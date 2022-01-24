@@ -144,6 +144,9 @@ class AppInfo {
         return true
     }
 
+    fun isPropertyFile(file: StorageFile): Boolean =
+        file.name?.endsWith(".properties") ?: false
+
     fun refreshBackupHistory(context: Context) {
         backupDir.let { backupDir ->
             historyCollectorThread?.interrupt()
@@ -152,7 +155,7 @@ class AppInfo {
                 val backups: MutableList<BackupItem> = mutableListOf()
                 try {
                     appBackupDir?.listFiles()
-                        ?.filter { it.isPropertyFile }
+                        ?.filter { isPropertyFile(it) }
                         ?.forEach {
                             try {
                                 backups.add(BackupItem(context, it))
@@ -202,7 +205,7 @@ class AppInfo {
         backupDir = null
     }
 
-    fun delete(context: Context, backupItem: BackupItem, directBoolean: Boolean = true) {
+    fun delete(context: Context, backupItem: BackupItem, removeFromHistory: Boolean = true) {
         if (backupItem.backupProperties.packageName != packageName) {
             throw RuntimeException("Asked to delete a backup of ${backupItem.backupProperties.packageName} but this object is for $packageName")
         }
@@ -218,7 +221,8 @@ class AppInfo {
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, backupItem.backupProperties.packageName)
         }
-        if (directBoolean) backupHistory.remove(backupItem)
+        if (removeFromHistory)
+            backupHistory.remove(backupItem)
     }
 
     val isInstalled: Boolean

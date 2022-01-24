@@ -37,7 +37,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
     private var backupBoolean = true
 
     init {
-        setOperation("QQQ")
+        setOperation("...")
     }
 
     override suspend fun doWork(): Result {
@@ -45,6 +45,8 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         val selectedMode = inputData.getInt("selectedMode", MODE_UNSET)
         this.backupBoolean = inputData.getBoolean("backupBoolean", true)
         this.notificationId = inputData.getInt("notificationId", 123454321)
+
+        setOperation("beg")
 
         //setForeground(createForegroundInfo())
         var result: ActionResult? = null
@@ -75,8 +77,8 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         val packageLabel = appInfo?.packageLabel
             ?: "NONE"
         try {
-            if(MainActivityX.cancelAllWork) {
-                setOperation()
+            if(isStopped || MainActivityX.cancelAllWork) {
+                setOperation("DEL")
             } else {
 
                 appInfo?.let { ai ->
@@ -122,27 +124,44 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             LogsHandler.unhandledException(e, packageLabel)
         }
         val error = result?.message
-        return Result.success(
-            workDataOf(
-                "error" to error,
-                "succeeded" to result?.succeeded,
-                "packageLabel" to packageLabel
+        val succeeded = result?.succeeded ?: false
+        if(succeeded)
+            return Result.success(
+                workDataOf(
+                    "backupBoolean" to backupBoolean,
+                    "packageName" to packageName,
+                    "operation" to "OK",
+                    "error" to error,
+                    "succeeded" to succeeded,
+                    "packageLabel" to packageLabel
+                )
             )
-        )
+        else
+            if(runAttemptCount < 3)
+                return Result.retry()
+            else
+                return Result.failure(
+                    workDataOf(
+                        "backupBoolean" to backupBoolean,
+                        "packageName" to packageName,
+                        "operation" to "ERR",
+                        "error" to error,
+                        "succeeded" to succeeded,
+                        "packageLabel" to packageLabel
+                    )
+                )
     }
 
     fun setOperation(operation: String = "") {
         val packageName = inputData.getString("packageName") ?: "NONE"
         val backupBoolean = inputData.getBoolean("backupBoolean", true)
-        /*
-        setProgress(workDataOf(
+        setProgressAsync(workDataOf(
             "packageName" to packageName,
             "backupBoolean" to backupBoolean,
             "operation" to operation
         ))
         MainActivityX.showRunningStatus()
-        */
-        MainActivityX.setOperation(packageName, if(backupBoolean) "B" else "R", operation)
+        //MainActivityX.setOperation(packageName, if(backupBoolean) "B" else "R", operation)
     }
 
     /*

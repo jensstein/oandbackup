@@ -49,6 +49,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
 
     open fun run(app: AppInfo, backupMode: Int): ActionResult {
         var backupItem: BackupItem? = null
+        var ok = false
         try {
             Timber.i("Backing up: ${app.packageName} [${app.packageLabel}]")
             work?.setOperation("pre")
@@ -86,6 +87,10 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 )
             }
             val backupBuilder = BackupBuilder(context, app.appMetaInfo, appBackupRoot)
+            val iv = initIv(CIPHER_ALGORITHM) // as we're using a static Cipher Algorithm
+            backupBuilder.setIv(iv)
+            backupItem = backupBuilder.createBackupItem()
+
             val backupInstanceDir = backupBuilder.backupPath
             val pauseApp = context.isPauseApps
             var markerFile: StorageFile? = null
@@ -95,8 +100,6 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 Timber.d("pre-process package (to avoid file inconsistencies during backup etc.)")
                 preprocessPackage(app.packageName)
             }
-            val iv = initIv(CIPHER_ALGORITHM) // as we're using a static Cipher Algorithm
-            backupBuilder.setIv(iv)
             try {
                 if (backupMode and MODE_APK == MODE_APK) {
                     Timber.i("$app: Backing up package")
@@ -139,12 +142,13 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 if (context.isEncryptionEnabled()) {
                     backupBuilder.setCipherType(CIPHER_ALGORITHM)
                 }
-                backupItem = backupBuilder.createBackupItem()
                 saveBackupProperties(
                     appBackupRoot,
                     backupItem.backupProperties
                 )
-                app.backupHistory.add(backupItem)
+
+                ok = true
+
             } catch (e: BackupFailedException) {
                 Timber.e("Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
                 Timber.d("Backup deleted: ${backupBuilder.backupPath.delete()}")
@@ -163,15 +167,21 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 Timber.d("Backup deleted: ${backupBuilder.backupPath.delete()}")
                 return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
             } finally {
+                work?.setOperation("fin")
                 if (pauseApp) {
                     Timber.d("post-process package (to set it back to normal operation)")
-                    work?.setOperation("fin")
                     postprocessPackage(app.packageName)
                     markerFile?.delete()
                 }
+                backupItem?.let {
+                    if (ok)
+                        app.backupHistory.add(it)
+                    else
+                        app.delete(context, it, true)
+                }
             }
         } finally {
-            work?.setOperation()
+            work?.setOperation("end")
             Timber.i("$app: Backup done: ${backupItem ?: app.packageName}")
         }
         return ActionResult(app, backupItem?.backupProperties, "", true)

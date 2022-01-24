@@ -102,7 +102,7 @@ class MainActivityX : BaseActivity() {
         var runningOperations : MutableMap<String, MutableMap<String, String>> = mutableMapOf()
         var cancelAllWork = false
 
-        val use_workInfos = false
+        val use_workInfos = true
 
         fun setOperation(packageName: String, action: String = "", operation: String = "") {
             if(!use_workInfos) {
@@ -139,7 +139,7 @@ class MainActivityX : BaseActivity() {
                     runningOperations.forEach { action ->
                         action.value.forEach { operation ->
                             when (operation.value) {
-                                "QQQ" -> queued++
+                                "..." -> queued++
                                 else -> {
                                     running++
                                     bigText += "${action.key} ${operation.value} ${operation.key}\n"
@@ -154,31 +154,70 @@ class MainActivityX : BaseActivity() {
             activity?.let { activity ->
                 activity.runOnUiThread {
                     val appContext = activity.applicationContext
-                    val workInfos = WorkManager.getInstance(appContext).getWorkInfosByTag(
+                    val workManager = WorkManager.getInstance(appContext)
+                    val workInfos = workManager.getWorkInfosByTag(
                         AppActionWork::class.qualifiedName!!
                     )
-                    val workCount = workInfos.get().size
+                    var workCount = 0
+                    var workEnqueued = 0
+                    var workRunning = 0
+                    var workFinished = 0
+                    var succeeded = 0
+                    var failed = 0
+                    var cancelled = 0
                     if(use_workInfos) {
                         workInfos.get().forEach { workInfo ->
                             val progress = workInfo.progress
                             val operation = progress.getString("operation")
-                            when(operation) {
-                                "QQQ" -> queued++
-                                else -> {
-                                    running++
+                            workCount++
+                            when(workInfo.state) {
+                                WorkInfo.State.SUCCEEDED -> {
+                                    succeeded++
+                                    workFinished++
+                                }
+                                WorkInfo.State.FAILED -> {
+                                    failed++
+                                    workFinished++
+                                }
+                                WorkInfo.State.CANCELLED -> {
+                                    cancelled++
+                                    workFinished++
+                                }
+                                WorkInfo.State.ENQUEUED -> {
+                                    queued++
+                                    workEnqueued++
+                                }
+                                WorkInfo.State.RUNNING -> {
                                     val packageName = progress.getString("packageName")
                                     val backupBoolean = progress.getBoolean("backupBoolean", true)
-                                    bigText += "${if (backupBoolean) "B" else "R"} $operation : $packageName\n"
+                                    workRunning++
+                                    when (operation) {
+                                        "..." -> queued++
+                                        else -> {
+                                            running++
+                                            if(!packageName.isNullOrEmpty() and !operation.isNullOrEmpty())
+                                                bigText += "${if (backupBoolean) "B" else "R"} $operation : $packageName\n"
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
-                    if(maxCount < running + queued)
-                        maxCount = running + queued
+                    val active = running + queued + succeeded + failed
+                    if(maxCount < active)
+                        maxCount = active
                     counter = maxCount - running - queued
-                    val title = "${counter}/${maxCount} ($workCount) $queued -> $running"
+                    val title = "${counter}/${maxCount} ($active/$workCount) +$succeeded -$failed %$cancelled $queued>$running"
                     val notificationManager = NotificationManagerCompat.from(appContext)
-                    if (running > 0) {
+                    if (running + queued == 0) {
+                        activity.hideProgress()
+                        notificationManager.cancel(statusNotificationId)
+                        statusNotificationId = 0
+                        action = ""
+                        actionRunning = false
+                        maxCount = 0
+                        counter = 0
+                    } else {
                         val notificationChannel = NotificationChannel(
                             classAddress("NotificationHandler"),
                             classAddress("NotificationHandler"),
@@ -196,11 +235,17 @@ class MainActivityX : BaseActivity() {
                         val cancelIntent = PendingIntent.getBroadcast(
                             appContext,
                             0,
-                            Intent(appContext, actionReceiver.javaClass).setAction("ACTION_CANCELWORKQUEUE"),
+                            Intent(
+                                appContext,
+                                ActionReceiver::class.java
+                            ).setAction("ACTION_CANCELWORKQUEUE"),
                             PendingIntent.FLAG_IMMUTABLE
                         )
                         val notification =
-                            NotificationCompat.Builder(appContext, classAddress("NotificationHandler"))
+                            NotificationCompat.Builder(
+                                appContext,
+                                classAddress("NotificationHandler")
+                            )
                                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                                 .setSmallIcon(R.drawable.ic_app)
                                 .setContentTitle(title)
@@ -209,50 +254,34 @@ class MainActivityX : BaseActivity() {
                                 .setProgress(maxCount, counter, false)
                                 .setAutoCancel(true)
                                 .setContentIntent(resultPendingIntent)
-                                .addAction(R.drawable.ic_close, appContext.getString(R.string.dialogCancel), cancelIntent)
+                                .addAction(
+                                    R.drawable.ic_close,
+                                    appContext.getString(R.string.dialogCancel),
+                                    cancelIntent
+                                )
                                 .build()
                         notificationManager.notify(statusNotificationId, notification)
                         activity.updateProgress(counter, maxCount)
-                    } else {
-                        if (running + queued == 0) {
-                            activity.hideProgress()
-                            notificationManager.cancel(statusNotificationId)
-                            statusNotificationId = 0
-                            action = ""
-                            actionRunning = false
-                            maxCount = 0
-                            counter = 0
-                        }
                     }
                 }
             }
         }
 
-        fun showRunningStatus(actionText: String = "", counter: Int = -1, maxCount: Int = -1) {
-            if (actionText.isNotEmpty())
-                MainActivityX.action = actionText
-            if (counter >= 0)
-                MainActivityX.counter = counter
-            if (maxCount >= 0)
-                MainActivityX.maxCount = maxCount
-            showRunningStatus()
-        }
-
         fun cancelWorkQueue(context: Context) {
             activity?.showToast("cancel work queue")
-            cancelAllWork = true
-            //val workManager = WorkManager.getInstance(context)
+            //cancelAllWork = true
+            val workManager = WorkManager.getInstance(context)
             //Timber.i("WorkManager: ${workManager}")
-            //AppActionWork::class.qualifiedName?.let {
-            //    workManager.cancelAllWorkByTag(it)
-            //} ?: workManager.cancelAllWork()
+            AppActionWork::class.qualifiedName?.let {
+                workManager.cancelAllWorkByTag(it)
+            } //?: workManager.cancelAllWork()
             activity?.refreshView()
+            showRunningStatus()
         }
 
         class ActionReceiver : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent?) {
                 when(intent?.action) {
-                        //"ACTION_CANCELWORKQUEUE" -> cancelWorkQueue(activity!!.applicationContext)
                         "ACTION_CANCELWORKQUEUE" -> cancelWorkQueue(context.applicationContext)
                         "ACTION_CANCELWORKQUEUE_SERVICE" -> cancelWorkQueue(context.applicationContext)
                 }

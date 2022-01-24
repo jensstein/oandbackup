@@ -38,20 +38,23 @@ open class StorageFile {
             parent ?: run {
                 file ?: run {
                     uri?.let { uri ->
+                        val last = uri.lastPathSegment!!
                         try {
-                            uri.lastPathSegment?.let { last ->
-                                if (last.startsWith('/')) {
-                                    file = RootFile(last)
-                                    Timber.i("direct RootFile shadow tree at $file for SAF $last")
-                                } else {
-                                    val (storage, path) = last.split(":")
-                                    file = RootFile(RootFile("/storage", storage), path)
-                                    //file = RootFile(RootFile("/mnt/media_rw", storage), path)
-                                    Timber.i("found RootFile shadow tree at $file for SAF $last")
-                                }
+                            Timber.i("SAF: last=$last uri=$uri")
+                            if (last.startsWith('/')) {
+                                file = RootFile(last)
+                                Timber.i("direct RootFile shadow at $file for SAF $last ($uri)")
+                            } else {
+                                val (storage, path) = last.split(":")
+                                file = RootFile(RootFile("/storage", storage), path)
+                                //file = RootFile(RootFile("/mnt/media_rw", storage), path)
+                                Timber.i("found RootFile shadow at $file for SAF $last ($uri)")
                             }
+                            if( ! (file!!.exists() && file!!.canWrite()))
+                                throw Exception("cannot use RootFile shadow")
                         } catch (e: Throwable) {
                             file = null
+                            Timber.i("cannot use RootFile shadow for SAF $last ($uri)")
                         }
                     }
                 }
@@ -102,9 +105,6 @@ open class StorageFile {
 
     fun exists(): Boolean =
         file?.exists() ?: context?.let { context -> uri?.exists(context) } ?: false
-
-    val isPropertyFile: Boolean
-        get() = isFile && name?.endsWith(".properties") ?: false
 
     fun inputStream(): InputStream? {
         return file?.let { file ->

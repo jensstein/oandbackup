@@ -93,15 +93,15 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             } catch (e: CryptoSetupException) {
                 return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
             } finally {
+                work?.setOperation("fin")
                 if (pauseApp) {
                     Timber.d("post-process package (to set it back to normal operation)")
-                    work?.setOperation("fin")
                     postprocessPackage(app.packageName)
                     //markerFile?.delete()
                 }
             }
         } finally {
-            work?.setOperation()
+            work?.setOperation("end")
             Timber.i("$app: Restore done: $backupProperties")
         }
         return ActionResult(app, backupProperties, "", true)

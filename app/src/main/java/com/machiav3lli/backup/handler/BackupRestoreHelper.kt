@@ -69,7 +69,13 @@ object BackupRestoreHelper {
 
         // create the new backup
         val result = action.run(appInfo, reBackupMode)
-        Timber.i("[${appInfo.packageName}] Backup succeeded: ${result.succeeded}")
+
+        if(result.succeeded)
+            Timber.i("[${appInfo.packageName}] Backup succeeded: ${result.succeeded}")
+        else {
+            Timber.i("[${appInfo.packageName}] Backup FAILED: ${result.succeeded} ${result.message}")
+        }
+
         if (housekeepingWhen == HousekeepingMoment.AFTER) {
             housekeepingPackageBackups(context, appInfo, false)
         }

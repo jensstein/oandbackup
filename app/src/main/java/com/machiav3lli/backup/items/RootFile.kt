@@ -360,7 +360,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
      * @see File.list
      */
     override fun list(filenameFilter: FilenameFilter?): Array<String>? {
-        if (!isDirectory) return null
+        //if (!isDirectory) return null
         val files = runAsRoot("$utilBoxQ ls -bA1 $quoted").out.map {
             ShellHandler.FileInfo.unescapeLsOutput(it)
         }.filter {
@@ -378,7 +378,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
      * @see File.listFiles
      */
     override fun listFiles(): Array<RootFile>? {
-        if (!isDirectory) return null
+        //if (!isDirectory) return null
         return list()?.map {
             RootFile(this, it)
         }?.toTypedArray()
@@ -393,7 +393,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
      * @see File.listFiles
      */
     override fun listFiles(filenameFilter: FilenameFilter?): Array<RootFile>? {
-        if (!isDirectory) return null
+        //if (!isDirectory) return null
         return list(filenameFilter)?.map {
             RootFile(this, it)
         }?.toTypedArray()
@@ -408,7 +408,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
      * @see File.listFiles
      */
     override fun listFiles(fileFilter: FileFilter?): Array<RootFile>? {
-        if (!isDirectory) return null
+        //if (!isDirectory) return null
         var files = list()?.map {
             RootFile(this, it)
         }
