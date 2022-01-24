@@ -59,8 +59,10 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
 
     override fun canWrite(): Boolean = cmdBool("[ -w $quoted ]")
 
-    override fun createNewFile(): Boolean =
-        cmdBool("[ ! -e $quoted ] && $utilBoxQ echo -n > $quoted")
+    override fun createNewFile(): Boolean {
+        clearCache()
+        return cmdBool("[ ! -e $quoted ] && $utilBoxQ echo -n > $quoted")
+    }
 
     /**
      * Deletes the file or directory denoted by this abstract pathname. If
@@ -71,7 +73,10 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
      * Requires command `rm` for files, and `rmdir` for directories.
      * @see File.delete
      */
-    override fun delete(): Boolean = cmdBool("$utilBoxQ rm -f $quoted || $utilBoxQ rmdir $quoted")
+    override fun delete(): Boolean {
+        clearCache()
+        return cmdBool("$utilBoxQ rm -f $quoted || $utilBoxQ rmdir $quoted")
+    }
 
     /**
      * Deletes the file or directory denoted by this abstract pathname. If
@@ -82,7 +87,10 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
      * Requires command `rm`.
      * @see File.delete
      */
-    fun deleteRecursive(): Boolean = cmdBool("$utilBoxQ rm -rf $quoted")
+    fun deleteRecursive(): Boolean {
+        clearCache()
+        return cmdBool("$utilBoxQ rm -rf $quoted")
+    }
 
     /**
      * Clear the content of the file denoted by this abstract pathname.
@@ -97,8 +105,6 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
     override fun deleteOnExit() {
         throw UnsupportedOperationException("Unsupported RootFile operation")
     }
-
-    override fun exists(): Boolean = cmdBool("[ -e $quoted ]")
 
     // We are constructed with an absolute path, no need to re-resolve again
     override fun getAbsolutePath(): String = path
@@ -168,9 +174,36 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
      */
     override fun getUsableSpace(): Long = statFS("%a")
 
-    override fun isDirectory(): Boolean = cmdBool("[ -d $quoted ]")
 
-    override fun isFile(): Boolean = cmdBool("[ -f $quoted ]")
+    // cached attributes
+
+    fun clearCache() {
+        existsCached = null
+        isDirectoryCached = null
+        isFileCached = null
+    }
+
+    var existsCached : Boolean? = null
+    override fun exists(): Boolean {
+        if (existsCached == null)
+            existsCached = cmdBool("[ -e $quoted ]")
+        return existsCached!!
+    }
+
+    var isDirectoryCached : Boolean? = null
+    override fun isDirectory(): Boolean {
+        if (isDirectoryCached == null)
+            isDirectoryCached = cmdBool("[ -d $quoted ]")
+        return isDirectoryCached!!
+    }
+
+    var isFileCached : Boolean? = null
+    override fun isFile(): Boolean  {
+        if (isFileCached == null)
+            isFileCached = cmdBool("[ -f $quoted ]")
+        return isFileCached!!
+    }
+
 
     /**
      * @return true if the abstract pathname denotes a block device.
@@ -361,7 +394,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
      */
     override fun list(filenameFilter: FilenameFilter?): Array<String>? {
         //if (!isDirectory) return null
-        val files = runAsRoot("$utilBoxQ ls -bA1 $quoted").out.map {
+        val files = runAsRoot("$utilBoxQ ls -bA1 $quoted/").out.map {
             ShellHandler.FileInfo.unescapeLsOutput(it)
         }.filter {
             filenameFilter?.accept(this, name) ?: true
