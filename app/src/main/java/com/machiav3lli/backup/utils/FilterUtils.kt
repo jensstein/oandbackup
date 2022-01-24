@@ -39,7 +39,13 @@ fun List<AppInfo>.applyFilter(filter: SortFilterModel, context: Context): List<A
 
 private fun List<AppInfo>.applyBackupFilter(backupFilter: Int): List<AppInfo> {
     val predicate: (AppInfo) -> Boolean = {
-        (if (backupFilter and MODE_NONE == MODE_NONE) !it.hasBackups else false)
+        (if (backupFilter and MODE_NONE == MODE_NONE)
+            !it.hasBackups or
+                    ! ( it.hasApk or it.hasAppData or it.hasDevicesProtectedData or
+                            it.hasExternalData or it.hasObbData or it.hasMediaData)
+            else
+                false
+                )
                 || (if (backupFilter and MODE_APK == MODE_APK) it.hasApk else false)
                 || (if (backupFilter and MODE_DATA == MODE_DATA) it.hasAppData else false)
                 || (if (backupFilter and MODE_DATA_DE == MODE_DATA_DE) it.hasDevicesProtectedData else false)
