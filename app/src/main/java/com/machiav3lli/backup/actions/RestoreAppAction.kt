@@ -56,9 +56,6 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             Timber.i("Restoring: ${app.packageName} [${app.packageLabel}]")
             work?.setOperation("pre")
             val pauseApp = context.isPauseApps
-            //var markerFile: StorageFile? = null
-            //if (isSuspended(app.packageName))
-            //    markerFile = backupDir.createFile(binaryMimeType, SUSPENDED_MARKER_FILE)
             if (pauseApp) {
                 Timber.d("pre-process package (to avoid file inconsistencies during backup etc.)")
                 preprocessPackage(app.packageName)

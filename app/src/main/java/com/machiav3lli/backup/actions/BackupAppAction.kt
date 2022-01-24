@@ -92,9 +92,6 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
 
             val backupInstanceDir = backupBuilder.backupPath
             val pauseApp = context.isPauseApps
-            var markerFile: StorageFile? = null
-            if (isSuspended(app.packageName))
-                markerFile = appBackupRoot.createFile(binaryMimeType, SUSPENDED_MARKER_FILE)
             if (pauseApp) {
                 Timber.d("pre-process package (to avoid file inconsistencies during backup etc.)")
                 preprocessPackage(app.packageName)
@@ -173,7 +170,6 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 if (pauseApp) {
                     Timber.d("post-process package (to set it back to normal operation)")
                     postprocessPackage(app.packageName)
-                    markerFile?.delete()
                 }
                 if (backupItem == null)
                     backupItem = backupBuilder.createBackupItem()
