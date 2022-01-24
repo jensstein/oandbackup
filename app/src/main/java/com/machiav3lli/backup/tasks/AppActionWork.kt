@@ -77,7 +77,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         val packageLabel = appInfo?.packageLabel
             ?: "NONE"
         try {
-            if(isStopped || MainActivityX.cancelAllWork) {
+            if(isStopped) { //TODO cleanup  || MainActivityX.cancelAllWork) {
                 setOperation("DEL")
             } else {
 
@@ -136,8 +136,8 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                     "packageLabel" to packageLabel
                 )
             )
-        else
-            if(runAttemptCount < 3)
+        else {
+            if(runAttemptCount <= WORK_MAX_ATTEMPTS) //TODO hg42 use setting?
                 return Result.retry()
             else
                 return Result.failure(
@@ -150,6 +150,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                         "packageLabel" to packageLabel
                     )
                 )
+        }
     }
 
     fun setOperation(operation: String = "") {
@@ -160,8 +161,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             "backupBoolean" to backupBoolean,
             "operation" to operation
         ))
-        MainActivityX.showRunningStatus()
-        //MainActivityX.setOperation(packageName, if(backupBoolean) "B" else "R", operation)
+        //TODO cleanup MainActivityX.showRunningStatus()
     }
 
     /*
@@ -208,6 +208,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
 
     companion object {
         private val CHANNEL_ID = AppActionWork::class.java.name
+        val WORK_MAX_ATTEMPTS = 3
 
         fun Request(
             packageName: String,

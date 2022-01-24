@@ -272,9 +272,7 @@ class HomeFragment : NavigationFragment(),
         var counter = 0
         val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
         val workManager = WorkManager.getInstance(requireContext())
-        workManager.pruneWork()
-        MainActivityX.cancelAllWork = false
-        MainActivityX.showRunningStatus()
+        MainActivityX.startWork()
         selectedItems.forEach { (packageName, mode) ->
 
             val oneTimeWorkRequest =
@@ -283,7 +281,7 @@ class HomeFragment : NavigationFragment(),
 
             val oneTimeWorkLiveData = WorkManager.getInstance(requireContext())
                 .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
-            MainActivityX.showRunningStatus()
+            //TODO cleanup MainActivityX.showRunningStatus()
             oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
                 override fun onChanged(t: WorkInfo?) {
                     if (t?.state == WorkInfo.State.SUCCEEDED) {
@@ -322,7 +320,7 @@ class HomeFragment : NavigationFragment(),
                     }
 
                     finishWorkLiveData.removeObserver(this)
-                    MainActivityX.showRunningStatus()
+                    //TODO cleanup MainActivityX.showRunningStatus()
                     viewModel.refreshNow.value = true
                 }
             }

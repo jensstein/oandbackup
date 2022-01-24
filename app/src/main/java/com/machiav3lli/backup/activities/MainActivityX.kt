@@ -95,78 +95,88 @@ class MainActivityX : BaseActivity() {
         var appsSuspendedChecked = false
 
         var statusNotificationId = 0
-        var cancelAllWork = false
+        //TODO cleanup var cancelAllWork = false
 
-        fun showRunningStatus() {
+        fun showRunningStatus(manager: WorkManager? = null, work: MutableList<WorkInfo>? = null) {
             var running = 0
             var queued = 0
             var shortText = ""
             var bigText = ""
 
+            if(manager == null || work == null)
+                return
+
             if (statusNotificationId == 0)
                 statusNotificationId = System.currentTimeMillis().toInt()
             activity?.let { activity ->
-                activity.runOnUiThread {
-                    val appContext = activity.applicationContext
-                    val workManager = WorkManager.getInstance(appContext)
-                    val workInfos = workManager.getWorkInfosByTag(
-                        AppActionWork::class.qualifiedName!!
-                    )
-                    var workCount = 0
-                    var workEnqueued = 0
-                    var workBlocked = 0
-                    var workRunning = 0
-                    var workFinished = 0
-                    var succeeded = 0
-                    var failed = 0
-                    var canceled = 0
-                    var retried = 0
+                val appContext = activity.applicationContext
+                val workManager = manager ?: WorkManager.getInstance(appContext)
+                val workInfos = work ?: workManager.getWorkInfosByTag(
+                    AppActionWork::class.qualifiedName!!
+                ).get()
+                var workCount = 0
+                var workEnqueued = 0
+                var workBlocked = 0
+                var workRunning = 0
+                var workFinished = 0
+                var workSecondAttempts = 0
+                var workLastAttempts = 0
+                var succeeded = 0
+                var failed = 0
+                var canceled = 0
 
-                    workInfos.get().forEach { workInfo ->
-                        val progress = workInfo.progress
-                        val operation = progress.getString("operation")
-                        workCount++
-                        if (workInfo.runAttemptCount > 1)
-                            retried++
-                        when(workInfo.state) {
-                            WorkInfo.State.SUCCEEDED -> {
-                                succeeded++
-                                workFinished++
-                            }
-                            WorkInfo.State.FAILED -> {
-                                failed++
-                                workFinished++
-                            }
-                            WorkInfo.State.CANCELLED -> {
-                                canceled++
-                                workFinished++
-                            }
-                            WorkInfo.State.ENQUEUED -> {
-                                queued++
-                                workEnqueued++
-                            }
-                            WorkInfo.State.BLOCKED -> {
-                                queued++
-                                workBlocked++
-                            }
-                            WorkInfo.State.RUNNING -> {
-                                val packageName = progress.getString("packageName")
-                                val backupBoolean = progress.getBoolean("backupBoolean", true)
-                                workRunning++
-                                when (operation) {
-                                    "..." -> queued++
-                                    else -> {
-                                        running++
-                                        if(!packageName.isNullOrEmpty() and !operation.isNullOrEmpty())
-                                            bigText += "${if (backupBoolean) "B" else "R"} $operation : $packageName\n"
-                                    }
+                workInfos.forEach { workInfo ->
+                    val progress = workInfo.progress
+                    val operation = progress.getString("operation")
+                    workCount++
+                    if (workInfo.runAttemptCount > 1) {
+                        if (workInfo.runAttemptCount == AppActionWork.WORK_MAX_ATTEMPTS)
+                            workLastAttempts++
+                        else
+                            workSecondAttempts++
+                    }
+
+                    when(workInfo.state) {
+                        WorkInfo.State.SUCCEEDED -> {
+                            succeeded++
+                            workFinished++
+                        }
+                        WorkInfo.State.FAILED -> {
+                            failed++
+                            workFinished++
+                        }
+                        WorkInfo.State.CANCELLED -> {
+                            canceled++
+                            workFinished++
+                        }
+                        WorkInfo.State.ENQUEUED -> {
+                            queued++
+                            workEnqueued++
+                        }
+                        WorkInfo.State.BLOCKED -> {
+                            queued++
+                            workBlocked++
+                        }
+                        WorkInfo.State.RUNNING -> {
+                            val packageName = progress.getString("packageName")
+                            val backupBoolean = progress.getBoolean("backupBoolean", true)
+                            workRunning++
+                            when (operation) {
+                                "..." -> queued++
+                                else -> {
+                                    running++
+                                    if(!packageName.isNullOrEmpty() and !operation.isNullOrEmpty())
+                                        bigText += "${if (backupBoolean) "B" else "R"} $operation : $packageName\n"
                                 }
                             }
                         }
                     }
+                }
 
-                    val processed = succeeded + failed
-                    val title = "$processed/$workCount ✅$succeeded(🔄$retried)❌$failed ⏹$canceled $queued🏃$running"
+                val processed = succeeded + failed
+                val title = "$processed/$workCount = ✔$succeeded/❌$failed (🔄$workSecondAttempts...$workLastAttempts) ⏸$workBlocked ⏹$canceled - $queued🚀$running"
+
+                if(workCount>0) {
                     val notificationManager = NotificationManagerCompat.from(appContext)
                     val notificationChannel = NotificationChannel(
                         classAddress("NotificationHandler"),
@@ -191,54 +201,74 @@ class MainActivityX : BaseActivity() {
                         ).setAction("ACTION_CANCELWORKQUEUE"),
                         PendingIntent.FLAG_IMMUTABLE
                     )
-                    val notification =
-                        NotificationCompat.Builder(
-                            appContext,
-                            classAddress("NotificationHandler")
-                        )
-                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                            .setSmallIcon(R.drawable.ic_app)
-                            .setContentTitle(title)
-                            .setStyle(NotificationCompat.BigTextStyle().bigText(bigText))
-                            .setContentText(shortText)
-                            .setProgress(workCount, processed, false)
-                            .setAutoCancel(true)
-                            .setContentIntent(resultPendingIntent)
-                            .addAction(
-                                R.drawable.ic_close,
-                                appContext.getString(R.string.dialogCancel),
-                                cancelIntent
+                    activity.runOnUiThread {
+                        val notification =
+                            NotificationCompat.Builder(
+                                appContext,
+                                classAddress("NotificationHandler")
                             )
-                            .build()
-                    notificationManager.notify(statusNotificationId, notification)
-                    activity.updateProgress(processed, workCount)
+                                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                                .setSmallIcon(R.drawable.ic_app)
+                                .setContentTitle(title)
+                                .setStyle(NotificationCompat.BigTextStyle().bigText(bigText))
+                                .setContentText(shortText)
+                                .setProgress(workCount, processed, false)
+                                .setAutoCancel(true)
+                                .setContentIntent(resultPendingIntent)
+                                .addAction(
+                                    R.drawable.ic_close,
+                                    appContext.getString(R.string.dialogCancel),
+                                    cancelIntent
+                                )
+                                .build()
+                        notificationManager.notify(statusNotificationId, notification)
+                        activity.updateProgress(processed, workCount)
 
-                    if (running + queued == 0) {
-                        activity.hideProgress()
-                        // don't remove, the result may be intersting for the user
-                        //notificationManager.cancel(statusNotificationId)
-                        //statusNotificationId = 0
+                        if (running + queued == 0) {
+                            activity.hideProgress()
+                            // don't remove notification, the result may be interesting for the user
+                            //notificationManager.cancel(statusNotificationId)
+                            //statusNotificationId = 0
+                        }
                     }
                 }
             }
         }
 
-        fun cancelWorkQueue(context: Context) {
+        fun initWorkManager() {
+            val workManager = workManager()
+            workManager.pruneWork()
+            workManager.getWorkInfosByTagLiveData(
+                AppActionWork::class.qualifiedName!!
+            ).observeForever {
+                showRunningStatus(workManager, it)
+            }
+        }
+
+        fun workContext() = activity!!.applicationContext
+        fun workManager() = WorkManager.getInstance(workContext())
+
+        fun startWork() {
+            workManager().pruneWork()
+            //MainActivityX.cancelAllWork = false
+            //MainActivityX.showRunningStatus()
+        }
+
+        private fun cancelWork() {
             activity?.showToast("cancel work queue")
             //cancelAllWork = true
-            val workManager = WorkManager.getInstance(context)
             AppActionWork::class.qualifiedName?.let {
-                workManager.cancelAllWorkByTag(it)
+                workManager().cancelAllWorkByTag(it)
             }
             activity?.refreshView()
-            showRunningStatus()
+            //showRunningStatus()
         }
 
         class ActionReceiver : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent?) {
                 when(intent?.action) {
-                        "ACTION_CANCELWORKQUEUE" -> cancelWorkQueue(context.applicationContext)
-                        "ACTION_CANCELWORKQUEUE_SERVICE" -> cancelWorkQueue(context.applicationContext)
+                        "ACTION_CANCELWORKQUEUE" -> cancelWork()
+                        "ACTION_CANCELWORKQUEUE_SERVICE" -> cancelWork()
                 }
             }
         }
@@ -292,6 +322,8 @@ class MainActivityX : BaseActivity() {
                 }
             }
         }
+
+        initWorkManager()
 
         Shell.getShell()
         binding = ActivityMainXBinding.inflate(layoutInflater)

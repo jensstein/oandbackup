@@ -108,10 +108,8 @@ open class ScheduleService : Service() {
                 } else {
                     val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
                     val workManager = WorkManager.getInstance(context)
-                    workManager.pruneWork()
-                    MainActivityX.cancelAllWork = false
-                    MainActivityX.showRunningStatus()
 
+                    MainActivityX.startWork()
                     selectedItems.forEach { packageName ->
 
                         val oneTimeWorkRequest =
@@ -168,7 +166,7 @@ open class ScheduleService : Service() {
                                 )
                                 scheduleAlarm(context, scheduleId, true)
                                 isNeedRefresh = true
-                                MainActivityX.showRunningStatus()
+                                //TODO cleanup MainActivityX.showRunningStatus()
                                 finishWorkLiveData.removeObserver(this)
                                 stopService(intent)
                             }

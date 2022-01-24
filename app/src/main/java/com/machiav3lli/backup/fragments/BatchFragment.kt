@@ -333,10 +333,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         var resultsSuccess = true
         var counter = 0
         val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
-        val workManager = WorkManager.getInstance(requireContext())
-        workManager.pruneWork()
-        MainActivityX.cancelAllWork = false
-        MainActivityX.showRunningStatus()
+        MainActivityX.startWork()
         selectedItems.forEach { (packageName, mode) ->
 
             val oneTimeWorkRequest =
@@ -383,7 +380,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                         LogsHandler.logErrors(requireContext(), errors.dropLast(2))
                     }
 
-                    MainActivityX.showRunningStatus()
+                    //TODO cleanup MainActivityX.showRunningStatus()
                     viewModel.refreshNow.value = true
                     finishWorkLiveData.removeObserver(this)
                 }
