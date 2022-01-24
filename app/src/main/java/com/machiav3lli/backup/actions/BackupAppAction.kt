@@ -89,7 +89,6 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             val backupBuilder = BackupBuilder(context, app.appMetaInfo, appBackupRoot)
             val iv = initIv(CIPHER_ALGORITHM) // as we're using a static Cipher Algorithm
             backupBuilder.setIv(iv)
-            backupItem = backupBuilder.createBackupItem()
 
             val backupInstanceDir = backupBuilder.backupPath
             val pauseApp = context.isPauseApps
@@ -142,6 +141,9 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 if (context.isEncryptionEnabled()) {
                     backupBuilder.setCipherType(CIPHER_ALGORITHM)
                 }
+
+                backupItem = backupBuilder.createBackupItem()
+
                 saveBackupProperties(
                     appBackupRoot,
                     backupItem.backupProperties
@@ -173,12 +175,12 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                     postprocessPackage(app.packageName)
                     markerFile?.delete()
                 }
-                backupItem?.let {
-                    if (ok)
-                        app.backupHistory.add(it)
-                    else
-                        app.delete(context, it, true)
-                }
+                if (backupItem == null)
+                    backupItem = backupBuilder.createBackupItem()
+                if (ok)
+                    app.backupHistory.add(backupItem)
+                else
+                    app.delete(context, backupItem, true)
             }
         } finally {
             work?.setOperation("end")
