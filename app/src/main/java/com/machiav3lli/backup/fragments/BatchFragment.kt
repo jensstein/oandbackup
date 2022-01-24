@@ -18,6 +18,7 @@
 package com.machiav3lli.backup.fragments
 
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -40,10 +41,13 @@ import com.machiav3lli.backup.databinding.FragmentBatchBinding
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.handler.showNotification
+import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BatchItemX
 import com.machiav3lli.backup.items.BatchPlaceholderItemX
 import com.machiav3lli.backup.tasks.AppActionWork
+import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.BatchViewModel
 import com.machiav3lli.backup.viewmodels.BatchViewModelFactory
@@ -313,17 +317,11 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     // TODO abstract this to fit for Main- & BatchFragment
     // TODO break down to smaller bits
     override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {
-        MainActivityX.cancelAllWork = false
         val notificationId = System.currentTimeMillis().toInt()
         val notificationMessage = String.format(
             getString(R.string.fetching_action_list),
             getString(if (backupBoolean) R.string.backup else R.string.restore)
         )
-        /*
-        showRunningStatus(
-            notificationMessage
-        )
-        */
         val selectedItems = selectedPackages
             .mapIndexed { i, packageName ->
                 if (packageName.isNullOrEmpty()) null
@@ -335,29 +333,18 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         var resultsSuccess = true
         var counter = 0
         val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
-        /*
-        showRunningStatus(
-            getString(if (backupBoolean) R.string.backupProgress else R.string.restoreProgress),
-            counter, selectedItems.size
-        )
-        */
         val workManager = WorkManager.getInstance(requireContext())
         workManager.pruneWork()
+        MainActivityX.cancelAllWork = false
+        MainActivityX.showRunningStatus()
         selectedItems.forEach { (packageName, mode) ->
 
             val oneTimeWorkRequest =
                 AppActionWork.Request(packageName, mode, backupBoolean, notificationId)
-            //worksList.add(oneTimeWorkRequest)
-            workManager.enqueue(oneTimeWorkRequest)
+            worksList.add(oneTimeWorkRequest)
 
             val oneTimeWorkLiveData = WorkManager.getInstance(requireContext())
                 .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
-            /*
-            showRunningStatus(
-                getString(if (backupBoolean) R.string.backupProgress else R.string.restoreProgress),
-                counter, selectedItems.size
-            )
-            */
             oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
                 override fun onChanged(t: WorkInfo?) {
                     if (t?.state == WorkInfo.State.SUCCEEDED) {
@@ -365,12 +352,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                         counter += 1
 
                         val (succeeded, packageLabel, error) = AppActionWork.getOutput(t)
-                        /*
-                        showRunningStatus(
-                            getString(if (backupBoolean) R.string.backupProgress else R.string.restoreProgress),
-                            counter, selectedItems.size
-                        )
-                        */
                         if (error.isNotEmpty()) errors = "$errors$packageLabel: ${
                             LogsHandler.handleErrorMessages(
                                 requireContext(),
@@ -385,7 +366,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
             })
         }
 
-        /*
         val finishWorkRequest = FinishWork.Request(resultsSuccess, backupBoolean)
 
         val finishWorkLiveData = WorkManager.getInstance(requireContext())
@@ -403,22 +383,19 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                         LogsHandler.logErrors(requireContext(), errors.dropLast(2))
                     }
 
-                    requireMainActivity().hideProgress()
+                    MainActivityX.showRunningStatus()
                     viewModel.refreshNow.value = true
                     finishWorkLiveData.removeObserver(this)
                 }
             }
         })
-        */
 
-        /*
         if (worksList.isNotEmpty()) {
             WorkManager.getInstance(requireContext())
                 .beginWith(worksList)
                 .then(finishWorkRequest)
                 .enqueue()
         }
-        */
     }
 
     override fun refreshView() {

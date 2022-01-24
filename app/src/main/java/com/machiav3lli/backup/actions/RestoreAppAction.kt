@@ -98,7 +98,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                 }
             }
         } finally {
-            work?.setOperation("end")
+            work?.setOperation("<--")
             Timber.i("$app: Restore done: $backupProperties")
         }
         return ActionResult(app, backupProperties, "", true)

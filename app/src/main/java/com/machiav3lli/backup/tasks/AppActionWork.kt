@@ -46,7 +46,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         this.backupBoolean = inputData.getBoolean("backupBoolean", true)
         this.notificationId = inputData.getInt("notificationId", 123454321)
 
-        setOperation("beg")
+        setOperation("-->")
 
         //setForeground(createForegroundInfo())
         var result: ActionResult? = null

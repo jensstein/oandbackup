@@ -71,7 +71,14 @@ fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Bool
     val packageList = packageInfoList
             .filterNotNull()
             .filterNot { it.packageName.matches(ignoredPackages) || blocklist.contains(it.packageName) }
-            .map { AppInfo(this, it, backupRoot) }
+            .mapNotNull {
+                try {
+                    AppInfo(this, it, backupRoot)
+                } catch (e: AssertionError) {
+                    Timber.e("Could not create AppInfo for ${it}: $e")
+                    null
+                }
+            }
             .toMutableList()
 
     if(!MainActivityX.appsSuspendedChecked) {
@@ -86,11 +93,6 @@ fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Bool
                         ) and ApplicationInfo.FLAG_SUSPENDED
                 ){
                     runAsRoot("pm unsuspend ${appInfo.packageName}")
-                    //appInfo.backupDir?.findFile(BaseAppAction.SUSPENDED_MARKER_FILE)
-                    //    ?.let { markerFile ->
-                    //BaseAppAction.cleanupSuspended(appInfo.packageName)
-                    //        markerFile.delete()
-                    //    }
                 }
             }
             MainActivityX.appsSuspendedChecked = true
@@ -107,7 +109,7 @@ fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Bool
 
     if (includeUninstalled) {
         val installedPackageNames = packageList
-                .map(AppInfo::packageName)
+                .map { it.packageName }
                 .toList()
         val directoriesInBackupRoot = getDirectoriesInBackupRoot()
         val missingAppsWithBackup: List<AppInfo> =
@@ -115,7 +117,7 @@ fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Bool
         // if it fails, null the object for filtering in the next step to avoid crashes
                 // filter out previously failed backups
                 directoriesInBackupRoot
-                        .filterNot { installedPackageNames.contains(it.name) || blocklist.contains(it.name) }
+                        .filterNot { it.name?.let { name -> installedPackageNames.contains(name) || blocklist.contains(name) } ?: true }
                         .mapNotNull {
                             try {
                                 AppInfo(this, it.name, it)

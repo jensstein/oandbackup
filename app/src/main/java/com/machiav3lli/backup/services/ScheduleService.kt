@@ -107,13 +107,11 @@ open class ScheduleService : Service() {
                     stopService(intent)
                 } else {
                     val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
+                    val workManager = WorkManager.getInstance(context)
+                    workManager.pruneWork()
+                    MainActivityX.cancelAllWork = false
+                    MainActivityX.showRunningStatus()
 
-                    /*
-                    MainActivityX.showRunningStatus(
-                        getString(R.string.backupProgress),
-                        counter, selectedItems.size
-                    )
-                    */
                     selectedItems.forEach { packageName ->
 
                         val oneTimeWorkRequest =
@@ -131,12 +129,6 @@ open class ScheduleService : Service() {
                                         ?: ""
                                     val error = t.outputData.getString("error")
                                         ?: ""
-                                    /*
-                                    MainActivityX.showRunningStatus(
-                                        getString(R.string.backupProgress),
-                                        counter, selectedItems.size
-                                    )
-                                    */
                                     if (error.isNotEmpty()) errors = "$errors$packageLabel: ${
                                         LogsHandler.handleErrorMessages(
                                             this@ScheduleService,
@@ -176,6 +168,7 @@ open class ScheduleService : Service() {
                                 )
                                 scheduleAlarm(context, scheduleId, true)
                                 isNeedRefresh = true
+                                MainActivityX.showRunningStatus()
                                 finishWorkLiveData.removeObserver(this)
                                 stopService(intent)
                             }
@@ -183,9 +176,6 @@ open class ScheduleService : Service() {
                     })
 
                     if (worksList.isNotEmpty()) {
-                        MainActivityX.cancelAllWork = false
-                        val workManager = WorkManager.getInstance(context)
-                        //Timber.i("WorkManager: ${workManager}")
                         workManager
                             .beginWith(worksList)
                             .then(finishWorkRequest)
