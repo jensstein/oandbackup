@@ -157,6 +157,7 @@
     <string name="sched_excludeSystemCheckBox">Exclude system apps</string>
     <string name="sched_blocklist">Blocklist</string>
     <string name="spec_accounts">Accounts</string>
+    <string name="spec_smsmms">SMS/MMS</string>
     <string name="spec_appwidgets">App Widgets</string>
     <string name="spec_bluetooth">Bluetooth</string>
     <string name="spec_data">Data Usage and Policy</string>
