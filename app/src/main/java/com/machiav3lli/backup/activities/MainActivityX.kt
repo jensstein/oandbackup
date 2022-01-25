@@ -197,8 +197,8 @@ class MainActivityX : BaseActivity() {
                         0,
                         Intent(
                             appContext,
-                            ActionReceiver::class.java
-                        ).setAction("ACTION_CANCELWORKQUEUE"),
+                            WorkReceiver::class.java
+                        ).setAction("WORK_CANCEL"),
                         PendingIntent.FLAG_IMMUTABLE
                     )
                     activity.runOnUiThread {
@@ -264,16 +264,16 @@ class MainActivityX : BaseActivity() {
             //showRunningStatus()
         }
 
-        class ActionReceiver : BroadcastReceiver() {
+        class WorkReceiver : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent?) {
                 when(intent?.action) {
-                        "ACTION_CANCELWORKQUEUE" -> cancelWork()
-                        "ACTION_CANCELWORKQUEUE_SERVICE" -> cancelWork()
+                        "WORK_CANCEL" -> cancelWork()
+                        "WORK_CANCEL_SERVICE" -> cancelWork()
                 }
             }
         }
 
-        val actionReceiver = ActionReceiver()
+        val actionReceiver = WorkReceiver()
     }
 
     private lateinit var prefs: SharedPreferences
@@ -323,8 +323,6 @@ class MainActivityX : BaseActivity() {
             }
         }
 
-        initWorkManager()
-
         Shell.getShell()
         binding = ActivityMainXBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
@@ -345,6 +343,7 @@ class MainActivityX : BaseActivity() {
         })
         initAssetFiles()
         initShell()
+        initWorkManager()
         runOnUiThread { showEncryptionDialog() }
         setContentView(binding.root)
     }
@@ -357,12 +356,12 @@ class MainActivityX : BaseActivity() {
         super.onStart()
         setupOnClicks()
         setupNavigation()
-        applicationContext.registerReceiver(actionReceiver, IntentFilter())
+        workContext().registerReceiver(actionReceiver, IntentFilter())
     }
 
     override fun onStop() {
         super.onStop()
-        unregisterReceiver(actionReceiver)
+        workContext().unregisterReceiver(actionReceiver)
     }
 
     override fun onResume() {
@@ -393,7 +392,7 @@ class MainActivityX : BaseActivity() {
         if (intent != null) {
             val action = intent.action
             when (action) {
-                //"ACTION_CANCELWORKQUEUE" -> cancelWorkQueue(this)
+                //"WORK_CANCEL" -> cancelWorkQueue(this)
             }
         }
         super.onNewIntent(intent)

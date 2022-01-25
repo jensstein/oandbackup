@@ -78,7 +78,7 @@ open class ScheduleService : Service() {
         if (intent != null) {
             val action = intent.action
             when (action) {
-                "ACTION_CANCELWORKQUEUE_SERVICE" -> {
+                "WORK_CANCEL_SERVICE" -> {
                     MainActivityX.cancelWorkQueue(baseContext)
                     stopSelf()
                 }
@@ -207,9 +207,9 @@ open class ScheduleService : Service() {
             0,
             //Intent(this, ScheduleService::class.java)                          // doesn't trigger ScheduleService onStartCommand
             //Intent(this, MainActivityX::class.java)                            // doesn't trigger MainActivityX onNewIntent (but once worked?)
-            Intent(this, MainActivityX.Companion.ActionReceiver::class.java)   // broadcast works but has wrong context? not this work queue?
+            Intent(this, MainActivityX.Companion.WorkReceiver::class.java)   // broadcast works but has wrong context? not this work queue?
                 //.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                .setAction("ACTION_CANCELWORKQUEUE_SERVICE"),
+                .setAction("WORK_CANCEL_SERVICE"),
             PendingIntent.FLAG_IMMUTABLE
         )
         this.notification = NotificationCompat.Builder(this, CHANNEL_ID)
