@@ -20,9 +20,35 @@ package com.machiav3lli.backup.services
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.ContentValues
+import android.net.Uri
+import android.provider.Telephony
+import android.telephony.SmsMessage
 
 class SmsReceiver : BroadcastReceiver() {
-    override fun onReceive(context: Context, intent: Intent) {
-        TODO("Stub file to get OAndBackupX into Default SMS in Settings.")
+    override fun onReceive(context: Context?, intent: Intent?) {
+        if(context == null || intent == null || intent.action == null || intent.extras == null){
+            return
+        }
+        if (intent.action != (Telephony.Sms.Intents.SMS_RECEIVED_ACTION)) {
+            return
+        }
+        val smsMessages = Telephony.Sms.Intents.getMessagesFromIntent(intent)
+        for (message in smsMessages) {
+            putSmsToDatabase( context, message )
+        }
+    }
+
+    private fun putSmsToDatabase(context: Context, sms: SmsMessage) {
+        val contentResolver = context.contentResolver
+        val values = ContentValues()
+        values.put( "address", sms.originatingAddress)
+        values.put( "date", sms.timestampMillis)
+        values.put( "read", 0 );
+        values.put( "status", sms.status)
+        values.put( "type", 1 )
+        values.put( "seen", 0 )
+        values.put( "body", sms.messageBody.toString() );
+        contentResolver.insert( Uri.parse( "content://sms" ), values );
     }
 }
