@@ -15,7 +15,6 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStream
 import java.io.OutputStream
-import java.util.*
 
 // TODO MAYBE migrate at some point to FuckSAF
 
@@ -35,7 +34,7 @@ open class StorageFile {
         if (PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean("shadowRootFileForSAF", true)
         ) {
-            fun isValidPath(file: RootFile?): Boolean = file?.let { file.exists() and file.canWrite() } ?: false
+            fun isValidPath(file: RootFile?): Boolean = file?.let { file.exists() && file.canRead() && file.canWrite() } ?: false
             parent ?: run {
                 file ?: run {
                     uri?.let { uri ->
@@ -54,8 +53,8 @@ open class StorageFile {
                                 val possiblePaths = listOf(
                                     "/storage/$storage/$subpath",
                                     "/mnt/media_rw/$storage/$subpath",
-                                    "/mnt/runtime/default/$storage/$subpath",
-                                    "/mnt/runtime/full/$storage/$subpath"
+                                    "/mnt/runtime/full/$storage/$subpath",
+                                    "/mnt/runtime/default/$storage/$subpath"
                                 )
                                 var checkFile: RootFile? = null
                                 for(path in possiblePaths) {
