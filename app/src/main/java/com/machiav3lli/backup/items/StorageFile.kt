@@ -35,6 +35,7 @@ open class StorageFile {
         if (PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean("shadowRootFileForSAF", true)
         ) {
+            fun isValidPath(file: RootFile?): Boolean = file?.let { file.exists() and file.canWrite() } ?: false
             parent ?: run {
                 file ?: run {
                     uri?.let { uri ->
@@ -42,19 +43,36 @@ open class StorageFile {
                         try {
                             Timber.i("SAF: last=$last uri=$uri")
                             if (last.startsWith('/')) {
-                                file = RootFile(last)
-                                Timber.i("direct RootFile shadow at $file for SAF $last ($uri)")
+                                val checkFile = RootFile(last)
+                                if (isValidPath(checkFile)) {
+                                    Timber.i("found direct RootFile shadow at $checkFile")
+                                    file = checkFile
+                                } else
+                                    throw Exception("cannot use RootFile shadow at $last")
                             } else {
-                                val (storage, path) = last.split(":")
-                                file = RootFile(RootFile("/storage", storage), path)
-                                //file = RootFile(RootFile("/mnt/media_rw", storage), path)
-                                Timber.i("found RootFile shadow at $file for SAF $last ($uri)")
+                                val (storage, subpath) = last.split(":")
+                                val possiblePaths = listOf(
+                                    "/storage/$storage/$subpath",
+                                    "/mnt/media_rw/$storage/$subpath",
+                                    "/mnt/runtime/default/$storage/$subpath",
+                                    "/mnt/runtime/full/$storage/$subpath"
+                                )
+                                var checkFile: RootFile? = null
+                                for(path in possiblePaths) {
+                                    checkFile = RootFile(path)
+                                    if (isValidPath(checkFile)) {
+                                        Timber.i("found storage RootFile shadow at $checkFile")
+                                        file = checkFile
+                                        break
+                                    }
+                                    checkFile = null
+                                }
+                                if(checkFile == null)
+                                    throw Exception("cannot use RootFile shadow at one of ${possiblePaths.joinToString(" ")}")
                             }
-                            if( ! (file!!.exists() && file!!.canWrite()))
-                                throw Exception("cannot use RootFile shadow")
                         } catch (e: Throwable) {
                             file = null
-                            Timber.i("cannot use RootFile shadow for SAF $last ($uri)")
+                            Timber.i("using access via SAF")
                         }
                     }
                 }
