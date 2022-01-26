@@ -33,7 +33,8 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.preference.PreferenceManager
-import androidx.work.*
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.PREFS_SKIPPEDENCRYPTION
 import com.machiav3lli.backup.R
@@ -48,7 +49,8 @@ import com.machiav3lli.backup.fragments.RefreshViewController
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
-import com.machiav3lli.backup.items.*
+import com.machiav3lli.backup.items.SortFilterModel
+import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.MainViewModel
@@ -466,12 +468,12 @@ class MainActivityX : BaseActivity() {
                     // additional generated files
                     File(assetDir, ShellHandler.EXCLUDE_FILE)
                         .writeText(
-                            (BaseAppAction.DATA_EXCLUDED_DIRS + BaseAppAction.DATA_EXCLUDED_FILES)
+                            (BaseAppAction.DATA_EXCLUDED_DIRS.map { "./$it" } + BaseAppAction.DATA_EXCLUDED_FILES)
                                 .map { it + "\n" }.joinToString("")
                         )
                     File(assetDir, ShellHandler.EXCLUDE_CACHE_FILE)
                         .writeText(
-                            BaseAppAction.DATA_EXCLUDED_CACHE_DIRS
+                            BaseAppAction.DATA_EXCLUDED_CACHE_DIRS.map { "./$it" }
                                 .map { it + "\n" }.joinToString("")
                         )
                     // validate with version file if completed
