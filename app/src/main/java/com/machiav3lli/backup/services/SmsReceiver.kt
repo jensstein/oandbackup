@@ -44,11 +44,11 @@ class SmsReceiver : BroadcastReceiver() {
         val values = ContentValues()
         values.put( "address", sms.originatingAddress)
         values.put( "date", sms.timestampMillis)
-        values.put( "read", 0 );
+        values.put( "read", 0 )
         values.put( "status", sms.status)
         values.put( "type", 1 )
         values.put( "seen", 0 )
-        values.put( "body", sms.messageBody.toString() );
-        contentResolver.insert( Uri.parse( "content://sms" ), values );
+        values.put( "body", sms.messageBody.toString() )
+        contentResolver.insert( Uri.parse( "content://sms" ), values )
     }
 }
