@@ -30,7 +30,7 @@ class SmsReceiver : BroadcastReceiver() {
         if(context == null || intent == null || intent.action == null || intent.extras == null){
             return
         }
-        if (intent.action != (Telephony.Sms.Intents.SMS_RECEIVED_ACTION)) {
+        if (intent.action != (Telephony.Sms.Intents.SMS_DELIVER_ACTION)) {
             return
         }
         val smsMessages = Telephony.Sms.Intents.getMessagesFromIntent(intent)
