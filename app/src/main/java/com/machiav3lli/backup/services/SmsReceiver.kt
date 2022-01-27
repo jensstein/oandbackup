@@ -49,8 +49,8 @@ class SmsReceiver : BroadcastReceiver() {
         val contentResolver = context.contentResolver
         val values = ContentValues()
         val notificationId = System.currentTimeMillis()
-        val message = sms.messageBody.toString()
-        var sender = sms.originatingAddress ?: ""
+        val message = sms.displayMessageBody.toString()
+        var sender = sms.displayOriginatingAddress ?: ""
 
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
             val uri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(sender))
@@ -67,7 +67,7 @@ class SmsReceiver : BroadcastReceiver() {
             } catch (e: Exception) {}
         }
 
-        values.put( "address", sms.originatingAddress)
+        values.put( "address", sms.displayOriginatingAddress)
         values.put( "date", sms.timestampMillis)
         values.put( "read", 0 )
         values.put( "status", sms.status)
