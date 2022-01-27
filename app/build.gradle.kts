@@ -86,7 +86,8 @@ android {
     }
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_1_8.toString()
+            jvmTarget = compileOptions.sourceCompatibility.toString()
+            freeCompilerArgs = listOf("-Xjvm-default=all")
         }
     }
     dependenciesInfo {
