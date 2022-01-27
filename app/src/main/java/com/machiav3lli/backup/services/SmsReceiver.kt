@@ -17,13 +17,19 @@
  */
 package com.machiav3lli.backup.services
 
+import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.ContentValues
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.provider.ContactsContract.PhoneLookup
 import android.provider.Telephony
 import android.telephony.SmsMessage
+import androidx.core.content.ContextCompat
+import com.machiav3lli.backup.activities.MainActivityX
+import com.machiav3lli.backup.handler.showNotification
 
 class SmsReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -42,13 +48,36 @@ class SmsReceiver : BroadcastReceiver() {
     private fun putSmsToDatabase(context: Context, sms: SmsMessage) {
         val contentResolver = context.contentResolver
         val values = ContentValues()
+        val notificationId = System.currentTimeMillis()
+        val message = sms.messageBody.toString()
+        var sender = sms.originatingAddress ?: ""
+
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+            val uri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(sender))
+            val projection = arrayOf(PhoneLookup.DISPLAY_NAME)
+            try {
+                val cursor = contentResolver.query(uri, projection, null, null, null)
+                cursor.use {
+                    if (cursor?.moveToFirst() == true) {
+                        if (cursor.getString(0) != "") {
+                            sender = cursor.getString(0)
+                        }
+                    }
+                }
+            } catch (e: Exception) {}
+        }
+
         values.put( "address", sms.originatingAddress)
         values.put( "date", sms.timestampMillis)
         values.put( "read", 0 )
         values.put( "status", sms.status)
         values.put( "type", 1 )
         values.put( "seen", 0 )
-        values.put( "body", sms.messageBody.toString() )
+        values.put( "body", message )
         contentResolver.insert( Uri.parse( "content://sms" ), values )
+        showNotification(
+            context, MainActivityX::class.java, notificationId.toInt(),
+                sender, message, true
+        )
     }
 }
