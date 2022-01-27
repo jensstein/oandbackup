@@ -94,9 +94,6 @@ android {
         includeInApk = false
         includeInBundle = false
     }
-    lint {
-        isAbortOnError = false
-    }
     packagingOptions {
         resources.excludes.add("META-INF/LICENSE.md")
         resources.excludes.add("META-INF/LICENSE-notice.md")
