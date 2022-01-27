@@ -25,7 +25,7 @@ import com.machiav3lli.backup.dbs.ScheduleDao
 class ExportsViewModelFactory(private val dataSource: ScheduleDao, private val application: Application)
     : ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ExportsViewModel::class.java)) {
             return ExportsViewModel(dataSource, application) as T
         }
