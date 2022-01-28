@@ -94,7 +94,7 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
                     .add(
                         AppInfo(
                             context, SpecialAppMetaInfo(
-                                "special.smsmmsjson",
+                                "special.smsmms.json",
                                 specPrefix + context.getString(R.string.spec_smsmmsjson),
                                 Build.VERSION.RELEASE,
                                 Build.VERSION.SDK_INT, arrayOf()
