@@ -92,6 +92,15 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
                 }
                 val commands = mutableListOf<String>()
                 for (restoreFile in expectedFiles) {
+                    val (uid, gid, con) = try {
+                        shell.suGetOwnerGroupContext(restoreFile.absolutePath)
+                    } catch(e: Throwable) {
+                        // fallback to permissions of parent directory
+                        shell.suGetOwnerGroupContext(
+                            restoreFile.parentFile.absolutePath ?:
+                                restoreFile.toPath().parent.toString()
+                        )
+                    }
                     commands.add(
                         "$utilBoxQ mv -f ${
                             quote(
@@ -101,6 +110,15 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
                                 )
                             )
                         } ${quote(restoreFile)}"
+                    )
+                    commands.add(
+                        "$utilBoxQ chown $uid:$gid ${quote(restoreFile)}"
+                    )
+                    commands.add(
+                        if (con == "?") //TODO hg42: when does it happen?
+                            "restorecon -RF -v ${quote(restoreFile)}"
+                        else
+                            "chcon -R -h -v '$con' ${quote(restoreFile)}"
                     )
                 }
                 val command = commands.joinToString(" ; ")  // no dependency
