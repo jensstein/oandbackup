@@ -22,7 +22,7 @@ import android.net.Uri
 import android.util.JsonReader
 
 object RestoreSMSMMSJSONAction {
-    fun restoreData(context: Context, fileUri: Uri) {
+    fun restoreData(context: Context, filePath: String) {
         // TODO: restore SMS/MMS here
     }
 

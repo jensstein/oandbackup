@@ -123,6 +123,12 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
                 val command = commands.joinToString(" ; ")  // no dependency
                 runAsRoot(command)
             }
+            if (app.packageName == "special.smsmms.json") {
+                for (filePath in metaInfo.fileList) {
+                    RestoreSMSMMSJSONAction.restoreData(context, filePath)
+                    File(filePath).delete()
+                }
+            }
         } catch (e: ShellCommandFailedException) {
             val error = extractErrorMessage(e.shellResult)
             Timber.e("$app: Restore $BACKUP_DIR_DATA failed. System might be inconsistent: $error")
