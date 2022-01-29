@@ -74,7 +74,8 @@ class SmsReceiver : BroadcastReceiver() {
         values.put( "type", 1 )
         values.put( "seen", 0 )
         values.put( "body", message )
-        contentResolver.insert( Uri.parse( "content://sms/inbox" ), values )
+        values.put( "subject", sms.pseudoSubject)
+        contentResolver.insert( Uri.parse( "content://sms" ), values )
         showNotification(
             context, MainActivityX::class.java, notificationId.toInt(),
                 sender, message, true

@@ -66,6 +66,9 @@ class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHa
         val filesToBackup: MutableList<ShellHandler.FileInfo> = ArrayList(appInfo.fileList.size)
         try {
             for (filePath in appInfo.fileList) {
+                if (app.packageName == "special.smsmms.json") {
+                    BackupSMSMMSJSONAction.backupData(context, filePath)
+                }
                 val file = File(filePath)
                 val isDirSource = filePath.endsWith("/")
                 val parent = if (isDirSource) file.name else null
@@ -118,6 +121,11 @@ class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHa
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, app)
             throw BackupFailedException("unhandled exception", e)
+        }
+        if (app.packageName == "special.smsmms.json") {
+            for (filePath in appInfo.fileList) {
+                File(filePath).delete()
+            }
         }
         return true
     }
