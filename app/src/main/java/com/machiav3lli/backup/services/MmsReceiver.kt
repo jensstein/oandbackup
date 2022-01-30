@@ -20,9 +20,11 @@ package com.machiav3lli.backup.services
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import timber.log.Timber
 
 class MmsReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        TODO("Stub file to get OAndBackupX into Default SMS in Settings.")
+        Timber.tag("MmsReceiver").v("onReceive")
+        // TODO: Stub file to get OAndBackupX into Default SMS in Settings.
     }
 }

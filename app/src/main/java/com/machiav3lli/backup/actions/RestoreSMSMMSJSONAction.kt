@@ -22,6 +22,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.provider.Telephony
 import android.util.JsonReader
 import android.util.JsonToken
 import androidx.core.content.ContextCompat
@@ -33,6 +34,7 @@ import java.io.InputStreamReader
 
 object RestoreSMSMMSJSONAction {
     fun restoreData(context: Context, filePath: String) {
+        Timber.tag("RestoreSMSMMSJSONAction").v("restoreData")
         if (ContextCompat.checkSelfPermission(
                         context,
                         Manifest.permission.READ_SMS
@@ -43,9 +45,7 @@ object RestoreSMSMMSJSONAction {
                     jsonReader.beginArray()
                     while (jsonReader.hasNext()) {
                         jsonReader.beginObject()
-                        val name = jsonReader.nextName()
-                        Timber.tag("RestoreSMSMMSJSONAction: restoreData").v("name -- $name")
-                        when (name) {
+                        when (jsonReader.nextName()) {
                             "sms" -> restoreSMS(context, jsonReader)
                             "mms" -> restoreMMS(context, jsonReader)
                             else -> jsonReader.skipValue()
@@ -59,7 +59,7 @@ object RestoreSMSMMSJSONAction {
         }
     }
 
-    // Loop through SMS's
+    // Loop through SMS
     private fun restoreSMS(context: Context, jsonReader: JsonReader) {
         Timber.tag("RestoreSMSMMSJSONAction").v("restoreSMS")
         jsonReader.beginArray()
@@ -74,31 +74,52 @@ object RestoreSMSMMSJSONAction {
         Timber.tag("RestoreSMSMMSJSONAction").v("parseSMS")
         jsonReader.beginObject()
         val values = ContentValues()
+        var queryWhere = ""
         while (jsonReader.hasNext()) {
             val name = jsonReader.nextName()
             if (jsonReader.peek() == JsonToken.STRING) {
                 val value = jsonReader.nextString()
-                Timber.tag("RestoreSMSMMSJSONAction: parseSMS").v("name -- $name --- value -- $value")
-                values.put( name, value)
+                values.put(name, value)
+                if (isNumber(value)) {
+                    queryWhere = "$queryWhere $name = $value AND"
+                } else {
+                    queryWhere = "$queryWhere $name = '$value' AND"
+                }
+            }
+            else if (jsonReader.peek() == JsonToken.NULL) {
+                queryWhere = "$queryWhere $name IS NULL AND"
+                jsonReader.skipValue()
             } else {
                 jsonReader.skipValue()
             }
         }
-        saveSMS(context, values)
+        queryWhere = queryWhere.removeSuffix(" AND")
+        saveSMS(context, values, queryWhere)
         jsonReader.endObject()
     }
 
     // Save single SMS to database
-    private fun saveSMS(context: Context, values: ContentValues) {
+    private fun saveSMS(context: Context, values: ContentValues, queryWhere: String) {
         Timber.tag("RestoreSMSMMSJSONAction").v("saveSMS")
-        // TODO: Prevent duplicates when restoring
         val contentResolver = context.contentResolver
-        contentResolver.insert( Uri.parse( "content://sms" ), values )
+        // Check for duplicates
+        val existsCursor = contentResolver.query(Telephony.Sms.CONTENT_URI, arrayOf("_id"), queryWhere, null, null)
+        val exists = existsCursor?.count
+        existsCursor?.close()
+        if (exists == 0) {
+            contentResolver.insert(Telephony.Sms.CONTENT_URI, values)
+        }
     }
 
     private fun restoreMMS(context: Context, jsonReader: JsonReader) {
         Timber.tag("RestoreSMSMMSJSONAction").v("restoreMMS")
         // TODO: restore MMS here
         jsonReader.skipValue()
+    }
+
+    private fun isNumber(input: String): Boolean {
+        Timber.tag("RestoreSMSMMSJSONAction").v("isNumber")
+        val regex = """^(-)?[0-9]+((\.)[0-9]+)?$""".toRegex()
+        return if (input.isEmpty()) false else regex.matches(input)
     }
 }

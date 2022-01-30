@@ -24,6 +24,7 @@ import android.net.Uri
 import android.provider.Telephony
 import android.util.JsonWriter
 import androidx.core.content.ContextCompat
+import timber.log.Timber
 import java.io.BufferedWriter
 import java.io.File
 import java.io.OutputStreamWriter
@@ -48,6 +49,7 @@ object BackupSMSMMSJSONAction {
         )
 
     fun backupData(context: Context, filePath: String) {
+        Timber.tag("BackupSMSMMSJSONAction").v("backupData")
         context.contentResolver.openOutputStream(Uri.fromFile(File(filePath)), "wt").use { outputStream ->
             BufferedWriter(OutputStreamWriter(outputStream)).use { writer ->
                 val jsonWriter = JsonWriter(writer)
@@ -60,6 +62,7 @@ object BackupSMSMMSJSONAction {
     }
 
     private fun backupSMS(context: Context, jsonWriter: JsonWriter) {
+        Timber.tag("BackupSMSMMSJSONAction").v("backupSMS")
         if (ContextCompat.checkSelfPermission(
                     context,
                     Manifest.permission.READ_SMS
@@ -73,9 +76,7 @@ object BackupSMSMMSJSONAction {
                     do {
                         jsonWriter.beginObject()
                         message.columnNames.forEachIndexed { m, columnName ->
-                            val value = message.getString(m)
-                            if (value != null)
-                                jsonWriter.name(columnName).value(value)
+                            jsonWriter.name(columnName).value(message.getString(m))
                         }
                         jsonWriter.endObject()
                     } while (message.moveToNext())
@@ -87,6 +88,7 @@ object BackupSMSMMSJSONAction {
     }
     
     private fun backupMMS(context: Context, jsonWriter: JsonWriter) {
+        Timber.tag("BackupSMSMMSJSONAction").v("backupMMS")
         if (ContextCompat.checkSelfPermission(
                         context,
                         Manifest.permission.READ_SMS
