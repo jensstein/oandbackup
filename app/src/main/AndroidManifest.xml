@@ -4,7 +4,7 @@
     package="com.machiav3lli.backup"
     android:installLocation="auto">
 
-    <!-- special.smsmmsjson -->
+    <!-- special.smsmms.json -->
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.WRITE_SMS" />
     <uses-permission android:name="android.permission.SEND_SMS" />
@@ -36,6 +36,10 @@
         android:required="false" />
     <uses-feature
         android:name="android.hardware.touchscreen"
+        android:required="false" />
+    <!-- special.smsmms.json -->
+    <uses-feature
+        android:name="android.hardware.telephony"
         android:required="false" />
 
     <application
