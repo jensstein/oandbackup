@@ -17,20 +17,88 @@
  */
 package com.machiav3lli.backup.actions
 
+import android.Manifest
+import android.content.ContentValues
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.util.JsonReader
+import android.util.JsonToken
+import androidx.core.content.ContextCompat
+import timber.log.Timber
+import java.io.BufferedReader
+import java.io.File
+import java.io.InputStreamReader
+
 
 object RestoreSMSMMSJSONAction {
     fun restoreData(context: Context, filePath: String) {
-        // TODO: restore SMS/MMS here
+        if (ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.READ_SMS
+                ) == PackageManager.PERMISSION_GRANTED) {
+            context.contentResolver.openInputStream(Uri.fromFile(File(filePath))).use { inputStream ->
+                BufferedReader(InputStreamReader(inputStream)).use { reader ->
+                    val jsonReader = JsonReader(reader)
+                    jsonReader.beginArray()
+                    while (jsonReader.hasNext()) {
+                        jsonReader.beginObject()
+                        val name = jsonReader.nextName()
+                        Timber.tag("RestoreSMSMMSJSONAction: restoreData").v("name -- $name")
+                        when (name) {
+                            "sms" -> restoreSMS(context, jsonReader)
+                            "mms" -> restoreMMS(context, jsonReader)
+                            else -> jsonReader.skipValue()
+                        }
+                        jsonReader.endObject()
+                    }
+                    jsonReader.endArray()
+                    jsonReader.close()
+                }
+            }
+        }
     }
 
-    private fun restoreSMS(context: Context, jsonWriter: JsonReader) {
-        // TODO: restore SMS here 
+    // Loop through SMS's
+    private fun restoreSMS(context: Context, jsonReader: JsonReader) {
+        Timber.tag("RestoreSMSMMSJSONAction").v("restoreSMS")
+        jsonReader.beginArray()
+        while (jsonReader.hasNext()) {
+            parseSMS(context, jsonReader)
+        }
+        jsonReader.endArray()
     }
 
-    private fun restoreMMS(context: Context, jsonWriter: JsonReader) {
+    // Parse through one SMS
+    private fun parseSMS(context: Context, jsonReader: JsonReader) {
+        Timber.tag("RestoreSMSMMSJSONAction").v("parseSMS")
+        jsonReader.beginObject()
+        val values = ContentValues()
+        while (jsonReader.hasNext()) {
+            val name = jsonReader.nextName()
+            if (jsonReader.peek() == JsonToken.STRING) {
+                val value = jsonReader.nextString()
+                Timber.tag("RestoreSMSMMSJSONAction: parseSMS").v("name -- $name --- value -- $value")
+                values.put( name, value)
+            } else {
+                jsonReader.skipValue()
+            }
+        }
+        saveSMS(context, values)
+        jsonReader.endObject()
+    }
+
+    // Save single SMS to database
+    private fun saveSMS(context: Context, values: ContentValues) {
+        Timber.tag("RestoreSMSMMSJSONAction").v("saveSMS")
+        // TODO: Prevent duplicates when restoring
+        val contentResolver = context.contentResolver
+        contentResolver.insert( Uri.parse( "content://sms" ), values )
+    }
+
+    private fun restoreMMS(context: Context, jsonReader: JsonReader) {
+        Timber.tag("RestoreSMSMMSJSONAction").v("restoreMMS")
         // TODO: restore MMS here
+        jsonReader.skipValue()
     }
 }
