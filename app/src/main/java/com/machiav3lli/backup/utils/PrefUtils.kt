@@ -110,10 +110,10 @@ fun Context.isBiometricLockAvailable(): Boolean =
  * @return user configured location
  * @throws StorageLocationNotConfiguredException if the value is not set
  */
-val Context.backupDirPath: String
+val Context.backupDirConfigured: String
     @Throws(StorageLocationNotConfiguredException::class)
     get() {
-        val location = getPrivateSharedPrefs().getString(PREFS_PATH_BACKUP_DIRECTORY, "")
+        val location = getDefaultSharedPreferences().getString(PREFS_PATH_BACKUP_DIRECTORY, "")
             ?: ""
         if (location.isEmpty()) {
             throw StorageLocationNotConfiguredException()
@@ -124,7 +124,7 @@ val Context.backupDirPath: String
 fun Context.setBackupDir(value: Uri) {
     val fullUri = DocumentsContract
         .buildDocumentUriUsingTree(value, DocumentsContract.getTreeDocumentId(value))
-    getPrivateSharedPrefs().edit()
+    getDefaultSharedPreferences().edit()
         .putString(PREFS_PATH_BACKUP_DIRECTORY, fullUri.toString()).apply()
     FileUtils.invalidateBackupLocation()
 }
@@ -132,7 +132,7 @@ fun Context.setBackupDir(value: Uri) {
 val Context.isStorageDirSetAndOk: Boolean
     get() {
         return try {
-            val storageDirPath = backupDirPath
+            val storageDirPath = backupDirConfigured
             if (storageDirPath.isEmpty()) {
                 return false
             }
@@ -267,8 +267,8 @@ val Context.isBackupObbData: Boolean
 val Context.isBackupMediaData: Boolean
     get() = getDefaultSharedPreferences().getBoolean(PREFS_MEDIADATA, false)
 
-val Context.isKillBeforeActionEnabled: Boolean
-    get() = getDefaultSharedPreferences().getBoolean(PREFS_KILLBEFOREACTION, true)
+val Context.isPauseApps: Boolean
+    get() = getDefaultSharedPreferences().getBoolean("pauseApps", true)
 
 val Context.isDisableVerification: Boolean
     get() = getDefaultSharedPreferences().getBoolean(PREFS_DISABLEVERIFICATION, true)
@@ -280,29 +280,29 @@ val Context.isAllowDowngrade: Boolean
     get() = getDefaultSharedPreferences().getBoolean(PREFS_ALLOWDOWNGRADE, false)
 
 var Context.isNeedRefresh: Boolean
-    get() = getPrivateSharedPrefs().getBoolean(NEED_REFRESH, false)
+    get() = getDefaultSharedPreferences().getBoolean(NEED_REFRESH, false)
     set(value) {
-        getPrivateSharedPrefs().edit().putBoolean(NEED_REFRESH, value).apply()
+        getDefaultSharedPreferences().edit().putBoolean(NEED_REFRESH, value).apply()
     }
 
 var Context.sortFilterModel: SortFilterModel
     get() {
         val sortFilterModel: SortFilterModel
-        val sortFilterPref = getPrivateSharedPrefs().getString(PREFS_SORT_FILTER, "")
+        val sortFilterPref = getDefaultSharedPreferences().getString(PREFS_SORT_FILTER, "")
         sortFilterModel =
             if (!sortFilterPref.isNullOrEmpty()) SortFilterModel(sortFilterPref)
             else SortFilterModel()
         return sortFilterModel
     }
     set(value) =
-        getPrivateSharedPrefs().edit().putString(PREFS_SORT_FILTER, value.toString()).apply()
+        getDefaultSharedPreferences().edit().putString(PREFS_SORT_FILTER, value.toString()).apply()
 
 
 var Context.sortOrder: Boolean
     get() =
-        getPrivateSharedPrefs().getBoolean(PREFS_SORT_ORDER, false)
+        getDefaultSharedPreferences().getBoolean(PREFS_SORT_ORDER, false)
     set(value) =
-        getPrivateSharedPrefs().edit().putBoolean(PREFS_SORT_ORDER, value).apply()
+        getDefaultSharedPreferences().edit().putBoolean(PREFS_SORT_ORDER, value).apply()
 
 val Context.isRememberFiltering: Boolean
     get() = getDefaultSharedPreferences().getBoolean(PREFS_REMEMBERFILTERING, true)
@@ -310,16 +310,16 @@ val Context.isRememberFiltering: Boolean
 class StorageLocationNotConfiguredException : Exception("Storage Location has not been configured")
 
 var Context.themeStyle: String
-    get() = getPrivateSharedPrefs().getString(PREFS_THEME, "system") ?: "system"
-    set(value) = getPrivateSharedPrefs().edit().putString(PREFS_THEME, value).apply()
+    get() = getDefaultSharedPreferences().getString(PREFS_THEME, "system") ?: "system"
+    set(value) = getDefaultSharedPreferences().edit().putString(PREFS_THEME, value).apply()
 
 var Context.accentStyle: String
-    get() = getPrivateSharedPrefs().getString(PREFS_ACCENT_COLOR, "accent_0") ?: "accent_0"
-    set(value) = getPrivateSharedPrefs().edit().putString(PREFS_ACCENT_COLOR, value).apply()
+    get() = getDefaultSharedPreferences().getString(PREFS_ACCENT_COLOR, "accent_0") ?: "accent_0"
+    set(value) = getDefaultSharedPreferences().edit().putString(PREFS_ACCENT_COLOR, value).apply()
 
 var Context.secondaryStyle: String
-    get() = getPrivateSharedPrefs().getString(PREFS_SECONDARY_COLOR, "secondary_0") ?: "secondary_0"
-    set(value) = getPrivateSharedPrefs().edit().putString(PREFS_SECONDARY_COLOR, value).apply()
+    get() = getDefaultSharedPreferences().getString(PREFS_SECONDARY_COLOR, "secondary_0") ?: "secondary_0"
+    set(value) = getDefaultSharedPreferences().edit().putString(PREFS_SECONDARY_COLOR, value).apply()
 
 var Context.language: String
     get() = getDefaultSharedPreferences().getString(PREFS_LANGUAGES, PREFS_LANGUAGES_DEFAULT)

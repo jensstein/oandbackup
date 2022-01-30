@@ -18,7 +18,6 @@
 package com.machiav3lli.backup.handler
 
 import android.content.Context
-import android.net.Uri
 import com.machiav3lli.backup.EXPORTS_FOLDER_NAME
 import com.machiav3lli.backup.EXPORTS_INSTANCE
 import com.machiav3lli.backup.R
@@ -28,7 +27,6 @@ import com.machiav3lli.backup.dbs.ScheduleDatabase
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logErrors
 import com.machiav3lli.backup.handler.LogsHandler.Companion.unhandledException
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.utils.ensureDirectory
 import com.machiav3lli.backup.utils.getBackupDir
 import timber.log.Timber
 import java.io.BufferedOutputStream
@@ -50,14 +48,18 @@ class ExportsHandler(var context: Context) {
         val scheds = dataSource.all
         scheds.forEach {
             val fileName = String.format(EXPORTS_INSTANCE, it.name)
-            val exportFile = exportsDirectory?.createFile("application/octet-stream", fileName)
-            BufferedOutputStream(context.contentResolver.openOutputStream(exportFile?.uri
-                    ?: Uri.EMPTY, "w"))
-                    .use { exportOut -> exportOut.write(it.toGson().toByteArray(StandardCharsets.UTF_8)) }
-            Timber.i("Exported the schedule ${it.name} to $exportFile")
+            exportsDirectory?.createFile("application/octet-stream", fileName)?.let { exportFile ->
+                BufferedOutputStream(exportFile.outputStream())
+                    .use { exportOut ->
+                        exportOut.write(
+                            it.toGson().toByteArray(StandardCharsets.UTF_8)
+                            )
+                        Timber.i("Exported the schedule ${it.name} to $exportFile")
+                    }
+            }
         }
         showNotification(context, PrefsActivity::class.java, System.currentTimeMillis().toInt(),
-                context.getString(R.string.sched_exported), null, false)
+            context.getString(R.string.sched_exported), null, false)
     }
 
     @Throws(IOException::class)
@@ -67,12 +69,12 @@ class ExportsHandler(var context: Context) {
             if (it.isFile) try {
                 exports.add(Pair(Schedule(context, it), it))
             } catch (e: NullPointerException) {
-                val message = "(Null) Incomplete schedule or wrong structure found in ${it.uri.encodedPath}."
+                val message = "(Null) Incomplete schedule or wrong structure found in ${it}."
                 Timber.w(message)
                 logErrors(context, message)
             } catch (e: Throwable) {
-                val message = "(catchall) Incomplete schedule or wrong structure found in ${it.uri.encodedPath}."
-                unhandledException(e, it.uri)
+                val message = "(catchall) Incomplete schedule or wrong structure found in ${it}."
+                unhandledException(e, it)
                 logErrors(context, message)
             }
         }

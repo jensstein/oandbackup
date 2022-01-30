@@ -63,8 +63,6 @@ fun Activity.showActionResult(result: ActionResult, saveMethod: DialogInterface.
             .setPositiveButton(R.string.dialogOK, null)
         if (!result.succeeded) {
             builder.setNegativeButton(R.string.dialogSave, saveMethod)
-        }
-        if (!result.succeeded) {
             builder.setTitle(R.string.errorDialogTitle)
                 .setMessage(LogsHandler.handleErrorMessages(this, result.message))
             builder.show()

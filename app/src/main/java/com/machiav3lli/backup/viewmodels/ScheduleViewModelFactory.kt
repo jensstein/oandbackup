@@ -26,7 +26,7 @@ class ScheduleViewModelFactory(private val id: Long, private val scheduleDB: Sch
                                private val application: Application)
     : ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ScheduleViewModel::class.java)) {
             return ScheduleViewModel(id, scheduleDB, application) as T
         }

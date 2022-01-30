@@ -65,14 +65,11 @@ const val PREFS_HOUSEKEEPING_MOMENT = "housekeepingMoment"
 const val PREFS_DISABLEVERIFICATION = "disableVerification"
 const val PREFS_RESTOREWITHALLPERMISSIONS = "giveAllPermissions"
 const val PREFS_ALLOWDOWNGRADE = "allowDowngrade"
-const val PREFS_KILLBEFOREACTION = "killBeforeAction"
 const val PREFS_BATCH_DELETE = "batchDelete"
 const val PREFS_COPYSELF = "copySelfApk"
 const val PREFS_SCHEDULESEXPORTIMPORT = "schedulesExportImport"
 const val PREFS_SAVEAPPSLIST = "saveAppsList"
 const val PREFS_LOGVIEWER = "logViewer"
-const val PREFS_INTERNAL_RETRIEVE_APP_META_ATTEMPTS = "retrieveAppMetaAttempts";
-const val PREFS_INTERNAL_RETRIEVE_APP_META_SLEEP_MS = "retrieveAppMetaSleepMs";
 
 const val ALT_MODE_UNSET = 0
 const val ALT_MODE_APK = 1
@@ -89,9 +86,9 @@ const val MODE_DATA_OBB = 0b0000001
 const val MODE_DATA_MEDIA = 0b1000000
 const val BACKUP_FILTER_DEFAULT = 0b1111111
 val possibleSchedModes =
-    mutableListOf(MODE_APK, MODE_DATA, MODE_DATA_DE, MODE_DATA_EXT, MODE_DATA_OBB, MODE_DATA_MEDIA)
+    listOf(MODE_APK, MODE_DATA, MODE_DATA_DE, MODE_DATA_EXT, MODE_DATA_OBB, MODE_DATA_MEDIA)
 val possibleBackupFilters =
-    mutableListOf(MODE_NONE, MODE_APK, MODE_DATA, MODE_DATA_DE, MODE_DATA_EXT, MODE_DATA_OBB, MODE_DATA_MEDIA)
+    listOf(MODE_NONE, MODE_APK, MODE_DATA, MODE_DATA_DE, MODE_DATA_EXT, MODE_DATA_OBB, MODE_DATA_MEDIA)
 
 const val MAIN_SORT_LABEL = 0
 const val MAIN_SORT_PACKAGENAME = 1
@@ -103,8 +100,8 @@ const val MAIN_FILTER_UNSET = 0b000
 const val MAIN_FILTER_SYSTEM = 0b100
 const val MAIN_FILTER_USER = 0b010
 const val MAIN_FILTER_SPECIAL = 0b001
-val possibleMainFilters = mutableListOf(MAIN_FILTER_SYSTEM, MAIN_FILTER_USER, MAIN_FILTER_SPECIAL)
-val possibleSchedFilters = mutableListOf(MAIN_FILTER_SYSTEM, MAIN_FILTER_USER)
+val possibleMainFilters = listOf(MAIN_FILTER_SYSTEM, MAIN_FILTER_USER, MAIN_FILTER_SPECIAL)
+val possibleSchedFilters = listOf(MAIN_FILTER_SYSTEM, MAIN_FILTER_USER)
 
 const val SPECIAL_FILTER_ALL = 0
 const val SPECIAL_FILTER_LAUNCHABLE = 1
@@ -113,8 +110,7 @@ const val SPECIAL_FILTER_OLD = 3
 const val SPECIAL_FILTER_NOT_INSTALLED = 4
 const val SPECIAL_FILTER_DISABLED = 5
 
-const val DEFAULT_RETRIEVE_APP_META_ATTEMPTS = 20;
-const val DEFAULT_RETRIEVE_APP_META_SLEEP_MS = 500;
+const val DEFAULT_RETRIEVE_APP_META_MAXWAIT = 30;
 
 const val BUNDLE_USERS = "users"
 const val NEED_REFRESH = "needRefresh"

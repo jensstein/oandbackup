@@ -18,7 +18,6 @@
 package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
-import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -63,11 +62,11 @@ class MainViewModel(
         }
     }
 
-    private suspend fun recreateAppInfoList(): MutableList<AppInfo> = withContext(Dispatchers.IO) {
-        val blockedPackagesList = blocklist.value?.map { it.packageName ?: "" } ?: listOf()
-        val dataList = appContext.getApplicationList(blockedPackagesList)
-        dataList
-    }
+    private suspend fun recreateAppInfoList(): MutableList<AppInfo> =
+        withContext(Dispatchers.IO) {
+            val blockedPackagesList = blocklist.value?.mapNotNull { it.packageName } ?: listOf()
+            appContext.getApplicationList(blockedPackagesList)
+        }
 
     fun updatePackage(packageName: String) {
         viewModelScope.launch {
@@ -85,7 +84,7 @@ class MainViewModel(
             var appInfo = dataList?.find { it.packageName == packageName }
             dataList?.removeIf { it.packageName == packageName }
             try {
-                appInfo = AppInfo(appContext, appInfo?.backupDirUri ?: Uri.EMPTY, packageName)
+                appInfo = AppInfo(appContext, packageName, appInfo?.backupDir)
                 dataList?.add(appInfo)
             } catch (e: AssertionError) {
                 Timber.w(e.message ?: "")

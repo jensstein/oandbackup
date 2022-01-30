@@ -26,7 +26,7 @@ import com.machiav3lli.backup.items.AppInfo
 class AppSheetViewModelFactory(private val app: AppInfo, private val shellCommands: ShellCommands, private val application: Application)
     : ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(AppSheetViewModel::class.java)) {
             return AppSheetViewModel(app, shellCommands, application) as T
         }

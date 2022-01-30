@@ -19,17 +19,14 @@ package com.machiav3lli.backup.handler
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.net.Uri
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.HousekeepingMoment.Companion.fromString
 import com.machiav3lli.backup.actions.*
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
-import com.machiav3lli.backup.items.ActionResult
-import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.BackupItem
-import com.machiav3lli.backup.items.BackupProperties
+import com.machiav3lli.backup.items.*
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
-import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
+import com.machiav3lli.backup.tasks.AppActionWork
+import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupDir
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
@@ -40,7 +37,13 @@ import java.io.IOException
 
 object BackupRestoreHelper {
 
-    fun backup(context: Context, shell: ShellHandler, appInfo: AppInfo, backupMode: Int): ActionResult {
+    fun backup(
+        context: Context,
+        work: AppActionWork?,
+        shell: ShellHandler,
+        appInfo: AppInfo,
+        backupMode: Int
+    ): ActionResult {
         var reBackupMode = backupMode
         val housekeepingWhen = fromString(context.getDefaultSharedPreferences()
                 .getString(PREFS_HOUSEKEEPING_MOMENT, HousekeepingMoment.AFTER.value)
@@ -49,37 +52,47 @@ object BackupRestoreHelper {
             housekeepingPackageBackups(context, appInfo, true)
         }
         // Select and prepare the action to use
-        val action: BackupAppAction
-        if (appInfo.isSpecial) {
-            if (reBackupMode and MODE_APK == MODE_APK) {
-                Timber.e("[${appInfo.packageName}] Special Backup called with MODE_APK or MODE_BOTH. Masking invalid settings.")
-                reBackupMode = reBackupMode and MODE_DATA
-                Timber.d("[${appInfo.packageName}] New backup mode: $reBackupMode")
+        val action: BackupAppAction = when {
+            appInfo.isSpecial -> {
+                if (reBackupMode and MODE_APK == MODE_APK) {
+                    Timber.e("[${appInfo.packageName}] Special Backup called with MODE_APK or MODE_BOTH. Masking invalid settings.")
+                    reBackupMode = reBackupMode and MODE_DATA
+                    Timber.d("[${appInfo.packageName}] New backup mode: $reBackupMode")
+                }
+                BackupSpecialAction(context, work, shell)
             }
-            action = BackupSpecialAction(context, shell)
-        } else {
-            action = BackupAppAction(context, shell)
+            else -> {
+                BackupAppAction(context, work, shell)
+            }
         }
         Timber.d("[${appInfo.packageName}] Using ${action.javaClass.simpleName} class")
 
         // create the new backup
         val result = action.run(appInfo, reBackupMode)
-        Timber.i("[${appInfo.packageName}] Backup succeeded: ${result.succeeded}")
+
+        if(result.succeeded)
+            Timber.i("[${appInfo.packageName}] Backup succeeded: ${result.succeeded}")
+        else {
+            Timber.i("[${appInfo.packageName}] Backup FAILED: ${result.succeeded} ${result.message}")
+        }
+
         if (housekeepingWhen == HousekeepingMoment.AFTER) {
             housekeepingPackageBackups(context, appInfo, false)
         }
         return result
     }
 
-    fun restore(context: Context, shellHandler: ShellHandler, app: AppInfo, mode: Int,
-                backupProperties: BackupProperties, backupLocation: Uri): ActionResult {
-        val restoreAction: RestoreAppAction = when {
-            app.isSpecial -> RestoreSpecialAction(context, shellHandler)
-            app.isSystem -> RestoreSystemAppAction(context, shellHandler)
-            else -> RestoreAppAction(context, shellHandler)
+    fun restore(
+        context: Context, work: AppActionWork?, shellHandler: ShellHandler, appInfo: AppInfo,
+        mode: Int, backupProperties: BackupProperties, backupDir: StorageFile
+    ): ActionResult {
+        val action: RestoreAppAction = when {
+            appInfo.isSpecial -> RestoreSpecialAction(context, work, shellHandler)
+            appInfo.isSystem -> RestoreSystemAppAction(context, work, shellHandler)
+            else -> RestoreAppAction(context, work, shellHandler)
         }
-        val result = restoreAction.run(app, backupProperties, backupLocation, mode)
-        Timber.i("$app: Restore succeeded: ${result.succeeded}")
+        val result = action.run(appInfo, backupProperties, backupDir, mode)
+        Timber.i("[${appInfo.packageName}] Restore succeeded: ${result.succeeded}")
         return result
     }
 
@@ -96,7 +109,7 @@ object BackupRestoreHelper {
                 if (fileInfos.size != 1) {
                     throw FileNotFoundException("Could not find OAndBackupX's own apk file")
                 }
-                suCopyFileToDocument(context.contentResolver, fileInfos[0], backupRoot)
+                suCopyFileToDocument(fileInfos[0], backupRoot)
                 // Invalidating cache, otherwise the next call will fail
                 // Can cost a lot time, but this function won't be run that often
                 invalidateCache()
@@ -116,7 +129,7 @@ object BackupRestoreHelper {
         } catch (e: StorageLocationNotConfiguredException) {
             Timber.e("${e.javaClass.simpleName}: $e")
             return false
-        } catch (e: BackupLocationIsAccessibleException) {
+        } catch (e: BackupLocationInAccessibleException) {
             Timber.e("${e.javaClass.simpleName}: $e")
             return false
         }
@@ -148,9 +161,9 @@ object BackupRestoreHelper {
                         }
                         .toMutableList()
                 (0 until revisionsToDelete).forEach {
-                    val deleteTarget = backups[it]
-                    Timber.i("[${app.packageName}] Deleting backup revision $deleteTarget")
-                    app.delete(context, deleteTarget)
+                    val deleteInfo = backups[it]
+                    Timber.i("[${app.packageName}] Deleting backup revision $deleteInfo")
+                    app.delete(context, deleteInfo)
                 }
             }
         }

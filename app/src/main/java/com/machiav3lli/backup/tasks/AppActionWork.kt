@@ -17,14 +17,8 @@
  */
 package com.machiav3lli.backup.tasks
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.job.JobService
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
-import androidx.core.app.NotificationCompat
 import androidx.work.*
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.activities.MainActivityX
@@ -42,13 +36,19 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
     private var notificationId: Int = 123454321
     private var backupBoolean = true
 
+    init {
+        setOperation("...")
+    }
+
     override suspend fun doWork(): Result {
-        val packageName = inputData.getString("packageName")
-            ?: ""
+        val packageName = inputData.getString("packageName") ?: ""
         val selectedMode = inputData.getInt("selectedMode", MODE_UNSET)
         this.backupBoolean = inputData.getBoolean("backupBoolean", true)
         this.notificationId = inputData.getInt("notificationId", 123454321)
-        setForeground(createForegroundInfo())
+
+        setOperation("-->")
+
+        //setForeground(createForegroundInfo())
         var result: ActionResult? = null
         var appInfo: AppInfo? = null
 
@@ -61,7 +61,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                 .find { it.name == packageName }
             backupDir?.let {
                 try {
-                    appInfo = AppInfo(context, it.uri, it.name)
+                    appInfo = AppInfo(context, it.name, it)
                 } catch (e: AssertionError) {
                     Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
                     result = ActionResult(
@@ -77,58 +77,94 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         val packageLabel = appInfo?.packageLabel
             ?: "NONE"
         try {
-            appInfo?.let { ai ->
-                try {
-                    MainActivityX.shellHandlerInstance?.let { instance ->
-                        result = when {
-                            backupBoolean ->
-                                {
+            if(isStopped) { //TODO cleanup  || MainActivityX.cancelAllWork) {
+                setOperation("DEL")
+            } else {
+
+                appInfo?.let { ai ->
+                    try {
+                        MainActivityX.shellHandlerInstance?.let { shellHandler ->
+                            result = when {
+                                backupBoolean -> {
                                     BackupRestoreHelper.backup(
-                                        context, instance, ai, selectedMode
+                                        context, this, shellHandler, ai, selectedMode
                                     )
                                 }
-                            else -> {
-                                // Latest backup for now
-                                ai.latestBackup?.let {
-                                    BackupRestoreHelper.restore(
-                                        context, instance, ai, selectedMode,
-                                        it.backupProperties, it.backupInstanceDirUri
-                                    )
+                                else -> {
+                                    // Latest backup for now
+                                    ai.latestBackup?.let {
+                                        BackupRestoreHelper.restore(
+                                            context, this, shellHandler, ai, selectedMode,
+                                            it.backupProperties, it.backupInstanceDir
+                                        )
+                                    }
                                 }
                             }
                         }
-                    }
-                } catch (e: Throwable) {
-                    result = ActionResult(
-                        ai, null,
-                        "not processed: $packageLabel: $e\n${e.stackTrace}", false
-                    )
-                    Timber.w("package: ${ai.packageLabel} result: $e")
-                } finally {
-                    result?.let {
-                        if (!it.succeeded) {
-                            showNotification(
-                                context, MainActivityX::class.java,
-                                result.hashCode(), ai.packageLabel, it.message, it.message, false
-                            )
+                    } catch (e: Throwable) {
+                        result = ActionResult(
+                            ai, null,
+                            "not processed: $packageLabel: $e\n${e.stackTrace}", false
+                        )
+                        Timber.w("package: ${ai.packageLabel} result: $e")
+                    } finally {
+                        result?.let {
+                            if (!it.succeeded) {
+                                val message = "${ai.packageName}\n${it.message}"
+                                showNotification(
+                                    context, MainActivityX::class.java,
+                                    result.hashCode(), ai.packageLabel, it.message, message, false
+                                )
+                            }
                         }
                     }
                 }
             }
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, packageLabel)
-        } finally {
-            val error = result?.message
+        }
+        val error = result?.message
+        val succeeded = result?.succeeded ?: false
+        if(succeeded)
             return Result.success(
                 workDataOf(
+                    "backupBoolean" to backupBoolean,
+                    "packageName" to packageName,
+                    "operation" to "OK",
                     "error" to error,
-                    "succeeded" to result?.succeeded,
+                    "succeeded" to succeeded,
                     "packageLabel" to packageLabel
                 )
             )
+        else {
+            if(runAttemptCount <= WORK_MAX_ATTEMPTS) //TODO hg42 use setting?
+                return Result.retry()
+            else
+                return Result.failure(
+                    workDataOf(
+                        "backupBoolean" to backupBoolean,
+                        "packageName" to packageName,
+                        "operation" to "ERR",
+                        "error" to error,
+                        "succeeded" to succeeded,
+                        "packageLabel" to packageLabel
+                    )
+                )
         }
     }
 
+    fun setOperation(operation: String = "") {
+        val packageName = inputData.getString("packageName") ?: "NONE"
+        val backupBoolean = inputData.getBoolean("backupBoolean", true)
+        setProgressAsync(workDataOf(
+            "packageName" to packageName,
+            "backupBoolean" to backupBoolean,
+            "operation" to operation
+        ))
+        //TODO cleanup MainActivityX.showRunningStatus()
+    }
+
+    /*
     private fun createForegroundInfo(): ForegroundInfo {
         val contentPendingIntent = PendingIntent.getActivity(
             context, 0,
@@ -154,10 +190,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             .setContentIntent(contentPendingIntent)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
-            .addAction(
-                com.machiav3lli.backup.R.drawable.ic_close,
-                context.getString(com.machiav3lli.backup.R.string.dialogCancel), cancelIntent
-            )
+            .addAction(R.drawable.ic_close, context.getString(R.string.dialogCancel), cancelIntent)
             .build()
 
         return ForegroundInfo(this.notificationId + 1, notification)
@@ -171,9 +204,11 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         notificationChannel.enableVibration(true)
         notificationManager.createNotificationChannel(notificationChannel)
     }
+    */
 
     companion object {
         private val CHANNEL_ID = AppActionWork::class.java.name
+        val WORK_MAX_ATTEMPTS = 3
 
         fun Request(
             packageName: String,
@@ -186,7 +221,8 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                     "packageName" to packageName,
                     "selectedMode" to mode,
                     "backupBoolean" to backupBoolean,
-                    "notificationId" to notificationId
+                    "notificationId" to notificationId,
+                    "operation" to "..."
                 )
             )
             .build()

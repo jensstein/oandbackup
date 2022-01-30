@@ -30,8 +30,8 @@ android {
         applicationId = "com.machiav3lli.backup"
         minSdk = 26
         targetSdk = 31
-        versionCode = 7000
-        versionName = "7.0.0"
+        versionCode = 8000
+        versionName = "8.0.0"
 
         testApplicationId = "${applicationId}.tests"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -86,15 +86,13 @@ android {
     }
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_1_8.toString()
+            jvmTarget = compileOptions.sourceCompatibility.toString()
+            freeCompilerArgs = listOf("-Xjvm-default=all")
         }
     }
     dependenciesInfo {
         includeInApk = false
         includeInBundle = false
-    }
-    lint {
-        isAbortOnError = false
     }
     packagingOptions {
         resources.excludes.add("META-INF/LICENSE.md")
@@ -103,33 +101,34 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.10")
 
     // Libs
-    implementation("androidx.room:room-runtime:2.4.0-rc01")
-    implementation("androidx.room:room-ktx:2.4.0-rc01")
+    implementation("androidx.room:room-runtime:2.4.1")
+    implementation("androidx.room:room-ktx:2.4.1")
+    kapt("androidx.room:room-compiler:2.4.1")
     implementation("androidx.work:work-runtime-ktx:2.7.1")
-    kapt("androidx.room:room-compiler:2.4.0-rc01")
     implementation("com.google.code.gson:gson:2.8.9")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
     implementation("androidx.security:security-crypto:1.1.0-alpha03")
     implementation("androidx.biometric:biometric:1.2.0-alpha04")
     implementation("org.apache.commons:commons-compress:1.21")
     implementation("commons-io:commons-io:2.11.0")
-    val libsu = "3.1.2"
+    implementation("com.jakewharton.timber:timber:5.0.1")
+    val libsu = "3.2.1"
     implementation("com.github.topjohnwu.libsu:core:$libsu")
     implementation("com.github.topjohnwu.libsu:io:$libsu")
-    implementation("com.jakewharton.timber:timber:5.0.1")
+    //implementation("com.github.topjohnwu.libsu:busybox:$libsu")
 
     // UI
-    implementation("androidx.appcompat:appcompat:1.4.0")
-    implementation("androidx.fragment:fragment-ktx:1.4.0")
-    implementation("com.google.android.material:material:1.6.0-alpha01")
+    implementation("androidx.appcompat:appcompat:1.4.1")
+    implementation("androidx.fragment:fragment-ktx:1.4.1")
+    implementation("com.google.android.material:material:1.6.0-alpha02")
     implementation("androidx.preference:preference-ktx:1.1.1")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.4.0-beta02")
-    implementation("androidx.navigation:navigation-ui-ktx:2.4.0-beta02")
-    val fastadapter = "5.5.1"
+    implementation("androidx.navigation:navigation-fragment-ktx:2.5.0-alpha01")
+    implementation("androidx.navigation:navigation-ui-ktx:2.5.0-alpha01")
+    val fastadapter = "5.6.0"
     implementation("com.mikepenz:fastadapter:$fastadapter")
     implementation("com.mikepenz:fastadapter-extensions-diff:$fastadapter")
     implementation("com.mikepenz:fastadapter-extensions-binding:$fastadapter")
@@ -137,10 +136,9 @@ dependencies {
 
     //// Testing
 
+    implementation("androidx.test.ext:junit-ktx:1.1.3")
+    androidTestImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
     val androidxTest = "1.4.0"
-
-    // junit4
-
     implementation("androidx.test:rules:$androidxTest")
     androidTestImplementation("androidx.test:runner:$androidxTest")
 }
@@ -170,4 +168,3 @@ tasks.withType<Test> {
     //useTestNG()
     //useJUnitPlatform()
 }
-

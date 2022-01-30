@@ -27,6 +27,7 @@ import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.SpecialAppMetaInfo
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.CryptoSetupException
 import timber.log.Timber
 import java.io.File
@@ -35,8 +36,9 @@ import java.nio.file.LinkOption
 import java.util.*
 import kotlin.collections.ArrayList
 
-class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppAction(context, shell) {
-
+class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHandler)
+    : BackupAppAction(context, work, shell)
+{
     override fun run(app: AppInfo, backupMode: Int): ActionResult {
         if (backupMode and MODE_APK == MODE_APK) {
             Timber.e("Special contents don't have APKs to backup. Ignoring")
@@ -108,7 +110,7 @@ class BackupSpecialAction(context: Context, shell: ShellHandler) : BackupAppActi
                 }
                 filesToBackup.addAll(fileInfos)
             }
-            genericBackupData(BACKUP_DIR_DATA, backupInstanceDir.uri, filesToBackup, true, iv)
+            genericBackupData(BACKUP_DIR_DATA, backupInstanceDir, filesToBackup, true, iv)
         } catch (e: ShellCommandFailedException) {
             val error = extractErrorMessage(e.shellResult)
             Timber.e("$app: Backup Special Data failed: $error")

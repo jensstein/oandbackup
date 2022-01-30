@@ -7,7 +7,7 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.ShellCommands
-import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
+import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 
 /**
@@ -68,11 +68,11 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
          *
          * @param context Context object
          * @return a list of of virtual packages
-         * @throws BackupLocationIsAccessibleException   when the backup location cannot be read for any reason
+         * @throws BackupLocationInAccessibleException   when the backup location cannot be read for any reason
          * @throws StorageLocationNotConfiguredException when the backup location is not set in the configuration
          */
         @Throws(
-            BackupLocationIsAccessibleException::class,
+            BackupLocationInAccessibleException::class,
             StorageLocationNotConfiguredException::class
         )
         fun getSpecialPackages(context: Context): List<AppInfo> {

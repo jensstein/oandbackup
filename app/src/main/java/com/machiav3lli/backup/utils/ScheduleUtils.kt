@@ -81,5 +81,5 @@ fun cancelAlarm(context: Context, scheduleId: Int) {
     val pendingIntent = PendingIntent.getBroadcast(context, scheduleId, alarmIntent, PendingIntent.FLAG_IMMUTABLE)
     alarmManager.cancel(pendingIntent)
     pendingIntent.cancel()
-    Timber.i("canceled backup with id: $scheduleId")
+    Timber.i("cancelled backup with id: $scheduleId")
 }

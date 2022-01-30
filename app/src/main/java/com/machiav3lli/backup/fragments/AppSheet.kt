@@ -395,14 +395,10 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
                 }
                 actionType === ActionType.RESTORE -> {
                     backupProps?.let { backupProps: BackupProperties ->
+                        val backupDir = backupProps.getBackupDir(viewModel.appInfo.value?.backupDir)
                         RestoreActionTask(
                             it, requireMainActivity(), MainActivityX.shellHandlerInstance!!, mode,
-                            backupProps, backupProps.getBackupLocation(
-                                StorageFile.fromUri(
-                                    requireContext(),
-                                    viewModel.appInfo.value?.backupDirUri ?: Uri.EMPTY
-                                )
-                            ), this
+                            backupProps, backupDir!!, this
                         ).execute()
                     }
                 }

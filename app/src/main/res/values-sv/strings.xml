@@ -161,4 +161,17 @@
     <string name="radio_externaldata">Extern data</string>
     <string name="radio_updated">Uppdaterad</string>
     <string name="radio_system">System-appar</string>
+    <string name="prefs_obbdata">Säkerhetskopiera obb-filer</string>
+    <string name="error_pmDataIncompleteException_dataRestoreFailed">Appens data har inte återställts.</string>
+    <string name="prefs_service">Tjänstegenskaper</string>
+    <string name="prefs_devicelock">Enhetslås</string>
+    <string name="prefs_biometriclock_summary">Säkra appen med enhetens biometriska lås (t.ex fingeravtryck, upplåsning med ansiktet)</string>
+    <string name="prefs_encryption_summary">Aktivera för att kryptera säkerhetskopierad data</string>
+    <string name="prefs_password_summary">Ställ in att tömma för att stänga av kryptering</string>
+    <string name="prefs_enablespecial_summary">Behöver fortfarande intensiv testning, försök med vetskapen om faran att det kan orsaka omstarts-loopar. Återgivning är alltid välkommet.</string>
+    <string name="prefs_externaldata_summary">Säkerhetskopierar och återställer data som är placerad i den externa lagringsplatsen (t.ex /storage/emulated/0/Android/data/)</string>
+    <string name="prefs_obbdata_summary">Säkerhetskopierar och återställer appens obb-filer som är placerade i den externa lagringsplatsen (t.ex /storage/emulated/0/Android/obb/)</string>
+    <string name="prefs_mediadata">Säkerhetskopiera media-filer</string>
+    <string name="prefs_mediadata_summary">Säkerhetskopierar och återställer appens media-filer som är placerade i den externa lagringsplatsen (t.ex /storage/emulated/0/Android/media/)</string>
+    <string name="radio_user">Användar-appar</string>
 </resources>

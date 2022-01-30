@@ -302,7 +302,7 @@ Seedvault repo can be found here: https://github.com/seedvault-app/seedvault - c
 | root necessary? | [yes](#do-i-need-a-rooted-phone) | no |
 | encrypted backup | yes (optional) | yes |
 | automatic backup | yes (individual schedules) | yes (daily) |
-| usable For | [A8-A11](#which-android-versions-are-supported) | A11; but branches for from A9 to A12; also integrated into known Custom ROMs CalyxOS, GrapheneOS, [LOS](https://www.xda-developers.com/lineageos-seedvault-open-source-backup-solution/) |
+| usable For | [A8-A12](#which-android-versions-are-supported) | A11; but branches for from A9 to A12; also integrated into known Custom ROMs CalyxOS, GrapheneOS, [LOS](https://www.xda-developers.com/lineageos-seedvault-open-source-backup-solution/) |
 | Considers 'allowbackup' flag of apps? | no | yes |
 | OS-/Rom intergrated | no (dedicated app) | yes |
 | Choose backup location possibility? | yes | yes |

@@ -93,7 +93,7 @@ class PrefsActivity : BaseActivity() {
         Thread {
             try {
                 appInfoList = getApplicationList(listOf())
-            } catch (e: FileUtils.BackupLocationIsAccessibleException) {
+            } catch (e: FileUtils.BackupLocationInAccessibleException) {
                 e.printStackTrace()
             } catch (e: StorageLocationNotConfiguredException) {
                 e.printStackTrace()

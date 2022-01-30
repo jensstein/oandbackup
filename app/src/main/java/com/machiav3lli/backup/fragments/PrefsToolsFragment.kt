@@ -18,7 +18,6 @@
 package com.machiav3lli.backup.fragments
 
 import android.content.DialogInterface
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -224,12 +223,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
         val fileName = "${BACKUP_DATE_TIME_FORMATTER.format(date)}.appslist"
         val listFile =
             requireContext().getBackupDir().createFile("application/octet-stream", fileName)
-        BufferedOutputStream(
-            requireContext().contentResolver.openOutputStream(
-                listFile?.uri
-                    ?: Uri.EMPTY, "w"
-            )
-        )
+        BufferedOutputStream(listFile.outputStream())
             .use { it.write(filesText.toByteArray(StandardCharsets.UTF_8)) }
         showNotification(
             requireContext(), PrefsActivity::class.java, System.currentTimeMillis().toInt(),

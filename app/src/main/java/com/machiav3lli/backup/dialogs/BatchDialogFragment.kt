@@ -25,7 +25,6 @@ import androidx.fragment.app.DialogFragment
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.items.AppMetaInfo
 import com.machiav3lli.backup.utils.altModeToMode
-import com.machiav3lli.backup.utils.isKillBeforeActionEnabled
 import com.machiav3lli.backup.utils.modeToStringAlt
 import timber.log.Timber
 
@@ -38,10 +37,11 @@ class BatchDialogFragment(
         val title =
             if (backupBoolean) getString(R.string.backupConfirmation) else getString(R.string.restoreConfirmation)
         val message = StringBuilder()
-        if (requireContext().isKillBeforeActionEnabled) {
-            message.append(requireContext().getString(R.string.msg_appkill_warning))
-            message.append("\n\n")
-        }
+        // TODO: hg42: not necessary anymore?
+        //if (requireContext().isPauseApps) {
+        //    message.append(requireContext().getString(R.string.msg_appkill_warning))
+        //    message.append("\n\n")
+        //}
         selectedApps.forEachIndexed { i, metaInfo ->
             message.append("${metaInfo.packageLabel}")
             selectedModes[i].let { message.append(": ${modeToStringAlt(requireContext(), it)}\n") }

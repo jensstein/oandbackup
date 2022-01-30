@@ -18,28 +18,24 @@
 package com.machiav3lli.backup.items
 
 import android.content.Context
-import android.net.Uri
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.utils.openFileForReading
-import org.apache.commons.io.IOUtils
 import java.io.FileNotFoundException
 import java.io.IOException
 
 open class BackupItem {
     val backupProperties: BackupProperties
-    private val backupInstance: StorageFile
-    val backupInstanceDirUri: Uri
-        get() = backupInstance.uri
+    val backupInstanceDir: StorageFile
 
     constructor(properties: BackupProperties, backupInstance: StorageFile) {
         backupProperties = properties
-        this.backupInstance = backupInstance
+        this.backupInstanceDir = backupInstance
     }
 
     constructor(context: Context, propertiesFile: StorageFile) {
         try {
-            propertiesFile.uri.openFileForReading(context).use { reader ->
-                backupProperties = BackupProperties.fromGson(IOUtils.toString(reader))
+            propertiesFile.inputStream().let { inputStream ->
+                backupProperties = BackupProperties.fromGson(inputStream!!.reader().readText())
+                backupInstanceDir = backupProperties.getBackupDir(propertiesFile.parent)!!
             }
         } catch (e: FileNotFoundException) {
             throw BrokenBackupException(
@@ -55,10 +51,6 @@ open class BackupItem {
             LogsHandler.unhandledException(e, propertiesFile.uri)
             throw BrokenBackupException("Unable to process ${propertiesFile.name} at URI ${propertiesFile.uri}. [${e.javaClass.canonicalName}] $e")
         }
-        backupInstance = StorageFile.fromUri(
-            context,
-            backupProperties.getBackupLocation(propertiesFile.parentFile)
-        )
     }
 
     class BrokenBackupException @JvmOverloads internal constructor(
@@ -78,8 +70,7 @@ open class BackupItem {
     override fun hashCode(): Int {
         var hash = 7
         hash = 31 * hash + backupProperties.hashCode()
-        hash = 31 * hash + backupInstance.hashCode()
-        hash = 31 * hash + backupInstanceDirUri.hashCode()
+        hash = 31 * hash + backupInstanceDir.hashCode()
         return hash
     }
 }

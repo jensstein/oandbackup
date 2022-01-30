@@ -18,16 +18,14 @@
 package com.machiav3lli.backup.handler
 
 import android.content.Context
-import android.net.Uri
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.LOG_FOLDER_NAME
 import com.machiav3lli.backup.LOG_INSTANCE
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.items.LogItem
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
+import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.ensureDirectory
 import com.machiav3lli.backup.utils.getBackupDir
 import timber.log.Timber
 import java.io.BufferedOutputStream
@@ -51,15 +49,14 @@ class LogsHandler(var context: Context) {
             LOG_INSTANCE,
             BACKUP_DATE_TIME_FORMATTER.format(date)
         )
-        val logFile = logsDirectory?.createFile("application/octet-stream", logFileName)
-        BufferedOutputStream(
-            context.contentResolver.openOutputStream(
-                logFile?.uri
-                    ?: Uri.EMPTY, "w"
-            )
-        )
-            .use { logOut -> logOut.write(logItem.toGson().toByteArray(StandardCharsets.UTF_8)) }
-        Timber.i("Wrote $logFile file for $logItem")
+        logsDirectory?.createFile("application/octet-stream", logFileName)?.let { logFile ->
+            BufferedOutputStream(logFile.outputStream()).use { logOut ->
+                logOut.write(
+                    logItem.toGson().toByteArray(StandardCharsets.UTF_8)
+                )
+                Timber.i("Wrote $logFile file for $logItem")
+            }
+        }
     }
 
     @Throws(IOException::class)
@@ -70,13 +67,13 @@ class LogsHandler(var context: Context) {
                 logs.add(LogItem(context, it))
             } catch (e: NullPointerException) {
                 val message =
-                    "(Null) Incomplete log or wrong structure found in ${it.uri.encodedPath}."
+                    "(Null) Incomplete log or wrong structure found in $it."
                 Timber.w(message)
                 logErrors(context, message)
             } catch (e: Throwable) {
                 val message =
-                    "(catchall) Incomplete log or wrong structure found in ${it.uri.encodedPath}."
-                unhandledException(e, it.uri)
+                    "(catchall) Incomplete log or wrong structure found in $it."
+                unhandledException(e, it)
                 logErrors(context, message)
             }
         }
@@ -100,7 +97,7 @@ class LogsHandler(var context: Context) {
                 e.printStackTrace()
             } catch (e: StorageLocationNotConfiguredException) {
                 e.printStackTrace()
-            } catch (e: BackupLocationIsAccessibleException) {
+            } catch (e: BackupLocationInAccessibleException) {
                 e.printStackTrace()
             }
         }

@@ -39,7 +39,7 @@ class BackupActionTask(
         }
         notificationId = System.currentTimeMillis().toInt()
         publishProgress()
-        result = BackupRestoreHelper.backup(mainActivityX, shellHandler, app, mode)
+        result = BackupRestoreHelper.backup(mainActivityX, null, shellHandler, app, mode)
         return result
     }
 }

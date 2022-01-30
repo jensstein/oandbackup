@@ -20,7 +20,10 @@ package com.machiav3lli.backup.activities
 import android.content.Intent
 import android.os.Bundle
 import android.os.PowerManager
-import com.machiav3lli.backup.*
+import com.machiav3lli.backup.BuildConfig
+import com.machiav3lli.backup.PREFS_FIRST_LAUNCH
+import com.machiav3lli.backup.PREFS_IGNORE_BATTERY_OPTIMIZATION
+import com.machiav3lli.backup.classAddress
 import com.machiav3lli.backup.databinding.ActivitySplashBinding
 import com.machiav3lli.backup.utils.*
 import com.topjohnwu.superuser.Shell
@@ -30,16 +33,13 @@ class SplashActivity : BaseActivity() {
 
     companion object {
         init {
-            /*
-            * Shell.Config methods shall be called before any shell is created
-            * This is the why in this example we call it in a static block
-            * The followings are some examples, check Javadoc for more details
-            */
+            // Shell.Config methods shall be called before any shell is created
             Shell.enableVerboseLogging = BuildConfig.DEBUG
             Shell.setDefaultBuilder(
                 Shell.Builder.create()
-                    .setFlags(Shell.FLAG_MOUNT_MASTER)
-                    .setTimeout(20)
+                        //.setInitializers(BusyBoxInstaller::class.java)
+                        .setFlags(Shell.FLAG_MOUNT_MASTER)
+                        .setTimeout(20)
             )
         }
     }

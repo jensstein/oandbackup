@@ -29,6 +29,8 @@ import java.io.IOException
 import java.time.LocalDateTime
 
 open class LogItem {
+    // TODO: hg42: add ${BuildConfig.APPLICATION_ID} ${BuildConfig.VERSION_NAME} useful for stacktraces ?
+
     @SerializedName("logDate")
     @Expose
     var logDate: LocalDateTime
@@ -60,7 +62,7 @@ open class LogItem {
 
     constructor(context: Context, logFile: StorageFile) {
         try {
-            logFile.uri.openFileForReading(context).use { reader ->
+            logFile.uri!!.openFileForReading(context).use { reader ->
                 val item = fromGson(IOUtils.toString(reader))
                 this.logDate = item.logDate
                 this.deviceName = item.deviceName
@@ -70,17 +72,17 @@ open class LogItem {
             }
         } catch (e: FileNotFoundException) {
             throw BackupItem.BrokenBackupException(
-                "Cannot open ${logFile.name} at URI ${logFile.uri}",
+                "Cannot open $logFile",
                 e
             )
         } catch (e: IOException) {
             throw BackupItem.BrokenBackupException(
-                "Cannot read ${logFile.name} at URI ${logFile.uri}",
+                "Cannot read $logFile",
                 e
             )
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, logFile.uri)
-            throw BackupItem.BrokenBackupException("Unable to process ${logFile.name} at URI ${logFile.uri}. [${e.javaClass.canonicalName}] $e")
+            LogsHandler.unhandledException(e, logFile)
+            throw BackupItem.BrokenBackupException("Unable to process $logFile. [${e.javaClass.canonicalName}] $e")
         }
     }
 

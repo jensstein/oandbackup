@@ -18,162 +18,161 @@
 package com.machiav3lli.backup.actions
 
 import android.content.Context
-import android.net.Uri
+import androidx.preference.PreferenceManager
+import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import com.machiav3lli.backup.*
+import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
+import com.machiav3lli.backup.handler.ShellHandler.Companion.findAssetFile
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quoteMultiple
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
-import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQuoted
+import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.handler.ShellHandler.UnexpectedCommandResult
-import com.machiav3lli.backup.items.ActionResult
-import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.BackupProperties
-import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.items.*
+import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.*
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
 import org.apache.commons.io.FileUtils
 import timber.log.Timber
-import java.io.*
+import java.io.BufferedInputStream
+import java.io.FileNotFoundException
+import java.io.IOException
+import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
 
-open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppAction(context, shell) {
+open class RestoreAppAction(context: Context, work: AppActionWork?, shell: ShellHandler) : BaseAppAction(context, work, shell) {
     fun run(
         app: AppInfo,
         backupProperties: BackupProperties,
-        backupLocation: Uri,
+        backupDir: StorageFile,
         backupMode: Int
     ): ActionResult {
-        Timber.i("Restoring up: ${app.packageName} [${app.packageLabel}]")
-        val stopProcess = context.isKillBeforeActionEnabled
-        if (stopProcess) {
-            Timber.d("pre-process package (to avoid file inconsistencies during backup etc.)")
-            preprocessPackage(app.packageName)
-        }
         try {
-            if (backupMode and MODE_APK == MODE_APK) {
-                restorePackage(backupLocation, backupProperties)
-                refreshAppInfo(context, app)
+            Timber.i("Restoring: ${app.packageName} [${app.packageLabel}]")
+            work?.setOperation("pre")
+            val pauseApp = context.isPauseApps
+            if (pauseApp) {
+                Timber.d("pre-process package (to avoid file inconsistencies during backup etc.)")
+                preprocessPackage(app.packageName)
             }
-            if (backupMode != MODE_APK)
-                restoreAllData(app, backupProperties, backupLocation, backupMode)
-        } catch (e: PackageManagerDataIncompleteException) {
-            return ActionResult(
+            try {
+                if (backupMode and MODE_APK == MODE_APK) {
+                    work?.setOperation("apk")
+                    restorePackage(backupDir, backupProperties)
+                    refreshAppInfo(context, app)    // also waits for valid paths
+                }
+                if (backupMode != MODE_APK)
+                    restoreAllData(work, app, backupProperties, backupDir, backupMode)
+            } catch (e: PackageManagerDataIncompleteException) {
+                return ActionResult(
                     app,
                     null,
                     "${e.javaClass.simpleName}: ${e.message}. ${context.getString(R.string.error_pmDataIncompleteException_dataRestoreFailed)}",
                     false
-            )
-        } catch (e: RestoreFailedException) {
-            // Unwrap issues with shell commands so users know what command ran and what was the issue
-            val message: String = if (e.cause != null && e.cause is ShellCommandFailedException) {
-                val commandList = e.cause.commands.joinToString("; ")
-                "Shell command failed: ${commandList}\n${
-                    extractErrorMessage(e.cause.shellResult)
-                }"
-            } else {
-                "${e.javaClass.simpleName}: ${e.message}"
+                )
+            } catch (e: RestoreFailedException) {
+                // Unwrap issues with shell commands so users know what command ran and what was the issue
+                val message: String =
+                    if (e.cause != null && e.cause is ShellCommandFailedException) {
+                        val commandList = e.cause.commands.joinToString("; ")
+                        "Shell command failed: ${commandList}\n${
+                            extractErrorMessage(e.cause.shellResult)
+                        }"
+                    } else {
+                        "${e.javaClass.simpleName}: ${e.message}"
+                    }
+                return ActionResult(app, null, message, false)
+            } catch (e: CryptoSetupException) {
+                return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
+            } finally {
+                work?.setOperation("fin")
+                if (pauseApp) {
+                    Timber.d("post-process package (to set it back to normal operation)")
+                    postprocessPackage(app.packageName)
+                    //markerFile?.delete()
+                }
             }
-            return ActionResult(app, null, message, false)
-        } catch (e: CryptoSetupException) {
-            return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
         } finally {
-            if (stopProcess) {
-                Timber.d("post-process package (to set it back to normal operation)")
-                postprocessPackage(app.packageName)
-            }
+            work?.setOperation("<--")
+            Timber.i("$app: Restore done: $backupProperties")
         }
-        Timber.i("$app: Restore done: $backupProperties")
         return ActionResult(app, backupProperties, "", true)
     }
 
     @Throws(CryptoSetupException::class, RestoreFailedException::class)
     protected open fun restoreAllData(
+        work: AppActionWork?,
         app: AppInfo,
         backupProperties: BackupProperties,
-        backupLocation: Uri,
+        backupDir: StorageFile,
         backupMode: Int
     ) {
-        val backupDir = StorageFile.fromUri(context, backupLocation)
         if (backupProperties.hasAppData && backupMode and MODE_DATA == MODE_DATA) {
             Timber.i("[${backupProperties.packageName}] Restoring app's data")
-            restoreData(app, backupProperties, backupDir)
+            work?.setOperation("dat")
+            restoreData(app, backupProperties, backupDir, true)
         } else {
             Timber.i("[${backupProperties.packageName}] Skip restoring app's data; not part of the backup or restore mode")
         }
         if (backupProperties.hasDevicesProtectedData && backupMode and MODE_DATA_DE == MODE_DATA_DE) {
             Timber.i("[${backupProperties.packageName}] Restoring app's protected data")
-            restoreDeviceProtectedData(app, backupProperties, backupDir)
+            work?.setOperation("prt")
+            restoreDeviceProtectedData(app, backupProperties, backupDir, true)
         } else {
             Timber.i("[${backupProperties.packageName}] Skip restoring app's device protected data; not part of the backup or restore mode")
         }
         if (backupProperties.hasExternalData && backupMode and MODE_DATA_EXT == MODE_DATA_EXT) {
             Timber.i("[${backupProperties.packageName}] Restoring app's external data")
-            restoreExternalData(app, backupProperties, backupDir)
+            work?.setOperation("ext")
+            restoreExternalData(app, backupProperties, backupDir, true)
         } else {
             Timber.i("[${backupProperties.packageName}] Skip restoring app's external data; not part of the backup or restore mode")
         }
         if (backupProperties.hasObbData && backupMode and MODE_DATA_OBB == MODE_DATA_OBB) {
             Timber.i("[${backupProperties.packageName}] Restoring app's obb files")
-            restoreObbData(app, backupProperties, backupDir)
+            work?.setOperation("obb")
+            restoreObbData(app, backupProperties, backupDir, false)
         } else {
             Timber.i("[${backupProperties.packageName}] Skip restoring app's obb files; not part of the backup or restore mode")
         }
         if (backupProperties.hasMediaData && backupMode and MODE_DATA_MEDIA == MODE_DATA_MEDIA) {
             Timber.i("[${backupProperties.packageName}] Restoring app's media files")
-            restoreMediaData(app, backupProperties, backupDir)
+            work?.setOperation("med")
+            restoreMediaData(app, backupProperties, backupDir, false)
         } else {
             Timber.i("[${backupProperties.packageName}] Skip restoring app's media files; not part of the backup or restore mode")
         }
     }
 
     @Throws(ShellCommandFailedException::class)
-    protected fun wipeDirectory(targetDirectory: String, excludeDirs: List<String>) {
-        if (targetDirectory != "/" && targetDirectory.isNotEmpty()) {
+    protected fun wipeDirectory(targetPath: String, excludeDirs: List<String>) {
+        if (targetPath != "/" && targetPath.isNotEmpty() && RootFile(targetPath).exists()) {
             val targetContents: MutableList<String> =
-                mutableListOf(*shell.suGetDirectoryContents(File(targetDirectory)))
+                mutableListOf(*shell.suGetDirectoryContents(RootFile(targetPath)))
             targetContents.removeAll(excludeDirs)
             if (targetContents.isEmpty()) {
-                Timber.i("Nothing to remove in $targetDirectory")
+                Timber.i("Nothing to remove in $targetPath")
                 return
             }
             val removeTargets = targetContents
-                .map { s -> File(targetDirectory, s).absolutePath }
-            Timber.d("Removing existing files in $targetDirectory")
-            val command = "$utilBoxQuoted rm -rf ${quoteMultiple(removeTargets)}"
+                .map { s -> RootFile(targetPath, s).absolutePath }
+            Timber.d("Removing existing files in $targetPath")
+            val command = "$utilBoxQ rm -rf ${quoteMultiple(removeTargets)}"
             runAsRoot(command)
         }
     }
 
-    @Throws(IOException::class, CryptoSetupException::class)
-    protected fun uncompress(filepath: File, targetDir: File?, iv: ByteArray) {
-        val inputFilename = filepath.absolutePath
-        Timber.d("Opening file for expansion: $inputFilename")
-        val password = context.getEncryptionPassword()
-        var stream: InputStream = BufferedInputStream(FileInputStream(inputFilename))
-        if (password.isNotEmpty() && context.isEncryptionEnabled()) {
-            Timber.d("Encryption enabled")
-            stream = stream.decryptStream(password, context.getCryptoSalt(), iv)
-        }
-        TarArchiveInputStream(GzipCompressorInputStream(stream)).uncompressTo(targetDir)
-        Timber.d("Done expansion. Closing $inputFilename")
-        stream.close()
-    }
-
     @Throws(RestoreFailedException::class)
-    open fun restorePackage(backupLocation: Uri, backupProperties: BackupProperties) {
+    open fun restorePackage(backupDir: StorageFile, backupProperties: BackupProperties) {
         val packageName = backupProperties.packageName
-        Timber.i("[$packageName] Restoring from ${backupLocation.encodedPath}")
-        val backupDir = StorageFile.fromUri(context, backupLocation)
-        val baseApk = backupDir.findFile(BASE_APK_FILENAME)
+        Timber.i("[$packageName] Restoring from ${backupDir}")
+        val baseApkFile = backupDir.findFile(BASE_APK_FILENAME) ?: throw RestoreFailedException("$BASE_APK_FILENAME is missing in backup", null)
         Timber.d("[$packageName] Found $BASE_APK_FILENAME in backup archive")
-        if (baseApk == null) {
-            throw RestoreFailedException("$BASE_APK_FILENAME is missing in backup", null)
-        }
         val splitApksInBackup: Array<StorageFile> = try {
             backupDir.listFiles()
                 .filter { !it.isDirectory } // Forget about dictionaries immediately
@@ -186,7 +185,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         }
 
         // Copy all apk paths into a single array
-        var apksToRestore = arrayOf(baseApk)
+        var apksToRestore = arrayOf(baseApkFile)
         if (splitApksInBackup.isEmpty()) {
             Timber.d("[$packageName] The backup does not contain split apks")
         } else {
@@ -202,7 +201,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
          * https://issuetracker.google.com/issues/80270303#comment14 this
          * could potentially be unwise to use.
          */
-        val stagingApkPath: File?
+        val stagingApkPath: RootFile?
         if (PACKAGE_STAGING_DIRECTORY.exists()) {
             // It's expected, that all SDK 24+ version of Android go this way.
             stagingApkPath = PACKAGE_STAGING_DIRECTORY
@@ -219,20 +218,20 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
              * @machiav3lli 2020-08-09: In some oem ROMs the access to data/local/tmp is not allowed, I don't know how
              *                              this has changed in the last couple of years.
              */
-            stagingApkPath = File(context.getExternalFilesDir(null), "apkTmp")
+            stagingApkPath = RootFile(context.getExternalFilesDir(null), "apkTmp")
             Timber.w("Weird configuration. Expecting that the system does not allow installing from OABX's own data directory. Copying the apk to $stagingApkPath")
         }
         var success = false
         try {
             // Try it with a staging path. This is usually the way to go.
             // copy apks to staging dir
-            apksToRestore.forEach {
+            apksToRestore.forEach { apkFile ->
                 // The file must be touched before it can be written for some reason...
-                Timber.d("[$packageName] Copying ${it.name} to staging dir")
-                runAsRoot("touch ${quote(File(stagingApkPath, "$packageName.${it.name}"))}")
+                Timber.d("[$packageName] Copying ${apkFile.name} to staging dir")
+                runAsRoot("touch ${quote(RootFile(stagingApkPath, "$packageName.${apkFile.name}"))}")
                 suCopyFileFromDocument(
-                    context.contentResolver, it.uri,
-                    File(stagingApkPath, "$packageName.${it.name}").absolutePath
+                    apkFile,
+                    RootFile(stagingApkPath, "$packageName.${apkFile.name}").absolutePath
                 )
             }
             val sb = StringBuilder()
@@ -242,7 +241,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             // Install main package
             sb.append(
                 getPackageInstallCommand(
-                    File(stagingApkPath, "$packageName.${baseApk.name}"),
+                    RootFile(stagingApkPath, "$packageName.${baseApkFile.name}"),
                     // backupProperties.profileId
                 )
             )
@@ -251,7 +250,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                 splitApksInBackup.forEach {
                     sb.append(" ; ").append(
                         getPackageInstallCommand(
-                            File(stagingApkPath, "$packageName.${it.name}"),
+                            RootFile(stagingApkPath, "$packageName.${it.name}"),
                             // backupProperties.profileId,
                             backupProperties.packageName
                         )
@@ -276,10 +275,10 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             if (!success)
                 Timber.i("[$packageName] Restore unsuccessful")
             val command =
-                "$utilBoxQuoted rm ${
+                "$utilBoxQ rm ${
                     quoteMultiple(
                         apksToRestore.map {
-                            File(
+                            RootFile(
                                 stagingApkPath,
                                 "$packageName.${it.name}"
                             ).absolutePath
@@ -301,21 +300,20 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     }
 
     @Throws(RestoreFailedException::class)
-    private fun genericRestoreDataByCopying(
+    private fun genericRestoreDataByCopying(    // TODO: hg42: use if archive is a directory
         targetPath: String,
-        backupInstanceRoot: Uri,
+        backupInstanceDir: StorageFile,
         what: String
     ) {
         try {
-            val backupDirFile = StorageFile.fromUri(context, backupInstanceRoot)
-            val backupDirToRestore = backupDirFile.findFile(what)
+            val backupDirToRestore = backupInstanceDir.findFile(what)
                 ?: throw RestoreFailedException(
                     String.format(
                         LOG_DIR_IS_MISSING_CANNOT_RESTORE,
                         what
                     )
                 )
-            suRecursiveCopyFileFromDocument(context, backupDirToRestore.uri, targetPath)
+            suRecursiveCopyFileFromDocument(backupDirToRestore, targetPath)
         } catch (e: IOException) {
             throw RestoreFailedException("Could not read the input file due to IOException", e)
         } catch (e: ShellCommandFailedException) {
@@ -329,57 +327,72 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
 
     @Throws(CryptoSetupException::class, IOException::class)
     protected fun openArchiveFile(
-        archiveUri: Uri,
+        archive: StorageFile,
+        compressed: Boolean,
         isEncrypted: Boolean,
         iv: ByteArray?
-    ): TarArchiveInputStream {
-        val inputStream = BufferedInputStream(context.contentResolver.openInputStream(archiveUri))
+    ): InputStream {
+        var inputStream: InputStream = BufferedInputStream(archive.inputStream()!!)
         if (isEncrypted) {
             val password = context.getEncryptionPassword()
             if (password.isNotEmpty() && context.isEncryptionEnabled()) {
                 Timber.d("Decryption enabled")
-                return TarArchiveInputStream(
-                    GzipCompressorInputStream(
-                        inputStream.decryptStream(password, context.getCryptoSalt(), iv)
-                    )
-                )
+                inputStream = inputStream.decryptStream(password, context.getCryptoSalt(), iv)
             }
         }
-        return TarArchiveInputStream(GzipCompressorInputStream(inputStream))
+        if(compressed) {
+            inputStream = GzipCompressorInputStream(inputStream)
+        }
+        return inputStream
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
-    private fun genericRestoreFromArchive(
-        archiveUri: Uri,
-        targetDir: String,
+    fun genericRestoreFromArchiveTarApi(
+        dataType: String,
+        archive: StorageFile,
+        targetPath: String,
+        compressed: Boolean,
         isEncrypted: Boolean,
-        cachePath: File?,
-        iv: ByteArray?
+        iv: ByteArray?,
+        cachePath: RootFile?
     ) {
         // Check if the archive exists, uncompressTo can also throw FileNotFoundException
-        if (!StorageFile.fromUri(context, archiveUri).exists()) {
-            throw RestoreFailedException("Backup archive at $archiveUri is missing")
+        if (!archive.exists()) {
+            throw RestoreFailedException("Backup archive at $archive is missing")
         }
         var tempDir: Path? = null
         try {
-            openArchiveFile(archiveUri, isEncrypted, iv).use { inputStream ->
-                // Create a temporary directory in OABX's cache directory and uncompress the data into it
-                tempDir = Files.createTempDirectory(cachePath?.toPath(), "restore_")
-                tempDir?.let {
-                    inputStream.uncompressTo(it.toFile())
+            TarArchiveInputStream(
+                openArchiveFile(archive, compressed, isEncrypted, iv)
+            ).use { archiveStream ->
+                if(getDefaultSharedPreferences(MainActivityX.activity)
+                        .getBoolean("restoreAvoidTemporaryCopy", true)
+                ) {
                     // clear the data from the final directory
                     wipeDirectory(
-                        targetDir,
+                        targetPath,
                         DATA_EXCLUDED_DIRS
                     )
-                    // Move all the extracted data into the target directory
-                    val command =
-                        "$utilBoxQuoted mv -f ${quote(it.toString())}/* ${quote(targetDir)}/"
-                    runAsRoot(command)
+                    archiveStream.suUnpackTo(RootFile(targetPath))
+                } else {
+                    // Create a temporary directory in OABX's cache directory and uncompress the data into it
+                    Files.createTempDirectory(cachePath?.toPath(), "restore_")?.let {
+                        tempDir = it
+                        archiveStream.unpackTo(tempDir?.toFile())
+                        // clear the data from the final directory
+                        wipeDirectory(
+                            targetPath,
+                            DATA_EXCLUDED_DIRS
+                        )
+                        // Move all the extracted data into the target directory
+                        val command =
+                            "$utilBoxQ mv -f ${quote(tempDir.toString())}/* ${quote(targetPath)}/"
+                        runAsRoot(command)
+                    }
                 }
             }
         } catch (e: FileNotFoundException) {
-            throw RestoreFailedException("Backup archive at $archiveUri is missing", e)
+            throw RestoreFailedException("Backup archive at $archive is missing", e)
         } catch (e: IOException) {
             throw RestoreFailedException(
                 "Could not read the input file or write an output file due to IOException: $e",
@@ -388,7 +401,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
         } catch (e: ShellCommandFailedException) {
             val error = extractErrorMessage(e.shellResult)
             throw RestoreFailedException(
-                "Could not restore a file due to a failed root command: $error",
+                "Could not restore a file due to a failed root command for $targetPath: $error",
                 e
             )
         } catch (e: Throwable) {
@@ -396,51 +409,177 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
             throw RestoreFailedException("Could not restore a file due to a failed root command", e)
         } finally {
             // Clean up the temporary directory if it was initialized
-            if (tempDir != null) {
+            tempDir?.let {
                 try {
-                    FileUtils.forceDelete(tempDir?.toFile())
+                    FileUtils.forceDelete(it.toFile())
                 } catch (e: IOException) {
-                    Timber.e("Could not delete temporary directory. Cache Size might be growing. Reason: $e")
+                    Timber.e("Could not delete temporary directory $it. Cache Size might be growing. Reason: $e")
                 }
             }
         }
     }
 
+    @Throws(RestoreFailedException::class, CryptoSetupException::class,NotImplementedError::class)
+    fun genericRestoreFromArchiveTarCmd(
+        dataType: String,
+        archive: StorageFile,
+        targetPath: String,
+        compressed: Boolean,
+        isEncrypted: Boolean,
+        iv: ByteArray?
+    ) {
+        RootFile(targetPath).let { targetDir ->
+            // Check if the archive exists, uncompressTo can also throw FileNotFoundException
+            if (!archive.exists()) {
+                throw RestoreFailedException("Backup archive at $archive is missing")
+            }
+            try {
+                openArchiveFile(archive, compressed, isEncrypted, iv).use { archiveStream ->
+
+                    targetDir.mkdirs()  // in case it doesn't exist
+
+                    wipeDirectory(
+                        targetDir.absolutePath,
+                        DATA_EXCLUDED_DIRS
+                    )
+
+                    val tarScript = findAssetFile("tar.sh").toString()
+                    val qTarScript = quote(tarScript)
+                    val exclude = findAssetFile(ShellHandler.EXCLUDE_FILE).toString()
+                    val excludeCache = findAssetFile(ShellHandler.EXCLUDE_CACHE_FILE).toString()
+
+                    var options = ""
+                    options += " --exclude " + quote(exclude)
+                    if (context.getDefaultSharedPreferences()
+                            .getBoolean(PREFS_EXCLUDECACHE, true)
+                    ) {
+                        options += " --exclude " + quote(excludeCache)
+                    }
+
+                    val cmd =
+                        "su --mount-master -c sh $qTarScript extract $utilBoxQ ${options} ${quote(targetDir)}"
+                    Timber.i("SHELL: $cmd")
+
+                    val process = Runtime.getRuntime().exec(cmd)
+
+                    val shellIn = process.outputStream
+                    val shellOut = process.inputStream
+                    val shellErr = process.errorStream
+
+                    archiveStream.copyTo(shellIn, 65536)
+
+                    shellIn.close()
+
+                    val err = shellErr.readBytes().decodeToString()
+                    val errLines = err
+                        .split("\n")
+                        .filterNot { line ->
+                            line.isBlank()
+                                    || line.contains("tar: unknown file type") // e.g. socket 140000
+                        }
+                    if (errLines.isNotEmpty()) {
+                        val errFiltered = errLines.joinToString("\n")
+                        Timber.i(errFiltered)
+                        throw ScriptException(errFiltered)
+                    }
+                }
+            } catch (e: FileNotFoundException) {
+                throw RestoreFailedException("Backup archive at $archive is missing", e)
+            } catch (e: IOException) {
+                throw RestoreFailedException(
+                    "Could not read the input file or write an output file due to IOException: $e",
+                    e
+                )
+            } catch (e: ShellCommandFailedException) {
+                val error = extractErrorMessage(e.shellResult)
+                throw RestoreFailedException(
+                    "Could not restore a file due to a failed root command for $targetDir: $error",
+                    e
+                )
+            } catch (e: Throwable) {
+                LogsHandler.unhandledException(e)
+                throw RestoreFailedException(
+                    "Could not restore a file due to a failed root command",
+                    e
+                )
+            }
+        }
+    }
+
+    @Throws(RestoreFailedException::class, CryptoSetupException::class)
+    private fun genericRestoreFromArchive(
+        dataType: String,
+        archive: StorageFile,
+        targetPath: String,
+        compressed: Boolean,
+        isEncrypted: Boolean,
+        iv: ByteArray?,
+        cachePath: RootFile?
+    ) {
+        if (PreferenceManager.getDefaultSharedPreferences(MainActivityX.activity)
+                .getBoolean("restoreTarCmd", true)
+        ) {
+            return genericRestoreFromArchiveTarCmd(
+                dataType,
+                archive,
+                targetPath,
+                compressed,
+                isEncrypted,
+                iv
+            )
+        } else {
+            return genericRestoreFromArchiveTarApi(
+                dataType,
+                archive,
+                targetPath,
+                compressed,
+                isEncrypted,
+                iv,
+                cachePath
+            )
+        }
+    }
+
     @Throws(RestoreFailedException::class)
-    private fun genericRestorePermissions(type: String, targetDir: File) {
+    private fun genericRestorePermissions(
+        dataType: String,
+        targetPath: String,
+        uidgidcon: Array<String>
+    ) {
         try {
-            Timber.i("Getting user/group info and apply it recursively on $targetDir")
-            // retrieve the assigned uid and gid from the data directory Android created
-            val uidgidcon = shell.suGetOwnerGroupContext(targetDir.absolutePath)
+            val (uid, gid, con) = uidgidcon
+            Timber.i("Getting user/group info and apply it recursively on $targetPath")
             // get the contents. lib for example must be owned by root
             val dataContents: MutableList<String> =
-                mutableListOf(*shell.suGetDirectoryContents(targetDir))
+                mutableListOf(*shell.suGetDirectoryContents(RootFile(targetPath)))
             // Maybe dirty: Remove what we don't wanted to have in the backup. Just don't touch it
             dataContents.removeAll(DATA_EXCLUDED_DIRS)
             dataContents.removeAll(DATA_EXCLUDED_CACHE_DIRS)
             // calculate a list what must be updated
-            val chownTargets = dataContents.map { s -> File(targetDir, s).absolutePath }
+            val chownTargets = dataContents.map { s -> RootFile(targetPath, s).absolutePath }
             if (chownTargets.isEmpty()) {
                 // surprise. No data?
-                Timber.i("No chown targets. Is this an app without any $type ? Doing nothing.")
+                Timber.i("No chown targets. Is this an app without any $dataType ? Doing nothing.")
                 return
             }
-            Timber.d("Changing owner and group of '$targetDir' to ${uidgidcon[0]}:${uidgidcon[1]} and selinux context to ${uidgidcon[2]}")
+            Timber.d("Changing owner and group of '$targetPath' to $uid:$gid and selinux context to $con")
             var command =
-                "$utilBoxQuoted chown -R ${uidgidcon[0]}:${uidgidcon[1]} ${
+                "$utilBoxQ chown $uid:$gid ${
+                    quote(RootFile(targetPath).absolutePath)
+                } ; $utilBoxQ chown -R $uid:$gid ${
                     quoteMultiple(chownTargets)
                 }"
-            command += if (uidgidcon[2] == "?") //TODO hg42: when does it happen?
-                " ; restorecon -RF -v ${quote(targetDir)}"
+            command += if (con == "?") //TODO hg42: when does it happen?
+                " ; restorecon -RF -v ${quote(targetPath)}"
             else
-                " ; chcon -R -h -v '${uidgidcon[2]}' ${quote(targetDir)}"
+                " ; chcon -R -h -v '$con' ${quote(targetPath)}"
             runAsRoot(command)
         } catch (e: ShellCommandFailedException) {
-            val errorMessage = "Could not update permissions for $type"
+            val errorMessage = "Could not update permissions for $dataType"
             Timber.e(errorMessage)
             throw RestoreFailedException(errorMessage, e)
         } catch (e: UnexpectedCommandResult) {
-            val errorMessage = "Could not extract user and group information from $type directory"
+            val errorMessage = "Could not extract user and group information from $dataType directory"
             Timber.e(errorMessage)
             throw RestoreFailedException(errorMessage, e)
         }
@@ -450,27 +589,43 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     open fun restoreData(
         app: AppInfo,
         backupProperties: BackupProperties,
-        backupLocation: StorageFile
+        backupDir: StorageFile,
+        compressed: Boolean
     ) {
-        val backupFilename = getBackupArchiveFilename(BACKUP_DIR_DATA, backupProperties.isEncrypted)
+        val dataType = BACKUP_DIR_DATA
+        val backupFilename = getBackupArchiveFilename(
+            dataType,
+            compressed,
+            backupProperties.isEncrypted
+        )
         Timber.d(LOG_EXTRACTING_S, backupProperties.packageName, backupFilename)
-        val backupArchive = backupLocation.findFile(backupFilename)
+        val backupArchive = backupDir.findFile(backupFilename)
             ?: throw RestoreFailedException(
                 String.format(
                     LOG_BACKUP_ARCHIVE_MISSING,
                     backupFilename
                 )
             )
+        val extractTo = app.dataPath
+        if(!isPlausiblePath(extractTo, app.packageName))
+            throw RestoreFailedException(
+                "path '$extractTo' does not contain ${app.packageName}"
+            )
+        // retrieve the assigned uid and gid from the data directory Android created
+        val uidgidcon = shell.suGetOwnerGroupContext(extractTo)
         genericRestoreFromArchive(
-            backupArchive.uri,
-            app.dataPath,
+            dataType,
+            backupArchive,
+            extractTo,
+            compressed,
             backupProperties.isEncrypted,
-            context.cacheDir,
-            backupProperties.iv
+            backupProperties.iv,
+            RootFile(context.cacheDir)
         )
         genericRestorePermissions(
-            BACKUP_DIR_DATA,
-            File(app.dataPath)
+            dataType,
+            extractTo,
+            uidgidcon
         )
     }
 
@@ -478,30 +633,43 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     open fun restoreDeviceProtectedData(
         app: AppInfo,
         backupProperties: BackupProperties,
-        backupLocation: StorageFile
+        backupDir: StorageFile,
+        compressed: Boolean
     ) {
+        val dataType = BACKUP_DIR_DEVICE_PROTECTED_FILES
         val backupFilename = getBackupArchiveFilename(
-            BACKUP_DIR_DEVICE_PROTECTED_FILES,
+            dataType,
+            compressed,
             backupProperties.isEncrypted
         )
         Timber.d(LOG_EXTRACTING_S, backupProperties.packageName, backupFilename)
-        val backupArchive = backupLocation.findFile(backupFilename)
+        val backupArchive = backupDir.findFile(backupFilename)
             ?: throw RestoreFailedException(
                 String.format(
                     LOG_BACKUP_ARCHIVE_MISSING,
                     backupFilename
                 )
             )
+        val extractTo = app.devicesProtectedDataPath
+        if(!isPlausiblePath(extractTo, app.packageName))
+            throw RestoreFailedException(
+                "path '$extractTo' does not contain ${app.packageName}"
+            )
+        // retrieve the assigned uid and gid from the data directory Android created
+        val uidgidcon = shell.suGetOwnerGroupContext(extractTo)
         genericRestoreFromArchive(
-            backupArchive.uri,
-            app.devicesProtectedDataPath,
+            dataType,
+            backupArchive,
+            extractTo,
+            compressed,
             backupProperties.isEncrypted,
-            deviceProtectedStorageContext.cacheDir,
-            backupProperties.iv
+            backupProperties.iv,
+            RootFile(deviceProtectedStorageContext.cacheDir)
         )
         genericRestorePermissions(
-            BACKUP_DIR_DEVICE_PROTECTED_FILES,
-            File(app.devicesProtectedDataPath)
+            dataType,
+            extractTo,
+            uidgidcon
         )
     }
 
@@ -509,61 +677,137 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
     open fun restoreExternalData(
         app: AppInfo,
         backupProperties: BackupProperties,
-        backupLocation: StorageFile
+        backupDir: StorageFile,
+        compressed: Boolean
     ) {
-        val backupFilename =
-            getBackupArchiveFilename(BACKUP_DIR_EXTERNAL_FILES, backupProperties.isEncrypted)
+        val dataType = BACKUP_DIR_EXTERNAL_FILES
+        val backupFilename = getBackupArchiveFilename(
+            dataType,
+            compressed,
+            backupProperties.isEncrypted
+        )
         Timber.d(LOG_EXTRACTING_S, backupProperties.packageName, backupFilename)
-        val backupArchive = backupLocation.findFile(backupFilename)
+        val backupArchive = backupDir.findFile(backupFilename)
             ?: throw RestoreFailedException(
                 String.format(
                     LOG_BACKUP_ARCHIVE_MISSING,
                     backupFilename
                 )
             )
-        val externalDataDir = File(app.getExternalDataPath(context))
-        // This mkdir procedure might need to be replaced by a root command in future when filesystem access is not possible anymore
-        //  if (!externalDataDir.exists()) {
-        //      val mkdirResult = externalDataDir.mkdir()
-        //      if (!mkdirResult) {
-        //          throw RestoreFailedException("Could not create external data directory at $externalDataDir")
-        //      }
-        //  }
-        runAsRoot("$utilBoxQuoted mkdir -p ${quote(externalDataDir)}")
-        if (!externalDataDir.isDirectory)  //TODO hg42: what if it is a link to a directory? in case it existed before
-            throw RestoreFailedException("Could not create external data directory at $externalDataDir")
+        val extractTo = app.getExternalDataPath(context)
+        if(!isPlausiblePath(extractTo, app.packageName))
+            throw RestoreFailedException(
+                "path '$extractTo' does not contain ${app.packageName}"
+            )
+
         genericRestoreFromArchive(
-            backupArchive.uri,
-            externalDataDir.absolutePath,
+            dataType,
+            backupArchive,
+            extractTo,
+            compressed,
             backupProperties.isEncrypted,
-            context.externalCacheDir,
-            backupProperties.iv
+            backupProperties.iv,
+            context.externalCacheDir?.let { RootFile(it) }
         )
     }
 
     @Throws(RestoreFailedException::class)
     open fun restoreObbData(
         app: AppInfo,
-        backupProperties: BackupProperties?,
-        backupLocation: StorageFile
-    ) =
+        backupProperties: BackupProperties,
+        backupDir: StorageFile,
+        compressed: Boolean
+    ) {
+        /*
+        val extractTo = app.getObbFilesPath(context)
+        if(!isPlausiblePath(extractTo, app.packageName))
+            throw RestoreFailedException(
+            "path '$extractTo' does not contain ${app.packageName}"
+            )
         genericRestoreDataByCopying(
-            app.getObbFilesPath(context),
-            backupLocation.uri,
+            extractTo,
+            backupDir,
             BACKUP_DIR_OBB_FILES
         )
+        */
+        val dataType = BACKUP_DIR_OBB_FILES
+        val backupFilename = getBackupArchiveFilename(
+            dataType,
+            compressed,
+            backupProperties.isEncrypted
+        )
+        Timber.d(LOG_EXTRACTING_S, backupProperties.packageName, backupFilename)
+        val backupArchive = backupDir.findFile(backupFilename)
+            ?: throw RestoreFailedException(
+                String.format(
+                    LOG_BACKUP_ARCHIVE_MISSING,
+                    backupFilename
+                )
+            )
+        val extractTo = app.getObbFilesPath(context)
+        if(!isPlausiblePath(extractTo, app.packageName))
+            throw RestoreFailedException(
+                "path '$extractTo' does not contain ${app.packageName}"
+            )
+        genericRestoreFromArchive(
+            dataType,
+            backupArchive,
+            extractTo,
+            compressed,
+            backupProperties.isEncrypted,
+            backupProperties.iv,
+            context.externalCacheDir?.let { RootFile(it) }
+        )
+    }
 
     @Throws(RestoreFailedException::class)
     open fun restoreMediaData(
         app: AppInfo,
-        backupProperties: BackupProperties?,
-        backupLocation: StorageFile
-    ) =
+        backupProperties: BackupProperties,
+        backupDir: StorageFile,
+        compressed: Boolean
+    ) {
+        /*
+        val extractTo = app.getMediaFilesPath(context)
+        if (!isPlausiblePath(extractTo, app.packageName))
+            throw RestoreFailedException(
+                "path '$extractTo' does not contain ${app.packageName}"
+            )
         genericRestoreDataByCopying(
-            app.getMediaFilesPath(context),
-            backupLocation.uri,
+            extractTo,
+            backupDir,
             BACKUP_DIR_MEDIA_FILES
         )
+        */
+        val dataType = BACKUP_DIR_MEDIA_FILES
+        val backupFilename = getBackupArchiveFilename(
+            dataType,
+            compressed,
+            backupProperties.isEncrypted
+        )
+        Timber.d(LOG_EXTRACTING_S, backupProperties.packageName, backupFilename)
+        val backupArchive = backupDir.findFile(backupFilename)
+            ?: throw RestoreFailedException(
+                String.format(
+                    LOG_BACKUP_ARCHIVE_MISSING,
+                    backupFilename
+                )
+            )
+        val extractTo = app.getMediaFilesPath(context)
+        if(!isPlausiblePath(extractTo, app.packageName))
+            throw RestoreFailedException(
+                "path '$extractTo' does not contain ${app.packageName}"
+            )
+        genericRestoreFromArchive(
+            dataType,
+            backupArchive,
+            extractTo,
+            compressed,
+            backupProperties.isEncrypted,
+            backupProperties.iv,
+            context.externalCacheDir?.let { RootFile(it) }
+        )
+    }
 
     /**
      * Returns an installation command for adb/shell installation.
@@ -574,7 +818,7 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
      * @return a complete shell command
      */
     private fun getPackageInstallCommand(
-        apkPath: File, /*profilId: Int,*/
+        apkPath: RootFile, /*profilId: Int,*/
         basePackageName: String? = null
     ): String =
             String.format(
@@ -586,21 +830,31 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
 
     @Throws(PackageManagerDataIncompleteException::class)
     private fun refreshAppInfo(context: Context, app: AppInfo) {
-        // Try it multiple times with some waiting time in between to give PackageManager some time to
-        // properly initialize the package and populate the paths.
-        // It seems, that this
-        val maxAttempts = context.getDefaultSharedPreferences().getInt(PREFS_INTERNAL_RETRIEVE_APP_META_ATTEMPTS, DEFAULT_RETRIEVE_APP_META_ATTEMPTS)
-        val sleepTimeMs = context.getDefaultSharedPreferences().getInt(PREFS_INTERNAL_RETRIEVE_APP_META_SLEEP_MS, DEFAULT_RETRIEVE_APP_META_SLEEP_MS).toLong()
-        var attemptNo = 0;
+        val sleepTimeMs = 1000L
+
+        // delay before first try
+        val delayMs = context.getDefaultSharedPreferences().getInt("delayBeforeRefreshAppInfo", 0) * 1000L
+        var timeWaitedMs = 0L
         do {
-            if (attemptNo >= maxAttempts) {
-                throw PackageManagerDataIncompleteException(maxAttempts);
+            Thread.sleep(sleepTimeMs)
+            timeWaitedMs += sleepTimeMs
+        } while (timeWaitedMs < delayMs)
+
+        // try multiple times to get valid paths from PackageManager
+        // maxWaitMs is cumulated sleep time between tries
+        val maxWaitMs = context.getDefaultSharedPreferences().getInt("refreshAppInfoTimeout", 30) * 1000L
+        timeWaitedMs = 0L
+        var attemptNo = 0
+        do {
+            if (timeWaitedMs > maxWaitMs) {
+                throw PackageManagerDataIncompleteException(maxWaitMs / 1000L)
             }
-            if (attemptNo > 0) {
-                Timber.d("[${app.packageName}] paths were missing after data fetching data from PackageManager; attempt $attemptNo of $maxAttempts")
-                Thread.sleep(sleepTimeMs);
+            if (timeWaitedMs > 0) {
+                Timber.d("[${app.packageName}] paths were missing after data fetching data from PackageManager; attempt $attemptNo, waited ${timeWaitedMs / 1000L} of $maxWaitMs seconds")
+                Thread.sleep(sleepTimeMs)
             }
             app.refreshFromPackageManager(context)
+            timeWaitedMs += sleepTimeMs
             attemptNo++
         } while (!this.isPlausiblePackageInfo(app))
     }
@@ -611,16 +865,20 @@ open class RestoreAppAction(context: Context, shell: ShellHandler) : BaseAppActi
                 && app.devicesProtectedDataPath.isNotBlank()
     }
 
+    private fun isPlausiblePath(path: String, packageName: String): Boolean {
+        return path.contains(packageName)
+    }
+
     class RestoreFailedException : AppActionFailedException {
         constructor(message: String?) : super(message)
         constructor(message: String?, cause: Throwable?) : super(message, cause)
     }
 
-    class PackageManagerDataIncompleteException(var attempts: Int)
-        : Exception("PackageManager returned invalid data paths after $attempts attempts to retrieve them")
+    class PackageManagerDataIncompleteException(var seconds: Long)
+        : Exception("PackageManager returned invalid data paths after trying $seconds seconds to retrieve them")
 
     companion object {
-        protected val PACKAGE_STAGING_DIRECTORY = File("/data/local/tmp")
+        protected val PACKAGE_STAGING_DIRECTORY = RootFile("/data/local/tmp")
         const val BASE_APK_FILENAME = "base.apk"
         const val LOG_DIR_IS_MISSING_CANNOT_RESTORE =
             "Backup directory %s is missing. Cannot restore"

@@ -21,7 +21,6 @@ import android.app.usage.StorageStats
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import android.net.Uri
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.getPackageStorageStats
@@ -35,7 +34,7 @@ class AppInfo {
 
     var appMetaInfo: AppMetaInfo
 
-    var backupDirUri: Uri = Uri.EMPTY
+    var backupDir: StorageFile?
 
     var storageStats: StorageStats? = null
 
@@ -65,8 +64,7 @@ class AppInfo {
     internal constructor(context: Context, metaInfo: AppMetaInfo) {
         packageName = metaInfo.packageName.toString()
         appMetaInfo = metaInfo
-        val backupDoc = context.getBackupDir().findFile(packageName)
-        backupDirUri = backupDoc?.uri ?: Uri.EMPTY
+        backupDir = context.getBackupDir().findFile(packageName)
         refreshBackupHistory(context)
     }
 
@@ -74,15 +72,14 @@ class AppInfo {
         packageName = packageInfo.packageName
         this.packageInfo = PackageInfo(packageInfo)
         this.appMetaInfo = AppMetaInfo(context, packageInfo)
-        val backupDoc = context.getBackupDir().findFile(packageName)
-        backupDirUri = backupDoc?.uri ?: Uri.EMPTY
+        backupDir = context.getBackupDir().findFile(packageName)
         refreshBackupHistory(context)
         refreshStorageStats(context)
     }
 
-    constructor(context: Context, backupRoot: Uri, packageName: String?) {
-        this.backupDirUri = backupRoot
-        this.packageName = packageName ?: StorageFile.fromUri(context, backupRoot).name!!
+    constructor(context: Context, packageName: String?, backupDir: StorageFile?) {
+        this.backupDir = backupDir
+        this.packageName = packageName ?: backupDir?.name!!
         refreshBackupHistory(context)
         try {
             val pi = context.packageManager.getPackageInfo(this.packageName, 0)
@@ -108,13 +105,12 @@ class AppInfo {
         }
     }
 
-    constructor(context: Context, packageInfo: PackageInfo, backupRoot: Uri) {
+    constructor(context: Context, packageInfo: PackageInfo, backupRoot: StorageFile?) {
         this.packageName = packageInfo.packageName
         this.appMetaInfo = AppMetaInfo(context, packageInfo)
         this.packageInfo = PackageInfo(packageInfo)
-        val appBackupRoot = StorageFile.fromUri(context, backupRoot).findFile(packageName)
+        this.backupDir = backupRoot?.findFile(packageName)
         refreshStorageStats(context)
-        this.backupDirUri = appBackupRoot?.uri ?: Uri.EMPTY
         refreshBackupHistory(context)
     }
 
@@ -148,29 +144,32 @@ class AppInfo {
         return true
     }
 
+    fun isPropertyFile(file: StorageFile): Boolean =
+        file.name?.endsWith(".properties") ?: false
+
     fun refreshBackupHistory(context: Context) {
-        backupDirUri.let { backupDir ->
+        backupDir.let { backupDir ->
             historyCollectorThread?.interrupt()
             historyCollectorThread = Thread {
-                val appBackupDir = StorageFile.fromUri(context, backupDir)
+                val appBackupDir = backupDir
                 val backups: MutableList<BackupItem> = mutableListOf()
                 try {
-                    appBackupDir.listFiles()
-                        .filter { it.isPropertyFile }
-                        .forEach {
+                    appBackupDir?.listFiles()
+                        ?.filter { isPropertyFile(it) }
+                        ?.forEach {
                             try {
                                 backups.add(BackupItem(context, it))
                             } catch (e: BackupItem.BrokenBackupException) {
                                 val message =
-                                    "Incomplete backup or wrong structure found in ${it.uri.encodedPath}."
+                                    "Incomplete backup or wrong structure found in $it"
                                 Timber.w(message)
                             } catch (e: NullPointerException) {
                                 val message =
-                                    "(Null) Incomplete backup or wrong structure found in ${it.uri.encodedPath}."
+                                    "(Null) Incomplete backup or wrong structure found in $it"
                                 Timber.w(message)
                             } catch (e: Throwable) {
                                 val message =
-                                    "(catchall) Incomplete backup or wrong structure found in ${it.uri.encodedPath}."
+                                    "(catchall) Incomplete backup or wrong structure found in $it"
                                 LogsHandler.unhandledException(e, message)
                             }
                         }
@@ -179,7 +178,7 @@ class AppInfo {
                 } catch (e: InterruptedException) {
                     return@Thread
                 } catch (e: Throwable) {
-                    LogsHandler.unhandledException(e, backupDir.encodedPath)
+                    LogsHandler.unhandledException(e, backupDir)
                 }
                 backupHistoryCache = Pair(backups, context)
                 historyCollectorThread = null
@@ -189,24 +188,24 @@ class AppInfo {
     }
 
     @Throws(
-        FileUtils.BackupLocationIsAccessibleException::class,
+        FileUtils.BackupLocationInAccessibleException::class,
         StorageLocationNotConfiguredException::class
     )
-    fun getAppUri(context: Context, create: Boolean): Uri {
-        if (create && backupDirUri == Uri.EMPTY) {
-            backupDirUri = context.getBackupDir().ensureDirectory(packageName)!!.uri
+    fun getAppBackupRoot(context: Context, create: Boolean): StorageFile {
+        if (create && backupDir == null) {
+            backupDir = context.getBackupDir().ensureDirectory(packageName)
         }
-        return backupDirUri
+        return backupDir!!
     }
 
     fun deleteAllBackups(context: Context) {
         Timber.i("Deleting ${backupHistory.size} backups of $this")
-        StorageFile.fromUri(context, backupDirUri).delete()
+        backupDir?.delete()
         backupHistory.clear()
-        backupDirUri = Uri.EMPTY
+        backupDir = null
     }
 
-    fun delete(context: Context, backupItem: BackupItem, directBoolean: Boolean = true) {
+    fun delete(context: Context, backupItem: BackupItem, removeFromHistory: Boolean = true) {
         if (backupItem.backupProperties.packageName != packageName) {
             throw RuntimeException("Asked to delete a backup of ${backupItem.backupProperties.packageName} but this object is for $packageName")
         }
@@ -217,12 +216,13 @@ class AppInfo {
             backupItem.backupProperties.profileId
         )
         try {
-            backupItem.backupInstanceDirUri.deleteRecursive(context)
-            StorageFile.fromUri(context, backupDirUri).findFile(propertiesFileName)!!.delete()
+            backupItem.backupInstanceDir.deleteRecursive()
+            backupDir?.findFile(propertiesFileName)?.delete()
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, backupItem.backupProperties.packageName)
         }
-        if (directBoolean) backupHistory.remove(backupItem)
+        if (removeFromHistory)
+            backupHistory.remove(backupItem)
     }
 
     val isInstalled: Boolean
@@ -343,7 +343,7 @@ class AppInfo {
         val appInfo = other as AppInfo
         return packageName == appInfo.packageName
                 && appMetaInfo == appInfo.appMetaInfo
-                && backupDirUri == appInfo.backupDirUri
+                && backupDir == appInfo.backupDir
                 && storageStats == appInfo.storageStats
                 && packageInfo == appInfo.packageInfo
                 && backupHistory == appInfo.backupHistory
@@ -353,7 +353,7 @@ class AppInfo {
         var hash = 7
         hash = 31 * hash + packageName.hashCode()
         hash = 31 * hash + appMetaInfo.hashCode()
-        hash = 31 * hash + backupDirUri.hashCode()
+        hash = 31 * hash + backupDir.hashCode()
         hash = 31 * hash + storageStats.hashCode()
         hash = 31 * hash + packageInfo.hashCode()
         hash = 31 * hash + backupHistory.hashCode()
@@ -364,7 +364,7 @@ class AppInfo {
         return "Schedule{" +
                 "packageName=" + packageName +
                 ", appMetaInfo=" + appMetaInfo +
-                ", appUri=" + backupDirUri +
+                ", appUri=" + backupDir +
                 ", storageStats=" + storageStats +
                 ", packageInfo=" + packageInfo +
                 ", backupHistory=" + backupHistory +

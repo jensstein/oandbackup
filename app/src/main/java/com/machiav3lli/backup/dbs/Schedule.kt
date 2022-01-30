@@ -97,7 +97,7 @@ open class Schedule() {
 
     constructor(context: Context, exportFile: StorageFile) : this() {
         try {
-            exportFile.uri.openFileForReading(context).use { reader ->
+            exportFile.uri?.openFileForReading(context).use { reader ->
                 val item = fromGson(IOUtils.toString(reader))
                 this.id = item.id
                 this.name = item.name

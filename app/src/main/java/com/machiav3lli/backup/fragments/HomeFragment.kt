@@ -259,15 +259,7 @@ class HomeFragment : NavigationFragment(),
         selectedPackages: List<String?>,
         selectedModes: List<Int>
     ) {
-        val notificationId = System.currentTimeMillis()
-        val notificationMessage = String.format(
-            getString(R.string.fetching_action_list),
-            getString(R.string.backup)
-        )
-        showNotification(
-            requireContext(), MainActivityX::class.java, notificationId.toInt(),
-            notificationMessage, "", true
-        )
+        val notificationId = System.currentTimeMillis().toInt()
         val selectedItems = selectedPackages
             .mapIndexed { i, packageName ->
                 if (packageName.isNullOrEmpty()) null
@@ -279,26 +271,23 @@ class HomeFragment : NavigationFragment(),
         var resultsSuccess = true
         var counter = 0
         val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
+        val workManager = WorkManager.getInstance(requireContext())
+        MainActivityX.startWork()
         selectedItems.forEach { (packageName, mode) ->
+
             val oneTimeWorkRequest =
-                AppActionWork.Request(packageName, mode, true, notificationId.toInt())
+                AppActionWork.Request(packageName, mode, true, notificationId)
             worksList.add(oneTimeWorkRequest)
 
             val oneTimeWorkLiveData = WorkManager.getInstance(requireContext())
                 .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
+            //TODO cleanup MainActivityX.showRunningStatus()
             oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
                 override fun onChanged(t: WorkInfo?) {
                     if (t?.state == WorkInfo.State.SUCCEEDED) {
-                        requireMainActivity().updateProgress(counter, selectedItems.size)
                         counter += 1
 
                         val (succeeded, packageLabel, error) = AppActionWork.getOutput(t)
-                        val message =
-                            "${getString(R.string.backupProgress)} ($counter/${selectedItems.size})"
-                        showNotification(
-                            requireContext(), MainActivityX::class.java, notificationId.toInt(),
-                            message, packageLabel, false
-                        )
                         if (error.isNotEmpty()) errors = "$errors$packageLabel: ${
                             LogsHandler.handleErrorMessages(
                                 requireContext(),
@@ -323,22 +312,22 @@ class HomeFragment : NavigationFragment(),
                     val (message, title) = FinishWork.getOutput(t)
                     showNotification(
                         requireContext(), MainActivityX::class.java,
-                        notificationId.toInt(), title, message, true
+                        notificationId, title, message, true
                     )
                     val overAllResult = ActionResult(null, null, errors, resultsSuccess)
                     requireActivity().showActionResult(overAllResult) { _: DialogInterface?, _: Int ->
                         LogsHandler.logErrors(requireContext(), errors.dropLast(2))
                     }
 
-                    requireMainActivity().hideProgress()
-                    viewModel.refreshNow.value = true
                     finishWorkLiveData.removeObserver(this)
+                    //TODO cleanup MainActivityX.showRunningStatus()
+                    viewModel.refreshNow.value = true
                 }
             }
         })
 
         if (worksList.isNotEmpty()) {
-            WorkManager.getInstance(requireContext())
+            workManager
                 .beginWith(worksList)
                 .then(finishWorkRequest)
                 .enqueue()
@@ -357,7 +346,7 @@ class HomeFragment : NavigationFragment(),
                 val filteredList =
                     appInfoList.applyFilter(requireActivity().sortFilterModel, requireContext())
                 refreshMain(filteredList, appSheet != null)
-            } catch (e: FileUtils.BackupLocationIsAccessibleException) {
+            } catch (e: FileUtils.BackupLocationInAccessibleException) {
                 Timber.e("Could not update application list: $e")
             } catch (e: StorageLocationNotConfiguredException) {
                 Timber.e("Could not update application list: $e")
@@ -414,7 +403,8 @@ class HomeFragment : NavigationFragment(),
             } else
                 appSheet?.dismissAllowingStateLoss()
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e)
+            appSheet?.dismissAllowingStateLoss()
+            //LogsHandler.unhandledException(e)
         }
     }
 

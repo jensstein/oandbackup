@@ -33,7 +33,7 @@ class BackupDialogFragment(val appInfo: AppInfo, private val listener: ActionLis
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val labels = mutableListOf<String>()
         var selectedMode = MODE_UNSET
-        val possibleModes = possibleSchedModes
+        val possibleModes = possibleSchedModes.toMutableList()
 
         val pi = appInfo.packageInfo
         val showApkBtn = pi != null && pi.apkDir.isNotEmpty()

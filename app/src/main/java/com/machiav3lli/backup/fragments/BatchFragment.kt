@@ -317,14 +317,10 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     // TODO abstract this to fit for Main- & BatchFragment
     // TODO break down to smaller bits
     override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {
-        val notificationId = System.currentTimeMillis()
+        val notificationId = System.currentTimeMillis().toInt()
         val notificationMessage = String.format(
             getString(R.string.fetching_action_list),
             getString(if (backupBoolean) R.string.backup else R.string.restore)
-        )
-        showNotification(
-            requireContext(), MainActivityX::class.java, notificationId.toInt(),
-            notificationMessage, "", true
         )
         val selectedItems = selectedPackages
             .mapIndexed { i, packageName ->
@@ -337,9 +333,11 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         var resultsSuccess = true
         var counter = 0
         val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
+        MainActivityX.startWork()
         selectedItems.forEach { (packageName, mode) ->
+
             val oneTimeWorkRequest =
-                AppActionWork.Request(packageName, mode, backupBoolean, notificationId.toInt())
+                AppActionWork.Request(packageName, mode, backupBoolean, notificationId)
             worksList.add(oneTimeWorkRequest)
 
             val oneTimeWorkLiveData = WorkManager.getInstance(requireContext())
@@ -347,18 +345,10 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
             oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
                 override fun onChanged(t: WorkInfo?) {
                     if (t?.state == WorkInfo.State.SUCCEEDED) {
-                        requireMainActivity().updateProgress(counter, selectedItems.size)
                         binding.progressBar.progress = counter
                         counter += 1
 
                         val (succeeded, packageLabel, error) = AppActionWork.getOutput(t)
-                        val message = "${
-                            getString(if (backupBoolean) R.string.backupProgress else R.string.restoreProgress)
-                        } ($counter/${selectedItems.size})"
-                        showNotification(
-                            requireContext(), MainActivityX::class.java, notificationId.toInt(),
-                            message, packageLabel, false
-                        )
                         if (error.isNotEmpty()) errors = "$errors$packageLabel: ${
                             LogsHandler.handleErrorMessages(
                                 requireContext(),
@@ -390,7 +380,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                         LogsHandler.logErrors(requireContext(), errors.dropLast(2))
                     }
 
-                    requireMainActivity().hideProgress()
+                    //TODO cleanup MainActivityX.showRunningStatus()
                     viewModel.refreshNow.value = true
                     finishWorkLiveData.removeObserver(this)
                 }
@@ -413,7 +403,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                 val filteredList =
                     appInfoList.applyFilter(requireActivity().sortFilterModel, requireContext())
                 refreshBatch(filteredList)
-            } catch (e: FileUtils.BackupLocationIsAccessibleException) {
+            } catch (e: FileUtils.BackupLocationInAccessibleException) {
                 Timber.e("Could not update application list: $e")
             } catch (e: StorageLocationNotConfiguredException) {
                 Timber.e("Could not update application list: $e")

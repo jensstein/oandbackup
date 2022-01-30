@@ -19,7 +19,6 @@ package com.machiav3lli.backup.items
 
 import android.content.Context
 import android.content.pm.PackageInfo
-import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
@@ -72,9 +71,8 @@ open class BackupProperties : AppMetaInfo, Parcelable {
     @Expose
     val cpuArch: String?
 
-    fun getBackupLocation(appBackupDir: StorageFile?): Uri =
-        appBackupDir?.findFile(backupFolderName)?.uri
-            ?: Uri.EMPTY
+    fun getBackupDir(appBackupDir: StorageFile?) : StorageFile? =
+        appBackupDir?.findFile(backupFolderName)
 
     private val backupFolderName
         get() = String.format(

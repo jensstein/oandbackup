@@ -17,138 +17,172 @@
  */
 package com.machiav3lli.backup.actions
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.net.Uri
+import androidx.preference.PreferenceManager
 import com.machiav3lli.backup.*
+import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.BackupBuilder
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.isFileNotFoundException
+import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
+import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.*
+import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.*
-import com.machiav3lli.backup.utils.FileUtils.BackupLocationIsAccessibleException
+import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
+import com.topjohnwu.superuser.ShellUtils
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
 import org.apache.commons.compress.compressors.gzip.GzipParameters
 import timber.log.Timber
-import java.io.BufferedOutputStream
-import java.io.File
 import java.io.IOException
 import java.io.OutputStream
 import java.nio.charset.StandardCharsets
 
-open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppAction(context, shell) {
+
+class ScriptException(text: String) : Exception(text)
+
+open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellHandler) : BaseAppAction(context, work, shell) {
 
     open fun run(app: AppInfo, backupMode: Int): ActionResult {
-        Timber.i("Backing up: ${app.packageName} [${app.packageLabel}]")
-        val appBackupRootUri: Uri = try {
-            app.getAppUri(context, true)
-        } catch (e: BackupLocationIsAccessibleException) {
-            // Usually, this should never happen, but just in case...
-            val realException: Exception = BackupFailedException(STORAGE_LOCATION_INACCESSIBLE, e)
-            return ActionResult(
-                app,
-                null,
-                "${realException.javaClass.simpleName}: ${e.message}",
-                false
-            )
-        } catch (e: StorageLocationNotConfiguredException) {
-            val realException: Exception = BackupFailedException(STORAGE_LOCATION_INACCESSIBLE, e)
-            return ActionResult(
-                app,
-                null,
-                "${realException.javaClass.simpleName}: ${e.message}",
-                false
-            )
-        } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, app)
-            // Usually, this should never happen, but just in case...
-            val realException: Exception = BackupFailedException(STORAGE_LOCATION_INACCESSIBLE, e)
-            return ActionResult(
-                app,
-                null,
-                "${realException.javaClass.simpleName}: ${e.message}",
-                false
-            )
-        }
-        val backupBuilder = BackupBuilder(context, app.appMetaInfo, appBackupRootUri)
-        val backupInstanceDir = backupBuilder.backupPath
-        val stopProcess = context.isKillBeforeActionEnabled
-        val backupItem: BackupItem
-        if (stopProcess) {
-            Timber.d("pre-process package (to avoid file inconsistencies during backup etc.)")
-            preprocessPackage(app.packageName)
-        }
-        val iv = initIv(CIPHER_ALGORITHM) // as we're using a static Cipher Algorithm
-        backupBuilder.setIv(iv)
+        var backupItem: BackupItem? = null
+        var ok = false
         try {
-            if (backupMode and MODE_APK == MODE_APK) {
-                Timber.i("$app: Backing up package")
-                backupPackage(app, backupInstanceDir)
-                backupBuilder.setHasApk(true)
+            Timber.i("Backing up: ${app.packageName} [${app.packageLabel}]")
+            work?.setOperation("pre")
+            val appBackupRoot: StorageFile = try {
+                app.getAppBackupRoot(context, true)
+            } catch (e: BackupLocationInAccessibleException) {
+                // Usually, this should never happen, but just in case...
+                val realException: Exception =
+                    BackupFailedException(STORAGE_LOCATION_INACCESSIBLE, e)
+                return ActionResult(
+                    app,
+                    null,
+                    "${realException.javaClass.simpleName}: ${e.message}",
+                    false
+                )
+            } catch (e: StorageLocationNotConfiguredException) {
+                val realException: Exception =
+                    BackupFailedException(STORAGE_LOCATION_INACCESSIBLE, e)
+                return ActionResult(
+                    app,
+                    null,
+                    "${realException.javaClass.simpleName}: ${e.message}",
+                    false
+                )
+            } catch (e: Throwable) {
+                LogsHandler.unhandledException(e, app)
+                // Usually, this should never happen, but just in case...
+                val realException: Exception =
+                    BackupFailedException(STORAGE_LOCATION_INACCESSIBLE, e)
+                return ActionResult(
+                    app,
+                    null,
+                    "${realException.javaClass.simpleName}: ${e.message}",
+                    false
+                )
             }
-            var backupCreated: Boolean
-            if (backupMode and MODE_DATA == MODE_DATA) {
-                Timber.i("$app: Backing up data")
-                backupCreated = backupData(app, backupInstanceDir, iv)
-                backupBuilder.setHasAppData(backupCreated)
-            }
-            if (backupMode and MODE_DATA_DE == MODE_DATA_DE) {
-                Timber.i("$app: Backing up device's protected data")
-                backupCreated = backupDeviceProtectedData(app, backupInstanceDir, iv)
-                backupBuilder.setHasDevicesProtectedData(backupCreated)
-            }
-            if (backupMode and MODE_DATA_EXT == MODE_DATA_EXT) {
-                Timber.i("$app: Backing up external data")
-                backupCreated = backupExternalData(app, backupInstanceDir, iv)
-                backupBuilder.setHasExternalData(backupCreated)
-            }
-            if (backupMode and MODE_DATA_OBB == MODE_DATA_OBB) {
-                Timber.i("$app: Backing up obb files")
-                backupCreated = backupObbData(app, backupInstanceDir, iv)
-                backupBuilder.setHasObbData(backupCreated)
-            }
-            if (backupMode and MODE_DATA_MEDIA == MODE_DATA_MEDIA) {
-                Timber.i("$app: Backing up media files")
-                backupCreated = backupMediaData(app, backupInstanceDir, iv)
-                backupBuilder.setHasMediaData(backupCreated)
-            }
+            val backupBuilder = BackupBuilder(context, app.appMetaInfo, appBackupRoot)
+            val iv = initIv(CIPHER_ALGORITHM) // as we're using a static Cipher Algorithm
+            backupBuilder.setIv(iv)
 
-            if (context.isEncryptionEnabled()) {
-                backupBuilder.setCipherType(CIPHER_ALGORITHM)
+            val backupInstanceDir = backupBuilder.backupPath
+            val pauseApp = context.isPauseApps
+            if (pauseApp) {
+                Timber.d("pre-process package (to avoid file inconsistencies during backup etc.)")
+                preprocessPackage(app.packageName)
             }
-            backupItem = backupBuilder.createBackupItem()
-            saveBackupProperties(
-                StorageFile.fromUri(context, appBackupRootUri),
-                backupItem.backupProperties
-            )
-            app.backupHistory.add(backupItem)
-        } catch (e: BackupFailedException) {
-            Timber.e("Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
-            Timber.d("Backup deleted: ${backupBuilder.backupPath.delete()}")
-            return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
-        } catch (e: CryptoSetupException) {
-            Timber.e("Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
-            Timber.d("Backup deleted: ${backupBuilder.backupPath.delete()}")
-            return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
-        } catch (e: IOException) {
-            Timber.e("Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
-            Timber.d("Backup deleted: ${backupBuilder.backupPath.delete()}")
-            return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
-        } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, app)
-            Timber.e("Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
-            Timber.d("Backup deleted: ${backupBuilder.backupPath.delete()}")
-            return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
+            try {
+                if (backupMode and MODE_APK == MODE_APK) {
+                    Timber.i("$app: Backing up package")
+                    work?.setOperation("apk")
+                    backupPackage(app, backupInstanceDir)
+                    backupBuilder.setHasApk(true)
+                }
+                var backupCreated: Boolean
+                if (backupMode and MODE_DATA == MODE_DATA) {
+                    Timber.i("$app: Backing up data")
+                    work?.setOperation("dat")
+                    backupCreated = backupData(app, backupInstanceDir, iv)
+                    backupBuilder.setHasAppData(backupCreated)
+                }
+                if (backupMode and MODE_DATA_DE == MODE_DATA_DE) {
+                    Timber.i("$app: Backing up device's protected data")
+                    work?.setOperation("prt")
+                    backupCreated = backupDeviceProtectedData(app, backupInstanceDir, iv)
+                    backupBuilder.setHasDevicesProtectedData(backupCreated)
+                }
+                if (backupMode and MODE_DATA_EXT == MODE_DATA_EXT) {
+                    Timber.i("$app: Backing up external data")
+                    work?.setOperation("ext")
+                    backupCreated = backupExternalData(app, backupInstanceDir, iv)
+                    backupBuilder.setHasExternalData(backupCreated)
+                }
+                if (backupMode and MODE_DATA_OBB == MODE_DATA_OBB) {
+                    Timber.i("$app: Backing up obb files")
+                    work?.setOperation("obb")
+                    backupCreated = backupObbData(app, backupInstanceDir, iv)
+                    backupBuilder.setHasObbData(backupCreated)
+                }
+                if (backupMode and MODE_DATA_MEDIA == MODE_DATA_MEDIA) {
+                    Timber.i("$app: Backing up media files")
+                    work?.setOperation("med")
+                    backupCreated = backupMediaData(app, backupInstanceDir, iv)
+                    backupBuilder.setHasMediaData(backupCreated)
+                }
+
+                if (context.isEncryptionEnabled()) {
+                    backupBuilder.setCipherType(CIPHER_ALGORITHM)
+                }
+
+                backupItem = backupBuilder.createBackupItem()
+
+                saveBackupProperties(
+                    appBackupRoot,
+                    backupItem.backupProperties
+                )
+
+                ok = true
+
+            } catch (e: BackupFailedException) {
+                Timber.e("Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
+                Timber.d("Backup deleted: ${backupBuilder.backupPath.delete()}")
+                return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
+            } catch (e: CryptoSetupException) {
+                Timber.e("Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
+                Timber.d("Backup deleted: ${backupBuilder.backupPath.delete()}")
+                return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
+            } catch (e: IOException) {
+                Timber.e("Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
+                Timber.d("Backup deleted: ${backupBuilder.backupPath.delete()}")
+                return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
+            } catch (e: Throwable) {
+                LogsHandler.unhandledException(e, app)
+                Timber.e("Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
+                Timber.d("Backup deleted: ${backupBuilder.backupPath.delete()}")
+                return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
+            } finally {
+                work?.setOperation("fin")
+                if (pauseApp) {
+                    Timber.d("post-process package (to set it back to normal operation)")
+                    postprocessPackage(app.packageName)
+                }
+                if (backupItem == null)
+                    backupItem = backupBuilder.createBackupItem()
+                if (ok)
+                    app.backupHistory.add(backupItem)
+                else
+                    app.delete(context, backupItem, true)
+            }
         } finally {
-            if (stopProcess) {
-                Timber.d("post-process package (to set it back to normal operation)")
-                postprocessPackage(app.packageName)
-            }
+            work?.setOperation("<--")
+            Timber.i("$app: Backup done: ${backupItem ?: app.packageName}")
         }
-        Timber.i("$app: Backup done: $backupItem")
-        return ActionResult(app, backupItem.backupProperties, "", true)
+        return ActionResult(app, backupItem?.backupProperties, "", true)
     }
 
     @Throws(IOException::class)
@@ -162,50 +196,44 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         )
         val propertiesFile =
             packageBackupDir.createFile("application/octet-stream", propertiesFileName)
-        BufferedOutputStream(
-            context.contentResolver.openOutputStream(
-                propertiesFile?.uri
-                    ?: Uri.EMPTY, "w"
+        propertiesFile.outputStream()?.use { propertiesOut ->
+            propertiesOut.write(
+                properties.toGson().toByteArray(StandardCharsets.UTF_8)
             )
-        )
-            .use { propertiesOut ->
-                propertiesOut.write(
-                    properties.toGson().toByteArray(StandardCharsets.UTF_8)
-                )
-            }
+        }
         Timber.i("Wrote $propertiesFile file for backup: $properties")
     }
 
     @Throws(IOException::class, CryptoSetupException::class)
-    protected fun createBackupArchive(
-        backupInstanceDir: Uri,
+    protected fun createBackupArchiveTarApi(
+        backupInstanceDir: StorageFile,
         what: String,
         allFilesToBackup: List<ShellHandler.FileInfo>,
+        compress: Boolean,
         iv: ByteArray?
     ) {
-        Timber.i("Creating $what backup")
-        val backupDir = StorageFile.fromUri(context, backupInstanceDir)
-        val backupFilename = getBackupArchiveFilename(what, context.isEncryptionEnabled())
-        val backupFile = backupDir.createFile("application/octet-stream", backupFilename)
+        Timber.i("Creating $what backup via API")
+        val backupFilename = getBackupArchiveFilename(what, compress, context.isEncryptionEnabled())
+        val backupFile = backupInstanceDir.createFile("application/octet-stream", backupFilename)
+
         val password = context.getEncryptionPassword()
         val gzipParams = GzipParameters()
         gzipParams.compressionLevel = context.getCompressionLevel()
-        var outStream: OutputStream = BufferedOutputStream(
-            context.contentResolver.openOutputStream(
-                backupFile?.uri
-                    ?: Uri.EMPTY, "w"
-            )
-        )
+
+        var outStream: OutputStream = backupFile.outputStream()!!
+
         if (password.isNotEmpty() && context.isEncryptionEnabled()) {
             outStream = outStream.encryptStream(password, context.getCryptoSalt(), iv)
         }
+        if(compress) {
+            outStream = GzipCompressorOutputStream(
+                outStream,
+                gzipParams
+            )
+        }
+
         try {
-            TarArchiveOutputStream(
-                GzipCompressorOutputStream(
-                    outStream,
-                    gzipParams
-                )
-            ).use { archive ->
+            TarArchiveOutputStream(outStream).use { archive ->
                 archive.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX)
                 archive.suAddFiles(allFilesToBackup)
             }
@@ -217,13 +245,12 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
 
     @Throws(IOException::class)
     protected fun copyToBackupArchive(
-        backupInstanceDir: Uri,
+        backupInstanceDir: StorageFile,
         what: String,
         allFilesToBackup: List<ShellHandler.FileInfo>
     ) {
-        val backupInstance = StorageFile.fromUri(context, backupInstanceDir)
-        val backupDir = backupInstance.createDirectory(what)
-        suRecursiveCopyFileToDocument(context, allFilesToBackup, backupDir?.uri ?: Uri.EMPTY)
+        val backupDir = backupInstanceDir.createDirectory(what)
+        backupDir.recursiveCopyFiles(allFilesToBackup)
     }
 
     @Throws(BackupFailedException::class)
@@ -240,11 +267,11 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             "[%s] Backing up package (%d apks: %s)",
             app.packageName,
             apksToBackup.size,
-            apksToBackup.joinToString(" ") { s: String -> File(s).name }
+            apksToBackup.joinToString(" ") { s: String -> RootFile(s).name }
         )
         try {
             for (apk in apksToBackup) {
-                suCopyFileToDocument(context.contentResolver, apk, backupInstanceDir)
+                suCopyFileToDocument(apk, backupInstanceDir)
             }
         } catch (e: IOException) {
             Timber.e("$app: Backup APKs failed: $e")
@@ -256,12 +283,13 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
     }
 
     @Throws(BackupFailedException::class)
-    private fun assembleFileList(sourceDirectory: String): List<ShellHandler.FileInfo> {
+    private fun assembleFileList(sourcePath: String): List<ShellHandler.FileInfo> {
         // Check what are the contents to backup. No need to start working, if the directory does not exist
         return try {
             // Get a list of directories in the directory to backup
-            var dirsInSource = shell.suGetDetailedDirectoryContents(sourceDirectory, false, null)
-                .filter { dir: ShellHandler.FileInfo -> !dir.filename.contains(".gms.") } // a try to exclude google's push notifications id
+            var dirsInSource = shell.suGetDetailedDirectoryContents(sourcePath, false, null)
+                // a try to exclude google's push notifications id (hg42it's not a directory???)
+                //.filter { dir: ShellHandler.FileInfo -> !dir.filename.contains(".gms.") }
 
             // Excludes cache and libs, when we don't want to backup'em
             // TODO maybe remove the option and force the exclusion?
@@ -285,6 +313,9 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
                 if (dir.fileType === ShellHandler.FileInfo.FileType.DIRECTORY) try {
                     allFilesToBackup.addAll(
                         shell.suGetDetailedDirectoryContents(dir.absolutePath, true, dir.filename)
+                            .filterNot { file: ShellHandler.FileInfo ->
+                                file.filename in DATA_EXCLUDED_FILES
+                            }
                     )
                 } catch (e: ShellCommandFailedException) {
                     if (isFileNotFoundException(e)) {
@@ -296,42 +327,45 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
             }
             allFilesToBackup
         } catch (e: ShellCommandFailedException) {
-            throw BackupFailedException("Could not list contents of $sourceDirectory", e)
+            throw BackupFailedException("Could not list contents of $sourcePath", e)
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, sourceDirectory)
-            throw BackupFailedException("Could not list contents of $sourceDirectory", e)
+            LogsHandler.unhandledException(e, sourcePath)
+            throw BackupFailedException("Could not list contents of $sourcePath", e)
         }
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
-    protected fun genericBackupData(
-        backupType: String,
-        backupInstanceDir: Uri,
+    protected fun genericBackupDataTarApi(
+        dataType: String,
+        backupInstanceDir: StorageFile,
         filesToBackup: List<ShellHandler.FileInfo>,
         compress: Boolean,
         iv: ByteArray?
     ): Boolean {
         Timber.i(
             "Backing up %s got %d files to backup",
-            backupType,
+            dataType,
             filesToBackup.size
         )
         if (filesToBackup.isEmpty()) {
-            Timber.i("Nothing to backup for $backupType. Skipping")
+            Timber.i("Nothing to backup for $dataType. Skipping")
             return false
         }
         try {
+            /*
             if (compress) {
-                createBackupArchive(backupInstanceDir, backupType, filesToBackup, iv)
+                createBackupArchiveTarApi(backupInstanceDir, dataType, filesToBackup, compress, iv)
             } else {
-                copyToBackupArchive(backupInstanceDir, backupType, filesToBackup)
+                copyToBackupArchive(backupInstanceDir, dataType, filesToBackup)
             }
+            */
+            createBackupArchiveTarApi(backupInstanceDir, dataType, filesToBackup, compress, iv)
         } catch (e: IOException) {
-            val message = "${e.javaClass.canonicalName} occurred on $backupType backup: $e"
+            val message = "${e.javaClass.canonicalName} occurred on $dataType backup: $e"
             Timber.e(message)
             throw BackupFailedException(message, e)
         } catch (e: Throwable) {
-            val message = "${e.javaClass.canonicalName} occurred on $backupType backup: $e"
+            val message = "${e.javaClass.canonicalName} occurred on $dataType backup: $e"
             LogsHandler.unhandledException(e, message)
             throw BackupFailedException(message, e)
         }
@@ -339,15 +373,135 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
-    protected fun genericBackupData(
-        backupType: String,
-        backupInstanceDir: Uri,
-        sourceDirectory: String,
+    fun genericBackupDataTarApi(
+        dataType: String,
+        backupInstanceDir: StorageFile,
+        sourcePath: String,
         compress: Boolean,
         iv: ByteArray?
     ): Boolean {
-        val filesToBackup = assembleFileList(sourceDirectory)
-        return genericBackupData(backupType, backupInstanceDir, filesToBackup, true, iv)
+        val filesToBackup = assembleFileList(sourcePath)
+        return genericBackupData(dataType, backupInstanceDir, filesToBackup, compress, iv)
+    }
+
+    @SuppressLint("RestrictedApi")
+    @Throws(BackupFailedException::class, CryptoSetupException::class)
+    fun genericBackupDataTarCmd(
+        dataType: String,
+        backupInstanceDir: StorageFile,
+        sourcePath: String,
+        compress: Boolean,
+        iv: ByteArray?
+    ): Boolean {
+        if(!ShellUtils.fastCmdResult("test -d ${quote(sourcePath)}"))
+            return false
+        Timber.i("Creating $dataType backup via tar")
+        val backupFilename = getBackupArchiveFilename(dataType, compress, context.isEncryptionEnabled())
+        val backupFile = backupInstanceDir.createFile("application/octet-stream", backupFilename)
+
+        val password = context.getEncryptionPassword()
+        val gzipParams = GzipParameters()
+        gzipParams.compressionLevel = context.getCompressionLevel()
+
+        var outStream: OutputStream = backupFile.outputStream()!!
+
+        if (password.isNotEmpty() && context.isEncryptionEnabled()) {
+            outStream = outStream.encryptStream(password, context.getCryptoSalt(), iv)
+        }
+        if(compress) {
+            outStream = GzipCompressorOutputStream(
+                outStream,
+                gzipParams
+            )
+        }
+
+        var result = false
+        try {
+            val tarScript = ShellHandler.findAssetFile("tar.sh").toString()
+            val exclude = ShellHandler.findAssetFile(ShellHandler.EXCLUDE_FILE).toString()
+            val excludeCache = ShellHandler.findAssetFile(ShellHandler.EXCLUDE_CACHE_FILE).toString()
+
+            var options = ""
+            options += " --exclude ${quote(exclude)}"
+            if (context.getDefaultSharedPreferences().getBoolean(PREFS_EXCLUDECACHE, true)) {
+                options += " --exclude ${quote(excludeCache)}"
+            }
+
+            val cmd = "su --mount-master -c sh ${quote(tarScript)} create $utilBoxQ ${options} ${quote(sourcePath)}"
+            Timber.i("SHELL: $cmd")
+
+            val process = Runtime.getRuntime().exec(cmd)
+
+            val shellIn  = process.getOutputStream()
+            val shellOut = process.getInputStream()
+            val shellErr = process.getErrorStream()
+
+            shellOut.copyTo(outStream, 65536)
+
+            outStream.flush()
+
+            val err = shellErr.readBytes().decodeToString()
+            val errLines = err
+                .split("\n")
+                .filterNot { line ->
+                       line.isBlank()
+                    || line.contains("tar: unknown file type") // e.g. socket 140000
+                }
+            if(errLines.isNotEmpty()) {
+                val errFiltered = errLines.joinToString("\n")
+                Timber.i(errFiltered)
+                throw ScriptException(errFiltered)
+            }
+            result = true
+        } catch (e: Throwable) {
+            val message = "${e.javaClass.canonicalName} occurred on $dataType backup: $e"
+            LogsHandler.unhandledException(e, message)
+            throw BackupFailedException(message, e)
+        } finally {
+            Timber.d("Done compressing. Closing $backupFilename")
+            outStream.close()
+        }
+        return result
+    }
+
+    @Throws(BackupFailedException::class, CryptoSetupException::class)
+    protected fun genericBackupData(
+        dataType: String,
+        backupInstanceDir: StorageFile,
+        filesToBackup: List<ShellHandler.FileInfo>,
+        compress: Boolean,
+        iv: ByteArray?
+    ): Boolean {
+        return genericBackupDataTarApi(dataType, backupInstanceDir, filesToBackup, compress, iv)
+    }
+
+    @Throws(BackupFailedException::class, CryptoSetupException::class)
+    protected fun genericBackupData(
+        dataType: String,
+        backupInstanceDir: StorageFile,
+        sourcePath: String,
+        compress: Boolean,
+        iv: ByteArray?
+    ): Boolean {
+            if (PreferenceManager.getDefaultSharedPreferences(MainActivityX.activity)
+                    .getBoolean("backupTarCmd", true)
+            ) {
+                return genericBackupDataTarCmd(
+                    dataType,
+                    backupInstanceDir,
+                    sourcePath,
+                    compress,
+                    iv
+                )
+            } else {
+                return genericBackupDataTarApi(
+                    dataType,
+                    backupInstanceDir,
+                    sourcePath,
+                    compress,
+                    iv
+                )
+            }
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
@@ -356,9 +510,9 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         backupInstanceDir: StorageFile,
         iv: ByteArray?
     ): Boolean {
-        val backupType = BACKUP_DIR_DATA
-        Timber.i(LOG_START_BACKUP, app.packageName, backupType)
-        return genericBackupData(backupType, backupInstanceDir.uri, app.dataPath, true, iv)
+        val dataType = BACKUP_DIR_DATA
+        Timber.i(LOG_START_BACKUP, app.packageName, dataType)
+        return genericBackupData(dataType, backupInstanceDir, app.dataPath, true, iv)
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
@@ -367,14 +521,14 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         backupInstanceDir: StorageFile,
         iv: ByteArray?
     ): Boolean {
-        val backupType = BACKUP_DIR_EXTERNAL_FILES
-        Timber.i(LOG_START_BACKUP, app.packageName, backupType)
+        val dataType = BACKUP_DIR_EXTERNAL_FILES
+        Timber.i(LOG_START_BACKUP, app.packageName, dataType)
         return try {
-            genericBackupData(backupType, backupInstanceDir.uri, app.getExternalDataPath(context), true, iv)
+            genericBackupData(dataType, backupInstanceDir, app.getExternalDataPath(context), true, iv)
         } catch (ex: BackupFailedException) {
             if (ex.cause is ShellCommandFailedException && isFileNotFoundException(ex.cause)) {
                 // no such data found
-                Timber.i(LOG_NO_THING_TO_BACKUP, backupType, app.packageName)
+                Timber.i(LOG_NO_THING_TO_BACKUP, dataType, app.packageName)
                 return false
             }
             throw ex
@@ -387,14 +541,14 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         backupInstanceDir: StorageFile,
         iv: ByteArray?
     ): Boolean {
-        val backupType = BACKUP_DIR_OBB_FILES
-        Timber.i(LOG_START_BACKUP, app.packageName, backupType)
+        val dataType = BACKUP_DIR_OBB_FILES
+        Timber.i(LOG_START_BACKUP, app.packageName, dataType)
         return try {
-            genericBackupData(backupType, backupInstanceDir.uri, app.getObbFilesPath(context), false, iv)
+            genericBackupData(dataType, backupInstanceDir, app.getObbFilesPath(context), false, iv)
         } catch (ex: BackupFailedException) {
             if (ex.cause is ShellCommandFailedException && isFileNotFoundException(ex.cause)) {
                 // no such data found
-                Timber.i(LOG_NO_THING_TO_BACKUP, backupType, app.packageName)
+                Timber.i(LOG_NO_THING_TO_BACKUP, dataType, app.packageName)
                 return false
             }
             throw ex
@@ -407,14 +561,14 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         backupInstanceDir: StorageFile,
         iv: ByteArray?
     ): Boolean {
-        val backupType = BACKUP_DIR_MEDIA_FILES
-        Timber.i(LOG_START_BACKUP, app.packageName, backupType)
+        val dataType = BACKUP_DIR_MEDIA_FILES
+        Timber.i(LOG_START_BACKUP, app.packageName, dataType)
         return try {
-            genericBackupData(backupType, backupInstanceDir.uri, app.getMediaFilesPath(context), false, iv)
+            genericBackupData(dataType, backupInstanceDir, app.getMediaFilesPath(context), false, iv)
         } catch (ex: BackupFailedException) {
             if (ex.cause is ShellCommandFailedException && isFileNotFoundException(ex.cause)) {
                 // no such data found
-                Timber.i(LOG_NO_THING_TO_BACKUP, backupType, app.packageName)
+                Timber.i(LOG_NO_THING_TO_BACKUP, dataType, app.packageName)
                 return false
             }
             throw ex
@@ -427,14 +581,14 @@ open class BackupAppAction(context: Context, shell: ShellHandler) : BaseAppActio
         backupInstanceDir: StorageFile,
         iv: ByteArray?
     ): Boolean {
-        val backupType = BACKUP_DIR_DEVICE_PROTECTED_FILES
-        Timber.i(LOG_START_BACKUP, app.packageName, backupType)
+        val dataType = BACKUP_DIR_DEVICE_PROTECTED_FILES
+        Timber.i(LOG_START_BACKUP, app.packageName, dataType)
         return try {
-            genericBackupData(backupType, backupInstanceDir.uri, app.devicesProtectedDataPath, true, iv)
+            genericBackupData(dataType, backupInstanceDir, app.devicesProtectedDataPath, true, iv)
         } catch (ex: BackupFailedException) {
             if (ex.cause is ShellCommandFailedException && isFileNotFoundException(ex.cause)) {
                 // no such data found
-                Timber.i(LOG_NO_THING_TO_BACKUP, backupType, app.packageName)
+                Timber.i(LOG_NO_THING_TO_BACKUP, dataType, app.packageName)
                 return false
             }
             throw ex

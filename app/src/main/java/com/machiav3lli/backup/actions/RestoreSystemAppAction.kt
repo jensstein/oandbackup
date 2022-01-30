@@ -18,15 +18,15 @@
 package com.machiav3lli.backup.actions
 
 import android.content.Context
-import android.net.Uri
 import android.os.Build
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
-import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQuoted
+import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.BackupProperties
-import com.machiav3lli.backup.items.StorageFile.Companion.fromUri
+import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.tasks.AppActionWork
 import org.apache.commons.io.IOUtils
 import timber.log.Timber
 import java.io.File
@@ -34,19 +34,18 @@ import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 
-class RestoreSystemAppAction(context: Context, shell: ShellHandler) :
-    RestoreAppAction(context, shell) {
+class RestoreSystemAppAction(context: Context, work: AppActionWork?, shell: ShellHandler) :
+    RestoreAppAction(context, work, shell) {
 
     @Throws(RestoreFailedException::class)
-    override fun restorePackage(backupLocation: Uri, backupProperties: BackupProperties) {
-        val backupDir = fromUri(context, backupLocation)
+    override fun restorePackage(backupDir: StorageFile, backupProperties: BackupProperties) {
         val apkTargetPath = File(backupProperties.sourceDir ?: "")
-        backupDir.findFile(apkTargetPath.name)?.let { apkLocation ->
+        backupDir.findFile(apkTargetPath.name)?.uri?.let { apkLocation ->
             // Writing the apk to a temporary location to get it out of the magic storage to a local location
             // that can be accessed with shell commands.
             val tempPath = File(context.cacheDir, apkTargetPath.name)
             try {
-                val inputStream = context.contentResolver.openInputStream(apkLocation.uri)
+                val inputStream = context.contentResolver.openInputStream(apkLocation)
                 FileOutputStream(tempPath).use { outputStream ->
                     IOUtils.copy(
                         inputStream,
@@ -67,10 +66,10 @@ class RestoreSystemAppAction(context: Context, shell: ShellHandler) :
                 val command =
                     "(mount -o remount,rw ${quote(mountPoint)} && " +
                         "mkdir -p ${quote(appDir)} && (" +  // chmod might be obsolete
-                            "$utilBoxQuoted chmod 755 ${quote(appDir)} ; " +  // for some reason a permissions error is thrown if the apk path is not created first
-                            "$utilBoxQuoted touch ${quote(apkTargetPath)} ; " + // with touch, a reboot is not necessary after restoring system apps
-                            "$utilBoxQuoted mv -f ${quote(tempPath)} ${quote(apkTargetPath)} ; " +
-                            "$utilBoxQuoted chmod 644 ${quote(apkTargetPath)}" +
+                            "$utilBoxQ chmod 755 ${quote(appDir)} ; " +  // for some reason a permissions error is thrown if the apk path is not created first
+                            "$utilBoxQ touch ${quote(apkTargetPath)} ; " + // with touch, a reboot is not necessary after restoring system apps
+                            "$utilBoxQ mv -f ${quote(tempPath)} ${quote(apkTargetPath)} ; " +
+                            "$utilBoxQ chmod 644 ${quote(apkTargetPath)}" +
                         ")" +
                     "); mount -o remount,ro $mountPoint"
                 try {
