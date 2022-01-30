@@ -44,7 +44,6 @@ object BackupSMSMMSJSONAction {
             "locked",
             "sub_id",
             "error_code",
-            "creator",
             "seen"
         )
 
@@ -74,7 +73,9 @@ object BackupSMSMMSJSONAction {
                     do {
                         jsonWriter.beginObject()
                         message.columnNames.forEachIndexed { m, columnName ->
-                            jsonWriter.name(columnName).value(message.getString(m))
+                            val value = message.getString(m)
+                            if (value != null)
+                                jsonWriter.name(columnName).value(value)
                         }
                         jsonWriter.endObject()
                     } while (message.moveToNext())
