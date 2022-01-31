@@ -146,7 +146,7 @@ fun TarArchiveOutputStream.suAddFiles(allFiles: List<ShellHandler.FileInfo>) {
 }
 
 @Throws(IOException::class, ShellCommandFailedException::class)
-fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile?) {
+fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile?, strictHardLinks: Boolean = false) {
     val qUtilBox = ShellHandler.utilBoxQ
     targetDir?.let {
         val postponeModes = mutableMapOf<String, Int>()
@@ -167,8 +167,10 @@ fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile?) {
                     postponeChmod = true
                 }
                 tarEntry.isLink -> {
+
                     runAsRoot(
-                        "$qUtilBox ln ${quote(tarEntry.linkName)} ${quote(targetPath)}"
+                        // OABX v7 implementation stroes hard links and extracts all links as symlinks
+                        "$qUtilBox ln ${if(strictHardLinks) "" else "-s"} ${quote(tarEntry.linkName)} ${quote(targetPath)}"
                     )
                     doChmod = false
                 }

@@ -373,7 +373,10 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                         targetPath,
                         DATA_EXCLUDED_DIRS
                     )
-                    archiveStream.suUnpackTo(RootFile(targetPath))
+                    archiveStream.suUnpackTo(
+                        RootFile(targetPath),
+                        getDefaultSharedPreferences(MainActivityX.activity)
+                            .getBoolean("strictHardLinks", false))
                 } else {
                     // Create a temporary directory in OABX's cache directory and uncompress the data into it
                     Files.createTempDirectory(cachePath?.toPath(), "restore_")?.let {
