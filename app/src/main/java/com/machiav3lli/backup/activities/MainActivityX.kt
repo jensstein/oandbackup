@@ -23,10 +23,12 @@ import android.app.PendingIntent
 import android.content.*
 import android.content.res.AssetManager
 import android.os.Bundle
+import android.os.Looper
 import android.os.PersistableBundle
 import android.os.Process
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -303,12 +305,7 @@ class MainActivityX : BaseActivity() {
                                 "\n${BuildConfig.APPLICATION_ID} ${BuildConfig.VERSION_NAME}\n" +
                                 runAsRoot("logcat --pid=${Process.myPid()}").out.joinToString("\n")
                     )
-                    startActivity(
-                        Intent.makeRestartActivityTask(
-                            ComponentName(this, PrefsActivity::class.java)
-                        )
-                    )
-                    /*object : Thread() {
+                    object : Thread() {
                         override fun run() {
                             Looper.prepare()
                             repeat(5) {
@@ -322,7 +319,6 @@ class MainActivityX : BaseActivity() {
                         }
                     }.start()
                     Thread.sleep(5000)
-                    */
                 } finally {
                     System.exit(2)
                 }
