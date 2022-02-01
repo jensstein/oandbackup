@@ -302,8 +302,11 @@ class MainActivityX : BaseActivity() {
                     LogsHandler.unhandledException(e)
                     LogsHandler(context).writeToLogFile(
                         "uncaught exception happened:\n\n" +
-                                "\n${BuildConfig.APPLICATION_ID} ${BuildConfig.VERSION_NAME}\n" +
-                                runAsRoot("logcat --pid=${Process.myPid()}").out.joinToString("\n")
+                                "\n${BuildConfig.APPLICATION_ID} ${BuildConfig.VERSION_NAME}"
+                                + "\n" +
+                                runAsRoot(
+                                    "logcat -d --pid=${Process.myPid()}"  // -d = dump and exit
+                                ).out.joinToString("\n")
                     )
                     object : Thread() {
                         override fun run() {
