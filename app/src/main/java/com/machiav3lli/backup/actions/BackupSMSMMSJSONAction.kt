@@ -19,11 +19,10 @@ package com.machiav3lli.backup.actions
 
 import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Telephony
 import android.util.JsonWriter
-import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker
 import timber.log.Timber
 import java.io.BufferedWriter
 import java.io.File
@@ -48,8 +47,18 @@ object BackupSMSMMSJSONAction {
             "seen"
         )
 
+    @Throws(RuntimeException::class)
     fun backupData(context: Context, filePath: String) {
         Timber.tag("BackupSMSMMSJSONAction").v("backupData")
+        if (
+                (PermissionChecker.checkCallingOrSelfPermission(context, Manifest.permission.READ_SMS) == PermissionChecker.PERMISSION_DENIED) ||
+                (PermissionChecker.checkCallingOrSelfPermission(context, Manifest.permission.SEND_SMS) == PermissionChecker.PERMISSION_DENIED) ||
+                (PermissionChecker.checkCallingOrSelfPermission(context, Manifest.permission.RECEIVE_SMS) == PermissionChecker.PERMISSION_DENIED) ||
+                (PermissionChecker.checkCallingOrSelfPermission(context, Manifest.permission.RECEIVE_MMS) == PermissionChecker.PERMISSION_DENIED) ||
+                (PermissionChecker.checkCallingOrSelfPermission(context, Manifest.permission.RECEIVE_WAP_PUSH) == PermissionChecker.PERMISSION_DENIED)
+        ) {
+            throw RuntimeException("No permission for SMS/MMS.")
+        }
         context.contentResolver.openOutputStream(Uri.fromFile(File(filePath)), "wt").use { outputStream ->
             BufferedWriter(OutputStreamWriter(outputStream)).use { writer ->
                 val jsonWriter = JsonWriter(writer)
@@ -63,44 +72,34 @@ object BackupSMSMMSJSONAction {
 
     private fun backupSMS(context: Context, jsonWriter: JsonWriter) {
         Timber.tag("BackupSMSMMSJSONAction").v("backupSMS")
-        if (ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.READ_SMS
-                ) == PackageManager.PERMISSION_GRANTED) {
-            jsonWriter.beginObject()
-            jsonWriter.name("sms")
-            jsonWriter.beginArray()
-            val messages = context.contentResolver.query(Telephony.Sms.CONTENT_URI, includeSMSColumns, null, null, "_id")
-            messages?.use { message ->
-                if (message.moveToFirst()) {
-                    do {
-                        jsonWriter.beginObject()
-                        message.columnNames.forEachIndexed { m, columnName ->
-                            jsonWriter.name(columnName).value(message.getString(m))
-                        }
-                        jsonWriter.endObject()
-                    } while (message.moveToNext())
-                }
+        jsonWriter.beginObject()
+        jsonWriter.name("sms")
+        jsonWriter.beginArray()
+        val messages = context.contentResolver.query(Telephony.Sms.CONTENT_URI, includeSMSColumns, null, null, "_id")
+        messages?.use { message ->
+            if (message.moveToFirst()) {
+                do {
+                    jsonWriter.beginObject()
+                    message.columnNames.forEachIndexed { m, columnName ->
+                        jsonWriter.name(columnName).value(message.getString(m))
+                    }
+                    jsonWriter.endObject()
+                } while (message.moveToNext())
             }
-            jsonWriter.endArray()
-            jsonWriter.endObject()
         }
+        jsonWriter.endArray()
+        jsonWriter.endObject()
     }
     
     private fun backupMMS(context: Context, jsonWriter: JsonWriter) {
         Timber.tag("BackupSMSMMSJSONAction").v("backupMMS")
-        if (ContextCompat.checkSelfPermission(
-                        context,
-                        Manifest.permission.READ_SMS
-                ) == PackageManager.PERMISSION_GRANTED) {
-            jsonWriter.beginObject()
-            jsonWriter.name("mms")
-            jsonWriter.beginArray()
+        jsonWriter.beginObject()
+        jsonWriter.name("mms")
+        jsonWriter.beginArray()
 
-            // TODO: add in MMS backup here
+        // TODO: add in MMS backup here
 
-            jsonWriter.endArray()
-            jsonWriter.endObject()
-        }
+        jsonWriter.endArray()
+        jsonWriter.endObject()
     }
 }

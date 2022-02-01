@@ -20,12 +20,11 @@ package com.machiav3lli.backup.actions
 import android.Manifest
 import android.content.ContentValues
 import android.content.Context
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Telephony
 import android.util.JsonReader
 import android.util.JsonToken
-import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker
 import timber.log.Timber
 import java.io.BufferedReader
 import java.io.File
@@ -33,28 +32,33 @@ import java.io.InputStreamReader
 
 
 object RestoreSMSMMSJSONAction {
+    @Throws(RuntimeException::class)
     fun restoreData(context: Context, filePath: String) {
         Timber.tag("RestoreSMSMMSJSONAction").v("restoreData")
-        if (ContextCompat.checkSelfPermission(
-                        context,
-                        Manifest.permission.READ_SMS
-                ) == PackageManager.PERMISSION_GRANTED) {
-            context.contentResolver.openInputStream(Uri.fromFile(File(filePath))).use { inputStream ->
-                BufferedReader(InputStreamReader(inputStream)).use { reader ->
-                    val jsonReader = JsonReader(reader)
-                    jsonReader.beginArray()
-                    while (jsonReader.hasNext()) {
-                        jsonReader.beginObject()
-                        when (jsonReader.nextName()) {
-                            "sms" -> restoreSMS(context, jsonReader)
-                            "mms" -> restoreMMS(context, jsonReader)
-                            else -> jsonReader.skipValue()
-                        }
-                        jsonReader.endObject()
+        if (
+                (PermissionChecker.checkCallingOrSelfPermission(context, Manifest.permission.READ_SMS) == PermissionChecker.PERMISSION_DENIED) ||
+                (PermissionChecker.checkCallingOrSelfPermission(context, Manifest.permission.SEND_SMS) == PermissionChecker.PERMISSION_DENIED) ||
+                (PermissionChecker.checkCallingOrSelfPermission(context, Manifest.permission.RECEIVE_SMS) == PermissionChecker.PERMISSION_DENIED) ||
+                (PermissionChecker.checkCallingOrSelfPermission(context, Manifest.permission.RECEIVE_MMS) == PermissionChecker.PERMISSION_DENIED) ||
+                (PermissionChecker.checkCallingOrSelfPermission(context, Manifest.permission.RECEIVE_WAP_PUSH) == PermissionChecker.PERMISSION_DENIED)
+        ) {
+            throw RuntimeException("No permission for SMS/MMS.")
+        }
+        context.contentResolver.openInputStream(Uri.fromFile(File(filePath))).use { inputStream ->
+            BufferedReader(InputStreamReader(inputStream)).use { reader ->
+                val jsonReader = JsonReader(reader)
+                jsonReader.beginArray()
+                while (jsonReader.hasNext()) {
+                    jsonReader.beginObject()
+                    when (jsonReader.nextName()) {
+                        "sms" -> restoreSMS(context, jsonReader)
+                        "mms" -> restoreMMS(context, jsonReader)
+                        else -> jsonReader.skipValue()
                     }
-                    jsonReader.endArray()
-                    jsonReader.close()
+                    jsonReader.endObject()
                 }
+                jsonReader.endArray()
+                jsonReader.close()
             }
         }
     }

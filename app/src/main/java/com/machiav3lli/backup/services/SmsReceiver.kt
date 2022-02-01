@@ -28,6 +28,7 @@ import android.provider.ContactsContract.PhoneLookup
 import android.provider.Telephony
 import android.telephony.SmsMessage
 import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.showNotification
 import timber.log.Timber
@@ -39,6 +40,15 @@ class SmsReceiver : BroadcastReceiver() {
             return
         }
         if (intent.action != (Telephony.Sms.Intents.SMS_DELIVER_ACTION)) {
+            return
+        }
+        if (
+                (PermissionChecker.checkCallingOrSelfPermission(context, Manifest.permission.READ_SMS) == PermissionChecker.PERMISSION_DENIED) ||
+                (PermissionChecker.checkCallingOrSelfPermission(context, Manifest.permission.SEND_SMS) == PermissionChecker.PERMISSION_DENIED) ||
+                (PermissionChecker.checkCallingOrSelfPermission(context, Manifest.permission.RECEIVE_SMS) == PermissionChecker.PERMISSION_DENIED) ||
+                (PermissionChecker.checkCallingOrSelfPermission(context, Manifest.permission.RECEIVE_MMS) == PermissionChecker.PERMISSION_DENIED) ||
+                (PermissionChecker.checkCallingOrSelfPermission(context, Manifest.permission.RECEIVE_WAP_PUSH) == PermissionChecker.PERMISSION_DENIED)
+        ) {
             return
         }
         val smsMessages = Telephony.Sms.Intents.getMessagesFromIntent(intent)
@@ -55,7 +65,7 @@ class SmsReceiver : BroadcastReceiver() {
         val message = sms.displayMessageBody.toString()
         var sender = sms.displayOriginatingAddress ?: ""
 
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+        if (PermissionChecker.checkCallingOrSelfPermission(context, Manifest.permission.READ_CONTACTS) == PermissionChecker.PERMISSION_DENIED) {
             val uri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(sender))
             val projection = arrayOf(PhoneLookup.DISPLAY_NAME)
             try {
