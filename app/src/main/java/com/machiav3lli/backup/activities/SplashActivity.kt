@@ -43,6 +43,8 @@ class SplashActivity : BaseActivity() {
                 startActivity(introIntent)
             } else if (hasStoragePermissions &&
                 isStorageDirSetAndOk &&
+                checkSMSMMSPermission &&
+                checkContactsPermission &&
                 checkUsageStatsPermission &&
                 (prefs.getBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
                         || powerManager.isIgnoringBatteryOptimizations(packageName))

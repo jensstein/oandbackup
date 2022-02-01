@@ -225,6 +225,95 @@ val Context.canAccessExternalStorage: Boolean
         return externalStorage?.let { it.canRead() && it.canWrite() } ?: false
     }
 
+fun Activity.requireSMSMMSPermission() {
+    val smsmmsPermissionList = arrayOf(
+            Manifest.permission.READ_SMS,
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.RECEIVE_SMS,
+            Manifest.permission.RECEIVE_MMS,
+            Manifest.permission.RECEIVE_WAP_PUSH
+    )
+    if (
+        checkSelfPermission(Manifest.permission.READ_SMS) !=
+            PackageManager.PERMISSION_GRANTED ||
+        checkSelfPermission(Manifest.permission.SEND_SMS) !=
+            PackageManager.PERMISSION_GRANTED ||
+        checkSelfPermission(Manifest.permission.RECEIVE_SMS) !=
+            PackageManager.PERMISSION_GRANTED ||
+        checkSelfPermission(Manifest.permission.RECEIVE_MMS) !=
+            PackageManager.PERMISSION_GRANTED ||
+        checkSelfPermission(Manifest.permission.RECEIVE_WAP_PUSH) !=
+            PackageManager.PERMISSION_GRANTED
+    )
+        ActivityCompat.requestPermissions(this,smsmmsPermissionList, WRITE_PERMISSION)
+}
+
+val Context.checkSMSMMSPermission: Boolean
+    get() {
+        val appOps = (getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)
+        val mode = when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
+                appOps.unsafeCheckOpNoThrow(
+                        AppOpsManager.OPSTR_READ_SMS,
+                        Process.myUid(),
+                        packageName
+                )
+            else ->
+                appOps.checkOpNoThrow(
+                        AppOpsManager.OPSTR_READ_SMS,
+                        Process.myUid(),
+                        packageName
+                )
+        }
+        return if (mode == AppOpsManager.MODE_DEFAULT) {
+            (checkCallingOrSelfPermission(Manifest.permission.READ_SMS) ==
+                PackageManager.PERMISSION_GRANTED &&
+            checkCallingOrSelfPermission(Manifest.permission.SEND_SMS) ==
+                PackageManager.PERMISSION_GRANTED &&
+            checkCallingOrSelfPermission(Manifest.permission.RECEIVE_SMS) ==
+                PackageManager.PERMISSION_GRANTED &&
+            checkCallingOrSelfPermission(Manifest.permission.RECEIVE_MMS) ==
+                PackageManager.PERMISSION_GRANTED &&
+            checkCallingOrSelfPermission(Manifest.permission.RECEIVE_WAP_PUSH) ==
+                PackageManager.PERMISSION_GRANTED)
+        } else {
+            mode == AppOpsManager.MODE_ALLOWED
+        }
+    }
+
+fun Activity.requireContactsPermission() {
+    if (
+            checkSelfPermission(Manifest.permission.READ_CONTACTS) !=
+            PackageManager.PERMISSION_GRANTED
+    )
+        ActivityCompat.requestPermissions(this,arrayOf(Manifest.permission.READ_CONTACTS), WRITE_PERMISSION)
+}
+
+val Context.checkContactsPermission: Boolean
+    get() {
+        val appOps = (getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)
+        val mode = when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
+                appOps.unsafeCheckOpNoThrow(
+                        AppOpsManager.OPSTR_READ_CONTACTS,
+                        Process.myUid(),
+                        packageName
+                )
+            else ->
+                appOps.checkOpNoThrow(
+                        AppOpsManager.OPSTR_READ_CONTACTS,
+                        Process.myUid(),
+                        packageName
+                )
+        }
+        return if (mode == AppOpsManager.MODE_DEFAULT) {
+            checkCallingOrSelfPermission(Manifest.permission.READ_CONTACTS) ==
+                PackageManager.PERMISSION_GRANTED
+        } else {
+            mode == AppOpsManager.MODE_ALLOWED
+        }
+    }
+
 val Context.checkUsageStatsPermission: Boolean
     get() {
         val appOps = (getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)
