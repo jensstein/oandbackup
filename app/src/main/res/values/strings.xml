@@ -205,9 +205,9 @@
     <string name="split_apks">Split APKs:</string>
     <string name="backup_filters">Backup Filters:</string>
     <string name="smsmms_permission_title">SMS/MMS Permissions</string>
-    <string name="grant_smsmms_message">The app needs this permission to be able to backup/restore your SMS/MMS.</string>
+    <string name="grant_smsmms_message">This is essential to be able to backup/restore your SMS/MMS.</string>
     <string name="contacts_permission_title">Contacts Permissions</string>
-    <string name="grant_contacts_message">The app needs this permission to be able to match a contact to a SMS/MMS.</string>
+    <string name="grant_contacts_message">This is essential to be able to match a contact to a SMS/MMS.</string>
     <string name="grant_usage_access_title">Grant Usage Access</string>
     <string name="grant_usage_access_message">This is essential to get the information about sizes of app\'s files</string>
     <string name="app_size">App Size:</string>
