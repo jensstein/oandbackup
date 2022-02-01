@@ -85,7 +85,7 @@
         android:title="strictHardLinks" />
 
     <androidx.preference.CheckBoxPreference
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:key="restoreAvoidTemporaryCopy"
         android:summary="for API tar only: avoid using a temporary directory to extract files"
         android:title="restoreAvoidTemporaryCopy" />
