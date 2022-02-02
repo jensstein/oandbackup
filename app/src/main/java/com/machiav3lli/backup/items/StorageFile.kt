@@ -52,9 +52,11 @@ open class StorageFile {
                                 val (storage, subpath) = last.split(":")
                                 val possiblePaths = listOf(
                                     "/storage/$storage/$subpath",
+                                    "/storage/self/$storage/$subpath",
                                     "/mnt/media_rw/$storage/$subpath",
                                     "/mnt/runtime/full/$storage/$subpath",
-                                    "/mnt/runtime/default/$storage/$subpath"
+                                    "/mnt/runtime/default/$storage/$subpath",
+                                    "/mnt/runtime/default/self/$storage/$subpath"
                                 )
                                 var checkFile: RootFile? = null
                                 for(path in possiblePaths) {

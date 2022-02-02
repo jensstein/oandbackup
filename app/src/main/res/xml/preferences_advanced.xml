@@ -61,7 +61,7 @@
         android:title="pauseApps" />
 
     <androidx.preference.CheckBoxPreference
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:key="pmSuspend"
         android:summary="additionally use pm suspend command to pause apps"
         android:title="pmSuspend" />
@@ -77,6 +77,12 @@
         android:key="restoreTarCmd"
         android:summary="use tar shell command for restore"
         android:title="restoreTarCmd" />
+
+    <androidx.preference.CheckBoxPreference
+        android:defaultValue="false"
+        android:key="strictHardLinks"
+        android:summary="for API tar only: unpack hard links as hard links (otherwise they become symlinks)"
+        android:title="strictHardLinks" />
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="true"
