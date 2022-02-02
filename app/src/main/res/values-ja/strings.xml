@@ -131,4 +131,6 @@
     <string name="prefs_allowdowngrade">ダウングレードの許可</string>
     <string name="prefs_restoreallpermissions">すべての権限を復元する</string>
     <string name="prefs_externaldata_summary">外部ストレージ (例: /storage/emulated/0/Android/data/) に置かれたデータのバックアップとリストアを行います。</string>
+    <string name="showSplitAPKs">分割APK</string>
+    <string name="radio_mediadata">メディアデータ</string>
 </resources>
