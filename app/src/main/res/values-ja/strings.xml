@@ -144,4 +144,5 @@
     <string name="prefs_obbdata">obbファイルのバックアップ</string>
     <string name="prefs_enablespecial_summary">まだ集中的なテストが必要で、ブートループを起こす危険性を承知の上で試してみてください。フィードバックをお待ちしています。</string>
     <string name="prefs_obbdata_summary">外部ストレージ（例：/storage/emulated/0/Android/obb/）に置かれているアプリのobbファイルのバックアップとリストアを行います。</string>
+    <string name="error_pmDataIncompleteException_dataRestoreFailed">アプリデータは復元されていません。</string>
 </resources>
