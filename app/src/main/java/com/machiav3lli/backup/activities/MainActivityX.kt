@@ -53,6 +53,7 @@ import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.services.WorkReceiver
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.MainViewModel
@@ -97,7 +98,6 @@ class MainActivityX : BaseActivity() {
         var appsSuspendedChecked = false
 
         var statusNotificationId = 0
-        //TODO cleanup var cancelAllWork = false
 
         fun showRunningStatus(manager: WorkManager? = null, work: MutableList<WorkInfo>? = null) {
             var running = 0
@@ -237,8 +237,8 @@ class MainActivityX : BaseActivity() {
             }
         }
 
-        fun initWorkManager() {
-            val workManager = workManager()
+        fun initWorkManager(context: Context) {
+            val workManager = workManager(context)
             workManager.pruneWork()
             workManager.getWorkInfosByTagLiveData(
                 AppActionWork::class.qualifiedName!!
@@ -247,32 +247,19 @@ class MainActivityX : BaseActivity() {
             }
         }
 
-        fun workContext() = activity!!.applicationContext
-        fun workManager() = WorkManager.getInstance(workContext())
+        fun workContext(context: Context) = context.applicationContext
+        fun workManager(context: Context) = WorkManager.getInstance(workContext(context))
 
-        fun startWork() {
-            workManager().pruneWork()
-            //MainActivityX.cancelAllWork = false
-            //MainActivityX.showRunningStatus()
+        fun startWork(context: Context) {
+            workManager(context).pruneWork()
         }
 
-        private fun cancelWork() {
+        fun cancelWork(context: Context) {
             activity?.showToast("cancel work queue")
-            //cancelAllWork = true
             AppActionWork::class.qualifiedName?.let {
-                workManager().cancelAllWorkByTag(it)
+                workManager(context).cancelAllWorkByTag(it)
             }
             activity?.refreshView()
-            //showRunningStatus()
-        }
-
-        class WorkReceiver : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent?) {
-                when(intent?.action) {
-                        "WORK_CANCEL" -> cancelWork()
-                        "WORK_CANCEL_SERVICE" -> cancelWork()
-                }
-            }
         }
 
         val actionReceiver = WorkReceiver()
@@ -348,7 +335,7 @@ class MainActivityX : BaseActivity() {
         })
         initAssetFiles()
         initShell()
-        initWorkManager()
+        initWorkManager(this)
         runOnUiThread { showEncryptionDialog() }
         setContentView(binding.root)
     }
@@ -361,12 +348,12 @@ class MainActivityX : BaseActivity() {
         super.onStart()
         setupOnClicks()
         setupNavigation()
-        workContext().registerReceiver(actionReceiver, IntentFilter())
+        workContext(this).registerReceiver(actionReceiver, IntentFilter())
     }
 
     override fun onStop() {
         super.onStop()
-        workContext().unregisterReceiver(actionReceiver)
+        workContext(this).unregisterReceiver(actionReceiver)
     }
 
     override fun onResume() {
@@ -545,6 +532,7 @@ class MainActivityX : BaseActivity() {
             activity?.dismissSnackBar()
         }
     }
+
 }
 
 

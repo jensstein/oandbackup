@@ -49,13 +49,19 @@ open class ScheduleService : Service() {
     override fun onCreate() {
         super.onCreate()
         this.notificationId = System.currentTimeMillis().toInt()
+        showNotification(
+            this,
+            MainActivityX::class.java,
+            notificationId,
+            String.format(
+                getString(R.string.fetching_action_list),
+                getString(R.string.backup)
+            ),
+            "",
+            true
+        )
         if (MainActivityX.initShellHandler()) {
             createNotificationChannel()
-            /*
-            MainActivityX.showRunningStatus(
-                String.format(getString(R.string.fetching_action_list), getString(R.string.backup))
-            )
-            */
             createForegroundInfo()
             startForeground(notification.hashCode(), this.notification)
         } else {
@@ -69,6 +75,15 @@ open class ScheduleService : Service() {
             )
             stopSelf()
         }
+        try {
+            MainActivityX.initWorkManager(this)
+        } catch(e: Throwable) {
+            LogsHandler.unhandledException(e)
+        }
+    }
+
+    override fun onDestroy() {
+        stopForeground(true)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -107,9 +122,9 @@ open class ScheduleService : Service() {
                     stopService(intent)
                 } else {
                     val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
-                    val workManager = WorkManager.getInstance(context)
+                    val workManager = MainActivityX.workManager(context)
 
-                    MainActivityX.startWork()
+                    MainActivityX.startWork(context)
                     selectedItems.forEach { packageName ->
 
                         val oneTimeWorkRequest =
@@ -166,7 +181,6 @@ open class ScheduleService : Service() {
                                 )
                                 scheduleAlarm(context, scheduleId, true)
                                 isNeedRefresh = true
-                                //TODO cleanup MainActivityX.showRunningStatus()
                                 finishWorkLiveData.removeObserver(this)
                                 stopService(intent)
                             }
@@ -191,10 +205,6 @@ open class ScheduleService : Service() {
         return START_NOT_STICKY
     }
 
-    override fun onDestroy() {
-        stopForeground(true)
-    }
-
     private fun createForegroundInfo() {
         val contentPendingIntent = PendingIntent.getActivity(
             this,
@@ -207,7 +217,7 @@ open class ScheduleService : Service() {
             0,
             //Intent(this, ScheduleService::class.java)                          // doesn't trigger ScheduleService onStartCommand
             //Intent(this, MainActivityX::class.java)                            // doesn't trigger MainActivityX onNewIntent (but once worked?)
-            Intent(this, MainActivityX.Companion.WorkReceiver::class.java)   // broadcast works but has wrong context? not this work queue?
+            Intent(this, WorkReceiver::class.java)   // broadcast works but has wrong context? not this work queue?
                 //.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 .setAction("WORK_CANCEL_SERVICE"),
             PendingIntent.FLAG_IMMUTABLE

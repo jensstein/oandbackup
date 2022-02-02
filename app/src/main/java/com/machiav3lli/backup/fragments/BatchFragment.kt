@@ -333,7 +333,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         var resultsSuccess = true
         var counter = 0
         val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
-        MainActivityX.startWork()
+        MainActivityX.startWork(requireContext())
         selectedItems.forEach { (packageName, mode) ->
 
             val oneTimeWorkRequest =

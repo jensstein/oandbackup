@@ -87,7 +87,7 @@
 
         <receiver android:name=".services.AlarmReceiver" />
 
-        <receiver android:name=".activities.MainActivityX$Companion$WorkReceiver" />
+        <receiver android:name=".services.WorkReceiver" />
 
         <service
             android:name=".services.ScheduleService"
