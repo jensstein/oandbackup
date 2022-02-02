@@ -44,6 +44,9 @@ object RestoreSMSMMSJSONAction {
         ) {
             throw RuntimeException("No permission for SMS/MMS.")
         }
+        if (Telephony.Sms.getDefaultSmsPackage(context) != context.packageName) {
+            throw RuntimeException("OAndBackupX not default SMS/MMS app.")
+        }
         context.contentResolver.openInputStream(Uri.fromFile(File(filePath))).use { inputStream ->
             BufferedReader(InputStreamReader(inputStream)).use { reader ->
                 val jsonReader = JsonReader(reader)
