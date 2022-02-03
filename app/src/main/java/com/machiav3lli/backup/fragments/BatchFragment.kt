@@ -35,6 +35,7 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.FragmentBatchBinding
@@ -333,7 +334,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         var resultsSuccess = true
         var counter = 0
         val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
-        MainActivityX.startWork(requireContext())
+        OABX.work.startBatch()
         selectedItems.forEach { (packageName, mode) ->
 
             val oneTimeWorkRequest =

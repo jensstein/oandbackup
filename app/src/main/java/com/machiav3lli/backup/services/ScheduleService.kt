@@ -22,8 +22,11 @@ import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.Observer
-import androidx.work.*
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkInfo
+import androidx.work.workDataOf
 import com.machiav3lli.backup.MODE_UNSET
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
@@ -60,7 +63,7 @@ open class ScheduleService : Service() {
             "",
             true
         )
-        if (MainActivityX.initShellHandler()) {
+        if (MainActivityX.initShellHandler(this)) {
             createNotificationChannel()
             createForegroundInfo()
             startForeground(notification.hashCode(), this.notification)
@@ -74,11 +77,6 @@ open class ScheduleService : Service() {
                 false
             )
             stopSelf()
-        }
-        try {
-            MainActivityX.initWorkManager(this)
-        } catch(e: Throwable) {
-            LogsHandler.unhandledException(e)
         }
     }
 
@@ -94,7 +92,7 @@ open class ScheduleService : Service() {
             val action = intent.action
             when (action) {
                 "WORK_CANCEL_SERVICE" -> {
-                    MainActivityX.cancelWorkQueue(baseContext)
+                    OABX.workHandler.cancelWork()
                     stopSelf()
                 }
             }
@@ -122,16 +120,15 @@ open class ScheduleService : Service() {
                     stopService(intent)
                 } else {
                     val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
-                    val workManager = MainActivityX.workManager(context)
 
-                    MainActivityX.startWork(context)
+                    OABX.work.startBatch()
                     selectedItems.forEach { packageName ->
 
                         val oneTimeWorkRequest =
                             AppActionWork.Request(packageName, mode,true, notificationId)
                         worksList.add(oneTimeWorkRequest)
 
-                        val oneTimeWorkLiveData = WorkManager.getInstance(context)
+                        val oneTimeWorkLiveData = OABX.work.manager
                             .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
                         oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
                             override fun onChanged(t: WorkInfo?) {
@@ -164,7 +161,7 @@ open class ScheduleService : Service() {
                         )
                         .build()
 
-                    val finishWorkLiveData = WorkManager.getInstance(context)
+                    val finishWorkLiveData = OABX.work.manager
                         .getWorkInfoByIdLiveData(finishWorkRequest.id)
                     finishWorkLiveData.observeForever(object : Observer<WorkInfo> {
                         override fun onChanged(t: WorkInfo?) {
@@ -188,7 +185,7 @@ open class ScheduleService : Service() {
                     })
 
                     if (worksList.isNotEmpty()) {
-                        workManager
+                        OABX.work.manager
                             .beginWith(worksList)
                             .then(finishWorkRequest)
                             .enqueue()

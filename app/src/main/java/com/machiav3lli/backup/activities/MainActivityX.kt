@@ -20,8 +20,10 @@ package com.machiav3lli.backup.activities
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.*
-import android.content.res.AssetManager
+import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Looper
 import android.os.PersistableBundle
@@ -34,14 +36,9 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
-import androidx.preference.PreferenceManager
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.machiav3lli.backup.BuildConfig
-import com.machiav3lli.backup.PREFS_SKIPPEDENCRYPTION
-import com.machiav3lli.backup.R
-import com.machiav3lli.backup.actions.BaseAppAction
-import com.machiav3lli.backup.classAddress
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.databinding.ActivityMainXBinding
 import com.machiav3lli.backup.dbs.AppExtras
 import com.machiav3lli.backup.dbs.AppExtrasDatabase
@@ -59,27 +56,19 @@ import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.MainViewModel
 import com.machiav3lli.backup.viewmodels.MainViewModelFactory
 import com.topjohnwu.superuser.Shell
-import timber.log.Timber
-import java.io.File
-import java.io.FileOutputStream
 import java.lang.ref.WeakReference
 
 
 class MainActivityX : BaseActivity() {
 
     companion object {
-        val VERSION_FILE = "__version__"
-        val ASSETS_SUBDIR = "assets"
 
         var shellHandlerInstance: ShellHandler? = null
             private set
 
-        lateinit var assetDir : File
-            private set
-
-        fun initShellHandler() : Boolean {
+        fun initShellHandler(context: Context) : Boolean {
             return try {
-                shellHandlerInstance = ShellHandler()
+                shellHandlerInstance = ShellHandler(context)
                 true
             } catch (e: ShellHandler.ShellCommandFailedException) {
                 false
@@ -100,20 +89,21 @@ class MainActivityX : BaseActivity() {
         var statusNotificationId = 0
 
         fun showRunningStatus(manager: WorkManager? = null, work: MutableList<WorkInfo>? = null) {
-            var running = 0
-            var queued = 0
-            var shortText = ""
-            var bigText = ""
-
             if(manager == null || work == null)
                 return
 
             if (statusNotificationId == 0)
                 statusNotificationId = System.currentTimeMillis().toInt()
+
+            var running = 0
+            var queued = 0
+            var shortText = ""
+            var bigText = ""
+
             activity?.let { activity ->
-                val appContext = activity.applicationContext
-                val workManager = manager ?: WorkManager.getInstance(appContext)
-                val workInfos = work ?: workManager.getWorkInfosByTag(
+                val appContext = OABX.context
+                val workManager = OABX.work.manager
+                val workInfos = workManager.getWorkInfosByTag(
                     AppActionWork::class.qualifiedName!!
                 ).get()
                 var workCount = 0
@@ -236,33 +226,6 @@ class MainActivityX : BaseActivity() {
                 }
             }
         }
-
-        fun initWorkManager(context: Context) {
-            val workManager = workManager(context)
-            workManager.pruneWork()
-            workManager.getWorkInfosByTagLiveData(
-                AppActionWork::class.qualifiedName!!
-            ).observeForever {
-                showRunningStatus(workManager, it)
-            }
-        }
-
-        fun workContext(context: Context) = context.applicationContext
-        fun workManager(context: Context) = WorkManager.getInstance(workContext(context))
-
-        fun startWork(context: Context) {
-            workManager(context).pruneWork()
-        }
-
-        fun cancelWork(context: Context) {
-            activity?.showToast("cancel work queue")
-            AppActionWork::class.qualifiedName?.let {
-                workManager(context).cancelAllWorkByTag(it)
-            }
-            activity?.refreshView()
-        }
-
-        val actionReceiver = WorkReceiver()
     }
 
     private lateinit var prefs: SharedPreferences
@@ -333,9 +296,7 @@ class MainActivityX : BaseActivity() {
         viewModel.refreshNow.observe(this, {
             if (it) refreshView()
         })
-        initAssetFiles()
         initShell()
-        initWorkManager(this)
         runOnUiThread { showEncryptionDialog() }
         setContentView(binding.root)
     }
@@ -348,12 +309,10 @@ class MainActivityX : BaseActivity() {
         super.onStart()
         setupOnClicks()
         setupNavigation()
-        workContext(this).registerReceiver(actionReceiver, IntentFilter())
     }
 
     override fun onStop() {
         super.onStop()
-        workContext(this).unregisterReceiver(actionReceiver)
     }
 
     override fun onResume() {
@@ -384,7 +343,7 @@ class MainActivityX : BaseActivity() {
         if (intent != null) {
             val action = intent.action
             when (action) {
-                //"WORK_CANCEL" -> cancelWorkQueue(this)
+                //"WORK_CANCEL" -> OABX.workHandler.cancelWork()
             }
         }
         super.onNewIntent(intent)
@@ -434,46 +393,9 @@ class MainActivityX : BaseActivity() {
         }
     }
 
-    fun initAssetFiles() {
-
-        // copy scripts to file storage
-        activity?.let { context ->
-            assetDir = File(context.filesDir, ASSETS_SUBDIR)
-            assetDir.mkdirs()
-            // don't copy if the files exist and are from the current app version
-            val appVersion = BuildConfig.VERSION_NAME
-            val version = try {
-                File(assetDir, VERSION_FILE).readText()
-            } catch (e: Throwable) {
-                ""
-            }
-            if (version != appVersion) {
-                try {
-                    // cleans assetDir and copiers asset files
-                    context.assets.copyRecursively("files", assetDir)
-                    // additional generated files
-                    File(assetDir, ShellHandler.EXCLUDE_FILE)
-                        .writeText(
-                            (BaseAppAction.DATA_EXCLUDED_DIRS.map { "./$it" } + BaseAppAction.DATA_EXCLUDED_FILES)
-                                .map { it + "\n" }.joinToString("")
-                        )
-                    File(assetDir, ShellHandler.EXCLUDE_CACHE_FILE)
-                        .writeText(
-                            BaseAppAction.DATA_EXCLUDED_CACHE_DIRS.map { "./$it" }
-                                .map { it + "\n" }.joinToString("")
-                        )
-                    // validate with version file if completed
-                    File(assetDir, VERSION_FILE).writeText(appVersion)
-                } catch (e: Throwable) {
-                    Timber.w("cannot copy scripts to ${assetDir}")
-                }
-            }
-        }
-    }
-
     private fun initShell() {
         // Initialize the ShellHandler for further root checks
-        if (!initShellHandler()) {
+        if (!initShellHandler(this)) {
             showWarning(
                 MainActivityX::class.java.simpleName,
                 getString(R.string.shell_initproblem)
@@ -533,26 +455,4 @@ class MainActivityX : BaseActivity() {
         }
     }
 
-}
-
-
-fun AssetManager.copyRecursively(assetPath: String, targetFile: File) {
-    list(assetPath)?.let { list ->
-        if (list.isEmpty()) { // assetPath is file
-            open(assetPath).use { input ->
-                FileOutputStream(targetFile.absolutePath).use { output ->
-                    input.copyTo(output)
-                    output.flush()
-                }
-            }
-
-        } else { // assetPath is folder
-            targetFile.deleteRecursively()
-            targetFile.mkdir()
-
-            list.forEach {
-                copyRecursively("$assetPath/$it", File(targetFile, it))
-            }
-        }
-    }
 }

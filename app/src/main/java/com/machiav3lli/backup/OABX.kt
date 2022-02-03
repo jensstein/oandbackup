@@ -18,15 +18,38 @@
 package com.machiav3lli.backup
 
 import android.app.Application
+import android.content.Context
 import android.util.LruCache
+import androidx.preference.PreferenceManager
+import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.AppInfo
 import timber.log.Timber
+import java.lang.ref.WeakReference
 
 class OABX : Application() {
+
     var cache: LruCache<String, MutableList<AppInfo>> = LruCache(4000)
+
+    var work: WorkHandler? = null
+
+    companion object {
+        var appRef: WeakReference<OABX> = WeakReference(null)
+        val app: OABX           get() = appRef.get()!!
+
+        val context: Context    get() = app.applicationContext
+        val work: WorkHandler   get() = app.work!!
+    }
 
     override fun onCreate() {
         super.onCreate()
+        appRef = WeakReference(this)
         Timber.plant(Timber.DebugTree())
+        work = WorkHandler(context)
+    }
+
+    override fun onTerminate() {
+        work = work?.release()
+        appRef = WeakReference(null)
+        super.onTerminate()
     }
 }

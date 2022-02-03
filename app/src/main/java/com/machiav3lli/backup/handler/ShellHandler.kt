@@ -17,9 +17,9 @@
  */
 package com.machiav3lli.backup.handler
 
+import android.content.Context
 import android.os.Environment.DIRECTORY_DOCUMENTS
 import com.machiav3lli.backup.BuildConfig
-import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.MainActivityX.Companion.activity
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
 import com.machiav3lli.backup.utils.BUFFER_SIZE
@@ -34,7 +34,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 
-class ShellHandler {
+class ShellHandler(context: Context) {
+
+    lateinit var assets: AssetHandler
 
     init {
         // TODO: hg42: duplicate to SplashActivity?
@@ -45,6 +47,29 @@ class ShellHandler {
                 .setFlags(Shell.FLAG_MOUNT_MASTER)
                 .setTimeout(20)
         )
+
+        val names = UTILBOX_NAMES
+        names.any {
+            try {
+                setUtilBoxPath(it)
+                true
+            } catch (e: UtilboxNotAvailableException) {
+                Timber.d("Tried utilbox name '${it}'. Not available.")
+                false
+            }
+        }
+        if (utilBoxQ.isEmpty()) {
+            Timber.d("No more options for utilbox. Bailing out.")
+            throw UtilboxNotAvailableException(names.joinToString(", "), null)
+        }
+
+        assets = AssetHandler(context)
+        scriptDir = assets.directory
+        scriptUserDir = File(
+            activity?.getExternalFilesDir(DIRECTORY_DOCUMENTS),
+            SCRIPTS_SUBDIR
+        )
+        scriptUserDir?.mkdirs()
     }
 
     @Throws(ShellCommandFailedException::class)
@@ -489,29 +514,5 @@ class ShellHandler {
                 found = File(scriptDir, assetFileName)
             return found
         }
-    }
-
-    init {
-        val names = UTILBOX_NAMES
-        names.any {
-            try {
-                setUtilBoxPath(it)
-                true
-            } catch (e: UtilboxNotAvailableException) {
-                Timber.d("Tried utilbox name '${it}'. Not available.")
-                false
-            }
-        }
-        if (utilBoxQ.isEmpty()) {
-            Timber.d("No more options for utilbox. Bailing out.")
-            throw UtilboxNotAvailableException(names.joinToString(", "), null)
-        }
-
-        scriptDir = MainActivityX.assetDir
-        scriptUserDir = File(
-            activity?.getExternalFilesDir(DIRECTORY_DOCUMENTS),
-            SCRIPTS_SUBDIR
-        )
-        scriptUserDir?.mkdirs()
     }
 }

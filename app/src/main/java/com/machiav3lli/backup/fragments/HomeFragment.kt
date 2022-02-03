@@ -272,7 +272,7 @@ class HomeFragment : NavigationFragment(),
         var counter = 0
         val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
         val workManager = WorkManager.getInstance(requireContext())
-        MainActivityX.startWork(requireContext())
+        OABX.work.startBatch()
         selectedItems.forEach { (packageName, mode) ->
 
             val oneTimeWorkRequest =
