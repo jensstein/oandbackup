@@ -26,7 +26,6 @@ import android.util.Base64
 import android.util.JsonWriter
 import androidx.core.content.PermissionChecker
 import androidx.core.database.getStringOrNull
-import timber.log.Timber
 import java.io.*
 
 object BackupSMSMMSJSONAction {
@@ -114,7 +113,6 @@ object BackupSMSMMSJSONAction {
     }
     
     private fun backupMMS(context: Context, jsonWriter: JsonWriter) {
-        Timber.tag("BackupSMSMMSJSONAction").v("backupMMS")
         val projection = arrayOf(
             Telephony.Mms._ID,
             Telephony.Mms.CONTENT_CLASS,
@@ -315,8 +313,8 @@ object BackupSMSMMSJSONAction {
         }
         return returnVar
     }
+
     private fun backupAddresses(context: Context, jsonWriter: JsonWriter, id: Int) {
-        Timber.tag("BackupSMSMMSJSONAction").v("backupAddresses")
         val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             Telephony.Mms.Addr.getAddrUriForMessage(id.toString())
         } else {
