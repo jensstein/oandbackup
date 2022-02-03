@@ -23,11 +23,12 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.provider.Telephony
+import android.util.Base64
 import android.util.JsonReader
 import android.util.JsonToken
 import androidx.core.content.PermissionChecker
-import timber.log.Timber
 import java.io.BufferedReader
+import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.InputStreamReader
 
@@ -47,8 +48,6 @@ object RestoreSMSMMSJSONAction {
         if (Telephony.Sms.getDefaultSmsPackage(context) != context.packageName) {
             throw RuntimeException("OAndBackupX not default SMS/MMS app.")
         }
-//        context.contentResolver.delete(Telephony.Sms.CONTENT_URI, null, null) // TODO: REMOVE BEFORE RELEASE/COMMIT
-//        context.contentResolver.delete(Telephony.Mms.CONTENT_URI, null, null) // TODO: REMOVE BEFORE RELEASE/COMMIT
         val inputFile = context.contentResolver.openInputStream(Uri.fromFile(File(filePath)))
         inputFile?.use { inputStream ->
             BufferedReader(InputStreamReader(inputStream)).use { reader ->
@@ -58,7 +57,7 @@ object RestoreSMSMMSJSONAction {
                     jsonReader.beginObject()
                     when (jsonReader.nextName()) {
                         "SMS" -> restoreSMS(context, jsonReader)
-//                        "MMS" -> restoreMMS(context, jsonReader)
+                        "MMS" -> restoreMMS(context, jsonReader)
                         else -> jsonReader.skipValue()
                     }
                     jsonReader.endObject()
@@ -139,7 +138,9 @@ object RestoreSMSMMSJSONAction {
                 jsonReader.skipValue()
             }
         }
-        queryWhere = queryWhere.removeSuffix(" AND")
+        val threadId = Telephony.Threads.getOrCreateThreadId(context, values.getAsString(Telephony.Sms.ADDRESS))
+        values.put(Telephony.Sms.THREAD_ID, threadId)
+        queryWhere = "$queryWhere ${Telephony.Sms.THREAD_ID} = $threadId"
         saveSMS(context, values, queryWhere)
         jsonReader.endObject()
     }
@@ -156,6 +157,7 @@ object RestoreSMSMMSJSONAction {
         }
     }
 
+    // Loop through MMS
     private fun restoreMMS(context: Context, jsonReader: JsonReader) {
         jsonReader.beginArray()
         while (jsonReader.hasNext()) {
@@ -279,9 +281,17 @@ object RestoreSMSMMSJSONAction {
                 }
             }
         }
-        queryWhere = queryWhere.removeSuffix(" AND")
+        for (address in addresses) {
+            if (
+                    (values.getAsString(Telephony.Mms.MESSAGE_BOX) == "1" && address.getAsString(Telephony.Mms.Addr.TYPE) == "137") ||
+                    (values.getAsString(Telephony.Mms.MESSAGE_BOX) == "2" && address.getAsString(Telephony.Mms.Addr.TYPE) == "151")
+                ) {
+                val threadId = Telephony.Threads.getOrCreateThreadId(context, address.getAsString(Telephony.Mms.Addr.ADDRESS))
+                values.put(Telephony.Mms.THREAD_ID, threadId)
+                queryWhere = "$queryWhere ${Telephony.Mms.THREAD_ID} = $threadId"
+            }
+        }
         val savedMMSID = saveMMS(context, values, queryWhere)
-        Timber.tag("RestoreSMSMMSJSONAction:parseMMS:savedMMSID").v("$savedMMSID")
         if (savedMMSID > 0) {
             for (address in addresses) {
                 address.put(Telephony.Mms.Addr.MSG_ID, savedMMSID)
@@ -289,7 +299,7 @@ object RestoreSMSMMSJSONAction {
             }
             for (part in parts) {
                 part.put(Telephony.Mms.Part.MSG_ID, savedMMSID)
-                //saveMMSPart(context, part)
+                saveMMSPart(context, part)
             }
         }
         jsonReader.endObject()
@@ -396,13 +406,37 @@ object RestoreSMSMMSJSONAction {
 
     // Save single MMS Address to database
     private fun saveMMSPart(context: Context, values: ContentValues) {
-        val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            Telephony.Mms.Part.CONTENT_URI
+        val messageId = values.getAsString(Telephony.Mms.Part.MSG_ID)
+        val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            Telephony.Mms.Part.getPartUriForMessage(messageId)
         } else {
-            Uri.parse("content://mms/part")
+            Uri.parse("content://mms/$messageId/part")
         }
+        val contentType: String = values.getAsString(Telephony.Mms.Part.CONTENT_TYPE)
         val contentResolver = context.contentResolver
-        // Check for duplicates
-        contentResolver.insert(uri, values)
+        when {
+            (values.containsKey(Telephony.Mms.Part._DATA) && contentType.startsWith("image/")) -> {
+                val partData = Base64.decode(values.getAsString(Telephony.Mms.Part._DATA), Base64.NO_WRAP)
+                values.remove(Telephony.Mms.Part._DATA)
+                val insertData = contentResolver.insert(uri, values)
+                // Add data to part
+                if (insertData != null) {
+                    val outputStream = context.contentResolver.openOutputStream(insertData)
+                    val inputStream = ByteArrayInputStream(partData)
+                    val buffer = ByteArray(256)
+                    var len = 0
+                    if (outputStream != null) {
+                        while (inputStream.read(buffer).also { len = it } != -1) {
+                            outputStream.write(buffer, 0, len)
+                        }
+                        outputStream.close()
+                    }
+                    inputStream.close()
+                }
+            }
+            else -> {
+                contentResolver.insert(uri, values)
+            }
+        }
     }
 }

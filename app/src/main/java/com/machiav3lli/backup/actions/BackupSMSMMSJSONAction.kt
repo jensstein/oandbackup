@@ -26,7 +26,10 @@ import android.util.Base64
 import android.util.JsonWriter
 import androidx.core.content.PermissionChecker
 import androidx.core.database.getStringOrNull
-import java.io.*
+import java.io.BufferedWriter
+import java.io.File
+import java.io.IOException
+import java.io.OutputStreamWriter
 
 object BackupSMSMMSJSONAction {
     @Throws(RuntimeException::class)
@@ -299,11 +302,11 @@ object BackupSMSMMSJSONAction {
             val stream = context.contentResolver.openInputStream(partUri)
             stream?.use { inputStream ->
                 returnVar = when {
-                    contentType.startsWith("text/") -> {
-                        inputStream.readBytes().toString(Charsets.UTF_8)
+                    contentType.startsWith("image/") -> {
+                        Base64.encodeToString(inputStream.readBytes(), Base64.NO_WRAP)
                     }
                     else -> {
-                        Base64.encodeToString(inputStream.readBytes(), Base64.DEFAULT)
+                        inputStream.readBytes().toString(Charsets.UTF_8)
                     }
                 }
             }
