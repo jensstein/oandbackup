@@ -132,21 +132,18 @@ class ShellHandler(context: Context) {
 
     @Throws(UtilboxNotAvailableException::class)
     fun setUtilBoxPath(utilBoxName: String) {
-        var shellResult = runAsRoot("which $utilBoxName")
-        if (shellResult.out.isNotEmpty()) {
-            utilBoxPath = shellResult.out.joinToString("")
-            if (utilBoxPath.isNotEmpty()) {
-                utilBoxQ = quote(utilBoxPath)
-                shellResult = runAsRoot("$utilBoxQ --version")
-                if (shellResult.out.isNotEmpty()) {
-                    val utilBoxVersion = shellResult.out.joinToString("")
-                    Timber.i("Using Utilbox $utilBoxName : $utilBoxQ : $utilBoxVersion")
-                }
-                return
+        utilBoxQ = quote(utilBoxName)
+        var shellResult = runAsRoot("$utilBoxQ --version")
+        if (shellResult.isSuccess) {
+            if (shellResult.out.isNotEmpty()) {
+                utilBoxVersion = shellResult.out.joinToString("")
+                Timber.i("Using Utilbox $utilBoxName : $utilBoxQ : $utilBoxVersion")
+            } else {
+                Timber.i("Using Utilbox $utilBoxName : $utilBoxQ : no version")
             }
+            return
         }
         // not found => try bare executables (no utilbox prefixed)
-        utilBoxPath = ""
         utilBoxQ = ""
     }
 
@@ -359,9 +356,9 @@ class ShellHandler(context: Context) {
 
     companion object {
 
-        var utilBoxPath = ""
-            private set
         var utilBoxQ = ""
+            private set
+        var utilBoxVersion = ""
             private set
         lateinit var scriptDir : File
             private set
