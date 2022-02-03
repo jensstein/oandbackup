@@ -103,13 +103,14 @@ class PrefsServiceFragment : PreferenceFragmentCompat() {
 
     private fun onPrefChangePassword(
         passwordConfirmation: EditTextPreference,
-        password: String,
-        passwordCheck: String
+        password: String?,
+        passwordCheck: String?
     ): Boolean {
         passwordConfirmation.summary =
-            if (password == passwordCheck) getString(R.string.prefs_password_match_true) else getString(
-                R.string.prefs_password_match_false
-            )
+            if (password == passwordCheck)
+                getString(R.string.prefs_password_match_true)
+            else
+                getString(R.string.prefs_password_match_false)
         return true
     }
 }
