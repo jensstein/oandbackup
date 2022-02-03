@@ -19,9 +19,7 @@ package com.machiav3lli.backup.actions
 
 import android.annotation.SuppressLint
 import android.content.Context
-import androidx.preference.PreferenceManager
 import com.machiav3lli.backup.*
-import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.BackupBuilder
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
@@ -483,9 +481,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         compress: Boolean,
         iv: ByteArray?
     ): Boolean {
-            if (PreferenceManager.getDefaultSharedPreferences(MainActivityX.activity)
-                    .getBoolean("backupTarCmd", true)
-            ) {
+            if (OABX.prefFlag("backupTarCmd", true)) {
                 return genericBackupDataTarCmd(
                     dataType,
                     backupInstanceDir,

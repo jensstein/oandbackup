@@ -4,12 +4,10 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
-import androidx.preference.PreferenceManager
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
-import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.utils.*
-import com.topjohnwu.superuser.ShellUtils
 import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
@@ -31,9 +29,7 @@ open class StorageFile {
         this.parent = parent
         this.context = context
         this.uri = uri
-        if (PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean("shadowRootFileForSAF", true)
-        ) {
+        if (OABX.prefFlag("shadowRootFileForSAF", true)) {
             fun isValidPath(file: RootFile?): Boolean = file?.let { file.exists() && file.canRead() && file.canWrite() } ?: false
             parent ?: run {
                 file ?: run {

@@ -19,9 +19,8 @@ package com.machiav3lli.backup.actions
 
 import android.content.Context
 import android.content.pm.PackageManager
-import androidx.preference.PreferenceManager
 import com.machiav3lli.backup.BuildConfig
-import com.machiav3lli.backup.activities.MainActivityX
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
@@ -51,9 +50,7 @@ abstract class BaseAppAction protected constructor(
     }
 
     private fun prepostOptions() : String {
-        return if (PreferenceManager.getDefaultSharedPreferences(MainActivityX.activity)
-                    .getBoolean("pmSuspend", true)
-                  ) { "--suspend" } else { "" }
+        return if (OABX.prefFlag("pmSuspend", true)) { "--suspend" } else { "" }
     }
 
     open fun preprocessPackage(packageName: String) {

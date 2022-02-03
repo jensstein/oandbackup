@@ -38,6 +38,11 @@ class OABX : Application() {
 
         val context: Context    get() = app.applicationContext
         val work: WorkHandler   get() = app.work!!
+
+        fun prefFlag(name: String, default: Boolean) =
+                        PreferenceManager.getDefaultSharedPreferences(context).getBoolean(name, default)
+        fun prefInt(name: String, default: Int) =
+                        PreferenceManager.getDefaultSharedPreferences(context).getInt(name, default)
     }
 
     override fun onCreate() {

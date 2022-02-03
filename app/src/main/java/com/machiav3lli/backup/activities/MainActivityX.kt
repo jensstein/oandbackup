@@ -245,8 +245,7 @@ class MainActivityX : BaseActivity() {
         setCustomTheme()
         super.onCreate(savedInstanceState)
 
-        if(PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean("catchUncaughtException", true)) {
+        if(OABX.prefFlag("catchUncaughtException", true)) {
             Thread.setDefaultUncaughtExceptionHandler { thread, e ->
                 try {
                     LogsHandler.unhandledException(e)
