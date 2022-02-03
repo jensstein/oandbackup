@@ -96,7 +96,9 @@ class Test_shell {
                 dump(
                     ShellHandler.FileInfo.unescapeLsOutput(
                         runAsRoot("toybox ls -bdAlZ $testPattern")
-                            .out.joinToString("\n").split(" ", limit = 9)[8]
+                            .out.joinToString("\n")
+                            .split(Regex(" +"), limit = 9)
+                                [8]
                     )
                 )
             )

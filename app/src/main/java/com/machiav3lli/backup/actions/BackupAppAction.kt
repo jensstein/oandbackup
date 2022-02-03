@@ -211,7 +211,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         iv: ByteArray?
     ) {
         Timber.i("Creating $what backup via API")
-        val backupFilename = getBackupArchiveFilename(what, compress, context.isEncryptionEnabled())
+        val backupFilename = getBackupArchiveFilename(what, compress, iv != null && context.isEncryptionEnabled())
         val backupFile = backupInstanceDir.createFile("application/octet-stream", backupFilename)
 
         val password = context.getEncryptionPassword()
@@ -220,7 +220,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
 
         var outStream: OutputStream = backupFile.outputStream()!!
 
-        if (password.isNotEmpty() && context.isEncryptionEnabled()) {
+        if (iv != null && password.isNotEmpty() && context.isEncryptionEnabled()) {
             outStream = outStream.encryptStream(password, context.getCryptoSalt(), iv)
         }
         if(compress) {
@@ -394,7 +394,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         if(!ShellUtils.fastCmdResult("test -d ${quote(sourcePath)}"))
             return false
         Timber.i("Creating $dataType backup via tar")
-        val backupFilename = getBackupArchiveFilename(dataType, compress, context.isEncryptionEnabled())
+        val backupFilename = getBackupArchiveFilename(dataType, compress, iv != null && context.isEncryptionEnabled())
         val backupFile = backupInstanceDir.createFile("application/octet-stream", backupFilename)
 
         val password = context.getEncryptionPassword()
@@ -403,7 +403,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
 
         var outStream: OutputStream = backupFile.outputStream()!!
 
-        if (password.isNotEmpty() && context.isEncryptionEnabled()) {
+        if (iv != null && password.isNotEmpty() && context.isEncryptionEnabled()) {
             outStream = outStream.encryptStream(password, context.getCryptoSalt(), iv)
         }
         if(compress) {

@@ -2,6 +2,7 @@ package tests
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.platform.app.InstrumentationRegistry
+import com.machiav3lli.backup.PREFS_ENCRYPTION
 import com.machiav3lli.backup.actions.BackupAppAction
 import com.machiav3lli.backup.actions.RestoreAppAction
 import com.machiav3lli.backup.activities.MainActivityX
@@ -11,6 +12,7 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.items.RootFile
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.utils.getPrivateSharedPrefs
 import com.topjohnwu.superuser.ShellUtils.fastCmd
 import org.junit.*
 import org.junit.Assert.assertEquals
@@ -45,7 +47,7 @@ class Test_BackupRestore {
         }
 
         fun listContent(dir: RootFile): String {
-            return runAsRoot("ls -bAlZ ${dir.quoted} | grep -v total").out.joinToString("\n")
+            return runAsRoot("ls -bAlZ ${dir.quoted} | grep -v total | sort").out.joinToString("\n")
         }
 
         private fun prepareDirectory(): RootFile {
@@ -89,7 +91,7 @@ class Test_BackupRestore {
     @Before
     fun init() {
         tempStorage = StorageFile(tempDir)
-        shellHandler = ShellHandler()
+        shellHandler = ShellHandler(context)
         backupDirTarApi = tempStorage.createDirectory("backup_tarapi")
         backupDirTarCmd = tempStorage.createDirectory("backup_tarcmd")
         archiveTarApi = StorageFile(backupDirTarApi, "data.tar.gz")
@@ -111,49 +113,33 @@ class Test_BackupRestore {
 
     fun backup() {
         if(!backupCreated) {
+            context.applicationContext.getPrivateSharedPrefs().edit().putBoolean(PREFS_ENCRYPTION, false)
+            val iv = null     //initIv(CIPHER_ALGORITHM)
             val backupAction = BackupAppAction(context, null, shellHandler)
             val fromDir = StorageFile(testDir)
             backupAction.genericBackupDataTarApi(
                 "data", backupDirTarApi, fromDir.toString(),
-                true, null
+                true, iv
             )
             backupAction.genericBackupDataTarCmd(
                 "data", backupDirTarCmd, fromDir.toString(),
-                true, null
+                true, iv
             )
             backupCreated = true
         }
     }
 
     fun listTar(archive: StorageFile): String {
-      return runAsRoot(
-          "tar -tvzf ${quote(archive.file!!.absolutePath)} | awk '{if($8) {print $1,$2,$3,$6,$7,$8} else {print $1,$2,$3,$6}}'"
-      ).out
-          .filterNotNull()
-          .sorted()
-          .joinToString("\n")
-          .replace(Regex("""/$""", RegexOption.MULTILINE), "")
-    }
-
-    @Test
-    fun test_backup() {
-        backup()
-        val expected =
-            """
-            drwxr-xr-x root/root 0 files
-            lrwxrwxrwx root/root 0 link_sym_dir_abs -> <ABSLINK>
-            lrwxrwxrwx root/root 0 link_sym_dir_rel -> files
-            prw-r--r-- root/root 0 fifo
-            -rw-r--r-- root/root 0 regular
-            """.trimIndent().replace("<ABSLINK>", RootFile(testDir, "files").absolutePath)
-        assertEquals(
-            expected,
-            listTar(archiveTarApi)
-        )
-        assertEquals(
-            expected,
-            listTar(archiveTarCmd)
-        )
+        val result = runAsRoot(
+            "tar -tvzf ${quote(archive.file!!.absolutePath)} | awk '{if($8) {print $1,$2,$3,$6,$7,$8} else {print $1,$2,$3,$6}}'"
+        ).out
+            .filterNotNull()
+            .sorted()
+            .joinToString("\n")
+            .replace(Regex("""/$""", RegexOption.MULTILINE), "")
+            .replace(Regex(""" \./""", RegexOption.MULTILINE), " ")
+        Timber.i(result)
+        return result
     }
 
     fun checkRestore(toType: String, fromType: String) {

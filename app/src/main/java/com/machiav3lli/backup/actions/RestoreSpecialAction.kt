@@ -29,7 +29,6 @@ import com.machiav3lli.backup.items.SpecialAppMetaInfo
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.CryptoSetupException
-import com.machiav3lli.backup.utils.isEncryptionEnabled
 import com.machiav3lli.backup.utils.unpackTo
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
 import org.apache.commons.io.FileUtils
@@ -63,7 +62,7 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
         Timber.i("%s: Restore special data", app)
         val metaInfo = app.appMetaInfo as SpecialAppMetaInfo
         val tempPath = File(context.cacheDir, backupProperties.packageName ?: "")
-        val isEncrypted = context.isEncryptionEnabled()
+        val isEncrypted = backupProperties.isEncrypted
         val backupArchiveFilename = getBackupArchiveFilename(BACKUP_DIR_DATA, compressed, isEncrypted)
         val backupArchiveFile = backupDir.findFile(backupArchiveFilename)
             ?: throw RestoreFailedException("Backup archive at $backupArchiveFilename is missing")

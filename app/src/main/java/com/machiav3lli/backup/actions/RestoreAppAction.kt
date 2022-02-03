@@ -332,7 +332,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         var inputStream: InputStream = BufferedInputStream(archive.inputStream()!!)
         if (isEncrypted) {
             val password = context.getEncryptionPassword()
-            if (password.isNotEmpty() && context.isEncryptionEnabled()) {
+            if (iv != null && password.isNotEmpty() && context.isEncryptionEnabled()) {
                 Timber.d("Decryption enabled")
                 inputStream = inputStream.decryptStream(password, context.getCryptoSalt(), iv)
             }
