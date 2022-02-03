@@ -36,7 +36,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.machiav3lli.backup.*
-import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.SheetAppBinding
 import com.machiav3lli.backup.dbs.AppExtras
 import com.machiav3lli.backup.dialogs.BackupDialogFragment
@@ -44,7 +43,10 @@ import com.machiav3lli.backup.dialogs.RestoreDialogFragment
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
-import com.machiav3lli.backup.items.*
+import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.items.BackupItemX
+import com.machiav3lli.backup.items.BackupProperties
+import com.machiav3lli.backup.items.HomeItemX
 import com.machiav3lli.backup.tasks.BackupActionTask
 import com.machiav3lli.backup.tasks.RestoreActionTask
 import com.machiav3lli.backup.utils.*
@@ -389,7 +391,7 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
             when {
                 actionType === ActionType.BACKUP -> {
                     BackupActionTask(
-                        it, requireMainActivity(), MainActivityX.shellHandlerInstance!!, mode,
+                        it, requireMainActivity(), OABX.shellHandlerInstance!!, mode,
                         this
                     ).execute()
                 }
@@ -397,7 +399,7 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
                     backupProps?.let { backupProps: BackupProperties ->
                         val backupDir = backupProps.getBackupDir(viewModel.appInfo.value?.backupDir)
                         RestoreActionTask(
-                            it, requireMainActivity(), MainActivityX.shellHandlerInstance!!, mode,
+                            it, requireMainActivity(), OABX.shellHandlerInstance!!, mode,
                             backupProps, backupDir!!, this
                         ).execute()
                     }

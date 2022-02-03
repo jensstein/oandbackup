@@ -91,7 +91,7 @@ class Test_BackupRestore {
     @Before
     fun init() {
         tempStorage = StorageFile(tempDir)
-        shellHandler = ShellHandler(context)
+        shellHandler = ShellHandler()
         backupDirTarApi = tempStorage.createDirectory("backup_tarapi")
         backupDirTarCmd = tempStorage.createDirectory("backup_tarcmd")
         archiveTarApi = StorageFile(backupDirTarApi, "data.tar.gz")

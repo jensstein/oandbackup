@@ -20,7 +20,6 @@ package com.machiav3lli.backup.activities
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
@@ -46,7 +45,6 @@ import com.machiav3lli.backup.dbs.BlocklistDatabase
 import com.machiav3lli.backup.fragments.ProgressViewController
 import com.machiav3lli.backup.fragments.RefreshViewController
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.items.StorageFile
@@ -62,18 +60,6 @@ import java.lang.ref.WeakReference
 class MainActivityX : BaseActivity() {
 
     companion object {
-
-        var shellHandlerInstance: ShellHandler? = null
-            private set
-
-        fun initShellHandler(context: Context) : Boolean {
-            return try {
-                shellHandlerInstance = ShellHandler(context)
-                true
-            } catch (e: ShellHandler.ShellCommandFailedException) {
-                false
-            }
-        }
 
         var activityRef : WeakReference<MainActivityX> = WeakReference(null)
         var activity : MainActivityX?
@@ -295,7 +281,6 @@ class MainActivityX : BaseActivity() {
         viewModel.refreshNow.observe(this, {
             if (it) refreshView()
         })
-        initShell()
         runOnUiThread { showEncryptionDialog() }
         setContentView(binding.root)
     }
@@ -389,16 +374,6 @@ class MainActivityX : BaseActivity() {
                     )
                 }
                 .show()
-        }
-    }
-
-    private fun initShell() {
-        // Initialize the ShellHandler for further root checks
-        if (!initShellHandler(this)) {
-            showWarning(
-                MainActivityX::class.java.simpleName,
-                getString(R.string.shell_initproblem)
-            ) { _: DialogInterface?, _: Int -> finishAffinity() }
         }
     }
 

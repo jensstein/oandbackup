@@ -21,6 +21,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import androidx.work.*
 import com.machiav3lli.backup.MODE_UNSET
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.LogsHandler
@@ -77,13 +78,11 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         val packageLabel = appInfo?.packageLabel
             ?: "NONE"
         try {
-            if(isStopped) { //TODO cleanup  || MainActivityX.cancelAllWork) {
-                setOperation("DEL")
-            } else {
+            if(!isStopped) {
 
                 appInfo?.let { ai ->
                     try {
-                        MainActivityX.shellHandlerInstance?.let { shellHandler ->
+                        OABX.shellHandlerInstance?.let { shellHandler ->
                             result = when {
                                 backupBoolean -> {
                                     BackupRestoreHelper.backup(

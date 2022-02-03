@@ -53,7 +53,7 @@ open class ScheduleService : Service() {
         super.onCreate()
         this.notificationId = System.currentTimeMillis().toInt()
         showNotification(
-            this,
+            this.baseContext,
             MainActivityX::class.java,
             notificationId,
             String.format(
@@ -63,21 +63,9 @@ open class ScheduleService : Service() {
             "",
             true
         )
-        if (MainActivityX.initShellHandler(this)) {
-            createNotificationChannel()
-            createForegroundInfo()
-            startForeground(notification.hashCode(), this.notification)
-        } else {
-            showNotification(
-                this,
-                MainActivityX::class.java,
-                notificationId,
-                getString(R.string.schedule_failed),
-                getString(R.string.shell_initproblem),
-                false
-            )
-            stopSelf()
-        }
+        createNotificationChannel()
+        createForegroundInfo()
+        startForeground(notification.hashCode(), this.notification)
     }
 
     override fun onDestroy() {
@@ -92,7 +80,7 @@ open class ScheduleService : Service() {
             val action = intent.action
             when (action) {
                 "WORK_CANCEL_SERVICE" -> {
-                    OABX.workHandler.cancelWork()
+                    OABX.work.cancelBatch()
                     stopSelf()
                 }
             }

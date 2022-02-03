@@ -26,7 +26,6 @@ import androidx.fragment.app.Fragment
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.machiav3lli.backup.*
-import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.PrefsActivity
 import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.ExportsHandler
@@ -139,7 +138,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
             GlobalScope.launch(Dispatchers.IO) {
                 if (BackupRestoreHelper.copySelfApk(
                         requireContext(),
-                        MainActivityX.shellHandlerInstance!!
+                        OABX.shellHandlerInstance!!
                     )
                 )
                     showNotification(

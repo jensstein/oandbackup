@@ -17,9 +17,9 @@
  */
 package com.machiav3lli.backup.handler
 
-import android.content.Context
 import android.os.Environment.DIRECTORY_DOCUMENTS
 import com.machiav3lli.backup.BuildConfig
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.activities.MainActivityX.Companion.activity
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
 import com.machiav3lli.backup.utils.BUFFER_SIZE
@@ -34,7 +34,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 
-class ShellHandler(context: Context) {
+class ShellHandler {
 
     lateinit var assets: AssetHandler
 
@@ -63,7 +63,7 @@ class ShellHandler(context: Context) {
             throw UtilboxNotAvailableException(names.joinToString(", "), null)
         }
 
-        assets = AssetHandler(context)
+        assets = AssetHandler(OABX.context)
         scriptDir = assets.directory
         scriptUserDir = File(
             activity?.getExternalFilesDir(DIRECTORY_DOCUMENTS),

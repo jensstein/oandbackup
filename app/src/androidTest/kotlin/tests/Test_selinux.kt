@@ -10,7 +10,7 @@ class Test_selinux {
     @Test
     fun test_suGetOwnerGroupContext_extracts_valid_context() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val userGroupContext = ShellHandler(context).suGetOwnerGroupContext("/system")
+        val userGroupContext = ShellHandler().suGetOwnerGroupContext("/system")
         val con = userGroupContext[2]
         Timber.i("suGetOwnerGroupContext -> ${userGroupContext.joinToString("', '", "'", "'")} => context = '$con'")
 
