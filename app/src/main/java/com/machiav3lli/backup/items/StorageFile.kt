@@ -52,11 +52,15 @@ open class StorageFile {
                                 val (storage, subpath) = last.split(":")
                                 val possiblePaths = listOf(
                                     "/storage/$storage/$subpath",
-                                    "/storage/self/$storage/$subpath",
                                     "/mnt/media_rw/$storage/$subpath",
                                     "/mnt/runtime/full/$storage/$subpath",
                                     "/mnt/runtime/default/$storage/$subpath",
+                                    "/storage/self/$storage/$subpath",
                                     "/mnt/runtime/default/self/$storage/$subpath"
+                                    // these would need user number
+                                    //"/mnt/user/$user/$storage/$subpath",
+                                    //"/mnt/user/$user/self/$storage/$subpath",
+                                    //"/mnt/androidwritable/$user/self/$storage/$subpath",
                                 )
                                 var checkFile: RootFile? = null
                                 for(path in possiblePaths) {
@@ -172,8 +176,7 @@ open class StorageFile {
     fun delete(): Boolean {
         return try {
             file?.let {
-                //it.delete()  does not work, becaujse using "rmdir -f"
-                ShellUtils.fastCmdResult("rm -f ${quote(it)} || rmdir ${quote(it)}")
+                it.deleteRecursive()
             } ?: DocumentsContract.deleteDocument(context!!.contentResolver, uri!!)
         } catch (e: FileNotFoundException) {
             false
