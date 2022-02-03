@@ -21,6 +21,7 @@ import android.Manifest
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.provider.Telephony
 import android.util.JsonReader
 import android.util.JsonToken
@@ -46,6 +47,8 @@ object RestoreSMSMMSJSONAction {
         if (Telephony.Sms.getDefaultSmsPackage(context) != context.packageName) {
             throw RuntimeException("OAndBackupX not default SMS/MMS app.")
         }
+//        context.contentResolver.delete(Telephony.Sms.CONTENT_URI, null, null) // TODO: REMOVE BEFORE RELEASE/COMMIT
+//        context.contentResolver.delete(Telephony.Mms.CONTENT_URI, null, null) // TODO: REMOVE BEFORE RELEASE/COMMIT
         val inputFile = context.contentResolver.openInputStream(Uri.fromFile(File(filePath)))
         inputFile?.use { inputStream ->
             BufferedReader(InputStreamReader(inputStream)).use { reader ->
@@ -55,7 +58,7 @@ object RestoreSMSMMSJSONAction {
                     jsonReader.beginObject()
                     when (jsonReader.nextName()) {
                         "SMS" -> restoreSMS(context, jsonReader)
-                        "MMS" -> restoreMMS(context, jsonReader)
+//                        "MMS" -> restoreMMS(context, jsonReader)
                         else -> jsonReader.skipValue()
                     }
                     jsonReader.endObject()
@@ -154,8 +157,252 @@ object RestoreSMSMMSJSONAction {
     }
 
     private fun restoreMMS(context: Context, jsonReader: JsonReader) {
-        Timber.tag("RestoreSMSMMSJSONAction").v("restoreMMS")
-        // TODO: restore MMS here
-        jsonReader.skipValue()
+        jsonReader.beginArray()
+        while (jsonReader.hasNext()) {
+            parseMMS(context, jsonReader)
+        }
+        jsonReader.endArray()
+    }
+
+    // Parse through one MMS
+    private fun parseMMS(context: Context, jsonReader: JsonReader) {
+        jsonReader.beginObject()
+        val values = ContentValues()
+        var addresses = arrayOf<ContentValues>()
+        var parts = arrayOf<ContentValues>()
+        var queryWhere = ""
+        while (jsonReader.hasNext()) {
+            val nextName = jsonReader.nextName()
+            when (nextName) {
+                "addresses" -> {
+                    jsonReader.beginArray()
+                    while (jsonReader.hasNext()) {
+                        addresses += parseAddress(context, jsonReader)
+                    }
+                    jsonReader.endArray()
+                }
+                "parts" -> {
+                    jsonReader.beginArray()
+                    while (jsonReader.hasNext()) {
+                        parts += parsePart(context, jsonReader)
+                    }
+                    jsonReader.endArray()
+                }
+                else -> {
+                    val useName = when (nextName) {
+                        "CONTENT_CLASS" -> Telephony.Mms.CONTENT_CLASS
+                        "CONTENT_LOCATION" -> Telephony.Mms.CONTENT_LOCATION
+                        "CONTENT_TYPE" -> Telephony.Mms.CONTENT_TYPE
+                        "DELIVERY_REPORT" -> Telephony.Mms.DELIVERY_REPORT
+                        "DELIVERY_TIME" -> Telephony.Mms.DELIVERY_TIME
+                        "DATE" -> Telephony.Mms.DATE
+                        "DATE_SENT" -> Telephony.Mms.DATE_SENT
+                        "EXPIRY" -> Telephony.Mms.EXPIRY
+                        "LOCKED" -> Telephony.Mms.LOCKED
+                        "MESSAGE_CLASS" -> Telephony.Mms.MESSAGE_CLASS
+                        "MESSAGE_ID" -> Telephony.Mms.MESSAGE_ID
+                        "MESSAGE_SIZE" -> Telephony.Mms.MESSAGE_SIZE
+                        "MESSAGE_TYPE" -> Telephony.Mms.MESSAGE_TYPE
+                        "MESSAGE_BOX" -> Telephony.Mms.MESSAGE_BOX
+                        "PRIORITY" -> Telephony.Mms.PRIORITY
+                        "READ" -> Telephony.Mms.READ
+                        "READ_STATUS" -> Telephony.Mms.READ_STATUS
+                        "RESPONSE_STATUS" -> Telephony.Mms.RESPONSE_STATUS
+                        "RESPONSE_TEXT" -> Telephony.Mms.RESPONSE_TEXT
+                        "RETRIEVE_STATUS" -> Telephony.Mms.RETRIEVE_STATUS
+                        "RETRIEVE_TEXT" -> Telephony.Mms.RETRIEVE_TEXT
+                        "RETRIEVE_TEXT_CHARSET" -> Telephony.Mms.RETRIEVE_TEXT_CHARSET
+                        "REPORT_ALLOWED" -> Telephony.Mms.REPORT_ALLOWED
+                        "READ_REPORT" -> Telephony.Mms.READ_REPORT
+                        "SEEN" -> Telephony.Mms.SEEN
+                        "STATUS" -> Telephony.Mms.STATUS
+                        "SUBJECT" -> Telephony.Mms.SUBJECT
+                        "SUBJECT_CHARSET" -> Telephony.Mms.SUBJECT_CHARSET
+                        "SUBSCRIPTION_ID" -> Telephony.Mms.SUBSCRIPTION_ID
+                        "TEXT_ONLY" -> Telephony.Mms.TEXT_ONLY
+                        "TRANSACTION_ID" -> Telephony.Mms.TRANSACTION_ID
+                        "MMS_VERSION" -> Telephony.Mms.MMS_VERSION
+                        else -> "{}"
+                    }
+                    if (useName != "{}") {
+                        when (jsonReader.peek()) {
+                            JsonToken.STRING -> {
+                                val value = jsonReader.nextString()
+                                values.put(useName, value)
+                                queryWhere = when (useName) {
+                                    Telephony.Mms.CONTENT_CLASS -> "$queryWhere $useName = $value AND"
+                                    Telephony.Mms.CONTENT_LOCATION -> "$queryWhere $useName = '${value.replace("'","''")}' AND"
+                                    Telephony.Mms.CONTENT_TYPE -> "$queryWhere $useName = '${value.replace("'","''")}' AND"
+                                    Telephony.Mms.DELIVERY_REPORT -> "$queryWhere $useName = $value AND"
+                                    Telephony.Mms.DELIVERY_TIME -> "$queryWhere $useName = $value AND"
+                                    Telephony.Mms.DATE -> "$queryWhere $useName = $value AND"
+                                    Telephony.Mms.DATE_SENT -> "$queryWhere $useName = $value AND"
+                                    Telephony.Mms.EXPIRY -> "$queryWhere $useName = $value AND"
+                                    Telephony.Mms.LOCKED -> "$queryWhere $useName = $value AND"
+                                    Telephony.Mms.MESSAGE_CLASS -> "$queryWhere $useName = '${value.replace("'","''")}' AND"
+                                    Telephony.Mms.MESSAGE_ID -> "$queryWhere $useName = '${value.replace("'","''")}' AND"
+                                    Telephony.Mms.MESSAGE_SIZE -> "$queryWhere $useName = $value AND"
+                                    Telephony.Mms.MESSAGE_TYPE -> "$queryWhere $useName = $value AND"
+                                    Telephony.Mms.MESSAGE_BOX -> "$queryWhere $useName = $value AND"
+                                    Telephony.Mms.PRIORITY -> "$queryWhere $useName = $value AND"
+                                    Telephony.Mms.READ -> "$queryWhere $useName = $value AND"
+                                    Telephony.Mms.READ_STATUS -> "$queryWhere $useName = $value AND"
+                                    Telephony.Mms.RESPONSE_STATUS -> "$queryWhere $useName = $value AND"
+                                    Telephony.Mms.RESPONSE_TEXT -> "$queryWhere $useName = '${value.replace("'","''")}' AND"
+                                    Telephony.Mms.RETRIEVE_STATUS -> "$queryWhere $useName = $value AND"
+                                    Telephony.Mms.RETRIEVE_TEXT -> "$queryWhere $useName = '${value.replace("'","''")}' AND"
+                                    Telephony.Mms.RETRIEVE_TEXT_CHARSET -> "$queryWhere $useName = $value AND"
+                                    Telephony.Mms.REPORT_ALLOWED -> "$queryWhere $useName = $value AND"
+                                    Telephony.Mms.READ_REPORT -> "$queryWhere $useName = $value AND"
+                                    Telephony.Mms.SEEN -> "$queryWhere $useName = $value AND"
+                                    Telephony.Mms.STATUS -> "$queryWhere $useName = $value AND"
+                                    Telephony.Mms.SUBJECT -> "$queryWhere $useName = '${value.replace("'","''")}' AND"
+                                    Telephony.Mms.SUBJECT_CHARSET -> "$queryWhere $useName = $value AND"
+                                    Telephony.Mms.SUBSCRIPTION_ID -> "$queryWhere $useName = $value AND"
+                                    Telephony.Mms.TEXT_ONLY -> "$queryWhere $useName = $value AND"
+                                    Telephony.Mms.TRANSACTION_ID -> "$queryWhere $useName = '${value.replace("'","''")}' AND"
+                                    Telephony.Mms.MMS_VERSION -> "$queryWhere $useName = $value AND"
+                                    else -> queryWhere
+                                }
+                            }
+                            JsonToken.NULL -> {
+                                queryWhere = "$queryWhere $useName IS NULL AND"
+                                jsonReader.skipValue()
+                            }
+                            else -> {
+                                jsonReader.skipValue()
+                            }
+                        }
+                    } else {
+                        jsonReader.skipValue()
+                    }
+                }
+            }
+        }
+        queryWhere = queryWhere.removeSuffix(" AND")
+        val savedMMSID = saveMMS(context, values, queryWhere)
+        Timber.tag("RestoreSMSMMSJSONAction:parseMMS:savedMMSID").v("$savedMMSID")
+        if (savedMMSID > 0) {
+            for (address in addresses) {
+                address.put(Telephony.Mms.Addr.MSG_ID, savedMMSID)
+                saveMMSAddress(context, address, savedMMSID)
+            }
+            for (part in parts) {
+                part.put(Telephony.Mms.Part.MSG_ID, savedMMSID)
+                //saveMMSPart(context, part)
+            }
+        }
+        jsonReader.endObject()
+    }
+
+    // Parse through one Address
+    private fun parseAddress(context: Context, jsonReader: JsonReader): ContentValues {
+        val values = ContentValues()
+        jsonReader.beginObject()
+        while (jsonReader.hasNext()) {
+            val useName = when (jsonReader.nextName()) {
+                "ADDRESS" -> Telephony.Mms.Addr.ADDRESS
+                "TYPE" -> Telephony.Mms.Addr.TYPE
+                "CHARSET" ->  Telephony.Mms.Addr.CHARSET
+                else -> "{}"
+            }
+            if (useName != "{}") {
+                when (jsonReader.peek()) {
+                    JsonToken.STRING -> {
+                        values.put(useName, jsonReader.nextString())
+                    }
+                    JsonToken.NULL -> {
+                        jsonReader.skipValue()
+                    }
+                    else -> {
+                        jsonReader.skipValue()
+                    }
+                }
+            } else {
+                jsonReader.skipValue()
+            }
+        }
+        jsonReader.endObject()
+        return values
+    }
+
+    // Parse through one Part
+    private fun parsePart(context: Context, jsonReader: JsonReader): ContentValues {
+        val values = ContentValues()
+        jsonReader.beginObject()
+        while (jsonReader.hasNext()) {
+            val useName = when (jsonReader.nextName()) {
+                "SEQ" -> Telephony.Mms.Part.SEQ
+                "CONTENT_TYPE" -> Telephony.Mms.Part.CONTENT_TYPE
+                "NAME" ->  Telephony.Mms.Part.NAME
+                "CHARSET" -> Telephony.Mms.Part.CHARSET
+                "CONTENT_DISPOSITION" -> Telephony.Mms.Part.CONTENT_DISPOSITION
+                "FILENAME" -> Telephony.Mms.Part.FILENAME
+                "CONTENT_ID" -> Telephony.Mms.Part.CONTENT_ID
+                "CONTENT_LOCATION" -> Telephony.Mms.Part.CONTENT_LOCATION
+                "CT_START" -> Telephony.Mms.Part.CT_START
+                "CT_TYPE" -> Telephony.Mms.Part.CT_TYPE
+                "_DATA" -> Telephony.Mms.Part._DATA
+                "TEXT" -> Telephony.Mms.Part.TEXT
+                else -> "{}"
+            }
+            if (useName != "{}") {
+                when (jsonReader.peek()) {
+                    JsonToken.STRING -> {
+                        values.put(useName, jsonReader.nextString())
+                    }
+                    JsonToken.NULL -> {
+                        jsonReader.skipValue()
+                    }
+                    else -> {
+                        jsonReader.skipValue()
+                    }
+                }
+            } else {
+                jsonReader.skipValue()
+            }
+        }
+        jsonReader.endObject()
+        return values
+    }
+
+    // Save single MMS to database
+    private fun saveMMS(context: Context, values: ContentValues, queryWhere: String): Long {
+        val contentResolver = context.contentResolver
+        // Check for duplicates
+        val existsCursor = contentResolver.query(Telephony.Mms.CONTENT_URI, arrayOf(Telephony.Mms._ID), queryWhere, null, null)
+        val exists = existsCursor?.count
+        existsCursor?.close()
+        if (exists == 0) {
+            val insertData = contentResolver.insert(Telephony.Mms.CONTENT_URI, values)
+            if (insertData != null) {
+                return insertData.lastPathSegment?.toLong() ?: -1
+            }
+        }
+        return -1
+    }
+
+    // Save single MMS Address to database
+    private fun saveMMSAddress(context: Context, values: ContentValues, id: Long) {
+        val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            Telephony.Mms.Addr.getAddrUriForMessage(id.toString())
+        } else {
+            Uri.parse("content://mms/$id/addr")
+        }
+        val contentResolver = context.contentResolver
+        // Check for duplicates
+        contentResolver.insert(uri, values)
+    }
+
+    // Save single MMS Address to database
+    private fun saveMMSPart(context: Context, values: ContentValues) {
+        val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Telephony.Mms.Part.CONTENT_URI
+        } else {
+            Uri.parse("content://mms/part")
+        }
+        val contentResolver = context.contentResolver
+        // Check for duplicates
+        contentResolver.insert(uri, values)
     }
 }

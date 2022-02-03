@@ -195,8 +195,8 @@ object BackupSMSMMSJSONAction {
                         }
                         if (useColumnName != "{}") {
                             if (useColumnName == "_ID") {
-                                backupParts(context, jsonWriter, message.getInt(m))
-                                backupAddresses(context, jsonWriter, message.getInt(m))
+                                backupParts(context, jsonWriter, message.getLong(m))
+                                backupAddresses(context, jsonWriter, message.getLong(m))
                             } else {
                                 jsonWriter.name(useColumnName).value(message.getString(m))
                             }
@@ -211,7 +211,7 @@ object BackupSMSMMSJSONAction {
         jsonWriter.endObject()
     }
 
-    private fun backupParts(context: Context, jsonWriter: JsonWriter, id: Int) {
+    private fun backupParts(context: Context, jsonWriter: JsonWriter, id: Long) {
         val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             Telephony.Mms.Part.CONTENT_URI
         } else {
@@ -314,7 +314,7 @@ object BackupSMSMMSJSONAction {
         return returnVar
     }
 
-    private fun backupAddresses(context: Context, jsonWriter: JsonWriter, id: Int) {
+    private fun backupAddresses(context: Context, jsonWriter: JsonWriter, id: Long) {
         val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             Telephony.Mms.Addr.getAddrUriForMessage(id.toString())
         } else {
