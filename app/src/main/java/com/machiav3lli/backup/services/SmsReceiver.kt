@@ -75,14 +75,15 @@ class SmsReceiver : BroadcastReceiver() {
             } catch (e: Exception) {}
         }
 
-        values.put( "address", sms.displayOriginatingAddress)
-        values.put( "date", sms.timestampMillis)
-        values.put( "read", 0 )
-        values.put( "status", sms.status)
-        values.put( "type", 1 )
-        values.put( "seen", 0 )
-        values.put( "body", message )
-        values.put( "subject", sms.pseudoSubject)
+        values.put( Telephony.Sms.ADDRESS, sms.displayOriginatingAddress)
+        values.put( Telephony.Sms.DATE, sms.timestampMillis)
+        values.put( Telephony.Sms.READ, 0 )
+        values.put( Telephony.Sms.STATUS, sms.status)
+        values.put( Telephony.Sms.TYPE, 1 )
+        values.put( Telephony.Sms.SEEN, 0 )
+        values.put( Telephony.Sms.LOCKED, 0 )
+        values.put( Telephony.Sms.BODY, message )
+        values.put( Telephony.Sms.SUBJECT, sms.pseudoSubject)
         contentResolver.insert( Telephony.Sms.CONTENT_URI, values )
         showNotification(
             context, MainActivityX::class.java, notificationId.toInt(),
