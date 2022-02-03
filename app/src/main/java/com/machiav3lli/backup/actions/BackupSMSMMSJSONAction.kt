@@ -78,7 +78,7 @@ object BackupSMSMMSJSONAction {
         jsonWriter.beginObject()
         jsonWriter.name("SMS")
         jsonWriter.beginArray()
-        val messages = context.contentResolver.query(Telephony.Sms.CONTENT_URI, projection, null, null, Telephony.Sms._ID)
+        val messages = context.contentResolver.query(Telephony.Sms.CONTENT_URI, projection, null, null, Telephony.Sms.DATE)
         messages?.use { message ->
             if (message.moveToFirst()) {
                 do {
@@ -154,7 +154,7 @@ object BackupSMSMMSJSONAction {
         jsonWriter.beginObject()
         jsonWriter.name("MMS")
         jsonWriter.beginArray()
-        val messages = context.contentResolver.query(Telephony.Mms.CONTENT_URI, projection, null, null, Telephony.Mms._ID)
+        val messages = context.contentResolver.query(Telephony.Mms.CONTENT_URI, projection, null, null, Telephony.Mms.DATE)
         messages?.use { message ->
             if (message.moveToFirst()) {
                 do {
