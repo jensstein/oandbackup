@@ -101,19 +101,36 @@ object RestoreSMSMMSJSONAction {
                 else -> "{}"
             }
             if (useName != "{}") {
-                if (jsonReader.peek() == JsonToken.STRING) {
-                    val value = jsonReader.nextString()
-                    values.put(useName, value)
-                    if (isNumber(value)) {
-                        queryWhere = "$queryWhere $useName = $value AND"
-                    } else {
-                        queryWhere = "$queryWhere $useName = '$value' AND"
+                when (jsonReader.peek()) {
+                    JsonToken.STRING -> {
+                        val value = jsonReader.nextString()
+                        values.put(useName, value)
+                        queryWhere = when (useName) {
+                            Telephony.Sms.ADDRESS -> "$queryWhere $useName = '${value.replace("'","''")}' AND"
+                            Telephony.Sms.DATE -> "$queryWhere $useName = $value AND"
+                            Telephony.Sms.DATE_SENT -> "$queryWhere $useName = $value AND"
+                            Telephony.Sms.PROTOCOL -> "$queryWhere $useName = $value AND"
+                            Telephony.Sms.READ -> "$queryWhere $useName = $value AND"
+                            Telephony.Sms.STATUS -> "$queryWhere $useName = $value AND"
+                            Telephony.Sms.TYPE -> "$queryWhere $useName = $value AND"
+                            Telephony.Sms.REPLY_PATH_PRESENT -> "$queryWhere $useName = $value AND"
+                            Telephony.Sms.SUBJECT -> "$queryWhere $useName = '${value.replace("'","''")}' AND"
+                            Telephony.Sms.BODY -> "$queryWhere $useName = '${value.replace("'","''")}' AND"
+                            Telephony.Sms.SERVICE_CENTER -> "$queryWhere $useName = '${value.replace("'","''")}' AND"
+                            Telephony.Sms.LOCKED -> "$queryWhere $useName = $value AND"
+                            Telephony.Sms.SUBSCRIPTION_ID -> "$queryWhere $useName = $value AND"
+                            Telephony.Sms.ERROR_CODE -> "$queryWhere $useName = $value AND"
+                            Telephony.Sms.SEEN -> "$queryWhere $useName = $value AND"
+                            else -> queryWhere
+                        }
                     }
-                } else if (jsonReader.peek() == JsonToken.NULL) {
-                    queryWhere = "$queryWhere $useName IS NULL AND"
-                    jsonReader.skipValue()
-                } else {
-                    jsonReader.skipValue()
+                    JsonToken.NULL -> {
+                        queryWhere = "$queryWhere $useName IS NULL AND"
+                        jsonReader.skipValue()
+                    }
+                    else -> {
+                        jsonReader.skipValue()
+                    }
                 }
             } else {
                 jsonReader.skipValue()
@@ -140,10 +157,5 @@ object RestoreSMSMMSJSONAction {
         Timber.tag("RestoreSMSMMSJSONAction").v("restoreMMS")
         // TODO: restore MMS here
         jsonReader.skipValue()
-    }
-
-    private fun isNumber(input: String): Boolean {
-        val regex = """^(-)?[0-9]+((\.)[0-9]+)?$""".toRegex()
-        return if (input.isEmpty()) false else regex.matches(input)
     }
 }
