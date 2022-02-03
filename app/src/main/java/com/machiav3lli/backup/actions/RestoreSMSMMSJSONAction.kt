@@ -34,7 +34,6 @@ import java.io.InputStreamReader
 object RestoreSMSMMSJSONAction {
     @Throws(RuntimeException::class)
     fun restoreData(context: Context, filePath: String) {
-        Timber.tag("RestoreSMSMMSJSONAction").v("restoreData")
         if (
                 (PermissionChecker.checkCallingOrSelfPermission(context, Manifest.permission.READ_SMS) == PermissionChecker.PERMISSION_DENIED) ||
                 (PermissionChecker.checkCallingOrSelfPermission(context, Manifest.permission.SEND_SMS) == PermissionChecker.PERMISSION_DENIED) ||
@@ -47,15 +46,16 @@ object RestoreSMSMMSJSONAction {
         if (Telephony.Sms.getDefaultSmsPackage(context) != context.packageName) {
             throw RuntimeException("OAndBackupX not default SMS/MMS app.")
         }
-        context.contentResolver.openInputStream(Uri.fromFile(File(filePath))).use { inputStream ->
+        val inputFile = context.contentResolver.openInputStream(Uri.fromFile(File(filePath)))
+        inputFile?.use { inputStream ->
             BufferedReader(InputStreamReader(inputStream)).use { reader ->
                 val jsonReader = JsonReader(reader)
                 jsonReader.beginArray()
                 while (jsonReader.hasNext()) {
                     jsonReader.beginObject()
                     when (jsonReader.nextName()) {
-                        "sms" -> restoreSMS(context, jsonReader)
-                        "mms" -> restoreMMS(context, jsonReader)
+                        "SMS" -> restoreSMS(context, jsonReader)
+                        "MMS" -> restoreMMS(context, jsonReader)
                         else -> jsonReader.skipValue()
                     }
                     jsonReader.endObject()
@@ -64,11 +64,11 @@ object RestoreSMSMMSJSONAction {
                 jsonReader.close()
             }
         }
+        inputFile?.close()
     }
 
     // Loop through SMS
     private fun restoreSMS(context: Context, jsonReader: JsonReader) {
-        Timber.tag("RestoreSMSMMSJSONAction").v("restoreSMS")
         jsonReader.beginArray()
         while (jsonReader.hasNext()) {
             parseSMS(context, jsonReader)
@@ -78,24 +78,43 @@ object RestoreSMSMMSJSONAction {
 
     // Parse through one SMS
     private fun parseSMS(context: Context, jsonReader: JsonReader) {
-        Timber.tag("RestoreSMSMMSJSONAction").v("parseSMS")
         jsonReader.beginObject()
         val values = ContentValues()
         var queryWhere = ""
         while (jsonReader.hasNext()) {
-            val name = jsonReader.nextName()
-            if (jsonReader.peek() == JsonToken.STRING) {
-                val value = jsonReader.nextString()
-                values.put(name, value)
-                if (isNumber(value)) {
-                    queryWhere = "$queryWhere $name = $value AND"
-                } else {
-                    queryWhere = "$queryWhere $name = '$value' AND"
-                }
+            val useName = when (jsonReader.nextName()) {
+                "ADDRESS" -> Telephony.Sms.ADDRESS
+                "DATE" -> Telephony.Sms.DATE
+                "DATE_SENT" -> Telephony.Sms.DATE_SENT
+                "PROTOCOL" -> Telephony.Sms.PROTOCOL
+                "READ" -> Telephony.Sms.READ
+                "STATUS" -> Telephony.Sms.STATUS
+                "TYPE" -> Telephony.Sms.TYPE
+                "REPLY_PATH_PRESENT" -> Telephony.Sms.REPLY_PATH_PRESENT
+                "SUBJECT" -> Telephony.Sms.SUBJECT
+                "BODY" -> Telephony.Sms.BODY
+                "SERVICE_CENTER" -> Telephony.Sms.SERVICE_CENTER
+                "LOCKED" -> Telephony.Sms.LOCKED
+                "SUBSCRIPTION_ID" -> Telephony.Sms.SUBSCRIPTION_ID
+                "ERROR_CODE" -> Telephony.Sms.ERROR_CODE
+                "SEEN" -> Telephony.Sms.SEEN
+                else -> "{}"
             }
-            else if (jsonReader.peek() == JsonToken.NULL) {
-                queryWhere = "$queryWhere $name IS NULL AND"
-                jsonReader.skipValue()
+            if (useName != "{}") {
+                if (jsonReader.peek() == JsonToken.STRING) {
+                    val value = jsonReader.nextString()
+                    values.put(useName, value)
+                    if (isNumber(value)) {
+                        queryWhere = "$queryWhere $useName = $value AND"
+                    } else {
+                        queryWhere = "$queryWhere $useName = '$value' AND"
+                    }
+                } else if (jsonReader.peek() == JsonToken.NULL) {
+                    queryWhere = "$queryWhere $useName IS NULL AND"
+                    jsonReader.skipValue()
+                } else {
+                    jsonReader.skipValue()
+                }
             } else {
                 jsonReader.skipValue()
             }
@@ -107,10 +126,9 @@ object RestoreSMSMMSJSONAction {
 
     // Save single SMS to database
     private fun saveSMS(context: Context, values: ContentValues, queryWhere: String) {
-        Timber.tag("RestoreSMSMMSJSONAction").v("saveSMS")
         val contentResolver = context.contentResolver
         // Check for duplicates
-        val existsCursor = contentResolver.query(Telephony.Sms.CONTENT_URI, arrayOf("_id"), queryWhere, null, null)
+        val existsCursor = contentResolver.query(Telephony.Sms.CONTENT_URI, arrayOf(Telephony.Sms._ID), queryWhere, null, null)
         val exists = existsCursor?.count
         existsCursor?.close()
         if (exists == 0) {
@@ -125,7 +143,6 @@ object RestoreSMSMMSJSONAction {
     }
 
     private fun isNumber(input: String): Boolean {
-        Timber.tag("RestoreSMSMMSJSONAction").v("isNumber")
         val regex = """^(-)?[0-9]+((\.)[0-9]+)?$""".toRegex()
         return if (input.isEmpty()) false else regex.matches(input)
     }

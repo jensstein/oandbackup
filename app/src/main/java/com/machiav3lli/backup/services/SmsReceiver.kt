@@ -22,20 +22,16 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.ContentValues
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.ContactsContract.PhoneLookup
 import android.provider.Telephony
 import android.telephony.SmsMessage
-import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.showNotification
-import timber.log.Timber
 
 class SmsReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
-        Timber.tag("SmsReceiver").v("onReceive")
         if(context == null || intent == null || intent.action == null || intent.extras == null){
             return
         }
@@ -58,7 +54,6 @@ class SmsReceiver : BroadcastReceiver() {
     }
 
     private fun putSmsToDatabase(context: Context, sms: SmsMessage) {
-        Timber.tag("SmsReceiver").v("putSmsToDatabase")
         val contentResolver = context.contentResolver
         val values = ContentValues()
         val notificationId = System.currentTimeMillis()
