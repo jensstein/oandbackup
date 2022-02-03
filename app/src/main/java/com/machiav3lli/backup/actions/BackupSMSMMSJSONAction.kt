@@ -66,7 +66,6 @@ object BackupSMSMMSJSONAction {
             Telephony.Sms.READ,
             Telephony.Sms.STATUS,
             Telephony.Sms.TYPE,
-            Telephony.Sms.REPLY_PATH_PRESENT,
             Telephony.Sms.SUBJECT,
             Telephony.Sms.BODY,
             Telephony.Sms.SERVICE_CENTER,
@@ -92,7 +91,6 @@ object BackupSMSMMSJSONAction {
                             Telephony.Sms.READ -> "READ"
                             Telephony.Sms.STATUS -> "STATUS"
                             Telephony.Sms.TYPE -> "TYPE"
-                            Telephony.Sms.REPLY_PATH_PRESENT -> "REPLY_PATH_PRESENT"
                             Telephony.Sms.SUBJECT -> "SUBJECT"
                             Telephony.Sms.BODY -> "BODY"
                             Telephony.Sms.SERVICE_CENTER -> "SERVICE_CENTER"
@@ -118,29 +116,15 @@ object BackupSMSMMSJSONAction {
     private fun backupMMS(context: Context, jsonWriter: JsonWriter) {
         val projection = arrayOf(
             Telephony.Mms._ID,
-            Telephony.Mms.CONTENT_CLASS,
-            Telephony.Mms.CONTENT_LOCATION,
             Telephony.Mms.CONTENT_TYPE,
             Telephony.Mms.DELIVERY_REPORT,
-            Telephony.Mms.DELIVERY_TIME,
             Telephony.Mms.DATE,
             Telephony.Mms.DATE_SENT,
-            Telephony.Mms.EXPIRY,
             Telephony.Mms.LOCKED,
-            Telephony.Mms.MESSAGE_CLASS,
-            Telephony.Mms.MESSAGE_ID,
-            Telephony.Mms.MESSAGE_SIZE,
             Telephony.Mms.MESSAGE_TYPE,
             Telephony.Mms.MESSAGE_BOX,
-            Telephony.Mms.PRIORITY,
             Telephony.Mms.READ,
             Telephony.Mms.READ_STATUS,
-            Telephony.Mms.RESPONSE_STATUS,
-            Telephony.Mms.RESPONSE_TEXT,
-            Telephony.Mms.RETRIEVE_STATUS,
-            Telephony.Mms.RETRIEVE_TEXT,
-            Telephony.Mms.RETRIEVE_TEXT_CHARSET,
-            Telephony.Mms.REPORT_ALLOWED,
             Telephony.Mms.READ_REPORT,
             Telephony.Mms.SEEN,
             Telephony.Mms.STATUS,
@@ -162,29 +146,15 @@ object BackupSMSMMSJSONAction {
                     message.columnNames.forEachIndexed { m, columnName ->
                         val useColumnName = when (columnName) {
                             Telephony.Mms._ID -> "_ID"
-                            Telephony.Mms.CONTENT_CLASS -> "CONTENT_CLASS"
-                            Telephony.Mms.CONTENT_LOCATION -> "CONTENT_LOCATION"
                             Telephony.Mms.CONTENT_TYPE -> "CONTENT_TYPE"
                             Telephony.Mms.DELIVERY_REPORT -> "DELIVERY_REPORT"
-                            Telephony.Mms.DELIVERY_TIME -> "DELIVERY_TIME"
                             Telephony.Mms.DATE -> "DATE"
                             Telephony.Mms.DATE_SENT -> "DATE_SENT"
-                            Telephony.Mms.EXPIRY -> "EXPIRY"
                             Telephony.Mms.LOCKED -> "LOCKED"
-                            Telephony.Mms.MESSAGE_CLASS -> "MESSAGE_CLASS"
-                            Telephony.Mms.MESSAGE_ID -> "MESSAGE_ID"
-                            Telephony.Mms.MESSAGE_SIZE -> "MESSAGE_SIZE"
                             Telephony.Mms.MESSAGE_TYPE -> "MESSAGE_TYPE"
                             Telephony.Mms.MESSAGE_BOX -> "MESSAGE_BOX"
-                            Telephony.Mms.PRIORITY -> "PRIORITY"
                             Telephony.Mms.READ -> "READ"
                             Telephony.Mms.READ_STATUS -> "READ_STATUS"
-                            Telephony.Mms.RESPONSE_STATUS -> "RESPONSE_STATUS"
-                            Telephony.Mms.RESPONSE_TEXT -> "RESPONSE_TEXT"
-                            Telephony.Mms.RETRIEVE_STATUS -> "RETRIEVE_STATUS"
-                            Telephony.Mms.RETRIEVE_TEXT -> "RETRIEVE_TEXT"
-                            Telephony.Mms.RETRIEVE_TEXT_CHARSET -> "RETRIEVE_TEXT_CHARSET"
-                            Telephony.Mms.REPORT_ALLOWED -> "REPORT_ALLOWED"
                             Telephony.Mms.READ_REPORT -> "READ_REPORT"
                             Telephony.Mms.SEEN -> "SEEN"
                             Telephony.Mms.STATUS -> "STATUS"

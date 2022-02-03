@@ -92,7 +92,6 @@ object RestoreSMSMMSJSONAction {
                 "READ" -> Telephony.Sms.READ
                 "STATUS" -> Telephony.Sms.STATUS
                 "TYPE" -> Telephony.Sms.TYPE
-                "REPLY_PATH_PRESENT" -> Telephony.Sms.REPLY_PATH_PRESENT
                 "SUBJECT" -> Telephony.Sms.SUBJECT
                 "BODY" -> Telephony.Sms.BODY
                 "SERVICE_CENTER" -> Telephony.Sms.SERVICE_CENTER
@@ -115,7 +114,6 @@ object RestoreSMSMMSJSONAction {
                             Telephony.Sms.READ -> "$queryWhere $useName = $value AND"
                             Telephony.Sms.STATUS -> "$queryWhere $useName = $value AND"
                             Telephony.Sms.TYPE -> "$queryWhere $useName = $value AND"
-                            Telephony.Sms.REPLY_PATH_PRESENT -> "$queryWhere $useName = $value AND"
                             Telephony.Sms.SUBJECT -> "$queryWhere $useName = '${value.replace("'","''")}' AND"
                             Telephony.Sms.BODY -> "$queryWhere $useName = '${value.replace("'","''")}' AND"
                             Telephony.Sms.SERVICE_CENTER -> "$queryWhere $useName = '${value.replace("'","''")}' AND"
@@ -192,29 +190,15 @@ object RestoreSMSMMSJSONAction {
                 }
                 else -> {
                     val useName = when (nextName) {
-                        "CONTENT_CLASS" -> Telephony.Mms.CONTENT_CLASS
-                        "CONTENT_LOCATION" -> Telephony.Mms.CONTENT_LOCATION
                         "CONTENT_TYPE" -> Telephony.Mms.CONTENT_TYPE
                         "DELIVERY_REPORT" -> Telephony.Mms.DELIVERY_REPORT
-                        "DELIVERY_TIME" -> Telephony.Mms.DELIVERY_TIME
                         "DATE" -> Telephony.Mms.DATE
                         "DATE_SENT" -> Telephony.Mms.DATE_SENT
-                        "EXPIRY" -> Telephony.Mms.EXPIRY
                         "LOCKED" -> Telephony.Mms.LOCKED
-                        "MESSAGE_CLASS" -> Telephony.Mms.MESSAGE_CLASS
-                        "MESSAGE_ID" -> Telephony.Mms.MESSAGE_ID
-                        "MESSAGE_SIZE" -> Telephony.Mms.MESSAGE_SIZE
                         "MESSAGE_TYPE" -> Telephony.Mms.MESSAGE_TYPE
                         "MESSAGE_BOX" -> Telephony.Mms.MESSAGE_BOX
-                        "PRIORITY" -> Telephony.Mms.PRIORITY
                         "READ" -> Telephony.Mms.READ
                         "READ_STATUS" -> Telephony.Mms.READ_STATUS
-                        "RESPONSE_STATUS" -> Telephony.Mms.RESPONSE_STATUS
-                        "RESPONSE_TEXT" -> Telephony.Mms.RESPONSE_TEXT
-                        "RETRIEVE_STATUS" -> Telephony.Mms.RETRIEVE_STATUS
-                        "RETRIEVE_TEXT" -> Telephony.Mms.RETRIEVE_TEXT
-                        "RETRIEVE_TEXT_CHARSET" -> Telephony.Mms.RETRIEVE_TEXT_CHARSET
-                        "REPORT_ALLOWED" -> Telephony.Mms.REPORT_ALLOWED
                         "READ_REPORT" -> Telephony.Mms.READ_REPORT
                         "SEEN" -> Telephony.Mms.SEEN
                         "STATUS" -> Telephony.Mms.STATUS
@@ -232,29 +216,15 @@ object RestoreSMSMMSJSONAction {
                                 val value = jsonReader.nextString()
                                 values.put(useName, value)
                                 queryWhere = when (useName) {
-                                    Telephony.Mms.CONTENT_CLASS -> "$queryWhere $useName = $value AND"
-                                    Telephony.Mms.CONTENT_LOCATION -> "$queryWhere $useName = '${value.replace("'","''")}' AND"
                                     Telephony.Mms.CONTENT_TYPE -> "$queryWhere $useName = '${value.replace("'","''")}' AND"
                                     Telephony.Mms.DELIVERY_REPORT -> "$queryWhere $useName = $value AND"
-                                    Telephony.Mms.DELIVERY_TIME -> "$queryWhere $useName = $value AND"
                                     Telephony.Mms.DATE -> "$queryWhere $useName = $value AND"
                                     Telephony.Mms.DATE_SENT -> "$queryWhere $useName = $value AND"
-                                    Telephony.Mms.EXPIRY -> "$queryWhere $useName = $value AND"
                                     Telephony.Mms.LOCKED -> "$queryWhere $useName = $value AND"
-                                    Telephony.Mms.MESSAGE_CLASS -> "$queryWhere $useName = '${value.replace("'","''")}' AND"
-                                    Telephony.Mms.MESSAGE_ID -> "$queryWhere $useName = '${value.replace("'","''")}' AND"
-                                    Telephony.Mms.MESSAGE_SIZE -> "$queryWhere $useName = $value AND"
                                     Telephony.Mms.MESSAGE_TYPE -> "$queryWhere $useName = $value AND"
                                     Telephony.Mms.MESSAGE_BOX -> "$queryWhere $useName = $value AND"
-                                    Telephony.Mms.PRIORITY -> "$queryWhere $useName = $value AND"
                                     Telephony.Mms.READ -> "$queryWhere $useName = $value AND"
                                     Telephony.Mms.READ_STATUS -> "$queryWhere $useName = $value AND"
-                                    Telephony.Mms.RESPONSE_STATUS -> "$queryWhere $useName = $value AND"
-                                    Telephony.Mms.RESPONSE_TEXT -> "$queryWhere $useName = '${value.replace("'","''")}' AND"
-                                    Telephony.Mms.RETRIEVE_STATUS -> "$queryWhere $useName = $value AND"
-                                    Telephony.Mms.RETRIEVE_TEXT -> "$queryWhere $useName = '${value.replace("'","''")}' AND"
-                                    Telephony.Mms.RETRIEVE_TEXT_CHARSET -> "$queryWhere $useName = $value AND"
-                                    Telephony.Mms.REPORT_ALLOWED -> "$queryWhere $useName = $value AND"
                                     Telephony.Mms.READ_REPORT -> "$queryWhere $useName = $value AND"
                                     Telephony.Mms.SEEN -> "$queryWhere $useName = $value AND"
                                     Telephony.Mms.STATUS -> "$queryWhere $useName = $value AND"
