@@ -59,6 +59,7 @@ class SmsReceiver : BroadcastReceiver() {
         val notificationId = System.currentTimeMillis()
         val message = sms.displayMessageBody.toString()
         var sender = sms.displayOriginatingAddress ?: ""
+        val threadId = Telephony.Threads.getOrCreateThreadId(context, sms.displayOriginatingAddress)
 
         if (PermissionChecker.checkCallingOrSelfPermission(context, Manifest.permission.READ_CONTACTS) == PermissionChecker.PERMISSION_DENIED) {
             val uri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(sender))
@@ -75,6 +76,7 @@ class SmsReceiver : BroadcastReceiver() {
             } catch (e: Exception) {}
         }
 
+        values.put( Telephony.Sms.THREAD_ID, threadId)
         values.put( Telephony.Sms.ADDRESS, sms.displayOriginatingAddress)
         values.put( Telephony.Sms.DATE, sms.timestampMillis)
         values.put( Telephony.Sms.READ, 0 )
