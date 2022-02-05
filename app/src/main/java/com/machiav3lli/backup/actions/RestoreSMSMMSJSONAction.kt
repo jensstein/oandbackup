@@ -18,6 +18,7 @@
 package com.machiav3lli.backup.actions
 
 import android.Manifest
+import android.app.role.RoleManager
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
@@ -45,7 +46,7 @@ object RestoreSMSMMSJSONAction {
         ) {
             throw RuntimeException("No permission for SMS/MMS.")
         }
-        if (Telephony.Sms.getDefaultSmsPackage(context) != context.packageName) {
+        if (!isDefaultSms(context)) {
             throw RuntimeException("OAndBackupX not default SMS/MMS app.")
         }
         val inputFile = context.contentResolver.openInputStream(Uri.fromFile(File(filePath)))
@@ -407,6 +408,15 @@ object RestoreSMSMMSJSONAction {
             else -> {
                 contentResolver.insert(uri, values)
             }
+        }
+    }
+
+    // Check if default SMS
+    private fun isDefaultSms(context: Context): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            context.getSystemService(RoleManager::class.java)?.isRoleHeld(RoleManager.ROLE_SMS) == true
+        } else {
+            Telephony.Sms.getDefaultSmsPackage(context) == context.packageName
         }
     }
 }
