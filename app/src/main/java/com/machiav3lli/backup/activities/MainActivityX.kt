@@ -97,8 +97,7 @@ class MainActivityX : BaseActivity() {
                 var workBlocked = 0
                 var workRunning = 0
                 var workFinished = 0
-                var workSecondAttempts = 0
-                var workLastAttempts = 0
+                var workRetries = 0
                 var succeeded = 0
                 var failed = 0
                 var canceled = 0
@@ -108,10 +107,7 @@ class MainActivityX : BaseActivity() {
                     val operation = progress.getString("operation")
                     workCount++
                     if (workInfo.runAttemptCount > 1) {
-                        if (workInfo.runAttemptCount == AppActionWork.WORK_MAX_ATTEMPTS)
-                            workLastAttempts++
-                        else
-                            workSecondAttempts++
+                        workRetries++
                     }
 
                     when(workInfo.state) {
@@ -152,7 +148,12 @@ class MainActivityX : BaseActivity() {
                 }
 
                 val processed = succeeded + failed
-                val title = "$processed/$workCount = ✔$succeeded/❌$failed (🔄$workSecondAttempts...$workLastAttempts) ⏸$workBlocked ⏹$canceled - $queued🚀$running"
+
+                var title = "+$succeeded -$failed / $workCount"
+                    if(running+queued > 0)
+                        title += "  🏃$running 👭${queued}"
+                    else
+                        title += "  ${OABX.context.getString(R.string.finished)}"
 
                 if(workCount>0) {
                     val notificationManager = NotificationManagerCompat.from(appContext)

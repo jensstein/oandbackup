@@ -315,4 +315,6 @@
     <string name="all_data">Check all data</string>
     <string name="all_apk">Check all APK</string>
     <string name="showDisabled">Disabled apps</string>
+    <string name="schedule">Schedule</string>
+    <string name="finished">finished</string>
 </resources>

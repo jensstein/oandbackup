@@ -109,6 +109,16 @@
         android:title="cacheRootFileAttributes" />
 
     <androidx.preference.SeekBarPreference
+        android:defaultValue="3"
+        android:inputType="number"
+        android:key="maxRetriesPerPackage"
+        android:max="20"
+        android:summary="maximum number of retires per Package per Batch"
+        android:title="maxRetriesPerPackage"
+        app:min="0"
+        app:showSeekBarValue="true" />
+
+    <androidx.preference.SeekBarPreference
         android:defaultValue="0"
         android:inputType="number"
         android:key="delayBeforeRefreshAppInfo"
