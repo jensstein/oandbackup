@@ -33,6 +33,9 @@ interface ScheduleDao {
     @Query("SELECT * FROM schedule WHERE id = :id")
     fun getSchedule(id: Long): Schedule?
 
+    @Query("SELECT * FROM schedule WHERE name = :name")
+    fun getSchedule(name: String): Schedule?
+
     @Query("SELECT * FROM schedule WHERE id = :id")
     fun getLiveSchedule(id: Long): LiveData<Schedule?>
 

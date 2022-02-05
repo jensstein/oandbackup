@@ -1,7 +1,7 @@
 package tests
 
 import com.machiav3lli.backup.BuildConfig
-import com.machiav3lli.backup.handler.ignoredPackages
+import com.machiav3lli.backup.actions.BaseAppAction.Companion.ignoredPackages
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test

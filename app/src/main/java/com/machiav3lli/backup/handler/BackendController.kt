@@ -24,10 +24,7 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Process
-import com.machiav3lli.backup.LOG_FOLDER_NAME
-import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
-import com.machiav3lli.backup.MAIN_FILTER_USER
-import com.machiav3lli.backup.PREFS_ENABLESPECIALBACKUPS
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.ignoredPackages
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
@@ -35,10 +32,7 @@ import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.SpecialAppMetaInfo.Companion.getSpecialPackages
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
-import com.machiav3lli.backup.utils.FileUtils
-import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.getBackupDir
-import com.machiav3lli.backup.utils.getDefaultSharedPreferences
+import com.machiav3lli.backup.utils.*
 import timber.log.Timber
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -63,6 +57,7 @@ fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
 
 @Throws(FileUtils.BackupLocationInAccessibleException::class, StorageLocationNotConfiguredException::class)
 fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Boolean = true): MutableList<AppInfo> {
+    val startTime = System.currentTimeMillis()
     invalidateCache()
     val includeSpecial = getDefaultSharedPreferences().getBoolean(PREFS_ENABLESPECIALBACKUPS, false)
     val pm = packageManager
@@ -81,11 +76,11 @@ fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Bool
             }
             .toMutableList()
 
-    if(!MainActivityX.appsSuspendedChecked) {
-        MainActivityX.activity?.whileShowingSnackBar("cleanup any left over suspended apps") {
+    if(!OABX.appsSuspendedChecked) {
+        OABX.activity?.whileShowingSnackBar("cleanup any left over suspended apps") {
             // cleanup suspended package if lock file found
             packageList.forEach { appInfo ->
-                if(0 != (MainActivityX.activity?.packageManager
+                if(0 != (OABX.activity?.packageManager
                     ?.getPackageInfo(appInfo.packageName, 0)
                     ?.applicationInfo
                     ?.flags
@@ -95,7 +90,7 @@ fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Bool
                     runAsRoot("pm unsuspend ${appInfo.packageName}")
                 }
             }
-            MainActivityX.appsSuspendedChecked = true
+            OABX.appsSuspendedChecked = true
         }
     }
 
@@ -129,6 +124,8 @@ fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Bool
                         .toList()
         packageList.addAll(missingAppsWithBackup)
     }
+
+    OABX.activity?.showToast("appList: ${((System.currentTimeMillis() - startTime) / 1000 + 0.5).toInt()} sec")
 
     return packageList
 }

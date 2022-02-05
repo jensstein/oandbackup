@@ -20,6 +20,7 @@ package com.machiav3lli.backup.actions
 import android.annotation.SuppressLint
 import android.content.Context
 import com.machiav3lli.backup.*
+import com.machiav3lli.backup.OABX.Companion.app
 import com.machiav3lli.backup.handler.BackupBuilder
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
@@ -269,6 +270,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         )
         for (apk in apksToBackup) {
             try {
+                Timber.i("${app.packageName}: $apk")
                 suCopyFileToDocument(apk, backupInstanceDir)
             } catch (e: IOException) {
                 Timber.e("$app: Could not backup apk $apk: $e")
@@ -482,23 +484,24 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         compress: Boolean,
         iv: ByteArray?
     ): Boolean {
-            if (OABX.prefFlag("backupTarCmd", true)) {
-                return genericBackupDataTarCmd(
-                    dataType,
-                    backupInstanceDir,
-                    sourcePath,
-                    compress,
-                    iv
-                )
-            } else {
-                return genericBackupDataTarApi(
-                    dataType,
-                    backupInstanceDir,
-                    sourcePath,
-                    compress,
-                    iv
-                )
-            }
+        Timber.i("${app.packageName} <- $sourcePath")
+        if (OABX.prefFlag("backupTarCmd", true)) {
+            return genericBackupDataTarCmd(
+                dataType,
+                backupInstanceDir,
+                sourcePath,
+                compress,
+                iv
+            )
+        } else {
+            return genericBackupDataTarApi(
+                dataType,
+                backupInstanceDir,
+                sourcePath,
+                compress,
+                iv
+            )
+        }
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)

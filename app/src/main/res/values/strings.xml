@@ -324,4 +324,5 @@
     <string name="showDisabled">Disabled apps</string>
     <string name="schedule">Schedule</string>
     <string name="finished">finished</string>
+    <string name="batch">Batch</string>
 </resources>

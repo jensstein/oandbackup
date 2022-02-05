@@ -38,6 +38,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.machiav3lli.backup.*
+import com.machiav3lli.backup.OABX.Companion.appsSuspendedChecked
 import com.machiav3lli.backup.databinding.ActivityMainXBinding
 import com.machiav3lli.backup.dbs.AppExtras
 import com.machiav3lli.backup.dbs.AppExtrasDatabase
@@ -48,12 +49,13 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.services.WorkReceiver
+import com.machiav3lli.backup.services.CommandReceiver
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.MainViewModel
 import com.machiav3lli.backup.viewmodels.MainViewModelFactory
 import com.topjohnwu.superuser.Shell
+import timber.log.Timber
 import java.lang.ref.WeakReference
 
 
@@ -70,9 +72,29 @@ class MainActivityX : BaseActivity() {
                 activityRef = WeakReference(activity)
             }
 
-        var appsSuspendedChecked = false
-
         var statusNotificationId = 0
+
+        class Counters(
+            var startTime: Long = 0L,
+
+            var workCount: Int = 0,
+            var workEnqueued: Int = 0,
+            var workBlocked: Int = 0,
+            var workRunning: Int = 0,
+            var workFinished: Int = 0,
+            var workAttempts: Int = 0,
+            var workRetries: Int = 0,
+
+            var running: Int = 0,
+            var queued: Int = 0,
+            var shortText: String = "",
+            var bigText: String = "",
+            var retries: Int = 0,
+            var maxRetries: Int = 0,
+            var succeeded: Int = 0,
+            var failed: Int = 0,
+            var canceled: Int = 0
+        )
 
         fun showRunningStatus(manager: WorkManager? = null, work: MutableList<WorkInfo>? = null) {
             if(manager == null || work == null)
@@ -81,137 +103,241 @@ class MainActivityX : BaseActivity() {
             if (statusNotificationId == 0)
                 statusNotificationId = System.currentTimeMillis().toInt()
 
-            var running = 0
-            var queued = 0
-            var shortText = ""
-            var bigText = ""
+            var batches = mutableMapOf<String, Counters>()
 
-            activity?.let { activity ->
-                val appContext = OABX.context
-                val workManager = OABX.work.manager
-                val workInfos = workManager.getWorkInfosByTag(
-                    AppActionWork::class.qualifiedName!!
-                ).get()
-                var workCount = 0
-                var workEnqueued = 0
-                var workBlocked = 0
-                var workRunning = 0
-                var workFinished = 0
-                var workRetries = 0
-                var succeeded = 0
-                var failed = 0
-                var canceled = 0
+            val appContext = OABX.context
+            val workInfos = manager.getWorkInfosByTag(
+                AppActionWork::class.qualifiedName!!
+            ).get()
 
-                workInfos.forEach { workInfo ->
-                    val progress = workInfo.progress
-                    val operation = progress.getString("operation")
-                    workCount++
-                    if (workInfo.runAttemptCount > 1) {
-                        workRetries++
+            Thread {
+                workInfos.forEach { info ->
+                    var data = info.progress
+                    if(data.getString("batchName").isNullOrEmpty())
+                        data = info.outputData
+                    var batchName = data.getString("batchName")
+                    var packageName = data.getString("packageName")
+                    var packageLabel = data.getString("packageLabel")
+                    var backupBoolean = data.getBoolean("backupBoolean", true)
+                    var operation = data.getString("operation")
+                    var failures = data.getInt("failures", -1)
+
+                    val maxRetries = OABX.prefInt("maxRetriesPerPackage", 3)
+
+                    //Timber.d("%%%%% $batchName $packageName $operation $backupBoolean ${info.state} fail=$failures max=$maxRetries")
+
+                    if(batchName.isNullOrEmpty()) {
+                        info.tags.forEach {
+                            val parts = it.toString().split(':', limit = 2)
+                            if(parts.size > 1) {
+                                val (key, value) = parts
+                                when (key) {
+                                    "name" -> {
+                                        batchName = value
+                                        //Timber.d("%%%%% name from tag -> $batchName")
+                                        return@forEach
+                                    }
+                                    else -> {}
+                                }
+                            }
+                        }
+                    }
+                    if(batchName.isNullOrEmpty()) {
+                        Timber.d("????????????????????????????????????????? empty batch name, canceling")
+                        when(info.state) {
+                            WorkInfo.State.CANCELLED ->
+                                batchName = "CANCELLED"
+                            WorkInfo.State.ENQUEUED  ->
+                                batchName = "ENQUEUED"
+                            else -> {
+                                batchName = "UNDEF"
+                            }
+                        }
+                        Timber.d("?????????????????????????? name from state -> $batchName (to be canceled)")
+                        manager.cancelWorkById(info.id)
                     }
 
-                    when(workInfo.state) {
-                        WorkInfo.State.SUCCEEDED -> {
-                            succeeded++
-                            workFinished++
+                    //Timber.d("===== $batchName $packageName $operation $backupBoolean ${info.state} fail=$failures max=$maxRetries")
+
+                    batches.getOrPut(batchName!!) { Counters() }.run {
+                        if(startTime == 0L)
+                            startTime = System.currentTimeMillis()
+
+                        workCount++
+                        workAttempts = info.runAttemptCount
+                        if (info.runAttemptCount > 1)
+                            workRetries++
+                        if (failures > 1) {
+                            retries++
+                            if (failures > maxRetries)
+                                this.maxRetries++
                         }
-                        WorkInfo.State.FAILED -> {
-                            failed++
-                            workFinished++
-                        }
-                        WorkInfo.State.CANCELLED -> {
-                            canceled++
-                            workFinished++
-                        }
-                        WorkInfo.State.ENQUEUED -> {
-                            queued++
-                            workEnqueued++
-                        }
-                        WorkInfo.State.BLOCKED -> {
-                            queued++
-                            workBlocked++
-                        }
-                        WorkInfo.State.RUNNING -> {
-                            val packageName = progress.getString("packageName")
-                            val backupBoolean = progress.getBoolean("backupBoolean", true)
-                            workRunning++
-                            when (operation) {
-                                "..." -> queued++
-                                else -> {
-                                    running++
-                                    if(!packageName.isNullOrEmpty() and !operation.isNullOrEmpty())
-                                        bigText += "${if (backupBoolean) "B" else "R"} $operation : $packageName\n"
+
+                        when(info.state) {
+                            WorkInfo.State.SUCCEEDED -> {
+                                succeeded++
+                                workFinished++
+                            }
+                            WorkInfo.State.FAILED -> {
+                                failed++
+                                workFinished++
+                            }
+                            WorkInfo.State.CANCELLED -> {
+                                canceled++
+                                workFinished++
+                            }
+                            WorkInfo.State.ENQUEUED -> {
+                                queued++
+                                workEnqueued++
+                            }
+                            WorkInfo.State.BLOCKED -> {
+                                queued++
+                                workBlocked++
+                            }
+                            WorkInfo.State.RUNNING -> {
+                                workRunning++
+                                when (operation) {
+                                    "..." -> queued++
+                                    else -> {
+                                        running++
+                                        if (!packageName.isNullOrEmpty() and !operation.isNullOrEmpty())
+                                            bigText += "${
+                                                if (backupBoolean) "B" else "R"
+                                            }${
+                                                if(workRetries>0) " ${workRetries}" else ""
+                                            } $operation : $packageName\n"
+                                    }
                                 }
                             }
                         }
                     }
                 }
 
-                val processed = succeeded + failed
+                var allProcessed = 0
+                var allRemaining = 0
+                var allCount = 0
 
-                var title = "+$succeeded -$failed / $workCount"
-                    if(running+queued > 0)
-                        title += "  🏃$running 👭${queued}"
-                    else
-                        title += "  ${OABX.context.getString(R.string.finished)}"
+                batches.forEach { batchName, counters ->
+                    counters.run {
+                        val notificationId = batchName.hashCode()
 
-                if(workCount>0) {
-                    val notificationManager = NotificationManagerCompat.from(appContext)
-                    val notificationChannel = NotificationChannel(
-                        classAddress("NotificationHandler"),
-                        classAddress("NotificationHandler"),
-                        NotificationManager.IMPORTANCE_LOW
-                    )
-                    notificationManager.createNotificationChannel(notificationChannel)
-                    val resultIntent = Intent(appContext, MainActivityX::class.java)
-                    resultIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    val resultPendingIntent = PendingIntent.getActivity(
-                        appContext,
-                        0,
-                        resultIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                    )
-                    val cancelIntent = PendingIntent.getBroadcast(
-                        appContext,
-                        0,
-                        Intent(
-                            appContext,
-                            WorkReceiver::class.java
-                        ).setAction("WORK_CANCEL"),
-                        PendingIntent.FLAG_IMMUTABLE
-                    )
-                    activity.runOnUiThread {
-                        val notification =
-                            NotificationCompat.Builder(
-                                appContext,
-                                classAddress("NotificationHandler")
+                        val processed = succeeded + failed
+                        allProcessed += processed
+                        val remaining = running + queued
+                        allRemaining += remaining
+                        allCount += workCount
+
+                        var title = "$batchName"
+                        shortText = "✔$succeeded${if(failed>0) "❓$failed" else ""}/$workCount"
+                        if(remaining > 0)
+                            shortText += " 🏃$running 👭${queued}"
+                        else {
+                            shortText += " ${OABX.context.getString(R.string.finished)}"
+
+                            val duration = ((System.currentTimeMillis() - startTime) / 1000 + 0.5).toInt()
+                            if(duration > 10) {
+                                val min = (duration / 60).toInt()
+                                val sec = duration - min*60
+                                bigText = "$min min $sec sec"
+                            }
+                            startTime = 0L
+                        }
+                        if(canceled > 0)
+                            shortText += " 🚫$canceled"
+                        bigText = "$shortText\n$bigText"
+
+                        Timber.d("%%%%% -----------------> $title $shortText")
+
+                        if(workCount>0) {
+                            val notificationManager = NotificationManagerCompat.from(appContext)
+                            val notificationChannel = NotificationChannel(
+                                classAddress("NotificationHandler"),
+                                classAddress("NotificationHandler"),
+                                NotificationManager.IMPORTANCE_LOW
                             )
-                                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                                .setSmallIcon(R.drawable.ic_app)
-                                .setContentTitle(title)
-                                .setStyle(NotificationCompat.BigTextStyle().bigText(bigText))
-                                .setContentText(shortText)
-                                .setProgress(workCount, processed, false)
-                                .setAutoCancel(true)
-                                .setContentIntent(resultPendingIntent)
-                                .addAction(
-                                    R.drawable.ic_close,
-                                    appContext.getString(R.string.dialogCancel),
-                                    cancelIntent
-                                )
-                                .build()
-                        notificationManager.notify(statusNotificationId, notification)
-                        activity.updateProgress(processed, workCount)
+                            notificationManager.createNotificationChannel(notificationChannel)
+                            val resultIntent = Intent(appContext, MainActivityX::class.java)
+                            resultIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+                            val resultPendingIntent = PendingIntent.getActivity(
+                                appContext,
+                                0,
+                                resultIntent,
+                                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                            )
 
-                        if (running + queued == 0) {
-                            activity.hideProgress()
-                            // don't remove notification, the result may be interesting for the user
-                            //notificationManager.cancel(statusNotificationId)
-                            //statusNotificationId = 0
+                            var notificationBuilder =
+                                NotificationCompat.Builder(
+                                    appContext,
+                                    classAddress("NotificationHandler")
+                                )
+                                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                                    .setSmallIcon(R.drawable.ic_app)
+                                    .setContentTitle(title)
+                                    .setStyle(
+                                        NotificationCompat.BigTextStyle().bigText(bigText)
+                                    )
+                                    .setContentText(shortText)
+                                    .setAutoCancel(true)
+                                    .setContentIntent(resultPendingIntent)
+
+                            if(remaining > 0) {
+                                val cancelIntent = Intent(appContext, CommandReceiver::class.java).apply {
+                                    action = "cancel"
+                                    putExtra("name", batchName)
+                                }
+                                val cancelPendingIntent = PendingIntent.getBroadcast(
+                                    appContext,
+                                    batchName.hashCode(),
+                                    cancelIntent,
+                                    PendingIntent.FLAG_IMMUTABLE
+                                )
+                                val cancelAllIntent = Intent(appContext, CommandReceiver::class.java).apply {
+                                    action = "cancel"
+                                    //putExtra("name", "")
+                                }
+                                val cancelAllPendingIntent = PendingIntent.getBroadcast(
+                                    appContext,
+                                    "ALL".hashCode(),
+                                    cancelAllIntent,
+                                    PendingIntent.FLAG_IMMUTABLE
+                                )
+                                notificationBuilder
+                                    .setProgress(workCount, processed, false)
+                                    .addAction(
+                                        R.drawable.ic_close,
+                                        appContext.getString(R.string.dialogCancel),
+                                        cancelPendingIntent
+                                    )
+                                    .addAction(
+                                        R.drawable.ic_close,
+                                        "Cancel all",
+                                        cancelAllPendingIntent
+                                    )
+                            }
+
+                            val notification = notificationBuilder.build()
+                            notificationManager.notify(notificationId, notification)
+                            //activity.updateProgress(processed, workCount)
+
+                            if (remaining <= 0) {
+                                //activity.hideProgress()
+                                // don't remove notification, the result may be interesting for the user
+                                //notificationManager.cancel(statusNotificationId)
+                                //statusNotificationId = 0
+                            }
                         }
                     }
                 }
-            }
+                if (allRemaining > 0) {
+                    Timber.d("%%%%% $allProcessed < $allRemaining < $allCount")
+                    activity?.runOnUiThread { activity?.updateProgress(allProcessed, allCount) }
+                } else {
+                    Timber.d("%%%%% HIDE PROGRESS")
+                    activity?.runOnUiThread { activity?.hideProgress() }
+                    Timber.d("%%%%% PRUNE")
+                    OABX.work.prune()
+                }
+            }.start()
         }
     }
 
@@ -226,13 +352,14 @@ class MainActivityX : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val context = this
         activity = this
-
-        appsSuspendedChecked = false
+        OABX.activity = this
 
         setCustomTheme()
         super.onCreate(savedInstanceState)
 
-        if(OABX.prefFlag("catchUncaughtException", true)) {
+        appsSuspendedChecked = false
+
+        if (OABX.prefFlag("catchUncaughtException", true)) {
             Thread.setDefaultUncaughtExceptionHandler { thread, e ->
                 try {
                     LogsHandler.unhandledException(e)
@@ -270,20 +397,24 @@ class MainActivityX : BaseActivity() {
         val blocklistDao = BlocklistDatabase.getInstance(this).blocklistDao
         val appExtrasDao = AppExtrasDatabase.getInstance(this).appExtrasDao
         prefs = getPrivateSharedPrefs()
+
         val viewModelFactory = MainViewModelFactory(appExtrasDao, blocklistDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
         if (!isRememberFiltering) {
             this.sortFilterModel = SortFilterModel()
             this.sortOrder = false
         }
-        viewModel.blocklist.observe(this, {
+        viewModel.blocklist.observe(this) {
             viewModel.refreshList()
-        })
-        viewModel.refreshNow.observe(this, {
+        }
+        viewModel.refreshNow.observe(this) {
             if (it) refreshView()
-        })
+        }
         runOnUiThread { showEncryptionDialog() }
         setContentView(binding.root)
+
+        if (doIntent(intent))
+            return
     }
 
     override fun onDestroy() {
@@ -325,13 +456,20 @@ class MainActivityX : BaseActivity() {
     }
 
     override fun onNewIntent(intent: Intent?) {
+        doIntent(intent)
+        super.onNewIntent(intent)
+    }
+
+    fun doIntent(intent: Intent?): Boolean {
         if (intent != null) {
-            val action = intent.action
-            when (action) {
-                //"WORK_CANCEL" -> OABX.workHandler.cancelWork()
+            val command = intent.action
+            when (command) {
+                else -> {
+                    activity?.showToast("unknown command '$command'")
+                }
             }
         }
-        super.onNewIntent(intent)
+        return false
     }
 
     private fun setupNavigation() {
@@ -350,7 +488,7 @@ class MainActivityX : BaseActivity() {
 
     private fun setupOnClicks() {
         binding.buttonSettings.setOnClickListener {
-            viewModel.appInfoList.value?.let { oabx.cache.put("appInfoList", it) }
+            viewModel.appInfoList.value?.let { OABX.app.cache.put("appInfoList", it) }
             startActivity(
                 Intent(applicationContext, PrefsActivity::class.java)
             )

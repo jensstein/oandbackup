@@ -21,6 +21,7 @@ import android.app.Application
 import android.content.Context
 import android.util.LruCache
 import androidx.preference.PreferenceManager
+import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.AppInfo
@@ -34,8 +35,22 @@ class OABX : Application() {
     var work: WorkHandler? = null
 
     companion object {
+
+        // app should always be created
         var appRef: WeakReference<OABX> = WeakReference(null)
-        val app: OABX           get() = appRef.get()!!
+        val app: OABX get() = appRef.get()!!
+
+        // activity might be null
+        var activityRef: WeakReference<MainActivityX> = WeakReference(null)
+        var activity: MainActivityX ?
+            get() {
+                return activityRef.get()
+            }
+            set(activity) {
+                activityRef = WeakReference(activity)
+            }
+
+        var appsSuspendedChecked = false
 
         var shellHandlerInstance: ShellHandler? = null
             private set
@@ -62,9 +77,29 @@ class OABX : Application() {
     override fun onCreate() {
         super.onCreate()
         appRef = WeakReference(this)
-        Timber.plant(Timber.DebugTree())
+
+        Timber.plant(object: Timber.DebugTree() {
+
+            override fun log(
+                priority: Int, tag: String?, message: String, t: Throwable?
+            ) {
+                super.log(priority, "$tag", message, t)
+            }
+
+            override fun createStackElementTag(element: StackTraceElement): String {
+                return "${
+                    element.methodName
+                }@${
+                    element.lineNumber
+                }:${
+                    super.createStackElementTag(element)
+                }"
+            }
+        })
+
         initShellHandler()
         work = WorkHandler(context)
+        work?.prune()
     }
 
     override fun onTerminate() {

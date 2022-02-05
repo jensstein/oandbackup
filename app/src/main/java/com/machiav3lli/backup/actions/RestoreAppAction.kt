@@ -512,6 +512,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         iv: ByteArray?,
         cachePath: RootFile?
     ) {
+        Timber.i("${OABX.app.packageName} -> $targetPath")
         if (OABX.prefFlag("restoreTarCmd", true)) {
             return genericRestoreFromArchiveTarCmd(
                 dataType,

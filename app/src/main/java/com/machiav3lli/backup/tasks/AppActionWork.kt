@@ -34,8 +34,12 @@ import timber.log.Timber
 class AppActionWork(val context: Context, workerParams: WorkerParameters) :
     CoroutineWorker(context, workerParams) {
 
-    private var notificationId: Int = 123454321
-    private var backupBoolean = true
+    private var packageName = inputData.getString("packageName")!!
+    private var packageLabel = ""
+    private var operation = ""
+    private var backupBoolean = inputData.getBoolean("backupBoolean", true)
+    private var batchName = inputData.getString("batchName") ?: ""
+    private var notificationId: Int = inputData.getInt("notificationId", 123454321)
     private var failures = 0
 
     init {
@@ -43,10 +47,11 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
     }
 
     override suspend fun doWork(): Result {
-        val packageName = inputData.getString("packageName") ?: ""
+        //packageName = inputData.getString("packageName") ?: ""
+        //backupBoolean = inputData.getBoolean("backupBoolean", true)
+        //notificationId = inputData.getInt("notificationId", 123454321)
+        //batchName = inputData.getString("batchName") ?: "?AppActionWork.input?"
         val selectedMode = inputData.getInt("selectedMode", MODE_UNSET)
-        this.backupBoolean = inputData.getBoolean("backupBoolean", true)
-        this.notificationId = inputData.getInt("notificationId", 123454321)
 
         setOperation("-->")
 
@@ -59,6 +64,8 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                 context.packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA)
             appInfo = AppInfo(context, foundItem)
         } catch (e: PackageManager.NameNotFoundException) {
+            if(packageLabel.isEmpty())
+                packageLabel = appInfo?.packageLabel ?: "NONAME"
             val backupDir = context.getDirectoriesInBackupRoot()
                 .find { it.name == packageName }
             backupDir?.let {
@@ -76,8 +83,6 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             }
         }
 
-        val packageLabel = appInfo?.packageLabel
-            ?: "NONE"
         try {
             if(!isStopped) {
 
@@ -123,51 +128,46 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, packageLabel)
         }
-        val error = result?.message
         val succeeded = result?.succeeded ?: false
         if(succeeded) {
-            setOperation("OK")
-            return Result.success(
-                workDataOf(
-                    "backupBoolean" to backupBoolean,
-                    "packageName" to packageName,
-                    "operation" to "OK",
-                    "error" to error,
-                    "succeeded" to succeeded,
-                    "packageLabel" to packageLabel,
-                    "failures" to failures
-                )
-            )
+            return Result.success(getWorkData("OK", result))
         } else {
             failures++
             if(failures <= OABX.prefInt("maxRetriesPerPackage", 3))
                 return Result.retry()
             else {
-                setOperation("FAIL")
-                return Result.failure(
-                    workDataOf(
-                        "backupBoolean" to backupBoolean,
-                        "packageName" to packageName,
-                        "operation" to "ERR",
-                        "error" to error,
-                        "succeeded" to succeeded,
-                        "packageLabel" to packageLabel,
-                        "failures" to failures
-                    )
-                )
+                return Result.failure(getWorkData("ERR", result))
             }
         }
     }
 
     fun setOperation(operation: String = "") {
-        val packageName = inputData.getString("packageName") ?: "NONE"
-        val backupBoolean = inputData.getBoolean("backupBoolean", true)
-        setProgressAsync(workDataOf(
-            "packageName" to packageName,
-            "backupBoolean" to backupBoolean,
-            "operation" to operation,
-            "failures" to failures
-        ))
+        this.operation = operation
+        setProgressAsync(getWorkData(operation))
+    }
+
+    fun getWorkData(operation: String = "", result: ActionResult? = null): Data {
+        if(result == null)
+            return workDataOf(
+                "packageName" to packageName,
+                "packageLabel" to packageLabel,
+                "batchName" to batchName,
+                "backupBoolean" to backupBoolean,
+                "operation" to operation,
+                "failures" to failures
+            )
+        else
+            return workDataOf(
+                "packageName" to packageName,
+                "packageLabel" to packageLabel,
+                "batchName" to batchName,
+                "backupBoolean" to backupBoolean,
+                "operation" to operation,
+                "error" to result.message,
+                "succeeded" to result.succeeded,
+                "packageLabel" to packageLabel,
+                "failures" to failures
+            )
     }
 
     /*
@@ -219,17 +219,20 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             packageName: String,
             mode: Int,
             backupBoolean: Boolean,
-            notificationId: Int
+            notificationId: Int,
+            batchName: String
         ) = OneTimeWorkRequest.Builder(AppActionWork::class.java)
-            .setInputData(
-                workDataOf(
-                    "packageName" to packageName,
-                    "selectedMode" to mode,
-                    "backupBoolean" to backupBoolean,
-                    "notificationId" to notificationId,
-                    "operation" to "..."
+                .addTag("name:$batchName")
+                .setInputData(
+                    workDataOf(
+                        "packageName" to packageName,
+                        "selectedMode" to mode,
+                        "backupBoolean" to backupBoolean,
+                        "notificationId" to notificationId,
+                        "batchName" to batchName,
+                        "operation" to "..."
+                    )
                 )
-            )
             .build()
 
         fun getOutput(t: WorkInfo): Triple<Boolean, String, String> {
