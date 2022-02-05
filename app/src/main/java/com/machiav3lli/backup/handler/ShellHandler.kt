@@ -39,7 +39,6 @@ class ShellHandler {
     lateinit var assets: AssetHandler
 
     init {
-        // TODO: hg42: duplicate to SplashActivity?
         Shell.enableVerboseLogging = BuildConfig.DEBUG
         Shell.setDefaultBuilder(
             Shell.Builder.create()

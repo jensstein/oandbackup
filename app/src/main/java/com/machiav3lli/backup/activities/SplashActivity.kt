@@ -20,7 +20,6 @@ package com.machiav3lli.backup.activities
 import android.content.Intent
 import android.os.Bundle
 import android.os.PowerManager
-import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.PREFS_FIRST_LAUNCH
 import com.machiav3lli.backup.PREFS_IGNORE_BATTERY_OPTIMIZATION
 import com.machiav3lli.backup.classAddress
@@ -30,19 +29,6 @@ import com.topjohnwu.superuser.Shell
 
 class SplashActivity : BaseActivity() {
     private lateinit var binding: ActivitySplashBinding
-
-    companion object {
-        init {
-            // Shell.Config methods shall be called before any shell is created
-            Shell.enableVerboseLogging = BuildConfig.DEBUG
-            Shell.setDefaultBuilder(
-                Shell.Builder.create()
-                        //.setInitializers(BusyBoxInstaller::class.java)
-                        .setFlags(Shell.FLAG_MOUNT_MASTER)
-                        .setTimeout(20)
-            )
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setCustomTheme()
