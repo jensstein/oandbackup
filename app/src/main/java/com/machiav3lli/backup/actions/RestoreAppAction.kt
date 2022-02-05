@@ -450,9 +450,10 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                     ) {
                         options += " --exclude " + quote(excludeCache)
                     }
+                    var suOptions = "--mount-master"
 
                     val cmd =
-                        "su --mount-master -c sh $qTarScript extract $utilBoxQ ${options} ${quote(targetDir)}"
+                        "su $suOptions -c sh $qTarScript extract $utilBoxQ ${options} ${quote(targetDir)}"
                     Timber.i("SHELL: $cmd")
 
                     val process = Runtime.getRuntime().exec(cmd)

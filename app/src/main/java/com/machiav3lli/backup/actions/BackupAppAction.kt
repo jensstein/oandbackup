@@ -424,8 +424,9 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             if (context.getDefaultSharedPreferences().getBoolean(PREFS_EXCLUDECACHE, true)) {
                 options += " --exclude ${quote(excludeCache)}"
             }
+            var suOptions = "--mount-master"
 
-            val cmd = "su --mount-master -c sh ${quote(tarScript)} create $utilBoxQ ${options} ${quote(sourcePath)}"
+            val cmd = "su $suOptions -c sh ${quote(tarScript)} create $utilBoxQ ${options} ${quote(sourcePath)}"
             Timber.i("SHELL: $cmd")
 
             val process = Runtime.getRuntime().exec(cmd)

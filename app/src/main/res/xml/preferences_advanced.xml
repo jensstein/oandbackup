@@ -48,6 +48,7 @@
         android:summary="@string/prefs_allowdowngrade_summary"
         android:title="@string/prefs_allowdowngrade" />
 
+    <!-- developer settings -->
 
     <androidx.preference.PreferenceCategory
         android:icon="@drawable/ic_force_kill"
