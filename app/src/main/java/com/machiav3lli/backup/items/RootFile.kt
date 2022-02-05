@@ -50,10 +50,6 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
     constructor(parent: File?, child: String) : this(parent?.absolutePath, child) {}
     constructor(uri: URI) : this(File(uri)) {}
 
-    private fun cmd(c: String): String = ShellUtils.fastCmd(c)
-
-    private fun cmdBool(c: String): Boolean = ShellUtils.fastCmdResult(c)
-
     override fun canExecute(): Boolean = cmdBool("[ -x $quoted ]")
 
     override fun canRead(): Boolean = cmdBool("[ -r $quoted ]")
@@ -460,6 +456,13 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
     fun outputStream(): OutputStream = SuFileOutputStream.open(SuFile(this.absolutePath))
 
     companion object {
+
+        fun cmd(c: String): String = ShellUtils.fastCmd(c)
+        fun cmdBool(c: String): Boolean = ShellUtils.fastCmdResult(c)
+        //private fun cmd(c: String): String = ShellHandler.runAsRoot(c).out[0].toString()
+        //private fun cmdBool(c: String): Boolean = ShellHandler.runAsRoot(c).code == 0
+
+
         fun open(pathname: String): File {
             return if (Shell.rootAccess()) RootFile(pathname) else File(pathname)
         }
