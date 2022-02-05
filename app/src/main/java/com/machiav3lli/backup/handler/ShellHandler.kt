@@ -121,12 +121,12 @@ class ShellHandler {
         // use -dlZ instead of -dnZ, because -nZ was found (by Kostas!) with an error (with no space between group and context)
         // apparently uid/gid is less tested than names
         var shellResult: Shell.Result? = null
+        val command = "$utilBoxQ ls -bdAlZ ${quote(filepath)}"
         try {
-            val command = "$utilBoxQ ls -bdAlZ ${quote(filepath)}"
             shellResult = runAsRoot(command)
             return shellResult.out[0].split(" ", limit = 6).slice(2..4).toTypedArray()
         } catch (e: Throwable) {
-            throw UnexpectedCommandResult("'\$command' failed", shellResult)
+            throw UnexpectedCommandResult("'$command' failed", shellResult)
         }
     }
 
