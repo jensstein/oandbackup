@@ -252,40 +252,32 @@ fun Activity.requireSMSMMSPermission() {
 
 val Context.checkSMSMMSPermission: Boolean
     get() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val appOps = (getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)
-            val mode = appOps.unsafeCheckOpNoThrow(
+        val appOps = (getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)
+        val mode = when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
+                appOps.unsafeCheckOpNoThrow(
                         AppOpsManager.OPSTR_READ_SMS,
                         Process.myUid(),
                         packageName
-                    )
-            return if (mode == AppOpsManager.MODE_DEFAULT) {
-                (checkCallingOrSelfPermission(Manifest.permission.READ_SMS) ==
-                        PackageManager.PERMISSION_GRANTED &&
-                    checkCallingOrSelfPermission(Manifest.permission.SEND_SMS) ==
-                        PackageManager.PERMISSION_GRANTED &&
-                    checkCallingOrSelfPermission(Manifest.permission.RECEIVE_SMS) ==
-                        PackageManager.PERMISSION_GRANTED &&
-                    checkCallingOrSelfPermission(Manifest.permission.RECEIVE_MMS) ==
-                        PackageManager.PERMISSION_GRANTED &&
-                    checkCallingOrSelfPermission(Manifest.permission.RECEIVE_WAP_PUSH) ==
-                        PackageManager.PERMISSION_GRANTED)
-            } else {
-                mode == AppOpsManager.MODE_ALLOWED
-            }
-        } else {
+                )
             // Done this way because on (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
             // it always says that the permission is granted even though it is not
-            return (checkCallingOrSelfPermission(Manifest.permission.READ_SMS) ==
-                        PackageManager.PERMISSION_GRANTED &&
-                    checkCallingOrSelfPermission(Manifest.permission.SEND_SMS) ==
-                        PackageManager.PERMISSION_GRANTED &&
-                    checkCallingOrSelfPermission(Manifest.permission.RECEIVE_SMS) ==
-                        PackageManager.PERMISSION_GRANTED &&
-                    checkCallingOrSelfPermission(Manifest.permission.RECEIVE_MMS) ==
-                        PackageManager.PERMISSION_GRANTED &&
-                    checkCallingOrSelfPermission(Manifest.permission.RECEIVE_WAP_PUSH) ==
-                        PackageManager.PERMISSION_GRANTED)
+            else -> 3
+
+        }
+        return if (mode == AppOpsManager.MODE_DEFAULT) {
+            (checkCallingOrSelfPermission(Manifest.permission.READ_SMS) ==
+                PackageManager.PERMISSION_GRANTED &&
+            checkCallingOrSelfPermission(Manifest.permission.SEND_SMS) ==
+                PackageManager.PERMISSION_GRANTED &&
+            checkCallingOrSelfPermission(Manifest.permission.RECEIVE_SMS) ==
+                PackageManager.PERMISSION_GRANTED &&
+            checkCallingOrSelfPermission(Manifest.permission.RECEIVE_MMS) ==
+                PackageManager.PERMISSION_GRANTED &&
+            checkCallingOrSelfPermission(Manifest.permission.RECEIVE_WAP_PUSH) ==
+                PackageManager.PERMISSION_GRANTED)
+        } else {
+            mode == AppOpsManager.MODE_ALLOWED
         }
     }
 
@@ -299,24 +291,23 @@ fun Activity.requireContactsPermission() {
 
 val Context.checkContactsPermission: Boolean
     get() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val appOps = (getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)
-            val mode = appOps.unsafeCheckOpNoThrow(
+        val appOps = (getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)
+        val mode = when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
+                appOps.unsafeCheckOpNoThrow(
                         AppOpsManager.OPSTR_READ_CONTACTS,
                         Process.myUid(),
                         packageName
-                    )
-            return if (mode == AppOpsManager.MODE_DEFAULT) {
-                checkCallingOrSelfPermission(Manifest.permission.READ_CONTACTS) ==
-                    PackageManager.PERMISSION_GRANTED
-            } else {
-                mode == AppOpsManager.MODE_ALLOWED
-            }
-        } else {
+                )
             // Done this way because on (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
             // it always says that the permission is granted even though it is not
-            return checkCallingOrSelfPermission(Manifest.permission.READ_CONTACTS) ==
-                        PackageManager.PERMISSION_GRANTED
+            else -> 3
+        }
+        return if (mode == AppOpsManager.MODE_DEFAULT) {
+            checkCallingOrSelfPermission(Manifest.permission.READ_CONTACTS) ==
+                PackageManager.PERMISSION_GRANTED
+        } else {
+            mode == AppOpsManager.MODE_ALLOWED
         }
     }
 
