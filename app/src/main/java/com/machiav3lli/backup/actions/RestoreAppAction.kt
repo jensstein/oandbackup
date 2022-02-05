@@ -604,6 +604,10 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             throw RestoreFailedException(
                 "path '$extractTo' does not contain ${app.packageName}"
             )
+
+        if(!RootFile(extractTo).isDirectory)
+            throw RestoreFailedException("directory '$extractTo' does not exist")
+
         // retrieve the assigned uid and gid from the data directory Android created
         val uidgidcon = shell.suGetOwnerGroupContext(extractTo)
         genericRestoreFromArchive(
@@ -648,6 +652,10 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             throw RestoreFailedException(
                 "path '$extractTo' does not contain ${app.packageName}"
             )
+
+        if(!RootFile(extractTo).isDirectory)
+            throw RestoreFailedException("directory '$extractTo' does not exist")
+
         // retrieve the assigned uid and gid from the data directory Android created
         val uidgidcon = shell.suGetOwnerGroupContext(extractTo)
         genericRestoreFromArchive(
