@@ -46,6 +46,8 @@ import java.util.*
 
 const val READ_PERMISSION = 2
 const val WRITE_PERMISSION = 3
+const val SMS_PERMISSION = 4
+const val CONTACTS_PERMISSION = 5
 
 fun Context.getDefaultSharedPreferences(): SharedPreferences =
     PreferenceManager.getDefaultSharedPreferences(this)
@@ -245,7 +247,7 @@ fun Activity.requireSMSMMSPermission() {
         checkSelfPermission(Manifest.permission.RECEIVE_WAP_PUSH) !=
             PackageManager.PERMISSION_GRANTED
     )
-        ActivityCompat.requestPermissions(this,smsmmsPermissionList, WRITE_PERMISSION)
+        ActivityCompat.requestPermissions(this,smsmmsPermissionList, SMS_PERMISSION)
 }
 
 val Context.checkSMSMMSPermission: Boolean
@@ -286,7 +288,7 @@ fun Activity.requireContactsPermission() {
             checkSelfPermission(Manifest.permission.READ_CONTACTS) !=
             PackageManager.PERMISSION_GRANTED
     )
-        ActivityCompat.requestPermissions(this,arrayOf(Manifest.permission.READ_CONTACTS), WRITE_PERMISSION)
+        ActivityCompat.requestPermissions(this,arrayOf(Manifest.permission.READ_CONTACTS), CONTACTS_PERMISSION)
 }
 
 val Context.checkContactsPermission: Boolean
