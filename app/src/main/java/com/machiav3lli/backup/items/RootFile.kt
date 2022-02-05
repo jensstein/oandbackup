@@ -1,5 +1,6 @@
 package com.machiav3lli.backup.items
 
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
@@ -103,6 +104,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
      * Unsupported
      */
     override fun deleteOnExit() {
+        clearCache()
         throw UnsupportedOperationException("Unsupported RootFile operation")
     }
 
@@ -185,21 +187,21 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
 
     var existsCached : Boolean? = null
     override fun exists(): Boolean {
-        if (existsCached == null)
+        if (existsCached == null || ! OABX.prefFlag("cacheRootFileAttributes", false))
             existsCached = cmdBool("[ -e $quoted ]")
         return existsCached!!
     }
 
     var isDirectoryCached : Boolean? = null
     override fun isDirectory(): Boolean {
-        if (isDirectoryCached == null)
+        if (isDirectoryCached == null || ! OABX.prefFlag("cacheRootFileAttributes", false))
             isDirectoryCached = cmdBool("[ -d $quoted ]")
         return isDirectoryCached!!
     }
 
     var isFileCached : Boolean? = null
     override fun isFile(): Boolean  {
-        if (isFileCached == null)
+        if (isFileCached == null || ! OABX.prefFlag("cacheRootFileAttributes", false))
             isFileCached = cmdBool("[ -f $quoted ]")
         return isFileCached!!
     }
