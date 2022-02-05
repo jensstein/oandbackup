@@ -21,6 +21,7 @@ import android.Manifest
 import android.app.role.RoleManager
 import android.content.ContentValues
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Telephony
@@ -37,6 +38,9 @@ import java.io.InputStreamReader
 object RestoreSMSMMSJSONAction {
     @Throws(RuntimeException::class)
     fun restoreData(context: Context, filePath: String) {
+        if (!context.packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
+            throw RuntimeException("Device does not have SMS/MMS.")
+        }
         if (
                 (PermissionChecker.checkCallingOrSelfPermission(context, Manifest.permission.READ_SMS) == PermissionChecker.PERMISSION_DENIED) ||
                 (PermissionChecker.checkCallingOrSelfPermission(context, Manifest.permission.SEND_SMS) == PermissionChecker.PERMISSION_DENIED) ||

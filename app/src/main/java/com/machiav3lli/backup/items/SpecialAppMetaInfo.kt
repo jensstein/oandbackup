@@ -1,6 +1,7 @@
 package com.machiav3lli.backup.items
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
@@ -90,19 +91,21 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
                 val userDir = "/data/system/users/$userId"
                 val specPrefix = "$ "
 
-                specialPackages
-                    .add(
-                        AppInfo(
-                            context, SpecialAppMetaInfo(
-                                "special.smsmms.json",
-                                specPrefix + context.getString(R.string.spec_smsmmsjson),
-                                Build.VERSION.RELEASE,
-                                Build.VERSION.SDK_INT, arrayOf(
-                                    "${context.cacheDir.absolutePath}/special.smsmms.json.json"
+                if (context.packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
+                    specialPackages
+                        .add(
+                            AppInfo(
+                                context, SpecialAppMetaInfo(
+                                    "special.smsmms.json",
+                                    specPrefix + context.getString(R.string.spec_smsmmsjson),
+                                    Build.VERSION.RELEASE,
+                                    Build.VERSION.SDK_INT, arrayOf(
+                                        "${context.cacheDir.absolutePath}/special.smsmms.json.json"
+                                    )
                                 )
                             )
                         )
-                    )
+                }
                 specialPackages
                     .add(
                         AppInfo(

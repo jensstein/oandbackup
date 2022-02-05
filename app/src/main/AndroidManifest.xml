@@ -36,6 +36,7 @@
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
+    
     <!-- special.smsmms.json -->
     <uses-feature
         android:name="android.hardware.telephony"
