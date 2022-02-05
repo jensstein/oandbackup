@@ -262,8 +262,7 @@ val Context.checkSMSMMSPermission: Boolean
                 )
             // Done this way because on (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
             // it always says that the permission is granted even though it is not
-            else -> 3
-
+            else -> AppOpsManager.MODE_DEFAULT
         }
         return if (mode == AppOpsManager.MODE_DEFAULT) {
             (checkCallingOrSelfPermission(Manifest.permission.READ_SMS) ==
@@ -301,7 +300,7 @@ val Context.checkContactsPermission: Boolean
                 )
             // Done this way because on (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
             // it always says that the permission is granted even though it is not
-            else -> 3
+            else -> AppOpsManager.MODE_DEFAULT
         }
         return if (mode == AppOpsManager.MODE_DEFAULT) {
             checkCallingOrSelfPermission(Manifest.permission.READ_CONTACTS) ==
