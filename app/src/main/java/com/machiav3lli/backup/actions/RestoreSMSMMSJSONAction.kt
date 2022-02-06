@@ -256,25 +256,29 @@ object RestoreSMSMMSJSONAction {
                 }
             }
         }
+        val addressSet = mutableSetOf<String>()
         for (address in addresses) {
             if (
-                    (values.getAsString(Telephony.Mms.MESSAGE_BOX) == "1" && address.getAsString(Telephony.Mms.Addr.TYPE) == "137") ||
-                    (values.getAsString(Telephony.Mms.MESSAGE_BOX) == "2" && address.getAsString(Telephony.Mms.Addr.TYPE) == "151")
+                    (values.getAsString(Telephony.Mms.MESSAGE_BOX) == "1" && address.getAsString(Telephony.Mms.Addr.TYPE) != "151") ||
+                    (values.getAsString(Telephony.Mms.MESSAGE_BOX) == "2" && address.getAsString(Telephony.Mms.Addr.TYPE) != "137")
                 ) {
-                val threadId = Telephony.Threads.getOrCreateThreadId(context, address.getAsString(Telephony.Mms.Addr.ADDRESS))
-                values.put(Telephony.Mms.THREAD_ID, threadId)
-                queryWhere = "$queryWhere ${Telephony.Mms.THREAD_ID} = $threadId"
+                addressSet.add(address.getAsString(Telephony.Mms.Addr.ADDRESS))
             }
         }
-        val savedMMSID = saveMMS(context, values, queryWhere)
-        if (savedMMSID > 0) {
-            for (address in addresses) {
-                address.put(Telephony.Mms.Addr.MSG_ID, savedMMSID)
-                saveMMSAddress(context, address, savedMMSID)
-            }
-            for (part in parts) {
-                part.put(Telephony.Mms.Part.MSG_ID, savedMMSID)
-                saveMMSPart(context, part)
+        if (addressSet.isNotEmpty()) {
+            val threadId = Telephony.Threads.getOrCreateThreadId(context, addressSet)
+            values.put(Telephony.Mms.THREAD_ID, threadId)
+            queryWhere = "$queryWhere ${Telephony.Mms.THREAD_ID} = $threadId"
+            val savedMMSID = saveMMS(context, values, queryWhere)
+            if (savedMMSID > 0) {
+                for (address in addresses) {
+                    address.put(Telephony.Mms.Addr.MSG_ID, savedMMSID)
+                    saveMMSAddress(context, address, savedMMSID)
+                }
+                for (part in parts) {
+                    part.put(Telephony.Mms.Part.MSG_ID, savedMMSID)
+                    saveMMSPart(context, part)
+                }
             }
         }
         jsonReader.endObject()
