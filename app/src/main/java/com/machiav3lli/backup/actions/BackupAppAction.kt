@@ -267,16 +267,16 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             apksToBackup.size,
             apksToBackup.joinToString(" ") { s: String -> RootFile(s).name }
         )
-        try {
-            for (apk in apksToBackup) {
+        for (apk in apksToBackup) {
+            try {
                 suCopyFileToDocument(apk, backupInstanceDir)
+            } catch (e: IOException) {
+                Timber.e("$app: Could not backup apk $apk: $e")
+                throw BackupFailedException("Could not backup apk $apk", e)
+            } catch (e: Throwable) {
+                LogsHandler.unhandledException(e, app)
+                throw BackupFailedException("Could not backup apk $apk", e)
             }
-        } catch (e: IOException) {
-            Timber.e("$app: Backup APKs failed: $e")
-            throw BackupFailedException("Could not backup apk", e)
-        } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, app)
-            throw BackupFailedException("Could not backup apk", e)
         }
     }
 
