@@ -36,6 +36,9 @@ import java.io.InputStreamReader
 
 
 object RestoreSMSMMSJSONAction {
+    private var currentThreadId: Long = 0
+    private val compareForNewThread: Long = 0
+
     @Throws(RuntimeException::class)
     fun restoreData(context: Context, filePath: String) {
         if (!context.packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
@@ -57,21 +60,34 @@ object RestoreSMSMMSJSONAction {
         inputFile?.use { inputStream ->
             BufferedReader(InputStreamReader(inputStream)).use { reader ->
                 val jsonReader = JsonReader(reader)
-                jsonReader.beginArray()
-                while (jsonReader.hasNext()) {
-                    jsonReader.beginObject()
-                    when (jsonReader.nextName()) {
-                        "SMS" -> restoreSMS(context, jsonReader)
-                        "MMS" -> restoreMMS(context, jsonReader)
-                        else -> jsonReader.skipValue()
-                    }
-                    jsonReader.endObject()
-                }
-                jsonReader.endArray()
+                restoreTreads(context, jsonReader)
                 jsonReader.close()
             }
         }
         inputFile?.close()
+    }
+
+    // Loop through Threads
+    private fun restoreTreads(context: Context, jsonReader: JsonReader) {
+        jsonReader.beginArray()
+        while (jsonReader.hasNext()) {
+            currentThreadId = compareForNewThread
+            parseThread(context, jsonReader)
+        }
+        jsonReader.endArray()
+    }
+
+    // Parse through one Thread
+    private fun parseThread(context: Context, jsonReader: JsonReader) {
+        jsonReader.beginObject()
+        while (jsonReader.hasNext()) {
+            when (jsonReader.nextName()) {
+                "1-SMS" -> restoreSMS(context, jsonReader)
+                "2-MMS" -> restoreMMS(context, jsonReader)
+                else -> jsonReader.skipValue()
+            }
+        }
+        jsonReader.endObject()
     }
 
     // Loop through SMS
@@ -141,22 +157,23 @@ object RestoreSMSMMSJSONAction {
                 jsonReader.skipValue()
             }
         }
-        val threadId = Telephony.Threads.getOrCreateThreadId(context, values.getAsString(Telephony.Sms.ADDRESS))
-        values.put(Telephony.Sms.THREAD_ID, threadId)
-        queryWhere = "$queryWhere ${Telephony.Sms.THREAD_ID} = $threadId"
+        if (currentThreadId == compareForNewThread) {
+            currentThreadId = Telephony.Threads.getOrCreateThreadId(context, values.getAsString(Telephony.Sms.ADDRESS))
+        }
+        values.put(Telephony.Sms.THREAD_ID, currentThreadId)
+        queryWhere = "$queryWhere ${Telephony.Sms.THREAD_ID} = $currentThreadId"
         saveSMS(context, values, queryWhere)
         jsonReader.endObject()
     }
 
     // Save single SMS to database
     private fun saveSMS(context: Context, values: ContentValues, queryWhere: String) {
-        val contentResolver = context.contentResolver
         // Check for duplicates
-        val existsCursor = contentResolver.query(Telephony.Sms.CONTENT_URI, arrayOf(Telephony.Sms._ID), queryWhere, null, null)
+        val existsCursor = context.contentResolver.query(Telephony.Sms.CONTENT_URI, arrayOf(Telephony.Sms._ID), queryWhere, null, null)
         val exists = existsCursor?.count
         existsCursor?.close()
         if (exists == 0) {
-            contentResolver.insert(Telephony.Sms.CONTENT_URI, values)
+            context.contentResolver.insert(Telephony.Sms.CONTENT_URI, values)
         }
     }
 
@@ -256,19 +273,21 @@ object RestoreSMSMMSJSONAction {
                 }
             }
         }
-        val addressSet = mutableSetOf<String>()
-        for (address in addresses) {
-            if (
-                    (values.getAsString(Telephony.Mms.MESSAGE_BOX) == "1" && address.getAsString(Telephony.Mms.Addr.TYPE) != "151") ||
-                    (values.getAsString(Telephony.Mms.MESSAGE_BOX) == "2" && address.getAsString(Telephony.Mms.Addr.TYPE) != "137")
-                ) {
-                addressSet.add(address.getAsString(Telephony.Mms.Addr.ADDRESS))
+        if (currentThreadId == compareForNewThread) {
+            val addressSet = mutableSetOf<String>()
+            for (address in addresses) {
+                if (
+                        (values.getAsString(Telephony.Mms.MESSAGE_BOX) == "1" && address.getAsString(Telephony.Mms.Addr.TYPE) != "151") ||
+                        (values.getAsString(Telephony.Mms.MESSAGE_BOX) == "2" && address.getAsString(Telephony.Mms.Addr.TYPE) != "137")
+                    ) {
+                    addressSet.add(address.getAsString(Telephony.Mms.Addr.ADDRESS))
+                }
             }
+            currentThreadId = Telephony.Threads.getOrCreateThreadId(context, addressSet)
         }
-        if (addressSet.isNotEmpty()) {
-            val threadId = Telephony.Threads.getOrCreateThreadId(context, addressSet)
-            values.put(Telephony.Mms.THREAD_ID, threadId)
-            queryWhere = "$queryWhere ${Telephony.Mms.THREAD_ID} = $threadId"
+        if (currentThreadId != compareForNewThread) {
+            values.put(Telephony.Mms.THREAD_ID, currentThreadId)
+            queryWhere = "$queryWhere ${Telephony.Mms.THREAD_ID} = $currentThreadId"
             val savedMMSID = saveMMS(context, values, queryWhere)
             if (savedMMSID > 0) {
                 for (address in addresses) {
@@ -357,13 +376,12 @@ object RestoreSMSMMSJSONAction {
 
     // Save single MMS to database
     private fun saveMMS(context: Context, values: ContentValues, queryWhere: String): Long {
-        val contentResolver = context.contentResolver
         // Check for duplicates
-        val existsCursor = contentResolver.query(Telephony.Mms.CONTENT_URI, arrayOf(Telephony.Mms._ID), queryWhere, null, null)
+        val existsCursor = context.contentResolver.query(Telephony.Mms.CONTENT_URI, arrayOf(Telephony.Mms._ID), queryWhere, null, null)
         val exists = existsCursor?.count
         existsCursor?.close()
         if (exists == 0) {
-            val insertData = contentResolver.insert(Telephony.Mms.CONTENT_URI, values)
+            val insertData = context.contentResolver.insert(Telephony.Mms.CONTENT_URI, values)
             if (insertData != null) {
                 return insertData.lastPathSegment?.toLong() ?: -1
             }
@@ -378,9 +396,7 @@ object RestoreSMSMMSJSONAction {
         } else {
             Uri.parse("content://mms/$id/addr")
         }
-        val contentResolver = context.contentResolver
-        // Check for duplicates
-        contentResolver.insert(uri, values)
+        context.contentResolver.insert(uri, values)
     }
 
     // Save single MMS Address to database
@@ -392,12 +408,11 @@ object RestoreSMSMMSJSONAction {
             Uri.parse("content://mms/$messageId/part")
         }
         val contentType: String = values.getAsString(Telephony.Mms.Part.CONTENT_TYPE)
-        val contentResolver = context.contentResolver
         when {
             (values.containsKey(Telephony.Mms.Part._DATA) && contentType.startsWith("image/")) -> {
                 val partData = Base64.decode(values.getAsString(Telephony.Mms.Part._DATA), Base64.NO_WRAP)
                 values.remove(Telephony.Mms.Part._DATA)
-                val insertData = contentResolver.insert(uri, values)
+                val insertData = context.contentResolver.insert(uri, values)
                 // Add data to part
                 if (insertData != null) {
                     val outputStream = context.contentResolver.openOutputStream(insertData)
@@ -414,7 +429,7 @@ object RestoreSMSMMSJSONAction {
                 }
             }
             else -> {
-                contentResolver.insert(uri, values)
+                context.contentResolver.insert(uri, values)
             }
         }
     }

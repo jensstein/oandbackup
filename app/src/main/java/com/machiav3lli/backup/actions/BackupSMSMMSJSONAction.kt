@@ -47,13 +47,29 @@ object BackupSMSMMSJSONAction {
         ) {
             throw RuntimeException("No permission for SMS/MMS.")
         }
+
         val outputFile = context.contentResolver.openOutputStream(Uri.fromFile(File(filePath)), "wt")
         outputFile?.use { outputStream ->
             BufferedWriter(OutputStreamWriter(outputStream)).use { writer ->
                 val jsonWriter = JsonWriter(writer)
                 jsonWriter.beginArray()
-                backupSMS(context, jsonWriter)
-                backupMMS(context, jsonWriter)
+                val threads = context.contentResolver.query(Telephony.Threads.CONTENT_URI, arrayOf("thread_id"), null, null, "thread_id")
+                threads?.use { thread ->
+                    if (thread.moveToFirst()) {
+                        do {
+                            thread.columnNames.forEachIndexed { m, columnName ->
+                                if (columnName == "thread_id") {
+                                    val threadId = thread.getLong(m)
+                                    jsonWriter.beginObject()
+                                    backupSMS(context, jsonWriter, threadId)
+                                    backupMMS(context, jsonWriter, threadId)
+                                    jsonWriter.endObject()
+                                }
+                            }
+                        } while (thread.moveToNext())
+                    }
+                }
+                threads?.close()
                 jsonWriter.endArray()
                 jsonWriter.close()
             }
@@ -61,7 +77,7 @@ object BackupSMSMMSJSONAction {
         outputFile?.close()
     }
 
-    private fun backupSMS(context: Context, jsonWriter: JsonWriter) {
+    private fun backupSMS(context: Context, jsonWriter: JsonWriter, threadId: Long) {
         val projection = arrayOf(
             Telephony.Sms.ADDRESS,
             Telephony.Sms.DATE,
@@ -78,10 +94,9 @@ object BackupSMSMMSJSONAction {
             Telephony.Sms.ERROR_CODE,
             Telephony.Sms.SEEN
         )
-        jsonWriter.beginObject()
-        jsonWriter.name("SMS")
+        jsonWriter.name("1-SMS")
         jsonWriter.beginArray()
-        val messages = context.contentResolver.query(Telephony.Sms.CONTENT_URI, projection, null, null, Telephony.Sms.DATE)
+        val messages = context.contentResolver.query(Telephony.Sms.CONTENT_URI, projection, "${Telephony.Sms.THREAD_ID} = $threadId", null, Telephony.Sms.DATE)
         messages?.use { message ->
             if (message.moveToFirst()) {
                 do {
@@ -114,10 +129,9 @@ object BackupSMSMMSJSONAction {
         }
         messages?.close()
         jsonWriter.endArray()
-        jsonWriter.endObject()
     }
     
-    private fun backupMMS(context: Context, jsonWriter: JsonWriter) {
+    private fun backupMMS(context: Context, jsonWriter: JsonWriter, threadId: Long) {
         val projection = arrayOf(
             Telephony.Mms._ID,
             Telephony.Mms.CONTENT_TYPE,
@@ -139,10 +153,9 @@ object BackupSMSMMSJSONAction {
             Telephony.Mms.TRANSACTION_ID,
             Telephony.Mms.MMS_VERSION
         )
-        jsonWriter.beginObject()
-        jsonWriter.name("MMS")
+        jsonWriter.name("2-MMS")
         jsonWriter.beginArray()
-        val messages = context.contentResolver.query(Telephony.Mms.CONTENT_URI, projection, null, null, Telephony.Mms.DATE)
+        val messages = context.contentResolver.query(Telephony.Mms.CONTENT_URI, projection, "${Telephony.Mms.THREAD_ID} = $threadId", null, Telephony.Mms.DATE)
         messages?.use { message ->
             if (message.moveToFirst()) {
                 do {
@@ -185,7 +198,6 @@ object BackupSMSMMSJSONAction {
         }
         messages?.close()
         jsonWriter.endArray()
-        jsonWriter.endObject()
     }
 
     private fun backupParts(context: Context, jsonWriter: JsonWriter, id: Long) {
