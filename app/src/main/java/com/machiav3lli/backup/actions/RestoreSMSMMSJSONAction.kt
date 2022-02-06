@@ -26,8 +26,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Telephony
-import android.telephony.PhoneNumberUtils
-import android.telephony.TelephonyManager
 import android.util.Base64
 import android.util.JsonReader
 import android.util.JsonToken
@@ -41,7 +39,6 @@ import java.io.InputStreamReader
 object RestoreSMSMMSJSONAction {
     private var currentThreadId: Long = 0
     private val compareForNewThread: Long = 0
-    private var currentPhoneNumber: String = ""
 
     @SuppressLint("HardwareIds")
     @Throws(RuntimeException::class)
@@ -61,8 +58,6 @@ object RestoreSMSMMSJSONAction {
         if (!isDefaultSms(context)) {
             throw RuntimeException("OAndBackupX not default SMS/MMS app.")
         }
-        currentPhoneNumber = (context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager).line1Number
-        currentPhoneNumber = PhoneNumberUtils.normalizeNumber(currentPhoneNumber)
         val inputFile = context.contentResolver.openInputStream(Uri.fromFile(File(filePath)))
         inputFile?.use { inputStream ->
             BufferedReader(InputStreamReader(inputStream)).use { reader ->
@@ -206,14 +201,14 @@ object RestoreSMSMMSJSONAction {
                 "ADDRESSES" -> {
                     jsonReader.beginArray()
                     while (jsonReader.hasNext()) {
-                        addresses.add(parseAddress(context, jsonReader))
+                        addresses.add(parseAddress(jsonReader))
                     }
                     jsonReader.endArray()
                 }
                 "PARTS" -> {
                     jsonReader.beginArray()
                     while (jsonReader.hasNext()) {
-                        parts.add(parsePart(context, jsonReader))
+                        parts.add(parsePart(jsonReader))
                     }
                     jsonReader.endArray()
                 }
@@ -282,10 +277,18 @@ object RestoreSMSMMSJSONAction {
         }
         if (currentThreadId == compareForNewThread) {
             val addressSet = mutableSetOf<String>()
+            var address137 = ""
             for (address in addresses) {
-                if (!address.getAsBoolean("CURRENTPHONE")) {
+                if (address.getAsString(Telephony.Mms.Addr.TYPE) == "151") {
                     addressSet.add(address.getAsString(Telephony.Mms.Addr.ADDRESS))
                 }
+                if (address.getAsString(Telephony.Mms.Addr.TYPE) == "137") {
+                    address137 = address.getAsString(Telephony.Mms.Addr.ADDRESS)
+                }
+            }
+            if (values.getAsString(Telephony.Mms.MESSAGE_BOX) == "1") {
+                addressSet.remove(addressSet.last())
+                addressSet.add(address137)
             }
             currentThreadId = Telephony.Threads.getOrCreateThreadId(context, addressSet)
         }
@@ -295,7 +298,6 @@ object RestoreSMSMMSJSONAction {
             val savedMMSID = saveMMS(context, values, queryWhere)
             if (savedMMSID > 0) {
                 for (address in addresses) {
-                    address.remove("CURRENTPHONE")
                     address.put(Telephony.Mms.Addr.MSG_ID, savedMMSID)
                     saveMMSAddress(context, address, savedMMSID)
                 }
@@ -309,7 +311,7 @@ object RestoreSMSMMSJSONAction {
     }
 
     // Parse through one Address
-    private fun parseAddress(context: Context, jsonReader: JsonReader): ContentValues {
+    private fun parseAddress(jsonReader: JsonReader): ContentValues {
         val values = ContentValues()
         jsonReader.beginObject()
         while (jsonReader.hasNext()) {
@@ -317,17 +319,10 @@ object RestoreSMSMMSJSONAction {
                 "ADDRESS" -> Telephony.Mms.Addr.ADDRESS
                 "TYPE" -> Telephony.Mms.Addr.TYPE
                 "CHARSET" ->  Telephony.Mms.Addr.CHARSET
-                "CURRENTPHONE" -> "CURRENTPHONE"
                 else -> "{}"
             }
             if (useName != "{}") {
                 when (jsonReader.peek()) {
-                    JsonToken.BOOLEAN -> {
-                        values.put(useName, jsonReader.nextBoolean())
-                    }
-                    JsonToken.NUMBER -> {
-                        values.put(useName, jsonReader.nextInt())
-                    }
                     JsonToken.STRING -> {
                         values.put(useName, jsonReader.nextString())
                     }
@@ -343,15 +338,11 @@ object RestoreSMSMMSJSONAction {
             }
         }
         jsonReader.endObject()
-        if (values.getAsBoolean("CURRENTPHONE")) {
-            values.remove(Telephony.Mms.Addr.ADDRESS)
-            values.put(Telephony.Mms.Addr.ADDRESS, currentPhoneNumber)
-        }
         return values
     }
 
     // Parse through one Part
-    private fun parsePart(context: Context, jsonReader: JsonReader): ContentValues {
+    private fun parsePart(jsonReader: JsonReader): ContentValues {
         val values = ContentValues()
         jsonReader.beginObject()
         while (jsonReader.hasNext()) {

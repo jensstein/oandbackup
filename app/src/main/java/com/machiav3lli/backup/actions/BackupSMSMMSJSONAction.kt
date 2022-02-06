@@ -18,14 +18,11 @@
 package com.machiav3lli.backup.actions
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Telephony
-import android.telephony.PhoneNumberUtils
-import android.telephony.TelephonyManager
 import android.util.Base64
 import android.util.JsonWriter
 import androidx.core.content.PermissionChecker
@@ -36,10 +33,6 @@ import java.io.IOException
 import java.io.OutputStreamWriter
 
 object BackupSMSMMSJSONAction {
-    private var currentPhoneNumber: String = ""
-    private var currentCountryIso: String = ""
-
-    @SuppressLint("HardwareIds")
     @Throws(RuntimeException::class)
     fun backupData(context: Context, filePath: String) {
         if (!context.packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
@@ -53,12 +46,6 @@ object BackupSMSMMSJSONAction {
                 (PermissionChecker.checkCallingOrSelfPermission(context, Manifest.permission.RECEIVE_WAP_PUSH) == PermissionChecker.PERMISSION_DENIED)
         ) {
             throw RuntimeException("No permission for SMS/MMS.")
-        }
-        val tManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-        currentPhoneNumber = tManager.line1Number
-        currentPhoneNumber = PhoneNumberUtils.normalizeNumber(currentPhoneNumber)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-            currentCountryIso = tManager.networkCountryIso
         }
         val outputFile = context.contentResolver.openOutputStream(Uri.fromFile(File(filePath)), "wt")
         outputFile?.use { outputStream ->
@@ -342,28 +329,6 @@ object BackupSMSMMSJSONAction {
                         }
                         if (useColumnName != "{}") {
                             jsonWriter.name(useColumnName).value(address.getString(m))
-                            if (useColumnName == "ADDRESS") {
-                                if (
-                                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-                                        PhoneNumberUtils.areSamePhoneNumber(
-                                                            PhoneNumberUtils.normalizeNumber(address.getString(m)),
-                                                            currentPhoneNumber,
-                                                            currentCountryIso
-                                                        )
-                                    ) {
-                                    jsonWriter.name("CURRENTPHONE").value(1)
-                                } else if (
-                                        Build.VERSION.SDK_INT < Build.VERSION_CODES.S &&
-                                        PhoneNumberUtils.compare(
-                                                            PhoneNumberUtils.normalizeNumber(address.getString(m)),
-                                                            currentPhoneNumber
-                                                        )
-                                    ) {
-                                        jsonWriter.name("CURRENTPHONE").value(1)
-                                } else {
-                                    jsonWriter.name("CURRENTPHONE").value(0)
-                                }
-                            }
                         }
                     }
                     jsonWriter.endObject()
