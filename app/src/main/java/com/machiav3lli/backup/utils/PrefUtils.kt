@@ -255,6 +255,9 @@ val Context.checkSMSMMSPermission: Boolean
         if (!packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
             return true
         }
+        if (!getDefaultSharedPreferences().getBoolean(PREFS_ENABLESPECIALBACKUPS, false)) {
+            return true
+        }
         val appOps = (getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)
         val mode = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
@@ -294,6 +297,9 @@ fun Activity.requireContactsPermission() {
 val Context.checkContactsPermission: Boolean
     get() {
         if (!packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
+            return true
+        }
+        if (!getDefaultSharedPreferences().getBoolean(PREFS_ENABLESPECIALBACKUPS, false)) {
             return true
         }
         val appOps = (getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)
