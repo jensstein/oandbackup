@@ -70,6 +70,9 @@ class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHa
                 if (app.packageName == "special.smsmms.json") {
                     BackupSMSMMSJSONAction.backupData(context, filePath)
                 }
+                if (app.packageName == "special.calllogs.json") {
+                    BackupCallLogsJSONAction.backupData(context, filePath)
+                }
                 val file = File(filePath)
                 val isDirSource = filePath.endsWith("/")
                 val parent = if (isDirSource) file.name else null
@@ -125,7 +128,10 @@ class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHa
             LogsHandler.unhandledException(e, app)
             throw BackupFailedException("unhandled exception", e)
         }
-        if (app.packageName == "special.smsmms.json") {
+        if (
+                app.packageName == "special.smsmms.json" ||
+                app.packageName == "special.calllogs.json"
+            ) {
             for (filePath in appInfo.fileList) {
                 File(filePath).delete()
             }

@@ -128,6 +128,11 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
                     RestoreSMSMMSJSONAction.restoreData(context, filePath)
                 }
             }
+            if (app.packageName == "special.calllogs.json") {
+                for (filePath in metaInfo.fileList) {
+                    RestoreCallLogsJSONAction.restoreData(context, filePath)
+                }
+            }
         } catch (e: RuntimeException) {
             throw RestoreFailedException("${e.message}", e)
         } catch (e: ShellCommandFailedException) {
@@ -143,7 +148,10 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
             val backupDeleted = FileUtils.deleteQuietly(tempPath)
             Timber.d("$app: Uncompressed $BACKUP_DIR_DATA was deleted: $backupDeleted")
         }
-        if (app.packageName == "special.smsmms.json") {
+        if (
+                app.packageName == "special.smsmms.json" ||
+                app.packageName == "special.calllogs.json"
+            ) {
             for (filePath in metaInfo.fileList) {
                 File(filePath).delete()
             }
