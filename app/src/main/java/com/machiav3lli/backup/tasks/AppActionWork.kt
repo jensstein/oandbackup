@@ -22,6 +22,7 @@ import android.content.pm.PackageManager
 import androidx.work.*
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.PREFS_MAXRETRIES
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.LogsHandler
@@ -64,7 +65,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                 context.packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA)
             appInfo = AppInfo(context, foundItem)
         } catch (e: PackageManager.NameNotFoundException) {
-            if(packageLabel.isEmpty())
+            if (packageLabel.isEmpty())
                 packageLabel = appInfo?.packageLabel ?: "NONAME"
             val backupDir = context.getDirectoriesInBackupRoot()
                 .find { it.name == packageName }
@@ -84,7 +85,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         }
 
         try {
-            if(!isStopped) {
+            if (!isStopped) {
 
                 appInfo?.let { ai ->
                     try {
@@ -129,14 +130,14 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             LogsHandler.unhandledException(e, packageLabel)
         }
         val succeeded = result?.succeeded ?: false
-        if(succeeded) {
-            return Result.success(getWorkData("OK", result))
+        return if (succeeded) {
+            Result.success(getWorkData("OK", result))
         } else {
             failures++
-            if(failures <= OABX.prefInt("maxRetriesPerPackage", 3))
-                return Result.retry()
+            if (failures <= OABX.prefInt(PREFS_MAXRETRIES, 3))
+                Result.retry()
             else {
-                return Result.failure(getWorkData("ERR", result))
+                Result.failure(getWorkData("ERR", result))
             }
         }
     }
@@ -147,7 +148,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
     }
 
     fun getWorkData(operation: String = "", result: ActionResult? = null): Data {
-        if(result == null)
+        if (result == null)
             return workDataOf(
                 "packageName" to packageName,
                 "packageLabel" to packageLabel,
@@ -222,17 +223,17 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             notificationId: Int,
             batchName: String
         ) = OneTimeWorkRequest.Builder(AppActionWork::class.java)
-                .addTag("name:$batchName")
-                .setInputData(
-                    workDataOf(
-                        "packageName" to packageName,
-                        "selectedMode" to mode,
-                        "backupBoolean" to backupBoolean,
-                        "notificationId" to notificationId,
-                        "batchName" to batchName,
-                        "operation" to "..."
-                    )
+            .addTag("name:$batchName")
+            .setInputData(
+                workDataOf(
+                    "packageName" to packageName,
+                    "selectedMode" to mode,
+                    "backupBoolean" to backupBoolean,
+                    "notificationId" to notificationId,
+                    "batchName" to batchName,
+                    "operation" to "..."
                 )
+            )
             .build()
 
         fun getOutput(t: WorkInfo): Triple<Boolean, String, String> {

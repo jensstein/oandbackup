@@ -21,6 +21,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.PREFS_PMSUSPEND
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
@@ -40,7 +41,11 @@ abstract class BaseAppAction protected constructor(
     protected val deviceProtectedStorageContext: Context =
         context.createDeviceProtectedStorageContext()
 
-    fun getBackupArchiveFilename(what: String, isCompressed: Boolean, isEncrypted: Boolean): String {
+    fun getBackupArchiveFilename(
+        what: String,
+        isCompressed: Boolean,
+        isEncrypted: Boolean
+    ): String {
         return "$what.tar${if (isCompressed) ".gz" else ""}${if (isEncrypted) ".enc" else ""}"
     }
 
@@ -49,28 +54,30 @@ abstract class BaseAppAction protected constructor(
         protected constructor(message: String?, cause: Throwable?) : super(message, cause)
     }
 
-    private fun prepostOptions() : String {
-        return if (OABX.prefFlag("pmSuspend", true)) { "--suspend" } else { "" }
-    }
+    private fun prepostOptions(): String = if (OABX.prefFlag(PREFS_PMSUSPEND, true))
+        "--suspend"
+    else
+        ""
 
     open fun preprocessPackage(packageName: String) {
         try {
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
             val script = ShellHandler.findAssetFile("package.sh").toString()
-            Timber.w("---------------------------------------- Preprocess package ${packageName} uid ${applicationInfo.uid}")
+            Timber.w("---------------------------------------- Preprocess package $packageName uid ${applicationInfo.uid}")
             if (applicationInfo.uid < 10000) { // exclude several system users, e.g. system, radio
                 Timber.w("Ignore processes of system user UID < 10000")
                 return
             }
             if (!packageName.matches(doNotStop)) { // will stop most activity, needs a good blacklist
-                val shellResult = runAsRoot("sh ${script} pre $utilBoxQ ${prepostOptions()} ${packageName} ${applicationInfo.uid}")
+                val shellResult =
+                    runAsRoot("sh $script pre $utilBoxQ ${prepostOptions()} $packageName ${applicationInfo.uid}")
                 stopped[packageName] = shellResult.out.asSequence()
                     .filter { line: String -> line.isNotEmpty() }
                     .toMutableList()
-                Timber.w("${packageName} pids: ${stopped[packageName]?.joinToString(" ")}")
+                Timber.w("$packageName pids: ${stopped[packageName]?.joinToString(" ")}")
             }
         } catch (e: PackageManager.NameNotFoundException) {
-            Timber.w("${packageName} does not exist. Cannot preprocess!")
+            Timber.w("$packageName does not exist. Cannot preprocess!")
         } catch (e: ShellCommandFailedException) {
             Timber.w("Could not stop package ${packageName}: ${e.shellResult.err.joinToString(" ")}")
         } catch (e: Throwable) {
@@ -82,21 +89,27 @@ abstract class BaseAppAction protected constructor(
         try {
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
             val script = ShellHandler.findAssetFile("package.sh").toString()
-            Timber.w("........................................ Postprocess package ${packageName} uid ${applicationInfo.uid}")
+            Timber.w("........................................ Postprocess package $packageName uid ${applicationInfo.uid}")
             if (applicationInfo.uid < 10000) { // exclude several system users, e.g. system, radio
                 Timber.w("Ignore processes of system user UID < 10000")
                 return
             }
             stopped[packageName]?.let { pids ->
                 Timber.w("Continue stopped PIDs for package ${packageName}: ${pids.joinToString(" ")}")
-                runAsRoot("sh ${script} post $utilBoxQ ${prepostOptions()} ${packageName} ${applicationInfo.uid} ${pids.joinToString(" ")}")
+                runAsRoot(
+                    "sh $script post $utilBoxQ ${prepostOptions()} $packageName ${applicationInfo.uid} ${
+                        pids.joinToString(
+                            " "
+                        )
+                    }"
+                )
                 stopped.remove(packageName)
             } ?: run {
-                Timber.w("No stopped PIDs for package ${packageName}")
-                runAsRoot("sh ${script} ${packageName} ${applicationInfo.uid}")
+                Timber.w("No stopped PIDs for package $packageName")
+                runAsRoot("sh $script $packageName ${applicationInfo.uid}")
             }
         } catch (e: PackageManager.NameNotFoundException) {
-            Timber.w("${packageName} does not exist. Cannot post-process!")
+            Timber.w("$packageName does not exist. Cannot post-process!")
         } catch (e: ShellCommandFailedException) {
             Timber.w("Could not continue package ${packageName}: ${e.shellResult.err.joinToString(" ")}")
         } catch (e: Throwable) {
@@ -171,14 +184,15 @@ abstract class BaseAppAction protected constructor(
         }
 
         fun isSuspended(packageName: String): Boolean {
-            return ShellUtils.fastCmdResult("pm dump ${packageName} | grep suspended=true")
+            return ShellUtils.fastCmdResult("pm dump $packageName | grep suspended=true")
         }
 
         fun cleanupSuspended(packageName: String) {
-            Timber.i("cleanup ${packageName}")
+            Timber.i("cleanup $packageName")
             try {
-                runAsRoot("pm dump ${packageName} | grep suspended=true && pm unsuspend ${packageName}")
-            } catch(e : Throwable) {}
+                runAsRoot("pm dump $packageName | grep suspended=true && pm unsuspend ${packageName}")
+            } catch (e: Throwable) {
+            }
         }
     }
 }

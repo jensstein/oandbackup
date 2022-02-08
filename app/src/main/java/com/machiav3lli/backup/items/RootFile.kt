@@ -1,6 +1,7 @@
 package com.machiav3lli.backup.items
 
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.PREFS_CACHEROOTFILEATTRIBUTES
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
@@ -181,23 +182,23 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
         isFileCached = null
     }
 
-    var existsCached : Boolean? = null
+    var existsCached: Boolean? = null
     override fun exists(): Boolean {
-        if (existsCached == null || ! OABX.prefFlag("cacheRootFileAttributes", false))
+        if (existsCached == null || !OABX.prefFlag(PREFS_CACHEROOTFILEATTRIBUTES, false))
             existsCached = cmdBool("[ -e $quoted ]")
         return existsCached!!
     }
 
-    var isDirectoryCached : Boolean? = null
+    var isDirectoryCached: Boolean? = null
     override fun isDirectory(): Boolean {
-        if (isDirectoryCached == null || ! OABX.prefFlag("cacheRootFileAttributes", false))
+        if (isDirectoryCached == null || !OABX.prefFlag(PREFS_CACHEROOTFILEATTRIBUTES, false))
             isDirectoryCached = cmdBool("[ -d $quoted ]")
         return isDirectoryCached!!
     }
 
-    var isFileCached : Boolean? = null
-    override fun isFile(): Boolean  {
-        if (isFileCached == null || ! OABX.prefFlag("cacheRootFileAttributes", false))
+    var isFileCached: Boolean? = null
+    override fun isFile(): Boolean {
+        if (isFileCached == null || !OABX.prefFlag(PREFS_CACHEROOTFILEATTRIBUTES, false))
             isFileCached = cmdBool("[ -f $quoted ]")
         return isFileCached!!
     }
@@ -290,7 +291,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
             perms = "0" + perms
         val chars = perms.toCharArray()
         for (i in 0..2) {
-            val ri = chars.size-i-1
+            val ri = chars.size - i - 1
             var perm = chars[ri] - '0'
             if (!ownerOnly || i == 2) {
                 if (set)
@@ -451,7 +452,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
         return files?.toTypedArray()
     }
 
-    fun inputStream(): InputStream  = SuFileInputStream.open(SuFile(this.absolutePath))
+    fun inputStream(): InputStream = SuFileInputStream.open(SuFile(this.absolutePath))
 
     fun outputStream(): OutputStream = SuFileOutputStream.open(SuFile(this.absolutePath))
 

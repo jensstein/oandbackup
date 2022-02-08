@@ -65,6 +65,18 @@ const val PREFS_HOUSEKEEPING_MOMENT = "housekeepingMoment"
 const val PREFS_DISABLEVERIFICATION = "disableVerification"
 const val PREFS_RESTOREWITHALLPERMISSIONS = "giveAllPermissions"
 const val PREFS_ALLOWDOWNGRADE = "allowDowngrade"
+const val PREFS_PAUSEAPPS = "pauseApps"
+const val PREFS_PMSUSPEND = "pmSuspend"
+const val PREFS_BACKUPTARCMD = "backupTarCmd"
+const val PREFS_RESTORETARCMD = "restoreTarCmd"
+const val PREFS_STRICTHARDLINKS = "strictHardLinks"
+const val PREFS_RESTOREAVOIDTEMPCOPY = "restoreAvoidTemporaryCopy"
+const val PREFS_SHADOWROOTFILE = "shadowRootFileForSAF"
+const val PREFS_CATCHUNCAUGHT = "catchUncaughtException"
+const val PREFS_CACHEROOTFILEATTRIBUTES = "cacheRootFileAttributes"
+const val PREFS_MAXRETRIES = "maxRetriesPerPackage"
+const val PREFS_REFRESHDELAY = "delayBeforeRefreshAppInfo"
+const val PREFS_REFRESHTIMEOUT = "refreshAppInfoTimeout"
 const val PREFS_BATCH_DELETE = "batchDelete"
 const val PREFS_COPYSELF = "copySelfApk"
 const val PREFS_SCHEDULESEXPORTIMPORT = "schedulesExportImport"
@@ -88,7 +100,15 @@ const val BACKUP_FILTER_DEFAULT = 0b1111111
 val possibleSchedModes =
     listOf(MODE_APK, MODE_DATA, MODE_DATA_DE, MODE_DATA_EXT, MODE_DATA_OBB, MODE_DATA_MEDIA)
 val possibleBackupFilters =
-    listOf(MODE_NONE, MODE_APK, MODE_DATA, MODE_DATA_DE, MODE_DATA_EXT, MODE_DATA_OBB, MODE_DATA_MEDIA)
+    listOf(
+        MODE_NONE,
+        MODE_APK,
+        MODE_DATA,
+        MODE_DATA_DE,
+        MODE_DATA_EXT,
+        MODE_DATA_OBB,
+        MODE_DATA_MEDIA
+    )
 
 const val MAIN_SORT_LABEL = 0
 const val MAIN_SORT_PACKAGENAME = 1
@@ -118,7 +138,7 @@ const val NEED_REFRESH = "needRefresh"
 const val HELP_CHANGELOG = "https://github.com/machiav3lli/oandbackupx/blob/master/CHANGELOG.md"
 const val HELP_TELEGRAM = "https://t.me/OAndBackupX"
 const val HELP_ELEMENT =
-        "https://matrix.to/#/!PiXJUneYCnkWAjekqX:matrix.org?via=matrix.org&via=chat.astafu.de&via=zerc.net"
+    "https://matrix.to/#/!PiXJUneYCnkWAjekqX:matrix.org?via=matrix.org&via=chat.astafu.de&via=zerc.net"
 const val HELP_LICENSE = "https://github.com/machiav3lli/oandbackupx/blob/master/LICENSE.md"
 const val HELP_ISSUES = "https://github.com/machiav3lli/oandbackupx/blob/master/ISSUES.md"
 const val HELP_FAQ = "https://github.com/machiav3lli/oandbackupx/blob/master/FAQ.md"

@@ -20,11 +20,11 @@ package com.machiav3lli.backup
 import android.app.Application
 import android.content.Context
 import android.util.LruCache
-import androidx.preference.PreferenceManager
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
@@ -42,7 +42,7 @@ class OABX : Application() {
 
         // activity might be null
         var activityRef: WeakReference<MainActivityX> = WeakReference(null)
-        var activity: MainActivityX ?
+        var activity: MainActivityX?
             get() {
                 return activityRef.get()
             }
@@ -55,7 +55,7 @@ class OABX : Application() {
         var shellHandlerInstance: ShellHandler? = null
             private set
 
-        fun initShellHandler() : Boolean {
+        fun initShellHandler(): Boolean {
             return try {
                 shellHandlerInstance = ShellHandler()
                 true
@@ -64,21 +64,21 @@ class OABX : Application() {
             }
         }
 
-        val context: Context    get() = app.applicationContext
-        val work: WorkHandler   get() = app.work!!
+        val context: Context get() = app.applicationContext
+        val work: WorkHandler get() = app.work!!
 
-        fun prefFlag(name: String, default: Boolean) =
-                        PreferenceManager.getDefaultSharedPreferences(context).getBoolean(name, default)
+        fun prefFlag(name: String, default: Boolean) = context.getDefaultSharedPreferences()
+            .getBoolean(name, default)
 
-        fun prefInt(name: String, default: Int) =
-                        PreferenceManager.getDefaultSharedPreferences(context).getInt(name, default)
+        fun prefInt(name: String, default: Int) = context.getDefaultSharedPreferences()
+            .getInt(name, default)
     }
 
     override fun onCreate() {
         super.onCreate()
         appRef = WeakReference(this)
 
-        Timber.plant(object: Timber.DebugTree() {
+        Timber.plant(object : Timber.DebugTree() {
 
             override fun log(
                 priority: Int, tag: String?, message: String, t: Throwable?

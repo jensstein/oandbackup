@@ -5,6 +5,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.PREFS_SHADOWROOTFILE
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
@@ -30,8 +31,9 @@ open class StorageFile {
         this.parent = parent
         this.context = context
         this.uri = uri
-        if (OABX.prefFlag("shadowRootFileForSAF", true)) {
-            fun isValidPath(file: RootFile?): Boolean = file?.let { file.exists() && file.canRead() && file.canWrite() } ?: false
+        if (OABX.prefFlag(PREFS_SHADOWROOTFILE, false)) {
+            fun isValidPath(file: RootFile?): Boolean =
+                file?.let { file.exists() && file.canRead() && file.canWrite() } ?: false
             parent ?: run {
                 file ?: run {
                     uri?.let { uri ->
@@ -48,7 +50,7 @@ open class StorageFile {
                             } else {
                                 var (storage, subpath) = last.split(":")
                                 val user = ShellCommands.currentUser
-                                if(storage == "primary")
+                                if (storage == "primary")
                                     storage = "emulated/$user"
                                 // NOTE: lockups occur in emulator (or A12?) for certain paths
                                 // e.g. /storage/emulated/$user
@@ -66,7 +68,7 @@ open class StorageFile {
                                     //"/mnt/androidwritable/$user/self/$storage/$subpath",
                                 )
                                 var checkFile: RootFile? = null
-                                for(path in possiblePaths) {
+                                for (path in possiblePaths) {
                                     checkFile = RootFile(path)
                                     if (isValidPath(checkFile)) {   //TODO hg42 check with timeout in case of lockups
                                         Timber.i("found storage RootFile shadow at $checkFile")
@@ -75,8 +77,14 @@ open class StorageFile {
                                     }
                                     checkFile = null
                                 }
-                                if(checkFile == null)
-                                    throw Exception("cannot use RootFile shadow at one of ${possiblePaths.joinToString(" ")}")
+                                if (checkFile == null)
+                                    throw Exception(
+                                        "cannot use RootFile shadow at one of ${
+                                            possiblePaths.joinToString(
+                                                " "
+                                            )
+                                        }"
+                                    )
                             }
                         } catch (e: Throwable) {
                             file = null
@@ -156,7 +164,11 @@ open class StorageFile {
             newDir.mkdirs()
             return StorageFile(this, newDir)
         } ?: run {
-            return StorageFile(this, context!!, createFile(context!!, uri!!, DocumentsContract.Document.MIME_TYPE_DIR, displayName))
+            return StorageFile(
+                this,
+                context!!,
+                createFile(context!!, uri!!, DocumentsContract.Document.MIME_TYPE_DIR, displayName)
+            )
         }
     }
 
@@ -330,12 +342,11 @@ open class StorageFile {
             //  with DocumentsContract.buildDocumentUriUsingTree(value, DocumentsContract.getTreeDocumentId(value)) first
             checkCache()
             val id = uri.toString()
-            return uriStorageFileCache[id] ?:
-                StorageFile(
-                    null,
-                    context,
-                    uri
-                ).also { uriStorageFileCache[id] = it }
+            return uriStorageFileCache[id] ?: StorageFile(
+                null,
+                context,
+                uri
+            ).also { uriStorageFileCache[id] = it }
         }
 
         fun createFile(context: Context, uri: Uri, mimeType: String, displayName: String): Uri? {

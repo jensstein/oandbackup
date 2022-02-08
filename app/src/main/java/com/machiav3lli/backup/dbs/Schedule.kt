@@ -114,9 +114,15 @@ open class Schedule() {
                 this.blockList = item.blockList
             }
         } catch (e: FileNotFoundException) {
-            throw BackupItem.BrokenBackupException("Cannot open ${exportFile.name} at URI ${exportFile.uri}", e)
+            throw BackupItem.BrokenBackupException(
+                "Cannot open ${exportFile.name} at URI ${exportFile.uri}",
+                e
+            )
         } catch (e: IOException) {
-            throw BackupItem.BrokenBackupException("Cannot read ${exportFile.name} at URI ${exportFile.uri}", e)
+            throw BackupItem.BrokenBackupException(
+                "Cannot read ${exportFile.name} at URI ${exportFile.uri}",
+                e
+            )
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, exportFile.uri)
             throw BackupItem.BrokenBackupException("Unable to process ${exportFile.name} at URI ${exportFile.uri}. [${e.javaClass.canonicalName}] $e")
@@ -179,8 +185,7 @@ open class Schedule() {
                 '}'
     }
 
-    fun getBatchName(time: Long = this.timeToRun): String =
-            Schedule.getBatchName(this.name, time)
+    fun getBatchName(time: Long = this.timeToRun): String = getBatchName(this.name, time)
 
     class Builder {
         val schedule: Schedule = Schedule()
@@ -238,6 +243,6 @@ open class Schedule() {
             fromColumnName = "timeUntilNextEvent",
             toColumnName = "timeToRun"
         )
-        class AutoMigration: AutoMigrationSpec {}
+        class AutoMigration : AutoMigrationSpec {}
     }
 }

@@ -414,7 +414,7 @@ val Context.isBackupMediaData: Boolean
     get() = getDefaultSharedPreferences().getBoolean(PREFS_MEDIADATA, false)
 
 val Context.isPauseApps: Boolean
-    get() = getDefaultSharedPreferences().getBoolean("pauseApps", true)
+    get() = getDefaultSharedPreferences().getBoolean(PREFS_PAUSEAPPS, true)
 
 val Context.isDisableVerification: Boolean
     get() = getDefaultSharedPreferences().getBoolean(PREFS_DISABLEVERIFICATION, true)
