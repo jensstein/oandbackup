@@ -23,8 +23,13 @@ import android.content.pm.PackageInfo
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.PREFS_ENABLESPECIALBACKUPS
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.getPackageInfoList
+import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.items.SpecialAppMetaInfo
+import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 
 class PackagesListDialogFragment(
     private val selectedPackages: List<String>,
@@ -35,8 +40,8 @@ class PackagesListDialogFragment(
     override fun onCreateDialog(savedInstance: Bundle?): Dialog {
         val pm = requireContext().packageManager
 
-        var packageInfoList = requireContext().getPackageInfoList(filter)
-        packageInfoList = packageInfoList.sortedWith { pi1: PackageInfo, pi2: PackageInfo ->
+        var packageInfos = requireContext().getPackageInfoList(filter)
+        packageInfos = packageInfos.sortedWith { pi1: PackageInfo, pi2: PackageInfo ->
             val b1 = selectedPackages.contains(pi1.packageName)
             val b2 = selectedPackages.contains(pi2.packageName)
             if (b1 != b2)
@@ -49,21 +54,50 @@ class PackagesListDialogFragment(
         }
         val labels = mutableListOf<String>()
         val packagesNames = mutableListOf<String>()
-        val checkedIndexes = BooleanArray(packageInfoList.size)
+        val checkedIndexes = arrayListOf<Boolean>()
         val selections = mutableListOf<Int>()
-        packageInfoList.forEachIndexed { i, packageInfo ->
+        var i = 0
+        if(requireContext().getDefaultSharedPreferences().getBoolean(PREFS_ENABLESPECIALBACKUPS, false)) {
+            var specialInfos = SpecialAppMetaInfo.getSpecialPackages(OABX.app)
+            specialInfos = specialInfos.sortedWith { ai1: AppInfo, ai2: AppInfo ->
+                val b1 = selectedPackages.contains(ai1.packageName)
+                val b2 = selectedPackages.contains(ai2.packageName)
+                if (b1 != b2)
+                    if (b1) -1 else 1
+                else {
+                    val l1 = ai1.packageLabel
+                    val l2 = ai2.packageLabel
+                    l1.compareTo(l2, ignoreCase = true)
+                }
+            }
+            specialInfos.forEach { appInfo ->
+                labels.add(appInfo.packageLabel)
+                packagesNames.add(appInfo.packageName)
+                if (selectedPackages.contains(appInfo.packageName)) {
+                    checkedIndexes.add(true)
+                    selections.add(i)
+                } else {
+                    checkedIndexes.add(false)
+                }
+                i++
+            }
+        }
+        packageInfos.forEach { packageInfo ->
             labels.add(packageInfo.applicationInfo.loadLabel(pm).toString())
             packagesNames.add(packageInfo.packageName)
             if (selectedPackages.contains(packageInfo.packageName)) {
-                checkedIndexes[i] = true
+                checkedIndexes.add(true)
                 selections.add(i)
+            } else {
+                checkedIndexes.add(false)
             }
+            i++
         }
         return AlertDialog.Builder(requireActivity())
             .setTitle(if (isBlocklist) R.string.sched_blocklist else R.string.customListTitle)
             .setMultiChoiceItems(
                 labels.toTypedArray<CharSequence>(),
-                checkedIndexes
+                checkedIndexes.toBooleanArray()
             ) { _: DialogInterface?, index: Int, isChecked: Boolean ->
                 if (isChecked) selections.add(index) else selections.remove(index) // cast as Integer to distinguish between remove(Object) and remove(index)
             }

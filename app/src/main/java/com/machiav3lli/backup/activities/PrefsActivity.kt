@@ -22,6 +22,7 @@ import android.view.MenuItem
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ActivityPrefsBinding
 import com.machiav3lli.backup.fragments.HelpSheet
@@ -40,7 +41,7 @@ class PrefsActivity : BaseActivity() {
         binding = ActivityPrefsBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
         setContentView(binding.root)
-        appInfoList = oabx.cache.get("appInfoList") ?: mutableListOf()
+        appInfoList = OABX.app.cache.get("appInfoList") ?: mutableListOf()
         if (appInfoList.isNullOrEmpty()) refreshAppsList()
     }
 

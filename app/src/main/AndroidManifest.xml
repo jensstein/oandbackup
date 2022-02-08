@@ -13,6 +13,10 @@
     <uses-permission android:name="android.provider.Telephony.SMS_RECEIVED" />
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
 
+    <!-- special.calllog.json -->
+    <uses-permission android:name="android.permission.READ_CALL_LOG"/>
+    <uses-permission android:name="android.permission.WRITE_CALL_LOG"/>
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -94,8 +98,8 @@
 
         <activity
             android:name=".activities.SplashActivity"
-            android:label="@string/app_name"
             android:exported="true"
+            android:label="@string/app_name"
             android:theme="@style/AppTheme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -112,6 +116,7 @@
             android:label="@string/app_name" />
         <activity
             android:name=".activities.PrefsActivity"
+            android:exported="true"
             android:label="@string/prefs_title"
             android:launchMode="singleTask"
             android:parentActivityName=".activities.MainActivityX" />
@@ -153,12 +158,16 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".services.AlarmReceiver" />
+        <receiver
+            android:name=".services.AlarmReceiver" />
 
-        <receiver android:name=".services.WorkReceiver" />
+        <receiver
+            android:name=".services.CommandReceiver"
+            android:exported="true" />
 
         <service
             android:name=".services.ScheduleService"
             android:foregroundServiceType="dataSync" />
+
     </application>
 </manifest>

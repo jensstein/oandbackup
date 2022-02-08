@@ -24,7 +24,6 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.Observer
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
-import androidx.work.workDataOf
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
@@ -42,7 +41,6 @@ import timber.log.Timber
 open class ScheduleService : Service() {
     private lateinit var scheduledActionTask: ScheduledActionTask
     lateinit var notification: Notification
-    private var scheduleId = -1L
     private var notificationId = -1
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -52,6 +50,9 @@ open class ScheduleService : Service() {
     override fun onCreate() {
         super.onCreate()
         this.notificationId = System.currentTimeMillis().toInt()
+
+        createNotificationChannel()
+
         showNotification(
             this.baseContext,
             MainActivityX::class.java,
@@ -63,7 +64,7 @@ open class ScheduleService : Service() {
             "",
             true
         )
-        createNotificationChannel()
+
         createForegroundInfo()
         startForeground(notification.hashCode(), this.notification)
     }
@@ -73,19 +74,19 @@ open class ScheduleService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        intent?.let { this.scheduleId = it.getLongExtra("scheduleId", -1L) }
+        val now = System.currentTimeMillis()
+        val scheduleId = intent?.getLongExtra("scheduleId", -1L) ?: -1L
+        val batchName  = intent?.getStringExtra("name") ?: ""
 
-        /*
         if (intent != null) {
             val action = intent.action
             when (action) {
-                "WORK_CANCEL_SERVICE" -> {
-                    OABX.work.cancelBatch()
+                "cancel" -> {
+                    OABX.work.cancel(batchName)
                     stopSelf()
                 }
             }
         }
-        */
 
         scheduledActionTask = object : ScheduledActionTask(baseContext, scheduleId) {
             override fun onPostExecute(result: Pair<List<String>, Int>?) {
@@ -109,11 +110,15 @@ open class ScheduleService : Service() {
                 } else {
                     val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
 
+                    // stop "fetching list..." notification
+                    val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+                    notificationManager.cancel(notificationId)
+
                     OABX.work.startBatch()
                     selectedItems.forEach { packageName ->
 
                         val oneTimeWorkRequest =
-                            AppActionWork.Request(packageName, mode,true, notificationId)
+                            AppActionWork.Request(packageName, mode,true, notificationId, batchName)
                         worksList.add(oneTimeWorkRequest)
 
                         val oneTimeWorkLiveData = OABX.work.manager
@@ -140,15 +145,7 @@ open class ScheduleService : Service() {
                         })
                     }
 
-                    val finishWorkRequest = OneTimeWorkRequest.Builder(FinishWork::class.java)
-                        .setInputData(
-                            workDataOf(
-                                "resultsSuccess" to resultsSuccess,
-                                "backupBoolean" to true
-                            )
-                        )
-                        .build()
-
+                    val finishWorkRequest = FinishWork.Request(resultsSuccess, true)
                     val finishWorkLiveData = OABX.work.manager
                         .getWorkInfoByIdLiveData(finishWorkRequest.id)
                     finishWorkLiveData.observeForever(object : Observer<WorkInfo> {
@@ -181,7 +178,6 @@ open class ScheduleService : Service() {
                         stopSelf()
                     }
                 }
-
                 super.onPostExecute(result)
             }
         }
@@ -190,22 +186,22 @@ open class ScheduleService : Service() {
         return START_NOT_STICKY
     }
 
-    private fun createForegroundInfo() {
+    private fun createForegroundInfo(/* name: String */) {  //TODO hg42 investigate if multiple services can run in parallel (so here each has it's own name)
         val contentPendingIntent = PendingIntent.getActivity(
             this,
             0,
             Intent(this, MainActivityX::class.java),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        val cancelIntent = PendingIntent.getBroadcast(
+        val cancelIntent = Intent(this, ScheduleService::class.java).apply {
+            action = "cancel"
+            //putExtra("name", name)
+        }
+        val cancelPendingIntent = PendingIntent.getBroadcast(
             this,
             0,
-            //Intent(this, ScheduleService::class.java)                          // doesn't trigger ScheduleService onStartCommand
-            //Intent(this, MainActivityX::class.java)                            // doesn't trigger MainActivityX onNewIntent (but once worked?)
-            Intent(this, WorkReceiver::class.java)   // broadcast works but has wrong context? not this work queue?
-                //.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                .setAction("WORK_CANCEL_SERVICE"),
-            PendingIntent.FLAG_IMMUTABLE
+            cancelIntent,
+            PendingIntent.FLAG_IMMUTABLE //TODO hg42 check flags ??? PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         this.notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(getString(R.string.sched_notificationMessage))
@@ -215,7 +211,7 @@ open class ScheduleService : Service() {
             .setContentIntent(contentPendingIntent)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
-            .addAction(R.drawable.ic_close, getString(R.string.dialogCancel), cancelIntent)
+            .addAction(R.drawable.ic_close, getString(R.string.dialogCancel), cancelPendingIntent)
             .build()
     }
 

@@ -48,6 +48,8 @@ import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.IAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import timber.log.Timber
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class HomeFragment : NavigationFragment(),
     BatchDialogFragment.ConfirmListener, RefreshViewController {
@@ -80,15 +82,15 @@ class HomeFragment : NavigationFragment(),
         setupViews()
         if (requireMainActivity().viewModel.refreshNow.value == true) refreshView()
 
-        viewModel.refreshNow.observe(requireActivity(), {
+        viewModel.refreshNow.observe(requireActivity()) {
             binding.refreshLayout.isRefreshing = it
             if (it) {
                 binding.searchBar.setQuery("", false)
                 requireMainActivity().viewModel.refreshList()
             }
-        })
+        }
 
-        viewModel.nUpdatedApps.observe(requireActivity(), {
+        viewModel.nUpdatedApps.observe(requireActivity()) {
             binding.buttonUpdated.text =
                 binding.root.context.resources.getQuantityString(R.plurals.updated_apps, it, it)
             if (it > 0) {
@@ -129,7 +131,7 @@ class HomeFragment : NavigationFragment(),
                 binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
                 binding.buttonUpdated.setOnClickListener(null)
             }
-        })
+        }
     }
 
     override fun onStart() {
@@ -260,6 +262,10 @@ class HomeFragment : NavigationFragment(),
         selectedModes: List<Int>
     ) {
         val notificationId = System.currentTimeMillis().toInt()
+        val now = LocalDateTime.now()
+        val batchType = getString(R.string.backup)
+        val batchName = "${batchType} ${DateTimeFormatter.ofPattern("ddd HH:mm").format(now)}"
+
         val selectedItems = selectedPackages
             .mapIndexed { i, packageName ->
                 if (packageName.isNullOrEmpty()) null
@@ -276,7 +282,7 @@ class HomeFragment : NavigationFragment(),
         selectedItems.forEach { (packageName, mode) ->
 
             val oneTimeWorkRequest =
-                AppActionWork.Request(packageName, mode, true, notificationId)
+                AppActionWork.Request(packageName, mode, true, notificationId, batchName)
             worksList.add(oneTimeWorkRequest)
 
             val oneTimeWorkLiveData = WorkManager.getInstance(requireContext())

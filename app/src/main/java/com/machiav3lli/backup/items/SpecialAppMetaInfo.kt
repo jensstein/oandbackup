@@ -105,6 +105,19 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
                                 )
                             )
                         )
+                    specialPackages
+                        .add(
+                            AppInfo(
+                                context, SpecialAppMetaInfo(
+                                    "special.calllogs.json",
+                                    specPrefix + context.getString(R.string.spec_calllogsjson),
+                                    Build.VERSION.RELEASE,
+                                    Build.VERSION.SDK_INT, arrayOf(
+                                        "${context.cacheDir.absolutePath}/special.calllogs.json.json"
+                                    )
+                                )
+                            )
+                        )
                 }
                 specialPackages
                     .add(

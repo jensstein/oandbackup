@@ -39,6 +39,7 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.FragmentBatchBinding
+import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
@@ -318,7 +319,12 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     // TODO abstract this to fit for Main- & BatchFragment
     // TODO break down to smaller bits
     override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {
+
         val notificationId = System.currentTimeMillis().toInt()
+        val now = System.currentTimeMillis()
+        val batchType = getString(if (backupBoolean) R.string.backup else R.string.restore)
+        val batchName = Schedule.getBatchName(batchType, now)
+
         val notificationMessage = String.format(
             getString(R.string.fetching_action_list),
             getString(if (backupBoolean) R.string.backup else R.string.restore)
@@ -338,7 +344,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         selectedItems.forEach { (packageName, mode) ->
 
             val oneTimeWorkRequest =
-                AppActionWork.Request(packageName, mode, backupBoolean, notificationId)
+                AppActionWork.Request(packageName, mode, backupBoolean, notificationId, batchName)
             worksList.add(oneTimeWorkRequest)
 
             val oneTimeWorkLiveData = WorkManager.getInstance(requireContext())

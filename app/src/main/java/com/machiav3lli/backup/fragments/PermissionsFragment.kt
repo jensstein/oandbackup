@@ -69,6 +69,19 @@ class PermissionsFragment : Fragment() {
                     .show()
         }
 
+    private val callLogsPermission: Unit
+        get() {
+            AlertDialog.Builder(requireContext())
+                .setTitle(R.string.calllogs_permission_title)
+                .setMessage(R.string.grant_calllogs_message)
+                .setPositiveButton(R.string.dialog_approve) { _: DialogInterface?, _: Int ->
+                    requireActivity().requireCallLogsPermission()
+                }
+                .setNeutralButton(getString(R.string.dialog_refuse)) { _: DialogInterface?, _: Int -> }
+                .setCancelable(false)
+                .show()
+        }
+
     private val contactsPermission: Unit
         get() {
             AlertDialog.Builder(requireContext())
@@ -132,6 +145,9 @@ class PermissionsFragment : Fragment() {
         binding.cardSMSMMSPermission.visibility =
                 if (requireContext().checkSMSMMSPermission) View.GONE
                 else View.VISIBLE
+        binding.cardCallLogsPermission.visibility =
+            if (requireContext().checkCallLogsPermission) View.GONE
+            else View.VISIBLE
         binding.cardContactsPermission.visibility =
                 if (requireContext().checkContactsPermission) View.GONE
                 else View.VISIBLE
@@ -149,6 +165,7 @@ class PermissionsFragment : Fragment() {
             requireActivity().requireStorageLocation(askForDirectory)
         }
         binding.cardSMSMMSPermission.setOnClickListener { smsmmsPermission }
+        binding.cardCallLogsPermission.setOnClickListener { callLogsPermission }
         binding.cardContactsPermission.setOnClickListener { contactsPermission }
         binding.cardUsageAccess.setOnClickListener { usageStatsPermission }
         binding.cardBatteryOptimization.setOnClickListener {
@@ -160,6 +177,7 @@ class PermissionsFragment : Fragment() {
         if (requireContext().hasStoragePermissions &&
             requireContext().isStorageDirSetAndOk &&
             requireContext().checkSMSMMSPermission &&
+            requireContext().checkCallLogsPermission &&
             requireContext().checkContactsPermission &&
             requireContext().checkUsageStatsPermission &&
             (prefs.getBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION, false)

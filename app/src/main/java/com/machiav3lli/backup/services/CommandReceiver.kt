@@ -1,0 +1,43 @@
+package com.machiav3lli.backup.services
+
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.dbs.ScheduleDatabase
+import com.machiav3lli.backup.utils.showToast
+import timber.log.Timber
+
+class CommandReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent?) {
+        if(intent == null) return
+        val command = intent.action.toString()
+        when (command) {
+            "cancel" -> {
+                intent.getStringExtra("name")?.let { batchName ->
+                    Timber.d("################################################### command intent cancel -------------> name=$batchName")
+                    OABX.activity?.showToast("$command ${batchName}")
+                    OABX.work.cancel(batchName)
+                }
+            }
+            "schedule" -> {
+                intent.getStringExtra("name")?.let { name ->
+                    OABX.activity?.showToast("$command $name")
+                    Timber.d("################################################### command intent schedule -------------> name=$name")
+                    Thread {
+                        val serviceIntent = Intent(context, ScheduleService::class.java)
+                        val scheduleDao = ScheduleDatabase.getInstance(context).scheduleDao
+                        scheduleDao.getSchedule(name)?.let { schedule ->
+                            serviceIntent.putExtra("scheduleId", schedule.id)
+                            serviceIntent.putExtra("name", schedule.getBatchName())
+                            context.startService(serviceIntent)
+                        }
+                    }.start()
+                }
+            }
+            else -> {
+                OABX.activity?.showToast("unknown command '$command'")
+            }
+        }
+    }
+}

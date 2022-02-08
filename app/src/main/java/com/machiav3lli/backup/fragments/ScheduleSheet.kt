@@ -277,8 +277,12 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
         override fun execute() {
             Thread {
                 val serviceIntent = Intent(context, ScheduleService::class.java)
-                serviceIntent.putExtra("scheduleId", scheduleId)
-                context.startService(serviceIntent)
+                val scheduleDao = ScheduleDatabase.getInstance(context).scheduleDao
+                scheduleDao.getSchedule(scheduleId)?.let { schedule ->
+                    serviceIntent.putExtra("scheduleId", scheduleId)
+                    serviceIntent.putExtra("name", schedule.getBatchName())
+                    context.startService(serviceIntent)
+                }
             }.start()
         }
     }

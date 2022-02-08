@@ -34,7 +34,6 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.LinkOption
 import java.util.*
-import kotlin.collections.ArrayList
 
 class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHandler)
     : BackupAppAction(context, work, shell)
@@ -43,11 +42,13 @@ class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHa
         if (backupMode and MODE_APK == MODE_APK) {
             Timber.e("Special contents don't have APKs to backup. Ignoring")
         }
-        return if (backupMode and MODE_DATA == MODE_DATA) super.run(app, MODE_DATA)
-        else ActionResult(
-            app, null,
-            "Special backup only backups data, but data was not selected for backup", false
-        )
+        return  if (backupMode and MODE_DATA == MODE_DATA)
+                    super.run(app, MODE_DATA)
+                else ActionResult(
+                    app, null,
+                    "Special backup only backups data, but data was not selected for backup",
+                    false
+                )
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
@@ -68,6 +69,9 @@ class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHa
             for (filePath in appInfo.fileList) {
                 if (app.packageName == "special.smsmms.json") {
                     BackupSMSMMSJSONAction.backupData(context, filePath)
+                }
+                if (app.packageName == "special.calllogs.json") {
+                    BackupCallLogsJSONAction.backupData(context, filePath)
                 }
                 val file = File(filePath)
                 val isDirSource = filePath.endsWith("/")
@@ -124,7 +128,10 @@ class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHa
             LogsHandler.unhandledException(e, app)
             throw BackupFailedException("unhandled exception", e)
         }
-        if (app.packageName == "special.smsmms.json") {
+        if (
+                app.packageName == "special.smsmms.json" ||
+                app.packageName == "special.calllogs.json"
+            ) {
             for (filePath in appInfo.fileList) {
                 File(filePath).delete()
             }

@@ -4,17 +4,17 @@ import android.content.Context
 import android.content.IntentFilter
 import androidx.work.WorkManager
 import com.machiav3lli.backup.activities.MainActivityX
-import com.machiav3lli.backup.services.WorkReceiver
+import com.machiav3lli.backup.services.CommandReceiver
 import com.machiav3lli.backup.tasks.AppActionWork
 
 class WorkHandler(context: Context) {
 
     var manager: WorkManager = WorkManager.getInstance(context)
-    lateinit var actionReceiver: WorkReceiver
+    lateinit var actionReceiver: CommandReceiver
     lateinit var context: Context
 
     init {
-        actionReceiver = WorkReceiver()
+        actionReceiver = CommandReceiver()
         context.registerReceiver(actionReceiver, IntentFilter())
 
         manager.pruneWork()
@@ -32,16 +32,21 @@ class WorkHandler(context: Context) {
         return null
     }
 
-    fun startBatch() {
+    fun prune() {
         manager.pruneWork()
     }
 
-    fun cancel() {
-        //TODO hg42 MainActivityX.activity?.showToast("cancel work queue")
-        AppActionWork::class.qualifiedName?.let {
-            manager.cancelAllWorkByTag(it)
-        }
-        //TODO hg42 MainActivityX.activity?.refreshView()  // why?
+    fun startBatch() {
+        prune()
+    }
+
+    fun cancel(tag: String? = null) {
+        if(tag.isNullOrEmpty())
+            AppActionWork::class.qualifiedName?.let {
+                manager.cancelAllWorkByTag(it)
+            }
+        else
+            manager.cancelAllWorkByTag("name:$tag")
     }
 
 }

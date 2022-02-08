@@ -40,7 +40,6 @@ object RestoreSMSMMSJSONAction {
     private var currentThreadId: Long = 0
     private val compareForNewThread: Long = 0
 
-    @SuppressLint("HardwareIds")
     @Throws(RuntimeException::class)
     fun restoreData(context: Context, filePath: String) {
         if (!context.packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {

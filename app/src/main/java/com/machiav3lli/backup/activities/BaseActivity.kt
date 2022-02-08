@@ -20,11 +20,8 @@ package com.machiav3lli.backup.activities
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import com.machiav3lli.backup.ContextWraperX.Companion.wrap
-import com.machiav3lli.backup.OABX
 
 abstract class BaseActivity : AppCompatActivity() {
-    val oabx: OABX
-        get() = application as OABX
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(wrap(newBase))
