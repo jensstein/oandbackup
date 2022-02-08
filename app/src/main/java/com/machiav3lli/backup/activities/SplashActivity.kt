@@ -44,6 +44,7 @@ class SplashActivity : BaseActivity() {
             } else if (hasStoragePermissions &&
                 isStorageDirSetAndOk &&
                 checkSMSMMSPermission &&
+                checkCallLogsPermission &&
                 checkContactsPermission &&
                 checkUsageStatsPermission &&
                 (prefs.getBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION, false)

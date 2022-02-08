@@ -48,6 +48,7 @@ const val READ_PERMISSION = 2
 const val WRITE_PERMISSION = 3
 const val SMS_PERMISSION = 4
 const val CONTACTS_PERMISSION = 5
+const val CALLLOGS_PERMISSION = 6
 
 fun Context.getDefaultSharedPreferences(): SharedPreferences =
     PreferenceManager.getDefaultSharedPreferences(this)
@@ -281,6 +282,50 @@ val Context.checkSMSMMSPermission: Boolean
                 PackageManager.PERMISSION_GRANTED &&
             checkCallingOrSelfPermission(Manifest.permission.RECEIVE_WAP_PUSH) ==
                 PackageManager.PERMISSION_GRANTED)
+        } else {
+            mode == AppOpsManager.MODE_ALLOWED
+        }
+    }
+
+fun Activity.requireCallLogsPermission() {
+    val callLogPermissionList = arrayOf(
+        Manifest.permission.READ_CALL_LOG,
+        Manifest.permission.WRITE_CALL_LOG
+    )
+    if (
+        checkSelfPermission(Manifest.permission.READ_CALL_LOG) !=
+            PackageManager.PERMISSION_GRANTED ||
+        checkSelfPermission(Manifest.permission.WRITE_CALL_LOG) !=
+            PackageManager.PERMISSION_GRANTED
+    )
+        ActivityCompat.requestPermissions(this,callLogPermissionList, CALLLOGS_PERMISSION)
+}
+
+val Context.checkCallLogsPermission: Boolean
+    get() {
+        if (!packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
+            return true
+        }
+        if (!getDefaultSharedPreferences().getBoolean(PREFS_ENABLESPECIALBACKUPS, false)) {
+            return true
+        }
+        val appOps = (getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)
+        val mode = when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
+                appOps.unsafeCheckOpNoThrow(
+                    AppOpsManager.OPSTR_READ_CALL_LOG,
+                    Process.myUid(),
+                    packageName
+                )
+            // Done this way because on (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
+            // it always says that the permission is granted even though it is not
+            else -> AppOpsManager.MODE_DEFAULT
+        }
+        return if (mode == AppOpsManager.MODE_DEFAULT) {
+            (checkCallingOrSelfPermission(Manifest.permission.READ_CALL_LOG) ==
+                    PackageManager.PERMISSION_GRANTED &&
+                checkCallingOrSelfPermission(Manifest.permission.WRITE_CALL_LOG) ==
+                    PackageManager.PERMISSION_GRANTED)
         } else {
             mode == AppOpsManager.MODE_ALLOWED
         }
