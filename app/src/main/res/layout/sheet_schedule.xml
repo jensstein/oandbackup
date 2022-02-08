@@ -177,6 +177,15 @@
                     android:text="@string/radio_user"
                     app:chipIcon="@drawable/ic_user"
                     app:chipIconTint="@color/chip_icon_user" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/filterSpecial"
+                    style="@style/Chip.Mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/radio_special"
+                    app:chipIcon="@drawable/ic_special"
+                    app:chipIconTint="@color/chip_icon_special" />
             </com.google.android.material.chip.ChipGroup>
 
             <androidx.appcompat.widget.AppCompatTextView

@@ -116,6 +116,11 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                 refresh(false)
             }
         }
+        if (requireContext().specialBackupsEnabled) {
+            binding.filterSpecial.visibility = View.VISIBLE
+        } else {
+            binding.filterSpecial.visibility = View.GONE
+        }
         binding.timeOfDay.setOnClickListener {
             TimePickerDialog(
                 requireContext(),
