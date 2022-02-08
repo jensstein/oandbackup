@@ -20,7 +20,14 @@ package com.machiav3lli.backup.actions
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
+import android.provider.CallLog
+import android.util.JsonWriter
 import androidx.core.content.PermissionChecker
+import java.io.BufferedWriter
+import java.io.File
+import java.io.OutputStreamWriter
 
 object BackupCallLogsJSONAction {
     @Throws(RuntimeException::class)
@@ -34,5 +41,97 @@ object BackupCallLogsJSONAction {
         ) {
             throw RuntimeException("No permission for Call Logs.")
         }
+        var projection = arrayOf(
+            CallLog.Calls.CACHED_NAME,
+            CallLog.Calls.CACHED_NUMBER_TYPE,
+            CallLog.Calls.CACHED_NUMBER_LABEL,
+            CallLog.Calls.DATE,
+            CallLog.Calls.DURATION,
+            CallLog.Calls.NEW,
+            CallLog.Calls.NUMBER,
+            CallLog.Calls.TYPE,
+            CallLog.Calls.DATA_USAGE,
+            CallLog.Calls.COUNTRY_ISO,
+            CallLog.Calls.GEOCODED_LOCATION,
+            CallLog.Calls.IS_READ,
+            CallLog.Calls.FEATURES,
+            CallLog.Calls.LAST_MODIFIED,
+            CallLog.Calls.NUMBER_PRESENTATION,
+            CallLog.Calls.PHONE_ACCOUNT_COMPONENT_NAME,
+            CallLog.Calls.PHONE_ACCOUNT_ID,
+            CallLog.Calls.POST_DIAL_DIGITS,
+            CallLog.Calls.TRANSCRIPTION,
+            CallLog.Calls.VIA_NUMBER
+        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            projection += CallLog.Calls.BLOCK_REASON
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            projection += CallLog.Calls.MISSED_REASON
+            projection += CallLog.Calls.PRIORITY
+            projection += CallLog.Calls.SUBJECT
+        }
+        val outputFile = context.contentResolver.openOutputStream(Uri.fromFile(File(filePath)), "wt")
+        outputFile?.use { outputStream ->
+            BufferedWriter(OutputStreamWriter(outputStream)).use { writer ->
+                val jsonWriter = JsonWriter(writer)
+                jsonWriter.beginArray()
+                val callLogs = context.contentResolver.query(CallLog.Calls.CONTENT_URI, projection, null, null, CallLog.Calls.DATE)
+                callLogs?.use { callLog ->
+                    if (callLog.moveToFirst()) {
+                        do {
+                            jsonWriter.beginObject()
+                            callLog.columnNames.forEachIndexed { m, columnName ->
+                                var useColumnName = when (columnName) {
+                                    CallLog.Calls.CACHED_NAME -> "CACHED_NAME"
+                                    CallLog.Calls.CACHED_NUMBER_TYPE -> "CACHED_NUMBER_TYPE"
+                                    CallLog.Calls.CACHED_NUMBER_LABEL -> "CACHED_NUMBER_LABEL"
+                                    CallLog.Calls.DATE -> "DATE"
+                                    CallLog.Calls.DURATION -> "DURATION"
+                                    CallLog.Calls.NEW -> "NEW"
+                                    CallLog.Calls.NUMBER -> "NUMBER"
+                                    CallLog.Calls.TYPE -> "TYPE"
+                                    CallLog.Calls.DATA_USAGE -> "DATA_USAGE"
+                                    CallLog.Calls.COUNTRY_ISO -> "COUNTRY_ISO"
+                                    CallLog.Calls.GEOCODED_LOCATION -> "GEOCODED_LOCATION"
+                                    CallLog.Calls.IS_READ -> "IS_READ"
+                                    CallLog.Calls.FEATURES -> "FEATURES"
+                                    CallLog.Calls.LAST_MODIFIED -> "LAST_MODIFIED"
+                                    CallLog.Calls.NUMBER_PRESENTATION -> "NUMBER_PRESENTATION"
+                                    CallLog.Calls.PHONE_ACCOUNT_COMPONENT_NAME -> "PHONE_ACCOUNT_COMPONENT_NAME"
+                                    CallLog.Calls.PHONE_ACCOUNT_ID -> "PHONE_ACCOUNT_ID"
+                                    CallLog.Calls.POST_DIAL_DIGITS -> "POST_DIAL_DIGITS"
+                                    CallLog.Calls.TRANSCRIPTION -> "TRANSCRIPTION"
+                                    CallLog.Calls.VIA_NUMBER -> "VIA_NUMBER"
+                                    else -> "{}"
+                                }
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && useColumnName == "{}") {
+                                    useColumnName = when (columnName) {
+                                        CallLog.Calls.BLOCK_REASON -> "BLOCK_REASON"
+                                        else -> "{}"
+                                    }
+                                }
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && useColumnName == "{}") {
+                                    useColumnName = when (columnName) {
+                                        CallLog.Calls.MISSED_REASON -> "MISSED_REASON"
+                                        CallLog.Calls.PRIORITY -> "PRIORITY"
+                                        CallLog.Calls.SUBJECT -> "SUBJECT"
+                                        else -> "{}"
+                                    }
+                                }
+                                if (useColumnName != "{}") {
+                                    jsonWriter.name(useColumnName).value(callLog.getString(m))
+                                }
+                            }
+                            jsonWriter.endObject()
+                        } while (callLog.moveToNext())
+                    }
+                }
+                callLogs?.close()
+                jsonWriter.endArray()
+                jsonWriter.close()
+            }
+        }
+        outputFile?.close()
     }
 }
