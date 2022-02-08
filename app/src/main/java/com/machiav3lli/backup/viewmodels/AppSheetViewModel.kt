@@ -33,6 +33,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
+// TODO Add factory as companion
 class AppSheetViewModel(app: AppInfo, var shellCommands: ShellCommands, private val appContext: Application)
     : AndroidViewModel(appContext) {
 

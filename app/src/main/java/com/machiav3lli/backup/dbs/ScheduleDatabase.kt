@@ -24,6 +24,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.machiav3lli.backup.SCHEDULES_DB_NAME
 
+// TODO merge the databases into one
 @Database(
     entities = [Schedule::class],
     version = 7,

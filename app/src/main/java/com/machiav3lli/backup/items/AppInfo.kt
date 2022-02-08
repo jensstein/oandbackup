@@ -29,6 +29,7 @@ import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 
+// TODO make serializable (maybe: bring into the DB)
 class AppInfo {
     var packageName: String = ""
 

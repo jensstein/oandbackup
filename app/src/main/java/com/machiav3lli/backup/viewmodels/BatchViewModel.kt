@@ -21,6 +21,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 
+// TODO Add factory as companion
 class BatchViewModel(appContext: Application) : AndroidViewModel(appContext) {
     val apkCheckedList = mutableListOf<String>()
     val dataCheckedList = mutableListOf<String>()

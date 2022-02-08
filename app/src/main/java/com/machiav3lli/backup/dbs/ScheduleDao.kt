@@ -21,6 +21,7 @@ import android.database.SQLException
 import androidx.lifecycle.LiveData
 import androidx.room.*
 
+// TODO abstract a base dao and gather all daos in one file
 @Dao
 interface ScheduleDao {
     @Query("SELECT COUNT(*) FROM schedule")

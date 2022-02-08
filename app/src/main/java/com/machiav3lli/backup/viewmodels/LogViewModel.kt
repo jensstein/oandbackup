@@ -29,6 +29,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+// TODO Add factory as companion
 class LogViewModel(private val appContext: Application)
     : AndroidViewModel(appContext) {
 

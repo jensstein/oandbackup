@@ -23,6 +23,7 @@ import java.lang.reflect.Type
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+// TODO replace with kotlin serialization
 object GsonUtils {
     var instance: Gson? = null
         get() {

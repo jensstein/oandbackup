@@ -23,6 +23,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.machiav3lli.backup.BLOCKLIST_DB_NAME
 
+// TODO merge the databases into one
 @Database(entities = [Blocklist::class], version = 2)
 abstract class BlocklistDatabase : RoomDatabase() {
     abstract val blocklistDao: BlocklistDao

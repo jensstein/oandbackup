@@ -23,6 +23,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.machiav3lli.backup.APPEXTRAS_DB_NAME
 
+// TODO merge the databases into one
 @Database(entities = [AppExtras::class], version = 1)
 abstract class AppExtrasDatabase : RoomDatabase() {
     abstract val appExtrasDao: AppExtrasDao

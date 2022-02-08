@@ -159,6 +159,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/refreshLayout">
 
+            <!--  TODO fix view when no room for text -->
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/buttonUpdated"
                 style="@style/Button.Rectangular"

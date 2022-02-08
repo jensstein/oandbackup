@@ -25,6 +25,7 @@ import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import androidx.room.Update
 
+// TODO abstract a base dao and gather all daos in one file
 @Dao
 interface AppExtrasDao {
     @Query("SELECT COUNT(*) FROM appextras")

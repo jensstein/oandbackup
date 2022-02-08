@@ -28,6 +28,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+// TODO Add factory as companion
 class SchedulerViewModel(val database: ScheduleDao, appContext: Application)
     : AndroidViewModel(appContext) {
 

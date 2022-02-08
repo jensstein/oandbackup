@@ -34,6 +34,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
+// TODO Add factory as companion
 class MainViewModel(
     private val appExtrasDao: AppExtrasDao,
     private val blocklistDao: BlocklistDao,

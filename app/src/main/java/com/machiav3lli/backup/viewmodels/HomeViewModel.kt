@@ -21,6 +21,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 
+// TODO Add factory as companion
 class HomeViewModel(appContext: Application) : AndroidViewModel(appContext) {
     val nUpdatedApps: MutableLiveData<Int> = MutableLiveData()
     val refreshNow = MutableLiveData<Boolean>()

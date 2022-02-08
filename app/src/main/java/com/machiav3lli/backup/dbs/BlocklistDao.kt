@@ -24,6 +24,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 
+// TODO abstract a base dao and gather all daos in one file
 @Dao
 interface BlocklistDao {
     @Query("SELECT COUNT(*) FROM blocklist")
