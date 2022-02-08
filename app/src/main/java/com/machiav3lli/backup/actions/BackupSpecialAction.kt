@@ -34,7 +34,6 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.LinkOption
 import java.util.*
-import kotlin.collections.ArrayList
 
 class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHandler)
     : BackupAppAction(context, work, shell)
@@ -43,11 +42,13 @@ class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHa
         if (backupMode and MODE_APK == MODE_APK) {
             Timber.e("Special contents don't have APKs to backup. Ignoring")
         }
-        return if (backupMode and MODE_DATA == MODE_DATA) super.run(app, MODE_DATA)
-        else ActionResult(
-            app, null,
-            "Special backup only backups data, but data was not selected for backup", false
-        )
+        return  if (backupMode and MODE_DATA == MODE_DATA)
+                    super.run(app, MODE_DATA)
+                else ActionResult(
+                    app, null,
+                    "Special backup only backups data, but data was not selected for backup",
+                    false
+                )
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)

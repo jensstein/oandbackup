@@ -120,8 +120,8 @@ abstract class BaseAppAction protected constructor(
             "code_cache"
         )
         val DATA_EXCLUDED_BASENAMES = listOf(
-            "lib",
-            "no_backup"
+            "lib",      //TODO hg42 what about architecture dependent names? or may be application specific? lib* ???
+            "no_backup" //TODO hg42 use Context.getNoBackupFilesDir() ??? tricky, because it's an absolute path (remove common part...)
         )
         val DATA_EXCLUDED_NAMES = listOf(
             "com.google.android.gms.appid.xml",

@@ -235,7 +235,7 @@ class MainActivityX : BaseActivity() {
                             shortText += " ${OABX.context.getString(R.string.finished)}"
 
                             val duration = ((System.currentTimeMillis() - startTime) / 1000 + 0.5).toInt()
-                            if(duration > 10) {
+                            if(duration > 0) {
                                 val min = (duration / 60).toInt()
                                 val sec = duration - min*60
                                 bigText = "$min min $sec sec"
