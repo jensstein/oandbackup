@@ -23,13 +23,13 @@ import android.content.pm.PackageInfo
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import com.machiav3lli.backup.MAIN_FILTER_SPECIAL
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_ENABLESPECIALBACKUPS
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.getPackageInfoList
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.SpecialAppMetaInfo
-import com.machiav3lli.backup.utils.getDefaultSharedPreferences
+import com.machiav3lli.backup.utils.specialBackupsEnabled
 
 class PackagesListDialogFragment(
     private val selectedPackages: List<String>,
@@ -57,7 +57,7 @@ class PackagesListDialogFragment(
         val checkedIndexes = arrayListOf<Boolean>()
         val selections = mutableListOf<Int>()
         var i = 0
-        if(requireContext().getDefaultSharedPreferences().getBoolean(PREFS_ENABLESPECIALBACKUPS, false)) {
+        if (requireContext().specialBackupsEnabled && filter and MAIN_FILTER_SPECIAL == MAIN_FILTER_SPECIAL) {
             var specialInfos = SpecialAppMetaInfo.getSpecialPackages(OABX.app)
             specialInfos = specialInfos.sortedWith { ai1: AppInfo, ai2: AppInfo ->
                 val b1 = selectedPackages.contains(ai1.packageName)
