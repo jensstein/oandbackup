@@ -311,13 +311,13 @@ val Context.checkCallLogsPermission: Boolean
         }
         val appOps = (getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)
         val mode = when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
+            Build.VERSION.SDK_INT > Build.VERSION_CODES.Q ->
                 appOps.unsafeCheckOpNoThrow(
                     AppOpsManager.OPSTR_READ_CALL_LOG,
                     Process.myUid(),
                     packageName
                 )
-            // Done this way because on (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
+            // Done this way because on (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q)
             // it always says that the permission is granted even though it is not
             else -> AppOpsManager.MODE_DEFAULT
         }
