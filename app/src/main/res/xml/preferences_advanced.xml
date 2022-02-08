@@ -92,7 +92,7 @@
         android:title="restoreAvoidTemporaryCopy" />
 
     <androidx.preference.CheckBoxPreference
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:key="shadowRootFileForSAF"
         android:summary="use superuser file system access instead of SAF if the real file system can be found"
         android:title="shadowRootFileForSAF" />
