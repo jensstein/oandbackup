@@ -366,7 +366,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                     // clear the data from the final directory
                     wipeDirectory(
                         targetPath,
-                        DATA_EXCLUDED_DIRS
+                        DATA_EXCLUDED_BASENAMES
                     )
                     archiveStream.suUnpackTo(RootFile(targetPath), OABX.prefFlag("strictHardLinks", false))
                 } else {
@@ -377,7 +377,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                         // clear the data from the final directory
                         wipeDirectory(
                             targetPath,
-                            DATA_EXCLUDED_DIRS
+                            DATA_EXCLUDED_BASENAMES
                         )
                         // Move all the extracted data into the target directory
                         val command =
@@ -435,7 +435,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
 
                     wipeDirectory(
                         targetDir.absolutePath,
-                        DATA_EXCLUDED_DIRS
+                        DATA_EXCLUDED_BASENAMES
                     )
 
                     val tarScript = findAssetFile("tar.sh").toString()
@@ -548,7 +548,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             val dataContents: MutableList<String> =
                 mutableListOf(*shell.suGetDirectoryContents(RootFile(targetPath)))
             // Maybe dirty: Remove what we don't wanted to have in the backup. Just don't touch it
-            dataContents.removeAll(DATA_EXCLUDED_DIRS)
+            dataContents.removeAll(DATA_EXCLUDED_BASENAMES)
             dataContents.removeAll(DATA_EXCLUDED_CACHE_DIRS)
             // calculate a list what must be updated
             val chownTargets = dataContents.map { s -> RootFile(targetPath, s).absolutePath }

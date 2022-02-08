@@ -34,7 +34,7 @@ class AssetHandler(context: Context) {
                 // additional generated files
                 File(directory, ShellHandler.EXCLUDE_FILE)
                     .writeText(
-                        (BaseAppAction.DATA_EXCLUDED_DIRS.map { "./$it" } + BaseAppAction.DATA_EXCLUDED_FILES)
+                        (BaseAppAction.DATA_EXCLUDED_BASENAMES.map { "./$it" } + BaseAppAction.DATA_EXCLUDED_NAMES)
                             .map { it + "\n" }.joinToString("")
                     )
                 File(directory, ShellHandler.EXCLUDE_CACHE_FILE)

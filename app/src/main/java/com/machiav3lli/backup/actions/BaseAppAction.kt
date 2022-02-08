@@ -115,9 +115,20 @@ abstract class BaseAppAction protected constructor(
            @machiav3lli libs are generally created while installing the app. Backing them up
            would result a compatibility problem between devices with different cpu_arch
          */
-        val DATA_EXCLUDED_CACHE_DIRS = listOf("cache", "code_cache")
-        val DATA_EXCLUDED_DIRS = listOf("lib", "no_backup")
-        val DATA_EXCLUDED_FILES = listOf("com.google.android.gms.appid.xml")
+        val DATA_EXCLUDED_CACHE_DIRS = listOf(
+            "cache",
+            "code_cache"
+        )
+        val DATA_EXCLUDED_BASENAMES = listOf(
+            "lib",
+            "no_backup"
+        )
+        val DATA_EXCLUDED_NAMES = listOf(
+            "com.google.android.gms.appid.xml",
+            "cache",
+            "trash",
+            ".thumbnails",
+        )
 
         val ignoredPackages = ("""(?x)
             # complete matches

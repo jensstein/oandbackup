@@ -20,7 +20,7 @@ package com.machiav3lli.backup.utils
 import android.system.ErrnoException
 import android.system.Os
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.DATA_EXCLUDED_CACHE_DIRS
-import com.machiav3lli.backup.actions.BaseAppAction.Companion.DATA_EXCLUDED_DIRS
+import com.machiav3lli.backup.actions.BaseAppAction.Companion.DATA_EXCLUDED_BASENAMES
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
@@ -159,7 +159,7 @@ fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile?, strictHardLinks: Bool
             val mode = tarEntry.mode and 0b0_111_111_111_111
             when {
                 relPath.isEmpty() -> return@forEach
-                relPath in DATA_EXCLUDED_DIRS -> return@forEach
+                relPath in DATA_EXCLUDED_BASENAMES -> return@forEach
                 relPath in DATA_EXCLUDED_CACHE_DIRS -> return@forEach
                 tarEntry.isDirectory -> {
                     runAsRoot("$qUtilBox mkdir -p ${quote(targetPath)}")
@@ -250,7 +250,7 @@ fun TarArchiveInputStream.unpackTo(targetDir: File?) {
             val mode = tarEntry.mode and 0b111_111_111_111
             when {
                 relPath.isEmpty() -> return@forEach
-                relPath in DATA_EXCLUDED_DIRS -> return@forEach
+                relPath in DATA_EXCLUDED_BASENAMES -> return@forEach
                 relPath in DATA_EXCLUDED_CACHE_DIRS -> return@forEach
                 tarEntry.isDirectory -> {
                     if (!targetFile.mkdirs()) {
