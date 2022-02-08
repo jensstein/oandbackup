@@ -63,7 +63,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
             ScheduleViewModelFactory(scheduleId, scheduleDB, requireActivity().application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(ScheduleViewModel::class.java)
 
-        viewModel.schedule.observe(viewLifecycleOwner, {
+        viewModel.schedule.observe(viewLifecycleOwner) {
             binding.schedName.text = it.name
             it.filterIds.forEach { id ->
                 binding.schedFilter.check(id)
@@ -78,7 +78,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
             setTimeLeft(it, System.currentTimeMillis())
             binding.timeOfDay.text = LocalTime.of(it.timeHour, it.timeMinute).toString()
             binding.intervalDays.text = java.lang.String.valueOf(it.interval)
-        })
+        }
 
         return binding.root
     }

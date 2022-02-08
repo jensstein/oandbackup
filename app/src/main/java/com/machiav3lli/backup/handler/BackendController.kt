@@ -24,9 +24,11 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Process
-import com.machiav3lli.backup.*
+import com.machiav3lli.backup.LOG_FOLDER_NAME
+import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
+import com.machiav3lli.backup.MAIN_FILTER_USER
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.ignoredPackages
-import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.SpecialAppMetaInfo.Companion.getSpecialPackages
@@ -46,47 +48,54 @@ List of packages to be ignored for said reasons
 fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
     packageManager.getInstalledPackages(0)
         .filter { packageInfo: PackageInfo ->
-            val isSystem = packageInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == ApplicationInfo.FLAG_SYSTEM
+            val isSystem =
+                packageInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == ApplicationInfo.FLAG_SYSTEM
             val isIgnored = packageInfo.packageName.matches(ignoredPackages)
-            if(isIgnored)
+            if (isIgnored)
                 Timber.i("ignored package: ${packageInfo.packageName}")
-            (if (filter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM) isSystem && ! isIgnored else false)
-                    || (if (filter and MAIN_FILTER_USER == MAIN_FILTER_USER) !isSystem && ! isIgnored else false)
+            (if (filter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM) isSystem && !isIgnored else false)
+                    || (if (filter and MAIN_FILTER_USER == MAIN_FILTER_USER) !isSystem && !isIgnored else false)
         }
         .toList()
 
-@Throws(FileUtils.BackupLocationInAccessibleException::class, StorageLocationNotConfiguredException::class)
-fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Boolean = true): MutableList<AppInfo> {
+@Throws(
+    FileUtils.BackupLocationInAccessibleException::class,
+    StorageLocationNotConfiguredException::class
+)
+fun Context.getApplicationList(
+    blocklist: List<String>,
+    includeUninstalled: Boolean = true
+): MutableList<AppInfo> {
     val startTime = System.currentTimeMillis()
     invalidateCache()
-    val includeSpecial = getDefaultSharedPreferences().getBoolean(PREFS_ENABLESPECIALBACKUPS, false)
+    val includeSpecial = specialBackupsEnabled
     val pm = packageManager
     val backupRoot = getBackupDir()
     val packageInfoList = pm.getInstalledPackages(0)
     val packageList = packageInfoList
-            .filterNotNull()
-            .filterNot { it.packageName.matches(ignoredPackages) || blocklist.contains(it.packageName) }
-            .mapNotNull {
-                try {
-                    AppInfo(this, it, backupRoot)
-                } catch (e: AssertionError) {
-                    Timber.e("Could not create AppInfo for ${it}: $e")
-                    null
-                }
+        .filterNotNull()
+        .filterNot { it.packageName.matches(ignoredPackages) || blocklist.contains(it.packageName) }
+        .mapNotNull {
+            try {
+                AppInfo(this, it, backupRoot)
+            } catch (e: AssertionError) {
+                Timber.e("Could not create AppInfo for ${it}: $e")
+                null
             }
-            .toMutableList()
+        }
+        .toMutableList()
 
-    if(!OABX.appsSuspendedChecked) {
+    if (!OABX.appsSuspendedChecked) {
         OABX.activity?.whileShowingSnackBar("cleanup any left over suspended apps") {
             // cleanup suspended package if lock file found
             packageList.forEach { appInfo ->
-                if(0 != (OABX.activity?.packageManager
-                    ?.getPackageInfo(appInfo.packageName, 0)
-                    ?.applicationInfo
-                    ?.flags
-                    ?: 0
-                        ) and ApplicationInfo.FLAG_SUSPENDED
-                ){
+                if (0 != (OABX.activity?.packageManager
+                        ?.getPackageInfo(appInfo.packageName, 0)
+                        ?.applicationInfo
+                        ?.flags
+                        ?: 0
+                            ) and ApplicationInfo.FLAG_SUSPENDED
+                ) {
                     runAsRoot("pm unsuspend ${appInfo.packageName}")
                 }
             }
@@ -104,24 +113,30 @@ fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Bool
 
     if (includeUninstalled) {
         val installedPackageNames = packageList
-                .map { it.packageName }
-                .toList()
+            .map { it.packageName }
+            .toList()
         val directoriesInBackupRoot = getDirectoriesInBackupRoot()
         val missingAppsWithBackup: List<AppInfo> =
         // Try to create AppInfo objects
         // if it fails, null the object for filtering in the next step to avoid crashes
-                // filter out previously failed backups
-                directoriesInBackupRoot
-                        .filterNot { it.name?.let { name -> installedPackageNames.contains(name) || blocklist.contains(name) } ?: true }
-                        .mapNotNull {
-                            try {
-                                AppInfo(this, it.name, it)
-                            } catch (e: AssertionError) {
-                                Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
-                                null
-                            }
-                        }
-                        .toList()
+            // filter out previously failed backups
+            directoriesInBackupRoot
+                .filterNot {
+                    it.name?.let { name ->
+                        installedPackageNames.contains(name) || blocklist.contains(
+                            name
+                        )
+                    } ?: true
+                }
+                .mapNotNull {
+                    try {
+                        AppInfo(this, it.name, it)
+                    } catch (e: AssertionError) {
+                        Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
+                        null
+                    }
+                }
+                .toList()
         packageList.addAll(missingAppsWithBackup)
     }
 
@@ -130,13 +145,18 @@ fun Context.getApplicationList(blocklist: List<String>, includeUninstalled: Bool
     return packageList
 }
 
-@Throws(FileUtils.BackupLocationInAccessibleException::class, StorageLocationNotConfiguredException::class)
+@Throws(
+    FileUtils.BackupLocationInAccessibleException::class,
+    StorageLocationNotConfiguredException::class
+)
 fun Context.getDirectoriesInBackupRoot(): List<StorageFile> {
     val backupRoot = getBackupDir()
     try {
         return backupRoot.listFiles()
-                .filter { it.isDirectory && it.name != LOG_FOLDER_NAME && !(it.name?.startsWith('.') ?: false)}
-                .toList()
+            .filter {
+                it.isDirectory && it.name != LOG_FOLDER_NAME && !(it.name?.startsWith('.') ?: false)
+            }
+            .toList()
     } catch (e: FileNotFoundException) {
         Timber.e("${e.javaClass.simpleName}: ${e.message}")
     } catch (e: Throwable) {

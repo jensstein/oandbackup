@@ -264,7 +264,7 @@ class HomeFragment : NavigationFragment(),
         val notificationId = System.currentTimeMillis().toInt()
         val now = LocalDateTime.now()
         val batchType = getString(R.string.backup)
-        val batchName = "${batchType} ${DateTimeFormatter.ofPattern("ddd HH:mm").format(now)}"
+        val batchName = "$batchType ${DateTimeFormatter.ofPattern("ddd HH:mm").format(now)}"
 
         val selectedItems = selectedPackages
             .mapIndexed { i, packageName ->

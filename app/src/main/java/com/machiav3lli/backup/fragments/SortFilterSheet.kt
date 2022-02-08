@@ -23,7 +23,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
 import com.google.android.material.chip.ChipGroup
-import com.machiav3lli.backup.PREFS_ENABLESPECIALBACKUPS
 import com.machiav3lli.backup.databinding.SheetSortFilterBinding
 import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.utils.*
@@ -91,9 +90,7 @@ class SortFilterSheet(
         binding.specialFilters.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int ->
             mSortFilterModel.specialFilter = idToSpecialFilter(checkedId)
         }
-        if (requireContext().getDefaultSharedPreferences()
-                .getBoolean(PREFS_ENABLESPECIALBACKUPS, false)
-        ) {
+        if (requireContext().specialBackupsEnabled) {
             binding.filterSpecial.visibility = View.VISIBLE
         } else {
             binding.filterSpecial.visibility = View.GONE
