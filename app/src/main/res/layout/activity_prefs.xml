@@ -57,7 +57,7 @@
                 android:layout_height="match_parent"
                 android:clickable="true"
                 android:focusable="true"
-                android:tint="?colorControlNormal"
+                android:tint="?backgroundColor"
                 android:tooltipText="@string/help"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
