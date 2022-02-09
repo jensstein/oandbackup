@@ -74,8 +74,6 @@ class MainActivityX : BaseActivity() {
         var statusNotificationId = 0
 
         class Counters(
-            var startTime: Long = 0L,
-
             var workCount: Int = 0,
             var workEnqueued: Int = 0,
             var workBlocked: Int = 0,
@@ -95,14 +93,21 @@ class MainActivityX : BaseActivity() {
             var canceled: Int = 0
         )
 
+        class PersistentCounters(
+            var startTime: Long = 0L,
+        )
+
+        val batchPersist = mutableMapOf<String, PersistentCounters>()
+
         fun showRunningStatus(manager: WorkManager? = null, work: MutableList<WorkInfo>? = null) {
+
             if (manager == null || work == null)
                 return
 
+            val batches = mutableMapOf<String, Counters>()
+
             if (statusNotificationId == 0)
                 statusNotificationId = System.currentTimeMillis().toInt()
-
-            val batches = mutableMapOf<String, Counters>()
 
             val appContext = OABX.context
             val workInfos = manager.getWorkInfosByTag(
@@ -159,8 +164,13 @@ class MainActivityX : BaseActivity() {
                     //Timber.d("===== $batchName $packageName $operation $backupBoolean ${info.state} fail=$failures max=$maxRetries")
 
                     batches.getOrPut(batchName!!) { Counters() }.run {
-                        if (startTime == 0L)
-                            startTime = System.currentTimeMillis()
+
+                        val persist: PersistentCounters = batchPersist.getOrPut(batchName!!) { PersistentCounters() }
+
+                        if (persist.startTime == 0L) {
+                            persist.startTime = System.currentTimeMillis()
+                            Timber.w("---------------------------------------------> set startTime ${persist.startTime}")
+                        }
 
                         workCount++
                         workAttempts = info.runAttemptCount
@@ -217,6 +227,9 @@ class MainActivityX : BaseActivity() {
                 var allCount = 0
 
                 batches.forEach { (batchName, counters) ->
+
+                    val persist: PersistentCounters = batchPersist.getOrPut(batchName) { PersistentCounters() }
+
                     counters.run {
                         val notificationId = batchName.hashCode()
 
@@ -234,13 +247,14 @@ class MainActivityX : BaseActivity() {
                             shortText += " ${OABX.context.getString(R.string.finished)}"
 
                             val duration =
-                                ((System.currentTimeMillis() - startTime) / 1000 + 0.5).toInt()
+                                ((System.currentTimeMillis() - persist.startTime) / 1000 + 0.5).toInt()
                             if (duration > 0) {
                                 val min = (duration / 60).toInt()
                                 val sec = duration - min * 60
                                 bigText = "$min min $sec sec"
+                                Timber.w("=============================================> stop ${persist.startTime} + $duration = $bigText")
                             }
-                            startTime = 0L
+                            persist.startTime = 0L
                         }
                         if (canceled > 0)
                             shortText += " 🚫$canceled"

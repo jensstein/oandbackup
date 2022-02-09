@@ -56,13 +56,14 @@ open class StorageFile {
                                 // e.g. /storage/emulated/$user
                                 val possiblePaths = listOf(
                                     "/mnt/pass_through/$user/$storage/$subpath",
-                                    //"/storage/$storage/$subpath",             // lockups! primary links to /storage/emulated/$user
                                     "/mnt/media_rw/$storage/$subpath",
                                     "/mnt/runtime/full/$storage/$subpath",
                                     "/mnt/runtime/default/$storage/$subpath",
-                                    //"/storage/self/$storage/$subpath",            // lockups! ommit self, because self/primary links to lockup
-                                    //"/mnt/runtime/default/self/$storage/$subpath" // lockups! ommit self, because self/primary links to lockup
-                                    // these would need user number
+
+                                    // lockups! primary links to /storage/emulated/$user and all self etc.
+                                    //"/storage/$storage/$subpath",
+                                    //"/storage/self/$storage/$subpath",
+                                    //"/mnt/runtime/default/self/$storage/$subpath"
                                     //"/mnt/user/$user/$storage/$subpath",
                                     //"/mnt/user/$user/self/$storage/$subpath",
                                     //"/mnt/androidwritable/$user/self/$storage/$subpath",

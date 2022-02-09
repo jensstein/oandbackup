@@ -19,7 +19,7 @@ package com.machiav3lli.backup.handler
 
 import android.os.Environment.DIRECTORY_DOCUMENTS
 import android.telephony.mbms.FileInfo
-import com.google.code.regexp.Pattern
+//import com.google.code.regexp.Pattern
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.activities.MainActivityX.Companion.activity
@@ -202,7 +202,7 @@ class ShellHandler {
         }
 
         companion object {
-            private val PATTERN_LINKSPLIT       = Pattern.compile(" -> ")
+            private val PATTERN_LINKSPLIT       = Regex(" -> ") //Pattern.compile(" -> ")
             private val FALLBACK_MODE_FOR_DIR   = translatePosixPermissionToMode("rwxrwx--x")
             private val FALLBACK_MODE_FOR_FILE  = translatePosixPermissionToMode("rw-rw----")
             private val FALLBACK_MODE_FOR_CACHE = translatePosixPermissionToMode("rwxrws--x")
@@ -251,6 +251,7 @@ class ShellHandler {
                 parentPath: String?,
                 absoluteParent: String
             ): FileInfo? {
+                var parent = absoluteParent
                 // Expecting something like this (with whitespace) from
                 // ls -bAll /data/data/com.shazam.android/
                 // field   0     1    2       3            4       5            6             7     8
@@ -260,31 +261,92 @@ class ShellHandler {
                 // [0] Filemode, [1] number of directories/links inside, [2] owner [3] group [4] size
                 // [5] mdate, [6] mtime, [7] mtimezone, [8] filename
                 //var absoluteParent = absoluteParent
-                var parent = absoluteParent
                 //val tokens = lsLine.split(Regex("""\s+"""), 9).toTypedArray()
-                val regex = Pattern.compile(
-                    """^(?<mode>\S+)\s+(?<links>\d+)\s+(?<owner>\S+)\s+(?<group>\S+)\s+(?<size>\d+)\s+(?<mdate>\S+)\s+(?<mtime>\S+)(\s+(?<mzone>[+-]\S+))?\s+(?<name>.*)$"""
+                //  val regex = Pattern.compile(
+                //      """(?x)
+                //          |^
+                //          |(?<mode>\S+)
+                //          |\s+
+                //          |(?<links>\d+)
+                //          |\s+
+                //          |(?<owner>\S+)
+                //          |\s+
+                //          |(?<group>\S+)
+                //          |\s+
+                //          |(?<size>\d+)
+                //          |\s+
+                //          |(?<mdatetime>
+                //          |  (?<mdate>\S+)
+                //          |  \s+
+                //          |  (?<mtime>\S+)(?:\.\S+)       # ignore nanoseconds part
+                //          |  (\s+                         # optional
+                //          |     (?<mzone>[+-]\d\d\d\d)    # old toybox on api 26 doesn't have this
+                //          |  )?                           # (no -ll option or --full-time)
+                //          |)
+                //          |\s+
+                //          |(?<name>.*)
+                //          |$
+                //          |""".trimMargin()
+                //  )
+                //  val match = regex.matcher(lsLine)
+                //  match.find()
+                //  var filePath: String?
+                //  val modeFlags = match.group("mode") ?: return null
+                //  val owner = match.group("owner") ?: return null
+                //  val group = match.group("group") ?: return null
+                //  val size = match.group("size") ?: return null
+                //  val mdatetime = match.group("mdatetime") ?: return null
+                //  val mdate = match.group("mdate") ?: return null
+                //  val mtime = match.group("mtime") ?: return null
+                //  val mzone = match.group("mzone")
+                //  var name = match.group("name") ?: return null
+                val regex = Regex(
+                    """(?x)
+                        |^
+                        |(\S+)                       # 1 mode
+                        |\s+
+                        |(\d+)                       # 2 links
+                        |\s+
+                        |(\S+)                       # 3 owner
+                        |\s+
+                        |(\S+)                       # 4 group
+                        |\s+
+                        |(\d+)                       # 5 size
+                        |\s+
+                        |(                           # 6 mdatetime
+                        |  ([\d-]+)                  # 7 mdate
+                        |  \s+
+                        |  ([\d:]+)(\.\d+)?          # 8 mtime  9 nanoseconds opt 
+                        |  (\s+                      # 10 opt
+                        |     ([+-]\d+)              # 11 mzone # toybox on api 26 doesn't have this TODO hg42 test 27-30
+                        |  )?                                   # (no -ll option or --full-time)
+                        |)
+                        |\s+
+                        |(.*)                        # 12 longname
+                        |$
+                        |""".trimMargin()
                 )
-                val match = regex.matcher(lsLine)
-                match.find()
+                val match = regex.matchEntire(lsLine)
+                if (match == null) throw Exception("ls output does not match expectations (regex)")
+                val modeFlags   = match.groupValues[1]
+                val owner       = match.groupValues[3]
+                val group       = match.groupValues[4]
+                val size        = match.groupValues[5]
+                //val mdatetime   = match.groupValues[6]
+                val mdate       = match.groupValues[7]
+                val mtime       = match.groupValues[8]
+                val mzone       = match.groupValues[11]
+                var name        = match.groupValues[12]
                 var filePath: String?
-                val modeFlags = match.group("mode") ?: return null
-                val owner = match.group("owner") ?: return null
-                val group = match.group("group") ?: return null
-                val size = match.group("size") ?: return null
-                val mdate = match.group("mdate") ?: return null
-                val mtime = match.group("mtime") ?: return null
-                val mzone = match.group("mzone")
-                var name = match.group("name") ?: return null
                 val fileModTime =
-                        if(mzone.isNullOrEmpty())
+                        if(mzone.isEmpty())
                             // 2020-11-26 04:35
                             SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
                                 .parse("$mdate $mtime")
                         else
-                            // 2020-11-26 04:35:21.543772855 +0100
+                            // 2020-11-26 04:35:21(.543772855) +0100
                             SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.getDefault())
-                                .parse("$mdate ${mtime.split(".")[0]} $mzone")
+                                .parse("$mdate $mtime $mzone")
                 // If ls was executed with a file as parameter, the full path is echoed. This is not
                 // good for processing. Removing the absolute parent and setting the parent to be the parent
                 // and not the file itself
