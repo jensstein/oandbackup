@@ -36,7 +36,7 @@ import java.util.regex.Pattern
 
 class ShellHandler {
 
-    lateinit var assets: AssetHandler
+    var assets: AssetHandler
 
     init {
         Shell.enableVerboseLogging = BuildConfig.DEBUG
@@ -260,22 +260,35 @@ class ShellHandler {
                 // [5] mdate, [6] mtime, [7] mtimezone, [8] filename
                 //var absoluteParent = absoluteParent
                 var parent = absoluteParent
-                val tokens = lsLine.split(Regex("""\s+"""), 9).toTypedArray()
+                //val tokens = lsLine.split(Regex("""\s+"""), 9).toTypedArray()
+                val regex = """^(?<mode>\S+)\s+(?<links>\d+)\s+(?<owner>\S+)\s+(?<group>\S+)\s+(?<size>\d+)\s+(?<mdate>\S+)\s+(?<mtime>\S+)(\s+(?<mzone>[+-]\S+))?\s+(?<name>.*)$""".toRegex()
+                var match = regex.matchEntire(lsLine)?.groups ?: throw Exception("ls format does not match")
                 var filePath: String?
-                val owner = tokens[2]
-                val group = tokens[3]
-                // 2020-11-26 04:35:21.543772855 +0100
-                val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.getDefault())
+                val modeFlags = match.get("mode")?.value!!
+                val owner = match.get("owner")?.value!!
+                val group = match.get("group")?.value!!
+                val size = match.get("size")?.value!!
+                val mdate = match.get("mdate")?.value!!
+                val mtime = match.get("mtime")?.value!!
+                val mzone = match.get("mzone")?.value
+                var name = match.get("name")?.value!!
                 val fileModTime =
-                    formatter.parse("${tokens[5]} ${tokens[6].split(".")[0]} ${tokens[7]}")
+                        if(mzone.isNullOrEmpty())
+                            // 2020-11-26 04:35
+                            SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+                                .parse("$mdate $mtime")
+                        else
+                            // 2020-11-26 04:35:21.543772855 +0100
+                            SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.getDefault())
+                                .parse("$mdate ${mtime.split(".")[0]} $mzone")
                 // If ls was executed with a file as parameter, the full path is echoed. This is not
                 // good for processing. Removing the absolute parent and setting the parent to be the parent
                 // and not the file itself
-                if (tokens[8].startsWith(parent)) {
+                if (name.startsWith(parent)) {
                     parent = File(parent).parent!!
-                    tokens[8] = tokens[8].substring(parent.length + 1)
+                    name = name.substring(parent.length + 1)
                 }
-                val fileName = unescapeLsOutput(tokens[8])
+                val fileName = unescapeLsOutput(name)
                 filePath =
                     if (parentPath == null || parentPath.isEmpty()) {
                         fileName
@@ -284,7 +297,7 @@ class ShellHandler {
                     }
                 var fileMode = FALLBACK_MODE_FOR_FILE
                 try {
-                    fileMode = translatePosixPermissionToMode(tokens[0].substring(1))
+                    fileMode = translatePosixPermissionToMode(modeFlags.substring(1))
                 } catch (e: IllegalArgumentException) {
                     // Happens on cache and code_cache dir because of sticky bits
                     // drwxrws--x 2 u0_a108 u0_a108_cache 4096 2020-09-22 17:36 cache
@@ -298,7 +311,7 @@ class ShellHandler {
                         fileMode = FALLBACK_MODE_FOR_CACHE
                     } else {
                         fileMode =
-                            if (tokens[0][0] == 'd') {
+                            if (modeFlags[0] == 'd') {
                                 FALLBACK_MODE_FOR_DIR
                             } else {
                                 FALLBACK_MODE_FOR_FILE
@@ -306,7 +319,7 @@ class ShellHandler {
                         Timber.w(
                             String.format(
                                 "Found a file with special mode (%s), which is not processable. Falling back to %s. filepath=%s ; absoluteParent=%s",
-                                tokens[0], fileMode, filePath, parent
+                                modeFlags, fileMode, filePath, parent
                             )
                         )
                     }
@@ -316,7 +329,7 @@ class ShellHandler {
                 var linkName: String? = null
                 var fileSize: Long = 0
                 val type: FileType
-                when (tokens[0][0]) {
+                when (modeFlags[0]) {
                     'd' -> type = FileType.DIRECTORY
                     'l' -> {
                         type = FileType.SYMBOLIC_LINK
@@ -330,7 +343,7 @@ class ShellHandler {
                     'c' -> type = FileType.CHAR_DEVICE
                     else -> {
                         type = FileType.REGULAR_FILE
-                        fileSize = tokens[4].toLong()
+                        fileSize = size.toLong()
                     }
                 }
                 val result = FileInfo(

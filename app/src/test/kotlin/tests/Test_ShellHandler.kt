@@ -4,7 +4,7 @@ import com.machiav3lli.backup.handler.ShellHandler
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-internal class Test_ShellHandler {
+class Test_ShellHandler {
 
     @Test
     fun test_fromLsOOutput_handlesWhitespace() {
@@ -58,6 +58,46 @@ internal class Test_ShellHandler {
         )
         assertEquals(
 				1611014609000,
+                fileInfo.fileModTime.time
+        )
+        assertEquals(
+				0b0_110_000_000,
+                fileInfo.fileMode
+        )
+        assertEquals(
+				ShellHandler.FileInfo.FileType.REGULAR_FILE,
+                fileInfo.fileType
+        )
+    }
+
+    @Test
+    fun test_fromLsOOutput_handlesOldFormat() {
+        val fileInfo = ShellHandler.FileInfo.fromLsOutput(
+                "-rw------- 1 user0_a247 group0_a247 15951095 2021-01-19 01:03 111   333.file",
+                "/data/data/org.fdroid.fdroid/files"
+        )
+        assertEquals(
+				"111   333.file",
+                fileInfo.filePath
+        )
+        assertEquals(
+				"/data/data/org.fdroid.fdroid/files/111   333.file",
+                fileInfo.absolutePath
+        )
+        assertEquals(
+				15951095,
+                fileInfo.fileSize
+        )
+        assertEquals(
+				"user0_a247",
+                fileInfo.owner
+        )
+        assertEquals(
+				"group0_a247",
+                fileInfo.group
+        )
+        assertEquals(
+            (1611014609000/60_000).toLong()*60_000, // only minutes, remove seconds
                 fileInfo.fileModTime.time
         )
         assertEquals(
