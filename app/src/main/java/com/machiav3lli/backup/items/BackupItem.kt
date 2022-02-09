@@ -33,23 +33,23 @@ open class BackupItem {
 
     constructor(context: Context, propertiesFile: StorageFile) {
         try {
-            propertiesFile.inputStream().let { inputStream ->
-                backupProperties = BackupProperties.fromGson(inputStream!!.reader().readText())
+            propertiesFile.inputStream()!!.let { inputStream ->
+                backupProperties = BackupProperties.fromGson(inputStream.reader().readText())
                 backupInstanceDir = backupProperties.getBackupDir(propertiesFile.parent)!!
             }
         } catch (e: FileNotFoundException) {
             throw BrokenBackupException(
-                "Cannot open ${propertiesFile.name} at URI ${propertiesFile.uri}",
+                "Cannot open ${propertiesFile.name} at ${propertiesFile.path}",
                 e
             )
         } catch (e: IOException) {
             throw BrokenBackupException(
-                "Cannot read ${propertiesFile.name} at URI ${propertiesFile.uri}",
+                "Cannot read ${propertiesFile.name} at ${propertiesFile.path}",
                 e
             )
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, propertiesFile.uri)
-            throw BrokenBackupException("Unable to process ${propertiesFile.name} at URI ${propertiesFile.uri}. [${e.javaClass.canonicalName}] $e")
+            LogsHandler.unhandledException(e, propertiesFile.path)
+            throw BrokenBackupException("Unable to process ${propertiesFile.name} at ${propertiesFile.path}. [${e.javaClass.canonicalName}] $e")
         }
     }
 

@@ -24,10 +24,7 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Process
-import com.machiav3lli.backup.LOG_FOLDER_NAME
-import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
-import com.machiav3lli.backup.MAIN_FILTER_USER
-import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.ignoredPackages
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.AppInfo
@@ -154,7 +151,10 @@ fun Context.getDirectoriesInBackupRoot(): List<StorageFile> {
     try {
         return backupRoot.listFiles()
             .filter {
-                it.isDirectory && it.name != LOG_FOLDER_NAME && !(it.name?.startsWith('.') ?: false)
+                it.isDirectory &&
+                        it.name != LOG_FOLDER_NAME &&
+                        it.name != EXPORTS_FOLDER_NAME &&
+                        !(it.name?.startsWith('.') ?: false)
             }
             .toList()
     } catch (e: FileNotFoundException) {

@@ -22,10 +22,10 @@ open class StorageFile {
 
     var parent: StorageFile? = null
     var context: Context? = null
-    var uri: Uri? = null
 
-    var parentFile: RootFile? = null
-    var file: RootFile? = null
+    private var uri: Uri? = null
+    private var file: RootFile? = null
+    private var parentFile: RootFile? = null
 
     constructor(parent: StorageFile?, context: Context?, uri: Uri?) {
         this.parent = parent
@@ -127,6 +127,13 @@ open class StorageFile {
     val path: String?
         get() = file?.path ?: uri?.path
 
+    fun getUri(): Uri? {
+        return uri ?: file?.let {
+            uri = Uri.fromFile(it)
+            uri
+        }
+    }
+
     override fun toString(): String {
         return path ?: "null"
     }
@@ -141,19 +148,13 @@ open class StorageFile {
         file?.exists() ?: context?.let { context -> uri?.exists(context) } ?: false
 
     fun inputStream(): InputStream? {
-        return file?.let { file ->
-            //SuFileInputStream.open(file)
-            file.inputStream()
-        } ?: uri?.let { uri ->
+        return file?.inputStream() ?: uri?.let { uri ->
             context?.contentResolver?.openInputStream(uri)
         }
     }
 
     fun outputStream(): OutputStream? {
-        return file?.let { file ->
-            //SuFileOutputStream.open(file)
-            file.outputStream()
-        } ?: uri?.let { uri ->
+        return file?.outputStream() ?: uri?.let { uri ->
             context?.contentResolver?.openOutputStream(uri, "w")
         }
     }
@@ -225,6 +226,20 @@ open class StorageFile {
             ok = false
         }
         return ok
+    }
+
+    fun findUri(displayName: String): Uri? {
+        try {
+            for (file in listFiles()) {
+                if (displayName == file.name) {
+                    return file.uri
+                }
+            }
+        } catch (e: FileNotFoundException) {
+        } catch (e: Throwable) {
+            LogsHandler.unhandledException(e, uri)
+        }
+        return null
     }
 
     fun findFile(displayName: String): StorageFile? {

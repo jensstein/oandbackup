@@ -80,7 +80,7 @@ class LogViewModel(private val appContext: Application)
                 if (it.exists()) {
                     shareFileIntent = Intent().apply {
                         action = Intent.ACTION_SEND
-                        putExtra(Intent.EXTRA_STREAM, it.uri)
+                        putExtra(Intent.EXTRA_STREAM, it.getUri())
                         type = "text/plain"
                         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     }

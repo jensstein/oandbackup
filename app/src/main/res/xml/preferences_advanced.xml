@@ -98,7 +98,7 @@
         android:title="shadowRootFileForSAF" />
 
     <androidx.preference.CheckBoxPreference
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:key="catchUncaughtException"
         android:summary="unexpected exceptions are caught and output to logcat and app is restarted (needs restart when toggling)"
         android:title="catchUncaughtException" />

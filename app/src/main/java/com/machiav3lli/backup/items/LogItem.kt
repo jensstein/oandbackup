@@ -22,8 +22,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.utils.GsonUtils.instance
-import com.machiav3lli.backup.utils.openFileForReading
-import org.apache.commons.io.IOUtils
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.time.LocalDateTime
@@ -62,8 +60,8 @@ open class LogItem {
 
     constructor(context: Context, logFile: StorageFile) {
         try {
-            logFile.uri!!.openFileForReading(context).use { reader ->
-                val item = fromGson(IOUtils.toString(reader))
+            logFile.inputStream()!!.use { inputStream ->
+                val item = fromGson(inputStream.reader().readText())
                 this.logDate = item.logDate
                 this.deviceName = item.deviceName
                 this.sdkCodename = item.sdkCodename

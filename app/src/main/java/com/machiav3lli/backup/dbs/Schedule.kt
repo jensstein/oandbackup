@@ -30,8 +30,6 @@ import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.GsonUtils
 import com.machiav3lli.backup.utils.mainFilterToId
 import com.machiav3lli.backup.utils.modeToId
-import com.machiav3lli.backup.utils.openFileForReading
-import org.apache.commons.io.IOUtils
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -100,8 +98,8 @@ open class Schedule() {
 
     constructor(context: Context, exportFile: StorageFile) : this() {
         try {
-            exportFile.uri?.openFileForReading(context).use { reader ->
-                val item = fromGson(IOUtils.toString(reader))
+            exportFile.inputStream()!!.use { inputStream ->
+                val item = fromGson(inputStream.reader().readText())
                 this.id = item.id
                 this.name = item.name
                 this.filter = item.filter
@@ -115,17 +113,17 @@ open class Schedule() {
             }
         } catch (e: FileNotFoundException) {
             throw BackupItem.BrokenBackupException(
-                "Cannot open ${exportFile.name} at URI ${exportFile.uri}",
+                "Cannot open ${exportFile.name} at ${exportFile.path}",
                 e
             )
         } catch (e: IOException) {
             throw BackupItem.BrokenBackupException(
-                "Cannot read ${exportFile.name} at URI ${exportFile.uri}",
+                "Cannot read ${exportFile.name} at ${exportFile.path}",
                 e
             )
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, exportFile.uri)
-            throw BackupItem.BrokenBackupException("Unable to process ${exportFile.name} at URI ${exportFile.uri}. [${e.javaClass.canonicalName}] $e")
+            LogsHandler.unhandledException(e, exportFile.path)
+            throw BackupItem.BrokenBackupException("Unable to process ${exportFile.name} at ${exportFile.path}. [${e.javaClass.canonicalName}] $e")
         }
     }
 

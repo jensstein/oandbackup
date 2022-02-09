@@ -11,7 +11,8 @@ import timber.log.Timber
 class CommandReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         if(intent == null) return
-        val command = intent.action.toString()
+        val command = intent.action
+        Timber.i("Command: command $command")
         when (command) {
             "cancel" -> {
                 intent.getStringExtra("name")?.let { batchName ->
@@ -35,8 +36,11 @@ class CommandReceiver : BroadcastReceiver() {
                     }.start()
                 }
             }
+            null -> {
+                // ignore?
+            }
             else -> {
-                OABX.activity?.showToast("unknown command '$command'")
+                OABX.activity?.showToast("Command: unknown command '$command'")
             }
         }
     }

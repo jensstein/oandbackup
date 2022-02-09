@@ -40,17 +40,18 @@ class RestoreSystemAppAction(context: Context, work: AppActionWork?, shell: Shel
     @Throws(RestoreFailedException::class)
     override fun restorePackage(backupDir: StorageFile, backupProperties: BackupProperties) {
         val apkTargetPath = File(backupProperties.sourceDir ?: "")
-        backupDir.findFile(apkTargetPath.name)?.uri?.let { apkLocation ->
+        backupDir.findFile(apkTargetPath.name)?.let { apkFile ->
             // Writing the apk to a temporary location to get it out of the magic storage to a local location
             // that can be accessed with shell commands.
             val tempPath = File(context.cacheDir, apkTargetPath.name)
             try {
-                val inputStream = context.contentResolver.openInputStream(apkLocation)
-                FileOutputStream(tempPath).use { outputStream ->
-                    IOUtils.copy(
-                        inputStream,
-                        outputStream
-                    )
+                apkFile.inputStream().use { inputStream ->
+                    FileOutputStream(tempPath).use { outputStream ->
+                        IOUtils.copy(
+                            inputStream,
+                            outputStream
+                        )
+                    }
                 }
             } catch (e: FileNotFoundException) {
                 throw RestoreFailedException("Could not find main apk in backup", e)
@@ -58,7 +59,7 @@ class RestoreSystemAppAction(context: Context, work: AppActionWork?, shell: Shel
                 throw RestoreFailedException("Could extract main apk file to temporary location", e)
             }
             var mountPoint = "/"
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) { //TODO hg42: is this a sufficient condition? can we test for it at runtime?
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                 // Android versions prior Android 10 use /system
                 mountPoint = "/system"
             }

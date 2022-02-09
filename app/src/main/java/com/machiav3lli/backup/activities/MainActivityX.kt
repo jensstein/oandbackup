@@ -443,11 +443,15 @@ class MainActivityX : BaseActivity() {
     }
 
     fun doIntent(intent: Intent?): Boolean {
-        if (intent != null) {
-            when (val command = intent.action) {
-                else -> {
-                    activity?.showToast("unknown command '$command'")
-                }
+        if (intent == null) return false
+        val command = intent.action
+        Timber.i("Command: command $command")
+        when (command) {
+            null -> {
+                // ignore?
+            }
+            else -> {
+                activity?.showToast("Main: unknown command '$command'")
             }
         }
         return false
