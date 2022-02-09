@@ -378,13 +378,14 @@ class MainActivityX : BaseActivity() {
         if (OABX.prefFlag(PREFS_CATCHUNCAUGHT, true)) {
             Thread.setDefaultUncaughtExceptionHandler { _, e ->
                 try {
+                    val maxCrashLines = OABX.prefInt("maxCrashLines", 100)
                     LogsHandler.unhandledException(e)
                     LogsHandler(context).writeToLogFile(
                         "uncaught exception happened:\n\n" +
                                 "\n${BuildConfig.APPLICATION_ID} ${BuildConfig.VERSION_NAME}"
                                 + "\n" +
                                 runAsRoot(
-                                    "logcat -d --pid=${Process.myPid()}"  // -d = dump and exit
+                                    "logcat -d -t $maxCrashLines --pid=${Process.myPid()}"  // -d = dump and exit
                                 ).out.joinToString("\n")
                     )
                     object : Thread() {
@@ -401,6 +402,8 @@ class MainActivityX : BaseActivity() {
                         }
                     }.start()
                     Thread.sleep(5000)
+                } catch(e: Throwable) {
+                    // ignore
                 } finally {
                     exitProcess(2)
                 }

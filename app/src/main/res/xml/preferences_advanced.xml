@@ -103,6 +103,16 @@
         android:summary="unexpected exceptions are caught and output to logcat and app is restarted (needs restart when toggling)"
         android:title="catchUncaughtException" />
 
+    <androidx.preference.SeekBarPreference
+        android:defaultValue="100"
+        android:inputType="number"
+        android:key="maxCrashLines"
+        android:max="1000"
+        android:summary="maximum number of lines to be saved from the logcat on an uncaughtException"
+        android:title="maxCrashLines"
+        app:min="0"
+        app:showSeekBarValue="true" />
+
     <androidx.preference.CheckBoxPreference
         android:defaultValue="false"
         android:key="cacheRootFileAttributes"
