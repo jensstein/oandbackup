@@ -21,6 +21,7 @@ import android.app.Application
 import android.content.Intent
 import androidx.lifecycle.*
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.PrefsActivity
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.showNotification
@@ -78,13 +79,24 @@ class LogViewModel(private val appContext: Application)
             val shareFileIntent: Intent
             LogsHandler(appContext).getLogFile(log.logDate)?.let {
                 if (it.exists()) {
-                    shareFileIntent = Intent().apply {
-                        action = Intent.ACTION_SEND
-                        putExtra(Intent.EXTRA_STREAM, it.getUri())
-                        type = "text/plain"
-                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    }
-                    appContext.startActivity(shareFileIntent)
+                    it.inputStream()?.reader()?.readText()?.let { text ->
+                        shareFileIntent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            //putExtra(Intent.EXTRA_STREAM, it.getUri())
+                            putExtra(Intent.EXTRA_TEXT, text)
+                            type = "text/plain"
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        }
+                        //appContext.startActivity(shareFileIntent)
+                        MainActivityX.activity?.startActivity(
+                            Intent.createChooser(
+                                shareFileIntent,
+                                "Share $it.name"
+                            )
+                        )
+                    } ?:
+                        showNotification(appContext, PrefsActivity::class.java, System.currentTimeMillis().toInt(),
+                            "Could not read log file $it.name", "", false)
                 } else {
                     showNotification(appContext, PrefsActivity::class.java, System.currentTimeMillis().toInt(),
                             appContext.getString(R.string.logs_share_failed), "", false)
