@@ -90,6 +90,9 @@ android {
             freeCompilerArgs = listOf("-Xjvm-default=all")
         }
     }
+    lint {
+        checkReleaseBuilds = false
+    }
     dependenciesInfo {
         includeInApk = false
         includeInBundle = false
