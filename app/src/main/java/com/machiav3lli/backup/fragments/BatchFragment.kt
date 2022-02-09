@@ -199,6 +199,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                 .plus(item.app.packageLabel)
                 .find { it.contains(cs.toString(), true) } != null
         }
+        binding.searchBar.maxWidth = Int.MAX_VALUE
         binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
                 batchItemAdapter.filter(newText)
