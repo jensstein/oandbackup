@@ -18,10 +18,7 @@
 package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
 import com.machiav3lli.backup.dbs.AppExtras
 import com.machiav3lli.backup.dbs.AppExtrasDao
@@ -34,7 +31,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-// TODO Add factory as companion
 class MainViewModel(
     private val appExtrasDao: AppExtrasDao,
     private val blocklistDao: BlocklistDao,
@@ -143,5 +139,19 @@ class MainViewModel(
             blocklistDao.updateList(PACKAGES_LIST_GLOBAL_ID, newList)
             appInfoList.value?.removeIf { newList.contains(it.packageName) }
         }
+
+    class Factory(
+        private val appExtrasDao: AppExtrasDao,
+        private val blocklistDao: BlocklistDao,
+        private val application: Application
+    ) : ViewModelProvider.Factory {
+        @Suppress("unchecked_cast")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
+                return MainViewModel(appExtrasDao, blocklistDao, application) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel class")
+        }
+    }
 }
 

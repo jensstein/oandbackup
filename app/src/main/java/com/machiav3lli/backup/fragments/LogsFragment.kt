@@ -29,7 +29,6 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.FragmentRecyclerBinding
 import com.machiav3lli.backup.items.LogItemX
 import com.machiav3lli.backup.viewmodels.LogViewModel
-import com.machiav3lli.backup.viewmodels.LogViewModelFactory
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
@@ -48,15 +47,15 @@ class LogsFragment : Fragment() {
         super.onCreate(savedInstanceState)
         binding = FragmentRecyclerBinding.inflate(inflater, container, false)
 
-        val viewModelFactory = LogViewModelFactory(requireActivity().application)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(LogViewModel::class.java)
+        val viewModelFactory = LogViewModel.Factory(requireActivity().application)
+        viewModel = ViewModelProvider(this, viewModelFactory)[LogViewModel::class.java]
 
-        viewModel.refreshActive.observe(viewLifecycleOwner, {
+        viewModel.refreshActive.observe(viewLifecycleOwner) {
             binding.refreshLayout.isRefreshing = it
-        })
-        viewModel.refreshNow.observe(viewLifecycleOwner, {
+        }
+        viewModel.refreshNow.observe(viewLifecycleOwner) {
             if (it) refresh()
-        })
+        }
 
         return binding.root
     }

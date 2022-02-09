@@ -18,9 +18,7 @@
 package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.dbs.ScheduleDao
 import com.machiav3lli.backup.items.SchedulerItemX
@@ -28,9 +26,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-// TODO Add factory as companion
-class SchedulerViewModel(val database: ScheduleDao, appContext: Application)
-    : AndroidViewModel(appContext) {
+class SchedulerViewModel(val database: ScheduleDao, appContext: Application) :
+    AndroidViewModel(appContext) {
 
     var schedules = MediatorLiveData<List<Schedule>>()
 
@@ -52,10 +49,21 @@ class SchedulerViewModel(val database: ScheduleDao, appContext: Application)
     private suspend fun add() {
         withContext(Dispatchers.IO) {
             database.insert(
-                    Schedule.Builder() // Set id to 0 to make the database generate a new id
-                            .withId(0)
-                            .build()
+                Schedule.Builder() // Set id to 0 to make the database generate a new id
+                    .withId(0)
+                    .build()
             )
+        }
+    }
+
+    class Factory(private val dataSource: ScheduleDao, private val application: Application) :
+        ViewModelProvider.Factory {
+        @Suppress("unchecked_cast")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(SchedulerViewModel::class.java)) {
+                return SchedulerViewModel(dataSource, application) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel class")
         }
     }
 }

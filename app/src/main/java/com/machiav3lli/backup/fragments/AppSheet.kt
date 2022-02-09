@@ -51,7 +51,6 @@ import com.machiav3lli.backup.tasks.BackupActionTask
 import com.machiav3lli.backup.tasks.RestoreActionTask
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.AppSheetViewModel
-import com.machiav3lli.backup.viewmodels.AppSheetViewModelFactory
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.set
@@ -78,7 +77,7 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
             if (savedInstanceState != null) savedInstanceState.getStringArrayList(BUNDLE_USERS) else ArrayList()
         val shellCommands = ShellCommands(users)
         val viewModelFactory =
-            AppSheetViewModelFactory(appInfo, shellCommands, requireActivity().application)
+            AppSheetViewModel.Factory(appInfo, shellCommands, requireActivity().application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(AppSheetViewModel::class.java)
 
         viewModel.refreshNow.observe(viewLifecycleOwner, {

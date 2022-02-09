@@ -43,7 +43,6 @@ import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.ScheduleViewModel
-import com.machiav3lli.backup.viewmodels.ScheduleViewModelFactory
 import java.lang.ref.WeakReference
 import java.time.LocalTime
 import java.util.concurrent.TimeUnit
@@ -60,8 +59,8 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
         binding = SheetScheduleBinding.inflate(inflater, container, false)
         val scheduleDB = ScheduleDatabase.getInstance(requireContext()).scheduleDao
         val viewModelFactory =
-            ScheduleViewModelFactory(scheduleId, scheduleDB, requireActivity().application)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(ScheduleViewModel::class.java)
+            ScheduleViewModel.Factory(scheduleId, scheduleDB, requireActivity().application)
+        viewModel = ViewModelProvider(this, viewModelFactory)[ScheduleViewModel::class.java]
 
         viewModel.schedule.observe(viewLifecycleOwner) {
             binding.schedName.text = it.name

@@ -52,7 +52,6 @@ import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.BatchViewModel
-import com.machiav3lli.backup.viewmodels.BatchViewModelFactory
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.IAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
@@ -77,8 +76,8 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         super.onCreate(savedInstanceState)
         binding = FragmentBatchBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
-        val viewModelFactory = BatchViewModelFactory(requireActivity().application)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(BatchViewModel::class.java)
+        val viewModelFactory = BatchViewModel.Factory(requireActivity().application)
+        viewModel = ViewModelProvider(this, viewModelFactory)[BatchViewModel::class.java]
         return binding.root
     }
 
@@ -87,13 +86,13 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         setupViews()
         if (requireMainActivity().viewModel.refreshNow.value == true) refreshView()
 
-        viewModel.refreshNow.observe(requireActivity(), {
+        viewModel.refreshNow.observe(requireActivity()) {
             binding.refreshLayout.isRefreshing = it
             if (it) {
                 binding.searchBar.setQuery("", false)
                 requireMainActivity().viewModel.refreshList()
             }
-        })
+        }
     }
 
     override fun onStart() {
@@ -381,7 +380,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                     val (message, title) = FinishWork.getOutput(t)
                     showNotification(
                         requireContext(), MainActivityX::class.java,
-                        notificationId.toInt(), title, message, true
+                        notificationId, title, message, true
                     )
                     val overAllResult = ActionResult(null, null, errors, resultsSuccess)
                     requireActivity().showActionResult(overAllResult) { _: DialogInterface?, _: Int ->

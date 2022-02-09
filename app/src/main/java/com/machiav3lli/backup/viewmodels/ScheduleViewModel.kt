@@ -18,16 +18,13 @@
 package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.dbs.ScheduleDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-// TODO Add factory as companion
 class ScheduleViewModel(val id: Long, private val scheduleDB: ScheduleDao, appContext: Application)
     : AndroidViewModel(appContext) {
 
@@ -46,6 +43,18 @@ class ScheduleViewModel(val id: Long, private val scheduleDB: ScheduleDao, appCo
     private suspend fun deleteS() {
         withContext(Dispatchers.IO) {
             scheduleDB.delete(schedule.value!!)
+        }
+    }
+
+    class Factory(private val id: Long, private val scheduleDB: ScheduleDao,
+                                   private val application: Application)
+        : ViewModelProvider.Factory {
+        @Suppress("unchecked_cast")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(ScheduleViewModel::class.java)) {
+                return ScheduleViewModel(id, scheduleDB, application) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel class")
         }
     }
 }

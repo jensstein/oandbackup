@@ -20,13 +20,25 @@ package com.machiav3lli.backup.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 
-// TODO Add factory as companion
 class HomeViewModel(appContext: Application) : AndroidViewModel(appContext) {
     val nUpdatedApps: MutableLiveData<Int> = MutableLiveData()
     val refreshNow = MutableLiveData<Boolean>()
 
     init {
         nUpdatedApps.value = 0
+    }
+
+    class Factory(private val application: Application) :
+        ViewModelProvider.Factory {
+        @Suppress("unchecked_cast")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
+                return HomeViewModel(application) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel class")
+        }
     }
 }

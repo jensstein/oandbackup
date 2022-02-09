@@ -52,7 +52,6 @@ import com.machiav3lli.backup.services.CommandReceiver
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.MainViewModel
-import com.machiav3lli.backup.viewmodels.MainViewModelFactory
 import com.topjohnwu.superuser.Shell
 import timber.log.Timber
 import java.lang.ref.WeakReference
@@ -401,7 +400,7 @@ class MainActivityX : BaseActivity() {
         val appExtrasDao = AppExtrasDatabase.getInstance(this).appExtrasDao
         prefs = getPrivateSharedPrefs()
 
-        val viewModelFactory = MainViewModelFactory(appExtrasDao, blocklistDao, application)
+        val viewModelFactory = MainViewModel.Factory(appExtrasDao, blocklistDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
         if (!isRememberFiltering) {
             this.sortFilterModel = SortFilterModel()

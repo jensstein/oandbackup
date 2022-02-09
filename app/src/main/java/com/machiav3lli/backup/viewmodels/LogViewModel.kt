@@ -29,7 +29,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-// TODO Add factory as companion
 class LogViewModel(private val appContext: Application)
     : AndroidViewModel(appContext) {
 
@@ -105,6 +104,17 @@ class LogViewModel(private val appContext: Application)
         withContext(Dispatchers.IO) {
             logsList.value?.remove(log)
             log.delete(appContext)
+        }
+    }
+
+    class Factory(private val application: Application)
+        : ViewModelProvider.Factory {
+        @Suppress("unchecked_cast")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(LogViewModel::class.java)) {
+                return LogViewModel(application) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel class")
         }
     }
 }

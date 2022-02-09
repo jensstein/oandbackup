@@ -18,10 +18,7 @@
 package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellCommands
@@ -33,9 +30,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-// TODO Add factory as companion
-class AppSheetViewModel(app: AppInfo, var shellCommands: ShellCommands, private val appContext: Application)
-    : AndroidViewModel(appContext) {
+class AppSheetViewModel(
+    app: AppInfo,
+    var shellCommands: ShellCommands,
+    private val appContext: Application
+) : AndroidViewModel(appContext) {
 
     var appInfo = MediatorLiveData<AppInfo>()
 
@@ -60,14 +59,28 @@ class AppSheetViewModel(app: AppInfo, var shellCommands: ShellCommands, private 
             appInfo.value?.let {
                 Timber.i("uninstalling: ${appInfo.value?.packageLabel}")
                 try {
-                    shellCommands.uninstall(appInfo.value?.packageName, appInfo.value?.apkPath,
-                            appInfo.value?.dataPath, appInfo.value?.isSystem == true)
-                    showNotification(appContext, MainActivityX::class.java, notificationId++, appInfo.value?.packageLabel,
-                            appContext.getString(com.machiav3lli.backup.R.string.uninstallSuccess), true)
+                    shellCommands.uninstall(
+                        appInfo.value?.packageName, appInfo.value?.apkPath,
+                        appInfo.value?.dataPath, appInfo.value?.isSystem == true
+                    )
+                    showNotification(
+                        appContext,
+                        MainActivityX::class.java,
+                        notificationId++,
+                        appInfo.value?.packageLabel,
+                        appContext.getString(com.machiav3lli.backup.R.string.uninstallSuccess),
+                        true
+                    )
                     it.packageInfo = null
                 } catch (e: ShellCommands.ShellActionFailedException) {
-                    showNotification(appContext, MainActivityX::class.java, notificationId++, appInfo.value?.packageLabel,
-                            appContext.getString(com.machiav3lli.backup.R.string.uninstallFailure), true)
+                    showNotification(
+                        appContext,
+                        MainActivityX::class.java,
+                        notificationId++,
+                        appInfo.value?.packageLabel,
+                        appContext.getString(com.machiav3lli.backup.R.string.uninstallFailure),
+                        true
+                    )
                     e.message?.let { message -> LogsHandler.logErrors(appContext, message) }
                 }
             }
@@ -121,6 +134,20 @@ class AppSheetViewModel(app: AppInfo, var shellCommands: ShellCommands, private 
     private suspend fun deleteAll() {
         withContext(Dispatchers.IO) {
             appInfo.value?.deleteAllBackups(appContext)
+        }
+    }
+
+    class Factory(
+        private val app: AppInfo,
+        private val shellCommands: ShellCommands,
+        private val application: Application
+    ) : ViewModelProvider.Factory {
+        @Suppress("unchecked_cast")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(AppSheetViewModel::class.java)) {
+                return AppSheetViewModel(app, shellCommands, application) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel class")
         }
     }
 }

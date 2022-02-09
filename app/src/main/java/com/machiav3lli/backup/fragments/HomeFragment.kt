@@ -43,7 +43,6 @@ import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.HomeViewModel
-import com.machiav3lli.backup.viewmodels.HomeViewModelFactory
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.IAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
@@ -72,7 +71,7 @@ class HomeFragment : NavigationFragment(),
         super.onCreate(savedInstanceState)
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
-        val viewModelFactory = HomeViewModelFactory(requireActivity().application)
+        val viewModelFactory = HomeViewModel.Factory(requireActivity().application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(HomeViewModel::class.java)
         return binding.root
     }
