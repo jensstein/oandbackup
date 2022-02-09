@@ -155,6 +155,8 @@ abstract class BaseAppAction protected constructor(
             | com\.google\.android\.gsf
             # pattern matches
             | com\.android\.providers\.media\b.*
+            # program values
+            | """ + Regex.escape(BuildConfig.APPLICATION_ID) + """
             """).toRegex()
 
         val doNotStop = ("""(?x)
