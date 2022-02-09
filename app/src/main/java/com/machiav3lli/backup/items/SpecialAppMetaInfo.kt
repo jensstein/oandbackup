@@ -180,7 +180,7 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
                                 specPrefix + context.getString(R.string.spec_wallpaper),
                                 Build.VERSION.RELEASE,
                                 Build.VERSION.SDK_INT, arrayOf(
-                                    "$userDir/wallpaper",
+                                    //"$userDir/wallpaper",         // files are checked, non existent lead to erros
                                     "$userDir/wallpaper_info.xml"
                                 )
                             )
