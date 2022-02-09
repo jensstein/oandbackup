@@ -36,6 +36,9 @@ class CommandReceiver : BroadcastReceiver() {
                     }.start()
                 }
             }
+            "crash" -> {
+                throw Exception("this is an unknown exception sent from command intent") //TODO hg42 security?
+            }
             null -> {
                 // ignore?
             }
