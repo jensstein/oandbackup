@@ -60,7 +60,7 @@ fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
     StorageLocationNotConfiguredException::class
 )
 fun Context.getApplicationList(
-    blocklist: List<String>,
+    blockList: List<String>,
     includeUninstalled: Boolean = true
 ): MutableList<AppInfo> {
     val startTime = System.currentTimeMillis()
@@ -71,7 +71,7 @@ fun Context.getApplicationList(
     val packageInfoList = pm.getInstalledPackages(0)
     val packageList = packageInfoList
         .filterNotNull()
-        .filterNot { it.packageName.matches(ignoredPackages) || blocklist.contains(it.packageName) }
+        .filterNot { it.packageName.matches(ignoredPackages) || blockList.contains(it.packageName) }
         .mapNotNull {
             try {
                 AppInfo(this, it, backupRoot)
@@ -104,8 +104,12 @@ fun Context.getApplicationList(
     // discover the backup directory and run in a special case where no the directory is empty.
     // This would mean, that no package info is available – neither from backup.properties
     // nor from PackageManager.
+    var specialList = mutableListOf<String>()
     if (includeSpecial) {
-        packageList.addAll(getSpecialPackages(this))
+        getSpecialPackages(this).forEach {
+            packageList.add(it)
+            specialList.add(it.packageName)
+        }
     }
 
     if (includeUninstalled) {
@@ -120,9 +124,9 @@ fun Context.getApplicationList(
             directoriesInBackupRoot
                 .filterNot {
                     it.name?.let { name ->
-                        installedPackageNames.contains(name) || blocklist.contains(
-                            name
-                        )
+                        installedPackageNames.contains(name)
+                                || blockList.contains(name)
+                                || specialList.contains(name)
                     } ?: true
                 }
                 .mapNotNull {

@@ -232,22 +232,33 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
     }
 
     private fun setupOnClicks() {
+
+        // close
         binding.dismiss.setOnClickListener { dismissAllowingStateLoss() }
+
+        // tags
         binding.addTag.setOnClickListener {
             appExtras.customTags = appExtras.customTags.plus(binding.newTag.text.toString())
             binding.newTag.text = null
             viewModel.refreshNow.value = true
         }
+
+        // note
         binding.saveNote.setOnClickListener {
             appExtras.note = binding.noteText.text.toString()
             viewModel.refreshNow.value = true
         }
+
         viewModel.appInfo.value?.let { app: AppInfo ->
+
+            // details
             binding.appInfo.setOnClickListener {
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                 intent.data = Uri.fromParts("package", app.packageName, null)
                 this.startActivity(intent)
             }
+
+            // exodus
             binding.exodusReport.setOnClickListener {
                 requireContext().startActivity(
                     Intent(
@@ -256,12 +267,18 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
                     )
                 )
             }
+
+            // launch
             binding.launchApp.setOnClickListener {
                 requireContext().packageManager.getLaunchIntentForPackage(app.packageName)?.let {
                     startActivity(it)
                 }
             }
+
+            // enable/disable
             binding.enableDisable.setOnClickListener { displayDialogEnableDisable(app.isDisabled) }
+
+            // uninstall
             binding.uninstall.setOnClickListener {
                 AlertDialog.Builder(requireContext())
                     .setTitle(app.packageLabel)
@@ -273,13 +290,19 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
                     .setNegativeButton(R.string.dialogNo, null)
                     .show()
             }
+
+            // blocklist
             binding.addToBlocklist.setOnClickListener {
                 requireMainActivity().viewModel.addToBlocklist(app.packageName)
             }
+
+            // backup
             binding.backup.setOnClickListener {
                 BackupDialogFragment(app, this)
                     .show(requireActivity().supportFragmentManager, "backupDialog")
             }
+
+            // delete all backups
             binding.deleteAll.setOnClickListener {
                 AlertDialog.Builder(requireContext())
                     .setTitle(app.packageLabel)
@@ -291,6 +314,8 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
                     .setNegativeButton(R.string.dialogNo, null)
                     .show()
             }
+
+            // force-kill (TODO hg42 force-stop, force-close, ... ? I think these are different ones, and I don't know which)
             binding.forceKill.setOnClickListener {
                 AlertDialog.Builder(requireContext())
                     .setTitle(app.packageLabel)
@@ -302,6 +327,8 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
                     .setNegativeButton(R.string.dialogNo, null)
                     .show()
             }
+
+            // clear cache
             binding.wipeCache.setOnClickListener {
                 try {
                     Timber.i("$it: Wiping cache")
