@@ -191,11 +191,15 @@
     </style>
 
     <style name="Chip.Action.Positive" parent="Chip.Action">
+        <item name="android:textColor">?android:strokeColor</item>
+        <item name="chipIconTint">?android:strokeColor</item>
         <item name="rippleColor">?colorPrimary</item>
         <item name="chipBackgroundColor">@color/chip_surface_positive</item>
     </style>
 
     <style name="Chip.Action.Negative" parent="Chip.Action">
+        <item name="android:textColor">?android:strokeColor</item>
+        <item name="chipIconTint">?android:strokeColor</item>
         <item name="rippleColor">?colorSecondary</item>
         <item name="chipBackgroundColor">@color/chip_surface_negative</item>
     </style>
