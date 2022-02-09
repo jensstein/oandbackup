@@ -35,12 +35,8 @@ import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
 import org.apache.commons.io.FileUtils
 import timber.log.Timber
-import java.io.BufferedInputStream
-import java.io.FileNotFoundException
-import java.io.IOException
-import java.io.InputStream
+import java.io.*
 import java.nio.file.Files
-import java.nio.file.Path
 
 open class RestoreAppAction(context: Context, work: AppActionWork?, shell: ShellHandler) :
     BaseAppAction(context, work, shell) {
@@ -362,13 +358,13 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         compressed: Boolean,
         isEncrypted: Boolean,
         iv: ByteArray?,
-        cachePath: RootFile?
+        cachePath: File?
     ) {
         // Check if the archive exists, uncompressTo can also throw FileNotFoundException
         if (!archive.exists()) {
             throw RestoreFailedException("Backup archive at $archive is missing")
         }
-        var tempDir: Path? = null
+        var tempDir: RootFile? = null
         try {
             TarArchiveInputStream(
                 openArchiveFile(archive, compressed, isEncrypted, iv)
@@ -379,15 +375,13 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                         targetPath,
                         DATA_EXCLUDED_BASENAMES
                     )
-                    archiveStream.suUnpackTo(
-                        RootFile(targetPath),
-                        OABX.prefFlag(PREFS_STRICTHARDLINKS, false)
-                    )
+                    archiveStream.suUnpackTo(RootFile(targetPath))
                 } else {
                     // Create a temporary directory in OABX's cache directory and uncompress the data into it
-                    Files.createTempDirectory(cachePath?.toPath(), "restore_")?.let {
-                        tempDir = it
-                        archiveStream.unpackTo(tempDir?.toFile())
+                    //File(cachePath, "restore_${UUID.randomUUID()}").also { it.mkdirs() }.let {
+                    Files.createTempDirectory(cachePath?.toPath(), "restore_")?.toFile()?.let {
+                        tempDir = RootFile(it)
+                        archiveStream.suUnpackTo(tempDir!!)
                         // clear the data from the final directory
                         wipeDirectory(
                             targetPath,
@@ -397,7 +391,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                         val command =
                             "$utilBoxQ mv -f ${quote(tempDir.toString())}/* ${quote(targetPath)}/"
                         runAsRoot(command)
-                    }
+                    } ?: throw IOException("Could not create temporary directory $targetPath")
                 }
             }
         } catch (e: FileNotFoundException) {
@@ -420,7 +414,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             // Clean up the temporary directory if it was initialized
             tempDir?.let {
                 try {
-                    FileUtils.forceDelete(it.toFile())
+                    FileUtils.forceDelete(it)
                 } catch (e: IOException) {
                     Timber.e("Could not delete temporary directory $it. Cache Size might be growing. Reason: $e")
                 }
@@ -528,7 +522,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         compressed: Boolean,
         isEncrypted: Boolean,
         iv: ByteArray?,
-        cachePath: RootFile?
+        cachePath: File?
     ) {
         Timber.i("${OABX.app.packageName} -> $targetPath")
         if (OABX.prefFlag(PREFS_RESTORETARCMD, true)) {
@@ -891,7 +885,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         return path.contains(packageName)
     }
 
-    class RestoreFailedException : AppActionFailedException {
+    class RestoreFailedException : BaseAppAction.AppActionFailedException {
         constructor(message: String?) : super(message)
         constructor(message: String?, cause: Throwable?) : super(message, cause)
     }

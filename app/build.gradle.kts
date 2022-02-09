@@ -122,6 +122,7 @@ dependencies {
     implementation("com.github.topjohnwu.libsu:core:$libsu")
     implementation("com.github.topjohnwu.libsu:io:$libsu")
     //implementation("com.github.topjohnwu.libsu:busybox:$libsu")
+    implementation("com.github.tony19:named-regexp:0.2.6") // regex named groups
 
     // UI
     implementation("androidx.appcompat:appcompat:1.4.1")

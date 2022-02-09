@@ -18,6 +18,8 @@
 package com.machiav3lli.backup.handler
 
 import android.os.Environment.DIRECTORY_DOCUMENTS
+import android.telephony.mbms.FileInfo
+import com.google.code.regexp.Pattern
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.activities.MainActivityX.Companion.activity
@@ -32,7 +34,7 @@ import java.io.IOException
 import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.regex.Pattern
+
 
 class ShellHandler {
 
@@ -86,20 +88,19 @@ class ShellHandler {
         val shellResult = runAsRoot("$utilBoxQ ls -bAll ${quote(path)}")
         val relativeParent = parent ?: ""
         val result = shellResult.out.asSequence()
-            .filter { line: String -> line.isNotEmpty() }
-            .filter { line: String -> !line.startsWith("total") }
-            .filter { line: String -> line.split(Regex("""\s+"""), 0).size > 8 }
-            .map { line: String -> FileInfo.fromLsOutput(line, relativeParent, path) }
+            .filter { it.isNotEmpty() }
+            .filter { ! it.startsWith("total") }
+            .mapNotNull { FileInfo.fromLsOutput(it, relativeParent, path) }
             .toMutableList()
         if (recursive) {
             val directories = result
-                .filter { fileInfo: FileInfo -> fileInfo.fileType == FileType.DIRECTORY }
+                .filter { it.fileType == FileType.DIRECTORY }
                 .toTypedArray()
             directories.forEach { dir ->
                 result.addAll(
                     suGetDetailedDirectoryContents(
                         dir.absolutePath, true,
-                        if (parent != null) parent + '/' + dir.filename else dir.filename
+                        if (parent != null) "$parent/${dir.filename}" else dir.filename
                     )
                 )
             }
@@ -249,7 +250,7 @@ class ShellHandler {
                 lsLine: String,
                 parentPath: String?,
                 absoluteParent: String
-            ): FileInfo {
+            ): FileInfo? {
                 // Expecting something like this (with whitespace) from
                 // ls -bAll /data/data/com.shazam.android/
                 // field   0     1    2       3            4       5            6             7     8
@@ -261,17 +262,20 @@ class ShellHandler {
                 //var absoluteParent = absoluteParent
                 var parent = absoluteParent
                 //val tokens = lsLine.split(Regex("""\s+"""), 9).toTypedArray()
-                val regex = """^(?<mode>\S+)\s+(?<links>\d+)\s+(?<owner>\S+)\s+(?<group>\S+)\s+(?<size>\d+)\s+(?<mdate>\S+)\s+(?<mtime>\S+)(\s+(?<mzone>[+-]\S+))?\s+(?<name>.*)$""".toRegex()
-                var match = regex.matchEntire(lsLine)?.groups ?: throw Exception("ls format does not match")
+                val regex = Pattern.compile(
+                    """^(?<mode>\S+)\s+(?<links>\d+)\s+(?<owner>\S+)\s+(?<group>\S+)\s+(?<size>\d+)\s+(?<mdate>\S+)\s+(?<mtime>\S+)(\s+(?<mzone>[+-]\S+))?\s+(?<name>.*)$"""
+                )
+                val match = regex.matcher(lsLine)
+                match.find()
                 var filePath: String?
-                val modeFlags = match.get("mode")?.value!!
-                val owner = match.get("owner")?.value!!
-                val group = match.get("group")?.value!!
-                val size = match.get("size")?.value!!
-                val mdate = match.get("mdate")?.value!!
-                val mtime = match.get("mtime")?.value!!
-                val mzone = match.get("mzone")?.value
-                var name = match.get("name")?.value!!
+                val modeFlags = match.group("mode") ?: return null
+                val owner = match.group("owner") ?: return null
+                val group = match.group("group") ?: return null
+                val size = match.group("size") ?: return null
+                val mdate = match.group("mdate") ?: return null
+                val mtime = match.group("mtime") ?: return null
+                val mzone = match.group("mzone")
+                var name = match.group("name") ?: return null
                 val fileModTime =
                         if(mzone.isNullOrEmpty())
                             // 2020-11-26 04:35
@@ -360,7 +364,7 @@ class ShellHandler {
                 return result
             }
 
-            fun fromLsOutput(lsLine: String, absoluteParent: String): FileInfo {
+            fun fromLsOutput(lsLine: String, absoluteParent: String): FileInfo? {
                 return fromLsOutput(lsLine, "", absoluteParent)
             }
         }

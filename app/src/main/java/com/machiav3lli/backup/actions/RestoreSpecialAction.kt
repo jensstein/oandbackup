@@ -23,13 +23,10 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
-import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.BackupProperties
-import com.machiav3lli.backup.items.SpecialAppMetaInfo
-import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.items.*
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.CryptoSetupException
-import com.machiav3lli.backup.utils.unpackTo
+import com.machiav3lli.backup.utils.suUnpackTo
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
 import org.apache.commons.io.FileUtils
 import timber.log.Timber
@@ -61,7 +58,7 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
     ) {
         Timber.i("%s: Restore special data", app)
         val metaInfo = app.appMetaInfo as SpecialAppMetaInfo
-        val tempPath = File(context.cacheDir, backupProperties.packageName ?: "")
+        val tempPath = RootFile(context.cacheDir, backupProperties.packageName ?: "")
         val isEncrypted = backupProperties.isEncrypted
         val backupArchiveFilename = getBackupArchiveFilename(BACKUP_DIR_DATA, compressed, isEncrypted)
         val backupArchiveFile = backupDir.findFile(backupArchiveFilename)
@@ -72,17 +69,20 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
             ).use { archiveStream ->
                 tempPath.mkdir()
                 // Extract the contents to a temporary directory
-                archiveStream.unpackTo(tempPath)
+                archiveStream.suUnpackTo(tempPath)
 
                 // check if all expected files are there
                 val filesInBackup = tempPath.listFiles()
                 val expectedFiles = metaInfo.fileList
-                    .map { pathname: String? -> File(pathname ?: "") }
+                    .map { pathname: String? -> RootFile(pathname ?: "") }
                     .toTypedArray()
-                if (filesInBackup != null && (filesInBackup.size != expectedFiles.size || !areBasefilesSubsetOf(
-                        expectedFiles,
-                        filesInBackup
-                    ))
+                if (filesInBackup != null && (
+                        filesInBackup.size != expectedFiles.size
+                            || ! areBasefilesSubsetOf(
+                                    expectedFiles,
+                                    filesInBackup
+                                 )
+                        )
                 ) {
                     val errorMessage =
                         "$app: Backup is missing files. Found $filesInBackup; needed: $expectedFiles"
@@ -96,8 +96,8 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
                     } catch(e: Throwable) {
                         // fallback to permissions of parent directory
                         shell.suGetOwnerGroupContext(
-                            restoreFile.parentFile.absolutePath ?:
-                                restoreFile.toPath().parent.toString()
+                            restoreFile.parentFile?.absolutePath ?:
+                                        restoreFile.toPath().parent.toString()
                         )
                     }
                     commands.add(
@@ -190,7 +190,7 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
     }
 
     companion object {
-        private fun areBasefilesSubsetOf(set: Array<File>, subsetList: Array<File>): Boolean {
+        private fun  areBasefilesSubsetOf(set: Array<RootFile>, subsetList: Array<RootFile>): Boolean {
             val baseCollection: Collection<String> = set.map { obj: File -> obj.name }.toHashSet()
             val subsetCollection: Collection<String> =
                 subsetList.map { obj: File -> obj.name }.toHashSet()

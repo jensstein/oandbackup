@@ -17,15 +17,14 @@
  */
 package com.machiav3lli.backup.utils
 
-import android.system.ErrnoException
-import android.system.Os
-import com.machiav3lli.backup.actions.BaseAppAction.Companion.DATA_EXCLUDED_CACHE_DIRS
+import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.PREFS_STRICTHARDLINKS
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.DATA_EXCLUDED_BASENAMES
+import com.machiav3lli.backup.actions.BaseAppAction.Companion.DATA_EXCLUDED_CACHE_DIRS
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
-import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.RootFile
 import com.topjohnwu.superuser.io.SuFileOutputStream
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry
@@ -35,7 +34,10 @@ import org.apache.commons.compress.archivers.tar.TarConstants
 import org.apache.commons.compress.utils.IOUtils
 import org.apache.commons.io.FileUtils
 import timber.log.Timber
-import java.io.*
+import java.io.BufferedInputStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -145,100 +147,147 @@ fun TarArchiveOutputStream.suAddFiles(allFiles: List<ShellHandler.FileInfo>) {
     }
 }
 
-@Throws(IOException::class, ShellCommandFailedException::class)
-fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile?, strictHardLinks: Boolean = false) {
+@Throws(IOException::class)
+fun setAttributes(targetFile: RootFile, tarEntry: TarArchiveEntry) {
     val qUtilBox = ShellHandler.utilBoxQ
+    val path = targetFile.absolutePath
+    val mode = tarEntry.mode and 0b0_111_111_111_111
+    try {
+        runAsRoot(
+            "$qUtilBox chmod ${
+                String.format("%03o", mode)
+            } ${quote(path)}"
+        )
+    } catch (e: Throwable) {
+        throw IOException(
+            "Unable to chmod $path to ${String.format("%03o", mode)}: $e"
+        )
+    }
+    val (user, group) = listOf(tarEntry.userName, tarEntry.groupName)
+    try {
+        runAsRoot("$qUtilBox chown $user:$group ${quote(path)}")
+    } catch (e: Throwable) {
+        throw IOException("Unable to chown $path to $user:$group: $e")
+    }
+    val timeStr =
+            SimpleDateFormat(
+                "yyyy-MM-dd'T'HH:mm:SS",
+                Locale.getDefault(Locale.Category.FORMAT)
+            ).format(tarEntry.modTime.time)
+    try {
+        //targetPath.setLastModified(tarEntry.modTime.time)   YYYY-MM-DDThh:mm:SS[.frac][tz]
+        runAsRoot("$qUtilBox touch -m -d $timeStr ${quote(path)}"
+        )
+    } catch (e: Throwable) {
+        throw IOException("Unable to set modification time on $path to $timeStr: $e")
+    }
+}
+
+@Throws(IOException::class)
+fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile) {
+    val qUtilBox = ShellHandler.utilBoxQ
+    val strictHardLinks = OABX.prefFlag(PREFS_STRICTHARDLINKS, false)
     targetDir?.let {
-        val postponeModes = mutableMapOf<String, Int>()
+        val postponeInfo = mutableMapOf<String, TarArchiveEntry>()
         generateSequence { nextTarEntry }.forEach { tarEntry ->
-            val targetPath = RootFile(it, tarEntry.name)
-            Timber.d("Extracting ${tarEntry.name}")
-            var doChmod = true
-            var postponeChmod = false
-            var relPath = targetPath.relativeTo(it).toString()
-            val mode = tarEntry.mode and 0b0_111_111_111_111
+            val targetFile = RootFile(it, tarEntry.name)
+            Timber.d("Extracting ${tarEntry.name} (filesize: ${tarEntry.realSize})")
+            targetFile.parentFile?.let {
+                if (!it.exists() and !it.mkdirs()) {
+                    throw IOException("Unable to create parent folder ${it.absolutePath}")
+                }
+            } ?: throw IOException("No parent folder for ${targetFile.absolutePath}")
+            var doAttribs = true
+            var postponeAttribs = false
+            val relPath = targetFile.relativeTo(it).toString()
             when {
-                relPath.isEmpty() -> return@forEach
-                relPath in DATA_EXCLUDED_BASENAMES -> return@forEach
-                relPath in DATA_EXCLUDED_CACHE_DIRS -> return@forEach
+                relPath.isEmpty() ||
+                relPath in DATA_EXCLUDED_BASENAMES ||
+                relPath in DATA_EXCLUDED_CACHE_DIRS -> {
+                    return@forEach
+                }
                 tarEntry.isDirectory -> {
-                    runAsRoot("$qUtilBox mkdir -p ${quote(targetPath)}")
+                    if (!targetFile.mkdirs()) {
+                        throw IOException("Unable to create folder ${targetFile.absolutePath}")
+                    }
                     // write protection would prevent creating files inside, so chmod at end
-                    postponeChmod = true
+                    postponeAttribs = true
                 }
                 tarEntry.isLink -> {
-
-                    runAsRoot(
-                        // OABX v7 implementation stroes hard links and extracts all links as symlinks
-                        "$qUtilBox ln ${if(strictHardLinks) "" else "-s"} ${quote(tarEntry.linkName)} ${quote(targetPath)}"
-                    )
-                    doChmod = false
+                    // OABX v7 tarapi implementation stores all links as hard links (bug)
+                    // and extracts all links as symlinks (repair)
+                    if(strictHardLinks)
+                        try {
+                            runAsRoot(
+                                "$qUtilBox ln ${quote(tarEntry.linkName)} ${quote(targetFile)}"
+                            )
+                        } catch (e: Throwable) {
+                            throw IOException("Unable to create hardlink: ${tarEntry.linkName} -> ${targetFile.absolutePath} : $e")
+                        }
+                    else
+                        try {
+                            runAsRoot(
+                                // OABX v7 implementation stroes hard links and extracts all links as symlinks
+                                "$qUtilBox ln -s ${quote(tarEntry.linkName)} ${quote(targetFile)}"
+                            )
+                        } catch (e: Throwable) {
+                            throw IOException("Unable to create symlink: ${tarEntry.linkName} -> ${targetFile.absolutePath} : $e")
+                        }
+                    doAttribs = false
                 }
                 tarEntry.isSymbolicLink -> {
-                    runAsRoot(
-                        "$qUtilBox ln -s ${quote(tarEntry.linkName)} ${quote(targetPath)}"
-                    )
-                    doChmod = false
-                }
-                tarEntry.isFIFO -> {
-                    runAsRoot("$qUtilBox mkfifo ${quote(targetPath)}")
-                }
-                else -> {
-                    SuFileOutputStream.open(RootFile.open(it, tarEntry.name))
-                        .use { fos -> IOUtils.copy(this, fos, BUFFER_SIZE) }
-                }
-            }
-            if (doChmod) {
-                if (postponeChmod) {
-                    postponeModes[targetPath.absolutePath] = mode
-                } else {
                     try {
                         runAsRoot(
-                            "$qUtilBox chmod ${
-                                String.format("%03o", mode)
-                            } ${quote(targetPath.absolutePath)}"
+                            "$qUtilBox ln -s ${quote(tarEntry.linkName)} ${quote(targetFile)}"
                         )
-                    } catch (e: ErrnoException) {
-                        throw IOException(
-                            "Unable to chmod ${targetPath.absolutePath} to  ${
-                                String.format("%03o", mode)
-                            }: $e"
-                        )
+                    } catch (e: Throwable) {
+                        throw IOException("Unable to create symlink: ${tarEntry.linkName} -> ${targetFile.absolutePath} : $e")
+                    }
+                    doAttribs = false
+                }
+                tarEntry.isFIFO -> {
+                    try {
+                        runAsRoot("$qUtilBox mkfifo ${quote(targetFile)}")
+                    } catch (e: Throwable) {
+                        throw IOException("Unable to create fifo ${targetFile.absolutePath}: $e")
+                    }
+                }
+                else -> {
+                    try {
+                        SuFileOutputStream.open(RootFile.open(it, tarEntry.name))
+                            .use { fos -> IOUtils.copy(this, fos, BUFFER_SIZE) }
+                    } catch (e: Throwable) {
+                        throw IOException("Unable to create file ${targetFile.absolutePath}: $e")
                     }
                 }
             }
-
-            try {
-                //targetPath.setLastModified(tarEntry.modTime.time)   YYYY-MM-DDThh:mm:SS[.frac][tz]
-                runAsRoot(
-                    "$qUtilBox touch -m -d ${
-                        SimpleDateFormat(
-                            "yyyy-MM-dd'T'HH:mm:SS",
-                            Locale.getDefault(Locale.Category.FORMAT)
-                        ).format(tarEntry.modTime.time)
-                    } ${quote(targetPath)}"
-                )
-            } catch (e: ErrnoException) {
-                throw IOException("Unable to set modification time on $targetPath to ${tarEntry.modTime}: $e")
+            if (doAttribs) {
+                if (postponeAttribs) {
+                    postponeInfo[targetFile.absolutePath] = tarEntry
+                } else {
+                    setAttributes(targetFile, tarEntry)
+                }
             }
         }
-        postponeModes.forEach { fileMode ->
+
+        postponeInfo.forEach { (targetFile, tarEntry) ->
             try {
-                runAsRoot("$qUtilBox chmod ${String.format("%03o", fileMode.value)} ${quote(fileMode.key)}")
-            } catch (e: ErrnoException) {
-                throw IOException("Unable to chmod ${fileMode.key} to ${String.format("%03o", fileMode.value)}: $e")
+                setAttributes(RootFile(targetFile), tarEntry)
+            } catch (e: Throwable) {
+                throw IOException("Unable to set security attributes on $targetFile: $e")
             }
         }
     }
 }
 
+/*
 @Throws(IOException::class)
-fun TarArchiveInputStream.unpackTo(targetDir: File?) {
+fun TarArchiveInputStream.unpackTo(targetDir: File?, strictHardLinks: Boolean = false) {
     targetDir?.let {
         val postponeModes = mutableMapOf<String, Int>()
         generateSequence { nextTarEntry }.forEach { tarEntry ->
             val targetFile = File(it, tarEntry.name)
-            Timber.d("Uncompressing ${tarEntry.name} (filesize: ${tarEntry.realSize})")
+            Timber.d("Extracting ${tarEntry.name} (filesize: ${tarEntry.realSize})")
             targetFile.parentFile?.let {
                 if (!it.exists() and !it.mkdirs()) {
                     throw IOException("Unable to create parent folder ${it.absolutePath}")
@@ -246,7 +295,7 @@ fun TarArchiveInputStream.unpackTo(targetDir: File?) {
             } ?: throw IOException("No parent folder for ${targetFile.absolutePath}")
             var doChmod = true
             var postponeChmod = false
-            var relPath = targetFile.relativeTo(targetFile.parentFile!!).toString()
+            var relPath = targetFile.relativeTo(it).toString()
             val mode = tarEntry.mode and 0b111_111_111_111
             when {
                 relPath.isEmpty() -> return@forEach
@@ -259,10 +308,26 @@ fun TarArchiveInputStream.unpackTo(targetDir: File?) {
                     // write protection would prevent creating files inside, so chmod at end
                     postponeChmod = true
                 }
-                tarEntry.isLink or tarEntry.isSymbolicLink -> {
+                tarEntry.isLink -> {
+                    // OABX v7 implementation stores hard links and extracts all links as symlinks
+                    if(strictHardLinks)
+                        try {
+                            Os.link(tarEntry.linkName, targetFile.absolutePath)
+                        } catch (e: Throwable) {
+                            throw IOException("Unable to create hardlink: ${tarEntry.linkName} -> ${targetFile.absolutePath} : $e")
+                        }
+                    else
+                        try {
+                            Os.symlink(tarEntry.linkName, targetFile.absolutePath)
+                        } catch (e: Throwable) {
+                            throw IOException("Unable to create symlink: ${tarEntry.linkName} -> ${targetFile.absolutePath} : $e")
+                        }
+                    doChmod = false
+                }
+                tarEntry.isSymbolicLink -> {
                     try {
                         Os.symlink(tarEntry.linkName, targetFile.absolutePath)
-                    } catch (e: ErrnoException) {
+                    } catch (e: Throwable) {
                         throw IOException("Unable to create symlink: ${tarEntry.linkName} -> ${targetFile.absolutePath} : $e")
                     }
                     doChmod = false
@@ -270,14 +335,14 @@ fun TarArchiveInputStream.unpackTo(targetDir: File?) {
                 tarEntry.isFIFO -> {
                     try {
                         Os.mkfifo(targetFile.absolutePath, tarEntry.mode)
-                    } catch (e: ErrnoException) {
+                    } catch (e: Throwable) {
                         throw IOException("Unable to create fifo ${targetFile.absolutePath}: $e")
                     }
                 }
                 else -> {
                     try {
                         FileOutputStream(targetFile).use { fos -> IOUtils.copy(this, fos) }
-                    } catch (e: ErrnoException) {
+                    } catch (e: Throwable) {
                         throw IOException("Unable to create file ${targetFile.absolutePath}: $e")
                     }
                 }
@@ -288,24 +353,26 @@ fun TarArchiveInputStream.unpackTo(targetDir: File?) {
                 } else {
                     try {
                         Os.chmod(targetFile.absolutePath, mode)
-                    } catch (e: ErrnoException) {
+                    } catch (e: Throwable) {
                         throw IOException("Unable to chmod ${targetFile.absolutePath} to ${String.format("%03o", mode)}: $e")
                     }
                 }
 
             }
+
             try {
                 targetFile.setLastModified(tarEntry.modTime.time)
-            } catch (e: ErrnoException) {
+            } catch (e: Throwable) {
                 throw IOException("Unable to set modification time on $targetFile to ${tarEntry.modTime}: $e")
             }
         }
         postponeModes.forEach { fileMode ->
             try {
                 Os.chmod(fileMode.key, fileMode.value)
-            } catch (e: ErrnoException) {
+            } catch (e: Throwable) {
                 throw IOException("Unable to chmod ${fileMode.key} to ${String.format("%03o", fileMode.value)}: $e")
             }
         }
     }
 }
+*/

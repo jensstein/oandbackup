@@ -64,7 +64,7 @@ class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHa
         // This can be optimized, because it's known, that special backups won't meet any symlinks
         // since the list of files is fixed
         // It would make sense to implement something like TarUtils.addFilepath with SuFileInputStream and
-        val filesToBackup: MutableList<ShellHandler.FileInfo> = ArrayList(appInfo.fileList.size)
+        val filesToBackup = mutableListOf<ShellHandler.FileInfo>()
         try {
             for (filePath in appInfo.fileList) {
                 if (app.packageName == "special.smsmms.json") {
@@ -76,12 +76,14 @@ class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHa
                 val file = File(filePath)
                 val isDirSource = filePath.endsWith("/")
                 val parent = if (isDirSource) file.name else null
-                var fileInfos: List<ShellHandler.FileInfo>
+                var fileInfos = mutableListOf<ShellHandler.FileInfo>()
                 try {
-                    fileInfos = shell.suGetDetailedDirectoryContents(
-                        filePath.removeSuffix("/"),
-                        isDirSource,
-                        parent
+                    fileInfos.addAll(
+                        shell.suGetDetailedDirectoryContents(
+                            filePath.removeSuffix("/"),
+                            isDirSource,
+                            parent
+                        )
                     )
                 } catch (e: ShellCommandFailedException) {
                     continue  //TODO hg42: avoid checking the error message text for now

@@ -305,7 +305,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             }
 
             // if the list is empty, there is nothing to do
-            val allFilesToBackup: MutableList<ShellHandler.FileInfo> = ArrayList()
+            val allFilesToBackup = mutableListOf<ShellHandler.FileInfo>()
             if (dirsInSource.isEmpty()) {
                 return allFilesToBackup
             }

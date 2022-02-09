@@ -1,6 +1,6 @@
 package tests
 
-import com.machiav3lli.backup.BuildConfig
+import com.machiav3lli.backup.actions.BaseAppAction.Companion.doNotStop
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.ignoredPackages
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -26,10 +26,10 @@ class Test_ignoredPackages {
 
     @Test
     fun test_matchesOwnPackage() {
-        val packageName = BuildConfig.APPLICATION_ID
+        val packageName = com.machiav3lli.backup.BuildConfig.APPLICATION_ID  // use explicit BuildConfig
         assertTrue(
             "does not match: $packageName",
-            packageName.matches(ignoredPackages)
+            packageName.matches(doNotStop)
         )
     }
 
