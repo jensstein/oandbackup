@@ -54,6 +54,7 @@ class SchedulerItemX(var schedule: Schedule) : AbstractBindingItem<ItemScheduler
         binding.schedName.text = schedule.name
         binding.systemFilter.setExists(schedule.filter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM)
         binding.userFilter.setExists(schedule.filter and MAIN_FILTER_USER == MAIN_FILTER_USER)
+        binding.specialFilter.setExists(schedule.filter and MAIN_FILTER_SPECIAL == MAIN_FILTER_SPECIAL)
         binding.updatedFilter.setExists(schedule.specialFilter == SPECIAL_FILTER_NEW_UPDATED)
         binding.launchableFilter.setExists(schedule.specialFilter == SPECIAL_FILTER_LAUNCHABLE)
         binding.oldFilter.setExists(schedule.specialFilter == SPECIAL_FILTER_OLD)

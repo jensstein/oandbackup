@@ -41,10 +41,10 @@ private fun List<AppInfo>.applyBackupFilter(backupFilter: Int): List<AppInfo> {
     val predicate: (AppInfo) -> Boolean = {
         (if (backupFilter and MODE_NONE == MODE_NONE)
             !it.hasBackups or
-                    ! ( it.hasApk or it.hasAppData or it.hasDevicesProtectedData or
+                    !(it.hasApk or it.hasAppData or it.hasDevicesProtectedData or
                             it.hasExternalData or it.hasObbData or it.hasMediaData)
-            else
-                false
+        else
+            false
                 )
                 || (if (backupFilter and MODE_APK == MODE_APK) it.hasApk else false)
                 || (if (backupFilter and MODE_DATA == MODE_DATA) it.hasAppData else false)
@@ -144,10 +144,11 @@ fun idToSpecialFilter(id: Int): Int = when (id) {
 }
 
 fun filterToString(context: Context, filter: Int): String {
-    val activeFilters = possibleSchedFilters.filter { it and filter == it }
+    val activeFilters = possibleMainFilters.filter { it and filter == it }
     return when {
         activeFilters.size == 2 -> context.getString(R.string.radio_all)
         activeFilters.contains(MAIN_FILTER_USER) -> context.getString(R.string.radio_user)
+        activeFilters.contains(MAIN_FILTER_SPECIAL) -> context.getString(R.string.radio_special)
         else -> context.getString(R.string.radio_system)
     }
 }

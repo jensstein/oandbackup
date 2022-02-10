@@ -87,7 +87,7 @@ open class Schedule() {
     var blockList: Set<String> = setOf()
 
     val filterIds: List<Int>
-        get() = possibleSchedFilters
+        get() = possibleMainFilters
             .filter { it and filter == it }
             .map { mainFilterToId(it) }
 

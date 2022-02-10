@@ -78,6 +78,15 @@
                 android:tint="@color/ic_user"
                 app:srcCompat="@drawable/ic_user" />
 
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/specialFilter"
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
+                android:background="@android:color/transparent"
+                android:tint="@color/ic_special"
+                app:srcCompat="@drawable/ic_special" />
+
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/launchableFilter"
                 android:layout_width="@dimen/icon_small"
