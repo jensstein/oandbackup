@@ -36,11 +36,16 @@ open class StorageFile {
     private var file: RootFile? = null
     private var parentFile: RootFile? = null
 
-    constructor(parent: StorageFile?, context: Context?, uri: Uri?) {
+    constructor(
+        parent: StorageFile?,
+        context: Context?,
+        uri: Uri?,
+        allowShadowing: Boolean = false // Storage files that should be shadowable should be explicitly decalred as such
+    ) {
         this.parent = parent
         this.context = context
         this._uri = uri
-        if (OABX.prefFlag(PREFS_SHADOWROOTFILE, false)) {
+        if (OABX.prefFlag(PREFS_SHADOWROOTFILE, false) && allowShadowing) {
             fun isValidPath(file: RootFile?): Boolean =
                 file?.let { file.exists() && file.canRead() && file.canWrite() } ?: false
             parent ?: run {
