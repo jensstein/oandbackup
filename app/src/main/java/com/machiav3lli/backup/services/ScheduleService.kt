@@ -125,7 +125,10 @@ open class ScheduleService : Service() {
                             .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
                         oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
                             override fun onChanged(t: WorkInfo?) {
-                                if (t?.state == WorkInfo.State.SUCCEEDED) {
+                                if (t?.state == WorkInfo.State.SUCCEEDED ||
+                                    t?.state == WorkInfo.State.FAILED    ||
+                                    t?.state == WorkInfo.State.CANCELLED
+                                ) {
                                     counter += 1
                                     val succeeded = t.outputData.getBoolean("succeeded", false)
                                     val packageLabel = t.outputData.getString("packageLabel")
@@ -150,7 +153,10 @@ open class ScheduleService : Service() {
                         .getWorkInfoByIdLiveData(finishWorkRequest.id)
                     finishWorkLiveData.observeForever(object : Observer<WorkInfo> {
                         override fun onChanged(t: WorkInfo?) {
-                            if (t?.state == WorkInfo.State.SUCCEEDED) {
+                            if (t?.state == WorkInfo.State.SUCCEEDED ||
+                                t?.state == WorkInfo.State.FAILED    ||
+                                t?.state == WorkInfo.State.CANCELLED
+                            ) {
                                 val message = t.outputData.getString("notificationMessage")
                                     ?: ""
                                 val title = t.outputData.getString("notificationTitle")
