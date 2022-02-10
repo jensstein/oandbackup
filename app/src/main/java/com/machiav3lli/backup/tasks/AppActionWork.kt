@@ -24,10 +24,7 @@ import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_MAXRETRIES
 import com.machiav3lli.backup.activities.MainActivityX
-import com.machiav3lli.backup.handler.BackupRestoreHelper
-import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.handler.getDirectoriesInBackupRoot
-import com.machiav3lli.backup.handler.showNotification
+import com.machiav3lli.backup.handler.*
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.AppInfo
 import timber.log.Timber
@@ -61,9 +58,14 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         var appInfo: AppInfo? = null
 
         try {
-            val foundItem =
-                context.packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA)
-            appInfo = AppInfo(context, foundItem)
+            val specialAppInfo = context.getSpecial(packageName)
+            appInfo = if (specialAppInfo != null) {
+                specialAppInfo
+            } else {
+                val foundItem =
+                    context.packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA)
+                AppInfo(context, foundItem)
+            }
         } catch (e: PackageManager.NameNotFoundException) {
             if (packageLabel.isEmpty())
                 packageLabel = appInfo?.packageLabel ?: "NONAME"

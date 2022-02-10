@@ -188,3 +188,6 @@ fun Context.getPackageStorageStats(packageName: String, storageUuid: UUID): Stor
         null
     }
 }
+
+fun Context.getSpecial(packageName: String) = getSpecialPackages(this)
+    .find { it.packageName == packageName }
