@@ -99,6 +99,12 @@
 
     <androidx.preference.CheckBoxPreference
         android:defaultValue="false"
+        android:key="allowShadowingDefault"
+        android:summary="the default for StorageFile creation (enable for now, if you want to use root shadow at all)"
+        android:title="allowShadowingDefault" />
+
+    <androidx.preference.CheckBoxPreference
+        android:defaultValue="false"
         android:key="catchUncaughtException"
         android:summary="unexpected exceptions are caught and output to logcat and app is restarted (needs restart when toggling)"
         android:title="catchUncaughtException" />

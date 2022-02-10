@@ -6,6 +6,7 @@ import android.net.Uri
 import android.provider.DocumentsContract
 import androidx.core.content.FileProvider
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.PREFS_ALLOWSHADOWINGDEFAULT
 import com.machiav3lli.backup.PREFS_SHADOWROOTFILE
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellCommands
@@ -40,7 +41,7 @@ open class StorageFile {
         parent: StorageFile?,
         context: Context?,
         uri: Uri?,
-        allowShadowing: Boolean = false // Storage files that should be shadowable should be explicitly decalred as such
+        allowShadowing: Boolean = OABX.prefFlag(PREFS_ALLOWSHADOWINGDEFAULT, false) // Storage files that should be shadowable should be explicitly decalred as such
     ) {
         this.parent = parent
         this.context = context
