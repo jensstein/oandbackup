@@ -475,16 +475,21 @@ class MainActivityX : BaseActivity() {
     }
 
     private fun setupNavigation() {
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.fragmentContainer) as NavHostFragment
-        val navController = navHostFragment.navController
-        binding.bottomNavigation.setOnItemSelectedListener { item: MenuItem ->
-            if (item.itemId == binding.bottomNavigation.selectedItemId) return@setOnItemSelectedListener false
-            if (binding.bottomNavigation.selectedItemId.itemIdToOrder() < item.itemId.itemIdToOrder())
-                navController.navigateRight(item.itemId)
-            else
-                navController.navigateLeft(item.itemId)
-            true
+        try {
+            val navHostFragment =
+                supportFragmentManager.findFragmentById(R.id.fragmentContainer) as NavHostFragment
+            val navController = navHostFragment.navController
+            binding.bottomNavigation.setOnItemSelectedListener { item: MenuItem ->
+                if (item.itemId == binding.bottomNavigation.selectedItemId) return@setOnItemSelectedListener false
+                if (binding.bottomNavigation.selectedItemId.itemIdToOrder() < item.itemId.itemIdToOrder())
+                    navController.navigateRight(item.itemId)
+                else
+                    navController.navigateLeft(item.itemId)
+                true
+            }
+        } catch (e: ClassCastException) {
+            finish()
+            startActivity(intent)
         }
     }
 
