@@ -112,7 +112,7 @@ dependencies {
     kapt("androidx.room:room-compiler:2.4.1")
     implementation("androidx.work:work-runtime-ktx:2.7.1")
     implementation("com.google.code.gson:gson:2.8.9")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.1")
     implementation("androidx.security:security-crypto:1.1.0-alpha03")
     implementation("androidx.biometric:biometric:1.2.0-alpha04")
     implementation("org.apache.commons:commons-compress:1.21")
