@@ -95,6 +95,7 @@ class MainActivityX : BaseActivity() {
 
         class PersistentCounters(
             var startTime: Long = 0L,
+            var endTime: Long = 0L
         )
 
         val batchPersist = mutableMapOf<String, PersistentCounters>()
@@ -169,6 +170,7 @@ class MainActivityX : BaseActivity() {
 
                         if (persist.startTime == 0L) {
                             persist.startTime = System.currentTimeMillis()
+                            persist.endTime = 0L
                             Timber.w("---------------------------------------------> set startTime ${persist.startTime}")
                         }
 
@@ -246,13 +248,14 @@ class MainActivityX : BaseActivity() {
                         else {
                             shortText += " ${OABX.context.getString(R.string.finished)}"
 
+                            if (persist.endTime == 0L)
+                                persist.endTime = System.currentTimeMillis()
                             val duration =
-                                ((System.currentTimeMillis() - persist.startTime) / 1000 + 0.5).toInt()
+                                ((persist.endTime - persist.startTime) / 1000 + 0.5).toInt()
                             if (duration > 0) {
                                 val min = (duration / 60).toInt()
                                 val sec = duration - min * 60
                                 bigText = "$min min $sec sec"
-                                Timber.w("=============================================> stop ${persist.startTime} + $duration = $bigText")
                             }
                             persist.startTime = 0L
                         }
@@ -318,6 +321,9 @@ class MainActivityX : BaseActivity() {
                                     PendingIntent.FLAG_IMMUTABLE
                                 )
                                 notificationBuilder
+                                    .setOngoing(true)
+                                    .setPriority(NotificationCompat.PRIORITY_MAX)
+                                    .setCategory(NotificationCompat.CATEGORY_SERVICE)
                                     .setProgress(workCount, processed, false)
                                     .addAction(
                                         R.drawable.ic_close,
