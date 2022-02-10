@@ -4,6 +4,7 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
+import androidx.core.content.FileProvider
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_SHADOWROOTFILE
 import com.machiav3lli.backup.handler.LogsHandler
@@ -23,14 +24,22 @@ open class StorageFile {
     var parent: StorageFile? = null
     var context: Context? = null
 
-    private var uri: Uri? = null
+    private var _uri: Uri? = null
+    val uri: Uri?
+        get() = _uri ?: file?.let { file ->
+            context?.let {
+                FileProvider.getUriForFile(
+                    it, "${it.applicationContext.packageName}.provider", file
+                )
+            }
+        } ?: Uri.fromFile(file?.absoluteFile)
     private var file: RootFile? = null
     private var parentFile: RootFile? = null
 
     constructor(parent: StorageFile?, context: Context?, uri: Uri?) {
         this.parent = parent
         this.context = context
-        this.uri = uri
+        this._uri = uri
         if (OABX.prefFlag(PREFS_SHADOWROOTFILE, false)) {
             fun isValidPath(file: RootFile?): Boolean =
                 file?.let { file.exists() && file.canRead() && file.canWrite() } ?: false
@@ -119,43 +128,36 @@ open class StorageFile {
         get() {
             if (field == null) {
                 field = file?.name ?: let {
-                    context?.let { context -> uri?.getName(context) }
+                    context?.let { context -> _uri?.getName(context) }
                 }
             }
             return field
         }
 
     val path: String?
-        get() = file?.path ?: uri?.path
-
-    fun getUri(): Uri? {
-        return uri ?: file?.let {
-            uri = Uri.fromFile(it)
-            uri
-        }
-    }
+        get() = file?.path ?: _uri?.path
 
     override fun toString(): String {
         return path ?: "null"
     }
 
     val isFile: Boolean
-        get() = file?.isFile ?: context?.let { context -> uri?.isFile(context) } ?: false
+        get() = file?.isFile ?: context?.let { context -> _uri?.isFile(context) } ?: false
 
     val isDirectory: Boolean
-        get() = file?.isDirectory ?: context?.let { context -> uri?.isDirectory(context) } ?: false
+        get() = file?.isDirectory ?: context?.let { context -> _uri?.isDirectory(context) } ?: false
 
     fun exists(): Boolean =
-        file?.exists() ?: context?.let { context -> uri?.exists(context) } ?: false
+        file?.exists() ?: context?.let { context -> _uri?.exists(context) } ?: false
 
     fun inputStream(): InputStream? {
-        return file?.inputStream() ?: uri?.let { uri ->
+        return file?.inputStream() ?: _uri?.let { uri ->
             context?.contentResolver?.openInputStream(uri)
         }
     }
 
     fun outputStream(): OutputStream? {
-        return file?.outputStream() ?: uri?.let { uri ->
+        return file?.outputStream() ?: _uri?.let { uri ->
             context?.contentResolver?.openOutputStream(uri, "w")
         }
     }
@@ -169,7 +171,7 @@ open class StorageFile {
             return StorageFile(
                 this,
                 context!!,
-                createFile(context!!, uri!!, DocumentsContract.Document.MIME_TYPE_DIR, displayName)
+                createFile(context!!, _uri!!, DocumentsContract.Document.MIME_TYPE_DIR, displayName)
             )
         }
     }
@@ -186,7 +188,7 @@ open class StorageFile {
                 return StorageFile(this, newFile)
             }
         } ?: run {
-            StorageFile(this, context, createFile(context!!, uri!!, mimeType, displayName))
+            StorageFile(this, context, createFile(context!!, _uri!!, mimeType, displayName))
         }
     }
 
@@ -194,11 +196,11 @@ open class StorageFile {
         return try {
             file?.let {
                 it.deleteRecursive()
-            } ?: DocumentsContract.deleteDocument(context!!.contentResolver, uri!!)
+            } ?: DocumentsContract.deleteDocument(context!!.contentResolver, _uri!!)
         } catch (e: FileNotFoundException) {
             false
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, uri)
+            LogsHandler.unhandledException(e, _uri)
             false
         }
     }
@@ -212,18 +214,18 @@ open class StorageFile {
         } ?: try {
             val result =
                 context?.let { context ->
-                    uri?.let { uri ->
+                    _uri?.let { uri ->
                         DocumentsContract.renameDocument(
                             context.contentResolver, uri, displayName
                         )
                     }
                 }
             if (result != null) {
-                uri = result
+                _uri = result
                 ok = true
             }
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, uri)
+            LogsHandler.unhandledException(e, _uri)
             ok = false
         }
         return ok
@@ -233,12 +235,12 @@ open class StorageFile {
         try {
             for (file in listFiles()) {
                 if (displayName == file.name) {
-                    return file.uri
+                    return file._uri
                 }
             }
         } catch (e: FileNotFoundException) {
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, uri)
+            LogsHandler.unhandledException(e, _uri)
         }
         return null
     }
@@ -256,13 +258,13 @@ open class StorageFile {
             }
         } catch (e: FileNotFoundException) {
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, uri)
+            LogsHandler.unhandledException(e, _uri)
         }
         return null
     }
 
     fun recursiveCopyFiles(files: List<ShellHandler.FileInfo>) {
-        suRecursiveCopyFilesToDocument(context!!, files, uri!!)
+        suRecursiveCopyFilesToDocument(context!!, files, _uri!!)
     }
 
     @Throws(FileNotFoundException::class)
@@ -270,7 +272,7 @@ open class StorageFile {
         try {
             exists()
         } catch (e: Throwable) {
-            throw FileNotFoundException("File $uri does not exist")
+            throw FileNotFoundException("File $_uri does not exist")
         }
         checkCache()
         val id = path
@@ -285,8 +287,8 @@ open class StorageFile {
                 context?.contentResolver?.let { resolver ->
                     val childrenUri = try {
                         DocumentsContract.buildChildDocumentsUriUsingTree(
-                            this.uri,
-                            DocumentsContract.getDocumentId(this.uri)
+                            this._uri,
+                            DocumentsContract.getDocumentId(this._uri)
                         )
                     } catch (e: IllegalArgumentException) {
                         return listOf()
@@ -302,13 +304,13 @@ open class StorageFile {
                         while (cursor?.moveToNext() == true) {
                             documentUri =
                                 DocumentsContract.buildDocumentUriUsingTree(
-                                    this.uri,
+                                    this._uri,
                                     cursor.getString(0)
                                 )
                             results.add(documentUri)
                         }
                     } catch (e: Throwable) {
-                        LogsHandler.unhandledException(e, uri)
+                        LogsHandler.unhandledException(e, _uri)
                     } finally {
                         closeQuietly(cursor)
                     }
@@ -342,7 +344,7 @@ open class StorageFile {
         } catch (e: FileNotFoundException) {
             false
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, uri)
+            LogsHandler.unhandledException(e, _uri)
             false
         }
         else -> false
