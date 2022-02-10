@@ -65,7 +65,6 @@ object BackupCallLogsJSONAction {
             CallLog.Calls.GEOCODED_LOCATION,
             CallLog.Calls.IS_READ,
             CallLog.Calls.FEATURES,
-            CallLog.Calls.LAST_MODIFIED,
             CallLog.Calls.NUMBER_PRESENTATION,
             CallLog.Calls.PHONE_ACCOUNT_COMPONENT_NAME,
             CallLog.Calls.PHONE_ACCOUNT_ID,
@@ -99,7 +98,6 @@ object BackupCallLogsJSONAction {
                             CallLog.Calls.GEOCODED_LOCATION -> "GEOCODED_LOCATION"
                             CallLog.Calls.IS_READ -> "IS_READ"
                             CallLog.Calls.FEATURES -> "FEATURES"
-                            CallLog.Calls.LAST_MODIFIED -> "LAST_MODIFIED"
                             CallLog.Calls.NUMBER_PRESENTATION -> "NUMBER_PRESENTATION"
                             CallLog.Calls.PHONE_ACCOUNT_COMPONENT_NAME -> "PHONE_ACCOUNT_COMPONENT_NAME"
                             CallLog.Calls.PHONE_ACCOUNT_ID -> "PHONE_ACCOUNT_ID"

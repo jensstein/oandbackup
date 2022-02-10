@@ -81,7 +81,6 @@ object RestoreCallLogsJSONAction {
                 "GEOCODED_LOCATION" -> CallLog.Calls.GEOCODED_LOCATION
                 "IS_READ" -> CallLog.Calls.IS_READ
                 "FEATURES" -> CallLog.Calls.FEATURES
-                "LAST_MODIFIED" -> CallLog.Calls.LAST_MODIFIED
                 "NUMBER_PRESENTATION" -> CallLog.Calls.NUMBER_PRESENTATION
                 "PHONE_ACCOUNT_COMPONENT_NAME" -> CallLog.Calls.PHONE_ACCOUNT_COMPONENT_NAME
                 "PHONE_ACCOUNT_ID" -> CallLog.Calls.PHONE_ACCOUNT_ID
@@ -122,7 +121,6 @@ object RestoreCallLogsJSONAction {
                             CallLog.Calls.GEOCODED_LOCATION -> "$queryWhere $useName = '${value.replace("'","''")}' AND"
                             CallLog.Calls.IS_READ -> "$queryWhere $useName = $value AND"
                             CallLog.Calls.FEATURES -> "$queryWhere $useName = $value AND"
-                            CallLog.Calls.LAST_MODIFIED -> "$queryWhere $useName = $value AND"
                             CallLog.Calls.NUMBER_PRESENTATION -> "$queryWhere $useName = '${value.replace("'","''")}' AND"
                             CallLog.Calls.PHONE_ACCOUNT_COMPONENT_NAME -> "$queryWhere $useName = '${value.replace("'","''")}' AND"
                             CallLog.Calls.PHONE_ACCOUNT_ID -> "$queryWhere $useName = '${value.replace("'","''")}' AND"
