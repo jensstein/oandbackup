@@ -45,10 +45,11 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
             val scheduleDao = ScheduleDatabase.getInstance(context).scheduleDao
             val schedule = scheduleDao.getSchedule(scheduleId)
             if (schedule?.enabled == true) {
+                val now = System.currentTimeMillis()
                 val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
                 val alarmIntent = Intent(context, AlarmReceiver::class.java)
                 alarmIntent.putExtra("scheduleId", scheduleId)
-                alarmIntent.putExtra("batchName", schedule.getBatchName())
+                alarmIntent.putExtra("batchName", schedule.getBatchName(now))
 
                 val pendingIntent = PendingIntent.getBroadcast(
                     context,
@@ -56,7 +57,6 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                     alarmIntent,
                     PendingIntent.FLAG_IMMUTABLE
                 )
-                val now = System.currentTimeMillis()
                 val timeLeft = calculateTimeToRun(schedule, now) - now
                 if (rescheduleBoolean) {
                     schedule.timePlaced = now

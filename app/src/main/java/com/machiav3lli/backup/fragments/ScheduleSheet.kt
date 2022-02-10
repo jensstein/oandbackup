@@ -280,11 +280,12 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
 
         override fun execute() {
             Thread {
+                val now = System.currentTimeMillis()
                 val serviceIntent = Intent(context, ScheduleService::class.java)
                 val scheduleDao = ScheduleDatabase.getInstance(context).scheduleDao
                 scheduleDao.getSchedule(scheduleId)?.let { schedule ->
                     serviceIntent.putExtra("scheduleId", scheduleId)
-                    serviceIntent.putExtra("name", schedule.getBatchName())
+                    serviceIntent.putExtra("name", schedule.getBatchName(now))
                     context.startService(serviceIntent)
                 }
             }.start()

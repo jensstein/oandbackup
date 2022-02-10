@@ -183,7 +183,7 @@ open class Schedule() {
                 '}'
     }
 
-    fun getBatchName(time: Long = this.timeToRun): String = getBatchName(this.name, time)
+    fun getBatchName(time: Long): String = getBatchName(this.name, time)
 
     class Builder {
         val schedule: Schedule = Schedule()
@@ -233,7 +233,7 @@ open class Schedule() {
         fun getBatchName(name: String?, time: Long): String = "${
             name ?: OABX.app.getString(R.string.batch)
         } ${
-            SimpleDateFormat("EEE HH:mm", Locale.getDefault()).format(time)
+            SimpleDateFormat("EEE HH:mm:ss", Locale.getDefault()).format(time)
         }"
 
         @RenameColumn(

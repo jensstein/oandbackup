@@ -26,11 +26,12 @@ class CommandReceiver : BroadcastReceiver() {
                     OABX.activity?.showToast("$command $name")
                     Timber.d("################################################### command intent schedule -------------> name=$name")
                     Thread {
+                        val now = System.currentTimeMillis()
                         val serviceIntent = Intent(context, ScheduleService::class.java)
                         val scheduleDao = ScheduleDatabase.getInstance(context).scheduleDao
                         scheduleDao.getSchedule(name)?.let { schedule ->
                             serviceIntent.putExtra("scheduleId", schedule.id)
-                            serviceIntent.putExtra("name", schedule.getBatchName())
+                            serviceIntent.putExtra("name", schedule.getBatchName(now))
                             context.startService(serviceIntent)
                         }
                     }.start()
