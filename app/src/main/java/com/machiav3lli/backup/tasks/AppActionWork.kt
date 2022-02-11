@@ -17,12 +17,19 @@
  */
 package com.machiav3lli.backup.tasks
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.job.JobService
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import androidx.core.app.NotificationCompat
 import androidx.work.*
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_MAXRETRIES
+import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.*
 import com.machiav3lli.backup.items.ActionResult
@@ -45,15 +52,13 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
     }
 
     override suspend fun doWork(): Result {
-        //packageName = inputData.getString("packageName") ?: ""
-        //backupBoolean = inputData.getBoolean("backupBoolean", true)
-        //notificationId = inputData.getInt("notificationId", 123454321)
-        //batchName = inputData.getString("batchName") ?: "?AppActionWork.input?"
+
         val selectedMode = inputData.getInt("selectedMode", MODE_UNSET)
+
+        setForeground(createForegroundInfo())
 
         setOperation("-->")
 
-        //setForeground(createForegroundInfo())
         var result: ActionResult? = null
         var appInfo: AppInfo? = null
 
@@ -173,7 +178,6 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             )
     }
 
-    /*
     private fun createForegroundInfo(): ForegroundInfo {
         val contentPendingIntent = PendingIntent.getActivity(
             context, 0,
@@ -182,7 +186,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         )
 
         val cancelIntent = WorkManager.getInstance(applicationContext)
-            .createCancelPendingIntent(id) // TODO causing crash on targetSDK 31 on A12, go back to targetSDK 30 for now and wait update on WorkManager's side
+            .createCancelPendingIntent(id) // TODO [hg42: is the comment still valid?] causing crash on targetSDK 31 on A12, go back to targetSDK 30 for now and wait update on WorkManager's side
 
         createNotificationChannel()
 
@@ -213,7 +217,6 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         notificationChannel.enableVibration(true)
         notificationManager.createNotificationChannel(notificationChannel)
     }
-    */
 
     companion object {
         private val CHANNEL_ID = AppActionWork::class.java.name

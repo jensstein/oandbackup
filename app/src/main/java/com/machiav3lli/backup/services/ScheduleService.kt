@@ -29,6 +29,7 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.tasks.AppActionWork
@@ -76,22 +77,23 @@ open class ScheduleService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val now = System.currentTimeMillis()
         val scheduleId = intent?.getLongExtra("scheduleId", -1L) ?: -1L
-        val batchName  = intent?.getStringExtra("name") ?: ""
+        val name  = intent?.getStringExtra("name") ?: "NoName@Service"
 
         if (intent != null) {
             val action = intent.action
             when (action) {
                 "cancel" -> {
-                    OABX.work.cancel(batchName)
+                    OABX.work.cancel(name)
                     stopSelf()
                 }
             }
         }
 
         scheduledActionTask = object : ScheduledActionTask(baseContext, scheduleId) {
-            override fun onPostExecute(result: Pair<List<String>, Int>?) {
-                val selectedItems = result?.first ?: listOf()
-                val mode = result?.second ?: MODE_UNSET
+            override fun onPostExecute(result: Triple<String, List<String>, Int>?) {
+                val name = result?.first ?: "NoName@Task"
+                val selectedItems = result?.second ?: listOf()
+                val mode = result?.third ?: MODE_UNSET
                 var errors = ""
                 var resultsSuccess = true
                 var counter = 0
@@ -118,7 +120,7 @@ open class ScheduleService : Service() {
                     selectedItems.forEach { packageName ->
 
                         val oneTimeWorkRequest =
-                            AppActionWork.Request(packageName, mode,true, notificationId, batchName)
+                            AppActionWork.Request(packageName, mode,true, notificationId, WorkHandler.getBatchName(name, now))
                         worksList.add(oneTimeWorkRequest)
 
                         val oneTimeWorkLiveData = OABX.work.manager
@@ -192,7 +194,7 @@ open class ScheduleService : Service() {
         return START_NOT_STICKY
     }
 
-    private fun createForegroundInfo(/* name: String */) {  //TODO hg42 investigate if multiple services can run in parallel (so here each has it's own name)
+    private fun createForegroundInfo() {
         val contentPendingIntent = PendingIntent.getActivity(
             this,
             0,
@@ -207,7 +209,7 @@ open class ScheduleService : Service() {
             this,
             0,
             cancelIntent,
-            PendingIntent.FLAG_IMMUTABLE //TODO hg42 check flags ??? PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_IMMUTABLE
         )
         this.notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(getString(R.string.sched_notificationMessage))

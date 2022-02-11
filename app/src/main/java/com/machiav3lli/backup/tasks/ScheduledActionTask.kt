@@ -33,21 +33,21 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 open class ScheduledActionTask(val context: Context, private val scheduleId: Long) :
-    CoroutinesAsyncTask<Void?, String, Pair<List<String>, Int>>() {
+    CoroutinesAsyncTask<Void?, String, Triple<String, List<String>, Int>>() {
 
-    override fun doInBackground(vararg params: Void?): Pair<List<String>, Int>? {
+    override fun doInBackground(vararg params: Void?): Triple<String, List<String>, Int>? {
+
         val scheduleDao = ScheduleDatabase.getInstance(context).scheduleDao
         val blacklistDao = BlocklistDatabase.getInstance(context).blocklistDao
 
-        val schedule = scheduleDao.getSchedule(scheduleId)
-        val filter = schedule?.filter
-            ?: MAIN_FILTER_DEFAULT
-        val specialFilter = schedule?.specialFilter
-            ?: SPECIAL_FILTER_ALL
-        val customList = schedule?.customList
-            ?: setOf()
-        val customBlocklist = schedule?.blockList
-            ?: listOf()
+        val schedule = scheduleDao.getSchedule(scheduleId) ?:
+                                return Triple("DbFailed", listOf(), MODE_UNSET)
+
+        val name = schedule.name.toString()
+        val filter = schedule.filter
+        val specialFilter = schedule.specialFilter
+        val customList = schedule.customList
+        val customBlocklist = schedule.blockList
         val globalBlocklist = blacklistDao.getBlocklistedPackages(PACKAGES_LIST_GLOBAL_ID)
         val blockList = globalBlocklist.plus(customBlocklist)
 
@@ -59,19 +59,20 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
                 context,
                 "Scheduled backup failed due to ${e.javaClass.simpleName}: $e"
             )
-            return Pair(listOf(), MODE_UNSET)
+            return Triple(name, listOf(), MODE_UNSET)
         } catch (e: StorageLocationNotConfiguredException) {
             Timber.e("Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
             LogsHandler.logErrors(
                 context,
                 "Scheduled backup failed due to ${e.javaClass.simpleName}: $e"
             )
-            return Pair(listOf(), MODE_UNSET)
+            return Triple(name, listOf(), MODE_UNSET)
         }
 
         var launchableAppsList = listOf<String>()
         if (specialFilter == SPECIAL_FILTER_LAUNCHABLE) {
-            val mainIntent = Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER)
+            val mainIntent =
+                Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER)
             launchableAppsList = context.packageManager.queryIntentActivities(mainIntent, 0)
                 .map { it.activityInfo.packageName }
         }
@@ -116,6 +117,10 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
                 m1.packageLabel.compareTo(m2.packageLabel, ignoreCase = true)
             }
             .map(AppInfo::packageName)
-        return Pair(selectedItems, schedule?.mode ?: MODE_UNSET)
+        return Triple(
+            name,
+            selectedItems,
+            schedule.mode
+        )
     }
 }

@@ -6,6 +6,8 @@ import androidx.work.WorkManager
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.services.CommandReceiver
 import com.machiav3lli.backup.tasks.AppActionWork
+import java.text.SimpleDateFormat
+import java.util.*
 
 class WorkHandler(context: Context) {
 
@@ -49,4 +51,15 @@ class WorkHandler(context: Context) {
             manager.cancelAllWorkByTag("name:$tag")
     }
 
+    companion object {
+
+        fun getBatchName(name: String, startTime: Long): String {
+            return if (startTime == 0L)
+                name
+            else
+                "$name ${
+                    SimpleDateFormat("EEE HH:mm:ss", Locale.getDefault()).format(startTime)
+                }"
+        }
+    }
 }

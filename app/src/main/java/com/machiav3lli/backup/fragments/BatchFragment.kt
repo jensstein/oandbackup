@@ -39,10 +39,10 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.FragmentBatchBinding
-import com.machiav3lli.backup.dbs.Schedule
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.AppInfo
@@ -323,7 +323,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         val notificationId = System.currentTimeMillis().toInt()
         val now = System.currentTimeMillis()
         val batchType = getString(if (backupBoolean) R.string.backup else R.string.restore)
-        val batchName = Schedule.getBatchName(batchType, now)
+        val batchName = WorkHandler.getBatchName(batchType, now)
 
         val notificationMessage = String.format(
             getString(R.string.fetching_action_list),

@@ -49,7 +49,6 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                 val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
                 val alarmIntent = Intent(context, AlarmReceiver::class.java)
                 alarmIntent.putExtra("scheduleId", scheduleId)
-                alarmIntent.putExtra("batchName", schedule.getBatchName(now))
 
                 val pendingIntent = PendingIntent.getBroadcast(
                     context,

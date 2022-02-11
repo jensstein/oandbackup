@@ -23,8 +23,8 @@ import androidx.room.migration.AutoMigrationSpec
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.machiav3lli.backup.*
-import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.BackupItem
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.GsonUtils
@@ -32,8 +32,6 @@ import com.machiav3lli.backup.utils.mainFilterToId
 import com.machiav3lli.backup.utils.modeToId
 import java.io.FileNotFoundException
 import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.*
 
 @Entity
 open class Schedule() {
@@ -183,7 +181,7 @@ open class Schedule() {
                 '}'
     }
 
-    fun getBatchName(time: Long): String = getBatchName(this.name, time)
+    fun getBatchName(startTime: Long): String = WorkHandler.getBatchName(this.name ?: "Schedule", startTime)
 
     class Builder {
         val schedule: Schedule = Schedule()
@@ -229,12 +227,6 @@ open class Schedule() {
         fun fromGson(gson: String?): Schedule {
             return GsonUtils.instance!!.fromJson(gson, Schedule::class.java)
         }
-
-        fun getBatchName(name: String?, time: Long): String = "${
-            name ?: OABX.app.getString(R.string.batch)
-        } ${
-            SimpleDateFormat("EEE HH:mm:ss", Locale.getDefault()).format(time)
-        }"
 
         @RenameColumn(
             tableName = "Schedule",
