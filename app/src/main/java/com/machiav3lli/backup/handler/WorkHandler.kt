@@ -111,12 +111,13 @@ class WorkHandler(context: Context) {
 
         val batchesKnown = mutableMapOf<String, BatchState>()
 
-        fun onProgress(handler: WorkHandler, work: MutableList<WorkInfo>? = null) {
-
-            if (work == null)
-                return
+        fun onProgress(handler: WorkHandler, workInfos: MutableList<WorkInfo>? = null) {
 
             val manager = handler.manager
+            val work = workInfos
+                            ?: manager.getWorkInfosByTag(AppActionWork::class.qualifiedName!!).get()
+                            ?: return
+
             val now = System.currentTimeMillis()
             val batchesRunning = mutableMapOf<String, WorkState>()
 
@@ -382,9 +383,27 @@ class WorkHandler(context: Context) {
 
     fun onFinish(handler: WorkHandler, work: MutableList<WorkInfo>? = null) {
 
-        if (work == null)
-            return
+        onProgress(handler, null)
 
-
+        /*
+        if ( ! work.isNullOrEmpty() ) {
+            Timber.d("%%%%% onFinish")
+            work.forEach {
+                it.tags.forEach tag@{ tag ->
+                    val parts = tag.toString().split(':', limit = 2)
+                    if (parts.size > 1) {
+                        val (key, value) = parts
+                        when (key) {
+                            "intent" -> {
+                                val intent = value
+                                return@tag
+                            }
+                            else -> {}
+                        }
+                    }
+                }
+            }
+        }
+        */
     }
 }
