@@ -19,6 +19,7 @@ package com.machiav3lli.backup.services
 
 import android.app.*
 import android.content.Intent
+import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.Observer
@@ -43,6 +44,7 @@ open class ScheduleService : Service() {
     private lateinit var scheduledActionTask: ScheduledActionTask
     lateinit var notification: Notification
     private var notificationId = -1
+    var runningSchedules = 0
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -53,6 +55,8 @@ open class ScheduleService : Service() {
         this.notificationId = System.currentTimeMillis().toInt()
 
         createNotificationChannel()
+        createForegroundInfo()
+        startForeground(notification.hashCode(), this.notification)
 
         showNotification(
             this.baseContext,
@@ -65,9 +69,6 @@ open class ScheduleService : Service() {
             "",
             true
         )
-
-        createForegroundInfo()
-        startForeground(notification.hashCode(), this.notification)
     }
 
     override fun onDestroy() {
@@ -78,6 +79,15 @@ open class ScheduleService : Service() {
         val now = System.currentTimeMillis()
         val scheduleId = intent?.getLongExtra("scheduleId", -1L) ?: -1L
         val name  = intent?.getStringExtra("name") ?: "NoName@Service"
+
+        var message = "############################################################ Service: $name"
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            message += " ui=$isUiContext"
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            message += " fgsv=$foregroundServiceType"
+        }
+        Timber.i(message)
 
         if (intent != null) {
             val action = intent.action
@@ -172,7 +182,8 @@ open class ScheduleService : Service() {
                                 scheduleAlarm(context, scheduleId, true)
                                 isNeedRefresh = true
                                 finishWorkLiveData.removeObserver(this)
-                                stopService(intent)
+                                //stopService(intent)
+                                stoppedSchedule(intent)
                             }
                         }
                     })
@@ -182,8 +193,11 @@ open class ScheduleService : Service() {
                             .beginWith(worksList)
                             .then(finishWorkRequest)
                             .enqueue()
+
+                        startedSchedule()
                     } else {
-                        stopSelf()
+                        //stopSelf()
+                        stoppedSchedule(intent)
                     }
                 }
                 super.onPostExecute(result)
@@ -192,6 +206,17 @@ open class ScheduleService : Service() {
         Timber.i(getString(R.string.sched_startingbackup))
         scheduledActionTask.execute()
         return START_NOT_STICKY
+    }
+
+    fun startedSchedule() {
+        runningSchedules++
+    }
+
+    fun stoppedSchedule(intent: Intent?) {
+        runningSchedules--
+        //if (runningSchedules <= 0)
+        //    stopService(intent)
+        //    stopSelf()
     }
 
     private fun createForegroundInfo() {
@@ -203,7 +228,6 @@ open class ScheduleService : Service() {
         )
         val cancelIntent = Intent(this, ScheduleService::class.java).apply {
             action = "cancel"
-            //putExtra("name", name)
         }
         val cancelPendingIntent = PendingIntent.getBroadcast(
             this,

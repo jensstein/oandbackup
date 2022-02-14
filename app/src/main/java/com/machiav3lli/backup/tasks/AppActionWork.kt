@@ -24,6 +24,7 @@ import android.app.job.JobService
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.work.*
 import com.machiav3lli.backup.MODE_UNSET
@@ -56,6 +57,12 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         setOperation("...")
 
         val selectedMode = inputData.getInt("selectedMode", MODE_UNSET)
+
+        var message = "------------------------------------------------------------ Work: $batchName $packageName"
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            message += " ui=${context.isUiContext}"
+        }
+        Timber.i(message)
 
         setForeground(createForegroundInfo())
 
