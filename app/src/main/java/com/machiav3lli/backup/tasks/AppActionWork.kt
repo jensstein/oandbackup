@@ -122,7 +122,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                         Timber.w("package: ${ai.packageLabel} result: $e")
                     } finally {
                         result?.let {
-                            if (!it.succeeded) {
+                            if (!it.succeeded && (failures < OABX.prefInt(PREFS_MAXRETRIES, 1))) {
                                 val message = "${ai.packageName}\n${it.message}"
                                 showNotification(
                                     context, MainActivityX::class.java,
@@ -141,7 +141,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             Result.success(getWorkData("OK", result))
         } else {
             failures++
-            if (failures <= OABX.prefInt(PREFS_MAXRETRIES, 3))
+            if (failures <= OABX.prefInt(PREFS_MAXRETRIES, 1))
                 Result.retry()
             else {
                 Result.failure(getWorkData("ERR", result))
