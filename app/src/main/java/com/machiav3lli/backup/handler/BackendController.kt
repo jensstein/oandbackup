@@ -64,6 +64,7 @@ fun Context.getApplicationList(
     includeUninstalled: Boolean = true
 ): MutableList<AppInfo> {
     val startTime = System.currentTimeMillis()
+
     invalidateCache()
     val includeSpecial = specialBackupsEnabled
     val pm = packageManager
@@ -81,6 +82,9 @@ fun Context.getApplicationList(
             }
         }
         .toMutableList()
+
+    val afterPackagesTime = System.currentTimeMillis()
+    OABX.activity?.showToast("packages: ${((afterPackagesTime - startTime) / 1000 + 0.5).toInt()} sec")
 
     if (!OABX.appsSuspendedChecked) {
         OABX.activity?.whileShowingSnackBar("cleanup any left over suspended apps") {
@@ -141,7 +145,8 @@ fun Context.getApplicationList(
         packageList.addAll(missingAppsWithBackup)
     }
 
-    OABX.activity?.showToast("appList: ${((System.currentTimeMillis() - startTime) / 1000 + 0.5).toInt()} sec")
+    val afterAllTime = System.currentTimeMillis()
+    OABX.activity?.showToast("all: ${((afterAllTime - startTime) / 1000 + 0.5).toInt()} sec")
 
     return packageList
 }
