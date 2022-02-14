@@ -179,7 +179,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                     app.delete(context, backupItem, true)
             }
         } finally {
-            work?.setOperation("<--")
+            work?.setOperation("end")
             Timber.i("$app: Backup done: ${backupItem ?: app.packageName}")
         }
         return ActionResult(app, backupItem?.backupProperties, "", true)

@@ -53,11 +53,11 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
 
     override suspend fun doWork(): Result {
 
+        setOperation("...")
+
         val selectedMode = inputData.getInt("selectedMode", MODE_UNSET)
 
         setForeground(createForegroundInfo())
-
-        setOperation("-->")
 
         var result: ActionResult? = null
         var appInfo: AppInfo? = null
