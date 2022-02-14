@@ -24,6 +24,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.BaseActivity
 import com.machiav3lli.backup.classAddress
@@ -40,6 +41,8 @@ fun showNotification(context: Context?, parentActivity: Class<out BaseActivity?>
     val notificationManager = NotificationManagerCompat.from(context!!)
     notificationManager.createNotificationChannel(notificationChannel)
     val notification = NotificationCompat.Builder(context, classAddress("NotificationHandler"))
+            .setGroup(BuildConfig.APPLICATION_ID)
+            .setSortKey("9")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setSmallIcon(R.drawable.ic_app)
             .setContentTitle(title)

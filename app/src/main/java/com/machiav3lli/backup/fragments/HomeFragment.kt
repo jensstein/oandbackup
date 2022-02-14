@@ -17,7 +17,6 @@
  */
 package com.machiav3lli.backup.fragments
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -32,13 +31,15 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.machiav3lli.backup.*
-import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.FragmentHomeBinding
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.handler.showNotification
-import com.machiav3lli.backup.items.*
+import com.machiav3lli.backup.handler.WorkHandler
+import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.items.HomeItemX
+import com.machiav3lli.backup.items.HomePlaceholderItemX
+import com.machiav3lli.backup.items.UpdatedItemX
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.utils.*
@@ -47,8 +48,6 @@ import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.IAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import timber.log.Timber
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class HomeFragment : NavigationFragment(),
     BatchDialogFragment.ConfirmListener, RefreshViewController {
@@ -261,10 +260,10 @@ class HomeFragment : NavigationFragment(),
         selectedPackages: List<String?>,
         selectedModes: List<Int>
     ) {
-        val notificationId = System.currentTimeMillis().toInt()
-        val now = LocalDateTime.now()
+        val now = System.currentTimeMillis()
+        val notificationId = now.toInt()
         val batchType = getString(R.string.backup)
-        val batchName = "$batchType ${DateTimeFormatter.ofPattern("ddd HH:mm").format(now)}"
+        val batchName = WorkHandler.getBatchName(batchType, now)
 
         val selectedItems = selectedPackages
             .mapIndexed { i, packageName ->
@@ -278,7 +277,7 @@ class HomeFragment : NavigationFragment(),
         var counter = 0
         val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
         val workManager = WorkManager.getInstance(requireContext())
-        OABX.work.startBatch()
+        OABX.work.startBatch(batchName)
         selectedItems.forEach { (packageName, mode) ->
 
             val oneTimeWorkRequest =
@@ -287,7 +286,6 @@ class HomeFragment : NavigationFragment(),
 
             val oneTimeWorkLiveData = WorkManager.getInstance(requireContext())
                 .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
-            //TODO cleanup MainActivityX.showRunningStatus()
             oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
                 override fun onChanged(t: WorkInfo?) {
                     if (t?.state == WorkInfo.State.SUCCEEDED) {
@@ -308,8 +306,9 @@ class HomeFragment : NavigationFragment(),
             })
         }
 
-        val finishWorkRequest = FinishWork.Request(resultsSuccess, true)
+        val finishWorkRequest = FinishWork.Request(resultsSuccess, true, batchName)
 
+        /*
         val finishWorkLiveData = WorkManager.getInstance(requireContext())
             .getWorkInfoByIdLiveData(finishWorkRequest.id)
         finishWorkLiveData.observeForever(object : Observer<WorkInfo> {
@@ -326,11 +325,11 @@ class HomeFragment : NavigationFragment(),
                     }
 
                     finishWorkLiveData.removeObserver(this)
-                    //TODO cleanup MainActivityX.showRunningStatus()
                     viewModel.refreshNow.value = true
                 }
             }
         })
+        */
 
         if (worksList.isNotEmpty()) {
             workManager

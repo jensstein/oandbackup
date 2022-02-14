@@ -128,11 +128,13 @@ open class ScheduleService : Service() {
                     val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
                     notificationManager.cancel(notificationId)
 
-                    OABX.work.startBatch()
+                    val batchName = WorkHandler.getBatchName(name, now)
+                    OABX.work.startBatch(batchName)
+
                     selectedItems.forEach { packageName ->
 
                         val oneTimeWorkRequest =
-                            AppActionWork.Request(packageName, mode,true, notificationId, WorkHandler.getBatchName(name, now))
+                            AppActionWork.Request(packageName, mode,true, notificationId, batchName)
                         worksList.add(oneTimeWorkRequest)
 
                         val oneTimeWorkLiveData = OABX.work.manager
@@ -162,7 +164,8 @@ open class ScheduleService : Service() {
                         })
                     }
 
-                    val finishWorkRequest = FinishWork.Request(resultsSuccess, true)
+                    val finishWorkRequest = FinishWork.Request(resultsSuccess, true, batchName)
+
                     val finishWorkLiveData = OABX.work.manager
                         .getWorkInfoByIdLiveData(finishWorkRequest.id)
                     finishWorkLiveData.observeForever(object : Observer<WorkInfo> {
