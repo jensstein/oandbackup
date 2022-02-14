@@ -24,6 +24,7 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import timber.log.Timber
 import java.lang.ref.WeakReference
@@ -39,6 +40,16 @@ class OABX : Application() {
         // app should always be created
         var appRef: WeakReference<OABX> = WeakReference(null)
         val app: OABX get() = appRef.get()!!
+
+        // service might be null
+        var serviceRef: WeakReference<ScheduleService> = WeakReference(null)
+        var service: ScheduleService?
+            get() {
+                return serviceRef.get()
+            }
+            set(service) {
+                serviceRef = WeakReference(service)
+            }
 
         // activity might be null
         var activityRef: WeakReference<MainActivityX> = WeakReference(null)

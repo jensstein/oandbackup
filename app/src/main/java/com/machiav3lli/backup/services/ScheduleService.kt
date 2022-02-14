@@ -52,6 +52,7 @@ open class ScheduleService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        OABX.service = this
         this.notificationId = System.currentTimeMillis().toInt()
 
         createNotificationChannel()
@@ -72,6 +73,7 @@ open class ScheduleService : Service() {
     }
 
     override fun onDestroy() {
+        OABX.service = null
         stopForeground(true)
     }
 
