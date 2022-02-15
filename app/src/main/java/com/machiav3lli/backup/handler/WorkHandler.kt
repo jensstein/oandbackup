@@ -19,7 +19,6 @@ import com.machiav3lli.backup.tasks.FinishWork
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.concurrent.schedule
 
 class WorkHandler(context: Context) {
 
@@ -62,6 +61,7 @@ class WorkHandler(context: Context) {
         if(batchesStarted<0)
             batchesStarted = 0
         batchesStarted++
+        Timber.d("%%%%% $batchName started, $batchesStarted batches, thread ${Thread.currentThread().id}")
         batchesKnown.put(batchName, BatchState())
     }
 
@@ -116,6 +116,12 @@ class WorkHandler(context: Context) {
         var batchesStarted = -1
 
         fun onProgress(handler: WorkHandler, workInfos: MutableList<WorkInfo>? = null) {
+            synchronized(batchesStarted)  {
+                onProgress_(handler, workInfos)
+            }
+        }
+
+        fun onProgress_(handler: WorkHandler, workInfos: MutableList<WorkInfo>? = null) {
 
             val manager = handler.manager
             val work = workInfos
@@ -167,7 +173,8 @@ class WorkHandler(context: Context) {
 
                 batchesRunning.getOrPut(batchName!!) { WorkState() }.run batch@{
 
-                    val batch: BatchState = batchesKnown[batchName!!]!!
+                    //val batch: BatchState = batchesKnown[batchName!!]!!
+                    val batch: BatchState = batchesKnown.getOrPut(batchName!!) {  BatchState() }
 
                     if (batch.notificationId == 0)
                         batch.notificationId = batchName.hashCode()
@@ -367,11 +374,11 @@ class WorkHandler(context: Context) {
                     Timber.d("%%%%%%%%%%%%%%%%%%%%> $batchName ${batch.notificationId} '$shortText' $notification")
                     notificationManager.notify(batch.notificationId, notification)  //TODO hg42 setForeground(ForegroundInfo(batch.notificationId, notification))
 
-                    if (remaining <= 0) {
+                    if (! batch.isFinished && remaining <= 0) {
 
                         batch.isFinished = true
-                        Timber.d("%%%%% $batchName finished!")
                         batchesStarted--
+                        Timber.d("%%%%% $batchName finished! batches=$batchesStarted")
                     }
                 }
             }
@@ -382,22 +389,10 @@ class WorkHandler(context: Context) {
             } else {
                 if(batchesStarted==0) {     // exactly once
                     batchesStarted--
-                    Timber.d("%%%%% ALL HIDE PROGRESS")
+                    Timber.d("%%%%% ALL HIDE PROGRESS, $batchesStarted batches, thread ${Thread.currentThread().id}")
                     MainActivityX.activity?.runOnUiThread { MainActivityX.activity?.hideProgress() }
                     Timber.d("%%%%% ALL PRUNE")
                     OABX.work.prune()
-
-                    if(false) {
-                        Timer().schedule(1000) {
-                            Timber.d("%%%%% ALL delayed onProgress")
-                            onProgress(handler, null)
-                        }
-                    } else {
-                        Thread.sleep(1000)
-                        Timber.d("%%%%% ALL delayed onProgress")
-                        onProgress(handler, null)
-                    }
-                    Timber.d("%%%%% ALL after schedule")
 
                     // delete all jobs started a long time ago
                     val longAgo = 24*60*60*1000
@@ -414,7 +409,19 @@ class WorkHandler(context: Context) {
                         }
                     }
 
-                    OABX.service?.stopSelf()
+                    Thread {
+                        Timber.d("%%%%% ALL thread start")
+                        Thread.sleep(5000)
+                        Timber.d("%%%%% ALL delayed 5000 onProgress")
+                        onProgress(handler, null)
+                        Thread.sleep(5000)
+                        OABX.service?.let {
+                            Timber.w("%%%%% ------------------------------------------ service stopping...\\")
+                            it.stopSelf()
+                            Timber.w("%%%%% ------------------------------------------ service stopped.../")
+                        }
+                        Timber.d("%%%%% ALL after schedule")
+                    }.start()
                 }
             }
         }
