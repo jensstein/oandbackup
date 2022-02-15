@@ -49,15 +49,6 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
 
                 val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-                val alarmIntent = Intent(context, AlarmReceiver::class.java).apply {
-                    putExtra("scheduleId", scheduleId)
-                }
-                val pendingIntent = PendingIntent.getBroadcast(
-                    context,
-                    scheduleId.toInt(),
-                    alarmIntent,
-                    PendingIntent.FLAG_IMMUTABLE
-                )
                 val timeLeft = calculateTimeToRun(schedule, now) - now
                 if (rescheduleBoolean) {
                     schedule.timePlaced = now
@@ -66,10 +57,33 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                     schedule.timeToRun = now + TimeUnit.MINUTES.toMillis(1)
                 scheduleDao.update(schedule)
 
-                alarmManager.setAlarmClock(
-                    AlarmManager.AlarmClockInfo(schedule.timeToRun, null),
-                    pendingIntent
-                )
+                if(false) {
+                    val alarmIntent = Intent(context, AlarmReceiver::class.java).apply {
+                        putExtra("scheduleId", scheduleId)
+                    }
+                    val pendingIntent = PendingIntent.getBroadcast(
+                        context,
+                        scheduleId.toInt(),
+                        alarmIntent,
+                        PendingIntent.FLAG_IMMUTABLE
+                    )
+                    alarmManager.setAlarmClock(
+                        AlarmManager.AlarmClockInfo(schedule.timeToRun, null),
+                        pendingIntent
+                    )
+                } else {
+                    val alarmIntent = Intent(context, AlarmReceiver::class.java).apply {
+                        putExtra("scheduleId", scheduleId)
+                        addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
+                    }
+                    val pendingIntent = PendingIntent.getBroadcast(
+                        context,
+                        scheduleId.toInt(),
+                        alarmIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, schedule.timeToRun, pendingIntent)
+                }
                 Timber.i("scheduled backup starting in: ${TimeUnit.MILLISECONDS.toMinutes(schedule.timeToRun - System.currentTimeMillis())} minutes")
             } else
                 Timber.i("schedule is disabled. Nothing to schedule!")
