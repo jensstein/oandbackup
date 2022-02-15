@@ -18,9 +18,11 @@
 package com.machiav3lli.backup.services
 
 import android.app.*
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
+import android.os.PowerManager
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.Observer
 import androidx.work.OneTimeWorkRequest
@@ -45,6 +47,7 @@ open class ScheduleService : Service() {
     lateinit var notification: Notification
     private var notificationId = -1
     var runningSchedules = 0
+    var wakeLock: PowerManager.WakeLock? = null
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -55,9 +58,10 @@ open class ScheduleService : Service() {
         OABX.service = this
         this.notificationId = System.currentTimeMillis().toInt()
 
-        createNotificationChannel()
-        createForegroundInfo()
-        startForeground(notification.hashCode(), this.notification)
+        //createNotificationChannel()
+        //createForegroundInfo()
+        //startForeground(notification.hashCode(), this.notification)
+        wakelock(true)
 
         showNotification(
             this.baseContext,
@@ -74,13 +78,31 @@ open class ScheduleService : Service() {
 
     override fun onDestroy() {
         OABX.service = null
-        stopForeground(true)
+        //stopForeground(true)
+        wakelock(false)
+    }
+
+    fun wakelock(aquire: Boolean) {
+        val TAG = "OABX:SchedulerService"
+        if (aquire) {
+            val pm = OABX.context.getSystemService(Context.POWER_SERVICE) as PowerManager
+            wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG)
+            wakeLock?.acquire(60 * 60 * 1000L)
+            Timber.d("%%%%% $TAG wakelock aquire")
+        } else {
+            Timber.d("%%%%% $TAG wakelock release")
+            wakeLock?.release()
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val now = System.currentTimeMillis()
         val scheduleId = intent?.getLongExtra("scheduleId", -1L) ?: -1L
         val name  = intent?.getStringExtra("name") ?: "NoName@Service"
+
+        //createForegroundInfo()
+        //startForeground(notification.hashCode(), this.notification)
+        wakelock(true)
 
         var message = "############################################################ ScheduleService starting for scheduleId=$scheduleId name=$name"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -97,6 +119,8 @@ open class ScheduleService : Service() {
                 "cancel" -> {
                     Timber.i("action $action")
                     OABX.work.cancel(name)
+                    wakelock(false)
+                    Timber.d("%%%%% service stop")
                     stopSelf()
                 }
                 "schedule" -> {
@@ -107,13 +131,17 @@ open class ScheduleService : Service() {
                     // no action, continue with extra data
                 }
                 else -> {
-                    Timber.i("action $action unknown, ignored")
+                    Timber.d("action $action unknown, ignored")
+                    wakelock(false)
                     return START_NOT_STICKY
                 }
             }
         }
 
-        if(scheduleId == -1L) return START_NOT_STICKY
+        if(scheduleId == -1L) {
+            wakelock(false)
+            return START_NOT_STICKY
+        }
 
         scheduledActionTask = object : ScheduledActionTask(baseContext, scheduleId) {
             override fun onPostExecute(result: Triple<String, List<String>, Int>?) {
@@ -224,6 +252,7 @@ open class ScheduleService : Service() {
         }
         Timber.i(getString(R.string.sched_startingbackup))
         scheduledActionTask.execute()
+        wakelock(false)
         return START_NOT_STICKY
     }
 
