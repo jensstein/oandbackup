@@ -59,7 +59,9 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
 
                 if(false) {
                     val alarmIntent = Intent(context, AlarmReceiver::class.java).apply {
+                        setAction("schedule")
                         putExtra("scheduleId", scheduleId)
+                        addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
                     }
                     val pendingIntent = PendingIntent.getBroadcast(
                         context,
@@ -73,6 +75,8 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                     )
                 } else {
                     val alarmIntent = Intent(context, AlarmReceiver::class.java).apply {
+                    //val alarmIntent = Intent(context, ScheduleService::class.java).apply {
+                        setAction("schedule")
                         putExtra("scheduleId", scheduleId)
                         addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
                     }
@@ -80,7 +84,7 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                         context,
                         scheduleId.toInt(),
                         alarmIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
+                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
                     )
                     alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, schedule.timeToRun, pendingIntent)
                 }

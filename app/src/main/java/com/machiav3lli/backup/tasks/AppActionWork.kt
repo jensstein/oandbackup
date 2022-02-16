@@ -189,7 +189,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         val contentPendingIntent = PendingIntent.getActivity(
             context, 0,
             Intent(context, MainActivityX::class.java),
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         val cancelIntent = WorkManager.getInstance(applicationContext)

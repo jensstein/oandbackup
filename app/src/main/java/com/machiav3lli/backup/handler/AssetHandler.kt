@@ -13,7 +13,7 @@ class AssetHandler(context: Context) {
     val VERSION_FILE = "__version__"
     val ASSETS_SUBDIR = "assets"
 
-    lateinit var directory : File
+    var directory : File
         private set
 
     init {

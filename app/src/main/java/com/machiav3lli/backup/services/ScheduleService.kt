@@ -82,7 +82,7 @@ open class ScheduleService : Service() {
         val scheduleId = intent?.getLongExtra("scheduleId", -1L) ?: -1L
         val name  = intent?.getStringExtra("name") ?: "NoName@Service"
 
-        var message = "############################################################ Service: $name"
+        var message = "############################################################ ScheduleService starting for scheduleId=$scheduleId name=$name"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             message += " ui=$isUiContext"
         }
@@ -95,11 +95,25 @@ open class ScheduleService : Service() {
             val action = intent.action
             when (action) {
                 "cancel" -> {
+                    Timber.i("action $action")
                     OABX.work.cancel(name)
                     stopSelf()
                 }
+                "schedule" -> {
+                    // scheduleId already read from extras
+                    Timber.i("action $action")
+                }
+                null -> {
+                    // no action, continue with extra data
+                }
+                else -> {
+                    Timber.i("action $action unknown, ignored")
+                    return START_NOT_STICKY
+                }
             }
         }
+
+        if(scheduleId == -1L) return START_NOT_STICKY
 
         scheduledActionTask = object : ScheduledActionTask(baseContext, scheduleId) {
             override fun onPostExecute(result: Triple<String, List<String>, Int>?) {
@@ -229,7 +243,7 @@ open class ScheduleService : Service() {
             this,
             0,
             Intent(this, MainActivityX::class.java),
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
         val cancelIntent = Intent(this, ScheduleService::class.java).apply {
             action = "cancel"
