@@ -5,8 +5,11 @@ import android.content.Context
 import android.content.Intent
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.dbs.ODatabase
+import com.machiav3lli.backup.utils.scheduleAlarm
 import com.machiav3lli.backup.utils.showToast
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.*
 
 class CommandReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
@@ -33,6 +36,26 @@ class CommandReceiver : BroadcastReceiver() {
                             serviceIntent.putExtra("scheduleId", schedule.id)
                             serviceIntent.putExtra("name", schedule.getBatchName(now))
                             context.startService(serviceIntent)
+                        }
+                    }.start()
+                }
+            }
+            "reschedule" -> {
+                intent.getStringExtra("name")?.let { name ->
+                    val now = System.currentTimeMillis()
+                    val time = intent.getStringExtra("time")
+                    val setTime = time ?: SimpleDateFormat("HH:mm", Locale.getDefault())
+                                                .format(now + 120)
+                    OABX.activity?.showToast("$command $name $time -> $setTime")
+                    Timber.d("################################################### command intent schedule -------------> name=$name time=$time -> $setTime")
+                    Thread {
+                        val scheduleDao = ODatabase.getInstance(context).scheduleDao
+                        scheduleDao.getSchedule(name)?.let { schedule ->
+                            val (hour, minute) = setTime.split(":").map { it.toInt() }
+                            schedule.timeHour = hour
+                            schedule.timeMinute = minute
+                            scheduleDao.update(schedule)
+                            scheduleAlarm(context, schedule.id, true)
                         }
                     }.start()
                 }
