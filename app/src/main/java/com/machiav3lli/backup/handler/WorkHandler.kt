@@ -388,32 +388,33 @@ class WorkHandler(context: Context) {
                 MainActivityX.activity?.runOnUiThread { MainActivityX.activity?.updateProgress(allProcessed, allCount) }
             } else {
                 if(batchesStarted==0) {     // exactly once
-                    batchesStarted--
+                    batchesStarted--        // now lock
                     Timber.d("%%%%% ALL HIDE PROGRESS, $batchesStarted batches, thread ${Thread.currentThread().id}")
                     MainActivityX.activity?.runOnUiThread { MainActivityX.activity?.hideProgress() }
-                    Timber.d("%%%%% ALL PRUNE")
-                    OABX.work.prune()
-
-                    // delete all jobs started a long time ago
-                    val longAgo = 24*60*60*1000
-                    batchesKnown.keys.toList().forEach { // copy the keys, because collection changes now
-                        batchesKnown[it]?.let { batch ->
-                            if (batch.isFinished == true) {
-                                val now = System.currentTimeMillis()
-                                if (now - batch.startTime > longAgo) {
-                                    Timber.d("%%%%% $it removing...\\")
-                                    batchesKnown.remove(it)
-                                    Timber.d("%%%%% $it removed..../")
-                                }
-                            }
-                        }
-                    }
 
                     Thread {
                         Timber.d("%%%%% ALL thread start")
                         Thread.sleep(5000)
                         Timber.d("%%%%% ALL delayed 5000 onProgress")
                         onProgress(handler, null)
+
+                        Timber.d("%%%%% ALL PRUNE")
+                        OABX.work.prune()
+
+                        // delete all jobs started a long time ago
+                        val longAgo = 24*60*60*1000
+                        batchesKnown.keys.toList().forEach { // copy the keys, because collection changes now
+                            batchesKnown[it]?.let { batch ->
+                                if (batch.isFinished == true) {
+                                    val now = System.currentTimeMillis()
+                                    if (now - batch.startTime > longAgo) {
+                                        Timber.d("%%%%% $it removing...\\")
+                                        batchesKnown.remove(it)
+                                        Timber.d("%%%%% $it removed..../")
+                                    }
+                                }
+                            }
+                        }
                         Thread.sleep(5000)
                         OABX.service?.let {
                             Timber.w("%%%%% ------------------------------------------ service stopping...\\")
@@ -430,26 +431,5 @@ class WorkHandler(context: Context) {
     fun onFinish(handler: WorkHandler, work: MutableList<WorkInfo>? = null) {
 
         onProgress(handler, null)
-
-        /*
-        if ( ! work.isNullOrEmpty() ) {
-            Timber.d("%%%%% onFinish")
-            work.forEach {
-                it.tags.forEach tag@{ tag ->
-                    val parts = tag.toString().split(':', limit = 2)
-                    if (parts.size > 1) {
-                        val (key, value) = parts
-                        when (key) {
-                            "intent" -> {
-                                val intent = value
-                                return@tag
-                            }
-                            else -> {}
-                        }
-                    }
-                }
-            }
-        }
-        */
     }
 }
