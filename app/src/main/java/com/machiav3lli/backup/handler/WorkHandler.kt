@@ -22,12 +22,12 @@ import java.util.*
 
 class WorkHandler(context: Context) {
 
+    //TODO hg42 use singleton?
     var manager: WorkManager = WorkManager.getInstance(context)
-    lateinit var actionReceiver: CommandReceiver
+    var actionReceiver: CommandReceiver = CommandReceiver()
     lateinit var context: Context
 
     init {
-        actionReceiver = CommandReceiver()
         context.registerReceiver(actionReceiver, IntentFilter())
 
         manager.pruneWork()
@@ -56,13 +56,81 @@ class WorkHandler(context: Context) {
         manager.pruneWork()
     }
 
-    fun startBatch(batchName: String) {
+    fun beginBatches() {
+        OABX.wakelock(true)
         prune()
+    }
+
+    fun endBatches() {
+        val delay = 1000L
+        Thread {
+            Timber.d("%%%%% ALL thread start")
+            Thread.sleep(delay)
+            Timber.d("%%%%% ALL delayed $delay onProgress")
+            onProgress(OABX.work, null)     // a final update of notifcations etc. just in case (note recursive call, must be locked in endBatch)
+
+            Timber.d("%%%%% ALL PRUNE")
+            OABX.work.prune()
+
+            // delete all batches started a long time ago (e.g. a day)
+            val longAgo = 24*60*60*1000
+            batchesKnown.keys.toList().forEach { // copy the keys, because collection changes now
+                batchesKnown[it]?.let { batch ->
+                    if (batch.isFinished == true) {
+                        val now = System.currentTimeMillis()
+                        if (now - batch.startTime > longAgo) {
+                            Timber.d("%%%%% $it removing...\\")
+                            batchesKnown.remove(it)
+                            Timber.d("%%%%% $it removed..../")
+                        }
+                    }
+                }
+            }
+
+            Thread.sleep(delay)
+            OABX.service?.let {
+                Timber.w("%%%%% ------------------------------------------ service stopping...\\")
+                it.stopSelf()
+                Timber.w("%%%%% ------------------------------------------ service stopped.../")
+            }
+
+            Timber.d("%%%%% ALL DONE")
+            OABX.wakelock(false) // now everything is done
+        }.start()
+    }
+
+    fun beginBatch(batchName: String) {
+        OABX.wakelock(true)
         if(batchesStarted<0)
             batchesStarted = 0
         batchesStarted++
-        Timber.d("%%%%% $batchName started, $batchesStarted batches, thread ${Thread.currentThread().id}")
+        if(batchesStarted == 1)     // first batch in a series
+            beginBatches()
+        Timber.d("%%%%% $batchName begin, $batchesStarted batches, thread ${Thread.currentThread().id}")
         batchesKnown.put(batchName, BatchState())
+    }
+
+    fun endBatch(batchName: String) {
+        batchesStarted--
+        Timber.d("%%%%% $batchName end, $batchesStarted batches, thread ${Thread.currentThread().id}")
+        OABX.wakelock(false)
+    }
+
+    fun justFinished(batch: BatchState): Boolean {
+        val finished = batch.isFinished
+        if(finished)
+            return false
+        // do only once
+        batch.isFinished = true
+        return true
+    }
+
+    fun justFinishedAll(): Boolean {
+        if(batchesStarted==0) {     // exactly once
+            batchesStarted--        // now lock this (reference counter < 0)
+            return true
+        }
+        return false
     }
 
     fun cancel(tag: String? = null) {  //TODO hg42 doesn't work for cancel all?
@@ -230,8 +298,8 @@ class WorkHandler(context: Context) {
                                     if (!packageName.isNullOrEmpty() and !operation.isNullOrEmpty())
                                         bigText += "<p>" +
                                                     "<tt>$operation</tt>" +
-                                                    "${if (workRetries > 0) " ➰ " else " • "}" +
-                                                    "$shortPackageName" +
+                                                    (if (workRetries > 0) " ➰ " else " • ") +
+                                                    shortPackageName +
                                                     "</p>"
                                 }
                             }
@@ -374,11 +442,8 @@ class WorkHandler(context: Context) {
                     Timber.d("%%%%%%%%%%%%%%%%%%%%> $batchName ${batch.notificationId} '$shortText' $notification")
                     notificationManager.notify(batch.notificationId, notification)  //TODO hg42 setForeground(ForegroundInfo(batch.notificationId, notification))
 
-                    if (! batch.isFinished && remaining <= 0) {
-
-                        batch.isFinished = true
-                        batchesStarted--
-                        Timber.d("%%%%% $batchName finished! batches=$batchesStarted")
+                    if (remaining <= 0 && OABX.work.justFinished(batch)) {
+                        OABX.work.endBatch(batchName)
                     }
                 }
             }
@@ -387,42 +452,12 @@ class WorkHandler(context: Context) {
                 Timber.d("%%%%% ALL finished=$allProcessed <-- remain=$allRemaining <-- total=$allCount")
                 MainActivityX.activity?.runOnUiThread { MainActivityX.activity?.updateProgress(allProcessed, allCount) }
             } else {
-                if(batchesStarted==0) {     // exactly once
-                    batchesStarted--        // now lock
+                if(OABX.work.justFinishedAll()) {
+
                     Timber.d("%%%%% ALL HIDE PROGRESS, $batchesStarted batches, thread ${Thread.currentThread().id}")
                     MainActivityX.activity?.runOnUiThread { MainActivityX.activity?.hideProgress() }
 
-                    Thread {
-                        Timber.d("%%%%% ALL thread start")
-                        Thread.sleep(5000)
-                        Timber.d("%%%%% ALL delayed 5000 onProgress")
-                        onProgress(handler, null)
-
-                        Timber.d("%%%%% ALL PRUNE")
-                        OABX.work.prune()
-
-                        // delete all jobs started a long time ago
-                        val longAgo = 24*60*60*1000
-                        batchesKnown.keys.toList().forEach { // copy the keys, because collection changes now
-                            batchesKnown[it]?.let { batch ->
-                                if (batch.isFinished == true) {
-                                    val now = System.currentTimeMillis()
-                                    if (now - batch.startTime > longAgo) {
-                                        Timber.d("%%%%% $it removing...\\")
-                                        batchesKnown.remove(it)
-                                        Timber.d("%%%%% $it removed..../")
-                                    }
-                                }
-                            }
-                        }
-                        Thread.sleep(5000)
-                        OABX.service?.let {
-                            Timber.w("%%%%% ------------------------------------------ service stopping...\\")
-                            it.stopSelf()
-                            Timber.w("%%%%% ------------------------------------------ service stopped.../")
-                        }
-                        Timber.d("%%%%% ALL after schedule")
-                    }.start()
+                    OABX.work.endBatches()
                 }
             }
         }
@@ -430,6 +465,6 @@ class WorkHandler(context: Context) {
 
     fun onFinish(handler: WorkHandler, work: MutableList<WorkInfo>? = null) {
 
-        onProgress(handler, null)
+        onProgress(handler, null)   // may be the state changed in between
     }
 }

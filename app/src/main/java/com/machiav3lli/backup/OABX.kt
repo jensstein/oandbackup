@@ -19,6 +19,7 @@ package com.machiav3lli.backup
 
 import android.app.Application
 import android.content.Context
+import android.os.PowerManager
 import android.util.LruCache
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.ShellHandler
@@ -83,6 +84,33 @@ class OABX : Application() {
 
         fun prefInt(name: String, default: Int) = context.getDefaultSharedPreferences()
             .getInt(name, default)
+
+        // if any background work is to be done
+        private var theWakeLock: PowerManager.WakeLock? = null
+        private var wakeLockNested: Int = 0
+        private const val wakeLockTag = "OABX:Application"
+        // count the nesting levels
+        // might be difficult seom times, because
+        // the lock must be transfered from one object/function to another
+        // e.g. from the receiver to the service
+        // TODO hg42 may be we should also use a reference counted lock token object that we can copy around, can be combined
+        fun wakelock(aquire: Boolean) {
+            if (aquire) {
+                Timber.d("%%%%% $wakeLockTag wakelock aquire (before: $wakeLockNested)")
+                if(++wakeLockNested == 1) {
+                    val pm = OABX.context.getSystemService(Context.POWER_SERVICE) as PowerManager
+                    theWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, wakeLockTag)
+                    theWakeLock?.acquire(60 * 60 * 1000L)
+                    Timber.d("%%%%% $wakeLockTag wakelock ACQUIRED")
+                }
+            } else {
+                Timber.d("%%%%% $wakeLockTag wakelock release (before: $wakeLockNested)")
+                if(--wakeLockNested == 0) {
+                    Timber.d("%%%%% $wakeLockTag wakelock RELEASING")
+                    theWakeLock?.release()
+                }
+            }
+        }
     }
 
     override fun onCreate() {

@@ -18,11 +18,9 @@
 package com.machiav3lli.backup.services
 
 import android.app.*
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
-import android.os.PowerManager
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.Observer
 import androidx.work.OneTimeWorkRequest
@@ -47,13 +45,14 @@ open class ScheduleService : Service() {
     lateinit var notification: Notification
     private var notificationId = -1
     var runningSchedules = 0
-    var wakeLock: PowerManager.WakeLock? = null
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
 
     override fun onCreate() {
+        OABX.wakelock(true)
+        Timber.i("%%%%% ############################################################ ScheduleService create")
         super.onCreate()
         OABX.service = this
         this.notificationId = System.currentTimeMillis().toInt()
@@ -61,7 +60,6 @@ open class ScheduleService : Service() {
         //createNotificationChannel()
         //createForegroundInfo()
         //startForeground(notification.hashCode(), this.notification)
-        wakelock(true)
 
         showNotification(
             this.baseContext,
@@ -77,22 +75,10 @@ open class ScheduleService : Service() {
     }
 
     override fun onDestroy() {
+        Timber.i("%%%%% ############################################################ ScheduleService destroy")
         OABX.service = null
         //stopForeground(true)
-        wakelock(false)
-    }
-
-    fun wakelock(aquire: Boolean) {
-        val TAG = "OABX:SchedulerService"
-        if (aquire) {
-            val pm = OABX.context.getSystemService(Context.POWER_SERVICE) as PowerManager
-            wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG)
-            wakeLock?.acquire(60 * 60 * 1000L)
-            Timber.d("%%%%% $TAG wakelock aquire")
-        } else {
-            Timber.d("%%%%% $TAG wakelock release")
-            wakeLock?.release()
-        }
+        OABX.wakelock(false)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -102,9 +88,9 @@ open class ScheduleService : Service() {
 
         //createForegroundInfo()
         //startForeground(notification.hashCode(), this.notification)
-        wakelock(true)
+        OABX.wakelock(true)
 
-        var message = "############################################################ ScheduleService starting for scheduleId=$scheduleId name=$name"
+        var message = "%%%%% ############################################################ ScheduleService starting for scheduleId=$scheduleId name=$name"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             message += " ui=$isUiContext"
         }
@@ -119,7 +105,7 @@ open class ScheduleService : Service() {
                 "cancel" -> {
                     Timber.i("action $action")
                     OABX.work.cancel(name)
-                    wakelock(false)
+                    OABX.wakelock(false)
                     Timber.d("%%%%% service stop")
                     stopSelf()
                 }
@@ -128,131 +114,141 @@ open class ScheduleService : Service() {
                     Timber.i("action $action")
                 }
                 null -> {
-                    // no action, continue with extra data
+                    // no action = standard action, simply continue with extra data
                 }
                 else -> {
                     Timber.d("action $action unknown, ignored")
-                    wakelock(false)
-                    return START_NOT_STICKY
+                    //OABX.wakelock(false)
+                    //return START_NOT_STICKY
+                    // or
+                    // scheduleId = -1L
                 }
             }
         }
 
-        if(scheduleId == -1L) {
-            wakelock(false)
-            return START_NOT_STICKY
-        }
+        if(scheduleId >= 0) {
+            scheduledActionTask = object : ScheduledActionTask(baseContext, scheduleId) {
+                override fun onPostExecute(result: Triple<String, List<String>, Int>?) {
+                    val name = result?.first ?: "NoName@Task"
+                    val selectedItems = result?.second ?: listOf()
+                    val mode = result?.third ?: MODE_UNSET
+                    var errors = ""
+                    var resultsSuccess = true
+                    var counter = 0
 
-        scheduledActionTask = object : ScheduledActionTask(baseContext, scheduleId) {
-            override fun onPostExecute(result: Triple<String, List<String>, Int>?) {
-                val name = result?.first ?: "NoName@Task"
-                val selectedItems = result?.second ?: listOf()
-                val mode = result?.third ?: MODE_UNSET
-                var errors = ""
-                var resultsSuccess = true
-                var counter = 0
+                    if (selectedItems.isEmpty()) {
+                        showNotification(
+                            context,
+                            MainActivityX::class.java,
+                            notificationId,
+                            getString(R.string.schedule_failed),
+                            getString(R.string.empty_filtered_list),
+                            false
+                        )
+                        scheduleAlarm(context, scheduleId, true)
+                        stopService(intent)
+                    } else {
+                        val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
 
-                if (selectedItems.isEmpty()) {
-                    showNotification(
-                        context,
-                        MainActivityX::class.java,
-                        notificationId,
-                        getString(R.string.schedule_failed),
-                        getString(R.string.empty_filtered_list),
-                        false
-                    )
-                    scheduleAlarm(context, scheduleId, true)
-                    stopService(intent)
-                } else {
-                    val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
+                        // stop "fetching list..." notification
+                        val notificationManager =
+                            getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+                        notificationManager.cancel(notificationId)
 
-                    // stop "fetching list..." notification
-                    val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-                    notificationManager.cancel(notificationId)
+                        val batchName = WorkHandler.getBatchName(name, now)
+                        OABX.work.beginBatch(batchName)
 
-                    val batchName = WorkHandler.getBatchName(name, now)
-                    OABX.work.startBatch(batchName)
+                        selectedItems.forEach { packageName ->
 
-                    selectedItems.forEach { packageName ->
+                            val oneTimeWorkRequest =
+                                AppActionWork.Request(
+                                    packageName,
+                                    mode,
+                                    true,
+                                    notificationId,
+                                    batchName
+                                )
+                            worksList.add(oneTimeWorkRequest)
 
-                        val oneTimeWorkRequest =
-                            AppActionWork.Request(packageName, mode,true, notificationId, batchName)
-                        worksList.add(oneTimeWorkRequest)
+                            val oneTimeWorkLiveData = OABX.work.manager
+                                .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
+                            oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
+                                override fun onChanged(t: WorkInfo?) {
+                                    if (t?.state == WorkInfo.State.SUCCEEDED ||
+                                        t?.state == WorkInfo.State.FAILED ||
+                                        t?.state == WorkInfo.State.CANCELLED
+                                    ) {
+                                        counter += 1
+                                        val succeeded = t.outputData.getBoolean("succeeded", false)
+                                        val packageLabel = t.outputData.getString("packageLabel")
+                                            ?: ""
+                                        val error = t.outputData.getString("error")
+                                            ?: ""
+                                        if (error.isNotEmpty()) errors = "$errors$packageLabel: ${
+                                            LogsHandler.handleErrorMessages(
+                                                this@ScheduleService,
+                                                error
+                                            )
+                                        }\n"
+                                        resultsSuccess = resultsSuccess && succeeded
+                                        oneTimeWorkLiveData.removeObserver(this)
+                                    }
+                                }
+                            })
+                        }
 
-                        val oneTimeWorkLiveData = OABX.work.manager
-                            .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
-                        oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
+                        val finishWorkRequest = FinishWork.Request(resultsSuccess, true, batchName)
+
+                        val finishWorkLiveData = OABX.work.manager
+                            .getWorkInfoByIdLiveData(finishWorkRequest.id)
+                        finishWorkLiveData.observeForever(object : Observer<WorkInfo> {
                             override fun onChanged(t: WorkInfo?) {
                                 if (t?.state == WorkInfo.State.SUCCEEDED ||
-                                    t?.state == WorkInfo.State.FAILED    ||
+                                    t?.state == WorkInfo.State.FAILED ||
                                     t?.state == WorkInfo.State.CANCELLED
                                 ) {
-                                    counter += 1
-                                    val succeeded = t.outputData.getBoolean("succeeded", false)
-                                    val packageLabel = t.outputData.getString("packageLabel")
+                                    val message = t.outputData.getString("notificationMessage")
                                         ?: ""
-                                    val error = t.outputData.getString("error")
+                                    val title = t.outputData.getString("notificationTitle")
                                         ?: ""
-                                    if (error.isNotEmpty()) errors = "$errors$packageLabel: ${
-                                        LogsHandler.handleErrorMessages(
-                                            this@ScheduleService,
-                                            error
-                                        )
-                                    }\n"
-                                    resultsSuccess = resultsSuccess && succeeded
-                                    oneTimeWorkLiveData.removeObserver(this)
+                                    val overAllResult =
+                                        ActionResult(null, null, errors, resultsSuccess)
+                                    if (!overAllResult.succeeded) LogsHandler.logErrors(
+                                        context,
+                                        errors
+                                    )
+                                    showNotification(
+                                        this@ScheduleService, MainActivityX::class.java,
+                                        notificationId, title, message, true
+                                    )
+                                    scheduleAlarm(context, scheduleId, true)
+                                    isNeedRefresh = true
+                                    finishWorkLiveData.removeObserver(this)
+                                    //stopService(intent)
+                                    stoppedSchedule(intent)
                                 }
                             }
                         })
-                    }
 
-                    val finishWorkRequest = FinishWork.Request(resultsSuccess, true, batchName)
+                        if (worksList.isNotEmpty()) {
+                            OABX.work.manager
+                                .beginWith(worksList)
+                                .then(finishWorkRequest)
+                                .enqueue()
 
-                    val finishWorkLiveData = OABX.work.manager
-                        .getWorkInfoByIdLiveData(finishWorkRequest.id)
-                    finishWorkLiveData.observeForever(object : Observer<WorkInfo> {
-                        override fun onChanged(t: WorkInfo?) {
-                            if (t?.state == WorkInfo.State.SUCCEEDED ||
-                                t?.state == WorkInfo.State.FAILED    ||
-                                t?.state == WorkInfo.State.CANCELLED
-                            ) {
-                                val message = t.outputData.getString("notificationMessage")
-                                    ?: ""
-                                val title = t.outputData.getString("notificationTitle")
-                                    ?: ""
-                                val overAllResult = ActionResult(null, null, errors, resultsSuccess)
-                                if (!overAllResult.succeeded) LogsHandler.logErrors(context, errors)
-                                showNotification(
-                                    this@ScheduleService, MainActivityX::class.java,
-                                    notificationId, title, message, true
-                                )
-                                scheduleAlarm(context, scheduleId, true)
-                                isNeedRefresh = true
-                                finishWorkLiveData.removeObserver(this)
-                                //stopService(intent)
-                                stoppedSchedule(intent)
-                            }
+                            startedSchedule()
+                        } else {
+                            //stopSelf()
+                            stoppedSchedule(intent)
                         }
-                    })
-
-                    if (worksList.isNotEmpty()) {
-                        OABX.work.manager
-                            .beginWith(worksList)
-                            .then(finishWorkRequest)
-                            .enqueue()
-
-                        startedSchedule()
-                    } else {
-                        //stopSelf()
-                        stoppedSchedule(intent)
                     }
+                    super.onPostExecute(result)
                 }
-                super.onPostExecute(result)
             }
+            Timber.i(getString(R.string.sched_startingbackup))
+            scheduledActionTask.execute()
         }
-        Timber.i(getString(R.string.sched_startingbackup))
-        scheduledActionTask.execute()
-        wakelock(false)
+        OABX.wakelock(false)
         return START_NOT_STICKY
     }
 
