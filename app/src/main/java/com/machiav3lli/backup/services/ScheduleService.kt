@@ -32,7 +32,6 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.handler.showNotification
-import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.tasks.ScheduledActionTask
@@ -209,6 +208,7 @@ open class ScheduleService : Service() {
                                     t?.state == WorkInfo.State.FAILED ||
                                     t?.state == WorkInfo.State.CANCELLED
                                 ) {
+                                    /*
                                     val message = t.outputData.getString("notificationMessage")
                                         ?: ""
                                     val title = t.outputData.getString("notificationTitle")
@@ -223,6 +223,7 @@ open class ScheduleService : Service() {
                                         this@ScheduleService, MainActivityX::class.java,
                                         notificationId, title, message, true
                                     )
+                                    */
                                     scheduleAlarm(context, scheduleId, true)
                                     isNeedRefresh = true
                                     finishWorkLiveData.removeObserver(this)
