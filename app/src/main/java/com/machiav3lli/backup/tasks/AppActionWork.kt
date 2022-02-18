@@ -17,20 +17,13 @@
  */
 package com.machiav3lli.backup.tasks
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.job.JobService
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import androidx.core.app.NotificationCompat
 import androidx.work.*
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_MAXRETRIES
-import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.*
 import com.machiav3lli.backup.items.ActionResult
@@ -64,7 +57,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         }
         Timber.i(message)
 
-        setForeground(createForegroundInfo())
+        //setForeground(createForegroundInfo())
 
         var result: ActionResult? = null
         var appInfo: AppInfo? = null
@@ -185,6 +178,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             )
     }
 
+    /*
     private fun createForegroundInfo(): ForegroundInfo {
         val contentPendingIntent = PendingIntent.getActivity(
             context, 0,
@@ -224,9 +218,10 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         notificationChannel.enableVibration(true)
         notificationManager.createNotificationChannel(notificationChannel)
     }
+    */
 
     companion object {
-        private val CHANNEL_ID = AppActionWork::class.java.name
+        //private val CHANNEL_ID = AppActionWork::class.java.name
 
         fun Request(
             packageName: String,
