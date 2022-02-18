@@ -23,6 +23,7 @@ import android.content.Context
 import android.content.Intent
 import android.icu.util.Calendar
 import com.machiav3lli.backup.dbs.ODatabase
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.services.AlarmReceiver
 import timber.log.Timber
@@ -57,7 +58,7 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                     schedule.timeToRun = now + TimeUnit.MINUTES.toMillis(1)
                 scheduleDao.update(schedule)
 
-                if(false) {
+                if(OABX.prefFlag("useAlarmClock", false)) {
                     val alarmIntent = Intent(context, AlarmReceiver::class.java).apply {
                         setAction("schedule")
                         putExtra("scheduleId", scheduleId)

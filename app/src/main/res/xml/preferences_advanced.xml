@@ -57,6 +57,18 @@
         app:initialExpandedChildrenCount="0">
 
         <androidx.preference.CheckBoxPreference
+            android:defaultValue="false"
+            android:key="useAlarmClock"
+            android:summary="use the alarm clock to schedule backups, this shows an alarm icon in the notification bar [needs reboot]"
+            android:title="useAlarmClock" />
+
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="false"
+            android:key="useForeground"
+            android:summary="use forground notifications to ensure app keeps runninig (if wakelock isn't enough)"
+            android:title="useForeground" />
+
+        <androidx.preference.CheckBoxPreference
             android:defaultValue="true"
             android:key="pauseApps"
             android:summary="pause apps during backups and restores to avoid inconsistent backups caused by ongoing file changes or other conflicts"
@@ -107,7 +119,7 @@
         <androidx.preference.CheckBoxPreference
             android:defaultValue="false"
             android:key="catchUncaughtException"
-            android:summary="unexpected exceptions are caught and output to logcat and app is restarted (needs restart when toggling)"
+            android:summary="unexpected exceptions are caught and output to logcat and app is restarted [needs reboot]"
             android:title="catchUncaughtException" />
 
         <androidx.preference.SeekBarPreference

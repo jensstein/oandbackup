@@ -57,9 +57,11 @@ open class ScheduleService : Service() {
         OABX.service = this
         this.notificationId = System.currentTimeMillis().toInt()
 
-        //createNotificationChannel()
-        //createForegroundInfo()
-        //startForeground(notification.hashCode(), this.notification)
+        if(OABX.prefFlag("useForeground", false)) {
+            createNotificationChannel()
+            createForegroundInfo()
+            startForeground(notification.hashCode(), this.notification)
+        }
 
         showNotification(
             this.baseContext,
