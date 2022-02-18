@@ -330,13 +330,14 @@ class WorkHandler(context: Context) {
                     allProcessed += processed
                     allRemaining += remaining
 
-                    val title = batchName
+                    var title = batchName
                     shortText = "${if (failed > 0) "😡$failed / " else ""}$succeeded / $workCount"
 
                     if (remaining > 0) {
                         shortText += " 🏃$running 👭${queued}"
                     } else {
-                        shortText += " ${OABX.context.getString(R.string.finished)}"
+                        //shortText += " ${OABX.context.getString(R.string.finished)}"
+                        title += " - ${if(failed == 0) "ok" else "$failed failed"}"
 
                         Timber.i("%%%%% $batchName isFinished=true")
 
