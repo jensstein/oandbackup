@@ -18,7 +18,6 @@
 package com.machiav3lli.backup.actions
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.role.RoleManager
 import android.content.ContentValues
 import android.content.Context
@@ -423,9 +422,9 @@ object RestoreSMSMMSJSONAction {
                 if (insertData != null) {
                     val outputStream = context.contentResolver.openOutputStream(insertData)
                     val inputStream = ByteArrayInputStream(partData)
-                    val buffer = ByteArray(256)
-                    var len = 0
                     if (outputStream != null) {
+                        val buffer = ByteArray(256)
+                        var len = 0
                         while (inputStream.read(buffer).also { len = it } != -1) {
                             outputStream.write(buffer, 0, len)
                         }

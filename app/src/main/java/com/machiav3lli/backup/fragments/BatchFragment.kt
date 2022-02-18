@@ -321,10 +321,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         val batchType = getString(if (backupBoolean) R.string.backup else R.string.restore)
         val batchName = WorkHandler.getBatchName(batchType, now)
 
-        val notificationMessage = String.format(
-            getString(R.string.fetching_action_list),
-            getString(if (backupBoolean) R.string.backup else R.string.restore)
-        )
         val selectedItems = selectedPackages
             .mapIndexed { i, packageName ->
                 if (packageName.isNullOrEmpty()) null
