@@ -436,7 +436,14 @@ class WorkHandler(context: Context) {
                                 "Cancel all",
                                 cancelAllPendingIntent
                             )
-
+                    } else {
+                        notificationBuilder
+                            .setColor(
+                                if(failed == 0)
+                                    0x66FF66
+                                else
+                                    0xFF6666
+                            )
                     }
 
                     val notification = notificationBuilder.build()
