@@ -78,12 +78,14 @@ class WorkHandler {
     }
 
     fun endBatches() {
-        val delay = 1000L
+        val delay = 3000L
         Thread {
             Timber.d("%%%%% ALL thread start")
             Thread.sleep(delay)
             Timber.d("%%%%% ALL delayed $delay onProgress")
             onProgress(OABX.work, null)     // a final update of notifcations etc. just in case (note recursive call, must be locked in endBatch)
+
+            MainActivityX.activity?.runOnUiThread { MainActivityX.activity?.hideProgress() }
 
             Timber.d("%%%%% ALL PRUNE")
             OABX.work.prune()
@@ -150,12 +152,18 @@ class WorkHandler {
     }
 
     fun cancel(tag: String? = null) {  //TODO hg42 doesn't work for cancel all?
-        if(tag.isNullOrEmpty())
-            AppActionWork::class.qualifiedName?.let {
-                manager.cancelAllWorkByTag(it)
+        // only cancel ActionWork, so that corresponding FinishWork will still be executed
+        if(tag.isNullOrEmpty()) {
+            // does not work, why?
+            //AppActionWork::class.qualifiedName?.let {
+            //    manager.cancelAllWorkByTag(it)
+            //}
+            batchesKnown.keys.forEach { name ->
+                manager.cancelAllWorkByTag("name:$name")
             }
-        else
+        } else {
             manager.cancelAllWorkByTag("name:$tag")
+        }
     }
 
     companion object {
@@ -436,6 +444,7 @@ class WorkHandler {
                         )
                         notificationBuilder
                             .setOngoing(true)
+                            .setSilent(true)
                             .setProgress(workCount, processed, false)
                             .addAction(
                                 R.drawable.ic_close,
@@ -449,6 +458,7 @@ class WorkHandler {
                             )
                     } else {
                         notificationBuilder
+                            .setSilent(false)
                             .setColor(
                                 if(failed == 0)
                                     0x66FF66
