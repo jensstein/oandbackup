@@ -58,6 +58,12 @@
 
         <androidx.preference.CheckBoxPreference
             android:defaultValue="false"
+            android:key="cancelOnStart"
+            android:summary="cancel all remaining jobs on OAndBackupX start [needs reboot]"
+            android:title="cancelOnStart" />
+
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="false"
             android:key="useAlarmClock"
             android:summary="use the alarm clock to schedule backups, this shows an alarm icon in the notification bar [needs reboot]"
             android:title="useAlarmClock" />
