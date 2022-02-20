@@ -46,10 +46,10 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
             val scheduleDao = ODatabase.getInstance(context).scheduleDao
             val schedule = scheduleDao.getSchedule(scheduleId)
             if (schedule?.enabled == true) {
-                val now = System.currentTimeMillis()
 
                 val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
+                val now = System.currentTimeMillis()
                 val timeLeft = calculateTimeToRun(schedule, now) - now
                 if (rescheduleBoolean) {
                     schedule.timePlaced = now
