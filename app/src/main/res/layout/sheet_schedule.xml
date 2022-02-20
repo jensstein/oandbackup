@@ -22,318 +22,366 @@
 
     </data>
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:paddingBottom="?actionBarSize"
-        android:scrollbars="none">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:scrollbars="none">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:padding="@dimen/cards_spacing">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/schedNameBlock"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toTopOf="@id/timeOfDayBlock"
+                    app:layout_constraintEnd_toStartOf="@id/dismiss"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sched_name"
+                        android:textAppearance="@style/TextAppearance.Title" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/schedName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/large_spacing"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:textAppearance="@style/TextAppearance.Title" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/dismiss"
+                    android:layout_width="@dimen/icon_large"
+                    android:layout_height="@dimen/icon_large"
+                    android:background="@drawable/bg_ripple_click_negative"
+                    android:src="@drawable/ic_arrow_down"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/timeOfDayBlock"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toTopOf="@id/intervalDaysBlock"
+                    app:layout_constraintEnd_toStartOf="@id/dismiss"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/dismiss">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sched_hourOfDay"
+                        android:textAppearance="@style/TextAppearance.Title" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/timeOfDay"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/large_spacing"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:textAppearance="@style/TextAppearance.Title"
+                        android:textColor="?colorAccent" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/intervalDaysBlock"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/cards_spacing"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toTopOf="@id/customListButton"
+                    app:layout_constraintEnd_toStartOf="@id/dismiss"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/timeOfDayBlock">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/intervalDaysTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/sched_interval"
+                        android:textAppearance="@style/TextAppearance.Title"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/intervalDays"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/intervalDays"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/large_spacing"
+                        android:gravity="end"
+                        android:textAppearance="@style/TextAppearance.Title"
+                        android:textColor="?colorAccent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/intervalDaysTitle"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/customListButton"
+                    style="@style/Chip.Action"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_button_neutral_ripple"
+                    android:text="@string/customListTitle"
+                    android:textAppearance="@style/TextAppearance.Label"
+                    app:chipIcon="@drawable/ic_customlist"
+                    app:layout_constraintBottom_toTopOf="@id/schedFilterTitle"
+                    app:layout_constraintEnd_toStartOf="@id/buttonBlocklist"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/intervalDaysBlock"
+                    app:rippleColor="?colorAccent" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/buttonBlocklist"
+                    style="@style/Chip.Action"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="@dimen/cards_spacing"
+                    android:background="@drawable/bg_button_neutral_ripple"
+                    android:text="@string/sched_blocklist"
+                    app:chipIcon="@drawable/ic_blocklist"
+                    app:layout_constraintBottom_toBottomOf="@id/customListButton"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/customListButton"
+                    app:layout_constraintTop_toTopOf="@id/customListButton"
+                    app:rippleColor="?colorAccent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/schedFilterTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/cards_spacing"
+                    android:text="@string/filter_options"
+                    android:textAppearance="@style/TextAppearance.Title"
+                    app:layout_constraintBottom_toTopOf="@id/schedFilter"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/customListButton" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/schedFilter"
+                    style="@style/Chip.Group"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toTopOf="@id/schedModeTitle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/schedFilterTitle"
+                    app:selectionRequired="false"
+                    app:singleSelection="false">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/filterSystem"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_system"
+                        app:chipIcon="@drawable/ic_system"
+                        app:chipIconTint="@color/chip_icon_system" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/filterUser"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_user"
+                        app:chipIcon="@drawable/ic_user"
+                        app:chipIconTint="@color/chip_icon_user" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/filterSpecial"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_special"
+                        app:chipIcon="@drawable/ic_special"
+                        app:chipIconTint="@color/chip_icon_special" />
+                </com.google.android.material.chip.ChipGroup>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/schedModeTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/cards_spacing"
+                    android:text="@string/sched_mode"
+                    android:textAppearance="@style/TextAppearance.Title"
+                    app:layout_constraintBottom_toTopOf="@id/schedMode"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/schedFilter" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/schedMode"
+                    style="@style/Chip.Group"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toTopOf="@id/schedSpecialFilterTitle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/schedModeTitle"
+                    app:selectionRequired="false"
+                    app:singleSelection="false">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/backupApk"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_apk"
+                        app:chipIcon="@drawable/ic_apk"
+                        app:chipIconTint="@color/chip_icon_apk" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/backupData"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_data"
+                        app:chipIcon="@drawable/ic_data"
+                        app:chipIconTint="@color/chip_icon_data" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/backupDataDe"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_deviceprotecteddata"
+                        app:chipIcon="@drawable/ic_de_data"
+                        app:chipIconTint="@color/chip_icon_de_data" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/backupDataExt"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_externaldata"
+                        app:chipIcon="@drawable/ic_external_data"
+                        app:chipIconTint="@color/chip_icon_ext_data" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/backupDataObb"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_obbdata"
+                        app:chipIcon="@drawable/ic_obb_data"
+                        app:chipIconTint="@color/chip_icon_obb" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/backupDataMedia"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_mediadata"
+                        app:chipIcon="@drawable/ic_media_data"
+                        app:chipIconTint="@color/chip_icon_media" />
+                </com.google.android.material.chip.ChipGroup>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/schedSpecialFilterTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/cards_spacing"
+                    android:text="@string/other_filters_options"
+                    android:textAppearance="@style/TextAppearance.Title"
+                    app:layout_constraintBottom_toTopOf="@id/schedSpecialFilter"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/schedMode" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/schedSpecialFilter"
+                    style="@style/Chip.Group"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/schedSpecialFilterTitle">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/specialAll"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_all"
+                        app:chipIcon="@drawable/ic_all"
+                        app:chipIconTint="@color/chip_icon_accent" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/specialLaunchable"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_launchable"
+                        app:chipIcon="@drawable/ic_launchable"
+                        app:chipIconTint="@color/chip_icon_obb" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/specialNewUpdated"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/showNewAndUpdated"
+                        app:chipIcon="@drawable/ic_updated"
+                        app:chipIconTint="@color/chip_icon_updated" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/specialOld"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/showOldBackups"
+                        app:chipIcon="@drawable/ic_old"
+                        app:chipIconTint="@color/chip_icon_exodus" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/specialDisabled"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/showDisabled"
+                        app:chipIcon="@drawable/ic_exclude"
+                        app:chipIconTint="@color/chip_icon_de_data" />
+                </com.google.android.material.chip.ChipGroup>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?colorPrimaryDark"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:padding="@dimen/cards_spacing">
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/schedNameBlock"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toTopOf="@id/timeOfDayBlock"
-                app:layout_constraintEnd_toStartOf="@id/dismiss"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sched_name"
-                    android:textAppearance="@style/TextAppearance.Title" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/schedName"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/large_spacing"
-                    android:layout_weight="1"
-                    android:gravity="center_horizontal"
-                    android:textAppearance="@style/TextAppearance.Title" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/dismiss"
-                android:layout_width="@dimen/icon_large"
-                android:layout_height="@dimen/icon_large"
-                android:background="@drawable/bg_ripple_click_negative"
-                android:src="@drawable/ic_arrow_down"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/timeOfDayBlock"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toTopOf="@id/intervalDaysBlock"
-                app:layout_constraintEnd_toStartOf="@id/dismiss"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dismiss">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sched_hourOfDay"
-                    android:textAppearance="@style/TextAppearance.Title" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/timeOfDay"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/large_spacing"
-                    android:layout_weight="1"
-                    android:gravity="end"
-                    android:textAppearance="@style/TextAppearance.Title"
-                    android:textColor="?colorAccent" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/intervalDaysBlock"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/cards_spacing"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toTopOf="@id/customListButton"
-                app:layout_constraintEnd_toStartOf="@id/dismiss"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/timeOfDayBlock">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/intervalDaysTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/sched_interval"
-                    android:textAppearance="@style/TextAppearance.Title"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/intervalDays"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/intervalDays"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/large_spacing"
-                    android:gravity="end"
-                    android:textAppearance="@style/TextAppearance.Title"
-                    android:textColor="?colorAccent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/intervalDaysTitle"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/schedFilterTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/cards_spacing"
-                android:text="@string/filter_options"
-                android:textAppearance="@style/TextAppearance.Title"
-                app:layout_constraintBottom_toTopOf="@id/schedFilter"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/customListButton" />
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/schedFilter"
-                style="@style/Chip.Group"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@id/schedModeTitle"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/schedFilterTitle"
-                app:selectionRequired="false"
-                app:singleSelection="false">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/filterSystem"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radio_system"
-                    app:chipIcon="@drawable/ic_system"
-                    app:chipIconTint="@color/chip_icon_system" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/filterUser"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radio_user"
-                    app:chipIcon="@drawable/ic_user"
-                    app:chipIconTint="@color/chip_icon_user" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/filterSpecial"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radio_special"
-                    app:chipIcon="@drawable/ic_special"
-                    app:chipIconTint="@color/chip_icon_special" />
-            </com.google.android.material.chip.ChipGroup>
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/schedModeTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/cards_spacing"
-                android:text="@string/sched_mode"
-                android:textAppearance="@style/TextAppearance.Title"
-                app:layout_constraintBottom_toTopOf="@id/schedMode"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/schedFilter" />
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/schedMode"
-                style="@style/Chip.Group"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@id/schedSpecialFilterTitle"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/schedModeTitle"
-                app:selectionRequired="false"
-                app:singleSelection="false">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/backupApk"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radio_apk"
-                    app:chipIcon="@drawable/ic_apk"
-                    app:chipIconTint="@color/chip_icon_apk" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/backupData"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radio_data"
-                    app:chipIcon="@drawable/ic_data"
-                    app:chipIconTint="@color/chip_icon_data" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/backupDataDe"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radio_deviceprotecteddata"
-                    app:chipIcon="@drawable/ic_de_data"
-                    app:chipIconTint="@color/chip_icon_de_data" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/backupDataExt"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radio_externaldata"
-                    app:chipIcon="@drawable/ic_external_data"
-                    app:chipIconTint="@color/chip_icon_ext_data" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/backupDataObb"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radio_obbdata"
-                    app:chipIcon="@drawable/ic_obb_data"
-                    app:chipIconTint="@color/chip_icon_obb" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/backupDataMedia"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radio_mediadata"
-                    app:chipIcon="@drawable/ic_media_data"
-                    app:chipIconTint="@color/chip_icon_media" />
-            </com.google.android.material.chip.ChipGroup>
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/schedSpecialFilterTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/cards_spacing"
-                android:text="@string/other_filters_options"
-                android:textAppearance="@style/TextAppearance.Title"
-                app:layout_constraintBottom_toTopOf="@id/schedSpecialFilter"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/schedMode" />
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/schedSpecialFilter"
-                style="@style/Chip.Group"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@id/timeLeftLine"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/schedSpecialFilterTitle">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/specialAll"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radio_all"
-                    app:chipIcon="@drawable/ic_all"
-                    app:chipIconTint="@color/chip_icon_accent" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/specialLaunchable"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radio_launchable"
-                    app:chipIcon="@drawable/ic_launchable"
-                    app:chipIconTint="@color/chip_icon_obb" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/specialNewUpdated"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/showNewAndUpdated"
-                    app:chipIcon="@drawable/ic_updated"
-                    app:chipIconTint="@color/chip_icon_updated" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/specialOld"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/showOldBackups"
-                    app:chipIcon="@drawable/ic_old"
-                    app:chipIconTint="@color/chip_icon_exodus" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/specialDisabled"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/showDisabled"
-                    app:chipIcon="@drawable/ic_exclude"
-                    app:chipIconTint="@color/chip_icon_de_data" />
-            </com.google.android.material.chip.ChipGroup>
+            android:paddingHorizontal="@dimen/cards_spacing"
+            android:paddingTop="@dimen/cards_spacing"
+            android:paddingBottom="@dimen/large_spacing">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/timeLeftLine"
@@ -344,7 +392,7 @@
                 app:layout_constraintBottom_toTopOf="@id/enableCheckbox"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/schedSpecialFilter">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
@@ -363,36 +411,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/customListButton"
-                style="@style/Chip.Action"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_button_neutral_ripple"
-                android:text="@string/customListTitle"
-                android:textAppearance="@style/TextAppearance.Label"
-                app:chipIcon="@drawable/ic_customlist"
-                app:layout_constraintBottom_toTopOf="@id/schedFilterTitle"
-                app:layout_constraintEnd_toStartOf="@id/buttonBlocklist"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/intervalDaysBlock"
-                app:rippleColor="?colorAccent" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/buttonBlocklist"
-                style="@style/Chip.Action"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="@dimen/cards_spacing"
-                android:background="@drawable/bg_button_neutral_ripple"
-                android:text="@string/sched_blocklist"
-                app:chipIcon="@drawable/ic_blocklist"
-                app:layout_constraintBottom_toBottomOf="@id/customListButton"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/customListButton"
-                app:layout_constraintTop_toTopOf="@id/customListButton"
-                app:rippleColor="?colorAccent" />
 
             <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/enableCheckbox"
@@ -428,6 +446,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/enableCheckbox" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>
 
