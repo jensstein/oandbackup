@@ -314,7 +314,7 @@ class WorkHandler {
                                     if (!packageName.isNullOrEmpty() and !operation.isNullOrEmpty())
                                         bigText += "<p>" +
                                                     "<tt>$operation</tt>" +
-                                                    (if (workRetries > 0) " ➰ " else " • ") +
+                                                    (if (failures > 0) " ? " else " • ") +
                                                     shortPackageName +
                                                     "</p>"
                                 }
@@ -364,10 +364,14 @@ class WorkHandler {
                         val min = (duration / 60).toInt()
                         val sec = duration - min * 60
                         bigText = "$min min $sec sec"
+                        if (canceled > 0)
+                            bigText += "\n$canceled cancelled"
+                        if (retries > 0)
+                            bigText += "\n$retries retried"
                     }
 
                     if (retries > 0)
-                        shortText += " ➰$retries"
+                        shortText += " 🔄$retries"
                     if (canceled > 0)
                         shortText += " 🚫$canceled"
 
