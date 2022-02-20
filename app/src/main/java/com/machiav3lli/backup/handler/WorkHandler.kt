@@ -20,15 +20,31 @@ import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
-class WorkHandler(context: Context) {
+class WorkHandler {
 
     //TODO hg42 use singleton?
-    var manager: WorkManager = WorkManager.getInstance(context)
-    var actionReceiver: CommandReceiver = CommandReceiver()
-    lateinit var context: Context
+    var manager: WorkManager
+    var actionReceiver: CommandReceiver
+    var context: Context
+    val notificationManager: NotificationManagerCompat
+    val notificationChannel: NotificationChannel
 
-    init {
+    constructor(appContext: Context) {
+
+        context = appContext
+        manager = WorkManager.getInstance(context)
+        actionReceiver = CommandReceiver()
+
         context.registerReceiver(actionReceiver, IntentFilter())
+
+        notificationManager = NotificationManagerCompat.from(context)
+
+        notificationChannel = NotificationChannel(
+            classAddress("NotificationHandler"),
+            classAddress("NotificationHandler"),
+            NotificationManager.IMPORTANCE_HIGH
+        )
+        notificationManager.createNotificationChannel(notificationChannel) //TODO hg42 use a global channel
 
         manager.pruneWork()
 
@@ -359,15 +375,6 @@ class WorkHandler(context: Context) {
 
                     Timber.d("%%%%% $batchName -----------------> $title $shortText")
 
-                    val notificationManager = NotificationManagerCompat.from(appContext)
-
-                    val notificationChannel = NotificationChannel(
-                        classAddress("NotificationHandler"),
-                        classAddress("NotificationHandler"),
-                        NotificationManager.IMPORTANCE_HIGH
-                    )
-                    notificationManager.createNotificationChannel(notificationChannel) //TODO hg42 use a global channel
-
                     val resultIntent = Intent(appContext, MainActivityX::class.java)
                     resultIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
                     val resultPendingIntent = PendingIntent.getActivity(
@@ -448,7 +455,7 @@ class WorkHandler(context: Context) {
 
                     val notification = notificationBuilder.build()
                     Timber.d("%%%%%%%%%%%%%%%%%%%%> $batchName ${batch.notificationId} '$shortText' $notification")
-                    notificationManager.notify(batch.notificationId, notification)  //TODO hg42 setForeground(ForegroundInfo(batch.notificationId, notification))
+                    OABX.work.notificationManager.notify(batch.notificationId, notification)  //TODO hg42 setForeground(ForegroundInfo(batch.notificationId, notification))
 
                     if (remaining <= 0 && OABX.work.justFinished(batch)) {
                         OABX.work.endBatch(batchName)
