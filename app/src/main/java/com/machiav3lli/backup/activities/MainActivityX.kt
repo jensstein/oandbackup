@@ -221,6 +221,17 @@ class MainActivityX : BaseActivity() {
                 var allProcessed = 0
                 var allRemaining = 0
                 var allCount = 0
+
+                batches.forEach batch@{ (batchName, counters) ->
+
+                    val persist: PersistentCounters =
+                        batchPersist.getOrPut(batchName) { PersistentCounters() }
+
+                    // when the batch is finished, create the notification once and not onGoing anymore
+                    if (persist.isFinished)
+                        return@batch
+
+                    counters.run {
                         val notificationId = batchName.hashCode()
 
                         val processed = succeeded + failed
@@ -347,6 +358,13 @@ class MainActivityX : BaseActivity() {
                 } else {
                     Timber.d("%%%%% HIDE PROGRESS")
                     activity?.runOnUiThread { activity?.hideProgress() }
+                    Timber.d("%%%%% PRUNE")
+                    OABX.work.prune()
+                    batchPersist.keys.forEach {
+                        if (batchPersist[it]?.isFinished == true)
+                            batchPersist.remove(it)
+                    }
+                }
             }.start()
         }
     }
@@ -393,6 +411,13 @@ class MainActivityX : BaseActivity() {
                                 ).show()
                             }
                             Looper.loop()
+                        }
+                    }.start()
+                    Thread.sleep(5000)
+                } catch (e: Throwable) {
+                    // ignore
+                } finally {
+                    exitProcess(2)
                 }
             }
         }
