@@ -65,39 +65,25 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                     } else {
                         true
                     }
+                val pendingIntent = createPendingIntent(context, scheduleId)
                 if (hasPermission && OABX.prefFlag("useAlarmClock", false)) {
-                    val alarmIntent = Intent(context, AlarmReceiver::class.java).apply {
-                        setAction("schedule")
-                        putExtra("scheduleId", scheduleId)
-                        addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
-                    }
-                    val pendingIntent = PendingIntent.getBroadcast(
-                        context,
-                        scheduleId.toInt(),
-                        alarmIntent,
-                        PendingIntent.FLAG_IMMUTABLE
-                    )
                     alarmManager.setAlarmClock(
                         AlarmManager.AlarmClockInfo(schedule.timeToRun, null),
                         pendingIntent
                     )
                 } else {
-                    val alarmIntent = Intent(context, AlarmReceiver::class.java).apply {
-                    //val alarmIntent = Intent(context, ScheduleService::class.java).apply {
-                        setAction("schedule")
-                        putExtra("scheduleId", scheduleId)
-                        addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
-                    }
-                    val pendingIntent = PendingIntent.getBroadcast(
-                        context,
-                        scheduleId.toInt(),
-                        alarmIntent,
-                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                    )
                     if (hasPermission && OABX.prefFlag("useExactAlarm", true))
-                        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, schedule.timeToRun, pendingIntent)
+                        alarmManager.setExactAndAllowWhileIdle(
+                            AlarmManager.RTC_WAKEUP,
+                            schedule.timeToRun,
+                            pendingIntent
+                        )
                     else
-                        alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, schedule.timeToRun, pendingIntent)
+                        alarmManager.setAndAllowWhileIdle(
+                            AlarmManager.RTC_WAKEUP,
+                            schedule.timeToRun,
+                            pendingIntent
+                        )
                 }
                 Timber.i("scheduled backup starting in: ${TimeUnit.MILLISECONDS.toMinutes(schedule.timeToRun - System.currentTimeMillis())} minutes")
             } else
@@ -108,11 +94,25 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
     }
 }
 
-fun cancelAlarm(context: Context, scheduleId: Int) {
+fun cancelAlarm(context: Context, scheduleId: Long) {
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    val alarmIntent = Intent(context, AlarmReceiver::class.java)
-    val pendingIntent = PendingIntent.getBroadcast(context, scheduleId, alarmIntent, PendingIntent.FLAG_IMMUTABLE)
+    val pendingIntent = createPendingIntent(context, scheduleId)
     alarmManager.cancel(pendingIntent)
     pendingIntent.cancel()
     Timber.i("cancelled backup with id: $scheduleId")
+}
+
+fun createPendingIntent(context: Context, scheduleId: Long): PendingIntent {
+    val alarmIntent = Intent(context, AlarmReceiver::class.java).apply {
+        setAction("schedule")
+        putExtra("scheduleId", scheduleId)
+        addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
+    }
+    val pendingIntent = PendingIntent.getBroadcast(
+        context,
+        scheduleId.toInt(),
+        alarmIntent,
+        PendingIntent.FLAG_IMMUTABLE
+    )
+    return pendingIntent
 }

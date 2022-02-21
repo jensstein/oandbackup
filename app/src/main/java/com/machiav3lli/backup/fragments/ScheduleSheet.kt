@@ -172,7 +172,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
         }
         binding.removeButton.setOnClickListener {
             viewModel.deleteSchedule()
-            cancelAlarm(requireContext(), scheduleId.toInt())
+            cancelAlarm(requireContext(), scheduleId)
             dismissAllowingStateLoss()
         }
         binding.activateButton.setOnClickListener { startSchedule() }
@@ -279,8 +279,10 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
             if (scheduler != null) {
                 schedule?.let {
                     scheduleDao.update(it)
-                    if (it.enabled) scheduleAlarm(scheduler, it.id, rescheduleBoolean)
-                    else cancelAlarm(scheduler, it.id.toInt())
+                    if (it.enabled)
+                        scheduleAlarm(scheduler, it.id, rescheduleBoolean)
+                    else
+                        cancelAlarm(scheduler, it.id)
                 }
             }
         }
