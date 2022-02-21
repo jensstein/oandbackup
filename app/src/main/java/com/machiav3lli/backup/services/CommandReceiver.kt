@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.dbs.ScheduleDatabase
+import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.utils.showToast
 import timber.log.Timber
 
@@ -28,7 +28,7 @@ class CommandReceiver : BroadcastReceiver() {
                     Thread {
                         val now = System.currentTimeMillis()
                         val serviceIntent = Intent(context, ScheduleService::class.java)
-                        val scheduleDao = ScheduleDatabase.getInstance(context).scheduleDao
+                        val scheduleDao = ODatabase.getInstance(context).scheduleDao
                         scheduleDao.getSchedule(name)?.let { schedule ->
                             serviceIntent.putExtra("scheduleId", schedule.id)
                             serviceIntent.putExtra("name", schedule.getBatchName(now))

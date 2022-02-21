@@ -40,8 +40,7 @@ import com.machiav3lli.backup.*
 import com.machiav3lli.backup.OABX.Companion.appsSuspendedChecked
 import com.machiav3lli.backup.databinding.ActivityMainXBinding
 import com.machiav3lli.backup.dbs.AppExtras
-import com.machiav3lli.backup.dbs.AppExtrasDatabase
-import com.machiav3lli.backup.dbs.BlocklistDatabase
+import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.fragments.ProgressViewController
 import com.machiav3lli.backup.fragments.RefreshViewController
 import com.machiav3lli.backup.handler.LogsHandler
@@ -425,11 +424,10 @@ class MainActivityX : BaseActivity() {
         Shell.getShell()
         binding = ActivityMainXBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
-        val blocklistDao = BlocklistDatabase.getInstance(this).blocklistDao
-        val appExtrasDao = AppExtrasDatabase.getInstance(this).appExtrasDao
+        val database = ODatabase.getInstance(this)
         prefs = getPrivateSharedPrefs()
 
-        val viewModelFactory = MainViewModel.Factory(appExtrasDao, blocklistDao, application)
+        val viewModelFactory = MainViewModel.Factory(database, application)
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
         if (!isRememberFiltering) {
             this.sortFilterModel = SortFilterModel()

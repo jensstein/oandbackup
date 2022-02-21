@@ -20,10 +20,7 @@ package com.machiav3lli.backup.viewmodels
 import android.app.Application
 import androidx.lifecycle.*
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
-import com.machiav3lli.backup.dbs.AppExtras
-import com.machiav3lli.backup.dbs.AppExtrasDao
-import com.machiav3lli.backup.dbs.Blocklist
-import com.machiav3lli.backup.dbs.BlocklistDao
+import com.machiav3lli.backup.dbs.*
 import com.machiav3lli.backup.handler.getApplicationList
 import com.machiav3lli.backup.items.AppInfo
 import kotlinx.coroutines.Dispatchers
@@ -32,10 +29,12 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class MainViewModel(
-    private val appExtrasDao: AppExtrasDao,
-    private val blocklistDao: BlocklistDao,
+    database: ODatabase,
     private val appContext: Application
 ) : AndroidViewModel(appContext) {
+    private val appExtrasDao: AppExtrasDao = database.appExtrasDao
+    private val blocklistDao: BlocklistDao = database.blocklistDao
+
     var appInfoList = MediatorLiveData<MutableList<AppInfo>>()
     var blocklist = MediatorLiveData<List<Blocklist>>()
     var appExtrasList: MutableList<AppExtras>
@@ -141,14 +140,13 @@ class MainViewModel(
         }
 
     class Factory(
-        private val appExtrasDao: AppExtrasDao,
-        private val blocklistDao: BlocklistDao,
+        private val database: ODatabase,
         private val application: Application
     ) : ViewModelProvider.Factory {
         @Suppress("unchecked_cast")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-                return MainViewModel(appExtrasDao, blocklistDao, application) as T
+                return MainViewModel(database, application) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }

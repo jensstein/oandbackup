@@ -22,8 +22,8 @@ import com.machiav3lli.backup.EXPORTS_FOLDER_NAME
 import com.machiav3lli.backup.EXPORTS_INSTANCE
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.PrefsActivity
+import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.Schedule
-import com.machiav3lli.backup.dbs.ScheduleDatabase
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logErrors
 import com.machiav3lli.backup.handler.LogsHandler.Companion.unhandledException
 import com.machiav3lli.backup.items.StorageFile
@@ -44,7 +44,7 @@ class ExportsHandler(var context: Context) {
     @Throws(IOException::class)
     fun exportSchedules() {
         // TODO improve on folder structure
-        val dataSource = ScheduleDatabase.getInstance(context).scheduleDao
+        val dataSource = ODatabase.getInstance(context).scheduleDao
         val scheds = dataSource.all
         scheds.forEach {
             val fileName = String.format(EXPORTS_INSTANCE, it.name)

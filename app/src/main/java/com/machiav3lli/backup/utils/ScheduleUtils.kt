@@ -22,8 +22,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.icu.util.Calendar
+import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.Schedule
-import com.machiav3lli.backup.dbs.ScheduleDatabase
 import com.machiav3lli.backup.services.AlarmReceiver
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -42,7 +42,7 @@ fun calculateTimeToRun(schedule: Schedule, now: Long): Long {
 fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean) {
     if (scheduleId >= 0) {
         Thread {
-            val scheduleDao = ScheduleDatabase.getInstance(context).scheduleDao
+            val scheduleDao = ODatabase.getInstance(context).scheduleDao
             val schedule = scheduleDao.getSchedule(scheduleId)
             if (schedule?.enabled == true) {
                 val now = System.currentTimeMillis()

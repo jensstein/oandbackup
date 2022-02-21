@@ -34,8 +34,9 @@ import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.SheetScheduleBinding
+import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.Schedule
-import com.machiav3lli.backup.dbs.ScheduleDatabase
+import com.machiav3lli.backup.dbs.ScheduleDao
 import com.machiav3lli.backup.dialogs.IntervalInDaysDialog
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.dialogs.ScheduleNameDialog
@@ -51,15 +52,19 @@ import kotlin.math.abs
 class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
     private lateinit var viewModel: ScheduleViewModel
     private lateinit var binding: SheetScheduleBinding
+    private lateinit var database: ODatabase
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = SheetScheduleBinding.inflate(inflater, container, false)
-        val scheduleDB = ScheduleDatabase.getInstance(requireContext()).scheduleDao
-        val viewModelFactory =
-            ScheduleViewModel.Factory(scheduleId, scheduleDB, requireActivity().application)
+        database = ODatabase.getInstance(requireContext())
+        val viewModelFactory = ScheduleViewModel.Factory(
+            scheduleId,
+            database.scheduleDao,
+            requireActivity().application
+        )
         viewModel = ViewModelProvider(this, viewModelFactory)[ScheduleViewModel::class.java]
 
         viewModel.schedule.observe(viewLifecycleOwner) {
@@ -195,7 +200,14 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
     }
 
     private fun refresh(rescheduleBoolean: Boolean) {
-        Thread(UpdateRunnable(viewModel.schedule.value, requireContext(), rescheduleBoolean))
+        Thread(
+            UpdateRunnable(
+                viewModel.schedule.value,
+                requireContext(),
+                database.scheduleDao,
+                rescheduleBoolean
+            )
+        )
             .start()
     }
 
@@ -247,7 +259,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                 .setMessage(message)
                 .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int ->
                     if (it.mode != MODE_UNSET)
-                        StartSchedule(requireContext(), scheduleId).execute()
+                        StartSchedule(requireContext(), database.scheduleDao, scheduleId).execute()
                 }
                 .setNegativeButton(R.string.dialogCancel) { _: DialogInterface?, _: Int -> }
                 .show()
@@ -257,6 +269,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
     class UpdateRunnable(
         private val schedule: Schedule?,
         context: Context?,
+        val scheduleDao: ScheduleDao,
         private val rescheduleBoolean: Boolean
     ) : Runnable {
         private val contextReference: WeakReference<Context?> = WeakReference(context)
@@ -264,8 +277,6 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
         override fun run() {
             val scheduler = contextReference.get()
             if (scheduler != null) {
-                val scheduleDatabase = ScheduleDatabase.getInstance(scheduler)
-                val scheduleDao = scheduleDatabase.scheduleDao
                 schedule?.let {
                     scheduleDao.update(it)
                     if (it.enabled) scheduleAlarm(scheduler, it.id, rescheduleBoolean)
@@ -275,14 +286,17 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
         }
     }
 
-    internal class StartSchedule(val context: Context, private val scheduleId: Long) :
+    internal class StartSchedule(
+        val context: Context,
+        val scheduleDao: ScheduleDao,
+        private val scheduleId: Long
+    ) :
         ShellCommands.Command {
 
         override fun execute() {
             Thread {
                 val now = System.currentTimeMillis()
                 val serviceIntent = Intent(context, ScheduleService::class.java)
-                val scheduleDao = ScheduleDatabase.getInstance(context).scheduleDao
                 scheduleDao.getSchedule(scheduleId)?.let { schedule ->
                     serviceIntent.putExtra("scheduleId", scheduleId)
                     serviceIntent.putExtra("name", schedule.getBatchName(now))

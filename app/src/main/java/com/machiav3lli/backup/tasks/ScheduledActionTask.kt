@@ -20,8 +20,7 @@ package com.machiav3lli.backup.tasks
 import android.content.Context
 import android.content.Intent
 import com.machiav3lli.backup.*
-import com.machiav3lli.backup.dbs.BlocklistDatabase
-import com.machiav3lli.backup.dbs.ScheduleDatabase
+import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.getApplicationList
 import com.machiav3lli.backup.items.AppInfo
@@ -37,11 +36,12 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
 
     override fun doInBackground(vararg params: Void?): Triple<String, List<String>, Int>? {
 
-        val scheduleDao = ScheduleDatabase.getInstance(context).scheduleDao
-        val blacklistDao = BlocklistDatabase.getInstance(context).blocklistDao
+        val database = ODatabase.getInstance(context)
+        val scheduleDao = database.scheduleDao
+        val blacklistDao = database.blocklistDao
 
-        val schedule = scheduleDao.getSchedule(scheduleId) ?:
-                                return Triple("DbFailed", listOf(), MODE_UNSET)
+        val schedule = scheduleDao.getSchedule(scheduleId)
+            ?: return Triple("DbFailed", listOf(), MODE_UNSET)
 
         val name = schedule.name.toString()
         val filter = schedule.filter

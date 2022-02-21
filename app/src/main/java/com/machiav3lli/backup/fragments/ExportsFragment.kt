@@ -27,7 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.FragmentRecyclerBinding
-import com.machiav3lli.backup.dbs.ScheduleDatabase
+import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.items.ExportsItemX
 import com.machiav3lli.backup.viewmodels.ExportsViewModel
 import com.mikepenz.fastadapter.FastAdapter
@@ -49,7 +49,7 @@ class ExportsFragment : Fragment() {
         super.onCreate(savedInstanceState)
         binding = FragmentRecyclerBinding.inflate(inflater, container, false)
 
-        val dataSource = ScheduleDatabase.getInstance(requireContext()).scheduleDao
+        val dataSource = ODatabase.getInstance(requireContext()).scheduleDao
         val viewModelFactory = ExportsViewModel.Factory(dataSource, requireActivity().application)
         viewModel = ViewModelProvider(this, viewModelFactory)[ExportsViewModel::class.java]
 
