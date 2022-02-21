@@ -22,7 +22,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.databinding.ItemSchedulerXBinding
-import com.machiav3lli.backup.dbs.Schedule
+import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.utils.calculateTimeToRun
 import com.machiav3lli.backup.utils.modeToModes
 import com.machiav3lli.backup.utils.setExists

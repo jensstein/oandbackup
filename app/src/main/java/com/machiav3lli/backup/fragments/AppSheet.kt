@@ -37,7 +37,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.databinding.SheetAppBinding
-import com.machiav3lli.backup.dbs.AppExtras
+import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dialogs.BackupDialogFragment
 import com.machiav3lli.backup.dialogs.RestoreDialogFragment
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType

@@ -21,8 +21,8 @@ import android.app.Application
 import androidx.lifecycle.*
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.PrefsActivity
-import com.machiav3lli.backup.dbs.Schedule
-import com.machiav3lli.backup.dbs.ScheduleDao
+import com.machiav3lli.backup.dbs.entity.Schedule
+import com.machiav3lli.backup.dbs.dao.ScheduleDao
 import com.machiav3lli.backup.handler.ExportsHandler
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.StorageFile

@@ -21,7 +21,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.machiav3lli.backup.dbs.ODatabase
-import com.machiav3lli.backup.dbs.ScheduleDao
+import com.machiav3lli.backup.dbs.dao.ScheduleDao
 import com.machiav3lli.backup.utils.scheduleAlarm
 import timber.log.Timber
 import java.lang.ref.WeakReference

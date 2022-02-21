@@ -25,7 +25,7 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.SheetAppBinding
-import com.machiav3lli.backup.dbs.AppExtras
+import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BackupItem

@@ -19,8 +19,8 @@ package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.machiav3lli.backup.dbs.Schedule
-import com.machiav3lli.backup.dbs.ScheduleDao
+import com.machiav3lli.backup.dbs.entity.Schedule
+import com.machiav3lli.backup.dbs.dao.ScheduleDao
 import com.machiav3lli.backup.items.SchedulerItemX
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

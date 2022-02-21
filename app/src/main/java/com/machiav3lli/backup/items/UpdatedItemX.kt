@@ -21,7 +21,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ItemUpdatedXBinding
-import com.machiav3lli.backup.dbs.AppExtras
+import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.utils.calculateID
 import com.machiav3lli.backup.utils.setIcon
 import com.mikepenz.fastadapter.binding.AbstractBindingItem

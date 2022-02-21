@@ -23,7 +23,7 @@ import com.machiav3lli.backup.EXPORTS_INSTANCE
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.PrefsActivity
 import com.machiav3lli.backup.dbs.ODatabase
-import com.machiav3lli.backup.dbs.Schedule
+import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logErrors
 import com.machiav3lli.backup.handler.LogsHandler.Companion.unhandledException
 import com.machiav3lli.backup.items.StorageFile

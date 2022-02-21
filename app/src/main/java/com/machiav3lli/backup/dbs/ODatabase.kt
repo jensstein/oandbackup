@@ -22,6 +22,12 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.machiav3lli.backup.SCHEDULES_DB_NAME
+import com.machiav3lli.backup.dbs.dao.AppExtrasDao
+import com.machiav3lli.backup.dbs.dao.BlocklistDao
+import com.machiav3lli.backup.dbs.dao.ScheduleDao
+import com.machiav3lli.backup.dbs.entity.AppExtras
+import com.machiav3lli.backup.dbs.entity.Blocklist
+import com.machiav3lli.backup.dbs.entity.Schedule
 
 @Database(
     entities = [Schedule::class, Blocklist::class, AppExtras::class],

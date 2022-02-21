@@ -21,7 +21,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.databinding.ItemExportsXBinding
-import com.machiav3lli.backup.dbs.Schedule
+import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.utils.modeToModes
 import com.machiav3lli.backup.utils.setExists
 import com.mikepenz.fastadapter.binding.AbstractBindingItem

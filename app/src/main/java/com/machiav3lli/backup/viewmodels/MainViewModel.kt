@@ -21,6 +21,10 @@ import android.app.Application
 import androidx.lifecycle.*
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
 import com.machiav3lli.backup.dbs.*
+import com.machiav3lli.backup.dbs.dao.AppExtrasDao
+import com.machiav3lli.backup.dbs.dao.BlocklistDao
+import com.machiav3lli.backup.dbs.entity.AppExtras
+import com.machiav3lli.backup.dbs.entity.Blocklist
 import com.machiav3lli.backup.handler.getApplicationList
 import com.machiav3lli.backup.items.AppInfo
 import kotlinx.coroutines.Dispatchers

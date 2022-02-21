@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.machiav3lli.backup.dbs
+package com.machiav3lli.backup.dbs.dao
 
 import android.database.SQLException
 import androidx.lifecycle.LiveData
@@ -23,6 +23,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import com.machiav3lli.backup.dbs.entity.Blocklist
 
 // TODO abstract a base dao and gather all daos in one file
 @Dao

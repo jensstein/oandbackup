@@ -23,7 +23,7 @@ import android.content.Context
 import android.content.Intent
 import android.icu.util.Calendar
 import com.machiav3lli.backup.dbs.ODatabase
-import com.machiav3lli.backup.dbs.Schedule
+import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.services.AlarmReceiver
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
