@@ -23,6 +23,7 @@ import android.content.Context
 import android.content.Intent
 import android.icu.util.Calendar
 import com.machiav3lli.backup.dbs.ODatabase
+import android.os.Build
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.services.AlarmReceiver
@@ -58,7 +59,13 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                     schedule.timeToRun = now + TimeUnit.MINUTES.toMillis(1)
                 scheduleDao.update(schedule)
 
-                if(OABX.prefFlag("useAlarmClock", false)) {
+                val hasPermission: Boolean =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        alarmManager.canScheduleExactAlarms()
+                    } else {
+                        true
+                    }
+                if (hasPermission && OABX.prefFlag("useAlarmClock", false)) {
                     val alarmIntent = Intent(context, AlarmReceiver::class.java).apply {
                         setAction("schedule")
                         putExtra("scheduleId", scheduleId)
@@ -87,7 +94,10 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                         alarmIntent,
                         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
                     )
-                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, schedule.timeToRun, pendingIntent)
+                    if (hasPermission && OABX.prefFlag("useExactAlarm", true))
+                        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, schedule.timeToRun, pendingIntent)
+                    else
+                        alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, schedule.timeToRun, pendingIntent)
                 }
                 Timber.i("scheduled backup starting in: ${TimeUnit.MILLISECONDS.toMinutes(schedule.timeToRun - System.currentTimeMillis())} minutes")
             } else

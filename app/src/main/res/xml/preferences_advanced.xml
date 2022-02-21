@@ -70,6 +70,12 @@
 
         <androidx.preference.CheckBoxPreference
             android:defaultValue="false"
+            android:key="useExactAlarm"
+            android:summary="if not using useAlarmClock, then use exact alarms, otherwise use inexact alarms which may be better for battery [needs reboot]"
+            android:title="useExactAlarm" />
+
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="false"
             android:key="useForeground"
             android:summary="use forground notifications to ensure app keeps runninig (if wakelock isn't enough)"
             android:title="useForeground" />
