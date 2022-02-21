@@ -31,7 +31,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?colorPrimaryDark"
             android:clipToPadding="false"
             android:padding="@dimen/cards_spacing">
 
@@ -101,6 +100,10 @@
                 app:layout_constraintStart_toEndOf="@id/appInfo"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="2dp" />
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
