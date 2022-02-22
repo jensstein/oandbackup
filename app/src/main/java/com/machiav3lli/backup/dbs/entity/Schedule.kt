@@ -20,67 +20,43 @@ package com.machiav3lli.backup.dbs.entity
 import android.content.Context
 import androidx.room.*
 import androidx.room.migration.AutoMigrationSpec
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.BackupItem
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.utils.GsonUtils
 import com.machiav3lli.backup.utils.mainFilterToId
 import com.machiav3lli.backup.utils.modeToId
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.io.FileNotFoundException
 import java.io.IOException
 
 @Entity
-open class Schedule() {
+@Serializable
+data class Schedule(
     @PrimaryKey(autoGenerate = true)
-    @SerializedName("id")
-    @Expose
     var id: Long = 0
-
-    @SerializedName("name")
-    @Expose
+) {
     var name: String? = "New Schedule"
-
     var enabled = false
 
-    @SerializedName("timeHour")
-    @Expose
     var timeHour = 0
-
-    @SerializedName("timeMinute")
-    @Expose
     var timeMinute = 0
-
-    @SerializedName("interval")
-    @Expose
     var interval = 1
-
     var timePlaced = System.currentTimeMillis()
 
-    @SerializedName("filter")
-    @Expose
     var filter: Int = MAIN_FILTER_DEFAULT
-
-    @SerializedName("mode")
-    @Expose
     var mode: Int = MODE_APK
-
-    @SerializedName("specialFilter")
-    @Expose
     var specialFilter: Int = SPECIAL_FILTER_ALL
 
     var timeToRun: Long = 0
 
-    @SerializedName("customList")
-    @Expose
     @TypeConverters(AppsListConverter::class)
     var customList: Set<String> = setOf()
 
-    @SerializedName("blockList")
-    @Expose
     @TypeConverters(AppsListConverter::class)
     var blockList: Set<String> = setOf()
 
@@ -97,7 +73,7 @@ open class Schedule() {
     constructor(context: Context, exportFile: StorageFile) : this() {
         try {
             exportFile.inputStream()!!.use { inputStream ->
-                val item = fromGson(inputStream.reader().readText())
+                val item = fromJson(inputStream.reader().readText())
                 this.id = item.id
                 this.name = item.name
                 this.filter = item.filter
@@ -160,10 +136,6 @@ open class Schedule() {
         return hash
     }
 
-    fun toGson(): String {
-        return GsonUtils.instance!!.toJson(this)
-    }
-
     override fun toString(): String {
         return "Schedule{" +
                 "id=" + id +
@@ -181,7 +153,8 @@ open class Schedule() {
                 '}'
     }
 
-    fun getBatchName(startTime: Long): String = WorkHandler.getBatchName(this.name ?: "Schedule", startTime)
+    fun getBatchName(startTime: Long): String =
+        WorkHandler.getBatchName(this.name ?: "Schedule", startTime)
 
     class Builder {
         val schedule: Schedule = Schedule()
@@ -223,10 +196,10 @@ open class Schedule() {
         }
     }
 
+    fun toJSON() = Json.encodeToString(this)
+
     companion object {
-        fun fromGson(gson: String?): Schedule {
-            return GsonUtils.instance!!.fromJson(gson, Schedule::class.java)
-        }
+        fun fromJson(json: String) = Json.decodeFromString<Schedule>(json)
 
         @RenameColumn(
             tableName = "Schedule",

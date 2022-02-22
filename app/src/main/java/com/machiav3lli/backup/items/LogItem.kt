@@ -18,36 +18,29 @@
 package com.machiav3lli.backup.items
 
 import android.content.Context
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.utils.GsonUtils.instance
+import com.machiav3lli.backup.utils.LocalDateTimeSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.time.LocalDateTime
 
+@Serializable
 open class LogItem {
     // TODO: hg42: add ${BuildConfig.APPLICATION_ID} ${BuildConfig.VERSION_NAME} useful for stacktraces ?
-
-    @SerializedName("logDate")
-    @Expose
+    @Serializable(with = LocalDateTimeSerializer::class)
     var logDate: LocalDateTime
         private set
 
-    @SerializedName("deviceName")
-    @Expose
     val deviceName: String?
 
-    @SerializedName("sdkVersion")
-    @Expose
     val sdkCodename: String?
 
-    @SerializedName("cpuArch")
-    @Expose
     val cpuArch: String?
 
-    @SerializedName("logText")
-    @Expose
     val logText: String?
 
     constructor(text: String, date: LocalDateTime) {
@@ -61,7 +54,7 @@ open class LogItem {
     constructor(context: Context, logFile: StorageFile) {
         try {
             logFile.inputStream()!!.use { inputStream ->
-                val item = fromGson(inputStream.reader().readText())
+                val item = fromJson(inputStream.reader().readText())
                 this.logDate = item.logDate
                 this.deviceName = item.deviceName
                 this.sdkCodename = item.sdkCodename
@@ -84,10 +77,6 @@ open class LogItem {
         }
     }
 
-    fun toGson(): String {
-        return instance!!.toJson(this)
-    }
-
     override fun toString(): String {
         return "LogItem{" +
                 "logDate=$logDate" +
@@ -103,9 +92,9 @@ open class LogItem {
         return logFile?.delete()
     }
 
+    fun toJSON() = Json.encodeToString(this)
+
     companion object {
-        fun fromGson(gson: String?): LogItem {
-            return instance!!.fromJson(gson, LogItem::class.java)
-        }
+        fun fromJson(json: String) = Json.decodeFromString<LogItem>(json)
     }
 }

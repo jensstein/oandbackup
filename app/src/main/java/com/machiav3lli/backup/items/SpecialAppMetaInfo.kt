@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
-import com.google.gson.annotations.SerializedName
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
@@ -15,8 +14,7 @@ import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
  * This class is used to describe special backup files that use a hardcoded list of file paths
  */
 open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
-    @SerializedName("specialFiles")
-    var fileList: Array<String>
+    var specialFiles: Array<String>
 
     constructor(
         packageName: String?,
@@ -26,7 +24,7 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
         fileList: Array<String>
     )
             : super(packageName, label, versionName, versionCode, 0, null, arrayOf(), true) {
-        this.fileList = fileList
+        this.specialFiles = fileList
     }
 
     override val isSpecial: Boolean
@@ -35,20 +33,20 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
     protected constructor(source: Parcel) : super(source) {
         val expectedItems = source.readInt()
         val temporaryFileList: Array<String?> = arrayOfNulls(expectedItems)
-        fileList = Array(expectedItems) { "" }
+        specialFiles = Array(expectedItems) { "" }
         source.readStringArray(temporaryFileList)
         temporaryFileList.forEachIndexed { index, value ->
             if (value != null) {
-                fileList[index] = value
+                specialFiles[index] = value
             } else {
                 throw IllegalArgumentException("SpecialAppMetaInfo parcel contained a null value")
             }
-        };
+        }
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(fileList.size)
-        parcel.writeStringArray(fileList)
+        parcel.writeInt(specialFiles.size)
+        parcel.writeStringArray(specialFiles)
     }
 
     override fun describeContents(): Int = 0
@@ -86,7 +84,7 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
             // Documentation note: This could be outdated, make sure the logic in BackupSpecialAction and
             // RestoreSpecialAction hasn't changed!
             synchronized(specialPackages) { // if n calls run in parallel we may have n duplicates
-                                            // because there is some time between asking for the size and the first add
+                // because there is some time between asking for the size and the first add
                 if (specialPackages.size == 0) {
                     // caching this prevents recreating AppInfo-objects all the time and at wrong times
                     val userId = ShellCommands.currentUser

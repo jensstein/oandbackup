@@ -198,7 +198,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             packageBackupDir.createFile("application/octet-stream", propertiesFileName)
         propertiesFile.outputStream()?.use { propertiesOut ->
             propertiesOut.write(
-                properties.toGson().toByteArray(StandardCharsets.UTF_8)
+                properties.toJSON().toByteArray(StandardCharsets.UTF_8)
             )
         }
         Timber.i("Wrote $propertiesFile file for backup: $properties")

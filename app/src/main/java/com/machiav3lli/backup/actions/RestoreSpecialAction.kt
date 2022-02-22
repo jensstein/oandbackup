@@ -73,7 +73,7 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
 
                 // check if all expected files are there
                 val filesInBackup = tempPath.listFiles()
-                val expectedFiles = metaInfo.fileList
+                val expectedFiles = metaInfo.specialFiles
                     .map { pathname: String? -> RootFile(pathname ?: "") }
                     .toTypedArray()
                 if (filesInBackup != null && (
@@ -124,12 +124,12 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
                 runAsRoot(command)
             }
             if (app.packageName == "special.smsmms.json") {
-                for (filePath in metaInfo.fileList) {
+                for (filePath in metaInfo.specialFiles) {
                     RestoreSMSMMSJSONAction.restoreData(context, filePath)
                 }
             }
             if (app.packageName == "special.calllogs.json") {
-                for (filePath in metaInfo.fileList) {
+                for (filePath in metaInfo.specialFiles) {
                     RestoreCallLogsJSONAction.restoreData(context, filePath)
                 }
             }
@@ -152,7 +152,7 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
                 app.packageName == "special.smsmms.json" ||
                 app.packageName == "special.calllogs.json"
             ) {
-            for (filePath in metaInfo.fileList) {
+            for (filePath in metaInfo.specialFiles) {
                 File(filePath).delete()
             }
         }

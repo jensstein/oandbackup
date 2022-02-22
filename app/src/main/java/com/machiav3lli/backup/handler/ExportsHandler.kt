@@ -52,14 +52,16 @@ class ExportsHandler(var context: Context) {
                 BufferedOutputStream(exportFile.outputStream())
                     .use { exportOut ->
                         exportOut.write(
-                            it.toGson().toByteArray(StandardCharsets.UTF_8)
-                            )
+                            it.toJSON().toByteArray(StandardCharsets.UTF_8)
+                        )
                         Timber.i("Exported the schedule ${it.name} to $exportFile")
                     }
             }
         }
-        showNotification(context, PrefsActivity::class.java, System.currentTimeMillis().toInt(),
-            context.getString(R.string.sched_exported), null, false)
+        showNotification(
+            context, PrefsActivity::class.java, System.currentTimeMillis().toInt(),
+            context.getString(R.string.sched_exported), null, false
+        )
     }
 
     @Throws(IOException::class)

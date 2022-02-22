@@ -18,60 +18,35 @@
 package com.machiav3lli.backup.utils
 
 import android.net.Uri
-import com.google.gson.*
-import java.lang.reflect.Type
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializer
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-// TODO replace with kotlin serialization
-object GsonUtils {
-    var instance: Gson? = null
-        get() {
-            if (field == null) {
-                field = createInstance()
-            }
-            return field
-        }
-        private set
+@Serializer(forClass = LocalDateTime::class)
+object LocalDateTimeSerializer : KSerializer<LocalDateTime> {
+    override val descriptor: SerialDescriptor =
+        PrimitiveSerialDescriptor("LocalDateTimeSerializer", PrimitiveKind.STRING)
 
-    private fun createInstance(): Gson = GsonBuilder()
-        .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeSerializer())
-        .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeDeserializer())
-        .registerTypeAdapter(Uri::class.java, UriSerializer())
-        .registerTypeAdapter(Uri::class.java, UriDeserializer())
-        .excludeFieldsWithoutExposeAnnotation()
-        .create()
+    override fun serialize(encoder: Encoder, value: LocalDateTime) =
+        encoder.encodeString(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(value))
 
-    internal class LocalDateTimeSerializer : JsonSerializer<LocalDateTime?> {
-        private val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
-        override fun serialize(
-            src: LocalDateTime?,
-            typeOfSrc: Type,
-            context: JsonSerializationContext
-        ): JsonElement = JsonPrimitive(formatter.format(src))
-    }
+    override fun deserialize(decoder: Decoder): LocalDateTime =
+        LocalDateTime.parse(decoder.decodeString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+}
 
-    internal class LocalDateTimeDeserializer : JsonDeserializer<LocalDateTime> {
-        override fun deserialize(
-            json: JsonElement,
-            typeOfT: Type,
-            context: JsonDeserializationContext
-        ): LocalDateTime = LocalDateTime.parse(json.asString, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-    }
+@Serializer(forClass = Uri::class)
+object UriSerializer : KSerializer<Uri> {
+    override val descriptor: SerialDescriptor =
+        PrimitiveSerialDescriptor("UriSerializer", PrimitiveKind.STRING)
 
-    internal class UriSerializer : JsonSerializer<Uri> {
-        override fun serialize(
-            src: Uri,
-            typeOfSrc: Type,
-            context: JsonSerializationContext
-        ): JsonElement = JsonPrimitive(src.toString())
-    }
+    override fun serialize(encoder: Encoder, value: Uri) =
+        encoder.encodeString(value.toString())
 
-    internal class UriDeserializer : JsonDeserializer<Uri> {
-        override fun deserialize(
-            json: JsonElement,
-            typeOfT: Type,
-            context: JsonDeserializationContext
-        ): Uri = Uri.parse(json.asString)
-    }
+    override fun deserialize(decoder: Decoder): Uri = Uri.parse(decoder.decodeString())
 }

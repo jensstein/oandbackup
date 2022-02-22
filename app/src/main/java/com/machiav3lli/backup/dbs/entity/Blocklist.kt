@@ -21,10 +21,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-class Blocklist {
+class Blocklist(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
-
+) {
     var packageName: String? = null
 
     var blocklistId = 0L

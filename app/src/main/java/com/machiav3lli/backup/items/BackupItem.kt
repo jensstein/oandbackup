@@ -34,7 +34,7 @@ open class BackupItem {
     constructor(context: Context, propertiesFile: StorageFile) {
         try {
             propertiesFile.inputStream()!!.let { inputStream ->
-                backupProperties = BackupProperties.fromGson(inputStream.reader().readText())
+                backupProperties = BackupProperties.fromJson(inputStream.reader().readText())
                 backupInstanceDir = backupProperties.getBackupDir(propertiesFile.parent)!!
             }
         } catch (e: FileNotFoundException) {
