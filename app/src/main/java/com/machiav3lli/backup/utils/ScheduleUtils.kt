@@ -22,9 +22,9 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.icu.util.Calendar
-import com.machiav3lli.backup.dbs.ODatabase
 import android.os.Build
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.services.AlarmReceiver
 import timber.log.Timber
@@ -36,6 +36,7 @@ fun calculateTimeToRun(schedule: Schedule, now: Long): Long {
     c[Calendar.HOUR_OF_DAY] = schedule.timeHour
     c[Calendar.MINUTE] = schedule.timeMinute
     c[Calendar.SECOND] = 0
+    c[Calendar.MILLISECOND] = 0
     if (now >= c.timeInMillis)
         c.add(Calendar.DAY_OF_MONTH, schedule.interval)
     return c.timeInMillis
