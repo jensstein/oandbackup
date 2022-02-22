@@ -11,8 +11,12 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.machiav3lli.backup.*
+import com.machiav3lli.backup.BuildConfig
+import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.PREFS_MAXRETRIES
+import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
+import com.machiav3lli.backup.classAddress
 import com.machiav3lli.backup.services.CommandReceiver
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
@@ -22,7 +26,6 @@ import java.util.*
 
 class WorkHandler {
 
-    //TODO hg42 use singleton?
     var manager: WorkManager
     var actionReceiver: CommandReceiver
     var context: Context
@@ -44,7 +47,7 @@ class WorkHandler {
             classAddress("NotificationHandler"),
             NotificationManager.IMPORTANCE_HIGH
         )
-        notificationManager.createNotificationChannel(notificationChannel) //TODO hg42 use a global channel
+        notificationManager.createNotificationChannel(notificationChannel)
 
         manager.pruneWork()
 
@@ -83,7 +86,10 @@ class WorkHandler {
             Timber.d("%%%%% ALL thread start")
             Thread.sleep(delay)
             Timber.d("%%%%% ALL delayed $delay onProgress")
-            onProgress(OABX.work, null)     // a final update of notifcations etc. just in case (note recursive call, must be locked in endBatch)
+            onProgress(
+                OABX.work,
+                null
+            )     // a final update of notifcations etc. just in case (note recursive call, must be locked in endBatch)
 
             MainActivityX.activity?.runOnUiThread { MainActivityX.activity?.hideProgress() }
 
@@ -91,7 +97,7 @@ class WorkHandler {
             OABX.work.prune()
 
             // delete all batches started a long time ago (e.g. a day)
-            val longAgo = 24*60*60*1000
+            val longAgo = 24 * 60 * 60 * 1000
             batchesKnown.keys.toList().forEach { // copy the keys, because collection changes now
                 batchesKnown[it]?.let { batch ->
                     if (batch.isFinished == true) {
@@ -119,10 +125,10 @@ class WorkHandler {
 
     fun beginBatch(batchName: String) {
         OABX.wakelock(true)
-        if(batchesStarted<0)
+        if (batchesStarted < 0)
             batchesStarted = 0
         batchesStarted++
-        if(batchesStarted == 1)     // first batch in a series
+        if (batchesStarted == 1)     // first batch in a series
             beginBatches()
         Timber.d("%%%%% $batchName begin, $batchesStarted batches, thread ${Thread.currentThread().id}")
         batchesKnown.put(batchName, BatchState())
@@ -136,7 +142,7 @@ class WorkHandler {
 
     fun justFinished(batch: BatchState): Boolean {
         val finished = batch.isFinished
-        if(finished)
+        if (finished)
             return false
         // do only once
         batch.isFinished = true
@@ -144,7 +150,7 @@ class WorkHandler {
     }
 
     fun justFinishedAll(): Boolean {
-        if(batchesStarted==0) {     // exactly once
+        if (batchesStarted == 0) {     // exactly once
             batchesStarted--        // now lock this (reference counter < 0)
             return true
         }
@@ -153,7 +159,7 @@ class WorkHandler {
 
     fun cancel(tag: String? = null) {  //TODO hg42 doesn't work for cancel all?
         // only cancel ActionWork, so that corresponding FinishWork will still be executed
-        if(tag.isNullOrEmpty()) {
+        if (tag.isNullOrEmpty()) {
             // does not work, why?
             //AppActionWork::class.qualifiedName?.let {
             //    manager.cancelAllWorkByTag(it)
@@ -208,7 +214,7 @@ class WorkHandler {
         var batchesStarted = -1
 
         fun onProgress(handler: WorkHandler, workInfos: MutableList<WorkInfo>? = null) {
-            synchronized(batchesStarted)  {
+            synchronized(batchesStarted) {
                 onProgress_(handler, workInfos)
             }
         }
@@ -217,8 +223,8 @@ class WorkHandler {
 
             val manager = handler.manager
             val work = workInfos
-                            ?: manager.getWorkInfosByTag(AppActionWork::class.qualifiedName!!).get()
-                            ?: return
+                ?: manager.getWorkInfosByTag(AppActionWork::class.qualifiedName!!).get()
+                ?: return
 
             val now = System.currentTimeMillis()
             val batchesRunning = mutableMapOf<String, WorkState>()
@@ -251,7 +257,7 @@ class WorkHandler {
                                     //Timber.d("%%%%% name from tag -> $batchName")
                                     return@tag
                                 }
-                                else -> {}
+                                else   -> {}
                             }
                         }
                     }
@@ -266,7 +272,7 @@ class WorkHandler {
                 batchesRunning.getOrPut(batchName!!) { WorkState() }.run batch@{
 
                     //val batch: BatchState = batchesKnown[batchName!!]!!
-                    val batch: BatchState = batchesKnown.getOrPut(batchName!!) {  BatchState() }
+                    val batch: BatchState = batchesKnown.getOrPut(batchName!!) { BatchState() }
 
                     if (batch.notificationId == 0)
                         batch.notificationId = batchName.hashCode()
@@ -291,7 +297,7 @@ class WorkHandler {
                             succeeded++
                             workFinished++
                         }
-                        WorkInfo.State.FAILED -> {
+                        WorkInfo.State.FAILED    -> {
                             failed++
                             workFinished++
                         }
@@ -299,28 +305,30 @@ class WorkHandler {
                             canceled++
                             workFinished++
                         }
-                        WorkInfo.State.ENQUEUED -> {
+                        WorkInfo.State.ENQUEUED  -> {
                             queued++
                             workEnqueued++
                         }
-                        WorkInfo.State.BLOCKED -> {
+                        WorkInfo.State.BLOCKED   -> {
                             queued++
                             workBlocked++
                         }
-                        WorkInfo.State.RUNNING -> {
+                        WorkInfo.State.RUNNING   -> {
                             workRunning++
                             when (operation) {
                                 "..." -> queued++
-                                else -> {
+                                else  -> {
                                     running++
-                                    val shortPackageName = packageName
+                                    val shortPackageName =
+                                        packageName
                                             ?.replace(Regex("""\bcom\b"""), "c")
                                             ?.replace(Regex("""\borg\b"""), "o")
                                             ?.replace(Regex("""\bandroid\b"""), "a")
                                             ?.replace(Regex("""\bgoogle\b"""), "g")
                                             ?.replace(Regex("""\bproviders\b"""), "p")
                                     if (!packageName.isNullOrEmpty() and !operation.isNullOrEmpty())
-                                        bigText += "<p>" +
+                                        bigText +=
+                                            "<p>" +
                                                     "<tt>$operation</tt>" +
                                                     (if (failures > 0) " ? " else " • ") +
                                                     shortPackageName +
@@ -361,7 +369,7 @@ class WorkHandler {
                         shortText += " 🏃$running 👭${queued}"
                     } else {
                         //shortText += " ${OABX.context.getString(R.string.finished)}"
-                        title += " - ${if(failed == 0) "ok" else "$failed failed"}"
+                        title += " - ${if (failed == 0) "ok" else "$failed failed"}"
 
                         Timber.i("%%%%% $batchName isFinished=true")
 
@@ -396,7 +404,8 @@ class WorkHandler {
                         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
                     )
 
-                    val htmlFlags = Html.FROM_HTML_MODE_COMPACT or Html.FROM_HTML_OPTION_USE_CSS_COLORS
+                    val htmlFlags =
+                        Html.FROM_HTML_MODE_COMPACT or Html.FROM_HTML_OPTION_USE_CSS_COLORS
                     val notificationBuilder =
                         NotificationCompat.Builder(
                             appContext,
@@ -418,7 +427,7 @@ class WorkHandler {
                             .setPriority(NotificationCompat.PRIORITY_MAX)
                             .setCategory(NotificationCompat.CATEGORY_SERVICE)
 
-                    if(remaining > 0) {
+                    if (remaining > 0) {
 
                         val cancelIntent =
                             Intent(appContext, CommandReceiver::class.java).apply {
@@ -460,7 +469,7 @@ class WorkHandler {
                         notificationBuilder
                             .setSilent(false)
                             .setColor(
-                                if(failed == 0)
+                                if (failed == 0)
                                     0x66FF66
                                 else
                                     0xFF6666
@@ -469,7 +478,11 @@ class WorkHandler {
 
                     val notification = notificationBuilder.build()
                     Timber.d("%%%%%%%%%%%%%%%%%%%%> $batchName ${batch.notificationId} '$shortText' $notification")
-                    OABX.work.notificationManager.notify(batch.notificationId, notification)  //TODO hg42 setForeground(ForegroundInfo(batch.notificationId, notification))
+                    OABX.work.notificationManager.notify(
+                        batch.notificationId,
+                        notification
+                    )
+                    //TODO hg42 ??? setForeground(ForegroundInfo(batch.notificationId, notification))
 
                     if (remaining <= 0 && OABX.work.justFinished(batch)) {
                         OABX.work.endBatch(batchName)
@@ -479,9 +492,14 @@ class WorkHandler {
 
             if (allRemaining > 0) {
                 Timber.d("%%%%% ALL finished=$allProcessed <-- remain=$allRemaining <-- total=$allCount")
-                MainActivityX.activity?.runOnUiThread { MainActivityX.activity?.updateProgress(allProcessed, allCount) }
+                MainActivityX.activity?.runOnUiThread {
+                    MainActivityX.activity?.updateProgress(
+                        allProcessed,
+                        allCount
+                    )
+                }
             } else {
-                if(OABX.work.justFinishedAll()) {
+                if (OABX.work.justFinishedAll()) {
 
                     Timber.d("%%%%% ALL HIDE PROGRESS, $batchesStarted batches, thread ${Thread.currentThread().id}")
                     MainActivityX.activity?.runOnUiThread { MainActivityX.activity?.hideProgress() }

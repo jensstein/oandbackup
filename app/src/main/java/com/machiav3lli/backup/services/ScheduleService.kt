@@ -17,7 +17,11 @@
  */
 package com.machiav3lli.backup.services
 
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
@@ -56,7 +60,7 @@ open class ScheduleService : Service() {
         OABX.service = this
         this.notificationId = System.currentTimeMillis().toInt()
 
-        if(OABX.prefFlag("useForeground", false)) {
+        if (OABX.prefFlag("useForeground", false)) {
             createNotificationChannel()
             createForegroundInfo()
             startForeground(notification.hashCode(), this.notification)
@@ -76,22 +80,22 @@ open class ScheduleService : Service() {
     }
 
     override fun onDestroy() {
-        Timber.i("%%%%% ############################################################ ScheduleService destroy")
+        Timber.i(
+            "%%%%% ############################################################ ScheduleService destroy"
+        )
         OABX.service = null
-        //stopForeground(true)
         OABX.wakelock(false)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val now = System.currentTimeMillis()
         val scheduleId = intent?.getLongExtra("scheduleId", -1L) ?: -1L
-        val name  = intent?.getStringExtra("name") ?: "NoName@Service"
+        val name = intent?.getStringExtra("name") ?: "NoName@Service"
 
-        //createForegroundInfo()
-        //startForeground(notification.hashCode(), this.notification)
         OABX.wakelock(true)
 
-        var message = "%%%%% ############################################################ ScheduleService starting for scheduleId=$scheduleId name=$name"
+        var message =
+            "%%%%% ############################################################ ScheduleService starting for scheduleId=$scheduleId name=$name"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             message += " ui=$isUiContext"
         }
@@ -103,7 +107,7 @@ open class ScheduleService : Service() {
         if (intent != null) {
             val action = intent.action
             when (action) {
-                "cancel" -> {
+                "cancel"   -> {
                     Timber.i("action $action")
                     OABX.work.cancel(name)
                     OABX.wakelock(false)
@@ -114,10 +118,10 @@ open class ScheduleService : Service() {
                     // scheduleId already read from extras
                     Timber.i("action $action")
                 }
-                null -> {
+                null       -> {
                     // no action = standard action, simply continue with extra data
                 }
-                else -> {
+                else       -> {
                     Timber.d("action $action unknown, ignored")
                     //OABX.wakelock(false)
                     //return START_NOT_STICKY
@@ -127,7 +131,7 @@ open class ScheduleService : Service() {
             }
         }
 
-        if(scheduleId >= 0) {
+        if (scheduleId >= 0) {
             scheduledActionTask = object : ScheduledActionTask(baseContext, scheduleId) {
                 override fun onPostExecute(result: Triple<String, List<String>, Int>?) {
                     val name = result?.first ?: "NoName@Task"
@@ -208,22 +212,6 @@ open class ScheduleService : Service() {
                                     t?.state == WorkInfo.State.FAILED ||
                                     t?.state == WorkInfo.State.CANCELLED
                                 ) {
-                                    /*
-                                    val message = t.outputData.getString("notificationMessage")
-                                        ?: ""
-                                    val title = t.outputData.getString("notificationTitle")
-                                        ?: ""
-                                    val overAllResult =
-                                        ActionResult(null, null, errors, resultsSuccess)
-                                    if (!overAllResult.succeeded) LogsHandler.logErrors(
-                                        context,
-                                        errors
-                                    )
-                                    showNotification(
-                                        this@ScheduleService, MainActivityX::class.java,
-                                        notificationId, title, message, true
-                                    )
-                                    */
                                     scheduleAlarm(context, scheduleId, true)
                                     isNeedRefresh = true
                                     finishWorkLiveData.removeObserver(this)
@@ -241,7 +229,6 @@ open class ScheduleService : Service() {
 
                             startedSchedule()
                         } else {
-                            //stopSelf()
                             stoppedSchedule(intent)
                         }
                     }
@@ -261,6 +248,7 @@ open class ScheduleService : Service() {
 
     fun stoppedSchedule(intent: Intent?) {
         runningSchedules--
+        // do this globally
         //if (runningSchedules <= 0)
         //    stopService(intent)
         //    stopSelf()

@@ -11,7 +11,7 @@ import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CommandReceiver : BroadcastReceiver() {
+class CommandReceiver : BroadcastReceiver() {        //TODO hg42 how to maintain security?
     override fun onReceive(context: Context, intent: Intent?) {
         if(intent == null) return
         val command = intent.action
@@ -61,7 +61,7 @@ class CommandReceiver : BroadcastReceiver() {
                 }
             }
             "crash" -> {
-                throw Exception("this is an unknown exception sent from command intent") //TODO hg42 security?
+                throw Exception("this is an unknown exception sent from command intent")
             }
             null -> {
                 // ignore?

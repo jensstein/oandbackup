@@ -26,13 +26,24 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import androidx.work.*
+import androidx.work.CoroutineWorker
+import androidx.work.Data
+import androidx.work.ForegroundInfo
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_MAXRETRIES
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
-import com.machiav3lli.backup.handler.*
+import com.machiav3lli.backup.handler.BackupRestoreHelper
+import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.handler.getDirectoriesInBackupRoot
+import com.machiav3lli.backup.handler.getSpecial
+import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.AppInfo
 import timber.log.Timber
@@ -58,13 +69,14 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
 
         val selectedMode = inputData.getInt("selectedMode", MODE_UNSET)
 
-        var message = "------------------------------------------------------------ Work: $batchName $packageName"
+        var message =
+            "------------------------------------------------------------ Work: $batchName $packageName"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             message += " ui=${context.isUiContext}"
         }
         Timber.i(message)
 
-        if(OABX.prefFlag("useForeground", false))
+        if (OABX.prefFlag("useForeground", false))
             setForeground(createForegroundInfo())
 
         var result: ActionResult? = null
@@ -111,7 +123,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                                         context, this, shellHandler, ai, selectedMode
                                     )
                                 }
-                                else -> {
+                                else          -> {
                                     // Latest backup for now
                                     ai.latestBackup?.let {
                                         BackupRestoreHelper.restore(
@@ -203,7 +215,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             .setContentTitle(
                 when {
                     backupBoolean -> context.getString(com.machiav3lli.backup.R.string.batchbackup)
-                    else -> context.getString(com.machiav3lli.backup.R.string.batchrestore)
+                    else          -> context.getString(com.machiav3lli.backup.R.string.batchrestore)
                 }
             )
             .setSmallIcon(com.machiav3lli.backup.R.drawable.ic_app)

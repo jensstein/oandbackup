@@ -90,10 +90,9 @@ class OABX : Application() {
         private var wakeLockNested: Int = 0
         private const val wakeLockTag = "OABX:Application"
         // count the nesting levels
-        // might be difficult seom times, because
-        // the lock must be transfered from one object/function to another
+        // might be difficult sometimes, because
+        // the lock must be transferred from one object/function to another
         // e.g. from the receiver to the service
-        // TODO hg42 may be we should also use a reference counted lock token object that we can copy around, can be combined
         fun wakelock(aquire: Boolean) {
             if (aquire) {
                 Timber.d("%%%%% $wakeLockTag wakelock aquire (before: $wakeLockNested)")
