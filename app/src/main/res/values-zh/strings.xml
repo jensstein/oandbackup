@@ -309,4 +309,18 @@
     <string name="prefs_compression_level">压缩级别</string>
     <string name="prefs_compression_level_summary">值越低，压缩速度越快，但文件越大。值越高，压缩效果越好，但是会花费更多的时间。</string>
     <string name="error_pmDataIncompleteException_dataRestoreFailed">尚未恢复应用数据。</string>
+    <string name="spec_calllogsjson">呼叫日志 JSON</string>
+    <string name="calllogs_permission_title">呼叫日志权限</string>
+    <string name="grant_calllogs_message">要能备份/还原你的呼叫日志，这是必需的。</string>
+    <string name="contacts_permission_title">联系人权限</string>
+    <string name="intro_permission_contacts">本应用需要这个权限才能将联系人匹配到短信/彩信。</string>
+    <string name="schedule">计划</string>
+    <string name="finished">已完成</string>
+    <string name="batch">批量</string>
+    <string name="smsmms_permission_title">短信/彩信权限</string>
+    <string name="grant_smsmms_message">要备份/还原你的短信/彩信，这是必需的。</string>
+    <string name="spec_smsmmsjson">短信/彩信 JSON</string>
+    <string name="grant_contacts_message">要能将联系人匹配到短信/彩信，这是必需的。</string>
+    <string name="intro_permission_smsmms">本应用需要这个权限才能备份/恢复你的短信/彩信。</string>
+    <string name="intro_permission_calllogs">本应用需要此权限才能备份/还原你的呼叫日志。</string>
 </resources>
