@@ -23,7 +23,11 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
-import com.machiav3lli.backup.items.*
+import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.items.BackupProperties
+import com.machiav3lli.backup.items.RootFile
+import com.machiav3lli.backup.items.SpecialAppMetaInfo
+import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.CryptoSetupException
 import com.machiav3lli.backup.utils.suUnpackTo
@@ -85,7 +89,7 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
                         )
                 ) {
                     val errorMessage =
-                        "$app: Backup is missing files. Found $filesInBackup; needed: $expectedFiles"
+                        "$app: Backup is missing files. Found ${filesInBackup.map { it.absolutePath }}; needed: ${expectedFiles.map { it.absolutePath }}"
                     Timber.e(errorMessage)
                     throw RestoreFailedException(errorMessage, null)
                 }
