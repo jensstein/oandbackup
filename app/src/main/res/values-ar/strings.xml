@@ -319,4 +319,18 @@
     <string name="error_pmDataIncompleteException_dataRestoreFailed">لم تتم استعادة بيانات التطبيق.</string>
     <string name="prefs_compression_level_summary">يتم ضغط القيمة الأقل بشكل أسرع ولكن ينتج عنها ملفات أكبر. تضغط القيمة الأعلى بشكل أفضل ولكنها تستغرق وقتًا أطول.</string>
     <string name="showDisabled">التطبيقات المعطلة</string>
+    <string name="grant_smsmms_message">هذا ضروري لتكون قادرًا على عمل نسخة احتياطية / استعادة رسائل SMS / MMS الخاصة بك.</string>
+    <string name="grant_calllogs_message">هذا ضروري لتكون قادرًا على الاحتفاظ بنسخة احتياطية / استعادة سجلات المكالمات الخاصة بك.</string>
+    <string name="grant_contacts_message">هذا ضروري لتكون قادرًا على مطابقة جهة اتصال برسالة SMS / MMS.</string>
+    <string name="intro_permission_calllogs">يحتاج التطبيق إلى هذا الإذن ليتمكن من إجراء نسخ احتياطي / استعادة سجلات المكالمات الخاصة بك.</string>
+    <string name="finished">منتهي</string>
+    <string name="contacts_permission_title">أذونات جهات الاتصال</string>
+    <string name="batch">حزمة</string>
+    <string name="smsmms_permission_title">أذونات SMS/MMS</string>
+    <string name="schedule">جدولة</string>
+    <string name="spec_smsmmsjson">SMS/ MMS JSON</string>
+    <string name="spec_calllogsjson">سجلات المكالمات JSON</string>
+    <string name="calllogs_permission_title">أذونات سجلات المكالمات</string>
+    <string name="intro_permission_smsmms">يحتاج التطبيق إلى هذا الإذن ليتمكن من نسخ / استعادة رسائل SMS / MMS الخاصة بك.</string>
+    <string name="intro_permission_contacts">يحتاج التطبيق إلى هذا الإذن ليتمكن من مطابقة جهة اتصال مع رسالة SMS/MMS.</string>
 </resources>
