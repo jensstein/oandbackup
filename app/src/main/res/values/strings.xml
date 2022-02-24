@@ -163,6 +163,7 @@
     <string name="spec_bluetooth">Bluetooth</string>
     <string name="spec_data">Data Usage and Policy</string>
     <string name="spec_wallpaper">Wallpaper</string>
+    <string name="spec_fingerprint">Fingerprints</string>
     <string name="spec_wifiAccessPoints">Wireless access points</string>
     <string name="error_creating_notification_channel">Unable to create notification channel</string>
     <string name="error_updating_schedule_mode">Error updating %1$s of schedule %2$d</string>

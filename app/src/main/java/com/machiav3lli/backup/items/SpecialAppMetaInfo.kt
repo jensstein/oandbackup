@@ -190,8 +190,22 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
                                     specPrefix + context.getString(R.string.spec_wallpaper),
                                     Build.VERSION.RELEASE,
                                     Build.VERSION.SDK_INT, arrayOf(
-                                        //"$userDir/wallpaper",         // files are checked, non existent lead to errors
+                                        "$userDir/wallpaper",
                                         "$userDir/wallpaper_info.xml"
+                                    )
+                                )
+                            )
+                        )
+                    specialPackages
+                        .add(
+                            AppInfo(
+                                context, SpecialAppMetaInfo(
+                                    "special.fingerprint",
+                                    specPrefix + context.getString(R.string.spec_fingerprint),
+                                    Build.VERSION.RELEASE,
+                                    Build.VERSION.SDK_INT, arrayOf(
+                                        "$userId/fpdata",
+                                        "$userDir/settings_fingerprint.xml"
                                     )
                                 )
                             )
