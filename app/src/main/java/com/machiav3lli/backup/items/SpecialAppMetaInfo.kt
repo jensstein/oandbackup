@@ -98,7 +98,11 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
                 if (specialPackages.size == 0) {
                     // caching this prevents recreating AppInfo-objects all the time and at wrong times
                     val userId = ShellCommands.currentUser
-                    val userDir = "/data/system/users/$userId"
+                    val miscDir = "/data/misc"
+                    val systemDir = "/data/system"
+                    val userDir = "$systemDir/users/$userId"
+                    val systemCeDir = "/data/system_ce/$userId"
+                    val vendorDeDir = "/data/vendor_de/$userId"
                     val specPrefix = "$ "
 
                     if (context.packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
@@ -137,7 +141,7 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
                                     specPrefix + context.getString(R.string.spec_accounts),
                                     Build.VERSION.RELEASE,
                                     Build.VERSION.SDK_INT, arrayOf(
-                                        "/data/system_ce/$userId/accounts_ce.db"
+                                        "$systemCeDir/accounts_ce.db"
                                     )
                                 )
                             )
@@ -163,7 +167,7 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
                                     specPrefix + context.getString(R.string.spec_bluetooth),
                                     Build.VERSION.RELEASE,
                                     Build.VERSION.SDK_INT, arrayOf(
-                                        "/data/misc/bluedroid/bt_config.conf"
+                                        "$miscDir/bluedroid/bt_config.conf"
                                     )
                                 )
                             )
@@ -176,8 +180,22 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
                                     specPrefix + context.getString(R.string.spec_data),
                                     Build.VERSION.RELEASE,
                                     Build.VERSION.SDK_INT, arrayOf(
-                                        "/data/system/netpolicy.xml",
-                                        "/data/system/netstats/"
+                                        "$systemDir/netpolicy.xml",
+                                        "$systemDir/netstats/"
+                                    )
+                                )
+                            )
+                        )
+                    specialPackages
+                        .add(
+                            AppInfo(
+                                context, SpecialAppMetaInfo(
+                                    "special.fingerprint",
+                                    specPrefix + context.getString(R.string.spec_fingerprint),
+                                    Build.VERSION.RELEASE,
+                                    Build.VERSION.SDK_INT, arrayOf(
+                                        "$userDir/settings_fingerprint.xml",
+                                        "$vendorDeDir/fpdata/"
                                     )
                                 )
                             )
@@ -196,25 +214,11 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
                                 )
                             )
                         )
-                    specialPackages
-                        .add(
-                            AppInfo(
-                                context, SpecialAppMetaInfo(
-                                    "special.fingerprint",
-                                    specPrefix + context.getString(R.string.spec_fingerprint),
-                                    Build.VERSION.RELEASE,
-                                    Build.VERSION.SDK_INT, arrayOf(
-                                        "$userId/fpdata",
-                                        "$userDir/settings_fingerprint.xml"
-                                    )
-                                )
-                            )
-                        )
                     // Location of the WifiConfigStore had been moved with Android R
                     val wifiConfigLocation = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-                        "/data/misc/wifi/WifiConfigStore.xml"
+                        "$miscDir/wifi/WifiConfigStore.xml"
                     } else {
-                        "/data/misc/apexdata/com.android.wifi/WifiConfigStore.xml"
+                        "$miscDir/apexdata/com.android.wifi/WifiConfigStore.xml"
                     }
                     specialPackages
                         .add(
