@@ -319,4 +319,18 @@
     <string name="prefs_compression_level">Степень сжатия</string>
     <string name="prefs_compression_level_summary">При меньших значениях — сжатие быстрее, но файлы весят больше. При больших значениях — сжатие лучше, но оно занимает больше времени.</string>
     <string name="showDisabled">Отключённые приложения</string>
+    <string name="contacts_permission_title">Разрешения контактов</string>
+    <string name="grant_calllogs_message">Это необходимо, чтобы создавать/восстанавливать резервные копии вашей истории звонков.</string>
+    <string name="intro_permission_smsmms">Приложению необходимо это разрешение, чтобы создавать/восстанавливать ваши SMS/MMS.</string>
+    <string name="intro_permission_calllogs">Приложению необходимо это разрешение, чтобы создавать/восстанавливать вашу историю звонков.</string>
+    <string name="batch">Массовый</string>
+    <string name="grant_contacts_message">Это необходимо, чтобы сопоставлять контакты с SMS/MMS.</string>
+    <string name="spec_smsmmsjson">SMS/MMS JSON</string>
+    <string name="smsmms_permission_title">Разрешения SMS/MMS</string>
+    <string name="grant_smsmms_message">Это необходимо, чтобы создавать/восстанавливать резервные копии ваших SMS/MMS.</string>
+    <string name="intro_permission_contacts">Приложению необходимо это разрешение, чтобы сопоставлять контакты с SMS/MMS.</string>
+    <string name="finished">завершённые</string>
+    <string name="calllogs_permission_title">Разрешения истории звонков</string>
+    <string name="spec_calllogsjson">JSON истории звонков</string>
+    <string name="schedule">Расписание</string>
 </resources>
