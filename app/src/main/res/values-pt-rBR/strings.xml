@@ -174,7 +174,7 @@
     <string name="dialogYes">Sim</string>
     <string name="dialogCancel">Cancelar</string>
     <string name="dialogOK">OK</string>
-    <string name="error_updating_schedule_mode">Error ao atualizar %1$s do agendamento %2$d</string>
+    <string name="error_updating_schedule_mode">Erro ao atualizar %1$s do agendamento %2$d</string>
     <string name="spec_accounts">Contas</string>
     <string name="sched_timeLeft">Tempo restante:</string>
     <string name="sched_mode">Modo de backup:</string>
@@ -307,4 +307,15 @@
     <string name="prefs_compression_level">Nível de Compressão</string>
     <string name="prefs_compression_level_summary">Um valor baixo comprime mais rápido mas gera arquivos maiores. Um valor alto comprime melhor mas demora mais.</string>
     <string name="showDisabled">Apps desabilitados</string>
+    <string name="grant_calllogs_message">Isto é essencial para fazer o backup/restauração dos seus Registos de Chamadas.</string>
+    <string name="intro_permission_calllogs">O aplicativo precisa desta permissão para poder fazer o backup/restauração dos seus Registros de Chamadas.</string>
+    <string name="grant_smsmms_message">Isto é essencial para fazer backup/restauração dos seus SMS/MMS.</string>
+    <string name="calllogs_permission_title">Permissões de Registros de Chamadas</string>
+    <string name="smsmms_permission_title">Permissões de SMS/MMS</string>
+    <string name="contacts_permission_title">Permissões de Contatos</string>
+    <string name="grant_contacts_message">Isso é essencial para associar um contato a um SMS/MMS.</string>
+    <string name="intro_permission_smsmms">O aplicativo precisa desta permissão para poder fazer o backup/restauração do seu SMS/MMS.</string>
+    <string name="intro_permission_contacts">O aplicativo precisa desta permissão para associar um contato a um SMS/MMS.</string>
+    <string name="schedule">Agendar</string>
+    <string name="batch">Lote</string>
 </resources>
