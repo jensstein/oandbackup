@@ -128,6 +128,14 @@ dependencies {
     // UI
     implementation("androidx.appcompat:appcompat:1.4.1")
     implementation("androidx.fragment:fragment-ktx:1.4.1")
+    implementation("com.google.android.material:material:1.6.0-alpha02")
+    implementation("androidx.preference:preference-ktx:1.2.0")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.5.0-alpha02")
+    implementation("androidx.navigation:navigation-ui-ktx:2.5.0-alpha02")
+    val fastadapter = "5.6.0"
+    implementation("com.mikepenz:fastadapter:$fastadapter")
+    implementation("com.mikepenz:fastadapter-extensions-diff:$fastadapter")
     implementation("com.mikepenz:fastadapter-extensions-binding:$fastadapter")
     implementation("com.facebook.shimmer:shimmer:0.5.0")
 
