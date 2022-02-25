@@ -42,7 +42,7 @@ open class BackupProperties : AppMetaInfo, Parcelable {
     val hasExternalData: Boolean
     val hasObbData: Boolean
     val hasMediaData: Boolean
-    val cipherType: String?
+    var cipherType: String? = null
     val iv: ByteArray?
     val cpuArch: String?
 
@@ -163,7 +163,7 @@ open class BackupProperties : AppMetaInfo, Parcelable {
     }
 
     val isEncrypted: Boolean
-        get() = cipherType != null && cipherType.isNotEmpty()
+        get() = !cipherType.isNullOrEmpty()
 
     override fun hashCode(): Int {
         var hash = 7
