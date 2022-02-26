@@ -36,6 +36,45 @@ class OABX : Application() {
 
     var work: WorkHandler? = null
 
+    init {
+        Timber.plant(object : Timber.DebugTree() {
+
+            override fun log(
+                priority: Int, tag: String?, message: String, t: Throwable?
+            ) {
+                super.log(priority, "$tag", message, t)
+            }
+
+            override fun createStackElementTag(element: StackTraceElement): String {
+                return "${
+                    element.methodName
+                }@${
+                    element.lineNumber
+                }:${
+                    super.createStackElementTag(element)
+                }"
+            }
+        })
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        appRef = WeakReference(this)
+
+        initShellHandler()
+
+        work = WorkHandler(context)
+        if (prefFlag("cancelOnStart", false))
+            work?.cancel()
+        work?.prune()
+    }
+
+    override fun onTerminate() {
+        work = work?.release()
+        appRef = WeakReference(null)
+        super.onTerminate()
+    }
+
     companion object {
 
         // app should always be created
@@ -110,42 +149,5 @@ class OABX : Application() {
                 }
             }
         }
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-        appRef = WeakReference(this)
-
-        Timber.plant(object : Timber.DebugTree() {
-
-            override fun log(
-                priority: Int, tag: String?, message: String, t: Throwable?
-            ) {
-                super.log(priority, "$tag", message, t)
-            }
-
-            override fun createStackElementTag(element: StackTraceElement): String {
-                return "${
-                    element.methodName
-                }@${
-                    element.lineNumber
-                }:${
-                    super.createStackElementTag(element)
-                }"
-            }
-        })
-
-        initShellHandler()
-
-        work = WorkHandler(context)
-        if (prefFlag("cancelOnStart", false))
-            work?.cancel()
-        work?.prune()
-    }
-
-    override fun onTerminate() {
-        work = work?.release()
-        appRef = WeakReference(null)
-        super.onTerminate()
     }
 }
