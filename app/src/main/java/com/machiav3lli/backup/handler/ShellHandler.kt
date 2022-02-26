@@ -73,6 +73,27 @@ class ShellHandler {
         scriptUserDir?.mkdirs()
     }
 
+    @Throws(ShellCommandFailedException::class, UnexpectedCommandResult::class)
+    fun suGetFileInfo(path: String, parent: String? = null): FileInfo {
+        val shellResult = runAsRoot("$utilBoxQ ls -bdAll ${quote(path)}")
+        val relativeParent = parent ?: ""
+        val result = shellResult.out.asSequence()
+            .filter { it.isNotEmpty() }
+            .filter { ! it.startsWith("total") }
+            .mapNotNull { FileInfo.fromLsOutput(it, relativeParent, File(path).parent!!) }
+            .toMutableList()
+        if(result.size < 1)
+            throw UnexpectedCommandResult("cannot get file info for '$path'", shellResult)
+        if(result.size > 1)
+            Timber.w("more than one file found for '$path', taking the first", shellResult)
+        return result[0]
+    }
+
+    @Throws(ShellCommandFailedException::class, UnexpectedCommandResult::class)
+    fun suGetFileInfo(file: File): FileInfo {
+        return suGetFileInfo(file.absolutePath, file.parent)
+    }
+
     @Throws(ShellCommandFailedException::class)
     fun suGetDirectoryContents(path: File): Array<String> {
         val shellResult = runAsRoot("$utilBoxQ ls -bA1 ${quote(path)}")
@@ -337,7 +358,6 @@ class ShellHandler {
                 val mtime       = match.groupValues[8]
                 val mzone       = match.groupValues[11]
                 var name        = match.groupValues[12]
-                var filePath: String?
                 val fileModTime =
                         if(mzone.isEmpty())
                             // 2020-11-26 04:35
@@ -355,8 +375,8 @@ class ShellHandler {
                     name = name.substring(parent.length + 1)
                 }
                 val fileName = unescapeLsOutput(name)
-                filePath =
-                    if (parentPath == null || parentPath.isEmpty()) {
+                var filePath =
+                    if (parentPath.isNullOrEmpty()) {
                         fileName
                     } else {
                         "${parentPath}/${fileName}"
@@ -413,7 +433,7 @@ class ShellHandler {
                     }
                 }
                 val result = FileInfo(
-                    filePath!!,
+                    filePath,
                     type,
                     parent,
                     owner,

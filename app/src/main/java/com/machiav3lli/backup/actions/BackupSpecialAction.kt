@@ -31,9 +31,6 @@ import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.CryptoSetupException
 import timber.log.Timber
 import java.io.File
-import java.nio.file.Files
-import java.nio.file.LinkOption
-import java.util.*
 
 class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHandler)
     : BackupAppAction(context, work, shell)
@@ -75,46 +72,34 @@ class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHa
                 }
                 val file = File(filePath)
                 val isDirSource = filePath.endsWith("/")
-                val parent = if (isDirSource) file.name else null
-                var fileInfos = mutableListOf<ShellHandler.FileInfo>()
-                try {
-                    fileInfos.addAll(
-                        shell.suGetDetailedDirectoryContents(
-                            filePath.removeSuffix("/"),
-                            isDirSource,
-                            parent
-                        )
-                    )
-                } catch (e: ShellCommandFailedException) {
-                    continue  //TODO hg42: avoid checking the error message text for now
-                    //TODO hg42: alternative implementation, better replaced this by API, when root permissions available, e.g. via Shizuku
-                    //    if(e.shellResult.err.toString().contains("No such file or directory", ignoreCase = true))
-                    //        continue
-                    //    throw(e)
-                }
+                val fileInfos = mutableListOf<ShellHandler.FileInfo>()
                 if (isDirSource) {
-                    // also add directory
-                    filesToBackup.add(
-                        ShellHandler.FileInfo(
-                            parent!!, ShellHandler.FileInfo.FileType.DIRECTORY,
-                            file.parent!!,
-                            Files.getAttribute(
-                                file.toPath(),
-                                "unix:owner",
-                                LinkOption.NOFOLLOW_LINKS
-                            ).toString(),
-                            Files.getAttribute(
-                                file.toPath(),
-                                "unix:group",
-                                LinkOption.NOFOLLOW_LINKS
-                            ).toString(),
-                            Files.getAttribute(
-                                file.toPath(),
-                                "unix:mode",
-                                LinkOption.NOFOLLOW_LINKS
-                            ) as Int,
-                            0, Date(file.lastModified())
+                    // directory
+                    try {
+                        // add contents
+                        fileInfos.addAll(
+                            shell.suGetDetailedDirectoryContents(
+                                filePath.removeSuffix("/"),
+                                isDirSource,
+                                file.name
+                            )
                         )
+                    } catch (e: ShellCommandFailedException) {
+                        LogsHandler.unhandledException(e)
+                        continue  //TODO hg42: avoid checking the error message text for now
+                        //TODO hg42: alternative implementation, better replaced this by API, when root permissions available, e.g. via Shizuku
+                        //    if(e.shellResult.err.toString().contains("No such file or directory", ignoreCase = true))
+                        //        continue
+                        //    throw(e)
+                    }
+                    // add directory itself
+                    filesToBackup.add(
+                        shell.suGetFileInfo(file.absolutePath)
+                    )
+                } else {
+                    // regular file
+                    filesToBackup.add(
+                        shell.suGetFileInfo(file.absolutePath)
                     )
                 }
                 filesToBackup.addAll(fileInfos)
