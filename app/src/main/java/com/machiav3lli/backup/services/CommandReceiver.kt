@@ -18,11 +18,10 @@ class CommandReceiver : BroadcastReceiver() {        //TODO hg42 how to maintain
         Timber.i("Command: command $command")
         when (command) {
             "cancel" -> {
-                intent.getStringExtra("name")?.let { batchName ->
-                    Timber.d("################################################### command intent cancel -------------> name=$batchName")
-                    OABX.activity?.showToast("$command ${batchName}")
-                    OABX.work.cancel(batchName)
-                }
+                val batchName = intent.getStringExtra("name")
+                Timber.d("################################################### command intent cancel -------------> name=$batchName")
+                OABX.activity?.showToast("$command ${batchName}")
+                OABX.work.cancel(batchName)
             }
             "schedule" -> {
                 intent.getStringExtra("name")?.let { name ->

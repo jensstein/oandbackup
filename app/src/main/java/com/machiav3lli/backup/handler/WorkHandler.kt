@@ -150,22 +150,19 @@ class WorkHandler {
     }
 
     fun justFinishedAll(): Boolean {
-        if (batchesStarted == 0) {     // exactly once
-            batchesStarted--        // now lock this (reference counter < 0)
+        if (batchesStarted == 0) {  // do this exactly once
+            batchesStarted--        // now lock this (counter < 0)
+            // here we could do something :-)
             return true
         }
         return false
     }
 
-    fun cancel(tag: String? = null) {  //TODO hg42 doesn't work for cancel all?
+    fun cancel(tag: String? = null) {
         // only cancel ActionWork, so that corresponding FinishWork will still be executed
         if (tag.isNullOrEmpty()) {
-            // does not work, why?
-            //AppActionWork::class.qualifiedName?.let {
-            //    manager.cancelAllWorkByTag(it)
-            //}
-            batchesKnown.keys.forEach { name ->
-                manager.cancelAllWorkByTag("name:$name")
+            AppActionWork::class.qualifiedName?.let {
+                manager.cancelAllWorkByTag(it)
             }
         } else {
             manager.cancelAllWorkByTag("name:$tag")
@@ -413,7 +410,6 @@ class WorkHandler {
                         )
                             .setGroup(BuildConfig.APPLICATION_ID)
                             .setSortKey("1-$batchName")
-                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                             .setSmallIcon(R.drawable.ic_app)
                             .setContentTitle(title)
                             .setContentText(Html.fromHtml(shortText, htmlFlags))
@@ -425,7 +421,8 @@ class WorkHandler {
                             .setContentIntent(resultPendingIntent)
                             .setAutoCancel(true)
                             .setPriority(NotificationCompat.PRIORITY_MAX)
-                            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                            .setCategory(NotificationCompat.CATEGORY_PROGRESS)
 
                     if (remaining > 0) {
 
@@ -478,10 +475,12 @@ class WorkHandler {
 
                     val notification = notificationBuilder.build()
                     Timber.d("%%%%%%%%%%%%%%%%%%%%> $batchName ${batch.notificationId} '$shortText' $notification")
-                    OABX.work.notificationManager.notify(
-                        batch.notificationId,
-                        notification
-                    )
+                    OABX.activity?.runOnUiThread {
+                        OABX.work.notificationManager.notify(
+                            batch.notificationId,
+                            notification
+                        )
+                    }
                     //TODO hg42 ??? setForeground(ForegroundInfo(batch.notificationId, notification))
 
                     if (remaining <= 0 && OABX.work.justFinished(batch)) {
