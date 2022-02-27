@@ -36,15 +36,15 @@ open class BackupProperties : AppMetaInfo, Parcelable {
     @Serializable(with = LocalDateTimeSerializer::class)
     var backupDate: LocalDateTime? = null
         private set
-    val hasApk: Boolean
-    val hasAppData: Boolean
-    val hasDevicesProtectedData: Boolean
-    val hasExternalData: Boolean
-    val hasObbData: Boolean
-    val hasMediaData: Boolean
+    var hasApk: Boolean = false
+    var hasAppData: Boolean = false
+    var hasDevicesProtectedData: Boolean = false
+    var hasExternalData: Boolean = false
+    var hasObbData: Boolean = false
+    var hasMediaData: Boolean = false
     var cipherType: String? = null
-    val iv: ByteArray?
-    val cpuArch: String?
+    var iv: ByteArray? = null
+    var cpuArch: String? = null
 
     fun getBackupDir(appBackupDir: StorageFile?): StorageFile? =
         appBackupDir?.findFile(backupFolderName)
@@ -141,8 +141,9 @@ open class BackupProperties : AppMetaInfo, Parcelable {
         hasObbData = source.readByte().toInt() != 0
         hasMediaData = source.readByte().toInt() != 0
         cipherType = source.readString()
-        iv = ByteArray(Cipher.getInstance(cipherType).blockSize)
-        source.readByteArray(iv)
+        iv = ByteArray(Cipher.getInstance(cipherType).blockSize).also {
+            source.readByteArray(it)
+        }
         cpuArch = source.readString()
     }
 
