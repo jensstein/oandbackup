@@ -369,9 +369,12 @@ class ShellHandler {
                                 .parse("$mdate $mtime $mzone")
                 // If ls was executed with a file as parameter, the full path is echoed. This is not
                 // good for processing. Removing the absolute parent and setting the parent to be the parent
-                // and not the file itself
+                // and not the file itself (hg42: huh? a parent should be a parent and never the file itself)
                 if (name.startsWith(parent)) {
-                    parent = File(parent).parent!!
+                    if (name == parent) {    // don't break the case the file is it own parent :-( in case it is used
+                        Timber.e("the file '$name' is it's own parent, but should not")
+                        parent = File(parent).parent!!
+                    }
                     name = name.substring(parent.length + 1)
                 }
                 val fileName = unescapeLsOutput(name)
