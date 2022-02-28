@@ -41,6 +41,8 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.handler.WorkHandler.Companion.getVar
+import com.machiav3lli.backup.handler.WorkHandler.Companion.setVar
 import com.machiav3lli.backup.handler.getDirectoriesInBackupRoot
 import com.machiav3lli.backup.handler.getSpecial
 import com.machiav3lli.backup.handler.showNotification
@@ -53,11 +55,10 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
 
     private var packageName = inputData.getString("packageName")!!
     private var packageLabel = ""
-    private var operation = ""
     private var backupBoolean = inputData.getBoolean("backupBoolean", true)
     private var batchName = inputData.getString("batchName") ?: ""
     private var notificationId: Int = inputData.getInt("notificationId", 123454321)
-    private var failures = 0
+    private var failures = getVar(batchName, packageName, "failures")?.toInt() ?: 0
 
     init {
         setOperation("...")
@@ -140,16 +141,6 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                             "not processed: $packageLabel: $e\n${e.stackTrace}", false
                         )
                         Timber.w("package: ${ai.packageLabel} result: $e")
-                    } finally {
-                        result?.let {
-                            if (!it.succeeded && (failures < OABX.prefInt(PREFS_MAXRETRIES, 1))) {
-                                val message = "${ai.packageName}\n${it.message}"
-                                showNotification(
-                                    context, MainActivityX::class.java,
-                                    result.hashCode(), ai.packageLabel, it.message, message, false
-                                )
-                            }
-                        }
                     }
                 }
             }
@@ -158,19 +149,30 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         }
         val succeeded = result?.succeeded ?: false
         return if (succeeded) {
+            setOperation("OK.")
+            Timber.w("package: $packageName OK")
             Result.success(getWorkData("OK", result))
         } else {
             failures++
-            if (failures <= OABX.prefInt(PREFS_MAXRETRIES, 1))
+            setVar(batchName, packageName, "failures", failures.toString())
+            if (failures <= OABX.prefInt(PREFS_MAXRETRIES, 1)) {
+                setOperation("err")
+                Timber.w("package: $packageName failures: $failures -> retry")
                 Result.retry()
-            else {
+            } else {
+                val message = "$packageName\n${result?.message}"
+                showNotification(
+                    context, MainActivityX::class.java,
+                    result.hashCode(), packageLabel, result?.message, message, false
+                )
+                setOperation("ERR")
+                Timber.w("package: $packageName FAILED")
                 Result.failure(getWorkData("ERR", result))
             }
         }
     }
 
     fun setOperation(operation: String = "") {
-        this.operation = operation
         setProgressAsync(getWorkData(operation))
     }
 

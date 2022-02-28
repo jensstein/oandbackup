@@ -84,14 +84,8 @@ class WorkHandler {
         val delay = 3000L
         Thread {
             Timber.d("%%%%% ALL thread start")
-            Thread.sleep(delay)
-            Timber.d("%%%%% ALL delayed $delay onProgress")
-            onProgress(
-                OABX.work,
-                null
-            )     // a final update of notifcations etc. just in case (note recursive call, must be locked in endBatch)
 
-            MainActivityX.activity?.runOnUiThread { MainActivityX.activity?.hideProgress() }
+            Thread.sleep(delay)
 
             Timber.d("%%%%% ALL PRUNE")
             OABX.work.prune()
@@ -110,16 +104,22 @@ class WorkHandler {
                     }
                 }
             }
+            batchPackageVars = mutableMapOf()
 
             Thread.sleep(delay)
+
+            OABX.activity?.runOnUiThread {
+                OABX.activity?.hideProgress()
+            }
+
+            Timber.d("%%%%% ALL DONE")
+            OABX.wakelock(false) // now everything is done
+
             OABX.service?.let {
                 Timber.w("%%%%% ------------------------------------------ service stopping...\\")
                 it.stopSelf()
                 Timber.w("%%%%% ------------------------------------------ service stopped.../")
             }
-
-            Timber.d("%%%%% ALL DONE")
-            OABX.wakelock(false) // now everything is done
         }.start()
     }
 
@@ -178,6 +178,58 @@ class WorkHandler {
                 "$name ${
                     SimpleDateFormat("EEE HH:mm:ss", Locale.getDefault()).format(startTime)
                 }"
+        }
+
+        fun getTagVars(tags: MutableSet<String>): MutableMap<String, String> {
+            val vars = mutableMapOf<String, String>()
+            tags.forEach { tag ->
+                val parts = tag.toString().split(':', limit = 2)
+                if (parts.size > 1) {
+                    val (key, value) = parts
+                    vars[key] = value
+                }
+            }
+            return vars
+        }
+
+        fun getTagVar(tags: MutableSet<String>, name: String): String? {
+            tags.forEach { tag ->
+                val parts = tag.toString().split(':', limit = 2)
+                if (parts.size > 1) {
+                    val (key, value) = parts
+                    if (key == name)
+                        return value
+                }
+            }
+            return null
+        }
+
+        fun setTagVar(tags: MutableSet<String>, name: String, value: String) {
+            run tags@{
+                tags.forEach { tag ->
+                    val parts = tag.toString().split(':', limit = 2)
+                    if (parts.size > 1) {
+                        val (key, oldValue) = parts
+                        if (key == name) {
+                            tags.remove(tag)
+                            return
+                        }
+                    }
+                }
+            }
+            tags.add("$name:$value")
+        }
+
+        var batchPackageVars: MutableMap<String, MutableMap<String, MutableMap<String, String>>> = mutableMapOf()
+
+        fun getVar(batchName: String, packageName: String, name: String): String? {
+            return batchPackageVars.get(batchName)?.get(packageName)?.get(name)
+        }
+
+        fun setVar(batchName: String, packageName: String, name: String, value: String) {
+            batchPackageVars.getOrPut(batchName)   { mutableMapOf() }
+                .getOrPut(packageName) { mutableMapOf() }
+                .put(name, value)
         }
 
         class WorkState(
@@ -244,20 +296,7 @@ class WorkHandler {
                 //Timber.d("%%%%% $batchName $packageName $operation $backupBoolean ${info.state} fail=$failures max=$maxRetries")
 
                 if (batchName.isNullOrEmpty()) {
-                    info.tags.forEach tag@{ tag ->
-                        val parts = tag.toString().split(':', limit = 2)
-                        if (parts.size > 1) {
-                            val (key, value) = parts
-                            when (key) {
-                                "name" -> {
-                                    batchName = value
-                                    //Timber.d("%%%%% name from tag -> $batchName")
-                                    return@tag
-                                }
-                                else   -> {}
-                            }
-                        }
-                    }
+                    batchName = getTagVar(info.tags, "name")
                 }
                 if (batchName.isNullOrEmpty()) {
                     batchName = WorkHandler.getBatchName("NoName@Work", 0)
@@ -491,18 +530,18 @@ class WorkHandler {
 
             if (allRemaining > 0) {
                 Timber.d("%%%%% ALL finished=$allProcessed <-- remain=$allRemaining <-- total=$allCount")
-                MainActivityX.activity?.runOnUiThread {
-                    MainActivityX.activity?.updateProgress(
+                OABX.activity?.runOnUiThread {
+                    OABX.activity?.updateProgress(
                         allProcessed,
                         allCount
                     )
                 }
             } else {
+                OABX.activity?.runOnUiThread {
+                    OABX.activity?.hideProgress()
+                }
                 if (OABX.work.justFinishedAll()) {
-
-                    Timber.d("%%%%% ALL HIDE PROGRESS, $batchesStarted batches, thread ${Thread.currentThread().id}")
-                    MainActivityX.activity?.runOnUiThread { MainActivityX.activity?.hideProgress() }
-
+                    Timber.d("%%%%% ALL $batchesStarted batches, thread ${Thread.currentThread().id}")
                     OABX.work.endBatches()
                 }
             }
