@@ -502,6 +502,7 @@ class WorkHandler {
                             )
                     } else {
                         notificationBuilder
+                            .setOngoing(false)
                             .setSilent(false)
                             .setColor(
                                 if (failed == 0)
@@ -513,13 +514,10 @@ class WorkHandler {
 
                     val notification = notificationBuilder.build()
                     Timber.d("%%%%%%%%%%%%%%%%%%%%> $batchName ${batch.notificationId} '$shortText' $notification")
-                    OABX.activity?.runOnUiThread {
-                        OABX.work.notificationManager.notify(
-                            batch.notificationId,
-                            notification
-                        )
-                    }
-                    //TODO hg42 ??? setForeground(ForegroundInfo(batch.notificationId, notification))
+                    OABX.work.notificationManager.notify(
+                        batch.notificationId,
+                        notification
+                    )
 
                     if (remaining <= 0 && OABX.work.justFinished(batch)) {
                         OABX.work.endBatch(batchName)
