@@ -152,7 +152,6 @@ class WorkHandler {
     fun justFinishedAll(): Boolean {
         if (batchesStarted == 0) {  // do this exactly once
             batchesStarted--        // now lock this (counter < 0)
-            // here we could do something :-)
             return true
         }
         return false
@@ -305,10 +304,10 @@ class WorkHandler {
 
                 //Timber.d("===== $batchName $packageName $operation $backupBoolean ${info.state} fail=$failures max=$maxRetries")
 
-                batchesRunning.getOrPut(batchName!!) { WorkState() }.run batch@{
+                batchesRunning.getOrPut(batchName) { WorkState() }.run batch@{
 
                     //val batch: BatchState = batchesKnown[batchName!!]!!
-                    val batch: BatchState = batchesKnown.getOrPut(batchName!!) { BatchState() }
+                    val batch: BatchState = batchesKnown.getOrPut(batchName) { BatchState() }
 
                     if (batch.notificationId == 0)
                         batch.notificationId = batchName.hashCode()
@@ -549,7 +548,7 @@ class WorkHandler {
     }
 
     fun onFinish(handler: WorkHandler, work: MutableList<WorkInfo>? = null) {
-
-        onProgress(handler, null)   // may be the state changed in between
+        // may be the state changed in between
+        onProgress(handler, null) // don't forward "work", because it's FinishWork not AppActionWork!
     }
 }

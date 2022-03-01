@@ -117,6 +117,9 @@ abstract class BaseAppAction protected constructor(
         }
     }
 
+    class ScriptException(text: String) :
+        AppActionFailedException(text)
+
     companion object {
         const val BACKUP_DIR_DATA = "data"
         const val BACKUP_DIR_DEVICE_PROTECTED_FILES = "device_protected_files"

@@ -18,6 +18,7 @@
 package com.machiav3lli.backup.utils
 
 import android.net.Uri
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializer
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -28,6 +29,7 @@ import kotlinx.serialization.encoding.Encoder
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+@ExperimentalSerializationApi
 @Serializer(forClass = LocalDateTime::class)
 object LocalDateTimeSerializer : KSerializer<LocalDateTime> {
     override val descriptor: SerialDescriptor =
@@ -40,6 +42,7 @@ object LocalDateTimeSerializer : KSerializer<LocalDateTime> {
         LocalDateTime.parse(decoder.decodeString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME)
 }
 
+@ExperimentalSerializationApi
 @Serializer(forClass = Uri::class)
 object UriSerializer : KSerializer<Uri> {
     override val descriptor: SerialDescriptor =

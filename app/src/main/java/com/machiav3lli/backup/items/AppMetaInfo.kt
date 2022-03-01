@@ -26,6 +26,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import java.io.File
 
 @Serializable
