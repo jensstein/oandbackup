@@ -304,4 +304,18 @@
     <string name="showDisabled">Ứng dụng bị tắt</string>
     <string name="error_pmDataIncompleteException_dataRestoreFailed">Dữ liệu ứng dụng chưa được khôi phục.</string>
     <string name="prefs_compression_level_summary">Giá trị thấp sẽ nén nhanh hơn nhưng làm tăng kích thước tệp. Giá trị cao sẽ nén tốt hơn nhưng tốn nhiều thời gian hơn.</string>
+    <string name="grant_smsmms_message">Quyền này là cần thiết để có thể sao lưu/khôi phục SMS/MMS của bạn.</string>
+    <string name="smsmms_permission_title">Quyền SMS/MMS</string>
+    <string name="contacts_permission_title">Quyền danh bạ</string>
+    <string name="intro_permission_smsmms">Ứng dụng cần quyền này để có thể sao lưu/khôi phục SMS/MMS.</string>
+    <string name="intro_permission_contacts">Ứng dụng cần quyền này để có thể nối danh bạ với SMS/MMS.</string>
+    <string name="schedule">Lịch trình</string>
+    <string name="finished">hoàn tất</string>
+    <string name="spec_smsmmsjson">JSON SMS/MMS</string>
+    <string name="spec_calllogsjson">JSON Nhật ký cuộc gọi</string>
+    <string name="calllogs_permission_title">Quyền nhật ký cuộc gọi</string>
+    <string name="grant_calllogs_message">Quyền này là cần thiết để có thể sao lưu/khôi phục nhật ký cuộc gọi của bạn.</string>
+    <string name="grant_contacts_message">Quyền này là cần thiết để có thể nối danh bạ với SMS/MMS.</string>
+    <string name="intro_permission_calllogs">Ứng dụng cần quyền này để có thể sao lưu/khôi phục nhật ký cuộc gọi.</string>
+    <string name="batch">Nhóm</string>
 </resources>
