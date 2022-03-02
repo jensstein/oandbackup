@@ -31,7 +31,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.OABX.Companion.appsSuspendedChecked
 import com.machiav3lli.backup.PREFS_CATCHUNCAUGHT
 import com.machiav3lli.backup.PREFS_SKIPPEDENCRYPTION
 import com.machiav3lli.backup.R
@@ -58,23 +57,10 @@ import com.machiav3lli.backup.utils.sortOrder
 import com.machiav3lli.backup.viewmodels.MainViewModel
 import com.topjohnwu.superuser.Shell
 import timber.log.Timber
-import java.lang.ref.WeakReference
 import kotlin.system.exitProcess
 
 
 class MainActivityX : BaseActivity() {
-
-    companion object {
-
-        var activityRef: WeakReference<MainActivityX> = WeakReference(null)
-        var activity: MainActivityX?
-            get() {
-                return activityRef.get()
-            }
-            set(activity) {
-                activityRef = WeakReference(activity)
-            }
-    }
 
     private lateinit var prefs: SharedPreferences
     private lateinit var refreshViewController: RefreshViewController
@@ -86,13 +72,12 @@ class MainActivityX : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val context = this
-        activity = this
         OABX.activity = this
 
         setCustomTheme()
         super.onCreate(savedInstanceState)
 
-        appsSuspendedChecked = false
+        OABX.appsSuspendedChecked = false
 
         if (OABX.prefFlag(PREFS_CATCHUNCAUGHT, true)) {
             Thread.setDefaultUncaughtExceptionHandler { _, e ->
@@ -112,7 +97,7 @@ class MainActivityX : BaseActivity() {
                             Looper.prepare()
                             repeat(5) {
                                 Toast.makeText(
-                                    activity,
+                                    context,
                                     "Uncaught Exception\n${e.message}\nrestarting application...",
                                     Toast.LENGTH_LONG
                                 ).show()
@@ -164,6 +149,7 @@ class MainActivityX : BaseActivity() {
     }
 
     override fun onResume() {
+        OABX.activity = this    // just in case 'this' object is recreated
         super.onResume()
         if (isNeedRefresh) {
             viewModel.refreshList()
@@ -189,7 +175,7 @@ class MainActivityX : BaseActivity() {
                 // ignore?
             }
             else -> {
-                activity?.showToast("Main: unknown command '$command'")
+                showToast("Main: unknown command '$command'")
             }
         }
         return false
@@ -287,12 +273,12 @@ class MainActivityX : BaseActivity() {
     }
 
     fun whileShowingSnackBar(message: String, todo: () -> Unit) {
-        activity?.runOnUiThread {
-            activity?.showSnackBar(message)
+        runOnUiThread {
+            showSnackBar(message)
         }
         todo()
-        activity?.runOnUiThread {
-            activity?.dismissSnackBar()
+        runOnUiThread {
+            dismissSnackBar()
         }
     }
 

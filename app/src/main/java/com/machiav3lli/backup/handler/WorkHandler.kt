@@ -94,7 +94,7 @@ class WorkHandler {
             val longAgo = 24 * 60 * 60 * 1000
             batchesKnown.keys.toList().forEach { // copy the keys, because collection changes now
                 batchesKnown[it]?.let { batch ->
-                    if (batch.isFinished == true) {
+                    if (batch.isFinished) {
                         val now = System.currentTimeMillis()
                         if (now - batch.startTime > longAgo) {
                             Timber.d("%%%%% $it removing...\\")
@@ -263,11 +263,11 @@ class WorkHandler {
 
         fun onProgress(handler: WorkHandler, workInfos: MutableList<WorkInfo>? = null) {
             synchronized(batchesStarted) {
-                onProgress_(handler, workInfos)
+                onProgressNoSync(handler, workInfos)
             }
         }
 
-        fun onProgress_(handler: WorkHandler, workInfos: MutableList<WorkInfo>? = null) {
+        fun onProgressNoSync(handler: WorkHandler, workInfos: MutableList<WorkInfo>? = null) {
 
             val manager = handler.manager
             val work = workInfos
@@ -298,7 +298,7 @@ class WorkHandler {
                     batchName = getTagVar(info.tags, "name")
                 }
                 if (batchName.isNullOrEmpty()) {
-                    batchName = WorkHandler.getBatchName("NoName@Work", 0)
+                    batchName = getBatchName("NoName@Work", 0)
                     Timber.d("?????????????????????????? name not set, using $batchName")
                 }
 
