@@ -22,444 +22,456 @@
 
     </data>
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:paddingBottom="?actionBarSize"
-        android:scrollbars="none">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:orientation="vertical"
-            android:padding="@dimen/cards_spacing">
+            android:scrollbars="none">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/stats"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_card_ripple"
-                android:elevation="4dp"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toTopOf="@+id/sortByTitle"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:padding="@dimen/cards_spacing">
 
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/appsNumCard"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/stats"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/buttons_spacing"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/backupsNumCard"
+                    android:background="@drawable/bg_card_ripple"
+                    android:elevation="4dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toTopOf="@+id/sortByTitle"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/appsNum"
-                        android:layout_width="match_parent"
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/appsNumCard"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:textAppearance="@style/TextAppearance.Label"
-                        android:textStyle="bold" />
+                        android:layout_marginVertical="@dimen/buttons_spacing"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/backupsNumCard"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="match_parent"
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/appsNum"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:textAppearance="@style/TextAppearance.Label"
+                            android:textStyle="bold" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:text="@string/stats_apps"
+                            android:textAppearance="@style/TextAppearance.Lines"
+                            android:textStyle="bold" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/backupsNumCard"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:text="@string/stats_apps"
-                        android:textAppearance="@style/TextAppearance.Lines"
-                        android:textStyle="bold" />
-                </androidx.appcompat.widget.LinearLayoutCompat>
+                        android:layout_marginVertical="@dimen/buttons_spacing"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/updatedNumCard"
+                        app:layout_constraintStart_toEndOf="@id/appsNumCard"
+                        app:layout_constraintTop_toTopOf="parent">
 
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/backupsNumCard"
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/backupsNum"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:textAppearance="@style/TextAppearance.Label"
+                            android:textStyle="bold" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:text="@string/stats_backups"
+                            android:textAppearance="@style/TextAppearance.Lines"
+                            android:textStyle="bold" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/updatedNumCard"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/buttons_spacing"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/dismiss"
+                        app:layout_constraintStart_toEndOf="@id/backupsNumCard"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/updatedNum"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:textAppearance="@style/TextAppearance.Label"
+                            android:textStyle="bold" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:text="@string/stats_updated"
+                            android:textAppearance="@style/TextAppearance.Lines"
+                            android:textStyle="bold" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/dismiss"
+                        android:layout_width="@dimen/icon_large"
+                        android:layout_height="0dp"
+                        android:layout_gravity="end"
+                        android:layout_marginStart="@dimen/cards_spacing"
+                        android:background="@drawable/bg_ripple_click_negative"
+                        android:src="@drawable/ic_arrow_down"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/updatedNumCard"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/sortByTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/buttons_spacing"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/updatedNumCard"
-                    app:layout_constraintStart_toEndOf="@id/appsNumCard"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:layout_marginVertical="@dimen/cards_spacing"
+                    android:text="@string/sort_options"
+                    android:textAppearance="@style/TextAppearance.Title"
+                    app:layout_constraintBottom_toTopOf="@id/sortBy"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/stats" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/backupsNum"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:textAppearance="@style/TextAppearance.Label"
-                        android:textStyle="bold" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:text="@string/stats_backups"
-                        android:textAppearance="@style/TextAppearance.Lines"
-                        android:textStyle="bold" />
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/updatedNumCard"
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/sortAscDesc"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/buttons_spacing"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/dismiss"
-                    app:layout_constraintStart_toEndOf="@id/backupsNumCard"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:text="@string/sortAscDesc"
+                    app:layout_constraintBottom_toTopOf="@id/filtersTitle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/sortBy"
+                    app:trackTint="@color/switch_track" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/updatedNum"
-                        android:layout_width="match_parent"
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/sortBy"
+                    style="@style/Chip.Group"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toTopOf="@id/sortAscDesc"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/sortByTitle">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/sortByLabel"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:textAppearance="@style/TextAppearance.Label"
-                        android:textStyle="bold" />
+                        android:text="@string/sortLabel"
+                        app:chipIcon="@drawable/ic_label"
+                        app:chipIconTint="@color/chip_icon_accent" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="match_parent"
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/sortByPackageName"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:text="@string/stats_updated"
-                        android:textAppearance="@style/TextAppearance.Lines"
-                        android:textStyle="bold" />
-                </androidx.appcompat.widget.LinearLayoutCompat>
+                        android:text="@string/sortPackageName"
+                        app:chipIcon="@drawable/ic_apk"
+                        app:chipIconTint="@color/chip_icon_apk" />
 
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/dismiss"
-                    android:layout_width="@dimen/icon_large"
-                    android:layout_height="0dp"
-                    android:layout_gravity="end"
-                    android:layout_marginStart="@dimen/cards_spacing"
-                    android:background="@drawable/bg_ripple_click_negative"
-                    android:src="@drawable/ic_arrow_down"
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/sortByDataSize"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sortDataSize"
+                        app:chipIcon="@drawable/ic_sizes"
+                        app:chipIconTint="@color/chip_icon_data" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/sortByBackupDate"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sortBackupDate"
+                        app:chipIcon="@drawable/ic_old"
+                        app:chipIconTint="@color/chip_icon_exodus" />
+                </com.google.android.material.chip.ChipGroup>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/filtersTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/cards_spacing"
+                    android:text="@string/filter_options"
+                    android:textAppearance="@style/TextAppearance.Title"
+                    app:layout_constraintBottom_toTopOf="@id/filters"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/sortAscDesc" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/filters"
+                    style="@style/Chip.Group"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toTopOf="@id/backupFiltersTitle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/filtersTitle"
+                    app:selectionRequired="false"
+                    app:singleSelection="false">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/filterSystem"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_system"
+                        app:chipIcon="@drawable/ic_system"
+                        app:chipIconTint="@color/chip_icon_system" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/filterUser"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_user"
+                        app:chipIcon="@drawable/ic_user"
+                        app:chipIconTint="@color/chip_icon_user" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/filterSpecial"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_special"
+                        app:chipIcon="@drawable/ic_special"
+                        app:chipIconTint="@color/chip_icon_special" />
+                </com.google.android.material.chip.ChipGroup>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/backupFiltersTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/cards_spacing"
+                    android:text="@string/backup_filters"
+                    android:textAppearance="@style/TextAppearance.Title"
+                    app:layout_constraintBottom_toTopOf="@id/backupFilters"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/filters" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/backupFilters"
+                    style="@style/Chip.Group"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toTopOf="@id/specialFiltersTitle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/backupFiltersTitle"
+                    app:selectionRequired="false"
+                    app:singleSelection="false">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/backupNone"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/showNotBackedup"
+                        app:chipIcon="@drawable/ic_empty"
+                        app:chipIconTint="@color/chip_icon_accent" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/backupApk"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_apk"
+                        app:chipIcon="@drawable/ic_apk"
+                        app:chipIconTint="@color/chip_icon_apk" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/backupData"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_data"
+                        app:chipIcon="@drawable/ic_data"
+                        app:chipIconTint="@color/chip_icon_data" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/backupDataDe"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_deviceprotecteddata"
+                        app:chipIcon="@drawable/ic_de_data"
+                        app:chipIconTint="@color/chip_icon_de_data" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/backupDataExt"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_externaldata"
+                        app:chipIcon="@drawable/ic_external_data"
+                        app:chipIconTint="@color/chip_icon_ext_data" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/backupDataObb"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_obbdata"
+                        app:chipIcon="@drawable/ic_obb_data"
+                        app:chipIconTint="@color/chip_icon_obb" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/backupDataMedia"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_mediadata"
+                        app:chipIcon="@drawable/ic_media_data"
+                        app:chipIconTint="@color/chip_icon_media" />
+                </com.google.android.material.chip.ChipGroup>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/specialFiltersTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/cards_spacing"
+                    android:text="@string/other_filters_options"
+                    android:textAppearance="@style/TextAppearance.Title"
+                    app:layout_constraintBottom_toTopOf="@id/specialFilters"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/backupFilters" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/specialFilters"
+                    style="@style/Chip.Group"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/updatedNumCard"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/specialFiltersTitle">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/specialAll"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_all"
+                        app:chipIcon="@drawable/ic_all"
+                        app:chipIconTint="@color/chip_icon_accent" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/specialLaunchable"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_launchable"
+                        app:chipIcon="@drawable/ic_launchable"
+                        app:chipIconTint="@color/chip_icon_obb" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/specialNewUpdated"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/showNewAndUpdated"
+                        app:chipIcon="@drawable/ic_updated"
+                        app:chipIconTint="@color/chip_icon_updated" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/specialOld"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/showOldBackups"
+                        app:chipIcon="@drawable/ic_old"
+                        app:chipIconTint="@color/chip_icon_exodus" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/specialNotInstalled"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/showNotInstalled"
+                        app:chipIcon="@drawable/ic_delete"
+                        app:chipIconTint="@color/chip_icon_secondary" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/specialDisabled"
+                        style="@style/Chip.Mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/showDisabled"
+                        app:chipIcon="@drawable/ic_exclude"
+                        app:chipIconTint="@color/chip_icon_de_data" />
+                </com.google.android.material.chip.ChipGroup>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/sortByTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/cards_spacing"
-                android:text="@string/sort_options"
-                android:textAppearance="@style/TextAppearance.Title"
-                app:layout_constraintBottom_toTopOf="@id/sortBy"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/stats" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/sortAscDesc"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/sortAscDesc"
-                app:layout_constraintBottom_toTopOf="@id/filtersTitle"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/sortBy"
-                app:trackTint="@color/switch_track" />
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/sortBy"
-                style="@style/Chip.Group"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@id/sortAscDesc"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/sortByTitle">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/sortByLabel"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sortLabel"
-                    app:chipIcon="@drawable/ic_label"
-                    app:chipIconTint="@color/chip_icon_accent" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/sortByPackageName"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sortPackageName"
-                    app:chipIcon="@drawable/ic_apk"
-                    app:chipIconTint="@color/chip_icon_apk" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/sortByDataSize"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sortDataSize"
-                    app:chipIcon="@drawable/ic_sizes"
-                    app:chipIconTint="@color/chip_icon_data" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/sortByBackupDate"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sortBackupDate"
-                    app:chipIcon="@drawable/ic_old"
-                    app:chipIconTint="@color/chip_icon_exodus" />
-            </com.google.android.material.chip.ChipGroup>
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/filtersTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/cards_spacing"
-                android:text="@string/filter_options"
-                android:textAppearance="@style/TextAppearance.Title"
-                app:layout_constraintBottom_toTopOf="@id/filters"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/sortAscDesc" />
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/filters"
-                style="@style/Chip.Group"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@id/backupFiltersTitle"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/filtersTitle"
-                app:selectionRequired="false"
-                app:singleSelection="false">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/filterSystem"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radio_system"
-                    app:chipIcon="@drawable/ic_system"
-                    app:chipIconTint="@color/chip_icon_system" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/filterUser"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radio_user"
-                    app:chipIcon="@drawable/ic_user"
-                    app:chipIconTint="@color/chip_icon_user" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/filterSpecial"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radio_special"
-                    app:chipIcon="@drawable/ic_special"
-                    app:chipIconTint="@color/chip_icon_special" />
-            </com.google.android.material.chip.ChipGroup>
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/backupFiltersTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/cards_spacing"
-                android:text="@string/backup_filters"
-                android:textAppearance="@style/TextAppearance.Title"
-                app:layout_constraintBottom_toTopOf="@id/backupFilters"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/filters" />
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/backupFilters"
-                style="@style/Chip.Group"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@id/specialFiltersTitle"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/backupFiltersTitle"
-                app:selectionRequired="false"
-                app:singleSelection="false">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/backupNone"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/showNotBackedup"
-                    app:chipIcon="@drawable/ic_empty"
-                    app:chipIconTint="@color/chip_icon_accent" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/backupApk"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radio_apk"
-                    app:chipIcon="@drawable/ic_apk"
-                    app:chipIconTint="@color/chip_icon_apk" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/backupData"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radio_data"
-                    app:chipIcon="@drawable/ic_data"
-                    app:chipIconTint="@color/chip_icon_data" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/backupDataDe"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radio_deviceprotecteddata"
-                    app:chipIcon="@drawable/ic_de_data"
-                    app:chipIconTint="@color/chip_icon_de_data" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/backupDataExt"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radio_externaldata"
-                    app:chipIcon="@drawable/ic_external_data"
-                    app:chipIconTint="@color/chip_icon_ext_data" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/backupDataObb"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radio_obbdata"
-                    app:chipIcon="@drawable/ic_obb_data"
-                    app:chipIconTint="@color/chip_icon_obb" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/backupDataMedia"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radio_mediadata"
-                    app:chipIcon="@drawable/ic_media_data"
-                    app:chipIconTint="@color/chip_icon_media" />
-            </com.google.android.material.chip.ChipGroup>
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/specialFiltersTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/cards_spacing"
-                android:text="@string/other_filters_options"
-                android:textAppearance="@style/TextAppearance.Title"
-                app:layout_constraintBottom_toTopOf="@id/specialFilters"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/backupFilters" />
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/specialFilters"
-                style="@style/Chip.Group"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@id/reset"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/specialFiltersTitle">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/specialAll"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radio_all"
-                    app:chipIcon="@drawable/ic_all"
-                    app:chipIconTint="@color/chip_icon_accent" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/specialLaunchable"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/radio_launchable"
-                    app:chipIcon="@drawable/ic_launchable"
-                    app:chipIconTint="@color/chip_icon_obb" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/specialNewUpdated"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/showNewAndUpdated"
-                    app:chipIcon="@drawable/ic_updated"
-                    app:chipIconTint="@color/chip_icon_updated" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/specialOld"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/showOldBackups"
-                    app:chipIcon="@drawable/ic_old"
-                    app:chipIconTint="@color/chip_icon_exodus" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/specialNotInstalled"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/showNotInstalled"
-                    app:chipIcon="@drawable/ic_delete"
-                    app:chipIconTint="@color/chip_icon_secondary" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/specialDisabled"
-                    style="@style/Chip.Mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/showDisabled"
-                    app:chipIcon="@drawable/ic_exclude"
-                    app:chipIconTint="@color/chip_icon_de_data" />
-            </com.google.android.material.chip.ChipGroup>
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?colorPrimaryDark"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/cards_spacing"
+            android:paddingTop="@dimen/cards_spacing"
+            android:paddingBottom="@dimen/large_spacing">
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/reset"
                 style="@style/ImageButton.Negative"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/cards_spacing"
+                android:layout_weight="1"
                 android:src="@drawable/ic_reset"
-                android:tooltipText="@string/resetFilter"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/apply"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/specialFilters" />
+                android:tooltipText="@string/resetFilter" />
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/apply"
                 style="@style/ImageButton.Positive"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/cards_spacing"
+                android:layout_weight="1"
                 android:src="@drawable/ic_apply"
-                android:tooltipText="@string/applyFilter"
-                app:layout_constraintBottom_toBottomOf="@id/reset"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/reset"
-                app:layout_constraintTop_toTopOf="@id/reset" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+                android:tooltipText="@string/applyFilter" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

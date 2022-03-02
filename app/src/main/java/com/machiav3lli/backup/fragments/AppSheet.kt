@@ -36,20 +36,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.machiav3lli.backup.*
-import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.SheetAppBinding
-import com.machiav3lli.backup.dbs.AppExtras
+import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dialogs.BackupDialogFragment
 import com.machiav3lli.backup.dialogs.RestoreDialogFragment
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
-import com.machiav3lli.backup.items.*
+import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.items.BackupItemX
+import com.machiav3lli.backup.items.BackupProperties
+import com.machiav3lli.backup.items.HomeItemX
 import com.machiav3lli.backup.tasks.BackupActionTask
 import com.machiav3lli.backup.tasks.RestoreActionTask
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.AppSheetViewModel
-import com.machiav3lli.backup.viewmodels.AppSheetViewModelFactory
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.set
@@ -76,7 +77,7 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
             if (savedInstanceState != null) savedInstanceState.getStringArrayList(BUNDLE_USERS) else ArrayList()
         val shellCommands = ShellCommands(users)
         val viewModelFactory =
-            AppSheetViewModelFactory(appInfo, shellCommands, requireActivity().application)
+            AppSheetViewModel.Factory(appInfo, shellCommands, requireActivity().application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(AppSheetViewModel::class.java)
 
         viewModel.refreshNow.observe(viewLifecycleOwner, {
@@ -231,22 +232,33 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
     }
 
     private fun setupOnClicks() {
+
+        // close
         binding.dismiss.setOnClickListener { dismissAllowingStateLoss() }
+
+        // tags
         binding.addTag.setOnClickListener {
             appExtras.customTags = appExtras.customTags.plus(binding.newTag.text.toString())
             binding.newTag.text = null
             viewModel.refreshNow.value = true
         }
+
+        // note
         binding.saveNote.setOnClickListener {
             appExtras.note = binding.noteText.text.toString()
             viewModel.refreshNow.value = true
         }
+
         viewModel.appInfo.value?.let { app: AppInfo ->
+
+            // details
             binding.appInfo.setOnClickListener {
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                 intent.data = Uri.fromParts("package", app.packageName, null)
                 this.startActivity(intent)
             }
+
+            // exodus
             binding.exodusReport.setOnClickListener {
                 requireContext().startActivity(
                     Intent(
@@ -255,12 +267,18 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
                     )
                 )
             }
+
+            // launch
             binding.launchApp.setOnClickListener {
                 requireContext().packageManager.getLaunchIntentForPackage(app.packageName)?.let {
                     startActivity(it)
                 }
             }
+
+            // enable/disable
             binding.enableDisable.setOnClickListener { displayDialogEnableDisable(app.isDisabled) }
+
+            // uninstall
             binding.uninstall.setOnClickListener {
                 AlertDialog.Builder(requireContext())
                     .setTitle(app.packageLabel)
@@ -272,13 +290,19 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
                     .setNegativeButton(R.string.dialogNo, null)
                     .show()
             }
+
+            // blocklist
             binding.addToBlocklist.setOnClickListener {
                 requireMainActivity().viewModel.addToBlocklist(app.packageName)
             }
+
+            // backup
             binding.backup.setOnClickListener {
                 BackupDialogFragment(app, this)
                     .show(requireActivity().supportFragmentManager, "backupDialog")
             }
+
+            // delete all backups
             binding.deleteAll.setOnClickListener {
                 AlertDialog.Builder(requireContext())
                     .setTitle(app.packageLabel)
@@ -290,6 +314,8 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
                     .setNegativeButton(R.string.dialogNo, null)
                     .show()
             }
+
+            // force-kill (TODO hg42 force-stop, force-close, ... ? I think these are different ones, and I don't know which)
             binding.forceKill.setOnClickListener {
                 AlertDialog.Builder(requireContext())
                     .setTitle(app.packageLabel)
@@ -301,6 +327,8 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
                     .setNegativeButton(R.string.dialogNo, null)
                     .show()
             }
+
+            // clear cache
             binding.wipeCache.setOnClickListener {
                 try {
                     Timber.i("$it: Wiping cache")
@@ -389,7 +417,7 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
             when {
                 actionType === ActionType.BACKUP -> {
                     BackupActionTask(
-                        it, requireMainActivity(), MainActivityX.shellHandlerInstance!!, mode,
+                        it, requireMainActivity(), OABX.shellHandlerInstance!!, mode,
                         this
                     ).execute()
                 }
@@ -397,7 +425,7 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
                     backupProps?.let { backupProps: BackupProperties ->
                         val backupDir = backupProps.getBackupDir(viewModel.appInfo.value?.backupDir)
                         RestoreActionTask(
-                            it, requireMainActivity(), MainActivityX.shellHandlerInstance!!, mode,
+                            it, requireMainActivity(), OABX.shellHandlerInstance!!, mode,
                             backupProps, backupDir!!, this
                         ).execute()
                     }

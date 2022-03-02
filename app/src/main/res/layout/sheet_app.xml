@@ -23,18 +23,14 @@
 
     </data>
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:paddingBottom="?actionBarSize"
-        android:scrollbars="none">
+        android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clipChildren="false"
             android:clipToPadding="false"
             android:padding="@dimen/cards_spacing">
 
@@ -46,7 +42,7 @@
                 android:contentDescription="@string/app_s_icon"
                 android:elevation="8dp"
                 android:src="@drawable/ic_placeholder"
-                app:layout_constraintBottom_toTopOf="@id/manager"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -103,456 +99,478 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/appInfo"
                 app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="2dp" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:scrollbars="none">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/manager"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clipChildren="false"
                 android:clipToPadding="false"
-                android:orientation="horizontal"
-                android:paddingVertical="@dimen/cards_spacing"
-                app:layout_constraintBottom_toTopOf="@id/appTypeLine"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/icon">
+                android:padding="@dimen/cards_spacing">
 
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/exodusReport"
-                    style="@style/ImageButton.Exodus"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/manager"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/buttons_spacing"
-                    android:paddingVertical="@dimen/med_spacing"
-                    android:src="@drawable/ic_exodus"
-                    android:tooltipText="@string/exodus_report"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/launchApp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/launchApp"
-                    style="@style/ImageButton.Launch"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/buttons_spacing"
-                    android:paddingVertical="@dimen/med_spacing"
-                    android:src="@drawable/ic_launchable"
-                    android:tooltipText="@string/launch_app"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/enableDisable"
-                    app:layout_constraintStart_toEndOf="@id/exodusReport"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/enableDisable"
-                    style="@style/ImageButton.Neutral"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/buttons_spacing"
-                    android:paddingVertical="@dimen/med_spacing"
-                    android:src="@drawable/ic_exclude"
-                    android:tooltipText="@string/disablePackage"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/uninstall"
-                    app:layout_constraintStart_toEndOf="@id/launchApp"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/uninstall"
-                    style="@style/ImageButton.Negative"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/buttons_spacing"
-                    android:paddingVertical="@dimen/med_spacing"
-                    android:src="@drawable/ic_delete"
-                    android:tooltipText="@string/uninstall"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/addToBlocklist"
-                    app:layout_constraintStart_toEndOf="@id/enableDisable"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/addToBlocklist"
-                    style="@style/ImageButton.Blocklist"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/buttons_spacing"
-                    android:paddingVertical="@dimen/med_spacing"
-                    android:src="@drawable/ic_blocklist"
-                    android:tooltipText="@string/global_blocklist_add"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/uninstall"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/appTypeLine"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/small_spacing"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toTopOf="@id/appSizeLine"
-                app:layout_constraintEnd_toStartOf="@id/divider"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/manager">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/app_s_type_title"
-                    android:textAppearance="@style/TextAppearance.Lines" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/appType"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:singleLine="true"
-                    android:textAppearance="@style/TextAppearance.Lines"
-                    android:textStyle="bold" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/divider"
-                android:layout_width="2dp"
-                android:layout_height="0dp"
-                android:layout_marginHorizontal="@dimen/buttons_spacing"
-                app:layout_constraintBottom_toTopOf="@id/tags"
-                app:layout_constraintEnd_toStartOf="@id/versionNameLine"
-                app:layout_constraintStart_toEndOf="@id/appTypeLine"
-                app:layout_constraintTop_toTopOf="@id/appTypeLine" />
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/versionNameLine"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="@id/appTypeLine"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/divider"
-                app:layout_constraintTop_toTopOf="@id/appTypeLine"
-                app:layout_constraintVertical_bias="0.526">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/version_name_title"
-                    android:textAppearance="@style/TextAppearance.Lines" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/versionName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:gravity="end"
-                    android:singleLine="true"
-                    android:textAppearance="@style/TextAppearance.Lines"
-                    android:textStyle="bold" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/appSizeLine"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/small_spacing"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toTopOf="@id/splitsLine"
-                app:layout_constraintEnd_toEndOf="@id/appTypeLine"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/appTypeLine">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/app_size"
-                    android:textAppearance="@style/TextAppearance.Lines" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/appSize"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:gravity="end"
-                    android:singleLine="true"
-                    android:textAppearance="@style/TextAppearance.Lines"
-                    android:textStyle="bold" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/dataSizeLine"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="@id/appSizeLine"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@id/versionNameLine"
-                app:layout_constraintTop_toTopOf="@id/appSizeLine">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/data_size"
-                    android:textAppearance="@style/TextAppearance.Lines" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/dataSize"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:gravity="end"
-                    android:singleLine="true"
-                    android:textAppearance="@style/TextAppearance.Lines"
-                    android:textStyle="bold" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/splitsLine"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/small_spacing"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toTopOf="@id/tags"
-                app:layout_constraintEnd_toEndOf="@id/appTypeLine"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/appSizeLine">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/split_apks"
-                    android:textAppearance="@style/TextAppearance.Lines" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/appSplits"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:gravity="end"
-                    android:singleLine="true"
-                    android:textAppearance="@style/TextAppearance.Lines"
-                    android:textStyle="bold" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/cacheSizeLine"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="@id/splitsLine"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@id/versionNameLine"
-                app:layout_constraintTop_toTopOf="@id/splitsLine">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/cache_size"
-                    android:textAppearance="@style/TextAppearance.Lines" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/cacheSize"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:gravity="end"
-                    android:singleLine="true"
-                    android:textAppearance="@style/TextAppearance.Lines"
-                    android:textStyle="bold" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/tags"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@id/note"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/splitsLine">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tagsTitle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/cards_spacing"
-                    android:text="@string/title_tags"
-                    android:textAppearance="@style/TextAppearance.Title"
-                    app:layout_constraintBottom_toTopOf="@id/tagsGroup"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:paddingVertical="@dimen/cards_spacing"
+                    app:layout_constraintBottom_toTopOf="@id/appTypeLine"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent">
 
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/tagsGroup"
-                    style="@style/Chip.Group"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toTopOf="@id/newTag"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tagsTitle" />
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/exodusReport"
+                        style="@style/ImageButton.Exodus"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/buttons_spacing"
+                        android:paddingVertical="@dimen/med_spacing"
+                        android:src="@drawable/ic_exodus"
+                        android:tooltipText="@string/exodus_report"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/launchApp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/newTag"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/addTag"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tagsGroup" />
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/launchApp"
+                        style="@style/ImageButton.Launch"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/buttons_spacing"
+                        android:paddingVertical="@dimen/med_spacing"
+                        android:src="@drawable/ic_launchable"
+                        android:tooltipText="@string/launch_app"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/enableDisable"
+                        app:layout_constraintStart_toEndOf="@id/exodusReport"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/addTag"
-                    android:layout_width="@dimen/icon_large"
-                    android:layout_height="0dp"
-                    android:background="@drawable/bg_ripple_click"
-                    android:paddingHorizontal="@dimen/buttons_spacing"
-                    android:src="@drawable/ic_add_tag"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/newTag"
-                    app:layout_constraintTop_toTopOf="@id/newTag" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/enableDisable"
+                        style="@style/ImageButton.Neutral"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/buttons_spacing"
+                        android:paddingVertical="@dimen/med_spacing"
+                        android:src="@drawable/ic_exclude"
+                        android:tooltipText="@string/disablePackage"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/uninstall"
+                        app:layout_constraintStart_toEndOf="@id/launchApp"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/note"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@id/actions"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tags">
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/uninstall"
+                        style="@style/ImageButton.Negative"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/buttons_spacing"
+                        android:paddingVertical="@dimen/med_spacing"
+                        android:src="@drawable/ic_delete"
+                        android:tooltipText="@string/uninstall"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/addToBlocklist"
+                        app:layout_constraintStart_toEndOf="@id/enableDisable"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/noteTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/cards_spacing"
-                    android:text="@string/title_note"
-                    android:textAppearance="@style/TextAppearance.Title"
-                    app:layout_constraintBottom_toTopOf="@id/noteText"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/addToBlocklist"
+                        style="@style/ImageButton.Blocklist"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/buttons_spacing"
+                        android:paddingVertical="@dimen/med_spacing"
+                        android:src="@drawable/ic_blocklist"
+                        android:tooltipText="@string/global_blocklist_add"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/uninstall"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/noteText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/saveNote"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/noteTitle" />
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/saveNote"
-                    android:layout_width="@dimen/icon_large"
-                    android:layout_height="0dp"
-                    android:background="@drawable/bg_ripple_click"
-                    android:src="@drawable/ic_save_note"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/noteText"
-                    app:layout_constraintTop_toTopOf="@id/noteText" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/actions"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipChildren="false"
-                app:layout_constraintBottom_toTopOf="@id/recyclerView"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/note">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/actionsTitle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/cards_spacing"
-                    android:text="@string/available_actions"
-                    android:textAppearance="@style/TextAppearance.Title"
-                    app:layout_constraintBottom_toTopOf="@id/actionsGroup"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/actionsGroup"
-                    style="@style/Chip.Group"
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/appTypeLine"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/small_spacing"
-                    app:layout_constraintBottom_toTopOf="@id/snackbar_text"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toTopOf="@id/appSizeLine"
+                    app:layout_constraintEnd_toStartOf="@id/divider"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/actionsTitle">
+                    app:layout_constraintTop_toBottomOf="@id/manager">
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/backup"
-                        style="@style/Chip.Action.Positive"
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/app_s_type_title"
+                        android:textAppearance="@style/TextAppearance.Lines" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appType"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/backup" />
+                        android:layout_gravity="end"
+                        android:singleLine="true"
+                        android:textAppearance="@style/TextAppearance.Lines"
+                        android:textStyle="bold" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/deleteAll"
-                        style="@style/Chip.Action.Negative"
+                <com.google.android.material.divider.MaterialDivider
+                    android:id="@+id/divider"
+                    android:layout_width="2dp"
+                    android:layout_height="0dp"
+                    android:layout_marginHorizontal="@dimen/buttons_spacing"
+                    app:layout_constraintBottom_toTopOf="@id/tags"
+                    app:layout_constraintEnd_toStartOf="@id/versionNameLine"
+                    app:layout_constraintStart_toEndOf="@id/appTypeLine"
+                    app:layout_constraintTop_toTopOf="@id/appTypeLine" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/versionNameLine"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="@id/appTypeLine"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/divider"
+                    app:layout_constraintTop_toTopOf="@id/appTypeLine"
+                    app:layout_constraintVertical_bias="0.526">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/version_name_title"
+                        android:textAppearance="@style/TextAppearance.Lines" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/versionName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/delete_all_backups" />
+                        android:layout_gravity="end"
+                        android:gravity="end"
+                        android:singleLine="true"
+                        android:textAppearance="@style/TextAppearance.Lines"
+                        android:textStyle="bold" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/forceKill"
-                        style="@style/Chip.Action"
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/appSizeLine"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/small_spacing"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toTopOf="@id/splitsLine"
+                    app:layout_constraintEnd_toEndOf="@id/appTypeLine"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/appTypeLine">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/app_size"
+                        android:textAppearance="@style/TextAppearance.Lines" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appSize"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/forceKill" />
+                        android:layout_gravity="end"
+                        android:gravity="end"
+                        android:singleLine="true"
+                        android:textAppearance="@style/TextAppearance.Lines"
+                        android:textStyle="bold" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/wipeCache"
-                        style="@style/Chip.Action"
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/dataSizeLine"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="@id/appSizeLine"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/versionNameLine"
+                    app:layout_constraintTop_toTopOf="@id/appSizeLine">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/data_size"
+                        android:textAppearance="@style/TextAppearance.Lines" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/dataSize"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/clear_cache" />
-                </com.google.android.material.chip.ChipGroup>
+                        android:layout_gravity="end"
+                        android:gravity="end"
+                        android:singleLine="true"
+                        android:textAppearance="@style/TextAppearance.Lines"
+                        android:textStyle="bold" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/snackbar_text"
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/splitsLine"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/small_spacing"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toTopOf="@id/tags"
+                    app:layout_constraintEnd_toEndOf="@id/appTypeLine"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/appSizeLine">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/split_apks"
+                        android:textAppearance="@style/TextAppearance.Lines" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appSplits"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:gravity="end"
+                        android:singleLine="true"
+                        android:textAppearance="@style/TextAppearance.Lines"
+                        android:textStyle="bold" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/cacheSizeLine"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="@id/splitsLine"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/versionNameLine"
+                    app:layout_constraintTop_toTopOf="@id/splitsLine">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/cache_size"
+                        android:textAppearance="@style/TextAppearance.Lines" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/cacheSize"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:gravity="end"
+                        android:singleLine="true"
+                        android:textAppearance="@style/TextAppearance.Lines"
+                        android:textStyle="bold" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/tags"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:elevation="8dp"
-                    android:gravity="center_horizontal"
-                    android:textAppearance="@style/TextAppearance.Title"
-                    android:textColor="?colorAccent"
-                    android:visibility="gone"
+                    app:layout_constraintBottom_toTopOf="@id/note"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/splitsLine">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tagsTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/cards_spacing"
+                        android:text="@string/title_tags"
+                        android:textAppearance="@style/TextAppearance.Title"
+                        app:layout_constraintBottom_toTopOf="@id/tagsGroup"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/tagsGroup"
+                        style="@style/Chip.Group"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toTopOf="@id/newTag"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tagsTitle" />
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/newTag"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/addTag"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tagsGroup" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/addTag"
+                        android:layout_width="@dimen/icon_large"
+                        android:layout_height="0dp"
+                        android:background="@drawable/bg_ripple_click"
+                        android:paddingHorizontal="@dimen/buttons_spacing"
+                        android:src="@drawable/ic_add_tag"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/newTag"
+                        app:layout_constraintTop_toTopOf="@id/newTag" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/note"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toTopOf="@id/actions"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tags">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/noteTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/cards_spacing"
+                        android:text="@string/title_note"
+                        android:textAppearance="@style/TextAppearance.Title"
+                        app:layout_constraintBottom_toTopOf="@id/noteText"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/noteText"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/saveNote"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/noteTitle" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/saveNote"
+                        android:layout_width="@dimen/icon_large"
+                        android:layout_height="0dp"
+                        android:background="@drawable/bg_ripple_click"
+                        android:src="@drawable/ic_save_note"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/noteText"
+                        app:layout_constraintTop_toTopOf="@id/noteText" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/actions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    app:layout_constraintBottom_toTopOf="@id/recyclerView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/note">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/actionsTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/cards_spacing"
+                        android:text="@string/available_actions"
+                        android:textAppearance="@style/TextAppearance.Title"
+                        app:layout_constraintBottom_toTopOf="@id/actionsGroup"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/actionsGroup"
+                        style="@style/Chip.Group"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/small_spacing"
+                        app:layout_constraintBottom_toTopOf="@id/snackbar_text"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/actionsTitle">
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/backup"
+                            style="@style/Chip.Action.Positive"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/backup" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/deleteAll"
+                            style="@style/Chip.Action.Negative"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/delete_all_backups" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/forceKill"
+                            style="@style/Chip.Action"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/forceKill" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/wipeCache"
+                            style="@style/Chip.Action"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/clear_cache" />
+                    </com.google.android.material.chip.ChipGroup>
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/snackbar_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:elevation="8dp"
+                        android:gravity="center_horizontal"
+                        android:textAppearance="@style/TextAppearance.Title"
+                        android:textColor="?colorAccent"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/actionsGroup" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/small_spacing"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/actionsGroup" />
+                    app:layout_constraintTop_toBottomOf="@id/actions"
+                    tools:itemCount="2"
+                    tools:listitem="@layout/item_backup_x" />
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/small_spacing"
-                android:clipChildren="false"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/actions"
-                tools:itemCount="2"
-                tools:listitem="@layout/item_backup_x" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

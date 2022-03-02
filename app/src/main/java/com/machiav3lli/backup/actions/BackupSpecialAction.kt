@@ -31,10 +31,6 @@ import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.CryptoSetupException
 import timber.log.Timber
 import java.io.File
-import java.nio.file.Files
-import java.nio.file.LinkOption
-import java.util.*
-import kotlin.collections.ArrayList
 
 class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHandler)
     : BackupAppAction(context, work, shell)
@@ -43,11 +39,13 @@ class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHa
         if (backupMode and MODE_APK == MODE_APK) {
             Timber.e("Special contents don't have APKs to backup. Ignoring")
         }
-        return if (backupMode and MODE_DATA == MODE_DATA) super.run(app, MODE_DATA)
-        else ActionResult(
-            app, null,
-            "Special backup only backups data, but data was not selected for backup", false
-        )
+        return  if (backupMode and MODE_DATA == MODE_DATA)
+                    super.run(app, MODE_DATA)
+                else ActionResult(
+                    app, null,
+                    "Special backup only backups data, but data was not selected for backup",
+                    false
+                )
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
@@ -63,54 +61,52 @@ class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHa
         // This can be optimized, because it's known, that special backups won't meet any symlinks
         // since the list of files is fixed
         // It would make sense to implement something like TarUtils.addFilepath with SuFileInputStream and
-        val filesToBackup: MutableList<ShellHandler.FileInfo> = ArrayList(appInfo.fileList.size)
+        val filesToBackup = mutableListOf<ShellHandler.FileInfo>()
         try {
-            for (filePath in appInfo.fileList) {
+            for (filePath in appInfo.specialFiles) {
+                if (app.packageName == "special.smsmms.json") {
+                    BackupSMSMMSJSONAction.backupData(context, filePath)
+                }
+                if (app.packageName == "special.calllogs.json") {
+                    BackupCallLogsJSONAction.backupData(context, filePath)
+                }
                 val file = File(filePath)
                 val isDirSource = filePath.endsWith("/")
-                val parent = if (isDirSource) file.name else null
-                var fileInfos: List<ShellHandler.FileInfo>
-                try {
-                    fileInfos = shell.suGetDetailedDirectoryContents(
-                        filePath.removeSuffix("/"),
-                        isDirSource,
-                        parent
-                    )
-                } catch (e: ShellCommandFailedException) {
-                    continue  //TODO hg42: avoid checking the error message text for now
-                    //TODO hg42: alternative implementation, better replaced this by API, when root permissions available, e.g. via Shizuku
-                    //    if(e.shellResult.err.toString().contains("No such file or directory", ignoreCase = true))
-                    //        continue
-                    //    throw(e)
-                }
+                val fileInfos = mutableListOf<ShellHandler.FileInfo>()
                 if (isDirSource) {
-                    // also add directory
-                    filesToBackup.add(
-                        ShellHandler.FileInfo(
-                            parent!!, ShellHandler.FileInfo.FileType.DIRECTORY,
-                            file.parent!!,
-                            Files.getAttribute(
-                                file.toPath(),
-                                "unix:owner",
-                                LinkOption.NOFOLLOW_LINKS
-                            ).toString(),
-                            Files.getAttribute(
-                                file.toPath(),
-                                "unix:group",
-                                LinkOption.NOFOLLOW_LINKS
-                            ).toString(),
-                            Files.getAttribute(
-                                file.toPath(),
-                                "unix:mode",
-                                LinkOption.NOFOLLOW_LINKS
-                            ) as Int,
-                            0, Date(file.lastModified())
+                    // directory
+                    try {
+                        // add contents
+                        fileInfos.addAll(
+                            shell.suGetDetailedDirectoryContents(
+                                filePath.removeSuffix("/"),
+                                isDirSource,
+                                file.name
+                            )
                         )
+                    } catch (e: ShellCommandFailedException) {
+                        LogsHandler.unhandledException(e)
+                        continue  //TODO hg42: avoid checking the error message text for now
+                        //TODO hg42: alternative implementation, better replaced this by API, when root permissions available, e.g. via Shizuku
+                        //    if(e.shellResult.err.toString().contains("No such file or directory", ignoreCase = true))
+                        //        continue
+                        //    throw(e)
+                    }
+                    // add directory itself
+                    filesToBackup.add(
+                        shell.suGetFileInfo(file.absolutePath)
+                    )
+                } else {
+                    // regular file
+                    filesToBackup.add(
+                        shell.suGetFileInfo(file.absolutePath)
                     )
                 }
                 filesToBackup.addAll(fileInfos)
             }
             genericBackupData(BACKUP_DIR_DATA, backupInstanceDir, filesToBackup, true, iv)
+        } catch (e: RuntimeException) {
+            throw BackupFailedException("${e.message}", e)
         } catch (e: ShellCommandFailedException) {
             val error = extractErrorMessage(e.shellResult)
             Timber.e("$app: Backup Special Data failed: $error")
@@ -118,6 +114,14 @@ class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHa
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, app)
             throw BackupFailedException("unhandled exception", e)
+        }
+        if (
+                app.packageName == "special.smsmms.json" ||
+                app.packageName == "special.calllogs.json"
+            ) {
+            for (filePath in appInfo.specialFiles) {
+                File(filePath).delete()
+            }
         }
         return true
     }

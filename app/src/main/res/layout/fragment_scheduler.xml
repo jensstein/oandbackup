@@ -65,6 +65,7 @@
                 android:layout_width="52dp"
                 android:layout_height="match_parent"
                 android:tooltipText="@string/sched_blocklist"
+                android:tint="?backgroundColor"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

@@ -1,5 +1,7 @@
 package com.machiav3lli.backup.items
 
+import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.PREFS_CACHEROOTFILEATTRIBUTES
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
@@ -48,10 +50,6 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
     constructor(parent: String?, child: String) : this(File(parent, child)) {}
     constructor(parent: File?, child: String) : this(parent?.absolutePath, child) {}
     constructor(uri: URI) : this(File(uri)) {}
-
-    private fun cmd(c: String): String = ShellUtils.fastCmd(c)
-
-    private fun cmdBool(c: String): Boolean = ShellUtils.fastCmdResult(c)
 
     override fun canExecute(): Boolean = cmdBool("[ -x $quoted ]")
 
@@ -103,6 +101,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
      * Unsupported
      */
     override fun deleteOnExit() {
+        clearCache()
         throw UnsupportedOperationException("Unsupported RootFile operation")
     }
 
@@ -183,23 +182,23 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
         isFileCached = null
     }
 
-    var existsCached : Boolean? = null
+    var existsCached: Boolean? = null
     override fun exists(): Boolean {
-        if (existsCached == null)
+        if (existsCached == null || !OABX.prefFlag(PREFS_CACHEROOTFILEATTRIBUTES, false))
             existsCached = cmdBool("[ -e $quoted ]")
         return existsCached!!
     }
 
-    var isDirectoryCached : Boolean? = null
+    var isDirectoryCached: Boolean? = null
     override fun isDirectory(): Boolean {
-        if (isDirectoryCached == null)
+        if (isDirectoryCached == null || !OABX.prefFlag(PREFS_CACHEROOTFILEATTRIBUTES, false))
             isDirectoryCached = cmdBool("[ -d $quoted ]")
         return isDirectoryCached!!
     }
 
-    var isFileCached : Boolean? = null
-    override fun isFile(): Boolean  {
-        if (isFileCached == null)
+    var isFileCached: Boolean? = null
+    override fun isFile(): Boolean {
+        if (isFileCached == null || !OABX.prefFlag(PREFS_CACHEROOTFILEATTRIBUTES, false))
             isFileCached = cmdBool("[ -f $quoted ]")
         return isFileCached!!
     }
@@ -292,7 +291,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
             perms = "0" + perms
         val chars = perms.toCharArray()
         for (i in 0..2) {
-            val ri = chars.size-i-1
+            val ri = chars.size - i - 1
             var perm = chars[ri] - '0'
             if (!ownerOnly || i == 2) {
                 if (set)
@@ -453,11 +452,18 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
         return files?.toTypedArray()
     }
 
-    fun inputStream(): InputStream  = SuFileInputStream.open(SuFile(this.absolutePath))
+    fun inputStream(): InputStream = SuFileInputStream.open(SuFile(this.absolutePath))
 
     fun outputStream(): OutputStream = SuFileOutputStream.open(SuFile(this.absolutePath))
 
     companion object {
+
+        fun cmd(c: String): String = ShellUtils.fastCmd(c)
+        fun cmdBool(c: String): Boolean = ShellUtils.fastCmdResult(c)
+        //private fun cmd(c: String): String = ShellHandler.runAsRoot(c).out[0].toString()
+        //private fun cmdBool(c: String): Boolean = ShellHandler.runAsRoot(c).code == 0
+
+
         fun open(pathname: String): File {
             return if (Shell.rootAccess()) RootFile(pathname) else File(pathname)
         }

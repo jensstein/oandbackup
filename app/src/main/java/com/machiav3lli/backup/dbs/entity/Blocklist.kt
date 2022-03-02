@@ -15,47 +15,65 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.machiav3lli.backup.dbs
+package com.machiav3lli.backup.dbs.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
 
 @Entity
-class AppExtras(var packageName: String = "") {
+class Blocklist(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
+) {
+    var packageName: String? = null
 
-    @TypeConverters(Schedule.AppsListConverter::class)
-    var customTags: Set<String> = setOf()
+    var blocklistId = 0L
 
-    var note: String = ""
+    class Builder {
+        private val blocklist: Blocklist = Blocklist()
+
+        fun withId(id: Long): Builder {
+            blocklist.id = id
+            return this
+        }
+
+        fun withBlocklistId(blocklistId: Long): Builder {
+            blocklist.blocklistId = blocklistId
+            return this
+        }
+
+        fun withPackageName(packageName: String): Builder {
+            blocklist.packageName = packageName
+            return this
+        }
+
+        fun build(): Blocklist {
+            return blocklist
+        }
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
-        val aBlocklist = other as AppExtras
+        val aBlocklist = other as Blocklist
         return id == aBlocklist.id
                 && packageName == aBlocklist.packageName
-                && customTags == aBlocklist.customTags
-                && note == aBlocklist.note
+                && blocklistId == aBlocklist.blocklistId
     }
 
     override fun hashCode(): Int {
         var hash = 7
         hash = 31 * hash + id.toInt()
         hash = 31 * hash + packageName.hashCode()
-        hash = 31 * hash + customTags.hashCode()
-        hash = 31 * hash + note.hashCode()
+        hash = 31 * hash + blocklistId.toInt()
         return hash
     }
 
     override fun toString(): String {
-        return "AppExtras{" +
+        return "Schedule{" +
                 "id=" + id +
                 ", packageName=" + packageName +
-                ", customTags=" + customTags +
-                ", note=" + note +
+                ", blocklistId=" + blocklistId +
                 '}'
     }
 }

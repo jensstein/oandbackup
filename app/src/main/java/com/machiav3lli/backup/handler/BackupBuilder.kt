@@ -89,7 +89,7 @@ class BackupBuilder(
                 appInfo, backupDate, hasApk, hasAppData, hasDevicesProtectedData,
                 hasExternalData, hasObbData, hasMediaData, cipherType, iv, cpuArch
             ),
-            backupPath!!
+            backupPath
         )
     }
 

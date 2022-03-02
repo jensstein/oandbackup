@@ -21,8 +21,8 @@ import android.app.Application
 import androidx.lifecycle.*
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.PrefsActivity
-import com.machiav3lli.backup.dbs.Schedule
-import com.machiav3lli.backup.dbs.ScheduleDao
+import com.machiav3lli.backup.dbs.entity.Schedule
+import com.machiav3lli.backup.dbs.dao.ScheduleDao
 import com.machiav3lli.backup.handler.ExportsHandler
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.StorageFile
@@ -30,8 +30,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ExportsViewModel(val database: ScheduleDao, private val appContext: Application)
-    : AndroidViewModel(appContext) {
+class ExportsViewModel(val database: ScheduleDao, private val appContext: Application) :
+    AndroidViewModel(appContext) {
 
     var exportsList = MediatorLiveData<MutableList<Pair<Schedule, StorageFile>>>()
 
@@ -86,19 +86,32 @@ class ExportsViewModel(val database: ScheduleDao, private val appContext: Applic
     fun importSchedule(export: Schedule) {
         viewModelScope.launch {
             import(export)
-            showNotification(appContext, PrefsActivity::class.java, System.currentTimeMillis().toInt(),
-                    appContext.getString(R.string.sched_imported), export.name, false)
+            showNotification(
+                appContext, PrefsActivity::class.java, System.currentTimeMillis().toInt(),
+                appContext.getString(R.string.sched_imported), export.name, false
+            )
         }
     }
 
     private suspend fun import(export: Schedule) {
         withContext(Dispatchers.IO) {
             database.insert(
-                    Schedule.Builder() // Set id to 0 to make the database generate a new id
-                            .withId(0)
-                            .import(export)
-                            .build()
+                Schedule.Builder() // Set id to 0 to make the database generate a new id
+                    .withId(0)
+                    .import(export)
+                    .build()
             )
+        }
+    }
+
+    class Factory(private val dataSource: ScheduleDao, private val application: Application) :
+        ViewModelProvider.Factory {
+        @Suppress("unchecked_cast")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(ExportsViewModel::class.java)) {
+                return ExportsViewModel(dataSource, application) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel class")
         }
     }
 }

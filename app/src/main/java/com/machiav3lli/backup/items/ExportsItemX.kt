@@ -21,7 +21,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.databinding.ItemExportsXBinding
-import com.machiav3lli.backup.dbs.Schedule
+import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.utils.modeToModes
 import com.machiav3lli.backup.utils.setExists
 import com.mikepenz.fastadapter.binding.AbstractBindingItem
@@ -47,6 +47,7 @@ class ExportsItemX(var schedule: Schedule, val exportFile: StorageFile) :
         binding.schedName.text = schedule.name
         binding.systemFilter.setExists(schedule.filter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM)
         binding.userFilter.setExists(schedule.filter and MAIN_FILTER_USER == MAIN_FILTER_USER)
+        binding.specialFilter.setExists(schedule.filter and MAIN_FILTER_SPECIAL == MAIN_FILTER_SPECIAL)
         binding.updatedFilter.setExists(schedule.specialFilter == SPECIAL_FILTER_NEW_UPDATED)
         binding.launchableFilter.setExists(schedule.specialFilter == SPECIAL_FILTER_LAUNCHABLE)
         binding.oldFilter.setExists(schedule.specialFilter == SPECIAL_FILTER_OLD)

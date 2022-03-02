@@ -130,5 +130,19 @@
     <string name="radio_updated">更新済</string>
     <string name="prefs_allowdowngrade">ダウングレードの許可</string>
     <string name="prefs_restoreallpermissions">すべての権限を復元する</string>
-    <string name="prefs_externaldata_summary">外部ストレージ (例: /storage/emulated/0/Android/data/) に置かれたデータのバックアップとリストアを行います。</string>
+    <string name="prefs_externaldata_summary">外部ストレージ (例: /storage/emulated/0/Android/data/) に配置されたデータのバックアップとリストアを行います。</string>
+    <string name="showSplitAPKs">分割APK</string>
+    <string name="radio_mediadata">メディアデータ</string>
+    <string name="prefs_advanced">高度な設定</string>
+    <string name="prefs_devicelock">デバイスロック</string>
+    <string name="prefs_service">サービスの設定</string>
+    <string name="prefs_user">ユーザー設定</string>
+    <string name="prefs_deviceprotecteddata">デバイスで保護されたデータのバックアップ</string>
+    <string name="prefs_deviceprotecteddata_summary">data/user_de に配置されたデータのバックアップと復元を行う</string>
+    <string name="prefs_devicelock_summary">デバイスの認証情報でアプリを保護</string>
+    <string name="prefs_theme">テーマ</string>
+    <string name="prefs_obbdata">obbファイルのバックアップ</string>
+    <string name="prefs_enablespecial_summary">まだ集中的なテストが必要で、ブートループを起こす危険性を承知の上で試してみてください。フィードバックをお待ちしています。</string>
+    <string name="prefs_obbdata_summary">外部ストレージ（例：/storage/emulated/0/Android/obb/）に置かれているアプリのobbファイルのバックアップとリストアを行います。</string>
+    <string name="error_pmDataIncompleteException_dataRestoreFailed">アプリデータは復元されていません。</string>
 </resources>

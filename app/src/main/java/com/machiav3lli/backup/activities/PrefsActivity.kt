@@ -22,6 +22,7 @@ import android.view.MenuItem
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ActivityPrefsBinding
 import com.machiav3lli.backup.fragments.HelpSheet
@@ -40,7 +41,7 @@ class PrefsActivity : BaseActivity() {
         binding = ActivityPrefsBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
         setContentView(binding.root)
-        appInfoList = oabx.cache.get("appInfoList") ?: mutableListOf()
+        appInfoList = OABX.app.cache.get("appInfoList") ?: mutableListOf()
         if (appInfoList.isNullOrEmpty()) refreshAppsList()
     }
 
@@ -63,28 +64,34 @@ class PrefsActivity : BaseActivity() {
     }
 
     private fun setupNavigation() {
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.fragmentContainer) as NavHostFragment
-        val navController = navHostFragment.navController
-        binding.bottomNavigation.setOnItemSelectedListener { item: MenuItem ->
-            if (item.itemId == binding.bottomNavigation.selectedItemId) return@setOnItemSelectedListener false
-            if (binding.bottomNavigation.selectedItemId.itemIdToOrder() < item.itemId.itemIdToOrder())
-                navController.navigateRight(item.itemId)
-            else
-                navController.navigateLeft(item.itemId)
-            true
-        }
-        navController.addOnDestinationChangedListener { _: NavController?, destination: NavDestination, _: Bundle? ->
-            binding.pageHeadline.text = when (destination.id) {
-                R.id.userFragment -> getString(R.string.prefs_user)
-                R.id.serviceFragment -> getString(R.string.prefs_service)
-                R.id.advancedFragment -> getString(R.string.prefs_advanced)
-                R.id.toolsFragment -> getString(R.string.prefs_tools)
-                else -> getString(R.string.prefs_title)
+        try {
+            val navHostFragment =
+                supportFragmentManager.findFragmentById(R.id.fragmentContainer) as NavHostFragment
+            val navController = navHostFragment.navController
+
+            binding.bottomNavigation.setOnItemSelectedListener { item: MenuItem ->
+                if (item.itemId == binding.bottomNavigation.selectedItemId) return@setOnItemSelectedListener false
+                if (binding.bottomNavigation.selectedItemId.itemIdToOrder() < item.itemId.itemIdToOrder())
+                    navController.navigateRight(item.itemId)
+                else
+                    navController.navigateLeft(item.itemId)
+                true
             }
-        }
-        if (intent.extras != null && intent.extras!!.getBoolean(".toEncryption", false)) {
-            navController.navigate(R.id.serviceFragment)
+            navController.addOnDestinationChangedListener { _: NavController?, destination: NavDestination, _: Bundle? ->
+                binding.pageHeadline.text = when (destination.id) {
+                    R.id.userFragment -> getString(R.string.prefs_user)
+                    R.id.serviceFragment -> getString(R.string.prefs_service)
+                    R.id.advancedFragment -> getString(R.string.prefs_advanced)
+                    R.id.toolsFragment -> getString(R.string.prefs_tools)
+                    else -> getString(R.string.prefs_title)
+                }
+            }
+            if (intent.extras != null && intent.extras!!.getBoolean(".toEncryption", false)) {
+                navController.navigate(R.id.serviceFragment)
+            }
+        } catch (e: ClassCastException) {
+            finish()
+            startActivity(intent)
         }
     }
 

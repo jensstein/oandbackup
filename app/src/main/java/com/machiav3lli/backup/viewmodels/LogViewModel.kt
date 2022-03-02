@@ -106,4 +106,15 @@ class LogViewModel(private val appContext: Application)
             log.delete(appContext)
         }
     }
+
+    class Factory(private val application: Application)
+        : ViewModelProvider.Factory {
+        @Suppress("unchecked_cast")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(LogViewModel::class.java)) {
+                return LogViewModel(application) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel class")
+        }
+    }
 }

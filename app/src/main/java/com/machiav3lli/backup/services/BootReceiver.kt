@@ -20,8 +20,8 @@ package com.machiav3lli.backup.services
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.machiav3lli.backup.dbs.ScheduleDao
-import com.machiav3lli.backup.dbs.ScheduleDatabase
+import com.machiav3lli.backup.dbs.ODatabase
+import com.machiav3lli.backup.dbs.dao.ScheduleDao
 import com.machiav3lli.backup.utils.scheduleAlarm
 import timber.log.Timber
 import java.lang.ref.WeakReference
@@ -30,13 +30,12 @@ class BootReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
-            val scheduleDao = ScheduleDatabase.getInstance(context).scheduleDao
+            val scheduleDao = ODatabase.getInstance(context).scheduleDao
             Thread(DatabaseRunnable(context, scheduleDao)).start()
         } else return
     }
 
-    private class DatabaseRunnable(val context: Context, scheduleDao: ScheduleDao)
-        : Runnable {
+    private class DatabaseRunnable(val context: Context, scheduleDao: ScheduleDao) : Runnable {
         private val scheduleDaoReference: WeakReference<ScheduleDao> = WeakReference(scheduleDao)
 
         override fun run() {

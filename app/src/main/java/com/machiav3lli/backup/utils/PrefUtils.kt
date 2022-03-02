@@ -21,7 +21,11 @@ import android.Manifest
 import android.app.Activity
 import android.app.AppOpsManager
 import android.app.KeyguardManager
-import android.content.*
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -36,7 +40,35 @@ import androidx.core.app.ActivityCompat
 import androidx.preference.PreferenceManager
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.machiav3lli.backup.*
+import com.machiav3lli.backup.NEED_REFRESH
+import com.machiav3lli.backup.PREFS_ACCENT_COLOR
+import com.machiav3lli.backup.PREFS_ALLOWDOWNGRADE
+import com.machiav3lli.backup.PREFS_BIOMETRICLOCK
+import com.machiav3lli.backup.PREFS_COMPRESSION_LEVEL
+import com.machiav3lli.backup.PREFS_DEVICELOCK
+import com.machiav3lli.backup.PREFS_DEVICEPROTECTEDDATA
+import com.machiav3lli.backup.PREFS_DISABLEVERIFICATION
+import com.machiav3lli.backup.PREFS_ENABLESPECIALBACKUPS
+import com.machiav3lli.backup.PREFS_ENCRYPTION
+import com.machiav3lli.backup.PREFS_EXTERNALDATA
+import com.machiav3lli.backup.PREFS_IGNORE_BATTERY_OPTIMIZATION
+import com.machiav3lli.backup.PREFS_LANGUAGES
+import com.machiav3lli.backup.PREFS_LANGUAGES_DEFAULT
+import com.machiav3lli.backup.PREFS_MEDIADATA
+import com.machiav3lli.backup.PREFS_OBBDATA
+import com.machiav3lli.backup.PREFS_PASSWORD
+import com.machiav3lli.backup.PREFS_PASSWORD_CONFIRMATION
+import com.machiav3lli.backup.PREFS_PATH_BACKUP_DIRECTORY
+import com.machiav3lli.backup.PREFS_PAUSEAPPS
+import com.machiav3lli.backup.PREFS_REMEMBERFILTERING
+import com.machiav3lli.backup.PREFS_RESTOREWITHALLPERMISSIONS
+import com.machiav3lli.backup.PREFS_SALT
+import com.machiav3lli.backup.PREFS_SECONDARY_COLOR
+import com.machiav3lli.backup.PREFS_SHARED_PRIVATE
+import com.machiav3lli.backup.PREFS_SORT_FILTER
+import com.machiav3lli.backup.PREFS_SORT_ORDER
+import com.machiav3lli.backup.PREFS_THEME
+import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.items.StorageFile
@@ -46,6 +78,9 @@ import java.util.*
 
 const val READ_PERMISSION = 2
 const val WRITE_PERMISSION = 3
+const val SMS_PERMISSION = 4
+const val CONTACTS_PERMISSION = 5
+const val CALLLOGS_PERMISSION = 6
 
 fun Context.getDefaultSharedPreferences(): SharedPreferences =
     PreferenceManager.getDefaultSharedPreferences(this)
@@ -70,8 +105,9 @@ fun Context.getCryptoSalt(): ByteArray {
 }
 
 fun Context.isEncryptionEnabled(): Boolean =
-    getPrivateSharedPrefs().getString(PREFS_PASSWORD, "")?.isNotEmpty()
-        ?: false
+    getPrivateSharedPrefs().getBoolean(PREFS_ENCRYPTION, false)
+            && getPrivateSharedPrefs().getString(PREFS_PASSWORD, "")?.isNotEmpty()
+            ?: false
 
 fun Context.getEncryptionPassword(): String =
     getPrivateSharedPrefs().getString(PREFS_PASSWORD, "")
@@ -225,6 +261,149 @@ val Context.canAccessExternalStorage: Boolean
         return externalStorage?.let { it.canRead() && it.canWrite() } ?: false
     }
 
+fun Activity.requireSMSMMSPermission() {
+    val smsmmsPermissionList = arrayOf(
+        Manifest.permission.READ_SMS,
+        Manifest.permission.SEND_SMS,
+        Manifest.permission.RECEIVE_SMS,
+        Manifest.permission.RECEIVE_MMS,
+        Manifest.permission.RECEIVE_WAP_PUSH
+    )
+    if (
+        checkSelfPermission(Manifest.permission.READ_SMS) !=
+        PackageManager.PERMISSION_GRANTED ||
+        checkSelfPermission(Manifest.permission.SEND_SMS) !=
+        PackageManager.PERMISSION_GRANTED ||
+        checkSelfPermission(Manifest.permission.RECEIVE_SMS) !=
+        PackageManager.PERMISSION_GRANTED ||
+        checkSelfPermission(Manifest.permission.RECEIVE_MMS) !=
+        PackageManager.PERMISSION_GRANTED ||
+        checkSelfPermission(Manifest.permission.RECEIVE_WAP_PUSH) !=
+        PackageManager.PERMISSION_GRANTED
+    )
+        ActivityCompat.requestPermissions(this, smsmmsPermissionList, SMS_PERMISSION)
+}
+
+val Context.checkSMSMMSPermission: Boolean
+    get() {
+        if (!packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
+            return true
+        }
+        if (!specialBackupsEnabled) {
+            return true
+        }
+        val appOps = (getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)
+        val mode = when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
+                appOps.unsafeCheckOpNoThrow(
+                    AppOpsManager.OPSTR_READ_SMS,
+                    Process.myUid(),
+                    packageName
+                )
+            // Done this way because on (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
+            // it always says that the permission is granted even though it is not
+            else -> AppOpsManager.MODE_DEFAULT
+        }
+        return if (mode == AppOpsManager.MODE_DEFAULT) {
+            (checkCallingOrSelfPermission(Manifest.permission.READ_SMS) ==
+                    PackageManager.PERMISSION_GRANTED &&
+                    checkCallingOrSelfPermission(Manifest.permission.SEND_SMS) ==
+                    PackageManager.PERMISSION_GRANTED &&
+                    checkCallingOrSelfPermission(Manifest.permission.RECEIVE_SMS) ==
+                    PackageManager.PERMISSION_GRANTED &&
+                    checkCallingOrSelfPermission(Manifest.permission.RECEIVE_MMS) ==
+                    PackageManager.PERMISSION_GRANTED &&
+                    checkCallingOrSelfPermission(Manifest.permission.RECEIVE_WAP_PUSH) ==
+                    PackageManager.PERMISSION_GRANTED)
+        } else {
+            mode == AppOpsManager.MODE_ALLOWED
+        }
+    }
+
+fun Activity.requireCallLogsPermission() {
+    val callLogPermissionList = arrayOf(
+        Manifest.permission.READ_CALL_LOG,
+        Manifest.permission.WRITE_CALL_LOG
+    )
+    if (
+        checkSelfPermission(Manifest.permission.READ_CALL_LOG) !=
+        PackageManager.PERMISSION_GRANTED ||
+        checkSelfPermission(Manifest.permission.WRITE_CALL_LOG) !=
+        PackageManager.PERMISSION_GRANTED
+    )
+        ActivityCompat.requestPermissions(this, callLogPermissionList, CALLLOGS_PERMISSION)
+}
+
+val Context.checkCallLogsPermission: Boolean
+    get() {
+        if (!packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
+            return true
+        }
+        if (!specialBackupsEnabled) {
+            return true
+        }
+        val appOps = (getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)
+        val mode = when {
+            Build.VERSION.SDK_INT > Build.VERSION_CODES.Q ->
+                appOps.unsafeCheckOpNoThrow(
+                    AppOpsManager.OPSTR_READ_CALL_LOG,
+                    Process.myUid(),
+                    packageName
+                )
+            // Done this way because on (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q)
+            // it always says that the permission is granted even though it is not
+            else -> AppOpsManager.MODE_DEFAULT
+        }
+        return if (mode == AppOpsManager.MODE_DEFAULT) {
+            (checkCallingOrSelfPermission(Manifest.permission.READ_CALL_LOG) ==
+                    PackageManager.PERMISSION_GRANTED &&
+                    checkCallingOrSelfPermission(Manifest.permission.WRITE_CALL_LOG) ==
+                    PackageManager.PERMISSION_GRANTED)
+        } else {
+            mode == AppOpsManager.MODE_ALLOWED
+        }
+    }
+
+fun Activity.requireContactsPermission() {
+    if (
+        checkSelfPermission(Manifest.permission.READ_CONTACTS) !=
+        PackageManager.PERMISSION_GRANTED
+    )
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.READ_CONTACTS),
+            CONTACTS_PERMISSION
+        )
+}
+
+val Context.checkContactsPermission: Boolean
+    get() {
+        if (!packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
+            return true
+        }
+        if (!specialBackupsEnabled) {
+            return true
+        }
+        val appOps = (getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)
+        val mode = when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
+                appOps.unsafeCheckOpNoThrow(
+                    AppOpsManager.OPSTR_READ_CONTACTS,
+                    Process.myUid(),
+                    packageName
+                )
+            // Done this way because on (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
+            // it always says that the permission is granted even though it is not
+            else -> AppOpsManager.MODE_DEFAULT
+        }
+        return if (mode == AppOpsManager.MODE_DEFAULT) {
+            checkCallingOrSelfPermission(Manifest.permission.READ_CONTACTS) ==
+                    PackageManager.PERMISSION_GRANTED
+        } else {
+            mode == AppOpsManager.MODE_ALLOWED
+        }
+    }
+
 val Context.checkUsageStatsPermission: Boolean
     get() {
         val appOps = (getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)
@@ -236,7 +415,7 @@ val Context.checkUsageStatsPermission: Boolean
                     packageName
                 )
             else ->
-                appOps.checkOpNoThrow(
+                appOps.checkOpNoThrow(  //TODO 'checkOpNoThrow(String, Int, String): Int' is deprecated. Deprecated in Java
                     AppOpsManager.OPSTR_GET_USAGE_STATS,
                     Process.myUid(),
                     packageName
@@ -268,7 +447,7 @@ val Context.isBackupMediaData: Boolean
     get() = getDefaultSharedPreferences().getBoolean(PREFS_MEDIADATA, false)
 
 val Context.isPauseApps: Boolean
-    get() = getDefaultSharedPreferences().getBoolean("pauseApps", true)
+    get() = getDefaultSharedPreferences().getBoolean(PREFS_PAUSEAPPS, true)
 
 val Context.isDisableVerification: Boolean
     get() = getDefaultSharedPreferences().getBoolean(PREFS_DISABLEVERIFICATION, true)
@@ -318,13 +497,20 @@ var Context.accentStyle: String
     set(value) = getDefaultSharedPreferences().edit().putString(PREFS_ACCENT_COLOR, value).apply()
 
 var Context.secondaryStyle: String
-    get() = getDefaultSharedPreferences().getString(PREFS_SECONDARY_COLOR, "secondary_0") ?: "secondary_0"
-    set(value) = getDefaultSharedPreferences().edit().putString(PREFS_SECONDARY_COLOR, value).apply()
+    get() = getDefaultSharedPreferences().getString(PREFS_SECONDARY_COLOR, "secondary_0")
+        ?: "secondary_0"
+    set(value) = getDefaultSharedPreferences().edit().putString(PREFS_SECONDARY_COLOR, value)
+        .apply()
 
 var Context.language: String
     get() = getDefaultSharedPreferences().getString(PREFS_LANGUAGES, PREFS_LANGUAGES_DEFAULT)
         ?: PREFS_LANGUAGES_DEFAULT
     set(value) = getDefaultSharedPreferences().edit().putString(PREFS_LANGUAGES, value).apply()
+
+var Context.specialBackupsEnabled: Boolean
+    get() = getDefaultSharedPreferences().getBoolean(PREFS_ENABLESPECIALBACKUPS, false)
+    set(value) = getDefaultSharedPreferences().edit().putBoolean(PREFS_ENABLESPECIALBACKUPS, value)
+        .apply()
 
 fun Context.getLocaleOfCode(localeCode: String): Locale = when {
     localeCode.isEmpty() -> resources.configuration.locales[0]

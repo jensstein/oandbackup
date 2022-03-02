@@ -27,10 +27,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.FragmentRecyclerBinding
-import com.machiav3lli.backup.dbs.ScheduleDatabase
+import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.items.ExportsItemX
 import com.machiav3lli.backup.viewmodels.ExportsViewModel
-import com.machiav3lli.backup.viewmodels.ExportsViewModelFactory
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
@@ -50,16 +49,16 @@ class ExportsFragment : Fragment() {
         super.onCreate(savedInstanceState)
         binding = FragmentRecyclerBinding.inflate(inflater, container, false)
 
-        val dataSource = ScheduleDatabase.getInstance(requireContext()).scheduleDao
-        val viewModelFactory = ExportsViewModelFactory(dataSource, requireActivity().application)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(ExportsViewModel::class.java)
+        val dataSource = ODatabase.getInstance(requireContext()).scheduleDao
+        val viewModelFactory = ExportsViewModel.Factory(dataSource, requireActivity().application)
+        viewModel = ViewModelProvider(this, viewModelFactory)[ExportsViewModel::class.java]
 
-        viewModel.refreshActive.observe(viewLifecycleOwner, {
+        viewModel.refreshActive.observe(viewLifecycleOwner) {
             binding.refreshLayout.isRefreshing = it
-        })
-        viewModel.refreshNow.observe(viewLifecycleOwner, {
+        }
+        viewModel.refreshNow.observe(viewLifecycleOwner) {
             if (it) refresh()
-        })
+        }
 
         return binding.root
     }

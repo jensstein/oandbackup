@@ -15,20 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.machiav3lli.backup.viewmodels
+package com.machiav3lli.backup.activities
 
-import android.app.Application
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
 
-class BatchViewModelFactory(
-    private val application: Application
-) : ViewModelProvider.Factory {
-    @Suppress("unchecked_cast")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(BatchViewModel::class.java)) {
-            return BatchViewModel(application) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
+class ComposeSms : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 }

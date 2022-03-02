@@ -37,11 +37,6 @@ class BatchDialogFragment(
         val title =
             if (backupBoolean) getString(R.string.backupConfirmation) else getString(R.string.restoreConfirmation)
         val message = StringBuilder()
-        // TODO: hg42: not necessary anymore?
-        //if (requireContext().isPauseApps) {
-        //    message.append(requireContext().getString(R.string.msg_appkill_warning))
-        //    message.append("\n\n")
-        //}
         selectedApps.forEachIndexed { i, metaInfo ->
             message.append("${metaInfo.packageLabel}")
             selectedModes[i].let { message.append(": ${modeToStringAlt(requireContext(), it)}\n") }

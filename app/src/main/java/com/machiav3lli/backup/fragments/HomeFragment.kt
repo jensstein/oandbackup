@@ -17,7 +17,6 @@
  */
 package com.machiav3lli.backup.fragments
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -32,18 +31,19 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.machiav3lli.backup.*
-import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.FragmentHomeBinding
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.handler.showNotification
-import com.machiav3lli.backup.items.*
+import com.machiav3lli.backup.handler.WorkHandler
+import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.items.HomeItemX
+import com.machiav3lli.backup.items.HomePlaceholderItemX
+import com.machiav3lli.backup.items.UpdatedItemX
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.HomeViewModel
-import com.machiav3lli.backup.viewmodels.HomeViewModelFactory
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.IAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
@@ -70,7 +70,7 @@ class HomeFragment : NavigationFragment(),
         super.onCreate(savedInstanceState)
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
-        val viewModelFactory = HomeViewModelFactory(requireActivity().application)
+        val viewModelFactory = HomeViewModel.Factory(requireActivity().application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(HomeViewModel::class.java)
         return binding.root
     }
@@ -80,15 +80,15 @@ class HomeFragment : NavigationFragment(),
         setupViews()
         if (requireMainActivity().viewModel.refreshNow.value == true) refreshView()
 
-        viewModel.refreshNow.observe(requireActivity(), {
+        viewModel.refreshNow.observe(requireActivity()) {
             binding.refreshLayout.isRefreshing = it
             if (it) {
                 binding.searchBar.setQuery("", false)
                 requireMainActivity().viewModel.refreshList()
             }
-        })
+        }
 
-        viewModel.nUpdatedApps.observe(requireActivity(), {
+        viewModel.nUpdatedApps.observe(requireActivity()) {
             binding.buttonUpdated.text =
                 binding.root.context.resources.getQuantityString(R.plurals.updated_apps, it, it)
             if (it > 0) {
@@ -129,7 +129,7 @@ class HomeFragment : NavigationFragment(),
                 binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
                 binding.buttonUpdated.setOnClickListener(null)
             }
-        })
+        }
     }
 
     override fun onStart() {
@@ -216,6 +216,7 @@ class HomeFragment : NavigationFragment(),
                 .plus(item.app.packageLabel)
                 .find { it.contains(cs.toString(), true) } != null
         }
+        binding.searchBar.maxWidth = Int.MAX_VALUE
         binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
                 homeItemAdapter.filter(newText)
@@ -259,7 +260,11 @@ class HomeFragment : NavigationFragment(),
         selectedPackages: List<String?>,
         selectedModes: List<Int>
     ) {
-        val notificationId = System.currentTimeMillis().toInt()
+        val now = System.currentTimeMillis()
+        val notificationId = now.toInt()
+        val batchType = getString(R.string.backup)
+        val batchName = WorkHandler.getBatchName(batchType, now)
+
         val selectedItems = selectedPackages
             .mapIndexed { i, packageName ->
                 if (packageName.isNullOrEmpty()) null
@@ -272,16 +277,15 @@ class HomeFragment : NavigationFragment(),
         var counter = 0
         val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
         val workManager = WorkManager.getInstance(requireContext())
-        MainActivityX.startWork()
+        OABX.work.beginBatch(batchName)
         selectedItems.forEach { (packageName, mode) ->
 
             val oneTimeWorkRequest =
-                AppActionWork.Request(packageName, mode, true, notificationId)
+                AppActionWork.Request(packageName, mode, true, notificationId, batchName)
             worksList.add(oneTimeWorkRequest)
 
             val oneTimeWorkLiveData = WorkManager.getInstance(requireContext())
                 .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
-            //TODO cleanup MainActivityX.showRunningStatus()
             oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
                 override fun onChanged(t: WorkInfo?) {
                     if (t?.state == WorkInfo.State.SUCCEEDED) {
@@ -302,8 +306,9 @@ class HomeFragment : NavigationFragment(),
             })
         }
 
-        val finishWorkRequest = FinishWork.Request(resultsSuccess, true)
+        val finishWorkRequest = FinishWork.Request(resultsSuccess, true, batchName)
 
+        /*
         val finishWorkLiveData = WorkManager.getInstance(requireContext())
             .getWorkInfoByIdLiveData(finishWorkRequest.id)
         finishWorkLiveData.observeForever(object : Observer<WorkInfo> {
@@ -320,11 +325,11 @@ class HomeFragment : NavigationFragment(),
                     }
 
                     finishWorkLiveData.removeObserver(this)
-                    //TODO cleanup MainActivityX.showRunningStatus()
                     viewModel.refreshNow.value = true
                 }
             }
         })
+        */
 
         if (worksList.isNotEmpty()) {
             workManager

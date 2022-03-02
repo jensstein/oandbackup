@@ -15,12 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.machiav3lli.backup.dbs
+package com.machiav3lli.backup.dbs.dao
 
 import android.database.SQLException
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.machiav3lli.backup.dbs.entity.Schedule
 
+// TODO abstract a base dao and gather all daos in one file
 @Dao
 interface ScheduleDao {
     @Query("SELECT COUNT(*) FROM schedule")
@@ -32,6 +34,9 @@ interface ScheduleDao {
 
     @Query("SELECT * FROM schedule WHERE id = :id")
     fun getSchedule(id: Long): Schedule?
+
+    @Query("SELECT * FROM schedule WHERE name = :name")
+    fun getSchedule(name: String): Schedule?
 
     @Query("SELECT * FROM schedule WHERE id = :id")
     fun getLiveSchedule(id: Long): LiveData<Schedule?>

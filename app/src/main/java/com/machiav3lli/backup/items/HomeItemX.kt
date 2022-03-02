@@ -23,7 +23,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ItemMainXBinding
-import com.machiav3lli.backup.dbs.AppExtras
+import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.utils.*
 import com.mikepenz.fastadapter.binding.AbstractBindingItem
 

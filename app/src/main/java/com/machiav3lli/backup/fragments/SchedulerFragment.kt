@@ -28,11 +28,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.FragmentSchedulerBinding
-import com.machiav3lli.backup.dbs.ScheduleDatabase
+import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.items.SchedulerItemX
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
-import com.machiav3lli.backup.viewmodels.SchedulerViewModelFactory
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.IAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
@@ -44,6 +43,7 @@ class SchedulerFragment : NavigationFragment() {
     private lateinit var binding: FragmentSchedulerBinding
     private var sheetSchedule: ScheduleSheet? = null
     private lateinit var viewModel: SchedulerViewModel
+    private lateinit var database: ODatabase
 
     private val schedulerItemAdapter = ItemAdapter<SchedulerItemX>()
     private var schedulerFastAdapter: FastAdapter<SchedulerItemX> =
@@ -57,9 +57,10 @@ class SchedulerFragment : NavigationFragment() {
         super.onCreate(savedInstanceState)
         binding = FragmentSchedulerBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
-        val dataSource = ScheduleDatabase.getInstance(requireContext()).scheduleDao
-        val viewModelFactory = SchedulerViewModelFactory(dataSource, requireActivity().application)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(SchedulerViewModel::class.java)
+        database = ODatabase.getInstance(requireContext())
+        val dataSource = database.scheduleDao
+        val viewModelFactory = SchedulerViewModel.Factory(dataSource, requireActivity().application)
+        viewModel = ViewModelProvider(this, viewModelFactory)[SchedulerViewModel::class.java]
         return binding.root
     }
 
@@ -67,7 +68,7 @@ class SchedulerFragment : NavigationFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
 
-        viewModel.schedules.observe(requireActivity(), {
+        viewModel.schedules.observe(requireActivity()) {
             it?.let {
                 val diffResult = calculateDiff(
                     schedulerItemAdapter,
@@ -76,7 +77,7 @@ class SchedulerFragment : NavigationFragment() {
                 )
                 set(schedulerItemAdapter, diffResult)
             }
-        })
+        }
     }
 
     override fun onResume() {
@@ -137,7 +138,14 @@ class SchedulerFragment : NavigationFragment() {
             item: SchedulerItemX
         ) {
             item.schedule.enabled = (v as AppCompatCheckBox).isChecked
-            Thread(ScheduleSheet.UpdateRunnable(item.schedule, requireContext(), true)).start()
+            Thread(
+                ScheduleSheet.UpdateRunnable(
+                    item.schedule,
+                    requireContext(),
+                    database.scheduleDao,
+                    true
+                )
+            ).start()
         }
     }
 

@@ -18,15 +18,136 @@
 package com.machiav3lli.backup
 
 import android.app.Application
+import android.content.Context
+import android.os.PowerManager
 import android.util.LruCache
+import com.machiav3lli.backup.activities.MainActivityX
+import com.machiav3lli.backup.handler.ShellHandler
+import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.services.ScheduleService
+import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import timber.log.Timber
+import java.lang.ref.WeakReference
 
 class OABX : Application() {
+
     var cache: LruCache<String, MutableList<AppInfo>> = LruCache(4000)
+
+    var work: WorkHandler? = null
+
+    init {
+        Timber.plant(object : Timber.DebugTree() {
+
+            override fun log(
+                priority: Int, tag: String?, message: String, t: Throwable?
+            ) {
+                super.log(priority, "$tag", message, t)
+            }
+
+            override fun createStackElementTag(element: StackTraceElement): String {
+                return "${
+                    element.methodName
+                }@${
+                    element.lineNumber
+                }:${
+                    super.createStackElementTag(element)
+                }"
+            }
+        })
+    }
 
     override fun onCreate() {
         super.onCreate()
-        Timber.plant(Timber.DebugTree())
+        appRef = WeakReference(this)
+
+        initShellHandler()
+
+        work = WorkHandler(context)
+        if (prefFlag("cancelOnStart", false))
+            work?.cancel()
+        work?.prune()
+    }
+
+    override fun onTerminate() {
+        work = work?.release()
+        appRef = WeakReference(null)
+        super.onTerminate()
+    }
+
+    companion object {
+
+        // app should always be created
+        var appRef: WeakReference<OABX> = WeakReference(null)
+        val app: OABX get() = appRef.get()!!
+
+        // service might be null
+        var serviceRef: WeakReference<ScheduleService> = WeakReference(null)
+        var service: ScheduleService?
+            get() {
+                return serviceRef.get()
+            }
+            set(service) {
+                serviceRef = WeakReference(service)
+            }
+
+        // activity might be null
+        var activityRef: WeakReference<MainActivityX> = WeakReference(null)
+        var activity: MainActivityX?
+            get() {
+                return activityRef.get()
+            }
+            set(activity) {
+                activityRef = WeakReference(activity)
+            }
+
+        var appsSuspendedChecked = false
+
+        var shellHandlerInstance: ShellHandler? = null
+            private set
+
+        fun initShellHandler(): Boolean {
+            return try {
+                shellHandlerInstance = ShellHandler()
+                true
+            } catch (e: ShellHandler.ShellCommandFailedException) {
+                false
+            }
+        }
+
+        val context: Context get() = app.applicationContext
+        val work: WorkHandler get() = app.work!!
+
+        fun prefFlag(name: String, default: Boolean) = context.getDefaultSharedPreferences()
+            .getBoolean(name, default)
+
+        fun prefInt(name: String, default: Int) = context.getDefaultSharedPreferences()
+            .getInt(name, default)
+
+        // if any background work is to be done
+        private var theWakeLock: PowerManager.WakeLock? = null
+        private var wakeLockNested: Int = 0
+        private const val wakeLockTag = "OABX:Application"
+        // count the nesting levels
+        // might be difficult sometimes, because
+        // the lock must be transferred from one object/function to another
+        // e.g. from the receiver to the service
+        fun wakelock(aquire: Boolean) {
+            if (aquire) {
+                Timber.d("%%%%% $wakeLockTag wakelock aquire (before: $wakeLockNested)")
+                if(++wakeLockNested == 1) {
+                    val pm = OABX.context.getSystemService(Context.POWER_SERVICE) as PowerManager
+                    theWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, wakeLockTag)
+                    theWakeLock?.acquire(60 * 60 * 1000L)
+                    Timber.d("%%%%% $wakeLockTag wakelock ACQUIRED")
+                }
+            } else {
+                Timber.d("%%%%% $wakeLockTag wakelock release (before: $wakeLockNested)")
+                if(--wakeLockNested == 0) {
+                    Timber.d("%%%%% $wakeLockTag wakelock RELEASING")
+                    theWakeLock?.release()
+                }
+            }
+        }
     }
 }

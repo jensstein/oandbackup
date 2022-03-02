@@ -18,9 +18,9 @@
 package com.machiav3lli.backup.tasks
 
 import android.content.Context
+import android.content.Intent
 import androidx.work.*
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.activities.MainActivityX
 
 class FinishWork(val context: Context, workerParams: WorkerParameters) :
     Worker(context, workerParams) {
@@ -47,12 +47,15 @@ class FinishWork(val context: Context, workerParams: WorkerParameters) :
     companion object {
         fun Request(
             resultsSuccess: Boolean,
-            backupBoolean: Boolean
+            backupBoolean: Boolean,
+            batchName: String
         ) = OneTimeWorkRequest.Builder(FinishWork::class.java)
+                .addTag("name:$batchName")
                 .setInputData(
                     workDataOf(
                         "resultsSuccess" to resultsSuccess,
-                        "backupBoolean" to backupBoolean
+                        "backupBoolean" to backupBoolean,
+                        "name" to batchName
                     )
                 )
                 .build()

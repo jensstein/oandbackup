@@ -15,19 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.machiav3lli.backup.viewmodels
+package com.machiav3lli.backup.services
 
-import android.app.Application
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import android.app.Service
+import android.content.Intent
+import android.os.IBinder
 
-class HomeViewModelFactory(private val application: Application) :
-    ViewModelProvider.Factory {
-    @Suppress("unchecked_cast")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
-            return HomeViewModel(application) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
+class HeadlessSmsSendService : Service() {
+    override fun onBind(intent: Intent): IBinder {
+        TODO("Stub file to get OAndBackupX into Default SMS in Settings.")
     }
 }

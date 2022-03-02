@@ -18,15 +18,13 @@
 package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
-import com.machiav3lli.backup.dbs.AppExtras
-import com.machiav3lli.backup.dbs.AppExtrasDao
-import com.machiav3lli.backup.dbs.Blocklist
-import com.machiav3lli.backup.dbs.BlocklistDao
+import com.machiav3lli.backup.dbs.*
+import com.machiav3lli.backup.dbs.dao.AppExtrasDao
+import com.machiav3lli.backup.dbs.dao.BlocklistDao
+import com.machiav3lli.backup.dbs.entity.AppExtras
+import com.machiav3lli.backup.dbs.entity.Blocklist
 import com.machiav3lli.backup.handler.getApplicationList
 import com.machiav3lli.backup.items.AppInfo
 import kotlinx.coroutines.Dispatchers
@@ -35,10 +33,12 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class MainViewModel(
-    private val appExtrasDao: AppExtrasDao,
-    private val blocklistDao: BlocklistDao,
+    database: ODatabase,
     private val appContext: Application
 ) : AndroidViewModel(appContext) {
+    private val appExtrasDao: AppExtrasDao = database.appExtrasDao
+    private val blocklistDao: BlocklistDao = database.blocklistDao
+
     var appInfoList = MediatorLiveData<MutableList<AppInfo>>()
     var blocklist = MediatorLiveData<List<Blocklist>>()
     var appExtrasList: MutableList<AppExtras>
@@ -142,5 +142,18 @@ class MainViewModel(
             blocklistDao.updateList(PACKAGES_LIST_GLOBAL_ID, newList)
             appInfoList.value?.removeIf { newList.contains(it.packageName) }
         }
+
+    class Factory(
+        private val database: ODatabase,
+        private val application: Application
+    ) : ViewModelProvider.Factory {
+        @Suppress("unchecked_cast")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
+                return MainViewModel(database, application) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel class")
+        }
+    }
 }
 

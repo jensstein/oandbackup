@@ -21,6 +21,7 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     id("kotlin-kapt")
+    kotlin("plugin.serialization") version "1.6.10"
 }
 
 android {
@@ -90,6 +91,9 @@ android {
             freeCompilerArgs = listOf("-Xjvm-default=all")
         }
     }
+    lint {
+        checkReleaseBuilds = false
+    }
     dependenciesInfo {
         includeInApk = false
         includeInBundle = false
@@ -108,8 +112,8 @@ dependencies {
     implementation("androidx.room:room-ktx:2.4.1")
     kapt("androidx.room:room-compiler:2.4.1")
     implementation("androidx.work:work-runtime-ktx:2.7.1")
-    implementation("com.google.code.gson:gson:2.8.9")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.1")
     implementation("androidx.security:security-crypto:1.1.0-alpha03")
     implementation("androidx.biometric:biometric:1.2.0-alpha04")
     implementation("org.apache.commons:commons-compress:1.21")
@@ -119,15 +123,16 @@ dependencies {
     implementation("com.github.topjohnwu.libsu:core:$libsu")
     implementation("com.github.topjohnwu.libsu:io:$libsu")
     //implementation("com.github.topjohnwu.libsu:busybox:$libsu")
+    //implementation("com.github.tony19:named-regexp:0.2.6") // regex named groups
 
     // UI
     implementation("androidx.appcompat:appcompat:1.4.1")
     implementation("androidx.fragment:fragment-ktx:1.4.1")
     implementation("com.google.android.material:material:1.6.0-alpha02")
-    implementation("androidx.preference:preference-ktx:1.1.1")
+    implementation("androidx.preference:preference-ktx:1.2.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.5.0-alpha01")
-    implementation("androidx.navigation:navigation-ui-ktx:2.5.0-alpha01")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.5.0-alpha02")
+    implementation("androidx.navigation:navigation-ui-ktx:2.5.0-alpha02")
     val fastadapter = "5.6.0"
     implementation("com.mikepenz:fastadapter:$fastadapter")
     implementation("com.mikepenz:fastadapter-extensions-diff:$fastadapter")

@@ -19,7 +19,7 @@ package com.machiav3lli.backup.fragments
 
 import androidx.fragment.app.Fragment
 import com.machiav3lli.backup.activities.MainActivityX
-import com.machiav3lli.backup.dbs.AppExtras
+import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.items.AppInfo
 
 abstract class NavigationFragment : Fragment(), ProgressViewController {

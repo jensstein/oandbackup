@@ -18,7 +18,6 @@
 package com.machiav3lli.backup.fragments
 
 import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -35,14 +34,13 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.databinding.FragmentBatchBinding
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.handler.showNotification
-import com.machiav3lli.backup.items.ActionResult
+import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BatchItemX
 import com.machiav3lli.backup.items.BatchPlaceholderItemX
@@ -50,7 +48,6 @@ import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.BatchViewModel
-import com.machiav3lli.backup.viewmodels.BatchViewModelFactory
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.IAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
@@ -75,8 +72,8 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         super.onCreate(savedInstanceState)
         binding = FragmentBatchBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
-        val viewModelFactory = BatchViewModelFactory(requireActivity().application)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(BatchViewModel::class.java)
+        val viewModelFactory = BatchViewModel.Factory(requireActivity().application)
+        viewModel = ViewModelProvider(this, viewModelFactory)[BatchViewModel::class.java]
         return binding.root
     }
 
@@ -85,13 +82,13 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         setupViews()
         if (requireMainActivity().viewModel.refreshNow.value == true) refreshView()
 
-        viewModel.refreshNow.observe(requireActivity(), {
+        viewModel.refreshNow.observe(requireActivity()) {
             binding.refreshLayout.isRefreshing = it
             if (it) {
                 binding.searchBar.setQuery("", false)
                 requireMainActivity().viewModel.refreshList()
             }
-        })
+        }
     }
 
     override fun onStart() {
@@ -197,6 +194,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                 .plus(item.app.packageLabel)
                 .find { it.contains(cs.toString(), true) } != null
         }
+        binding.searchBar.maxWidth = Int.MAX_VALUE
         binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
                 batchItemAdapter.filter(newText)
@@ -317,11 +315,12 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     // TODO abstract this to fit for Main- & BatchFragment
     // TODO break down to smaller bits
     override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {
+
         val notificationId = System.currentTimeMillis().toInt()
-        val notificationMessage = String.format(
-            getString(R.string.fetching_action_list),
-            getString(if (backupBoolean) R.string.backup else R.string.restore)
-        )
+        val now = System.currentTimeMillis()
+        val batchType = getString(if (backupBoolean) R.string.backup else R.string.restore)
+        val batchName = WorkHandler.getBatchName(batchType, now)
+
         val selectedItems = selectedPackages
             .mapIndexed { i, packageName ->
                 if (packageName.isNullOrEmpty()) null
@@ -333,11 +332,11 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         var resultsSuccess = true
         var counter = 0
         val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
-        MainActivityX.startWork()
+        OABX.work.beginBatch(batchName)
         selectedItems.forEach { (packageName, mode) ->
 
             val oneTimeWorkRequest =
-                AppActionWork.Request(packageName, mode, backupBoolean, notificationId)
+                AppActionWork.Request(packageName, mode, backupBoolean, notificationId, batchName)
             worksList.add(oneTimeWorkRequest)
 
             val oneTimeWorkLiveData = WorkManager.getInstance(requireContext())
@@ -363,8 +362,9 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
             })
         }
 
-        val finishWorkRequest = FinishWork.Request(resultsSuccess, backupBoolean)
+        val finishWorkRequest = FinishWork.Request(resultsSuccess, backupBoolean, batchName)
 
+        /*
         val finishWorkLiveData = WorkManager.getInstance(requireContext())
             .getWorkInfoByIdLiveData(finishWorkRequest.id)
         finishWorkLiveData.observeForever(object : Observer<WorkInfo> {
@@ -373,19 +373,19 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                     val (message, title) = FinishWork.getOutput(t)
                     showNotification(
                         requireContext(), MainActivityX::class.java,
-                        notificationId.toInt(), title, message, true
+                        notificationId, title, message, true
                     )
                     val overAllResult = ActionResult(null, null, errors, resultsSuccess)
                     requireActivity().showActionResult(overAllResult) { _: DialogInterface?, _: Int ->
                         LogsHandler.logErrors(requireContext(), errors.dropLast(2))
                     }
 
-                    //TODO cleanup MainActivityX.showRunningStatus()
                     viewModel.refreshNow.value = true
                     finishWorkLiveData.removeObserver(this)
                 }
             }
         })
+        */
 
         if (worksList.isNotEmpty()) {
             WorkManager.getInstance(requireContext())

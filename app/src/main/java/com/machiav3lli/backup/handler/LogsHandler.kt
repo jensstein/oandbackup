@@ -52,7 +52,7 @@ class LogsHandler(var context: Context) {
         logsDirectory?.createFile("application/octet-stream", logFileName)?.let { logFile ->
             BufferedOutputStream(logFile.outputStream()).use { logOut ->
                 logOut.write(
-                    logItem.toGson().toByteArray(StandardCharsets.UTF_8)
+                    logItem.toJSON().toByteArray(StandardCharsets.UTF_8)
                 )
                 Timber.i("Wrote $logFile file for $logItem")
             }

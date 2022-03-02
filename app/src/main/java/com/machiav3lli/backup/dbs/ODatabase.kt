@@ -21,24 +21,36 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.machiav3lli.backup.APPEXTRAS_DB_NAME
+import com.machiav3lli.backup.SCHEDULES_DB_NAME
+import com.machiav3lli.backup.dbs.dao.AppExtrasDao
+import com.machiav3lli.backup.dbs.dao.BlocklistDao
+import com.machiav3lli.backup.dbs.dao.ScheduleDao
+import com.machiav3lli.backup.dbs.entity.AppExtras
+import com.machiav3lli.backup.dbs.entity.Blocklist
+import com.machiav3lli.backup.dbs.entity.Schedule
 
-@Database(entities = [AppExtras::class], version = 1)
-abstract class AppExtrasDatabase : RoomDatabase() {
+@Database(
+    entities = [Schedule::class, Blocklist::class, AppExtras::class],
+    version = 1,
+    exportSchema = true,
+    autoMigrations = []
+)
+abstract class ODatabase : RoomDatabase() {
+    abstract val scheduleDao: ScheduleDao
+    abstract val blocklistDao: BlocklistDao
     abstract val appExtrasDao: AppExtrasDao
 
     companion object {
         @Volatile
-        private var INSTANCE: AppExtrasDatabase? = null
+        private var INSTANCE: ODatabase? = null
 
-        fun getInstance(context: Context): AppExtrasDatabase {
+        fun getInstance(context: Context): ODatabase {
             synchronized(this) {
                 if (INSTANCE == null) {
                     INSTANCE = Room
                         .databaseBuilder(
-                            context.applicationContext,
-                            AppExtrasDatabase::class.java,
-                            APPEXTRAS_DB_NAME
+                            context.applicationContext, ODatabase::class.java,
+                            SCHEDULES_DB_NAME
                         )
                         .fallbackToDestructiveMigration()
                         .build()

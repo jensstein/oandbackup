@@ -21,57 +21,32 @@ import android.content.Context
 import android.content.pm.PackageInfo
 import android.os.Parcel
 import android.os.Parcelable
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BACKUP_INSTANCE_DIR
-import com.machiav3lli.backup.utils.GsonUtils.instance
+import com.machiav3lli.backup.utils.LocalDateTimeSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.time.LocalDateTime
 import javax.crypto.Cipher
 
+@Serializable
 open class BackupProperties : AppMetaInfo, Parcelable {
-    @SerializedName("backupDate")
-    @Expose
+    @Serializable(with = LocalDateTimeSerializer::class)
     var backupDate: LocalDateTime? = null
         private set
+    var hasApk: Boolean = false
+    var hasAppData: Boolean = false
+    var hasDevicesProtectedData: Boolean = false
+    var hasExternalData: Boolean = false
+    var hasObbData: Boolean = false
+    var hasMediaData: Boolean = false
+    var cipherType: String? = null
+    var iv: ByteArray? = null
+    var cpuArch: String? = null
 
-    @SerializedName("hasApk")
-    @Expose
-    val hasApk: Boolean
-
-    @SerializedName("hasAppData")
-    @Expose
-    val hasAppData: Boolean
-
-    @SerializedName("hasDevicesProtectedData")
-    @Expose
-    val hasDevicesProtectedData: Boolean
-
-    @SerializedName("hasExternalData")
-    @Expose
-    val hasExternalData: Boolean
-
-    @SerializedName("hasObbData")
-    @Expose
-    val hasObbData: Boolean
-
-    @SerializedName("hasMediaData")
-    @Expose
-    val hasMediaData: Boolean
-
-    @SerializedName("cipherType")
-    @Expose
-    val cipherType: String?
-
-    @SerializedName("iv")
-    @Expose
-    val iv: ByteArray?
-
-    @SerializedName("cpuArch")
-    @Expose
-    val cpuArch: String?
-
-    fun getBackupDir(appBackupDir: StorageFile?) : StorageFile? =
+    fun getBackupDir(appBackupDir: StorageFile?): StorageFile? =
         appBackupDir?.findFile(backupFolderName)
 
     private val backupFolderName
@@ -82,11 +57,19 @@ open class BackupProperties : AppMetaInfo, Parcelable {
         )
 
     constructor(
-        context: Context, pi: PackageInfo, backupDate: LocalDateTime?, hasApk: Boolean,
-        hasAppData: Boolean, hasDevicesProtectedData: Boolean, hasExternalData: Boolean,
-        hasObbData: Boolean, hasMediaData: Boolean, cipherType: String?, iv: ByteArray?, cpuArch: String?
-    )
-            : super(context, pi) {
+        context: Context,
+        pi: PackageInfo,
+        backupDate: LocalDateTime?,
+        hasApk: Boolean,
+        hasAppData: Boolean,
+        hasDevicesProtectedData: Boolean,
+        hasExternalData: Boolean,
+        hasObbData: Boolean,
+        hasMediaData: Boolean,
+        cipherType: String?,
+        iv: ByteArray?,
+        cpuArch: String?
+    ) : super(context, pi) {
         this.backupDate = backupDate
         this.hasApk = hasApk
         this.hasAppData = hasAppData
@@ -100,9 +83,17 @@ open class BackupProperties : AppMetaInfo, Parcelable {
     }
 
     constructor(
-        base: AppMetaInfo, backupDate: LocalDateTime?, hasApk: Boolean,
-        hasAppData: Boolean, hasDevicesProtectedData: Boolean, hasExternalData: Boolean,
-        hasObbData: Boolean, hasMediaData: Boolean, cipherType: String?, iv: ByteArray?, cpuArch: String?
+        base: AppMetaInfo,
+        backupDate: LocalDateTime?,
+        hasApk: Boolean,
+        hasAppData: Boolean,
+        hasDevicesProtectedData: Boolean,
+        hasExternalData: Boolean,
+        hasObbData: Boolean,
+        hasMediaData: Boolean,
+        cipherType: String?,
+        iv: ByteArray?,
+        cpuArch: String?
     ) : super(
         base.packageName, base.packageLabel, base.versionName,
         base.versionCode, base.profileId, base.sourceDir,
@@ -150,8 +141,9 @@ open class BackupProperties : AppMetaInfo, Parcelable {
         hasObbData = source.readByte().toInt() != 0
         hasMediaData = source.readByte().toInt() != 0
         cipherType = source.readString()
-        iv = ByteArray(Cipher.getInstance(cipherType).blockSize)
-        source.readByteArray(iv)
+        iv = ByteArray(Cipher.getInstance(cipherType).blockSize).also {
+            source.readByteArray(it)
+        }
         cpuArch = source.readString()
     }
 
@@ -171,18 +163,14 @@ open class BackupProperties : AppMetaInfo, Parcelable {
         return 0
     }
 
-    fun toGson(): String {
-        return instance!!.toJson(this)
-    }
-
     val isEncrypted: Boolean
-        get() = cipherType != null && cipherType.isNotEmpty()
+        get() = !cipherType.isNullOrEmpty()
 
     override fun hashCode(): Int {
         var hash = 7
         hash = 31 * hash + backupDate.hashCode()
         hash = 31 * hash + if (hasApk) 1 else 0
-        hash = 31 * hash + if (hasAppData) 1 else 0                 
+        hash = 31 * hash + if (hasAppData) 1 else 0
         hash = 31 * hash + if (hasDevicesProtectedData) 1 else 0
         hash = 31 * hash + if (hasExternalData) 1 else 0
         hash = 31 * hash + if (hasObbData) 1 else 0
@@ -208,7 +196,11 @@ open class BackupProperties : AppMetaInfo, Parcelable {
                 '}'
     }
 
+    fun toJSON() = Json.encodeToString(this)
+
     companion object {
+        fun fromJson(json: String) = Json.decodeFromString<BackupProperties>(json)
+
         val CREATOR = object : Parcelable.Creator<BackupProperties?> {
             override fun createFromParcel(source: Parcel): BackupProperties {
                 return BackupProperties(source)
@@ -217,10 +209,6 @@ open class BackupProperties : AppMetaInfo, Parcelable {
             override fun newArray(size: Int): Array<BackupProperties?> {
                 return arrayOfNulls(size)
             }
-        }
-
-        fun fromGson(gson: String?): BackupProperties {
-            return instance!!.fromJson(gson, BackupProperties::class.java)
         }
     }
 }

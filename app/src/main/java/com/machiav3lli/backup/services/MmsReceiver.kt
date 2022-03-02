@@ -15,19 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.machiav3lli.backup.viewmodels
+package com.machiav3lli.backup.services
 
-import android.app.Application
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import timber.log.Timber
 
-class LogViewModelFactory(private val application: Application)
-    : ViewModelProvider.Factory {
-    @Suppress("unchecked_cast")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(LogViewModel::class.java)) {
-            return LogViewModel(application) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
+class MmsReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        Timber.tag("MmsReceiver").v("onReceive")
+        // TODO: Stub file to get OAndBackupX into Default SMS in Settings.
     }
 }

@@ -18,8 +18,10 @@
 package com.machiav3lli.backup.handler
 
 import android.os.Environment.DIRECTORY_DOCUMENTS
+import android.telephony.mbms.FileInfo
+//import com.google.code.regexp.Pattern
 import com.machiav3lli.backup.BuildConfig
-import com.machiav3lli.backup.activities.MainActivityX
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.activities.MainActivityX.Companion.activity
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
 import com.machiav3lli.backup.utils.BUFFER_SIZE
@@ -32,12 +34,13 @@ import java.io.IOException
 import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.regex.Pattern
+
 
 class ShellHandler {
 
+    var assets: AssetHandler
+
     init {
-        // TODO: hg42: duplicate to SplashActivity?
         Shell.enableVerboseLogging = BuildConfig.DEBUG
         Shell.setDefaultBuilder(
             Shell.Builder.create()
@@ -45,6 +48,50 @@ class ShellHandler {
                 .setFlags(Shell.FLAG_MOUNT_MASTER)
                 .setTimeout(20)
         )
+
+        val names = UTILBOX_NAMES
+        names.any {
+            try {
+                setUtilBoxPath(it)
+                true
+            } catch (e: UtilboxNotAvailableException) {
+                Timber.d("Tried utilbox name '${it}'. Not available.")
+                false
+            }
+        }
+        if (utilBoxQ.isEmpty()) {
+            Timber.d("No more options for utilbox. Bailing out.")
+            throw UtilboxNotAvailableException(names.joinToString(", "), null)
+        }
+
+        assets = AssetHandler(OABX.context)
+        scriptDir = assets.directory
+        scriptUserDir = File(
+            activity?.getExternalFilesDir(DIRECTORY_DOCUMENTS),
+            SCRIPTS_SUBDIR
+        )
+        scriptUserDir?.mkdirs()
+    }
+
+    @Throws(ShellCommandFailedException::class, UnexpectedCommandResult::class)
+    fun suGetFileInfo(path: String, parent: String? = null): FileInfo {
+        val shellResult = runAsRoot("$utilBoxQ ls -bdAll ${quote(path)}")
+        val relativeParent = parent ?: ""
+        val result = shellResult.out.asSequence()
+            .filter { it.isNotEmpty() }
+            .filter { ! it.startsWith("total") }
+            .mapNotNull { FileInfo.fromLsOutput(it, relativeParent, File(path).parent!!) }
+            .toMutableList()
+        if(result.size < 1)
+            throw UnexpectedCommandResult("cannot get file info for '$path'", shellResult)
+        if(result.size > 1)
+            Timber.w("more than one file found for '$path', taking the first", shellResult)
+        return result[0]
+    }
+
+    @Throws(ShellCommandFailedException::class, UnexpectedCommandResult::class)
+    fun suGetFileInfo(file: File): FileInfo {
+        return suGetFileInfo(file.absolutePath, file.parent)
     }
 
     @Throws(ShellCommandFailedException::class)
@@ -62,20 +109,19 @@ class ShellHandler {
         val shellResult = runAsRoot("$utilBoxQ ls -bAll ${quote(path)}")
         val relativeParent = parent ?: ""
         val result = shellResult.out.asSequence()
-            .filter { line: String -> line.isNotEmpty() }
-            .filter { line: String -> !line.startsWith("total") }
-            .filter { line: String -> line.split(Regex("""\s+"""), 0).size > 8 }
-            .map { line: String -> FileInfo.fromLsOutput(line, relativeParent, path) }
+            .filter { it.isNotEmpty() }
+            .filter { ! it.startsWith("total") }
+            .mapNotNull { FileInfo.fromLsOutput(it, relativeParent, path) }
             .toMutableList()
         if (recursive) {
             val directories = result
-                .filter { fileInfo: FileInfo -> fileInfo.fileType == FileType.DIRECTORY }
+                .filter { it.fileType == FileType.DIRECTORY }
                 .toTypedArray()
             directories.forEach { dir ->
                 result.addAll(
                     suGetDetailedDirectoryContents(
                         dir.absolutePath, true,
-                        if (parent != null) parent + '/' + dir.filename else dir.filename
+                        if (parent != null) "$parent/${dir.filename}" else dir.filename
                     )
                 )
             }
@@ -96,32 +142,29 @@ class ShellHandler {
         // use -dlZ instead of -dnZ, because -nZ was found (by Kostas!) with an error (with no space between group and context)
         // apparently uid/gid is less tested than names
         var shellResult: Shell.Result? = null
+        val command = "$utilBoxQ ls -bdAlZ ${quote(filepath)}"
         try {
-            val command = "$utilBoxQ ls -bdAlZ ${quote(filepath)}"
             shellResult = runAsRoot(command)
             return shellResult.out[0].split(" ", limit = 6).slice(2..4).toTypedArray()
         } catch (e: Throwable) {
-            throw UnexpectedCommandResult("'\$command' failed", shellResult)
+            throw UnexpectedCommandResult("'$command' failed", shellResult)
         }
     }
 
     @Throws(UtilboxNotAvailableException::class)
     fun setUtilBoxPath(utilBoxName: String) {
-        var shellResult = runAsRoot("which $utilBoxName")
-        if (shellResult.out.isNotEmpty()) {
-            utilBoxPath = shellResult.out.joinToString("")
-            if (utilBoxPath.isNotEmpty()) {
-                utilBoxQ = quote(utilBoxPath)
-                shellResult = runAsRoot("$utilBoxQ --version")
-                if (shellResult.out.isNotEmpty()) {
-                    val utilBoxVersion = shellResult.out.joinToString("")
-                    Timber.i("Using Utilbox $utilBoxName : $utilBoxQ : $utilBoxVersion")
-                }
-                return
+        utilBoxQ = quote(utilBoxName)
+        var shellResult = runAsRoot("$utilBoxQ --version")
+        if (shellResult.isSuccess) {
+            if (shellResult.out.isNotEmpty()) {
+                utilBoxVersion = shellResult.out.joinToString("")
+                Timber.i("Using Utilbox $utilBoxName : $utilBoxQ : $utilBoxVersion")
+            } else {
+                Timber.i("Using Utilbox $utilBoxName : $utilBoxQ : no version")
             }
+            return
         }
         // not found => try bare executables (no utilbox prefixed)
-        utilBoxPath = ""
         utilBoxQ = ""
     }
 
@@ -180,7 +223,7 @@ class ShellHandler {
         }
 
         companion object {
-            private val PATTERN_LINKSPLIT       = Pattern.compile(" -> ")
+            private val PATTERN_LINKSPLIT       = Regex(" -> ") //Pattern.compile(" -> ")
             private val FALLBACK_MODE_FOR_DIR   = translatePosixPermissionToMode("rwxrwx--x")
             private val FALLBACK_MODE_FOR_FILE  = translatePosixPermissionToMode("rw-rw----")
             private val FALLBACK_MODE_FOR_CACHE = translatePosixPermissionToMode("rwxrws--x")
@@ -228,7 +271,8 @@ class ShellHandler {
                 lsLine: String,
                 parentPath: String?,
                 absoluteParent: String
-            ): FileInfo {
+            ): FileInfo? {
+                var parent = absoluteParent
                 // Expecting something like this (with whitespace) from
                 // ls -bAll /data/data/com.shazam.android/
                 // field   0     1    2       3            4       5            6             7     8
@@ -238,32 +282,111 @@ class ShellHandler {
                 // [0] Filemode, [1] number of directories/links inside, [2] owner [3] group [4] size
                 // [5] mdate, [6] mtime, [7] mtimezone, [8] filename
                 //var absoluteParent = absoluteParent
-                var parent = absoluteParent
-                val tokens = lsLine.split(Regex("""\s+"""), 9).toTypedArray()
-                var filePath: String?
-                val owner = tokens[2]
-                val group = tokens[3]
-                // 2020-11-26 04:35:21.543772855 +0100
-                val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.getDefault())
+                //val tokens = lsLine.split(Regex("""\s+"""), 9).toTypedArray()
+                //  val regex = Pattern.compile(
+                //      """(?x)
+                //          |^
+                //          |(?<mode>\S+)
+                //          |\s+
+                //          |(?<links>\d+)
+                //          |\s+
+                //          |(?<owner>\S+)
+                //          |\s+
+                //          |(?<group>\S+)
+                //          |\s+
+                //          |(?<size>\d+)
+                //          |\s+
+                //          |(?<mdatetime>
+                //          |  (?<mdate>\S+)
+                //          |  \s+
+                //          |  (?<mtime>\S+)(?:\.\S+)       # ignore nanoseconds part
+                //          |  (\s+                         # optional
+                //          |     (?<mzone>[+-]\d\d\d\d)    # old toybox on api 26 doesn't have this
+                //          |  )?                           # (no -ll option or --full-time)
+                //          |)
+                //          |\s+
+                //          |(?<name>.*)
+                //          |$
+                //          |""".trimMargin()
+                //  )
+                //  val match = regex.matcher(lsLine)
+                //  match.find()
+                //  var filePath: String?
+                //  val modeFlags = match.group("mode") ?: return null
+                //  val owner = match.group("owner") ?: return null
+                //  val group = match.group("group") ?: return null
+                //  val size = match.group("size") ?: return null
+                //  val mdatetime = match.group("mdatetime") ?: return null
+                //  val mdate = match.group("mdate") ?: return null
+                //  val mtime = match.group("mtime") ?: return null
+                //  val mzone = match.group("mzone")
+                //  var name = match.group("name") ?: return null
+                val regex = Regex(
+                    """(?x)
+                        |^
+                        |(\S+)                       # 1 mode
+                        |\s+
+                        |(\d+)                       # 2 links
+                        |\s+
+                        |(\S+)                       # 3 owner
+                        |\s+
+                        |(\S+)                       # 4 group
+                        |\s+
+                        |(\d+)                       # 5 size
+                        |\s+
+                        |(                           # 6 mdatetime
+                        |  ([\d-]+)                  # 7 mdate
+                        |  \s+
+                        |  ([\d:]+)(\.\d+)?          # 8 mtime  9 nanoseconds opt 
+                        |  (\s+                      # 10 opt
+                        |     ([+-]\d+)              # 11 mzone # toybox on api 26 doesn't have this TODO hg42 test 27-30
+                        |  )?                                   # (no -ll option or --full-time)
+                        |)
+                        |\s+
+                        |(.*)                        # 12 longname
+                        |$
+                        |""".trimMargin()
+                )
+                val match = regex.matchEntire(lsLine)
+                if (match == null) throw Exception("ls output does not match expectations (regex)")
+                val modeFlags   = match.groupValues[1]
+                val owner       = match.groupValues[3]
+                val group       = match.groupValues[4]
+                val size        = match.groupValues[5]
+                //val mdatetime   = match.groupValues[6]
+                val mdate       = match.groupValues[7]
+                val mtime       = match.groupValues[8]
+                val mzone       = match.groupValues[11]
+                var name        = match.groupValues[12]
                 val fileModTime =
-                    formatter.parse("${tokens[5]} ${tokens[6].split(".")[0]} ${tokens[7]}")
+                        if(mzone.isEmpty())
+                            // 2020-11-26 04:35
+                            SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+                                .parse("$mdate $mtime")
+                        else
+                            // 2020-11-26 04:35:21(.543772855) +0100
+                            SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.getDefault())
+                                .parse("$mdate $mtime $mzone")
                 // If ls was executed with a file as parameter, the full path is echoed. This is not
                 // good for processing. Removing the absolute parent and setting the parent to be the parent
-                // and not the file itself
-                if (tokens[8].startsWith(parent)) {
-                    parent = File(parent).parent!!
-                    tokens[8] = tokens[8].substring(parent.length + 1)
+                // and not the file itself (hg42: huh? a parent should be a parent and never the file itself)
+                if (name.startsWith(parent)) {
+                    if (name == parent) {    // don't break the case the file is it own parent :-( in case it is used
+                        Timber.e("the file '$name' is it's own parent, but should not")
+                        parent = File(parent).parent!!
+                    }
+                    name = name.substring(parent.length + 1)
                 }
-                val fileName = unescapeLsOutput(tokens[8])
-                filePath =
-                    if (parentPath == null || parentPath.isEmpty()) {
+                val fileName = unescapeLsOutput(name)
+                var filePath =
+                    if (parentPath.isNullOrEmpty()) {
                         fileName
                     } else {
                         "${parentPath}/${fileName}"
                     }
                 var fileMode = FALLBACK_MODE_FOR_FILE
                 try {
-                    fileMode = translatePosixPermissionToMode(tokens[0].substring(1))
+                    fileMode = translatePosixPermissionToMode(modeFlags.substring(1))
                 } catch (e: IllegalArgumentException) {
                     // Happens on cache and code_cache dir because of sticky bits
                     // drwxrws--x 2 u0_a108 u0_a108_cache 4096 2020-09-22 17:36 cache
@@ -277,7 +400,7 @@ class ShellHandler {
                         fileMode = FALLBACK_MODE_FOR_CACHE
                     } else {
                         fileMode =
-                            if (tokens[0][0] == 'd') {
+                            if (modeFlags[0] == 'd') {
                                 FALLBACK_MODE_FOR_DIR
                             } else {
                                 FALLBACK_MODE_FOR_FILE
@@ -285,7 +408,7 @@ class ShellHandler {
                         Timber.w(
                             String.format(
                                 "Found a file with special mode (%s), which is not processable. Falling back to %s. filepath=%s ; absoluteParent=%s",
-                                tokens[0], fileMode, filePath, parent
+                                modeFlags, fileMode, filePath, parent
                             )
                         )
                     }
@@ -295,7 +418,7 @@ class ShellHandler {
                 var linkName: String? = null
                 var fileSize: Long = 0
                 val type: FileType
-                when (tokens[0][0]) {
+                when (modeFlags[0]) {
                     'd' -> type = FileType.DIRECTORY
                     'l' -> {
                         type = FileType.SYMBOLIC_LINK
@@ -309,11 +432,11 @@ class ShellHandler {
                     'c' -> type = FileType.CHAR_DEVICE
                     else -> {
                         type = FileType.REGULAR_FILE
-                        fileSize = tokens[4].toLong()
+                        fileSize = size.toLong()
                     }
                 }
                 val result = FileInfo(
-                    filePath!!,
+                    filePath,
                     type,
                     parent,
                     owner,
@@ -326,7 +449,7 @@ class ShellHandler {
                 return result
             }
 
-            fun fromLsOutput(lsLine: String, absoluteParent: String): FileInfo {
+            fun fromLsOutput(lsLine: String, absoluteParent: String): FileInfo? {
                 return fromLsOutput(lsLine, "", absoluteParent)
             }
         }
@@ -334,9 +457,9 @@ class ShellHandler {
 
     companion object {
 
-        var utilBoxPath = ""
-            private set
         var utilBoxQ = ""
+            private set
+        var utilBoxVersion = ""
             private set
         lateinit var scriptDir : File
             private set
@@ -489,29 +612,5 @@ class ShellHandler {
                 found = File(scriptDir, assetFileName)
             return found
         }
-    }
-
-    init {
-        val names = UTILBOX_NAMES
-        names.any {
-            try {
-                setUtilBoxPath(it)
-                true
-            } catch (e: UtilboxNotAvailableException) {
-                Timber.d("Tried utilbox name '${it}'. Not available.")
-                false
-            }
-        }
-        if (utilBoxQ.isEmpty()) {
-            Timber.d("No more options for utilbox. Bailing out.")
-            throw UtilboxNotAvailableException(names.joinToString(", "), null)
-        }
-
-        scriptDir = MainActivityX.assetDir
-        scriptUserDir = File(
-            activity?.getExternalFilesDir(DIRECTORY_DOCUMENTS),
-            SCRIPTS_SUBDIR
-        )
-        scriptUserDir?.mkdirs()
     }
 }
