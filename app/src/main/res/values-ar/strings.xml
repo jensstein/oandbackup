@@ -333,4 +333,5 @@
     <string name="calllogs_permission_title">أذونات سجلات المكالمات</string>
     <string name="intro_permission_smsmms">يحتاج التطبيق إلى هذا الإذن ليتمكن من نسخ / استعادة رسائل SMS / MMS الخاصة بك.</string>
     <string name="intro_permission_contacts">يحتاج التطبيق إلى هذا الإذن ليتمكن من مطابقة جهة اتصال مع رسالة SMS/MMS.</string>
+    <string name="spec_fingerprint">البصمات</string>
 </resources>
