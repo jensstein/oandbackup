@@ -103,18 +103,20 @@ fun AppCompatImageView.setAppType(appInfo: AppInfo) {
     imageTintList = color
 }
 
-fun Chip.setColor(theList: Set<String>) {
-    this.rippleColor = ColorStateList.valueOf(
+fun Chip.setTextColor(theList: Set<String>) {
+    this.setTextColor(
+        ColorStateList.valueOf(
+            if (theList.isNotEmpty()) context.colorAccent
+            else context.colorSecondary
+        )
+    )
+}
+
+fun Chip.setChipIconColor(theList: Set<String>) {
+    this.chipIconTint = ColorStateList.valueOf(
         if (theList.isNotEmpty()) context.colorAccent
         else context.colorSecondary
     )
-    val colorTrans =
-        ColorStateList.valueOf(
-            if (theList.isNotEmpty()) context.colorOnPrimary
-            else context.colorOnSecondary
-        )
-    this.chipStrokeColor = colorTrans
-    this.chipBackgroundColor = colorTrans
 }
 
 fun LocalDateTime.getFormattedDate(withTime: Boolean): String? {
