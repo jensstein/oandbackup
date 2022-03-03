@@ -164,6 +164,12 @@ data class Schedule(
             return this
         }
 
+        fun withSpecial(with: Boolean = true): Builder {
+            if (with) schedule.filter = MAIN_FILTER_DEFAULT
+            else schedule.filter = MAIN_FILTER_DEFAULT_WITHOUT_SPECIAL
+            return this
+        }
+
         fun import(export: Schedule): Builder {
             schedule.name = export.name
             schedule.filter = export.filter
