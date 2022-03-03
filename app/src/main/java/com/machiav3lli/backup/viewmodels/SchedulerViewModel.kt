@@ -19,8 +19,8 @@ package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.dbs.dao.ScheduleDao
+import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.SchedulerItemX
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -40,17 +40,18 @@ class SchedulerViewModel(val database: ScheduleDao, appContext: Application) :
         schedules.addSource(database.liveAll, schedules::setValue)
     }
 
-    fun addSchedule() {
+    fun addSchedule(withSpecial: Boolean) {
         viewModelScope.launch {
-            add()
+            add(withSpecial)
         }
     }
 
-    private suspend fun add() {
+    private suspend fun add(withSpecial: Boolean) {
         withContext(Dispatchers.IO) {
             database.insert(
                 Schedule.Builder() // Set id to 0 to make the database generate a new id
                     .withId(0)
+                    .withSpecial(withSpecial)
                     .build()
             )
         }

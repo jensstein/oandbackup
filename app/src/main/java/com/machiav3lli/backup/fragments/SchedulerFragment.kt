@@ -31,6 +31,7 @@ import com.machiav3lli.backup.databinding.FragmentSchedulerBinding
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.items.SchedulerItemX
+import com.machiav3lli.backup.utils.specialBackupsEnabled
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.IAdapter
@@ -121,7 +122,7 @@ class SchedulerFragment : NavigationFragment() {
             }.start()
         }
         binding.addSchedule.setOnClickListener {
-            viewModel.addSchedule()
+            viewModel.addSchedule(requireContext().specialBackupsEnabled)
         }
         schedulerFastAdapter.addEventHook(OnEnableClickHook())
     }
