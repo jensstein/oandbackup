@@ -333,4 +333,5 @@
     <string name="calllogs_permission_title">Разрешения истории звонков</string>
     <string name="spec_calllogsjson">JSON истории звонков</string>
     <string name="schedule">Расписание</string>
+    <string name="spec_fingerprint">Отпечатки пальцев</string>
 </resources>
