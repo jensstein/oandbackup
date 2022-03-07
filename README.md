@@ -78,7 +78,7 @@ All new icons in 7.0.0 based on CC0 icons found on [SVG Repo](https://www.svgrep
 
 [Jens Stein](https://github.com/jensstein) for his unbelievably valuable work on OAndBackup.
 
-[Nils](https://github.com/Tiefkuehlpizze), [Harald](https://github.com/hg42) and [Martin](https://github.com/Smojo) for their active contribution to the project.
+[Nils](https://github.com/Tiefkuehlpizze), [Harald](https://github.com/hg42), [Martin](https://github.com/Smojo) and [DL](https://github.com/dl200010) for their active contribution to the project.
 
 [Oliver Pepperell](https://github.com/opepp) for his contribution to the new anniversary design.
 
