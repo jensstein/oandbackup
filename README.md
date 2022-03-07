@@ -13,6 +13,8 @@ Now on functionality of our App:
 
 And here's the project's [FAQ](FAQ.md).
 
+### A Stance: I stand with Ukraine, as I stood and still stand with Yemen, Syria, Afghanistan, Myanmar, Sudan, Columbia, Somalia, Hong Kong (not China) and everywhere human beings are being oppressed by bigger states and/or local dictatorships.
+
 ## Installation
 
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/com.machiav3lli.backup/)
