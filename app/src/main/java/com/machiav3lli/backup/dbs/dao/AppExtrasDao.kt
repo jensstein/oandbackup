@@ -17,23 +17,15 @@
  */
 package com.machiav3lli.backup.dbs.dao
 
-import android.database.SQLException
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
-import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Update
 import com.machiav3lli.backup.dbs.entity.AppExtras
 
-// TODO abstract a base dao and gather all daos in one file
 @Dao
-interface AppExtrasDao {
+interface AppExtrasDao : BaseDao<AppExtras> {
     @Query("SELECT COUNT(*) FROM appextras")
     fun count(): Long
-
-    @Insert
-    @Throws(SQLException::class)
-    fun insert(vararg appExtras: AppExtras): LongArray?
 
     @get:Query("SELECT * FROM appextras ORDER BY packageName ASC")
     val all: MutableList<AppExtras>
@@ -46,9 +38,6 @@ interface AppExtrasDao {
 
     @Query("SELECT packageName FROM appextras WHERE packageName = :packageName")
     fun getLive(packageName: String): LiveData<List<String>>
-
-    @Update
-    fun update(blocklist: AppExtras?)
 
     @Query("DELETE FROM appextras")
     fun deleteAll()
