@@ -364,28 +364,16 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
 
         val finishWorkRequest = FinishWork.Request(resultsSuccess, backupBoolean, batchName)
 
-        /*
         val finishWorkLiveData = WorkManager.getInstance(requireContext())
             .getWorkInfoByIdLiveData(finishWorkRequest.id)
         finishWorkLiveData.observeForever(object : Observer<WorkInfo> {
             override fun onChanged(t: WorkInfo?) {
                 if (t?.state == WorkInfo.State.SUCCEEDED) {
-                    val (message, title) = FinishWork.getOutput(t)
-                    showNotification(
-                        requireContext(), MainActivityX::class.java,
-                        notificationId, title, message, true
-                    )
-                    val overAllResult = ActionResult(null, null, errors, resultsSuccess)
-                    requireActivity().showActionResult(overAllResult) { _: DialogInterface?, _: Int ->
-                        LogsHandler.logErrors(requireContext(), errors.dropLast(2))
-                    }
-
                     viewModel.refreshNow.value = true
                     finishWorkLiveData.removeObserver(this)
                 }
             }
         })
-        */
 
         if (worksList.isNotEmpty()) {
             WorkManager.getInstance(requireContext())
