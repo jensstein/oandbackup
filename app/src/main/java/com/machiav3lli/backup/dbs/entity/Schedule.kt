@@ -18,7 +18,9 @@
 package com.machiav3lli.backup.dbs.entity
 
 import android.content.Context
-import androidx.room.*
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.RenameColumn
 import androidx.room.migration.AutoMigrationSpec
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.handler.LogsHandler
@@ -54,10 +56,8 @@ data class Schedule(
 
     var timeToRun: Long = 0
 
-    @TypeConverters(AppsListConverter::class)
     var customList: Set<String> = setOf()
 
-    @TypeConverters(AppsListConverter::class)
     var blockList: Set<String> = setOf()
 
     val filterIds: List<Int>
@@ -185,20 +185,6 @@ data class Schedule(
 
         fun build(): Schedule {
             return schedule
-        }
-    }
-
-    class AppsListConverter {
-        @TypeConverter
-        fun toAppsList(string: String): Set<String> {
-            return if (string == "") setOf()
-            else string.split(",").toHashSet()
-        }
-
-        @TypeConverter
-        fun toString(appsList: Set<String?>?): String {
-            return if (appsList?.isNotEmpty() == true) appsList.joinToString(",")
-            else ""
         }
     }
 
