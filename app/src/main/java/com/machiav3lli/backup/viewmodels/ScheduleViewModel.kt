@@ -47,7 +47,7 @@ class ScheduleViewModel(val id: Long, private val scheduleDB: ScheduleDao, appCo
     }
 
     class Factory(private val id: Long, private val scheduleDB: ScheduleDao,
-                                   private val application: Application)
+                  private val application: Application)
         : ViewModelProvider.Factory {
         @Suppress("unchecked_cast")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

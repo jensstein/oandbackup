@@ -21,8 +21,6 @@ import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.os.Build
-import android.os.Parcel
-import android.os.Parcelable
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -38,7 +36,7 @@ open class AppMetaInfo(
     var sourceDir: String? = null,
     var splitSourceDirs: Array<String> = arrayOf(),
     var isSystem: Boolean = false,
-) : Parcelable {
+) {
     @Transient
     @Contextual
     var icon: Int = -1
@@ -64,44 +62,6 @@ open class AppMetaInfo(
         this.icon = pi.applicationInfo.icon
     }
 
-    protected constructor(source: Parcel) : this(
-        packageName = source.readString(),
-        packageLabel = source.readString(),
-        versionName = source.readString(),
-        versionCode = source.readInt(),
-        profileId = source.readInt(),
-        sourceDir = source.readString(),
-        splitSourceDirs = source.createStringArray() ?: arrayOf(),
-        isSystem = source.readByte().toInt() != 0
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(packageName)
-        parcel.writeString(packageLabel)
-        parcel.writeString(versionName)
-        parcel.writeInt(versionCode)
-        parcel.writeInt(profileId)
-        parcel.writeString(sourceDir)
-        parcel.writeStringArray(splitSourceDirs)
-        parcel.writeByte((if (isSystem) 1 else 0).toByte())
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
     open val isSpecial: Boolean
         get() = false
-
-    companion object {
-        val CREATOR: Parcelable.Creator<AppMetaInfo?> = object : Parcelable.Creator<AppMetaInfo?> {
-            override fun createFromParcel(source: Parcel): AppMetaInfo? {
-                return AppMetaInfo(source)
-            }
-
-            override fun newArray(size: Int): Array<AppMetaInfo?> {
-                return arrayOfNulls(size)
-            }
-        }
-    }
 }

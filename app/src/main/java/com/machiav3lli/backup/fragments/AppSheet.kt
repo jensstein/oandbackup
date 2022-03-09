@@ -80,13 +80,13 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
             AppSheetViewModel.Factory(appInfo, shellCommands, requireActivity().application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(AppSheetViewModel::class.java)
 
-        viewModel.refreshNow.observe(viewLifecycleOwner, {
+        viewModel.refreshNow.observe(viewLifecycleOwner) {
             if (it) {
                 requireMainActivity().updateAppExtras(appExtras)
                 requireMainActivity().updatePackage(viewModel.appInfo.value?.packageName ?: "")
                 viewModel.refreshNow.value = false
             }
-        })
+        }
 
         return binding.root
     }
