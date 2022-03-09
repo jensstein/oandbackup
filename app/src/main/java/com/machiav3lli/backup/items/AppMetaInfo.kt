@@ -20,7 +20,6 @@ package com.machiav3lli.backup.items
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
@@ -42,7 +41,7 @@ open class AppMetaInfo(
 ) : Parcelable {
     @Transient
     @Contextual
-    var applicationIcon: Drawable? = null
+    var icon: Int = -1
 
     constructor(context: Context, pi: PackageInfo) : this(
         packageName = pi.packageName,
@@ -62,7 +61,7 @@ open class AppMetaInfo(
         splitSourceDirs = pi.applicationInfo.splitSourceDirs ?: arrayOf(),
         isSystem = pi.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == ApplicationInfo.FLAG_SYSTEM
     ) {
-        this.applicationIcon = context.packageManager.getApplicationIcon(pi.applicationInfo)
+        this.icon = pi.applicationInfo.icon
     }
 
     protected constructor(source: Parcel) : this(
@@ -93,10 +92,6 @@ open class AppMetaInfo(
 
     open val isSpecial: Boolean
         get() = false
-
-    fun hasIcon(): Boolean {
-        return applicationIcon != null
-    }
 
     companion object {
         val CREATOR: Parcelable.Creator<AppMetaInfo?> = object : Parcelable.Creator<AppMetaInfo?> {

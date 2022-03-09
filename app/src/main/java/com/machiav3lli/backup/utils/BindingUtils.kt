@@ -22,6 +22,7 @@ import android.content.res.ColorStateList
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.databinding.BindingAdapter
+import coil.load
 import com.google.android.material.chip.Chip
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.items.AppInfo
@@ -68,10 +69,11 @@ fun View.changeVisibility(nVisibility: Int, withAnimation: Boolean) =
             }
         })
 
-fun AppCompatImageView.setIcon(metaInfo: AppMetaInfo?) = when {
-    metaInfo?.hasIcon() == true -> setImageDrawable(metaInfo.applicationIcon)
-    else -> setImageResource(R.drawable.ic_placeholder)
-}
+fun AppCompatImageView.setIcon(metaInfo: AppMetaInfo?): Any =
+    load("android.resource://${metaInfo?.packageName}/${metaInfo?.icon}") {
+        placeholder(R.drawable.ic_placeholder)
+        error(R.drawable.ic_placeholder)
+    }
 
 fun AppCompatImageView.setAppType(appInfo: AppInfo) {
     var color: ColorStateList
