@@ -138,6 +138,7 @@ dependencies {
     implementation("com.mikepenz:fastadapter-extensions-diff:$fastadapter")
     implementation("com.mikepenz:fastadapter-extensions-binding:$fastadapter")
     implementation("com.facebook.shimmer:shimmer:0.5.0")
+    implementation("io.coil-kt:coil:2.0.0-rc01")
 
     //// Testing
 
