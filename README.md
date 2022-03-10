@@ -13,6 +13,8 @@ Now on functionality of our App:
 
 And here's the project's [FAQ](FAQ.md).
 
+### A Stance: I stand with Ukraine, as I stood and still stand with Yemen, Syria, Afghanistan, Myanmar, Sudan, Columbia, Somalia, Hong Kong (not China) and everywhere human beings are being oppressed by bigger states and/or local dictatorships.
+
 ## Installation
 
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/com.machiav3lli.backup/)
@@ -78,7 +80,7 @@ All new icons in 7.0.0 based on CC0 icons found on [SVG Repo](https://www.svgrep
 
 [Jens Stein](https://github.com/jensstein) for his unbelievably valuable work on OAndBackup.
 
-[Nils](https://github.com/Tiefkuehlpizze), [Harald](https://github.com/hg42) and [Martin](https://github.com/Smojo) for their active contribution to the project.
+[Nils](https://github.com/Tiefkuehlpizze), [Harald](https://github.com/hg42), [Martin](https://github.com/Smojo) and [DL](https://github.com/dl200010) for their active contribution to the project.
 
 [Oliver Pepperell](https://github.com/opepp) for his contribution to the new anniversary design.
 

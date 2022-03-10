@@ -17,20 +17,15 @@
  */
 package com.machiav3lli.backup.dbs.dao
 
-import android.database.SQLException
 import androidx.lifecycle.LiveData
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Query
 import com.machiav3lli.backup.dbs.entity.Schedule
 
-// TODO abstract a base dao and gather all daos in one file
 @Dao
-interface ScheduleDao {
+interface ScheduleDao : BaseDao<Schedule> {
     @Query("SELECT COUNT(*) FROM schedule")
     fun count(): Long
-
-    @Insert
-    @Throws(SQLException::class)
-    fun insert(vararg schedules: Schedule): LongArray?
 
     @Query("SELECT * FROM schedule WHERE id = :id")
     fun getSchedule(id: Long): Schedule?
@@ -47,14 +42,8 @@ interface ScheduleDao {
     @get:Query("SELECT * FROM schedule ORDER BY id ASC")
     val liveAll: LiveData<List<Schedule>>
 
-    @Update
-    fun update(schedule: Schedule?)
-
     @Query("DELETE FROM schedule")
     fun deleteAll()
-
-    @Delete
-    fun delete(schedule: Schedule)
 
     @Query("DELETE FROM schedule WHERE id = :id")
     fun deleteById(id: Long)

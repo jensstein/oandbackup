@@ -13,15 +13,16 @@ import java.util.*
 
 class CommandReceiver : BroadcastReceiver() {        //TODO hg42 how to maintain security?
     override fun onReceive(context: Context, intent: Intent?) {
-        if(intent == null) return
+        if (intent == null) return
         val command = intent.action
         Timber.i("Command: command $command")
         when (command) {
             "cancel" -> {
-                val batchName = intent.getStringExtra("name")
-                Timber.d("################################################### command intent cancel -------------> name=$batchName")
-                OABX.activity?.showToast("$command ${batchName}")
-                OABX.work.cancel(batchName)
+                intent.getStringExtra("name")?.let { batchName ->
+                    Timber.d("################################################### command intent cancel -------------> name=$batchName")
+                    OABX.activity?.showToast("$command $batchName")
+                    OABX.work.cancel(batchName)
+                }
             }
             "schedule" -> {
                 intent.getStringExtra("name")?.let { name ->
@@ -44,7 +45,7 @@ class CommandReceiver : BroadcastReceiver() {        //TODO hg42 how to maintain
                     val now = System.currentTimeMillis()
                     val time = intent.getStringExtra("time")
                     val setTime = time ?: SimpleDateFormat("HH:mm", Locale.getDefault())
-                                                .format(now + 120)
+                        .format(now + 120)
                     OABX.activity?.showToast("$command $name $time -> $setTime")
                     Timber.d("################################################### command intent schedule -------------> name=$name time=$time -> $setTime")
                     Thread {

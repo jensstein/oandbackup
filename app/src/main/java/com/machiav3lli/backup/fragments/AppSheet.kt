@@ -80,13 +80,13 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
             AppSheetViewModel.Factory(appInfo, shellCommands, requireActivity().application)
         viewModel = ViewModelProvider(this, viewModelFactory).get(AppSheetViewModel::class.java)
 
-        viewModel.refreshNow.observe(viewLifecycleOwner, {
+        viewModel.refreshNow.observe(viewLifecycleOwner) {
             if (it) {
                 requireMainActivity().updateAppExtras(appExtras)
                 requireMainActivity().updatePackage(viewModel.appInfo.value?.packageName ?: "")
                 viewModel.refreshNow.value = false
             }
-        })
+        }
 
         return binding.root
     }
@@ -181,11 +181,7 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
     private fun setupAppInfo(update: Boolean) {
         viewModel.appInfo.value?.let {
             val appMetaInfo = it.appMetaInfo
-            if (appMetaInfo.applicationIcon != null) {
-                binding.icon.setImageDrawable(appMetaInfo.applicationIcon)
-            } else {
-                binding.icon.setImageResource(R.drawable.ic_placeholder)
-            }
+            binding.icon.setIcon(appMetaInfo)
             binding.label.text = appMetaInfo.packageLabel
             binding.packageName.text = it.packageName
             binding.appType.setText(if (appMetaInfo.isSystem) R.string.apptype_system else R.string.apptype_user)

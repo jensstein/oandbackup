@@ -45,8 +45,8 @@ class BootReceiver : BroadcastReceiver() {
                 return
             } else {
                 scheduleDao.all
-                        .filter { it.enabled }
-                        .forEach { scheduleAlarm(context, it.id, false) }
+                    .filter { it.enabled }
+                    .forEach { scheduleAlarm(context, it.id, false) }
             }
         }
     }

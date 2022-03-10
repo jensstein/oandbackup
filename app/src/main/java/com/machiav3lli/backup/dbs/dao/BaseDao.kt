@@ -15,25 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-buildscript {
-    repositories {
-        mavenCentral()
-        google()
-    }
-    dependencies {
-        classpath("com.android.tools.build:gradle:7.1.2")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10")
-    }
-}
+package com.machiav3lli.backup.dbs.dao
 
-allprojects {
-    repositories {
-        mavenCentral()
-        google()
-        maven(url = "https://jitpack.io")
-    }
-}
+import android.database.SQLException
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Update
 
-tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
+interface BaseDao<T> {
+    @Insert
+    @Throws(SQLException::class)
+    fun insert(vararg product: T)
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    fun update(vararg obj: T): Int
+
+    @Delete
+    fun delete(obj: T)
 }

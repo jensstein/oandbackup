@@ -17,23 +17,15 @@
  */
 package com.machiav3lli.backup.dbs.dao
 
-import android.database.SQLException
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
-import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Update
 import com.machiav3lli.backup.dbs.entity.Blocklist
 
-// TODO abstract a base dao and gather all daos in one file
 @Dao
-interface BlocklistDao {
+interface BlocklistDao : BaseDao<Blocklist> {
     @Query("SELECT COUNT(*) FROM blocklist")
     fun count(): Long
-
-    @Insert
-    @Throws(SQLException::class)
-    fun insert(vararg blocklists: Blocklist): LongArray?
 
     @get:Query("SELECT * FROM blocklist ORDER BY blocklistId ASC")
     val all: List<Blocklist>
@@ -47,18 +39,15 @@ interface BlocklistDao {
     @Query("SELECT packageName FROM blocklist WHERE blocklistId = :blocklistId")
     fun getLiveBlocklist(blocklistId: Long): LiveData<List<String>>
 
-    @Update
-    fun update(blocklist: Blocklist?)
-
     fun updateList(blocklistId: Long, newList: Set<String>) {
         deleteById(blocklistId)
         newList.forEach { packageName ->
             insert(
-                    Blocklist.Builder()
-                            .withId(0)
-                            .withBlocklistId(blocklistId)
-                            .withPackageName(packageName)
-                            .build()
+                Blocklist.Builder()
+                    .withId(0)
+                    .withBlocklistId(blocklistId)
+                    .withPackageName(packageName)
+                    .build()
             )
         }
     }

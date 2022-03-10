@@ -22,6 +22,7 @@ import android.content.res.ColorStateList
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.databinding.BindingAdapter
+import coil.load
 import com.google.android.material.chip.Chip
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.items.AppInfo
@@ -68,10 +69,11 @@ fun View.changeVisibility(nVisibility: Int, withAnimation: Boolean) =
             }
         })
 
-fun AppCompatImageView.setIcon(metaInfo: AppMetaInfo?) = when {
-    metaInfo?.hasIcon() == true -> setImageDrawable(metaInfo.applicationIcon)
-    else -> setImageResource(R.drawable.ic_placeholder)
-}
+fun AppCompatImageView.setIcon(metaInfo: AppMetaInfo?): Any =
+    load("android.resource://${metaInfo?.packageName}/${metaInfo?.icon}") {
+        placeholder(R.drawable.ic_placeholder)
+        error(R.drawable.ic_placeholder)
+    }
 
 fun AppCompatImageView.setAppType(appInfo: AppInfo) {
     var color: ColorStateList
@@ -103,18 +105,20 @@ fun AppCompatImageView.setAppType(appInfo: AppInfo) {
     imageTintList = color
 }
 
-fun Chip.setColor(theList: Set<String>) {
-    this.rippleColor = ColorStateList.valueOf(
+fun Chip.setTextColor(theList: Set<String>) {
+    this.setTextColor(
+        ColorStateList.valueOf(
+            if (theList.isNotEmpty()) context.colorAccent
+            else context.colorSecondary
+        )
+    )
+}
+
+fun Chip.setChipIconColor(theList: Set<String>) {
+    this.chipIconTint = ColorStateList.valueOf(
         if (theList.isNotEmpty()) context.colorAccent
         else context.colorSecondary
     )
-    val colorTrans =
-        ColorStateList.valueOf(
-            if (theList.isNotEmpty()) context.colorOnPrimary
-            else context.colorOnSecondary
-        )
-    this.chipStrokeColor = colorTrans
-    this.chipBackgroundColor = colorTrans
 }
 
 fun LocalDateTime.getFormattedDate(withTime: Boolean): String? {

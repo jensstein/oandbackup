@@ -1,117 +1,72 @@
-## Possible Features
+## In next major Release
 
-- [ ] Rootless Backups: Off the plan respecting the stats que.
+- [ ] Full support for Special Backups:
 
-- [ ] More functionality for AppSheet:
+  - [ ] Accounts: needs test of latest neo/pumpkin
 
-  - [x] Kill app
+  - [x] SMS/MMS (@dl200010)
 
-  - [ ] share backup
+  - [ ] Bluetooth: needs test of latest neo/pumpkin
 
-  - [x] launch
+  - [x] Wifi
 
-  - [x] package info shortcut
+  - [ ] Widgets: needs test of latest neo/pumpkin
 
-- [x] Multi-Backups support
+  - [x] Call logs (@dl200010)
 
-- [x] Add options upon choosing Backup from AppSheet: external/obb/cache.
+  - [ ] Data usage policy: Do we really need to keep it?
 
-- [x] External Storage/SAF support: my idea on it is splitting Backup-Actions into more steps(vice versa for Restore)
+  - [ ] Fingerprints: needs further test of latest neo/pumpkin (@hg42)
 
-- [x] SymLinks and "special" Files backup: fixing errors on some "unique" apps.
+  - [ ] Wallpaper: do we really need to keep it?
 
-- [x] Reformat Date handling in schedules
+- [x] TargetSDK 31
 
-- [x] Customize tags icons' colors
+- [ ] Restore saved permissions
 
-- [x] Columnize batch backup preference
-
-- [x] Revamp UI/UX:
-
-    - [x] Animations and elevation
-
-    - [x] MD3: All the already available components from MD-Android.
+- [ ] Refactor backup to use scripts (@hg42)
 
 ## Needed Fixes
 
-- [ ] Compatibility with Work Profiles: making Backup/Restore-Task profiles-sensitive. (Next Version)
+- [ ] TargetSDK 33
 
-- [x] Handle the error about disabling "verify apps over USB".
+- [ ] Fix GSF push notifications' issue: seems to work on a set of apps only.
 
-- [x] Replace deprecated Classes/Methods:
-
-  - [x] AsyncTask
-
-  - [x] ProgressDialog
-
-- [x] kill or not kill: all system apps, uids < 10000 or blacklisting...
-
-- [x] TargetSDK 30 & updated StorageManger
-
-- [x] Improve on performance in aftermath of using SAF (maybe more can be done?)
-
-- [x] Enable encryption direct shortcut
-
-- [x] Not responding to clicks after long time in background
-
-- [x] Fix GSF push notifications' issue: seems to work on a set of apps only.
-
-## Planned Restructure
-
-- [x] Improve UI/UX (on anniversary release as co-op with @opepp)
-
-- [ ] Use DataBinding/BindingAdapter where useful
-
-- [x] Refactor Schedules handling
-
-- [x] Migrate to Kotlin
-
-- [x] Use Kotlin style explicitly
-
-- [x] ViewModel where useful
-
-  - [x] Scheduler
-
-  - [x] Main & Batch
-
-  - [x] AppSheet
-
-- [x] Rewrite Help text
-
-- [x] Theming engine (with accent/primary and secondary)
-
-- [x] Automatic languages integration/detection
-
-- [x] Full separation of concerns of Activities and Fragments
-
-- [x] Better management for filtering and modes
-
-## In next major Release
-
-- [ ] (re)integrate OpenGPG
-
-- [ ] Fully support for Special Backups:
-
-  - [ ] Accounts
-
-  - [ ] SMS
-
-  - [ ] Bluetooth
-
-  - [ ] Wifi
-
-  - [ ] and others…
-
-- [ ] TargetSDK 31
+- [ ] Compatibility with Work Profiles: making Backup/Restore-Task profiles-sensitive
 
 - [ ] Restore to chosen user
 
-- [ ] Sort/filter based on changed data (last open after last backup - using 'UsageStatistics')
+## Possible Features
 
-## Low Priority(sorted)
+- [ ] -Rootless Backups: Off the plan respecting the stats que.-
 
-- [ ] Legacy Backup mode
+- [ ] New functions/tools:
+
+  - [ ] AppSheet: share backup
+
+  - [ ] Sort/filter based on changed data (last open after last backup - using 'UsageStatistics')
+
+  - [ ] (re)integrate OpenGPG
+
+  - [ ] Legacy Backup mode
+
+  - [ ] Add flashable Zip feature
+
+- [ ] Revamp UI/UX:
+
+    - [ ] MD3
+
+    - [ ] Material You support
+
+## Planned Restructure
+
+- [ ] Refactor app/package classes
+
+- [ ] Refactor backup/restore classes
+
+- [ ] Enable caching/instant load on launch
 
 - [ ] Migrate to Jetpack Compose instead of XML (where possible)
 
-- [ ] Add flashable Zip feature
+
+

@@ -45,9 +45,11 @@ object BackupRestoreHelper {
         backupMode: Int
     ): ActionResult {
         var reBackupMode = backupMode
-        val housekeepingWhen = fromString(context.getDefaultSharedPreferences()
+        val housekeepingWhen = fromString(
+            context.getDefaultSharedPreferences()
                 .getString(PREFS_HOUSEKEEPING_MOMENT, HousekeepingMoment.AFTER.value)
-                ?: HousekeepingMoment.AFTER.value)
+                ?: HousekeepingMoment.AFTER.value
+        )
         if (housekeepingWhen == HousekeepingMoment.BEFORE) {
             housekeepingPackageBackups(context, appInfo, true)
         }
@@ -70,7 +72,7 @@ object BackupRestoreHelper {
         // create the new backup
         val result = action.run(appInfo, reBackupMode)
 
-        if(result.succeeded)
+        if (result.succeeded)
             Timber.i("[${appInfo.packageName}] Backup succeeded: ${result.succeeded}")
         else {
             Timber.i("[${appInfo.packageName}] Backup FAILED: ${result.succeeded} ${result.message}")
@@ -105,7 +107,8 @@ object BackupRestoreHelper {
             apkFile?.delete()
             try {
                 val myInfo = context.packageManager.getPackageInfo(BuildConfig.APPLICATION_ID, 0)
-                val fileInfos = shell.suGetDetailedDirectoryContents(myInfo.applicationInfo.sourceDir, false)
+                val fileInfos =
+                    shell.suGetDetailedDirectoryContents(myInfo.applicationInfo.sourceDir, false)
                 if (fileInfos.size != 1) {
                     throw FileNotFoundException("Could not find OAndBackupX's own apk file")
                 }
@@ -137,7 +140,8 @@ object BackupRestoreHelper {
     }
 
     private fun housekeepingPackageBackups(context: Context, app: AppInfo, before: Boolean) {
-        var numBackupRevisions = context.getDefaultSharedPreferences().getInt(PREFS_NUM_BACKUP_REVISIONS, 2)
+        var numBackupRevisions =
+            context.getDefaultSharedPreferences().getInt(PREFS_NUM_BACKUP_REVISIONS, 2)
         var backups = app.backupHistory
         if (numBackupRevisions == 0) {
             Timber.i("[${app.packageName}] Infinite backup revisions configured. Not deleting any backup. ${backups.size} (valid) backups available")
@@ -156,10 +160,10 @@ object BackupRestoreHelper {
                 val revisionsToDelete = backups.size - numBackupRevisions
                 Timber.i("[${app.packageName}] More backup revisions than configured maximum (${backups.size} > ${numBackupRevisions + if (before) 1 else 0}). Deleting $revisionsToDelete backup(s).")
                 backups = backups
-                        .sortedWith { bi1: BackupItem, bi2: BackupItem ->
-                            bi1.backupProperties.backupDate!!.compareTo(bi2.backupProperties.backupDate)
-                        }
-                        .toMutableList()
+                    .sortedWith { bi1: BackupItem, bi2: BackupItem ->
+                        bi1.backupProperties.backupDate!!.compareTo(bi2.backupProperties.backupDate)
+                    }
+                    .toMutableList()
                 (0 until revisionsToDelete).forEach {
                     val deleteInfo = backups[it]
                     Timber.i("[${app.packageName}] Deleting backup revision $deleteInfo")

@@ -20,10 +20,7 @@ package com.machiav3lli.backup.items
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
-import android.graphics.drawable.Drawable
 import android.os.Build
-import android.os.Parcel
-import android.os.Parcelable
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -39,10 +36,10 @@ open class AppMetaInfo(
     var sourceDir: String? = null,
     var splitSourceDirs: Array<String> = arrayOf(),
     var isSystem: Boolean = false,
-) : Parcelable {
+) {
     @Transient
     @Contextual
-    var applicationIcon: Drawable? = null
+    var icon: Int = -1
 
     constructor(context: Context, pi: PackageInfo) : this(
         packageName = pi.packageName,
@@ -62,51 +59,9 @@ open class AppMetaInfo(
         splitSourceDirs = pi.applicationInfo.splitSourceDirs ?: arrayOf(),
         isSystem = pi.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == ApplicationInfo.FLAG_SYSTEM
     ) {
-        this.applicationIcon = context.packageManager.getApplicationIcon(pi.applicationInfo)
-    }
-
-    protected constructor(source: Parcel) : this(
-        packageName = source.readString(),
-        packageLabel = source.readString(),
-        versionName = source.readString(),
-        versionCode = source.readInt(),
-        profileId = source.readInt(),
-        sourceDir = source.readString(),
-        splitSourceDirs = source.createStringArray() ?: arrayOf(),
-        isSystem = source.readByte().toInt() != 0
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(packageName)
-        parcel.writeString(packageLabel)
-        parcel.writeString(versionName)
-        parcel.writeInt(versionCode)
-        parcel.writeInt(profileId)
-        parcel.writeString(sourceDir)
-        parcel.writeStringArray(splitSourceDirs)
-        parcel.writeByte((if (isSystem) 1 else 0).toByte())
-    }
-
-    override fun describeContents(): Int {
-        return 0
+        this.icon = pi.applicationInfo.icon
     }
 
     open val isSpecial: Boolean
         get() = false
-
-    fun hasIcon(): Boolean {
-        return applicationIcon != null
-    }
-
-    companion object {
-        val CREATOR: Parcelable.Creator<AppMetaInfo?> = object : Parcelable.Creator<AppMetaInfo?> {
-            override fun createFromParcel(source: Parcel): AppMetaInfo? {
-                return AppMetaInfo(source)
-            }
-
-            override fun newArray(size: Int): Array<AppMetaInfo?> {
-                return arrayOfNulls(size)
-            }
-        }
-    }
 }

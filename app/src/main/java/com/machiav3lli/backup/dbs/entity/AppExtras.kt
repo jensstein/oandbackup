@@ -19,14 +19,12 @@ package com.machiav3lli.backup.dbs.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
 
 @Entity
 class AppExtras(var packageName: String = "") {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
 
-    @TypeConverters(Schedule.AppsListConverter::class)
     var customTags: Set<String> = setOf()
 
     var note: String = ""

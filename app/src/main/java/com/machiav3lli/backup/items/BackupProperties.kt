@@ -19,8 +19,6 @@ package com.machiav3lli.backup.items
 
 import android.content.Context
 import android.content.pm.PackageInfo
-import android.os.Parcel
-import android.os.Parcelable
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BACKUP_INSTANCE_DIR
 import com.machiav3lli.backup.utils.LocalDateTimeSerializer
@@ -29,10 +27,9 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.time.LocalDateTime
-import javax.crypto.Cipher
 
 @Serializable
-open class BackupProperties : AppMetaInfo, Parcelable {
+open class BackupProperties : AppMetaInfo {
     @Serializable(with = LocalDateTimeSerializer::class)
     var backupDate: LocalDateTime? = null
         private set
@@ -133,36 +130,6 @@ open class BackupProperties : AppMetaInfo, Parcelable {
         this.cpuArch = cpuArch
     }
 
-    protected constructor(source: Parcel) {
-        hasApk = source.readByte().toInt() != 0
-        hasAppData = source.readByte().toInt() != 0
-        hasDevicesProtectedData = source.readByte().toInt() != 0
-        hasExternalData = source.readByte().toInt() != 0
-        hasObbData = source.readByte().toInt() != 0
-        hasMediaData = source.readByte().toInt() != 0
-        cipherType = source.readString()
-        iv = ByteArray(Cipher.getInstance(cipherType).blockSize).also {
-            source.readByteArray(it)
-        }
-        cpuArch = source.readString()
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeByte((if (hasApk) 1 else 0).toByte())
-        parcel.writeByte((if (hasAppData) 1 else 0).toByte())
-        parcel.writeByte((if (hasDevicesProtectedData) 1 else 0).toByte())
-        parcel.writeByte((if (hasExternalData) 1 else 0).toByte())
-        parcel.writeByte((if (hasObbData) 1 else 0).toByte())
-        parcel.writeByte((if (hasMediaData) 1 else 0).toByte())
-        parcel.writeString(cipherType)
-        parcel.writeByteArray(iv)
-        parcel.writeString(cpuArch)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
     val isEncrypted: Boolean
         get() = !cipherType.isNullOrEmpty()
 
@@ -196,19 +163,32 @@ open class BackupProperties : AppMetaInfo, Parcelable {
                 '}'
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is BackupProperties) return false
+
+        if (backupDate != other.backupDate) return false
+        if (hasApk != other.hasApk) return false
+        if (hasAppData != other.hasAppData) return false
+        if (hasDevicesProtectedData != other.hasDevicesProtectedData) return false
+        if (hasExternalData != other.hasExternalData) return false
+        if (hasObbData != other.hasObbData) return false
+        if (hasMediaData != other.hasMediaData) return false
+        if (cipherType != other.cipherType) return false
+        if (iv != null) {
+            if (other.iv == null) return false
+            if (!iv.contentEquals(other.iv)) return false
+        } else if (other.iv != null) return false
+        if (cpuArch != other.cpuArch) return false
+        if (backupFolderName != other.backupFolderName) return false
+        if (isEncrypted != other.isEncrypted) return false
+
+        return true
+    }
+
     fun toJSON() = Json.encodeToString(this)
 
     companion object {
         fun fromJson(json: String) = Json.decodeFromString<BackupProperties>(json)
-
-        val CREATOR = object : Parcelable.Creator<BackupProperties?> {
-            override fun createFromParcel(source: Parcel): BackupProperties {
-                return BackupProperties(source)
-            }
-
-            override fun newArray(size: Int): Array<BackupProperties?> {
-                return arrayOfNulls(size)
-            }
-        }
     }
 }

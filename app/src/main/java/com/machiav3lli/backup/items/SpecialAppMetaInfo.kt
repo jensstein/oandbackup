@@ -3,8 +3,6 @@ package com.machiav3lli.backup.items
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
-import android.os.Parcel
-import android.os.Parcelable
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
@@ -14,53 +12,19 @@ import timber.log.Timber
 /**
  * This class is used to describe special backup files that use a hardcoded list of file paths
  */
-open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
-    var specialFiles: Array<String>
-
-    constructor(
-        packageName: String?,
-        label: String?,
-        versionName: String?,
-        versionCode: Int,
-        fileList: Array<String>
-    )
-            : super(packageName, label, versionName, versionCode, 0, null, arrayOf(), true) {
-        this.specialFiles = fileList
-    }
+open class SpecialAppMetaInfo(
+    packageName: String?,
+    label: String?,
+    versionName: String?,
+    versionCode: Int,
+    fileList: Array<String>
+) : AppMetaInfo(packageName, label, versionName, versionCode, 0, null, arrayOf(), true) {
+    var specialFiles: Array<String> = fileList
 
     override val isSpecial: Boolean
         get() = true
 
-    protected constructor(source: Parcel) : super(source) {
-        val expectedItems = source.readInt()
-        val temporaryFileList: Array<String?> = arrayOfNulls(expectedItems)
-        specialFiles = Array(expectedItems) { "" }
-        source.readStringArray(temporaryFileList)
-        temporaryFileList.forEachIndexed { index, value ->
-            if (value != null) {
-                specialFiles[index] = value
-            } else {
-                throw IllegalArgumentException("SpecialAppMetaInfo parcel contained a null value")
-            }
-        }
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(specialFiles.size)
-        parcel.writeStringArray(specialFiles)
-    }
-
-    override fun describeContents(): Int = 0
-
     companion object {
-        @JvmField
-        val CREATOR: Parcelable.Creator<SpecialAppMetaInfo?> =
-            object : Parcelable.Creator<SpecialAppMetaInfo?> {
-                override fun createFromParcel(source: Parcel): SpecialAppMetaInfo? =
-                    SpecialAppMetaInfo(source)
-
-                override fun newArray(size: Int): Array<SpecialAppMetaInfo?> = arrayOfNulls(size)
-            }
         private val specialPackages: MutableList<AppInfo> = mutableListOf()
 
         /**
@@ -73,6 +37,7 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
          */
         var threadCount = 0
         var locked = false
+
         @Throws(
             BackupLocationInAccessibleException::class,
             StorageLocationNotConfiguredException::class
@@ -93,7 +58,7 @@ open class SpecialAppMetaInfo : AppMetaInfo, Parcelable {
                 }
             }
             synchronized(specialPackages) { // if n calls run in parallel we may have n duplicates
-                                            // because there is some time between asking for the size and the first add
+                // because there is some time between asking for the size and the first add
                 locked = true
                 if (specialPackages.size == 0) {
                     // caching this prevents recreating AppInfo-objects all the time and at wrong times

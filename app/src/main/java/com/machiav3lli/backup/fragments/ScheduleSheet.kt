@@ -35,8 +35,8 @@ import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.SheetScheduleBinding
 import com.machiav3lli.backup.dbs.ODatabase
-import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.dbs.dao.ScheduleDao
+import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.dialogs.IntervalInDaysDialog
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.dialogs.ScheduleNameDialog
@@ -77,8 +77,10 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
             }
             binding.schedSpecialFilter.check(specialFilterToId(it.specialFilter))
             binding.enableCheckbox.isChecked = it.enabled
-            binding.customListButton.setColor(it.customList)
-            binding.buttonBlocklist.setColor(it.blockList)
+            binding.customListButton.setTextColor(it.customList)
+            binding.customListButton.setChipIconColor(it.customList)
+            binding.buttonBlocklist.setTextColor(it.blockList)
+            binding.buttonBlocklist.setChipIconColor(it.blockList)
             setTimeLeft(it, System.currentTimeMillis())
             binding.timeOfDay.text = LocalTime.of(it.timeHour, it.timeMinute).toString()
             binding.intervalDays.text = java.lang.String.valueOf(it.interval)
