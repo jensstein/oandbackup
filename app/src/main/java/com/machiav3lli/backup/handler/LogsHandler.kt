@@ -103,7 +103,18 @@ class LogsHandler(var context: Context) {
         }
 
         fun stackTrace(e: Throwable) = e.stackTrace.joinToString("\nat ", "at ")
-        fun message(e: Throwable) = e.toString() + "\n" + stackTrace(e)
+        fun message(e: Throwable, backTrace: Boolean = false) =
+                "${e::class.simpleName}${
+                    if(e.cause != null)
+                        "\ncause: ${e.cause}" 
+                    else
+                        ""
+                }${
+                    if(backTrace) 
+                        "\n${stackTrace(e)}" 
+                    else 
+                        ""
+                }"
 
         fun logException(e: Throwable, what: Any? = null, prefix: String? = null) {
             var whatStr = ""
@@ -114,7 +125,7 @@ class LogsHandler(var context: Context) {
                 else
                     "$whatStr : "
             }
-            Timber.e("$prefix$e $whatStr\n${stackTrace(e)}")
+            Timber.e("$prefix$whatStr\n${message(e, true)}")
         }
 
         fun unhandledException(e: Throwable, what: Any? = null) {
