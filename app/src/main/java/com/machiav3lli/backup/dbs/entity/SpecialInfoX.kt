@@ -6,6 +6,7 @@ import android.os.Build
 import androidx.room.Entity
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.ShellCommands
+import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import timber.log.Timber
