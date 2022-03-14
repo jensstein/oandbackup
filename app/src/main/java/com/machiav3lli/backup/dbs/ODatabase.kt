@@ -23,16 +23,18 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.machiav3lli.backup.SCHEDULES_DB_NAME
-import com.machiav3lli.backup.dbs.dao.AppExtrasDao
-import com.machiav3lli.backup.dbs.dao.BlocklistDao
-import com.machiav3lli.backup.dbs.dao.ScheduleDao
-import com.machiav3lli.backup.dbs.entity.AppExtras
-import com.machiav3lli.backup.dbs.entity.Blocklist
-import com.machiav3lli.backup.dbs.entity.Schedule
+import com.machiav3lli.backup.dbs.dao.*
+import com.machiav3lli.backup.dbs.entity.*
 
 @Database(
-    entities = [Schedule::class, Blocklist::class, AppExtras::class],
-    version = 1,
+    entities = [
+        Schedule::class,
+        Blocklist::class,
+        AppExtras::class,
+        AppInfoX::class,
+        SpecialInfoX::class,
+        Backup::class],
+    version = 2,
     exportSchema = true,
     autoMigrations = []
 )
@@ -41,6 +43,9 @@ abstract class ODatabase : RoomDatabase() {
     abstract val scheduleDao: ScheduleDao
     abstract val blocklistDao: BlocklistDao
     abstract val appExtrasDao: AppExtrasDao
+    abstract val backupDao: BackupDao
+    abstract val appInfoDao: AppInfoDao
+    abstract val specialInfoDao: SpecialInfoDao
 
     companion object {
         @Volatile
