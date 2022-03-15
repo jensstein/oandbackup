@@ -116,19 +116,6 @@ open class SpecialAppMetaInfo(
                         .add(
                             AppInfo(
                                 context, SpecialAppMetaInfo(
-                                    "special.appwidgets",
-                                    specPrefix + context.getString(R.string.spec_appwidgets),
-                                    Build.VERSION.RELEASE,
-                                    Build.VERSION.SDK_INT, arrayOf(
-                                        "$userDir/appwidgets.xml"
-                                    )
-                                )
-                            )
-                        )
-                    specialPackages
-                        .add(
-                            AppInfo(
-                                context, SpecialAppMetaInfo(
                                     "special.bluetooth",
                                     specPrefix + context.getString(R.string.spec_bluetooth),
                                     Build.VERSION.RELEASE,
