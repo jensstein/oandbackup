@@ -80,10 +80,14 @@ android {
     }
     buildFeatures {
         dataBinding = true
+        compose = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.1.1"
     }
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
@@ -139,9 +143,19 @@ dependencies {
     implementation("com.mikepenz:fastadapter-extensions-binding:$fastadapter")
     implementation("com.facebook.shimmer:shimmer:0.5.0")
     implementation("io.coil-kt:coil:2.0.0-rc01")
+    implementation("io.coil-kt:coil-compose:2.0.0-rc01")
 
-    //// Testing
+    // Compose
+    implementation("androidx.compose.runtime:runtime:1.1.1")
+    implementation("androidx.compose.ui:ui:1.1.1")
+    implementation("androidx.compose.ui:ui-tooling:1.1.1")
+    implementation("androidx.compose.foundation:foundation:1.1.1")
+    implementation("androidx.compose.runtime:runtime-livedata:1.1.1")
+    implementation("androidx.compose.material:material:1.1.1")
+    implementation("com.google.android.material:compose-theme-adapter:1.1.5")
+    implementation("androidx.compose.material3:material3:1.0.0-alpha07")
 
+    // Testing
     implementation("androidx.test.ext:junit-ktx:1.1.3")
     androidTestImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
     val androidxTest = "1.4.0"
