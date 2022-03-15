@@ -313,4 +313,19 @@
     <string name="showDisabled">Вимкнені додатки</string>
     <string name="prefs_accent_8">Перанський гарбуз</string>
     <string name="prefs_secondary_8">М\'ята</string>
+    <string name="spec_fingerprint">Відбитки</string>
+    <string name="smsmms_permission_title">Дозволи SMS/MMS</string>
+    <string name="grant_smsmms_message">Це важливо для створення й відновлення резервних копій ваших SMS та MMS.</string>
+    <string name="calllogs_permission_title">Дозволи журналів викликів</string>
+    <string name="grant_calllogs_message">Це важливо для створення й відновлення резервних копій журналів ваших викликів.</string>
+    <string name="grant_contacts_message">Це важливо для зіставлення ваших контактів із SMS та MMS.</string>
+    <string name="intro_permission_smsmms">Застосунку потрібен цей дозвіл, щоб створювати й відновлювати резервні копії ваших SMS та MMS.</string>
+    <string name="intro_permission_contacts">Застосунку потрібен цей дозвіл, щоб зіставляти контакти з SMS та MMS.</string>
+    <string name="schedule">Розклад</string>
+    <string name="finished">готово</string>
+    <string name="spec_calllogsjson">JSON журналів викликів</string>
+    <string name="spec_smsmmsjson">JSON SMS/MMS</string>
+    <string name="contacts_permission_title">Дозволи контактів</string>
+    <string name="intro_permission_calllogs">Застосунку потрібен цей дозвіл, щоб створювати й відновлювати резервні копії журналів ваших викликів.</string>
+    <string name="batch">Декілька</string>
 </resources>
