@@ -21,9 +21,7 @@ import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.os.Build
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 import java.io.File
 
 @Serializable
@@ -36,10 +34,8 @@ open class AppMetaInfo(
     var sourceDir: String? = null,
     var splitSourceDirs: Array<String> = arrayOf(),
     var isSystem: Boolean = false,
-) {
-    @Transient
-    @Contextual
     var icon: Int = -1
+) {
 
     constructor(context: Context, pi: PackageInfo) : this(
         packageName = pi.packageName,
@@ -57,10 +53,9 @@ open class AppMetaInfo(
         },
         sourceDir = pi.applicationInfo.sourceDir,
         splitSourceDirs = pi.applicationInfo.splitSourceDirs ?: arrayOf(),
-        isSystem = pi.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == ApplicationInfo.FLAG_SYSTEM
-    ) {
-        this.icon = pi.applicationInfo.icon
-    }
+        isSystem = pi.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == ApplicationInfo.FLAG_SYSTEM,
+        icon = pi.applicationInfo.icon
+    )
 
     open val isSpecial: Boolean
         get() = false

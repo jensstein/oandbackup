@@ -17,8 +17,9 @@ open class SpecialAppMetaInfo(
     label: String?,
     versionName: String?,
     versionCode: Int,
-    fileList: Array<String>
-) : AppMetaInfo(packageName, label, versionName, versionCode, 0, null, arrayOf(), true) {
+    fileList: Array<String>,
+    icon: Int = -1
+) : AppMetaInfo(packageName, label, versionName, versionCode, 0, null, arrayOf(), true, icon) {
     var specialFiles: Array<String> = fileList
 
     override val isSpecial: Boolean
