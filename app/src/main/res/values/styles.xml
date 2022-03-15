@@ -38,7 +38,7 @@
     </style>
 
     <style name="Bar.BottomNavigation" parent="Widget.Material3.BottomNavigationView">
-        <item name="itemIconTint">@color/button_navbar</item>
+        <item name="itemIconTint">?colorControlNormal</item>
         <item name="labelVisibilityMode">selected</item>
         <item name="itemRippleColor">?colorAccent</item>
         <item name="itemActiveIndicatorStyle">@style/Bar.Bottom.ActiveIndicator</item>
@@ -180,14 +180,13 @@
         <item name="android:stateListAnimator">@null</item>
     </style>
 
-    <style name="Chip.Action" parent="Widget.Material3.Chip.Assist">
+    <style name="Chip.Action" parent="Widget.Material3.Chip.Assist.Elevated">
         <item name="chipBackgroundColor">?colorPrimaryDark</item>
         <item name="labelVisibilityMode">labeled</item>
         <item name="chipCornerRadius">8dp</item>
         <item name="chipStrokeWidth">0dp</item>
         <item name="rippleColor">?backgroundColor</item>
         <item name="android:textColor">?colorControlNormal</item>
-        <item name="android:elevation">4dp</item>
     </style>
 
     <style name="Chip.Action.Positive" parent="Chip.Action">

@@ -31,6 +31,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/appBar"
             style="@style/Bar.AppBar"
+            android:background="?colorPrimaryDark"
             android:elevation="@dimen/small_spacing"
             app:layout_constraintBottom_toTopOf="@id/introContainer"
             app:layout_constraintEnd_toEndOf="parent"
