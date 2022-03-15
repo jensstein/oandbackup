@@ -70,9 +70,17 @@ fun View.changeVisibility(nVisibility: Int, withAnimation: Boolean) =
         })
 
 fun AppCompatImageView.setIcon(metaInfo: AppMetaInfo?): Any =
-    load("android.resource://${metaInfo?.packageName}/${metaInfo?.icon}") {
-        placeholder(R.drawable.ic_placeholder)
-        error(R.drawable.ic_placeholder)
+    load(
+        if (metaInfo?.isSpecial == true) metaInfo.icon
+        else "android.resource://${metaInfo?.packageName}/${metaInfo?.icon}"
+    ) {
+        val placeholder = when {
+            metaInfo?.isSpecial == true -> R.drawable.ic_placeholder_special
+            metaInfo?.isSystem == true -> R.drawable.ic_placeholder_system
+            else -> R.drawable.ic_placeholder_user
+        }
+        placeholder(placeholder)
+        error(placeholder)
     }
 
 fun AppCompatImageView.setAppType(appInfo: AppInfo) {

@@ -38,7 +38,7 @@
             android:layout_marginTop="@dimen/cards_spacing"
             android:contentDescription="@string/app_s_icon"
             android:elevation="8dp"
-            android:src="@drawable/ic_placeholder"
+            android:src="@drawable/ic_placeholder_user"
             app:layout_constraintBottom_toTopOf="@id/label"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
