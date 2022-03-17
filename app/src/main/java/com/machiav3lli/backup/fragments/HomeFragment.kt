@@ -23,6 +23,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.Scaffold
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,16 +34,18 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.databinding.FragmentHomeBinding
+import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.HomeItemX
-import com.machiav3lli.backup.items.HomePlaceholderItemX
 import com.machiav3lli.backup.items.UpdatedItemX
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
+import com.machiav3lli.backup.ui.compose.recycler.HomePackageRecycler
+import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.HomeViewModel
 import com.mikepenz.fastadapter.FastAdapter
@@ -55,10 +59,6 @@ class HomeFragment : NavigationFragment(),
     lateinit var viewModel: HomeViewModel
     private var appSheet: AppSheet? = null
 
-    val homeItemAdapter = ItemAdapter<HomeItemX>()
-    private var homeFastAdapter: FastAdapter<HomeItemX>? = null
-    private val placeholderItemAdapter = ItemAdapter<HomePlaceholderItemX>()
-    private var placeholderFastAdapter: FastAdapter<HomePlaceholderItemX>? = null
     private val updatedItemAdapter = ItemAdapter<UpdatedItemX>()
     private var updatedFastAdapter: FastAdapter<UpdatedItemX>? = null
 
@@ -81,7 +81,7 @@ class HomeFragment : NavigationFragment(),
         if (requireMainActivity().viewModel.refreshNow.value == true) refreshView()
 
         viewModel.refreshNow.observe(requireActivity()) {
-            binding.refreshLayout.isRefreshing = it
+            //binding.refreshLayout.isRefreshing = it
             if (it) {
                 binding.searchBar.setQuery("", false)
                 requireMainActivity().viewModel.refreshList()
@@ -94,9 +94,9 @@ class HomeFragment : NavigationFragment(),
             if (it > 0) {
                 binding.updatedBar.visibility = View.VISIBLE
                 binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    0,
+                    0,
                     R.drawable.ic_arrow_up,
-                    0,
-                    0,
                     0
                 )
                 binding.buttonUpdateAll.visibility = View.VISIBLE
@@ -104,18 +104,18 @@ class HomeFragment : NavigationFragment(),
                     binding.updatedRecycler.visibility = when (binding.updatedRecycler.visibility) {
                         View.VISIBLE -> {
                             binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                                0,
+                                0,
                                 R.drawable.ic_arrow_up,
-                                0,
-                                0,
                                 0
                             )
                             View.GONE
                         }
                         else -> {
                             binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                                0,
+                                0,
                                 R.drawable.ic_arrow_down,
-                                0,
-                                0,
                                 0
                             )
                             View.VISIBLE
@@ -145,19 +145,13 @@ class HomeFragment : NavigationFragment(),
     }
 
     override fun setupViews() {
-        binding.refreshLayout.setColorSchemeColors(requireContext().colorAccent)
+        /*binding.refreshLayout.setColorSchemeColors(requireContext().colorAccent)
         binding.refreshLayout.setProgressBackgroundColorSchemeColor(
             resources.getColor(R.color.app_primary_base, requireActivity().theme)
         )
         binding.refreshLayout.setProgressViewOffset(false, 72, 144)
-        binding.refreshLayout.setOnRefreshListener { requireMainActivity().viewModel.refreshList() }
-        homeFastAdapter = FastAdapter.with(homeItemAdapter)
+        binding.refreshLayout.setOnRefreshListener { requireMainActivity().viewModel.refreshList() }*/
         updatedFastAdapter = FastAdapter.with(updatedItemAdapter)
-        homeFastAdapter?.setHasStableIds(true)
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        placeholderFastAdapter = FastAdapter.with(placeholderItemAdapter)
-        binding.recyclerView.adapter = placeholderFastAdapter
-        placeholderItemAdapter.set(MutableList(10) { HomePlaceholderItemX() })
         updatedFastAdapter?.setHasStableIds(true)
         binding.updatedRecycler.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
@@ -188,15 +182,6 @@ class HomeFragment : NavigationFragment(),
             )
             sheetSortFilter?.showNow(requireActivity().supportFragmentManager, "SORTFILTER_SHEET")
         }
-        homeFastAdapter?.onClickListener =
-            { _: View?, _: IAdapter<HomeItemX>?, item: HomeItemX?, position: Int? ->
-                if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                item?.let {
-                    appSheet = AppSheet(it.app, it.appExtras, position ?: -1)
-                    appSheet?.showNow(requireActivity().supportFragmentManager, "APP_SHEET")
-                }
-                false
-            }
         updatedFastAdapter?.onClickListener =
             { _: View?, _: IAdapter<UpdatedItemX>?, item: UpdatedItemX?, position: Int? ->
                 if (appSheet != null) appSheet?.dismissAllowingStateLoss()
@@ -219,14 +204,16 @@ class HomeFragment : NavigationFragment(),
         binding.searchBar.maxWidth = Int.MAX_VALUE
         binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
-                homeItemAdapter.filter(newText)
-                homeItemAdapter.itemFilter.filterPredicate = filterPredicate
+                // TODO apply query
+                //homeItemAdapter.filter(newText)
+                //homeItemAdapter.itemFilter.filterPredicate = filterPredicate
                 return true
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {
-                homeItemAdapter.filter(query)
-                homeItemAdapter.itemFilter.filterPredicate = filterPredicate
+                // TODO apply query
+                //homeItemAdapter.filter(query)
+                //homeItemAdapter.itemFilter.filterPredicate = filterPredicate
                 return true
             }
         })
@@ -255,7 +242,6 @@ class HomeFragment : NavigationFragment(),
     }
 
     // TODO abstract this to fit for Main- & BatchFragment
-    // TODO break down to smaller bits
     override fun onConfirmed(
         selectedPackages: List<String?>,
         selectedModes: List<Int>
@@ -366,9 +352,26 @@ class HomeFragment : NavigationFragment(),
         val updatedList = createUpdatedAppsList(filteredList)
         requireActivity().runOnUiThread {
             try {
-                binding.recyclerView.adapter = homeFastAdapter
-                homeItemAdapter.set(mainList)
                 updatedItemAdapter.set(updatedList)
+                binding.recyclerView.setContent {
+                    AppTheme(
+                        darkTheme = isSystemInDarkTheme()
+                    ) {
+                        Scaffold {
+                            HomePackageRecycler(productsList = filteredList,
+                                onClick = { item ->
+                                    if (appSheet != null) appSheet?.dismissAllowingStateLoss()
+                                    appSheet =
+                                        AppSheet(item, AppExtras(), filteredList.indexOf(item))
+                                    appSheet?.showNow(
+                                        parentFragmentManager,
+                                        "Package ${item.packageName}"
+                                    )
+                                }
+                            )
+                        }
+                    }
+                }
                 viewModel.nUpdatedApps.value = updatedList.size
                 if (mainList.isEmpty())
                     Toast.makeText(
@@ -397,7 +400,8 @@ class HomeFragment : NavigationFragment(),
     private fun refreshAppSheet() {
         try {
             val position = appSheet?.position ?: -1
-            if (homeItemAdapter.itemList.size() > position && position != -1) {
+            // TODO implement auto refresh of AppSheet
+            /*if (homeItemAdapter.itemList.size() > position && position != -1) {
                 val sheetAppInfo = homeFastAdapter?.getItem(position)?.app
                 sheetAppInfo?.let {
                     if (appSheet?.packageName == sheetAppInfo.packageName) {
@@ -406,7 +410,7 @@ class HomeFragment : NavigationFragment(),
                         appSheet?.dismissAllowingStateLoss()
                 }
             } else
-                appSheet?.dismissAllowingStateLoss()
+                appSheet?.dismissAllowingStateLoss()*/
         } catch (e: Throwable) {
             appSheet?.dismissAllowingStateLoss()
             //LogsHandler.unhandledException(e)
