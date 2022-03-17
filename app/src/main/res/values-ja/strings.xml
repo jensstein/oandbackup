@@ -44,7 +44,7 @@
     <string name="mkfileError">作成できませんでした</string>
     <!--fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError-->
     <string name="fallbackToDefault">デフォルトに戻します</string>
-    <string name="backupFolderError">設定で正しいパスを設定して、存在するか作成可能であることを確認してください</string>
+    <string name="backupFolderError">設定で正しいパスを設定して、それが存在するか作成可能であることを確認してください</string>
     <string name="shellReturnSuccess">成功</string>
     <string name="shellReturnError">エラー</string>
     <string name="backupProgress">バックアップ中…</string>
@@ -68,11 +68,11 @@
     <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
     <string name="batchDeleteBackupsDeleted">削除したバックアップ:</string>
     <string name="batchDeleteNothingToDelete">削除するバックアップはありません</string>
-    <string name="enablePackage">有効</string>
+    <string name="enablePackage">アプリを有効化</string>
     <!--enablePackageTitle: title for a list of checkable users-->
-    <string name="enablePackageTitle">ユーザーに有効</string>
-    <string name="disablePackage">無効</string>
-    <string name="disablePackageTitle">ユーザーに無効</string>
+    <string name="enablePackageTitle">ユーザー向けアプリを有効化</string>
+    <string name="disablePackage">アプリを無効化</string>
+    <string name="disablePackageTitle">ユーザー向けアプリを無効</string>
     <string name="prefs_title">設定</string>
     <string name="prefs_acquirewakelock">スリープを防止</string>
     <string name="prefs_acquirewakelock_summary">バッチ処理の実行中に、スリープを防止するためウェイクロックを行います。バックアップと復元を大幅にスピードアップしますが、より多くのエネルギーを消費します。</string>
@@ -145,4 +145,9 @@
     <string name="prefs_enablespecial_summary">まだ集中的なテストが必要で、ブートループを起こす危険性を承知の上で試してみてください。フィードバックをお待ちしています。</string>
     <string name="prefs_obbdata_summary">外部ストレージ（例：/storage/emulated/0/Android/obb/）に置かれているアプリのobbファイルのバックアップとリストアを行います。</string>
     <string name="error_pmDataIncompleteException_dataRestoreFailed">アプリデータは復元されていません。</string>
+    <string name="prefs_mediadata">メディアファイルをバックアップ</string>
+    <string name="prefs_mediadata_summary">外部ストレージ（例: /storage/emulated/0/Android/media/）に置かれているアプリのメディアファイルをバックアップ、リストアします。</string>
+    <string name="prefs_numBackupRevisions">バックアップの改訂数</string>
+    <string name="prefs_numBackupRevisions_summary">この数値を超えると、新しいバックアップを作成する際に最も古い改訂点が削除されます。ゼロに設定すると、全ての改訂点を保持します。</string>
+    <string name="prefs_housekeepingmoment">改訂点のクリーンアップ時間</string>
 </resources>
