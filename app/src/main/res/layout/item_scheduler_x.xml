@@ -67,7 +67,6 @@
                 android:layout_width="@dimen/icon_small"
                 android:layout_height="@dimen/icon_small"
                 android:background="@android:color/transparent"
-                android:tint="@color/ic_system"
                 app:srcCompat="@drawable/ic_system" />
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -75,7 +74,6 @@
                 android:layout_width="@dimen/icon_small"
                 android:layout_height="@dimen/icon_small"
                 android:background="@android:color/transparent"
-                android:tint="@color/ic_user"
                 app:srcCompat="@drawable/ic_user" />
 
 
@@ -84,7 +82,6 @@
                 android:layout_width="@dimen/icon_small"
                 android:layout_height="@dimen/icon_small"
                 android:background="@android:color/transparent"
-                android:tint="@color/ic_special"
                 app:srcCompat="@drawable/ic_special" />
 
             <androidx.appcompat.widget.AppCompatImageView

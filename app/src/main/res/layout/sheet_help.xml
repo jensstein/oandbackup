@@ -350,7 +350,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginEnd="@dimen/cards_spacing"
-                        android:tint="@color/ic_system"
                         app:srcCompat="@drawable/ic_system" />
 
                     <androidx.appcompat.widget.AppCompatTextView
@@ -367,7 +366,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginEnd="@dimen/cards_spacing"
-                        android:tint="@color/ic_user"
                         app:srcCompat="@drawable/ic_user" />
 
                     <androidx.appcompat.widget.AppCompatTextView
@@ -392,7 +390,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginEnd="@dimen/cards_spacing"
-                        android:tint="@color/ic_special"
                         app:srcCompat="@drawable/ic_special" />
 
                     <androidx.appcompat.widget.AppCompatTextView
