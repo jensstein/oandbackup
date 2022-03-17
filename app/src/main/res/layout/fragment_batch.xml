@@ -16,8 +16,7 @@
  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -136,26 +135,15 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/refreshLayout"
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_gravity="top"
             android:clipToPadding="false"
             app:layout_constraintBottom_toTopOf="@id/buttonBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/topBar">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                app:fastScrollEnabled="true"
-                tools:listitem="@layout/item_batch_x" />
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            app:layout_constraintTop_toBottomOf="@id/topBar" />
 
         <FrameLayout
             android:id="@+id/buttonBar"
@@ -176,7 +164,7 @@
                     style="@style/Chip.Apk"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/cards_spacing"
+                    android:layout_marginStart="@dimen/large_spacing"
                     android:tooltipText="@string/all_apk"
                     app:chipIconEnabled="true" />
 
@@ -185,6 +173,7 @@
                     style="@style/Chip.Data"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_marginHorizontal="@dimen/cards_spacing"
                     android:tooltipText="@string/all_data"
                     app:chipIconEnabled="true" />
 
