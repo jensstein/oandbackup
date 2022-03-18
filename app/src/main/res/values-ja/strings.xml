@@ -62,7 +62,7 @@
     <string name="notInstalledModeDataWarning">apkがないためバックアップからアプリを復元できません</string>
     <string name="shareTitle">共有</string>
     <string name="prefs_tools">ツール</string>
-    <string name="prefs_batchdelete">バックアップを削除しますか?</string>
+    <string name="prefs_batchdelete">バックアップを削除しますか\?</string>
     <string name="batchDeleteMessage">バックアップの削除中…</string>
     <string name="batchDeleteNotificationTitle">バックアップを削除</string>
     <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
@@ -75,13 +75,13 @@
     <string name="disablePackageTitle">ユーザー向けアプリを無効</string>
     <string name="prefs_title">設定</string>
     <string name="prefs_acquirewakelock">スリープを防止</string>
-    <string name="prefs_acquirewakelock_summary">バッチ処理の実行中に、スリープを防止するためウェイクロックを行います。バックアップと復元を大幅にスピードアップしますが、より多くのエネルギーを消費します。</string>
+    <string name="prefs_acquirewakelock_summary">バッチ処理に、スリープを防止するためウェイクロックを行います。バックアップと復元を大幅にスピードアップしますが、より多くのエネルギーを消費します。</string>
     <string name="prefs_pathbackupfolder">バックアップ フォルダー</string>
     <string name="prefs_oldbackups">世代でバックアップをフィルター</string>
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
     <string name="prefs_oldbackups_summary">値の日数よりも古いバックアップでフィルター。\'古いバックアップを表示\' フィルターで使用します。</string>
     <string name="prefs_copyselfapk">apk 自身をコピー</string>
-    <string name="prefs_copyselfapk_summary">バックアップ時に、バックアップフォルダの最上位に oandbackup のコピーを作成します</string>
+    <string name="prefs_copyselfapk_summary">バックアップフォルダの最上位にOAndBackupXのコピーを作成する</string>
     <string name="prefs_languages">言語</string>
     <string name="prefs_language_system">システムデフォルト</string>
     <string name="prefs_rememberfiltering">並び替えとフィルターを記憶</string>
@@ -150,4 +150,17 @@
     <string name="prefs_numBackupRevisions">バックアップの改訂数</string>
     <string name="prefs_numBackupRevisions_summary">この数値を超えると、新しいバックアップを作成する際に最も古い改訂点が削除されます。ゼロに設定すると、全ての改訂点を保持します。</string>
     <string name="prefs_housekeepingmoment">改訂点のクリーンアップ時間</string>
+    <string name="prefs_disableverification">USB経由のアプリの検証を無効化</string>
+    <string name="prefs_batchdelete_summary">現在インストールされていない全てのアプリのバックアップを削除する。</string>
+    <string name="prefs_saveappslist">アプリリストを保存</string>
+    <string name="prefs_housekeepingmoment_summary">バックアップのディスク容量を解放するため、最も古いバージョンを削除するタイミングを新しいバックアップの作成前、作成後のいずれかに設定します。</string>
+    <string name="prefs_compression_level_summary">小さい値は高速ですがサイズが大きくなります。大きい値は圧縮率が上がりますが時間がかかります。</string>
+    <string name="prefs_compression_level">圧縮レベル</string>
+    <string name="prefs_disableverification_summary">APKのリストア時にこの開発者向けオプションを無効化し、後で有効化してください。INSTALL_FAILED_VERIFICATION_FAILUREエラーを解決します。</string>
+    <string name="prefs_restoreallpermissions_summary">復元したアプリが要求する全ての権限を与える。</string>
+    <string name="prefs_allowdowngrade_summary">インストールされているアプリより古いバージョンの復元を許可する。</string>
+    <string name="prefs_logviewer">ログを見る</string>
+    <string name="prefs_stopcont">バックアップ、復元の前後にアプリを一時停止、再開する</string>
+    <string name="prefs_stopcont_summary">上級者専用: バックアップ中にアプリがファイルを変更してバックアップが失敗する場合に役立つかもしれません。</string>
+    <string name="prefs_saveappslist_summary">バックアップディレクトリにtxt形式でアプリのリストを保存する</string>
 </resources>
