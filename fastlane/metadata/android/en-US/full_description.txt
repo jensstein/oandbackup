@@ -1,4 +1,5 @@
 <p>Make and restore backups of apps on your device and save app data to a user-accessible location. Supports backing up and restoring single or multiple apps.</p>
+<p>Part of Neo Applications.</p>
 <p>Fork of OAndBackup bringing support for new Android versions and updated looks.</p>
 <p><br><b>Help translate it on Weblate:</b> https://hosted.weblate.org/engage/oandbackupx/.</p>
 <p><br><b>Requires root:</b> Because it copies files from /data/data, /data/app and /system/app.</p>
