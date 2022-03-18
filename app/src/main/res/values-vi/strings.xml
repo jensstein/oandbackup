@@ -318,4 +318,6 @@
     <string name="grant_contacts_message">Quyền này là cần thiết để có thể nối danh bạ với SMS/MMS.</string>
     <string name="intro_permission_calllogs">Ứng dụng cần quyền này để có thể sao lưu/khôi phục nhật ký cuộc gọi.</string>
     <string name="batch">Nhóm</string>
+    <string name="spec_fingerprint">Vân tay</string>
+    <string name="loading_list">Đang tải danh sách ứng dụng…</string>
 </resources>
