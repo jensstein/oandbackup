@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="ic_launcher_background">#FEF1F1</color>
+
     <color name="ic_exodus">#AB47BC</color>
     <color name="ic_exodus_trans">#80AB47BC</color>
     <color name="ic_system">#4590FE</color>
