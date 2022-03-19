@@ -314,4 +314,20 @@
     <string name="all_data">Alle Daten auswählen</string>
     <string name="all_apk">Alle APKs auswählen</string>
     <string name="showDisabled">Deaktivierte Apps</string>
+    <string name="grant_calllogs_message">Dies ist notwendig, um Anruf-Protokolle zu sichern und wiederherstellen zu können.</string>
+    <string name="contacts_permission_title">Kontakte-Berechtigungen</string>
+    <string name="calllogs_permission_title">Anruf-Protkoll-Berechtigungen</string>
+    <string name="grant_contacts_message">Dies ist notwendig, um einen Kontakt mit SMS/MMS verknüpfen zu können.</string>
+    <string name="intro_permission_calllogs">Die App benötigt diese Berechtigung, um Anruf-Protokolle zu sichern und wiederherstellen zu können.</string>
+    <string name="intro_permission_contacts">Die App benötigt diese Berechtigung, um einen Kontakt mit SMS/MMS verknüpfen zu können.</string>
+    <string name="schedule">Zeitplan</string>
+    <string name="finished">fertig</string>
+    <string name="batch">Stapelverarbeitung</string>
+    <string name="spec_calllogsjson">Anruf-Protokolldatei JSON</string>
+    <string name="intro_permission_smsmms">Die App benötigt diese Berechtigung, um SMS/MMS zu sichern und wiederherstellen zu können.</string>
+    <string name="loading_list">Die App-Liste wird geladen …</string>
+    <string name="spec_smsmmsjson">SMS/MMS JSON</string>
+    <string name="spec_fingerprint">Fingerprints</string>
+    <string name="smsmms_permission_title">SMS/MMS Berechtigungen</string>
+    <string name="grant_smsmms_message">Dies ist notwendig, um SMS/MMS zu sichern und wiederherstellen zu können.</string>
 </resources>
