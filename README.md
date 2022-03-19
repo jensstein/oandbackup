@@ -33,7 +33,7 @@ In those groups we discuss the development of the App and test new versions:
 
 ##### On Matrix: [OAndBackupX:Matrix.ORG](https://matrix.to/#/!PiXJUneYCnkWAjekqX:matrix.org?via=matrix.org)
 
-##### On Telegram: [t.me/OAndBackupX](https://t.me/OAndBackupX)
+##### On Telegram: [t.me/neo_backup](https://t.me/neo_backup)
 
 Our **[Code of Conduct](COC.md)** applies to the communication in the community same as for all contributers.
 
