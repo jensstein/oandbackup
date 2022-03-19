@@ -1,5 +1,6 @@
 package com.machiav3lli.backup.ui.compose.recycler
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,6 +26,7 @@ fun <T> VerticalItemList(
 ) {
     Box(
         modifier = modifier
+            .background(MaterialTheme.colorScheme.background)
             .fillMaxSize(),
         contentAlignment = if (list.isNullOrEmpty()) Alignment.Center else Alignment.TopStart
     ) {
