@@ -313,4 +313,20 @@
     <string name="error_pmDataIncompleteException_dataRestoreFailed">Los datos de aplicación no han sido restaurados.</string>
     <string name="prefs_compression_level_summary">Un valor bajo comprime más rápido pero produce archivos grandes. Un valor grande comprime mejor pero demora más tiempo.</string>
     <string name="showDisabled">Aplicaciones deshabilitadas</string>
+    <string name="grant_calllogs_message">Esto es esencial para poder hacer una copia de seguridad/restaurar sus registros de llamadas.</string>
+    <string name="contacts_permission_title">Permisos de contactos</string>
+    <string name="grant_contacts_message">Esto es esencial para poder hacer coincidir un contacto con un SMS/MMS.</string>
+    <string name="intro_permission_smsmms">La aplicación necesita este permiso para poder hacer una copia de seguridad/restaurar sus SMS/MMS.</string>
+    <string name="intro_permission_calllogs">La aplicación necesita este permiso para poder hacer una copia de seguridad/restaurar sus registros de llamadas.</string>
+    <string name="intro_permission_contacts">La aplicación necesita este permiso para poder hacer coincidir un contacto con un SMS/MMS.</string>
+    <string name="schedule">Calendario</string>
+    <string name="finished">finalizado</string>
+    <string name="batch">Lote</string>
+    <string name="spec_calllogsjson">Registros de llamadas JSON</string>
+    <string name="smsmms_permission_title">Permisos SMS/MMS</string>
+    <string name="grant_smsmms_message">Esto es esencial para poder hacer una copia de seguridad/restaurar sus SMS/MMS.</string>
+    <string name="spec_smsmmsjson">SMS/MMS JSON</string>
+    <string name="spec_fingerprint">Huellas dactilares</string>
+    <string name="calllogs_permission_title">Permisos de registros de llamadas</string>
+    <string name="loading_list">Cargando lista de aplicaciones…</string>
 </resources>
