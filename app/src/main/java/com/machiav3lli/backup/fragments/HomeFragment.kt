@@ -21,7 +21,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Scaffold
@@ -40,7 +39,6 @@ import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.HomeItemX
 import com.machiav3lli.backup.items.UpdatedItemX
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
@@ -195,12 +193,12 @@ class HomeFragment : NavigationFragment(),
     }
 
     private fun setupSearch() {
-        val filterPredicate = { item: HomeItemX, cs: CharSequence? ->
+        /*val filterPredicate = { item: HomeItemX, cs: CharSequence? ->
             item.appExtras.customTags
                 .plus(item.app.packageName)
                 .plus(item.app.packageLabel)
                 .find { it.contains(cs.toString(), true) } != null
-        }
+        }*/
         binding.searchBar.maxWidth = Int.MAX_VALUE
         binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
@@ -348,7 +346,7 @@ class HomeFragment : NavigationFragment(),
     }
 
     private fun refreshMain(filteredList: List<AppInfo>, appSheetBoolean: Boolean) {
-        val mainList = createMainAppsList(filteredList)
+        //val mainList = createMainAppsList(filteredList)
         val updatedList = createUpdatedAppsList(filteredList)
         requireActivity().runOnUiThread {
             try {
@@ -373,12 +371,6 @@ class HomeFragment : NavigationFragment(),
                     }
                 }
                 viewModel.nUpdatedApps.value = updatedList.size
-                if (mainList.isEmpty())
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.empty_filtered_list),
-                        Toast.LENGTH_SHORT
-                    ).show()
                 setupSearch()
                 if (appSheetBoolean) refreshAppSheet()
                 viewModel.refreshNow.value = false
@@ -388,9 +380,9 @@ class HomeFragment : NavigationFragment(),
         }
     }
 
-    private fun createMainAppsList(filteredList: List<AppInfo>): MutableList<HomeItemX> =
+    /*private fun createMainAppsList(filteredList: List<AppInfo>): MutableList<HomeItemX> =
         filteredList
-            .map { HomeItemX(it, appExtrasList.get(it.packageName)) }.toMutableList()
+            .map { HomeItemX(it, appExtrasList.get(it.packageName)) }.toMutableList()*/
 
     private fun createUpdatedAppsList(filteredList: List<AppInfo>): MutableList<UpdatedItemX> =
         filteredList
