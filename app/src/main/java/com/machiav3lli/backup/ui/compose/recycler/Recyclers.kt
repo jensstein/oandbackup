@@ -6,6 +6,7 @@ import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.ui.compose.item.BatchPackageItem
 import com.machiav3lli.backup.ui.compose.item.MainPackageItem
 import com.machiav3lli.backup.ui.compose.item.ScheduleItem
+import com.machiav3lli.backup.ui.compose.item.UpdatedPackageItem
 
 @Composable
 fun HomePackageRecycler(
@@ -14,6 +15,16 @@ fun HomePackageRecycler(
 ) {
     VerticalItemList(list = productsList) {
         MainPackageItem(it, onClick)
+    }
+}
+
+@Composable
+fun UpdatedPackageRecycler(
+    productsList: List<AppInfo>?,
+    onClick: (AppInfo) -> Unit = {}
+) {
+    HorizontalItemList(list = productsList) {
+        UpdatedPackageItem(it, onClick)
     }
 }
 
