@@ -1,7 +1,7 @@
 **OAndBackupX 1.0.2**
 * Hinzugefügt: Menüpunkt Klick-Feedback
-* Aktualisiert: verhalten beim Blättern 
-* Repariert: Startbildschirm
-* Repariert: Verhalten beim Wischen zum Aktualisieren 
-* Repariert: Statusleisten Farbschema
+* Aktualisiert: verhalten beim Blättern
+* Behoben: Startbildschirm
+* Behoben: Verhalten beim Wischen zum Aktualisieren
+* Behoben: Statusleisten Farbschema
 * und einige andere Benutzeroberflächen-Optimierungen
