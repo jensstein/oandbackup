@@ -1,4 +1,4 @@
 **OAndBackupX 0.9.7**
-* Repariert: Update-Logik
+* Behoben: Update-Logik
 * Entfernt: PGP-Verschlüsselung und symbolischen Links folgen
 * Quell-Code aufgeräumt

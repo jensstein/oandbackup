@@ -4,4 +4,4 @@
 * Hinzugefügt: Aufforderung zum Ausschluss der Batterieoptimierung
 * Korrigiert: der Profil-Fehler (muss getestet werden)
 * Umgestellt: von FilePicker auf SAF
-* Optimiert: Quell-Code
+* Quell-Code optimiert
