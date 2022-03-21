@@ -76,10 +76,8 @@ class ExportsViewModel(val database: ScheduleDao, private val appContext: Applic
 
     private suspend fun delete(exportFile: StorageFile) {
         withContext(Dispatchers.IO) {
-            exportsList.value?.removeIf {
-                it.second == exportFile
-            }
             exportFile.delete()
+            refreshList()
         }
     }
 

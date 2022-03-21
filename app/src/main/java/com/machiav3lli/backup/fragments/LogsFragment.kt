@@ -23,21 +23,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.FragmentRecyclerBinding
 import com.machiav3lli.backup.items.LogItemX
 import com.machiav3lli.backup.viewmodels.LogViewModel
 import com.mikepenz.fastadapter.FastAdapter
-import com.mikepenz.fastadapter.adapters.ItemAdapter
-import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 
 class LogsFragment : Fragment() {
     private lateinit var binding: FragmentRecyclerBinding
-    private val logItemAdapter = ItemAdapter<LogItemX>()
-    private var logFastAdapter: FastAdapter<LogItemX>? = null
     private lateinit var viewModel: LogViewModel
 
     override fun onCreateView(
@@ -51,7 +46,7 @@ class LogsFragment : Fragment() {
         viewModel = ViewModelProvider(this, viewModelFactory)[LogViewModel::class.java]
 
         viewModel.refreshActive.observe(viewLifecycleOwner) {
-            binding.refreshLayout.isRefreshing = it
+            //binding.refreshLayout.isRefreshing = it
         }
         viewModel.refreshNow.observe(viewLifecycleOwner) {
             if (it) refresh()
@@ -72,13 +67,7 @@ class LogsFragment : Fragment() {
     }
 
     private fun setupViews() {
-        logFastAdapter = FastAdapter.with(logItemAdapter)
-        logFastAdapter?.setHasStableIds(true)
-        binding.recyclerView.adapter = logFastAdapter
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        logFastAdapter?.addEventHook(OnDeleteClickHook())
-        logFastAdapter?.addEventHook(OnShareClickHook())
-        binding.refreshLayout.setOnRefreshListener { viewModel.refreshList() }
+        // binding.refreshLayout.setOnRefreshListener { viewModel.refreshList() }
     }
 
     inner class OnShareClickHook : ClickEventHook<LogItemX>() {
@@ -114,8 +103,6 @@ class LogsFragment : Fragment() {
     fun refresh() {
         val logsList = mutableListOf<LogItemX>()
         viewModel.logsList.value?.forEach { logsList.add(LogItemX(it)) }
-        FastAdapterDiffUtil[logItemAdapter] = logsList
-        logFastAdapter?.notifyDataSetChanged()
         viewModel.finishRefresh()
     }
 }
