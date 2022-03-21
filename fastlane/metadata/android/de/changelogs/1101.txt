@@ -1,6 +1,6 @@
 **OAndBackupX 1.1.1**
 * Hinzugefügt: Verknüpfung zum Exodus-Bericht im AppSheet
-*Repariert: kein Start, wenn es eine Anwendung mit Icon-Dimensionen <= 0 gibt.
+*Behoben: kein Start, wenn es eine Anwendung mit Icon-Dimensionen <= 0 gibt.
 * Geändert: Standard ist jetzt so eingestellt, dass OAndBackupX in den übergeordneten Backup-Ordner kopiert wird
 * Hinzugefügt: Griechisch (Danke @tsiflimagas)
 * Aktualisiert: Großschreibung und englische Zeichenketten (Danke @atrate)

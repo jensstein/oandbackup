@@ -1,4 +1,4 @@
 **OAndBackupX 1.2.0**
 * Aktualisiert: UI
-* Repariert: Absturz beim Teilen einer Sicherung
+* Behoben: Absturz beim Teilen einer Sicherung
 * Hinzugefügt: Optionen zur Sicherung geschützter (Device Protected) und externer Daten

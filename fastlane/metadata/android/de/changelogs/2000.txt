@@ -2,8 +2,8 @@
 * Auf sulib umgeschaltet (Danke @Tiefkuehlpizze)
 * Entfernt (entgültig): oab-utils (Danke @Tiefkuehlpizze)
 * Neue Benutzeroberflächen-Elemente für App-, Filter- & ScheduleSheet
-* Repariert: geplante Backups für (nur) Daten
-* Repariert: Zippen external/deData/obb gemäß Prefs
-* Repariert: Zippen leerer Ordner unter external/deData/obb
+* Behoben: geplante Backups für (nur) Daten
+* Behoben: Zippen external/deData/obb gemäß Prefs
+* Behoben: Zippen leerer Ordner unter external/deData/obb
 * Aktualisiert: saubere Zwischenspeicher Funktion
 * Einige andere Benutzerobersflächen- und Performance-Optimierungen
