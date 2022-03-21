@@ -29,8 +29,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class LogViewModel(private val appContext: Application)
-    : AndroidViewModel(appContext) {
+class LogViewModel(private val appContext: Application) : AndroidViewModel(appContext) {
 
     var logsList = MediatorLiveData<MutableList<LogItem>>()
 
@@ -59,11 +58,8 @@ class LogViewModel(private val appContext: Application)
         }
     }
 
-    private suspend fun recreateAppInfoList(): MutableList<LogItem>? {
-        return withContext(Dispatchers.IO) {
-            val dataList = LogsHandler(appContext).readLogs()
-            dataList
-        }
+    private suspend fun recreateAppInfoList(): MutableList<LogItem> = withContext(Dispatchers.IO) {
+        LogsHandler(appContext).readLogs()
     }
 
     fun shareLog(log: LogItem) {
@@ -86,8 +82,10 @@ class LogViewModel(private val appContext: Application)
                     }
                     appContext.startActivity(shareFileIntent)
                 } else {
-                    showNotification(appContext, PrefsActivity::class.java, System.currentTimeMillis().toInt(),
-                            appContext.getString(R.string.logs_share_failed), "", false)
+                    showNotification(
+                        appContext, PrefsActivity::class.java, System.currentTimeMillis().toInt(),
+                        appContext.getString(R.string.logs_share_failed), "", false
+                    )
                 }
             }
         }
@@ -102,13 +100,12 @@ class LogViewModel(private val appContext: Application)
 
     private suspend fun delete(log: LogItem) {
         withContext(Dispatchers.IO) {
-            logsList.value?.remove(log)
             log.delete(appContext)
+            refreshList()
         }
     }
 
-    class Factory(private val application: Application)
-        : ViewModelProvider.Factory {
+    class Factory(private val application: Application) : ViewModelProvider.Factory {
         @Suppress("unchecked_cast")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(LogViewModel::class.java)) {
