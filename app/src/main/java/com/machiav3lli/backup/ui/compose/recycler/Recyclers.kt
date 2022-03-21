@@ -3,10 +3,8 @@ package com.machiav3lli.backup.ui.compose.recycler
 import androidx.compose.runtime.Composable
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.ui.compose.item.BatchPackageItem
-import com.machiav3lli.backup.ui.compose.item.MainPackageItem
-import com.machiav3lli.backup.ui.compose.item.ScheduleItem
-import com.machiav3lli.backup.ui.compose.item.UpdatedPackageItem
+import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.ui.compose.item.*
 
 @Composable
 fun HomePackageRecycler(
@@ -59,5 +57,16 @@ fun ScheduleRecycler(
 ) {
     VerticalItemList(list = productsList) {
         ScheduleItem(it, onClick, onCheckChanged)
+    }
+}
+
+@Composable
+fun ExportedScheduleRecycler(
+    productsList: List<Pair<Schedule, StorageFile>>?,
+    onImport: (Schedule) -> Unit = {},
+    onDelete: (StorageFile) -> Unit = {}
+) {
+    VerticalItemList(list = productsList) {
+        ExportedScheduleItem(it.first, it.second, onImport, onDelete)
     }
 }
