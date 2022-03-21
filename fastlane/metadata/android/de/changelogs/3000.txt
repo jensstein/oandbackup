@@ -1,7 +1,7 @@
 **OAndBackupX 3.0.0**
 
 ##### DIESE VERSION IST NICHT MIT DEN VORHERIGEN VERSIONEN KOMPATIBEL
-* Geändert: Standard-Sicherungsverzeichnis nach /OABX
+* Behoben: Standard-Sicherungsverzeichnis nach /OABX
 * neu programmiert Verschlüsselung (Danke @Pizze)
 * Hinzugefügt: Sortierung nach Datengröße
 * Hinzugefügt: Warndialog über die Aktivierung der Verschlüsselung

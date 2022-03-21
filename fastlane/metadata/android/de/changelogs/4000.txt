@@ -7,4 +7,4 @@
 * Hinzugefügt: Symlink/Pipe-Unterstützung
 * Hinzugefügt: Multi-Backup-Unterstützung
 * Hinzugefügt: Parallele Batch-Aufgaben erlauben
- und mehr: https://github.com/machiav3lli/oandbackupx/blob/master/CHANGELOG.md
+und mehr: https://github.com/machiav3lli/oandbackupx/blob/master/CHANGELOG.md

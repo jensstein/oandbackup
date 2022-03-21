@@ -2,7 +2,7 @@
 
 * Entfernt: Unterstützung von Android-Nougat
 * Hinzugefügt: neues Tag-System
-* Hinzugefügt: biometrisches Schloss 
+* Hinzugefügt: biometrisches Schloss
 * Hinzugefügt: Elemente in der Stapelverarbeitung merken
 * Aktualisiert: gesamte Benutzeroberfläche
 * Aktualisiert: Standardeinstellung für externe Daten und obb - aus

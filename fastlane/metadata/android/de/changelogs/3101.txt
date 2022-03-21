@@ -2,9 +2,9 @@
 
 * Neu: das Intro
 * Neu: Verschlüsselung Passwort-Prüffeld
-* Entfernt: Einstellung Busybox-Pfad 
-* Repariert: Anzeige des aktuellen Datums anstelle der letzten Sicherung
-* Repariert: Aktualisierung der Tags der Apps nach neuer Sicherung
+* Entfernt: Einstellung Busybox-Pfad
+* Behoben: Anzeige des aktuellen Datums anstelle der letzten Sicherung
+* Behoben: Aktualisierung der Tags der Apps nach neuer Sicherung
 * Aktualisiert: Übersetzungen (NOR, RUS, ITA, FRA, NLD, DEU)
 * Aktualisiert: Erinnerungs-Sortier-/Filter-Vorgabe auf true gesetzt
 * Aktualisiert: biometrisches Schloss standardmäßig auf aus setzen

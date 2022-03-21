@@ -2,7 +2,7 @@
 * Hinzugefügt: App-Info Verknüpfung im AppSheet
 * Aktualisiert: Betätigen von Benutzeroberflächen-Elementen
 * Aktualisiert: neues Standard-Sicherungsverzeichnis /OAndBackupX
-* Repariert: Verhalten des Adapters nach Ausführung von Aktionen
-* Repariert: Absturz des Adapters
+* Behoben: Verhalten des Adapters nach Ausführung von Aktionen
+* Behoben: Absturz des Adapters
 * Umgestellt: vom Bereinigen des Caches der Anwendung zum Ausschließen des Caches vom Backup (Danke @icewind1991)
 * Optimiert: Verhalten verschiedener Benutzeroberflächen-Elemente
