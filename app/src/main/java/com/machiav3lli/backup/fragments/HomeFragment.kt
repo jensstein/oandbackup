@@ -21,14 +21,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Scaffold
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
@@ -40,17 +37,13 @@ import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.HomeItemX
-import com.machiav3lli.backup.items.UpdatedItemX
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.ui.compose.recycler.HomePackageRecycler
+import com.machiav3lli.backup.ui.compose.recycler.UpdatedPackageRecycler
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.HomeViewModel
-import com.mikepenz.fastadapter.FastAdapter
-import com.mikepenz.fastadapter.IAdapter
-import com.mikepenz.fastadapter.adapters.ItemAdapter
 import timber.log.Timber
 
 class HomeFragment : NavigationFragment(),
@@ -58,9 +51,6 @@ class HomeFragment : NavigationFragment(),
     private lateinit var binding: FragmentHomeBinding
     lateinit var viewModel: HomeViewModel
     private var appSheet: AppSheet? = null
-
-    private val updatedItemAdapter = ItemAdapter<UpdatedItemX>()
-    private var updatedFastAdapter: FastAdapter<UpdatedItemX>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -88,6 +78,25 @@ class HomeFragment : NavigationFragment(),
             }
         }
 
+        viewModel.updatedApps.observe(viewLifecycleOwner) {
+            viewModel.nUpdatedApps.value = it.size
+            binding.updatedRecycler.setContent {
+                AppTheme(
+                    darkTheme = isSystemInDarkTheme()
+                ) {
+                    UpdatedPackageRecycler(productsList = it,
+                        onClick = { item ->
+                            if (appSheet != null) appSheet?.dismissAllowingStateLoss()
+                            appSheet = AppSheet(item, AppExtras(), it.indexOf(item))
+                            appSheet?.showNow(
+                                parentFragmentManager,
+                                "Package ${item.packageName}"
+                            )
+                        }
+                    )
+                }
+            }
+        }
         viewModel.nUpdatedApps.observe(requireActivity()) {
             binding.buttonUpdated.text =
                 binding.root.context.resources.getQuantityString(R.plurals.updated_apps, it, it)
@@ -151,11 +160,6 @@ class HomeFragment : NavigationFragment(),
         )
         binding.refreshLayout.setProgressViewOffset(false, 72, 144)
         binding.refreshLayout.setOnRefreshListener { requireMainActivity().viewModel.refreshList() }*/
-        updatedFastAdapter = FastAdapter.with(updatedItemAdapter)
-        updatedFastAdapter?.setHasStableIds(true)
-        binding.updatedRecycler.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-        binding.updatedRecycler.adapter = updatedFastAdapter
     }
 
     override fun setupOnClicks() {
@@ -182,25 +186,16 @@ class HomeFragment : NavigationFragment(),
             )
             sheetSortFilter?.showNow(requireActivity().supportFragmentManager, "SORTFILTER_SHEET")
         }
-        updatedFastAdapter?.onClickListener =
-            { _: View?, _: IAdapter<UpdatedItemX>?, item: UpdatedItemX?, position: Int? ->
-                if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                item?.let {
-                    appSheet = AppSheet(it.app, it.appExtras, position ?: -1)
-                    appSheet?.showNow(requireActivity().supportFragmentManager, "APP_SHEET")
-                }
-                false
-            }
         binding.buttonUpdateAll.setOnClickListener { onClickUpdateAllAction() }
     }
 
     private fun setupSearch() {
-        val filterPredicate = { item: HomeItemX, cs: CharSequence? ->
+        /*val filterPredicate = { item: HomeItemX, cs: CharSequence? ->
             item.appExtras.customTags
                 .plus(item.app.packageName)
                 .plus(item.app.packageLabel)
                 .find { it.contains(cs.toString(), true) } != null
-        }
+        }*/
         binding.searchBar.maxWidth = Int.MAX_VALUE
         binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
@@ -220,12 +215,12 @@ class HomeFragment : NavigationFragment(),
     }
 
     private fun onClickUpdateAllAction() {
-        val selectedList = updatedItemAdapter.adapterItems
-            .map { it.app.appMetaInfo }
-            .toCollection(ArrayList())
-        val selectedListModes = updatedItemAdapter.adapterItems
-            .mapNotNull {
-                it.app.latestBackup?.backupProperties?.let { bp ->
+        val selectedList = viewModel.updatedApps.value
+            ?.map { it.appMetaInfo }
+            ?.toCollection(ArrayList()) ?: arrayListOf()
+        val selectedListModes = viewModel.updatedApps.value
+            ?.mapNotNull {
+                it.latestBackup?.backupProperties?.let { bp ->
                     when {
                         bp.hasApk && bp.hasAppData -> ALT_MODE_BOTH
                         bp.hasApk -> ALT_MODE_APK
@@ -234,7 +229,7 @@ class HomeFragment : NavigationFragment(),
                     }
                 }
             }
-            .toCollection(ArrayList())
+            ?.toCollection(ArrayList()) ?: arrayListOf()
         if (selectedList.isNotEmpty()) {
             BatchDialogFragment(true, selectedList, selectedListModes, this)
                 .show(requireActivity().supportFragmentManager, "DialogFragment")
@@ -348,11 +343,11 @@ class HomeFragment : NavigationFragment(),
     }
 
     private fun refreshMain(filteredList: List<AppInfo>, appSheetBoolean: Boolean) {
-        val mainList = createMainAppsList(filteredList)
-        val updatedList = createUpdatedAppsList(filteredList)
+        //val mainList = createMainAppsList(filteredList)
+        //val updatedList = createUpdatedAppsList(filteredList)
         requireActivity().runOnUiThread {
             try {
-                updatedItemAdapter.set(updatedList)
+                viewModel.updatedApps.value = filteredList.filter { it.isUpdated }
                 binding.recyclerView.setContent {
                     AppTheme(
                         darkTheme = isSystemInDarkTheme()
@@ -372,13 +367,6 @@ class HomeFragment : NavigationFragment(),
                         }
                     }
                 }
-                viewModel.nUpdatedApps.value = updatedList.size
-                if (mainList.isEmpty())
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.empty_filtered_list),
-                        Toast.LENGTH_SHORT
-                    ).show()
                 setupSearch()
                 if (appSheetBoolean) refreshAppSheet()
                 viewModel.refreshNow.value = false
@@ -387,15 +375,6 @@ class HomeFragment : NavigationFragment(),
             }
         }
     }
-
-    private fun createMainAppsList(filteredList: List<AppInfo>): MutableList<HomeItemX> =
-        filteredList
-            .map { HomeItemX(it, appExtrasList.get(it.packageName)) }.toMutableList()
-
-    private fun createUpdatedAppsList(filteredList: List<AppInfo>): MutableList<UpdatedItemX> =
-        filteredList
-            .filter { it.isUpdated }
-            .map { UpdatedItemX(it, appExtrasList.get(it.packageName)) }.toMutableList()
 
     private fun refreshAppSheet() {
         try {

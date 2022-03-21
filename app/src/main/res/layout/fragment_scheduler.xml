@@ -16,8 +16,7 @@
  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -30,13 +29,12 @@
         android:clipChildren="false"
         android:clipToPadding="false">
 
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/topBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?colorPrimaryDark"
-            app:layout_constraintBottom_toTopOf="@id/listLayout"
+            app:layout_constraintBottom_toTopOf="@id/recyclerView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -93,44 +91,36 @@
                 app:layout_constraintTop_toBottomOf="@id/appBar" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/listLayout"
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:clipChildren="false"
-            android:orientation="vertical"
+            android:clipToPadding="false"
+            app:layout_constraintBottom_toTopOf="@id/buttonBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/topBar" />
+
+        <FrameLayout
+            android:id="@+id/buttonBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?colorPrimaryDark"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/topBar">
+            app:layout_constraintTop_toBottomOf="@id/recyclerView">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/addSchedule"
+                style="@style/Widget.Material3.Button.ElevatedButton"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipChildren="false"
-                android:orientation="vertical">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipToPadding="false"
-                    tools:itemCount="4"
-                    tools:listitem="@layout/item_scheduler_x" />
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/addSchedule"
-                    style="@style/ImageButton.Positive"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/cards_spacing"
-                    android:layout_marginTop="@dimen/buttons_spacing"
-                    android:layout_marginBottom="@dimen/cards_spacing"
-                    android:paddingVertical="@dimen/large_spacing"
-                    android:src="@drawable/ic_add_sched"
-                    android:tooltipText="@string/sched_add" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-        </androidx.core.widget.NestedScrollView>
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/cards_spacing"
+                android:paddingVertical="@dimen/large_spacing"
+                android:text="@string/sched_add"
+                app:icon="@drawable/ic_add_sched" />
+        </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
 

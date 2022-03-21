@@ -21,7 +21,6 @@ import android.app.Application
 import androidx.lifecycle.*
 import com.machiav3lli.backup.dbs.dao.ScheduleDao
 import com.machiav3lli.backup.dbs.entity.Schedule
-import com.machiav3lli.backup.items.SchedulerItemX
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -31,10 +30,6 @@ class SchedulerViewModel(val database: ScheduleDao, appContext: Application) :
 
     var schedules = MediatorLiveData<List<Schedule>>()
 
-    val schedulesItems: List<SchedulerItemX>
-        get() = schedules.value?.map {
-            SchedulerItemX(it)
-        } ?: listOf()
 
     init {
         schedules.addSource(database.liveAll, schedules::setValue)

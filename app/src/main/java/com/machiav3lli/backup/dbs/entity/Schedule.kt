@@ -42,7 +42,7 @@ data class Schedule(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
 ) {
-    var name: String? = "New Schedule"
+    var name: String = "New Schedule"
     var enabled = false
 
     var timeHour = 0
@@ -154,7 +154,7 @@ data class Schedule(
     }
 
     fun getBatchName(startTime: Long): String =
-        WorkHandler.getBatchName(this.name ?: "Schedule", startTime)
+        WorkHandler.getBatchName(this.name, startTime)
 
     class Builder {
         val schedule: Schedule = Schedule()

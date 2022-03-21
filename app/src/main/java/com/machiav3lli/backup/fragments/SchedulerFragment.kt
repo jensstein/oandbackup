@@ -21,34 +21,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatCheckBox
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.Scaffold
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
-import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.FragmentSchedulerBinding
 import com.machiav3lli.backup.dbs.ODatabase
+import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
-import com.machiav3lli.backup.items.SchedulerItemX
+import com.machiav3lli.backup.ui.compose.recycler.ScheduleRecycler
+import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.specialBackupsEnabled
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
-import com.mikepenz.fastadapter.FastAdapter
-import com.mikepenz.fastadapter.IAdapter
-import com.mikepenz.fastadapter.adapters.ItemAdapter
-import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.calculateDiff
-import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.set
-import com.mikepenz.fastadapter.listeners.ClickEventHook
 
 class SchedulerFragment : NavigationFragment() {
     private lateinit var binding: FragmentSchedulerBinding
     private var sheetSchedule: ScheduleSheet? = null
     private lateinit var viewModel: SchedulerViewModel
     private lateinit var database: ODatabase
-
-    private val schedulerItemAdapter = ItemAdapter<SchedulerItemX>()
-    private var schedulerFastAdapter: FastAdapter<SchedulerItemX> =
-        FastAdapter.with(schedulerItemAdapter)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,14 +59,35 @@ class SchedulerFragment : NavigationFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
 
-        viewModel.schedules.observe(requireActivity()) {
-            it?.let {
-                val diffResult = calculateDiff(
-                    schedulerItemAdapter,
-                    viewModel.schedulesItems,
-                    SchedulerItemX.Companion.SchedulerDiffCallback()
-                )
-                set(schedulerItemAdapter, diffResult)
+        viewModel.schedules.observe(requireActivity()) { list ->
+            binding.recyclerView.setContent {
+                AppTheme(
+                    darkTheme = isSystemInDarkTheme()
+                ) {
+                    Scaffold {
+                        ScheduleRecycler(productsList = list,
+                            onClick = { item ->
+                                if (sheetSchedule != null) sheetSchedule?.dismissAllowingStateLoss()
+                                sheetSchedule = ScheduleSheet(item.id)
+                                sheetSchedule?.showNow(
+                                    requireActivity().supportFragmentManager,
+                                    "Schedule ${item.id}"
+                                )
+                            },
+                            onCheckChanged = { item: Schedule, b: Boolean ->
+                                item.enabled = b
+                                Thread(
+                                    ScheduleSheet.UpdateRunnable(
+                                        item,
+                                        requireContext(),
+                                        database.scheduleDao,
+                                        true
+                                    )
+                                ).start()
+                            }
+                        )
+                    }
+                }
             }
         }
     }
@@ -87,25 +98,9 @@ class SchedulerFragment : NavigationFragment() {
     }
 
     override fun setupViews() {
-        schedulerFastAdapter.setHasStableIds(false)
-        binding.recyclerView.adapter = schedulerFastAdapter
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
     }
 
     override fun setupOnClicks() {
-        schedulerFastAdapter.onClickListener =
-            { _: View?, _: IAdapter<SchedulerItemX>, item: SchedulerItemX?, _: Int? ->
-                sheetSchedule?.dismissAllowingStateLoss()
-                item?.let {
-                    sheetSchedule = ScheduleSheet(it.schedule.id)
-                    sheetSchedule?.showNow(
-                        requireActivity().supportFragmentManager,
-                        "SCHEDULESHEET"
-                    )
-                }
-                false
-            }
         binding.buttonBlocklist.setOnClickListener {
             Thread {
                 val blocklistedPackages = requireMainActivity().viewModel.blocklist.value
@@ -123,30 +118,6 @@ class SchedulerFragment : NavigationFragment() {
         }
         binding.addSchedule.setOnClickListener {
             viewModel.addSchedule(requireContext().specialBackupsEnabled)
-        }
-        schedulerFastAdapter.addEventHook(OnEnableClickHook())
-    }
-
-    inner class OnEnableClickHook : ClickEventHook<SchedulerItemX>() {
-        override fun onBind(viewHolder: RecyclerView.ViewHolder): View? {
-            return viewHolder.itemView.findViewById(R.id.enableCheckbox)
-        }
-
-        override fun onClick(
-            v: View,
-            position: Int,
-            fastAdapter: FastAdapter<SchedulerItemX>,
-            item: SchedulerItemX
-        ) {
-            item.schedule.enabled = (v as AppCompatCheckBox).isChecked
-            Thread(
-                ScheduleSheet.UpdateRunnable(
-                    item.schedule,
-                    requireContext(),
-                    database.scheduleDao,
-                    true
-                )
-            ).start()
         }
     }
 

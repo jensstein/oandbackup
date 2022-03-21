@@ -16,8 +16,7 @@
  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -168,20 +167,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.recyclerview.widget.RecyclerView
+            <androidx.compose.ui.platform.ComposeView
                 android:id="@+id/updatedRecycler"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:orientation="horizontal"
-                android:paddingHorizontal="@dimen/buttons_spacing"
-                android:scrollbars="none"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/buttonUpdated"
-                tools:listitem="@layout/item_updated_x" />
+                app:layout_constraintTop_toBottomOf="@id/buttonUpdated" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/buttonUpdateAll"

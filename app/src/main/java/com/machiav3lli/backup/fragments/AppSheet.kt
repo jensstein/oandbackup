@@ -46,7 +46,6 @@ import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BackupItemX
 import com.machiav3lli.backup.items.BackupProperties
-import com.machiav3lli.backup.items.HomeItemX
 import com.machiav3lli.backup.tasks.BackupActionTask
 import com.machiav3lli.backup.tasks.RestoreActionTask
 import com.machiav3lli.backup.utils.*
@@ -96,10 +95,10 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
         setup(false)
     }
 
-    fun updateApp(item: HomeItemX) {
+    /*fun updateApp(item: HomeItemX) {
         viewModel.appInfo.value = item.app
         setup(true)
-    }
+    }*/
 
     private fun setup(update: Boolean) {
         setupOnClicks()

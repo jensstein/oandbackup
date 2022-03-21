@@ -88,11 +88,11 @@ All new icons in 7.0.0 based on CC0 icons found on [SVG Repo](https://www.svgrep
 
 Open-Source libs: [FastAdapter](https://github.com/mikepenz/FastAdapter), [RootBeer](https://github.com/scottyab/rootbeer), [NumberPicker](https://github.com/ShawnLin013/NumberPicker), [Apache Commons](https://commons.apache.org).
 
-### Languages: [<img align="right" src="https://hosted.weblate.org/widgets/oandbackupx/-/287x66-white.png" alt="Übersetzungsstatus" />](https://hosted.weblate.org/engage/oandbackupx/?utm_source=widget)
+### Languages: [<img align="right" src="https://hosted.weblate.org/widgets/oandbackupx/-/287x66-white.png" alt="Übersetzungsstatus" />](https://hosted.weblate.org/engage/neo-backup/?utm_source=widget)
 
-[<img src="https://hosted.weblate.org/widgets/oandbackupx/-/multi-auto.svg" alt="Übersetzungsstatus" />](https://hosted.weblate.org/engage/oandbackupx/)
+[<img src="https://hosted.weblate.org/widgets/oandbackupx/-/multi-auto.svg" alt="Übersetzungsstatus" />](https://hosted.weblate.org/engage/neo-backup/)
 
-The Translations are now being hosted by [Weblate.org](https://hosted.weblate.org/engage/oandbackupx/).
+The Translations are now being hosted by [Weblate.org](https://hosted.weblate.org/engage/neo-backup/).
 
 Before that, translations were done analog/offline by those great people:
 

@@ -23,7 +23,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.SearchView
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -42,7 +41,6 @@ import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.BatchItemX
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.ui.compose.recycler.BatchPackageRecycler
@@ -153,12 +151,12 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     }
 
     private fun setupSearch() {
-        val filterPredicate = { item: BatchItemX, cs: CharSequence? ->
+        /*val filterPredicate = { item: BatchItemX, cs: CharSequence? ->
             item.appExtras.customTags
                 .plus(item.app.packageName)
                 .plus(item.app.packageLabel)
                 .find { it.contains(cs.toString(), true) } != null
-        }
+        }*/
         binding.searchBar.maxWidth = Int.MAX_VALUE
         binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
@@ -324,7 +322,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     }
 
     private fun refreshBatch(filteredList: List<AppInfo>) {
-        val batchList = createBatchAppsList(filteredList)
+        //val batchList = createBatchAppsList(filteredList)
         requireActivity().runOnUiThread {
             try {
                 binding.recyclerView.setContent {
@@ -374,12 +372,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                         }
                     }
                 }
-                if (batchList.isEmpty())
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.empty_filtered_list),
-                        Toast.LENGTH_SHORT
-                    ).show()
                 setupSearch()
                 viewModel.refreshNow.value = false
             } catch (e: Throwable) {
@@ -388,7 +380,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         }
     }
 
-    private fun createBatchAppsList(filteredList: List<AppInfo>): MutableList<BatchItemX> =
+    /*private fun createBatchAppsList(filteredList: List<AppInfo>): MutableList<BatchItemX> =
         filteredList
             .filter {
                 if (backupBoolean) it.isInstalled
@@ -398,7 +390,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                 item.isApkChecked = viewModel.apkCheckedList.contains(it.packageName)
                 item.isDataChecked = viewModel.dataCheckedList.contains(it.packageName)
                 item
-            }.toMutableList()
+            }.toMutableList()*/
 
     override fun updateProgress(progress: Int, max: Int) {
         binding.progressBar.visibility = View.VISIBLE
