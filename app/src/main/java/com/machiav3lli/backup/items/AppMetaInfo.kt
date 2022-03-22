@@ -26,9 +26,9 @@ import java.io.File
 
 @Serializable
 open class AppMetaInfo(
-    var packageName: String? = null,
+    var packageName: String,
     var packageLabel: String? = null,
-    var versionName: String? = null,
+    var versionName: String = "",
     var versionCode: Int = 0,
     var profileId: Int = 0,
     var sourceDir: String? = null,

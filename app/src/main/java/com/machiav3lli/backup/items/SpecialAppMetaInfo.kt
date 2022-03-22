@@ -13,9 +13,9 @@ import timber.log.Timber
  * This class is used to describe special backup files that use a hardcoded list of file paths
  */
 open class SpecialAppMetaInfo(
-    packageName: String?,
+    packageName: String,
     label: String?,
-    versionName: String?,
+    versionName: String,
     versionCode: Int,
     fileList: Array<String>,
     icon: Int = -1

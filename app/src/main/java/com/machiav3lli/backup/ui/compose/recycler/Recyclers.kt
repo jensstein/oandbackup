@@ -3,8 +3,8 @@ package com.machiav3lli.backup.ui.compose.recycler
 import androidx.compose.runtime.Composable
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.LogItem
 import com.machiav3lli.backup.items.BackupItem
+import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.ui.compose.item.*
 
@@ -86,9 +86,9 @@ fun ExportedScheduleRecycler(
 
 @Composable
 fun LogRecycler(
-    productsList: List<LogItem>?,
-    onShare: (LogItem) -> Unit = {},
-    onDelete: (LogItem) -> Unit = {}
+    productsList: List<Log>?,
+    onShare: (Log) -> Unit = {},
+    onDelete: (Log) -> Unit = {}
 ) {
     VerticalItemList(list = productsList) {
         LogItem(it, onShare, onDelete)

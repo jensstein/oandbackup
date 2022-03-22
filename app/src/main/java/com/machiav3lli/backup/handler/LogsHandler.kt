@@ -22,7 +22,7 @@ import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.LOG_FOLDER_NAME
 import com.machiav3lli.backup.LOG_INSTANCE
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.items.LogItem
+import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
@@ -44,7 +44,7 @@ class LogsHandler(var context: Context) {
     @Throws(IOException::class)
     fun writeToLogFile(logText: String) {
         val date = LocalDateTime.now()
-        val logItem = LogItem(logText, date)
+        val logItem = Log(logText, date)
         val logFileName = String.format(
             LOG_INSTANCE,
             BACKUP_DATE_TIME_FORMATTER.format(date)
@@ -60,11 +60,11 @@ class LogsHandler(var context: Context) {
     }
 
     @Throws(IOException::class)
-    fun readLogs(): MutableList<LogItem> {
-        val logs = mutableListOf<LogItem>()
+    fun readLogs(): MutableList<Log> {
+        val logs = mutableListOf<Log>()
         logsDirectory?.listFiles()?.forEach {
             if (it.isFile) try {
-                logs.add(LogItem(context, it))
+                logs.add(Log(it))
             } catch (e: NullPointerException) {
                 val message =
                     "(Null) Incomplete log or wrong structure found in $it."

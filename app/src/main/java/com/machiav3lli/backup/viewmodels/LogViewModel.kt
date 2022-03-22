@@ -24,14 +24,14 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.PrefsActivity
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.showNotification
-import com.machiav3lli.backup.items.LogItem
+import com.machiav3lli.backup.items.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class LogViewModel(private val appContext: Application) : AndroidViewModel(appContext) {
 
-    var logsList = MediatorLiveData<MutableList<LogItem>>()
+    var logsList = MediatorLiveData<MutableList<Log>>()
 
     private var _refreshActive = MutableLiveData<Boolean>()
     val refreshActive: LiveData<Boolean>
@@ -58,18 +58,18 @@ class LogViewModel(private val appContext: Application) : AndroidViewModel(appCo
         }
     }
 
-    private suspend fun recreateAppInfoList(): MutableList<LogItem> = withContext(Dispatchers.IO) {
+    private suspend fun recreateAppInfoList(): MutableList<Log> = withContext(Dispatchers.IO) {
         LogsHandler(appContext).readLogs()
     }
 
-    fun shareLog(log: LogItem) {
+    fun shareLog(log: Log) {
         viewModelScope.launch {
             share(log)
             _refreshNow.value = true
         }
     }
 
-    private suspend fun share(log: LogItem) {
+    private suspend fun share(log: Log) {
         withContext(Dispatchers.IO) {
             val shareFileIntent: Intent
             LogsHandler(appContext).getLogFile(log.logDate)?.let {
@@ -91,14 +91,14 @@ class LogViewModel(private val appContext: Application) : AndroidViewModel(appCo
         }
     }
 
-    fun deleteLog(log: LogItem) {
+    fun deleteLog(log: Log) {
         viewModelScope.launch {
             delete(log)
             _refreshNow.value = true
         }
     }
 
-    private suspend fun delete(log: LogItem) {
+    private suspend fun delete(log: Log) {
         withContext(Dispatchers.IO) {
             log.delete(appContext)
             refreshList()

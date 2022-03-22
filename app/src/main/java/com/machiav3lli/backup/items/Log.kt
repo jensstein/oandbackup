@@ -29,7 +29,7 @@ import java.io.IOException
 import java.time.LocalDateTime
 
 @Serializable
-open class LogItem {
+open class Log {
     // TODO: hg42: add ${BuildConfig.APPLICATION_ID} ${BuildConfig.VERSION_NAME} useful for stacktraces ?
     @Serializable(with = LocalDateTimeSerializer::class)
     var logDate: LocalDateTime
@@ -51,7 +51,7 @@ open class LogItem {
         this.logText = text
     }
 
-    constructor(context: Context, logFile: StorageFile) {
+    constructor(logFile: StorageFile) {
         try {
             logFile.inputStream()!!.use { inputStream ->
                 val item = fromJson(inputStream.reader().readText())
@@ -95,6 +95,6 @@ open class LogItem {
     fun toJSON() = Json.encodeToString(this)
 
     companion object {
-        fun fromJson(json: String) = Json.decodeFromString<LogItem>(json)
+        fun fromJson(json: String) = Json.decodeFromString<Log>(json)
     }
 }

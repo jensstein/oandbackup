@@ -12,16 +12,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.items.LogItem
+import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.getFormattedDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LogItem(
-    item: LogItem,
-    onShare: (LogItem) -> Unit = {},
-    onDelete: (LogItem) -> Unit = {}
+    item: Log,
+    onShare: (Log) -> Unit = {},
+    onDelete: (Log) -> Unit = {}
 ) {
     Card(
         modifier = Modifier,

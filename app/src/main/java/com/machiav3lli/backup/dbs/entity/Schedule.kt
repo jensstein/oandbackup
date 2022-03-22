@@ -17,7 +17,6 @@
  */
 package com.machiav3lli.backup.dbs.entity
 
-import android.content.Context
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.RenameColumn
@@ -70,7 +69,7 @@ data class Schedule(
             .filter { it and mode == it }
             .map { modeToId(it) }
 
-    constructor(context: Context, exportFile: StorageFile) : this() {
+    constructor(exportFile: StorageFile) : this() {
         try {
             exportFile.inputStream()!!.use { inputStream ->
                 val item = fromJson(inputStream.reader().readText())
