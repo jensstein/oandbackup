@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.LogItem
+import com.machiav3lli.backup.items.BackupItem
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.ui.compose.item.*
 
@@ -24,6 +25,17 @@ fun UpdatedPackageRecycler(
 ) {
     HorizontalItemList(list = productsList) {
         UpdatedPackageItem(it, onClick)
+    }
+}
+
+@Composable
+fun BackupRecycler(
+    productsList: List<BackupItem>?,
+    onRestore: (BackupItem) -> Unit = {},
+    onDelete: (BackupItem) -> Unit = {}
+) {
+    SizedItemList(list = productsList, itemHeight = 110) {
+        BackupInstanceItem(it, onRestore, onDelete)
     }
 }
 
