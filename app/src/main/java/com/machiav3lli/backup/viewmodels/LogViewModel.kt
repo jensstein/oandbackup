@@ -24,15 +24,14 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.PrefsActivity
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.showNotification
-import com.machiav3lli.backup.items.LogItem
+import com.machiav3lli.backup.items.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class LogViewModel(private val appContext: Application)
-    : AndroidViewModel(appContext) {
+class LogViewModel(private val appContext: Application) : AndroidViewModel(appContext) {
 
-    var logsList = MediatorLiveData<MutableList<LogItem>>()
+    var logsList = MediatorLiveData<MutableList<Log>>()
 
     private var _refreshActive = MutableLiveData<Boolean>()
     val refreshActive: LiveData<Boolean>
@@ -59,21 +58,18 @@ class LogViewModel(private val appContext: Application)
         }
     }
 
-    private suspend fun recreateAppInfoList(): MutableList<LogItem>? {
-        return withContext(Dispatchers.IO) {
-            val dataList = LogsHandler(appContext).readLogs()
-            dataList
-        }
+    private suspend fun recreateAppInfoList(): MutableList<Log> = withContext(Dispatchers.IO) {
+        LogsHandler(appContext).readLogs()
     }
 
-    fun shareLog(log: LogItem) {
+    fun shareLog(log: Log) {
         viewModelScope.launch {
             share(log)
             _refreshNow.value = true
         }
     }
 
-    private suspend fun share(log: LogItem) {
+    private suspend fun share(log: Log) {
         withContext(Dispatchers.IO) {
             val shareFileIntent: Intent
             LogsHandler(appContext).getLogFile(log.logDate)?.let {
@@ -86,29 +82,30 @@ class LogViewModel(private val appContext: Application)
                     }
                     appContext.startActivity(shareFileIntent)
                 } else {
-                    showNotification(appContext, PrefsActivity::class.java, System.currentTimeMillis().toInt(),
-                            appContext.getString(R.string.logs_share_failed), "", false)
+                    showNotification(
+                        appContext, PrefsActivity::class.java, System.currentTimeMillis().toInt(),
+                        appContext.getString(R.string.logs_share_failed), "", false
+                    )
                 }
             }
         }
     }
 
-    fun deleteLog(log: LogItem) {
+    fun deleteLog(log: Log) {
         viewModelScope.launch {
             delete(log)
             _refreshNow.value = true
         }
     }
 
-    private suspend fun delete(log: LogItem) {
+    private suspend fun delete(log: Log) {
         withContext(Dispatchers.IO) {
-            logsList.value?.remove(log)
             log.delete(appContext)
+            refreshList()
         }
     }
 
-    class Factory(private val application: Application)
-        : ViewModelProvider.Factory {
+    class Factory(private val application: Application) : ViewModelProvider.Factory {
         @Suppress("unchecked_cast")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(LogViewModel::class.java)) {

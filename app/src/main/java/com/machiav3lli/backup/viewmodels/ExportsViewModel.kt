@@ -21,8 +21,8 @@ import android.app.Application
 import androidx.lifecycle.*
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.PrefsActivity
-import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.dbs.dao.ScheduleDao
+import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.handler.ExportsHandler
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.StorageFile
@@ -60,12 +60,10 @@ class ExportsViewModel(val database: ScheduleDao, private val appContext: Applic
         }
     }
 
-    private suspend fun recreateExportsList(): MutableList<Pair<Schedule, StorageFile>> {
-        return withContext(Dispatchers.IO) {
-            val dataList = ExportsHandler(appContext).readExports()
-            dataList
+    private suspend fun recreateExportsList(): MutableList<Pair<Schedule, StorageFile>> =
+        withContext(Dispatchers.IO) {
+            ExportsHandler(appContext).readExports()
         }
-    }
 
     fun deleteExport(exportFile: StorageFile) {
         viewModelScope.launch {
@@ -76,10 +74,8 @@ class ExportsViewModel(val database: ScheduleDao, private val appContext: Applic
 
     private suspend fun delete(exportFile: StorageFile) {
         withContext(Dispatchers.IO) {
-            exportsList.value?.removeIf {
-                it.second == exportFile
-            }
             exportFile.delete()
+            refreshList()
         }
     }
 

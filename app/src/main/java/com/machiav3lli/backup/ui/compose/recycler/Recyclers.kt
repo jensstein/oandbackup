@@ -3,10 +3,10 @@ package com.machiav3lli.backup.ui.compose.recycler
 import androidx.compose.runtime.Composable
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.ui.compose.item.BatchPackageItem
-import com.machiav3lli.backup.ui.compose.item.MainPackageItem
-import com.machiav3lli.backup.ui.compose.item.ScheduleItem
-import com.machiav3lli.backup.ui.compose.item.UpdatedPackageItem
+import com.machiav3lli.backup.items.BackupItem
+import com.machiav3lli.backup.items.Log
+import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.ui.compose.item.*
 
 @Composable
 fun HomePackageRecycler(
@@ -25,6 +25,17 @@ fun UpdatedPackageRecycler(
 ) {
     HorizontalItemList(list = productsList) {
         UpdatedPackageItem(it, onClick)
+    }
+}
+
+@Composable
+fun BackupRecycler(
+    productsList: List<BackupItem>?,
+    onRestore: (BackupItem) -> Unit = {},
+    onDelete: (BackupItem) -> Unit = {}
+) {
+    SizedItemList(list = productsList, itemHeight = 110) {
+        BackupInstanceItem(it, onRestore, onDelete)
     }
 }
 
@@ -59,5 +70,27 @@ fun ScheduleRecycler(
 ) {
     VerticalItemList(list = productsList) {
         ScheduleItem(it, onClick, onCheckChanged)
+    }
+}
+
+@Composable
+fun ExportedScheduleRecycler(
+    productsList: List<Pair<Schedule, StorageFile>>?,
+    onImport: (Schedule) -> Unit = {},
+    onDelete: (StorageFile) -> Unit = {}
+) {
+    VerticalItemList(list = productsList) {
+        ExportedScheduleItem(it.first, it.second, onImport, onDelete)
+    }
+}
+
+@Composable
+fun LogRecycler(
+    productsList: List<Log>?,
+    onShare: (Log) -> Unit = {},
+    onDelete: (Log) -> Unit = {}
+) {
+    VerticalItemList(list = productsList) {
+        LogItem(it, onShare, onDelete)
     }
 }

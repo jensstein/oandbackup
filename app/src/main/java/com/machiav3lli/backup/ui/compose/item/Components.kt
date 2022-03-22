@@ -1,23 +1,29 @@
 package com.machiav3lli.backup.ui.compose.item
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import coil.compose.rememberAsyncImagePainter
 import com.machiav3lli.backup.*
+import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.items.BackupProperties
 import com.machiav3lli.backup.ui.compose.theme.*
 
 @Composable
@@ -47,6 +53,35 @@ fun PackageIcon(
             )
         }
     )
+}
+
+@Composable
+fun ActionChip(
+    icon: Painter,
+    text: String,
+    positive: Boolean = true,
+    onClick: () -> Unit
+) {
+    FilledTonalButton(
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (positive) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = if (positive) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer
+        ),
+        onClick = onClick,
+    ) {
+        Icon(
+            modifier = Modifier.size(18.dp),
+            painter = icon,
+            contentDescription = text
+        )
+        Text(
+            modifier = Modifier.padding(start = 4.dp),
+            text = text,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleSmall
+        )
+    }
 }
 
 @Composable
@@ -125,6 +160,60 @@ fun PackageLabels(
             else -> User
         }
     )
+}
+
+@Composable
+fun BackupLabels(
+    item: BackupProperties
+) {
+    AnimatedVisibility(visible = item.hasMediaData) {
+        Icon(
+            modifier = Modifier.size(24.dp),
+            painter = painterResource(id = R.drawable.ic_media_data),
+            contentDescription = stringResource(id = R.string.radio_mediadata),
+            tint = Media
+        )
+    }
+    AnimatedVisibility(visible = item.hasObbData) {
+        Icon(
+            modifier = Modifier.size(24.dp),
+            painter = painterResource(id = R.drawable.ic_obb_data),
+            contentDescription = stringResource(id = R.string.radio_obbdata),
+            tint = OBB
+        )
+    }
+    AnimatedVisibility(visible = item.hasExternalData) {
+        Icon(
+            modifier = Modifier.size(24.dp),
+            painter = painterResource(id = R.drawable.ic_external_data),
+            contentDescription = stringResource(id = R.string.radio_externaldata),
+            tint = ExtDATA
+        )
+    }
+    AnimatedVisibility(visible = item.hasDevicesProtectedData) {
+        Icon(
+            modifier = Modifier.size(24.dp),
+            painter = painterResource(id = R.drawable.ic_de_data),
+            contentDescription = stringResource(id = R.string.radio_deviceprotecteddata),
+            tint = DeData
+        )
+    }
+    AnimatedVisibility(visible = item.hasAppData) {
+        Icon(
+            modifier = Modifier.size(24.dp),
+            painter = painterResource(id = R.drawable.ic_data),
+            contentDescription = stringResource(id = R.string.radio_data),
+            tint = Data
+        )
+    }
+    AnimatedVisibility(visible = item.hasApk) {
+        Icon(
+            modifier = Modifier.size(24.dp),
+            painter = painterResource(id = R.drawable.ic_apk),
+            contentDescription = stringResource(id = R.string.radio_apk),
+            tint = APK
+        )
+    }
 }
 
 

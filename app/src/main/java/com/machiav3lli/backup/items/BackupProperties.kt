@@ -109,7 +109,7 @@ open class BackupProperties : AppMetaInfo {
     }
 
     constructor(
-        packageName: String?, packageLabel: String?, versionName: String?, versionCode: Int,
+        packageName: String, packageLabel: String?, versionName: String, versionCode: Int,
         profileId: Int, sourceDir: String?, splitSourceDirs: Array<String>, isSystem: Boolean,
         backupDate: LocalDateTime?, hasApk: Boolean, hasAppData: Boolean,
         hasDevicesProtectedData: Boolean, hasExternalData: Boolean, hasObbData: Boolean,

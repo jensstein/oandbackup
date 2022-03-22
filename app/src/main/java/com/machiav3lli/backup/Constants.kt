@@ -145,7 +145,7 @@ const val HELP_ISSUES = "https://github.com/machiav3lli/oandbackupx/blob/master/
 const val HELP_FAQ = "https://github.com/machiav3lli/oandbackupx/blob/master/FAQ.md"
 
 val BACKUP_DATE_TIME_FORMATTER: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss")
+    DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSS")
 
 fun classAddress(address: String): String = PREFS_SHARED_PRIVATE + address
 

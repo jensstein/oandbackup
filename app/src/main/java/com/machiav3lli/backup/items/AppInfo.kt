@@ -21,10 +21,13 @@ import android.app.usage.StorageStats
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import com.machiav3lli.backup.*
+import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
+import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.getPackageStorageStats
-import com.machiav3lli.backup.utils.*
+import com.machiav3lli.backup.utils.FileUtils
+import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
+import com.machiav3lli.backup.utils.getBackupDir
 import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
@@ -159,7 +162,7 @@ class AppInfo {
                         ?.filter { isPropertyFile(it) }
                         ?.forEach {
                             try {
-                                backups.add(BackupItem(context, it))
+                                backups.add(BackupItem(it))
                             } catch (e: BackupItem.BrokenBackupException) {
                                 val message =
                                     "Incomplete backup or wrong structure found in $it"

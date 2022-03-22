@@ -81,7 +81,8 @@ fun MainPackageItem(
                         softWrap = true,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1,
-                        style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     AnimatedVisibility(visible = item.hasBackups) {
                         Text(

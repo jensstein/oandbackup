@@ -34,6 +34,7 @@
         <item name="android:windowLightStatusBar">false</item>
         <item name="dialogCornerRadius">@dimen/cards_spacing</item>
         <item name="colorControlNormal">@android:color/white</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_vv</item>
         <item name="fastScrollHorizontalThumbDrawable">@drawable/fastscroll_thumb</item>
         <item name="fastScrollHorizontalTrackDrawable">@drawable/fastscroll_track</item>
         <item name="fastScrollVerticalThumbDrawable">@drawable/fastscroll_thumb</item>

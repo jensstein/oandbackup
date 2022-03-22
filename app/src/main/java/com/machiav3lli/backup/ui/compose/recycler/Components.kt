@@ -51,6 +51,42 @@ fun <T> VerticalItemList(
 }
 
 @Composable
+fun <T> SizedItemList(
+    modifier: Modifier = Modifier,
+    itemHeight: Int,
+    list: List<T>?,
+    itemKey: ((T) -> Any)? = null,
+    itemContent: @Composable LazyItemScope.(T) -> Unit
+) {
+    Box(
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.background)
+            .requiredHeight(if (list != null) ((list.size - 1) * 8 + list.size * itemHeight).dp else 20.dp),
+        contentAlignment = if (list.isNullOrEmpty()) Alignment.Center else Alignment.TopStart
+    ) {
+        when {
+            list == null -> Text(
+                text = stringResource(id = R.string.loading_list),
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            list.isEmpty() -> Text(
+                text = stringResource(id = R.string.empty_filtered_list),
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            else -> {
+                // TODO add scrollbars
+                LazyColumn(
+                    verticalArrangement = Arrangement.Absolute.spacedBy(8.dp),
+                    contentPadding = PaddingValues(vertical = 8.dp, horizontal = 8.dp),
+                ) {
+                    items(items = list, key = itemKey, itemContent = itemContent)
+                }
+            }
+        }
+    }
+}
+
+@Composable
 fun <T> HorizontalItemList(
     modifier: Modifier = Modifier,
     list: List<T>?,

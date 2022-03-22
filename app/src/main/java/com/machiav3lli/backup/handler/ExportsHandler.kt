@@ -69,7 +69,7 @@ class ExportsHandler(var context: Context) {
         val exports = mutableListOf<Pair<Schedule, StorageFile>>()
         exportsDirectory?.listFiles()?.forEach {
             if (it.isFile) try {
-                exports.add(Pair(Schedule(context, it), it))
+                exports.add(Pair(Schedule(it), it))
             } catch (e: NullPointerException) {
                 val message = "(Null) Incomplete schedule or wrong structure found in ${it}."
                 Timber.w(message)
