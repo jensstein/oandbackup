@@ -30,9 +30,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.machiav3lli.backup.*
@@ -44,24 +43,19 @@ import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.BackupItemX
 import com.machiav3lli.backup.items.BackupProperties
 import com.machiav3lli.backup.tasks.BackupActionTask
 import com.machiav3lli.backup.tasks.RestoreActionTask
+import com.machiav3lli.backup.ui.compose.recycler.BackupRecycler
+import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.AppSheetViewModel
-import com.mikepenz.fastadapter.FastAdapter
-import com.mikepenz.fastadapter.adapters.ItemAdapter
-import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.set
-import com.mikepenz.fastadapter.listeners.ClickEventHook
 import timber.log.Timber
 
 class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int) :
     BaseSheet(), ActionListener {
     private lateinit var binding: SheetAppBinding
     private lateinit var viewModel: AppSheetViewModel
-    private val backupItemAdapter = ItemAdapter<BackupItemX>()
-    private var backupFastAdapter: FastAdapter<BackupItemX>? = null
 
     val packageName: String?
         get() = viewModel.appInfo.value?.packageName
@@ -109,21 +103,57 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
     }
 
     private fun setupBackupList() {
-        backupItemAdapter.clear()
         viewModel.appInfo.value?.let {
             when {
                 it.hasBackups -> {
                     binding.recyclerView.visibility = View.VISIBLE
-                    backupFastAdapter = FastAdapter.with(backupItemAdapter)
-                    backupFastAdapter?.setHasStableIds(true)
-                    binding.recyclerView.adapter = backupFastAdapter
-                    binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-                    backupFastAdapter?.addEventHook(OnRestoreClickHook())
-                    backupFastAdapter?.addEventHook(OnDeleteClickHook())
-                    val backupList = mutableListOf<BackupItemX>()
-                    for (backup in it.backupHistory) backupList.add(BackupItemX(backup))
-                    backupList.sortBy { item -> item.backup.backupProperties.backupDate }
-                    set(backupItemAdapter, backupList.asReversed())
+                    binding.recyclerView.setContent {
+                        AppTheme(
+                            darkTheme = isSystemInDarkTheme()
+                        ) {
+                            BackupRecycler(productsList = it.backupHistory.sortedByDescending { item -> item.backupProperties.backupDate },
+                                onRestore = { item ->
+                                    val properties = item.backupProperties
+                                    viewModel.appInfo.value?.let { app ->
+                                        if (!app.isSpecial && !app.isInstalled
+                                            && !properties.hasApk && properties.hasAppData
+                                        ) {
+                                            requireActivity().showToast(getString(R.string.notInstalledModeDataWarning))
+                                        } else {
+                                            RestoreDialogFragment(app, properties, this@AppSheet)
+                                                .show(
+                                                    requireActivity().supportFragmentManager,
+                                                    "restoreDialog"
+                                                )
+                                        }
+                                    }
+                                },
+                                onDelete = { item ->
+                                    viewModel.appInfo.value?.let { app ->
+                                        AlertDialog.Builder(requireContext())
+                                            .setTitle(app.packageLabel)
+                                            .setMessage(R.string.deleteBackupDialogMessage)
+                                            .setPositiveButton(R.string.dialogYes) { dialog: DialogInterface?, _: Int ->
+                                                requireActivity().showToast(
+                                                    "${app.packageLabel}: ${
+                                                        getString(
+                                                            R.string.deleteBackup
+                                                        )
+                                                    }"
+                                                )
+                                                if (!app.hasBackups) {
+                                                    Timber.w("UI Issue! Tried to delete backups for app without backups.")
+                                                    dialog?.dismiss()
+                                                }
+                                                viewModel.deleteBackup(item)
+                                            }
+                                            .setNegativeButton(R.string.dialogNo, null)
+                                            .show()
+                                    }
+                                }
+                            )
+                        }
+                    }
                 }
                 else -> binding.recyclerView.visibility = View.GONE
             }
@@ -344,61 +374,6 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
                         }
                     Timber.w("Cache couldn't be deleted: $errorMessage")
                 }
-            }
-        }
-    }
-
-    inner class OnRestoreClickHook : ClickEventHook<BackupItemX>() {
-        override fun onBind(viewHolder: RecyclerView.ViewHolder): View? {
-            return viewHolder.itemView.findViewById(R.id.restore)
-        }
-
-        override fun onClick(
-            v: View,
-            position: Int,
-            fastAdapter: FastAdapter<BackupItemX>,
-            item: BackupItemX
-        ) {
-            val properties = item.backup.backupProperties
-            viewModel.appInfo.value?.let {
-                if (!it.isSpecial && !it.isInstalled
-                    && !properties.hasApk && properties.hasAppData
-                ) {
-                    requireActivity().showToast(getString(R.string.notInstalledModeDataWarning))
-                } else {
-                    RestoreDialogFragment(it, properties, this@AppSheet)
-                        .show(requireActivity().supportFragmentManager, "restoreDialog")
-                }
-            }
-        }
-    }
-
-    inner class OnDeleteClickHook : ClickEventHook<BackupItemX>() {
-        override fun onBind(viewHolder: RecyclerView.ViewHolder): View? {
-            return viewHolder.itemView.findViewById(R.id.delete)
-        }
-
-        override fun onClick(
-            v: View,
-            position: Int,
-            fastAdapter: FastAdapter<BackupItemX>,
-            item: BackupItemX
-        ) {
-            viewModel.appInfo.value?.let {
-                AlertDialog.Builder(requireContext())
-                    .setTitle(it.packageLabel)
-                    .setMessage(R.string.deleteBackupDialogMessage)
-                    .setPositiveButton(R.string.dialogYes) { dialog: DialogInterface?, _: Int ->
-                        requireActivity().showToast("${it.packageLabel}: ${getString(R.string.deleteBackup)}")
-                        if (!it.hasBackups) {
-                            Timber.w("UI Issue! Tried to delete backups for app without backups.")
-                            dialog?.dismiss()
-                        }
-                        viewModel.deleteBackup(item.backup)
-
-                    }
-                    .setNegativeButton(R.string.dialogNo, null)
-                    .show()
             }
         }
     }
