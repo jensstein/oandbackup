@@ -137,11 +137,6 @@ dependencies {
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
     implementation("androidx.navigation:navigation-fragment-ktx:2.5.0-alpha03")
     implementation("androidx.navigation:navigation-ui-ktx:2.5.0-alpha03")
-    val fastadapter = "5.6.0"
-    implementation("com.mikepenz:fastadapter:$fastadapter")
-    implementation("com.mikepenz:fastadapter-extensions-diff:$fastadapter")
-    implementation("com.mikepenz:fastadapter-extensions-binding:$fastadapter")
-    implementation("com.facebook.shimmer:shimmer:0.5.0")
     implementation("io.coil-kt:coil:2.0.0-rc01")
     implementation("io.coil-kt:coil-compose:2.0.0-rc01")
 
