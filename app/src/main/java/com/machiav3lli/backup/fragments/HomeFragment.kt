@@ -68,7 +68,6 @@ class HomeFragment : NavigationFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
-        if (requireMainActivity().viewModel.refreshNow.value == true) refreshView()
 
         viewModel.refreshNow.observe(requireActivity()) {
             //binding.refreshLayout.isRefreshing = it
@@ -77,9 +76,37 @@ class HomeFragment : NavigationFragment(),
                 requireMainActivity().viewModel.refreshList()
             }
         }
-
+        viewModel.filteredList.observe(viewLifecycleOwner) { list ->
+            try {
+                viewModel.updatedApps.value = list?.filter { it.isUpdated }
+                binding.recyclerView.setContent {
+                    AppTheme(
+                        darkTheme = isSystemInDarkTheme()
+                    ) {
+                        Scaffold {
+                            HomePackageRecycler(productsList = list,
+                                onClick = { item ->
+                                    if (appSheet != null) appSheet?.dismissAllowingStateLoss()
+                                    appSheet = AppSheet(item, AppExtras())
+                                    appSheet?.showNow(
+                                        parentFragmentManager,
+                                        "Package ${item.packageName}"
+                                    )
+                                }
+                            )
+                        }
+                    }
+                }
+                setupSearch()
+                list?.find { it.packageName == appSheet?.appInfo?.packageName }
+                    ?.let { sheetApp -> if (appSheet != null) refreshAppSheet(sheetApp) }
+                viewModel.refreshNow.value = false
+            } catch (e: Throwable) {
+                LogsHandler.unhandledException(e)
+            }
+        }
         viewModel.updatedApps.observe(viewLifecycleOwner) {
-            viewModel.nUpdatedApps.value = it.size
+            viewModel.nUpdatedApps.value = it?.size ?: 0
             binding.updatedRecycler.setContent {
                 AppTheme(
                     darkTheme = isSystemInDarkTheme()
@@ -139,6 +166,8 @@ class HomeFragment : NavigationFragment(),
                 binding.buttonUpdated.setOnClickListener(null)
             }
         }
+
+        if (requireMainActivity().viewModel.refreshNow.value == true) refreshView()
     }
 
     override fun onStart() {
@@ -327,52 +356,15 @@ class HomeFragment : NavigationFragment(),
                 appInfoList
             )
         )
-        Thread {
-            try {
-                val filteredList =
-                    appInfoList.applyFilter(requireActivity().sortFilterModel, requireContext())
-                refreshMain(filteredList, appSheet != null)
-            } catch (e: FileUtils.BackupLocationInAccessibleException) {
-                Timber.e("Could not update application list: $e")
-            } catch (e: StorageLocationNotConfiguredException) {
-                Timber.e("Could not update application list: $e")
-            } catch (e: Throwable) {
-                LogsHandler.unhandledException(e)
-            }
-        }.start()
-    }
-
-    private fun refreshMain(filteredList: List<AppInfo>, appSheetBoolean: Boolean) {
-        //val mainList = createMainAppsList(filteredList)
-        //val updatedList = createUpdatedAppsList(filteredList)
-        requireActivity().runOnUiThread {
-            try {
-                viewModel.updatedApps.value = filteredList.filter { it.isUpdated }
-                binding.recyclerView.setContent {
-                    AppTheme(
-                        darkTheme = isSystemInDarkTheme()
-                    ) {
-                        Scaffold {
-                            HomePackageRecycler(productsList = filteredList,
-                                onClick = { item ->
-                                    if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                                    appSheet =
-                                        AppSheet(item, AppExtras(), filteredList.indexOf(item))
-                                    appSheet?.showNow(
-                                        parentFragmentManager,
-                                        "Package ${item.packageName}"
-                                    )
-                                }
-                            )
-                        }
-                    }
-                }
-                setupSearch()
-                if (appSheetBoolean) refreshAppSheet()
-                viewModel.refreshNow.value = false
-            } catch (e: Throwable) {
-                LogsHandler.unhandledException(e)
-            }
+        try {
+            viewModel.filteredList.value =
+                appInfoList.applyFilter(requireActivity().sortFilterModel, requireContext())
+        } catch (e: FileUtils.BackupLocationInAccessibleException) {
+            Timber.e("Could not update application list: $e")
+        } catch (e: StorageLocationNotConfiguredException) {
+            Timber.e("Could not update application list: $e")
+        } catch (e: Throwable) {
+            LogsHandler.unhandledException(e)
         }
     }
 
