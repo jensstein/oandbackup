@@ -87,7 +87,7 @@ class HomeFragment : NavigationFragment(),
                     UpdatedPackageRecycler(productsList = it,
                         onClick = { item ->
                             if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                            appSheet = AppSheet(item, AppExtras(), it.indexOf(item))
+                            appSheet = AppSheet(item, AppExtras())
                             appSheet?.showNow(
                                 parentFragmentManager,
                                 "Package ${item.packageName}"

@@ -52,7 +52,7 @@ import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.AppSheetViewModel
 import timber.log.Timber
 
-class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int) :
+class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras) :
     BaseSheet(), ActionListener {
     private lateinit var binding: SheetAppBinding
     private lateinit var viewModel: AppSheetViewModel
