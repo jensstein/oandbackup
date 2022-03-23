@@ -89,10 +89,10 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras, val position: Int
         setup(false)
     }
 
-    /*fun updateApp(item: HomeItemX) {
-        viewModel.appInfo.value = item.app
+    fun updateApp(app: AppInfo) {
+        viewModel.appInfo.value = app
         setup(true)
-    }*/
+    }
 
     private fun setup(update: Boolean) {
         setupOnClicks()

@@ -376,23 +376,13 @@ class HomeFragment : NavigationFragment(),
         }
     }
 
-    private fun refreshAppSheet() {
+    private fun refreshAppSheet(app: AppInfo) {
         try {
-            val position = appSheet?.position ?: -1
             // TODO implement auto refresh of AppSheet
-            /*if (homeItemAdapter.itemList.size() > position && position != -1) {
-                val sheetAppInfo = homeFastAdapter?.getItem(position)?.app
-                sheetAppInfo?.let {
-                    if (appSheet?.packageName == sheetAppInfo.packageName) {
-                        homeFastAdapter?.getItem(position)?.let { appSheet?.updateApp(it) }
-                    } else
-                        appSheet?.dismissAllowingStateLoss()
-                }
-            } else
-                appSheet?.dismissAllowingStateLoss()*/
+            appSheet?.updateApp(app)
         } catch (e: Throwable) {
             appSheet?.dismissAllowingStateLoss()
-            //LogsHandler.unhandledException(e)
+            LogsHandler.unhandledException(e)
         }
     }
 
