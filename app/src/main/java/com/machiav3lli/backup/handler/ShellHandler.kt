@@ -40,26 +40,30 @@ class ShellHandler {
 
     init {
         Shell.enableVerboseLogging = BuildConfig.DEBUG
-        Shell.setDefaultBuilder(
-            Shell.Builder.create()
-                //.setInitializers(BusyBoxInstaller::class.java)
-                .setFlags(Shell.FLAG_MOUNT_MASTER)
-                .setTimeout(20)
-        )
+        val builder = Shell.Builder.create()
+                          .setFlags(Shell.FLAG_MOUNT_MASTER)
+                          .setTimeout(20)
+                          //.setInitializers(BusyBoxInstaller::class.java)
+        Shell.setDefaultBuilder(builder)
 
+        var reasons = mutableMapOf<String, String>()
         val names = UTILBOX_NAMES
         names.any {
             try {
                 setUtilBoxPath(it)
-                true
-            } catch (e: UtilboxNotAvailableException) {
-                Timber.d("Tried utilbox name '${it}'. Not available.")
+            } catch (e: Throwable) {
+                val reason = LogsHandler.message(e)
+                reasons[it] = reason
+                Timber.d("Tried utilbox name '$it': $reason")
                 false
             }
         }
         if (utilBoxQ.isEmpty()) {
             Timber.d("No more options for utilbox. Bailing out.")
-            throw UtilboxNotAvailableException(names.joinToString(", "), null)
+            throw UtilboxNotAvailableException(
+                    reasons.map { reason -> "${reason.key}: ${reason.value}" }
+                        .joinToString("\n")
+            )
         }
 
         assets = AssetHandler(OABX.context)
@@ -149,21 +153,55 @@ class ShellHandler {
         }
     }
 
-    @Throws(UtilboxNotAvailableException::class)
-    fun setUtilBoxPath(utilBoxName: String) {
+    fun setUtilBoxPath(utilBoxName: String): Boolean {
         utilBoxQ = quote(utilBoxName)
-        var shellResult = runAsRoot("$utilBoxQ --version")
-        if (shellResult.isSuccess) {
-            if (shellResult.out.isNotEmpty()) {
-                utilBoxVersion = shellResult.out.joinToString("")
-                Timber.i("Using Utilbox $utilBoxName : $utilBoxQ : $utilBoxVersion")
+        val reWhiteSpace = Regex("""\s+""")
+        try {
+            var shellResult = runAsRoot("$utilBoxQ --version")
+            if (shellResult.isSuccess) {
+                if (shellResult.out.isNotEmpty()) {
+                    val fields = shellResult.out[0].split(reWhiteSpace, 3)
+                    utilBoxVersion = fields[1]
+                    Timber.i("Using Utilbox $utilBoxName : $utilBoxQ : $utilBoxVersion")
+                    return true
+                } else {
+                    utilBoxVersion = ""
+                    Timber.i("Using Utilbox $utilBoxName : $utilBoxQ : no version")
+                    return true
+                }
             } else {
-                Timber.i("Using Utilbox $utilBoxName : $utilBoxQ : no version")
+                utilBoxQ = ""
+                throw Exception()
             }
-            return
+        } catch(e: Throwable) {
+            try {
+                var shellResult = runAsRoot(utilBoxQ)
+                if (shellResult.isSuccess) {
+                    if (shellResult.out.isNotEmpty()) {
+                        val fields = shellResult.out[0].split(reWhiteSpace, 3)
+                        utilBoxVersion = fields[1]
+                        Timber.i("Using Utilbox $utilBoxName : $utilBoxQ : $utilBoxVersion")
+                        return true
+                    } else {
+                        utilBoxVersion = ""
+                        Timber.i("Using Utilbox $utilBoxName : $utilBoxQ : no version")
+                        return true
+                    }
+                } else {
+                    utilBoxQ = ""
+                    throw Exception()
+                }
+            } catch (e: Throwable) {
+                utilBoxQ = ""
+                // no more options
+            }
+        } finally {
+            utilBoxVersion = utilBoxVersion.replace(Regex("""^[vV]"""), "")
+            utilBoxVersion = utilBoxVersion.replace(Regex("""-android$"""), "")
         }
         // not found => try bare executables (no utilbox prefixed)
         utilBoxQ = ""
+        return false
     }
 
     class ShellCommandFailedException(
@@ -174,8 +212,8 @@ class ShellHandler {
     class UnexpectedCommandResult(message: String, val shellResult: Shell.Result?) :
         Exception(message)
 
-    class UtilboxNotAvailableException(val triedBinaries: String, cause: Throwable?) :
-        Exception(cause)
+    class UtilboxNotAvailableException(reasons: String) :
+        Exception(reasons)
 
     class FileInfo(
         /**
@@ -464,7 +502,7 @@ class ShellHandler {
         var scriptUserDir : File? = null
             private set
         //private val UTILBOX_NAMES = listOf("busybox", "/sbin/.magisk/busybox/busybox", "toybox")
-        private val UTILBOX_NAMES = listOf("toybox")    // only toybox will work currently
+        private val UTILBOX_NAMES = listOf("/data/local/toybox", "toybox")    // only toybox will work currently
         val SCRIPTS_SUBDIR = "scripts"
         val EXCLUDE_CACHE_FILE = "tar_EXCLUDE_CACHE"
         val EXCLUDE_FILE = "tar_EXCLUDE"
