@@ -61,7 +61,7 @@ fun <T> SizedItemList(
     Box(
         modifier = modifier
             .background(MaterialTheme.colorScheme.background)
-            .requiredHeight(if (list != null) ((list.size - 1) * 8 + list.size * itemHeight).dp else 20.dp),
+            .requiredHeight(if (list != null) (list.size * (8 + itemHeight) + 8).dp else 20.dp),
         contentAlignment = if (list.isNullOrEmpty()) Alignment.Center else Alignment.TopStart
     ) {
         when {
