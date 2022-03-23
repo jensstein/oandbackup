@@ -61,7 +61,6 @@ import com.machiav3lli.backup.utils.suRecursiveCopyFileFromDocument
 import com.machiav3lli.backup.utils.suUnpackTo
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
-import org.apache.commons.io.FileUtils
 import timber.log.Timber
 import java.io.BufferedInputStream
 import java.io.File
@@ -456,7 +455,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             // Clean up the temporary directory if it was initialized
             tempDir?.let {
                 try {
-                    FileUtils.forceDelete(it)
+                    it.deleteRecursive()
                 } catch (e: IOException) {
                     Timber.e("Could not delete temporary directory $it. Cache Size might be growing. Reason: $e")
                 }
