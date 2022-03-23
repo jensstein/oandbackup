@@ -281,8 +281,11 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             }
             val sb = StringBuilder()
             val disableVerification = context.isDisableVerification
+
             // disable verify apps over usb
-            if (disableVerification) sb.append("settings put global verifier_verify_adb_installs 0 ; ")
+            if (disableVerification)
+                runAsRoot("settings put global verifier_verify_adb_installs 0")
+
             // Install main package
             sb.append(
                 getPackageInstallCommand(
@@ -303,11 +306,14 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                 }
             }
 
-            // re-enable verify apps over usb
-            if (disableVerification) sb.append(" ; settings put global verifier_verify_adb_installs 1")
             val command = sb.toString()
             runAsRoot(command)
             success = true
+
+            // re-enable verify apps over usb
+            if (disableVerification)
+                runAsRoot("settings put global verifier_verify_adb_installs 1")
+
             // Todo: Reload package meta data; Package Manager knows everything now; Function missing
         } catch (e: ShellCommandFailedException) {
             val error = extractErrorMessage(e.shellResult)
