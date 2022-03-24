@@ -1,16 +1,16 @@
 <html>
     <body>
-        <p><strong>Backup modes</strong>: An app can be backed up with only its apk, only its data or both. An app not currently installed can only be restored if the apk is present. Three special types of data is supported extra to the main data: device protected data, external data and obb data.
+        <p><strong>Moduri de backup</strong>: Unei aplicații i se poate face backup numai cu apk-ul său, numai cu datele sale sau cu ambele. O aplicație neinstalată în prezent poate fi restaurată numai dacă apk-ul este prezent. Trei tipuri speciale de date sunt suportate în plus față de datele principale: datele protejate ale dispozitivului, datele externe și datele obb.
         </p>
-        <p><strong>Delete backup</strong>: Deletes the backup files for a specific backup instance. While "delete backups" delete all of the backups of the chosen app.
+        <p><strong>Șterge backupul</strong>: Șterge fișierele backupului pentru o anumită instanță a unui backup. În timp ce „șterge backupurile” șterge toate backupurile aplicației alese.
         </p>
-        <p><strong>Uninstall</strong>: Somewhat more aggressive than a normal uninstall. In addition to doing a normal uninstall via Android commands, uninstalling from OAndBackupX deletes files the app might have left over in /data/app-lib/.
+        <p><strong>Dezinstalează</strong>: Oarecum mai agresiv decât o dezinstalare normală. În plus față de dezinstalarea normală via comenzi de Android, dezinstalarea din OAndBackupX șterge fișierele pe care aplicația le-ar fi putut lăsa în /data/app-lib/.
         </p>
-        <p><strong>Enable / disable</strong>: Uses the Android `pm` script to enable or disable an app. Disabling an app removes it from the normal user interface without uninstalling it. This can be used for enabling or disabling an app for multiple users at a time (if the device has multiple users). Users are identified with an ID e.g. 0 is the first user (owner) 10 is usually the work profile.
+        <p><strong>Activează / dezactivează</strong>: Folosește scriptul `pm` al Androidului pentru a activa sau dezactiva o aplicație. Dezactivarea unei aplicații o elimină din interfața normală a utilizatorului fără a o dezinstala. Acest lucru poate fi folosit pentru activarea sau dezactivarea unei aplicații pentru mai mulți utilizatori concomitent (dacă dispozitivul are mai mulți utilizatori). Utilizatorii sunt identificați cu un ID, de ex. 0 este primul utilizator (proprietar), 10 este, de obicei, profilul de lucru.
         </p>
-        <p><strong>Multiple users</strong>: Multi-user is still somewhat experimental but should work. Enabling and disabling only works after an initial install (not necessarily from OAndBackupx) or restore of the app.
+        <p><strong>Utilizatori multipli</strong>: Multiutilizator este încă oarecum experimental, dar ar trebui să funcționeze. Activarea și dezactivarea funcționează numai după o instalare inițială (nu neapărat din OAndBackupx) sau după o restaurare a aplicației.
         </p>
-        <p><strong>System-less apps</strong>: Backup and restore of system-less apps installed as Magisk modules is not supported and trying it could lead to system failure and forcing you to format and flash it anew.
+        <p><strong>Aplicații system-less</strong>: Crearea de backupuri și restaurarea aplicațiilor system-less precum modulele Magisk nu sunt suportate, iar încercarea de a face acest lucru ar putea duce la o defecțiune a sistemului, obligându-te să formatezi și să rescrii SO-ul de la zero.
         </p>
         <p><strong>Navigation</strong>: The navigation bar has "Settings", "Home", "Batch backup", "Batch restore" and "Schedule backups" (in that order). The number of apps upgraded after their last backup will be presented as a notification on "Home" button.
         </p>
