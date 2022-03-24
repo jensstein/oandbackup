@@ -70,7 +70,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
-        if (requireMainActivity().viewModel.refreshNow.value == true) refreshView()
 
         viewModel.refreshNow.observe(requireActivity()) {
             //binding.refreshLayout.isRefreshing = it
@@ -79,6 +78,63 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                 requireMainActivity().viewModel.refreshList()
             }
         }
+        viewModel.filteredList.observe(viewLifecycleOwner) { list ->
+            try {
+                binding.recyclerView.setContent {
+                    AppTheme(
+                        darkTheme = isSystemInDarkTheme()
+                    ) {
+                        Scaffold {
+                            BatchPackageRecycler(
+                                productsList = list?.filter {
+                                    if (backupBoolean) it.isInstalled
+                                    else it.hasBackups
+                                },
+                                !backupBoolean,
+                                viewModel.apkCheckedList,
+                                viewModel.dataCheckedList,
+                                onClick = { item ->
+                                    val showApk = when {
+                                        item.isSpecial || (!backupBoolean && !item.hasApk) -> false
+                                        else -> true
+                                    }
+                                    val isApkChecked =
+                                        viewModel.apkCheckedList.any { it == item.packageName }
+                                    val showData = when {
+                                        !backupBoolean && !item.hasAppData -> false
+                                        else -> true
+                                    }
+                                    val isDataChecked =
+                                        viewModel.dataCheckedList.any { it == item.packageName }
+                                    val bothChecked =
+                                        (isApkChecked || !showApk) && (isDataChecked || !showData)
+                                    if (bothChecked) {
+                                        viewModel.apkCheckedList.remove(item.packageName)
+                                        viewModel.dataCheckedList.remove(item.packageName)
+                                    }
+                                    if (!isApkChecked) viewModel.apkCheckedList.add(item.packageName)
+                                    if (!isDataChecked) viewModel.dataCheckedList.add(item.packageName)
+                                },
+                                onApkClick = { item: AppInfo, b: Boolean ->
+                                    if (b) viewModel.apkCheckedList.add(item.packageName)
+                                    else viewModel.apkCheckedList.remove(item.packageName)
+                                },
+                                onDataClick = { item: AppInfo, b: Boolean ->
+                                    if (b) viewModel.dataCheckedList.add(item.packageName)
+                                    else viewModel.dataCheckedList.remove(item.packageName)
+                                },
+                            )
+                        }
+                    }
+                }
+                setupSearch()
+                viewModel.refreshNow.value = false
+            } catch (e: Throwable) {
+                LogsHandler.unhandledException(e)
+            }
+        }
+
+        if (requireMainActivity().viewModel.refreshNow.value == true) refreshView()
     }
 
     override fun onStart() {
@@ -306,77 +362,15 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     override fun refreshView() {
         Timber.d("refreshing")
         sheetSortFilter = SortFilterSheet(requireActivity().sortFilterModel, getStats(appInfoList))
-        Thread {
-            try {
-                val filteredList =
-                    appInfoList.applyFilter(requireActivity().sortFilterModel, requireContext())
-                refreshBatch(filteredList)
-            } catch (e: FileUtils.BackupLocationInAccessibleException) {
-                Timber.e("Could not update application list: $e")
-            } catch (e: StorageLocationNotConfiguredException) {
-                Timber.e("Could not update application list: $e")
-            } catch (e: Throwable) {
-                LogsHandler.unhandledException(e)
-            }
-        }.start()
-    }
-
-    private fun refreshBatch(filteredList: List<AppInfo>) {
-        //val batchList = createBatchAppsList(filteredList)
-        requireActivity().runOnUiThread {
-            try {
-                binding.recyclerView.setContent {
-                    AppTheme(
-                        darkTheme = isSystemInDarkTheme()
-                    ) {
-                        Scaffold {
-                            BatchPackageRecycler(
-                                productsList = filteredList.filter {
-                                    if (backupBoolean) it.isInstalled
-                                    else it.hasBackups
-                                },
-                                !backupBoolean,
-                                viewModel.apkCheckedList,
-                                viewModel.dataCheckedList,
-                                onClick = { item ->
-                                    val showApk = when {
-                                        item.isSpecial || (!backupBoolean && !item.hasApk) -> false
-                                        else -> true
-                                    }
-                                    val isApkChecked =
-                                        viewModel.apkCheckedList.any { it == item.packageName }
-                                    val showData = when {
-                                        !backupBoolean && !item.hasAppData -> false
-                                        else -> true
-                                    }
-                                    val isDataChecked =
-                                        viewModel.dataCheckedList.any { it == item.packageName }
-                                    val bothChecked =
-                                        (isApkChecked || !showApk) && (isDataChecked || !showData)
-                                    if (bothChecked) {
-                                        viewModel.apkCheckedList.remove(item.packageName)
-                                        viewModel.dataCheckedList.remove(item.packageName)
-                                    }
-                                    if (!isApkChecked) viewModel.apkCheckedList.add(item.packageName)
-                                    if (!isDataChecked) viewModel.dataCheckedList.add(item.packageName)
-                                },
-                                onApkClick = { item: AppInfo, b: Boolean ->
-                                    if (b) viewModel.apkCheckedList.add(item.packageName)
-                                    else viewModel.apkCheckedList.remove(item.packageName)
-                                },
-                                onDataClick = { item: AppInfo, b: Boolean ->
-                                    if (b) viewModel.dataCheckedList.add(item.packageName)
-                                    else viewModel.dataCheckedList.remove(item.packageName)
-                                },
-                            )
-                        }
-                    }
-                }
-                setupSearch()
-                viewModel.refreshNow.value = false
-            } catch (e: Throwable) {
-                LogsHandler.unhandledException(e)
-            }
+        try {
+            viewModel.filteredList.value =
+                appInfoList.applyFilter(requireActivity().sortFilterModel, requireContext())
+        } catch (e: FileUtils.BackupLocationInAccessibleException) {
+            Timber.e("Could not update application list: $e")
+        } catch (e: StorageLocationNotConfiguredException) {
+            Timber.e("Could not update application list: $e")
+        } catch (e: Throwable) {
+            LogsHandler.unhandledException(e)
         }
     }
 
