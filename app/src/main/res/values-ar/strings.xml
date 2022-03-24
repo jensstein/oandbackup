@@ -334,4 +334,6 @@
     <string name="intro_permission_smsmms">يحتاج التطبيق إلى هذا الإذن ليتمكن من نسخ / استعادة رسائل SMS / MMS الخاصة بك.</string>
     <string name="intro_permission_contacts">يحتاج التطبيق إلى هذا الإذن ليتمكن من مطابقة جهة اتصال مع رسالة SMS/MMS.</string>
     <string name="spec_fingerprint">البصمات</string>
+    <string name="loading_list">جارٍ تحميل قائمة التطبيقات …</string>
+    <string name="delete">حذف</string>
 </resources>
