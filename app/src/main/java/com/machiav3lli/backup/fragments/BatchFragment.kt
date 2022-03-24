@@ -32,9 +32,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
-import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.R
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.databinding.FragmentBatchBinding
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
@@ -220,19 +218,23 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     }
 
     private fun onClickBatchAction(backupBoolean: Boolean) {
-        // TODO maintain packages list
-        /*val selectedList = batchItemAdapter.adapterItems
-            .filter(BatchItemX::isChecked)
-            .map { item: BatchItemX -> item.app.appMetaInfo }
-            .toCollection(ArrayList())
-        val selectedListModes = batchItemAdapter.adapterItems
-            .filter(BatchItemX::isChecked)
-            .map(BatchItemX::actionMode)
+        val checkedPackages = viewModel.filteredList.value
+            ?.filter { it.packageName in viewModel.apkCheckedList.union(viewModel.dataCheckedList) }
+            ?: listOf()
+        val selectedList = checkedPackages.map(AppInfo::appMetaInfo).toCollection(ArrayList())
+        val selectedListModes = checkedPackages
+            .map {
+                when (it.packageName) {
+                    in viewModel.apkCheckedList.intersect(viewModel.dataCheckedList) -> ALT_MODE_BOTH
+                    in viewModel.apkCheckedList -> ALT_MODE_APK
+                    else -> ALT_MODE_DATA
+                }
+            }
             .toCollection(ArrayList())
         if (selectedList.isNotEmpty()) {
             BatchDialogFragment(backupBoolean, selectedList, selectedListModes, this)
                 .show(requireActivity().supportFragmentManager, "DialogFragment")
-        }*/
+        }
     }
 
     private fun onCheckedApkClicked() {
