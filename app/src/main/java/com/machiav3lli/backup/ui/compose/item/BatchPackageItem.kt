@@ -42,7 +42,7 @@ fun BatchPackageItem(
     val showData by remember(item) {
         mutableStateOf(
             when {
-                restore && !item.hasAppData -> false
+                restore && !item.hasData -> false
                 else -> true
             }
         )

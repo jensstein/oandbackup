@@ -323,6 +323,13 @@ class AppInfo {
     val hasApk: Boolean
         get() = backupHistory.any { it.backupProperties.hasApk }
 
+    val hasData: Boolean
+        get() = backupHistory.any {
+            it.backupProperties.hasAppData || it.backupProperties.hasExternalData ||
+                    it.backupProperties.hasDevicesProtectedData || it.backupProperties.hasObbData ||
+                    it.backupProperties.hasMediaData
+        }
+
     val hasAppData: Boolean
         get() = backupHistory.any { it.backupProperties.hasAppData }
 
