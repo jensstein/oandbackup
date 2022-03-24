@@ -25,7 +25,7 @@ fun BatchPackageItem(
     restore: Boolean,
     isApkChecked: Boolean,
     isDataChecked: Boolean,
-    onClick: (AppInfo) -> Unit = {},
+    onClick: (AppInfo, Boolean, Boolean) -> Unit = { _: AppInfo, _: Boolean, _: Boolean -> },
     onApkClick: (AppInfo, Boolean) -> Unit = { _: AppInfo, _: Boolean -> },
     onDataClick: (AppInfo, Boolean) -> Unit = { _: AppInfo, _: Boolean -> }
 ) {
@@ -58,7 +58,7 @@ fun BatchPackageItem(
             val checked = (apkChecked.value || !showApk) && (dataChecked.value || !showData)
             if (showApk) apkChecked.value = !checked
             if (showData) dataChecked.value = !checked
-            onClick(item)
+            onClick(item, apkChecked.value, dataChecked.value)
         },
     ) {
         Row(

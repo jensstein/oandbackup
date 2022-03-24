@@ -45,7 +45,7 @@ fun BatchPackageRecycler(
     restore: Boolean = false,
     apkCheckedList: List<String> = listOf(),
     dataCheckedList: List<String> = listOf(),
-    onClick: (AppInfo) -> Unit = {},
+    onClick: (AppInfo, Boolean, Boolean) -> Unit = { _: AppInfo, _: Boolean, _: Boolean -> },
     onApkClick: (AppInfo, Boolean) -> Unit = { _: AppInfo, _: Boolean -> },
     onDataClick: (AppInfo, Boolean) -> Unit = { _: AppInfo, _: Boolean -> }
 ) {

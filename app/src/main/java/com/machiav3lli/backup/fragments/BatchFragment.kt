@@ -93,27 +93,15 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                                 !backupBoolean,
                                 viewModel.apkCheckedList,
                                 viewModel.dataCheckedList,
-                                onClick = { item ->
-                                    val showApk = when {
-                                        item.isSpecial || (!backupBoolean && !item.hasApk) -> false
-                                        else -> true
+                                onClick = { item, checkApk, checkData ->
+                                    when (checkApk) {
+                                        true -> viewModel.apkCheckedList.add(item.packageName)
+                                        else -> viewModel.apkCheckedList.remove(item.packageName)
                                     }
-                                    val isApkChecked =
-                                        viewModel.apkCheckedList.any { it == item.packageName }
-                                    val showData = when {
-                                        !backupBoolean && !item.hasAppData -> false
-                                        else -> true
+                                    when (checkData) {
+                                        true -> viewModel.dataCheckedList.add(item.packageName)
+                                        else -> viewModel.dataCheckedList.remove(item.packageName)
                                     }
-                                    val isDataChecked =
-                                        viewModel.dataCheckedList.any { it == item.packageName }
-                                    val bothChecked =
-                                        (isApkChecked || !showApk) && (isDataChecked || !showData)
-                                    if (bothChecked) {
-                                        viewModel.apkCheckedList.remove(item.packageName)
-                                        viewModel.dataCheckedList.remove(item.packageName)
-                                    }
-                                    if (!isApkChecked) viewModel.apkCheckedList.add(item.packageName)
-                                    if (!isDataChecked) viewModel.dataCheckedList.add(item.packageName)
                                 },
                                 onApkClick = { item: AppInfo, b: Boolean ->
                                     if (b) viewModel.apkCheckedList.add(item.packageName)
