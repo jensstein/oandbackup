@@ -328,6 +328,12 @@ class Package {
     val hasApk: Boolean
         get() = backupHistory.any { it.hasApk }
 
+    val hasData: Boolean
+        get() = backupHistory.any {
+            it.hasAppData || it.hasExternalData || it.hasDevicesProtectedData ||
+                    it.hasObbData || it.hasMediaData
+        }
+
     val hasAppData: Boolean
         get() = backupHistory.any { it.hasAppData }
 
