@@ -486,5 +486,9 @@ fun Context.getLocaleOfCode(localeCode: String): Locale = when {
         localeCode.substring(0, 2),
         localeCode.substring(4)
     )
+    localeCode.contains("_") -> Locale(
+        localeCode.substring(0, 2),
+        localeCode.substring(3)
+    )
     else -> Locale(localeCode)
 }
