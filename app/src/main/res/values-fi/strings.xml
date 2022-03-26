@@ -292,4 +292,23 @@
     <string name="prefs_secondary_1">Merenvihreä</string>
     <string name="prefs_accent_color">Aksenttiväri</string>
     <string name="home">Kotisivu</string>
+    <string name="loading_list">Ladataan sovelluslistaa…</string>
+    <string name="intro_permission_smsmms">Sovellus tarvitsee tämän käyttöoikeuden voidakseen varmuuskopioida ja palauttaa SMS/MMS-viestejä.</string>
+    <string name="intro_permission_calllogs">Sovellus tarvitsee tämän käyttöoikeuden voidakseen varmuuskopioida ja palauttaa puheluhistorian.</string>
+    <string name="fetching_action_list">Haetaan sovelluslistaa kohteelle %1$s…</string>
+    <string name="stats_updated">Päivitetyt</string>
+    <string name="no_file_manager_title">Ei SAF-hallintaa</string>
+    <string name="schedule">Ajasta</string>
+    <string name="finished">valmis</string>
+    <string name="intro_permission_storage">Sovellus tarvitsee tallennustilan luku- ja kirjoitusoikeuden voidakseen käyttää ulkoista tallennustilaa ja tarjotakseen myös ulkoisen datan/obb-tiedostojen varmuuskopioinnin.</string>
+    <string name="intro_permission_storage_location">Sovellus tarvitsee sijainnin varmuuskopioinnin tallentamiseen. Täysi varmuuskopio käyttää useita gigatavuja ja tiedostojärjestelmän kyselyitä tehdään paljon. Huomioi tämä, jos valitset verkkosijainnin varmuuskopioille.</string>
+    <string name="intro_permission_usageaccess">Sovellus tarvitsee tämän käyttöoikeuden voidakseen arvioida sovellustesi tilatiedot, datan koon sekä välimuistin.</string>
+    <string name="intro_permission_batteryoptimization">Ajastetut varmuuskopiot saattavat kohdata ongelmia joillain ROMeilla, joissa on aggressiivinen akun optimointi (kuten MIUI), mutta myös puhtaalla AOSP:lla ongelmia voi tulla.</string>
+    <string name="intro_permission_contacts">Sovellus tarvitsee tämän käyttöoikeuden voidakseen yhdistää yhteystietoja SMS/MMS-viesteihin.</string>
+    <string name="msg_appkill_warning">Valituille sovelluksille lähetetään stop-signaali ja niiden ajoa jatketaan tehtävän valmistumisen jälkeen. Tarkista prosessoidut sovellukset jälkeenpäin (ja vältä niiden käynnistämistä, kun tehtävä on käynnissä).</string>
+    <string name="radio_launchable">Käynnistettävät sovellukset</string>
+    <string name="no_file_manager_message">SAF-hallintaan sopivaa tiedostonhallintaa ei löytynyt. Kenties olet ottanut sisäänrakennetun tiedostonhallinnan pois käytöstä. Palauta tai ota se käyttöön uudelleen.</string>
+    <string name="shell_initproblem">Komentokehotteen käyttöönotto epäonnistui. Joko toybox/busybox puuttuu, tai sovelluksen root-oikeudet ovat poissa käytöstä.</string>
+    <string name="intro_permission_storage_location_warning">Älä valitse juurihakemistoa tai Lataukset-kansiota vaan luo uusi kansion vain varmuuskopioita varten. Lue lisää FAQ:sta</string>
+    <string name="delete">Poista</string>
 </resources>
