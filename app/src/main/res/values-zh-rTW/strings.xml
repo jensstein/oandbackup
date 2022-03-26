@@ -252,4 +252,45 @@
     <string name="help_appTypeHint">* 如果應用程式已解除安裝，應用程式類型的圖示會是灰色。如果應用程式已停用，則會是深灰色。</string>
     <string name="dialog_start">開始吧！</string>
     <string name="copyOwnApkSuccess">已將應用程式的 APK 複製到備份資料夾</string>
+    <string name="sched_exported">成功匯出排程</string>
+    <string name="error_datachanged">備份時，該應用程式的資料已被主動變更。請嘗試在備份前停止程序</string>
+    <string name="no_file_manager_message">沒有檔案管理員來管理 SAF。或許您已停用內建的檔案管理員。請還原或重新啟用它。</string>
+    <string name="schedule_failed">執行排程失敗</string>
+    <string name="dialog_export">匯出</string>
+    <string name="dialog_import">匯出</string>
+    <string name="sched_imported">成功匯入排程</string>
+    <string name="logs_share_failed">未找到記錄檔</string>
+    <string name="sortAscDesc">升序-降序</string>
+    <string name="forceKill">強制停止</string>
+    <string name="prefs_accent_color">輔色</string>
+    <string name="prefs_secondary_color">次要顏色</string>
+    <string name="error_encryptionpassword">加密密碼未設置或者錯誤！</string>
+    <string name="title_note">備註：</string>
+    <string name="title_tags">標籤：</string>
+    <plurals name="sched_interval_formal">
+        <item quantity="other">每 %d 天</item>
+    </plurals>
+    <plurals name="days_left">
+        <item quantity="other">%d 天，</item>
+    </plurals>
+    <string name="help_changelog">變更記錄</string>
+    <string name="home">首頁</string>
+    <string name="all_data">檢查所有資料</string>
+    <string name="all_apk">檢查所有 APK</string>
+    <string name="showDisabled">停用的應用程式</string>
+    <string name="intro_permission_batteryoptimization">在某些採用激進電池最佳化的 ROM（例如 MIUI），排程備份時可能會遇到一些問題。但即使在 vanilla AOSP 也可能發生這種問題。</string>
+    <string name="copyOwnApkFailed">無法將應用程式的 APK 複製到備份資料夾</string>
+    <string name="prefs_schedulesexportimport">匯出/匯入排程</string>
+    <string name="no_file_manager_title">無 SAF 管理器</string>
+    <string name="sortBackupDate">備份日期</string>
+    <string name="backup_all_updated">備份所有更新的應用程式</string>
+    <string name="loading_list">正在載入應用程式清單…</string>
+    <string name="wait_noappslist">尚未獲取應用程式清單。請稍等…</string>
+    <string name="filtered_list">過濾的清單</string>
+    <string name="schedule">排程</string>
+    <string name="delete">刪除</string>
+    <string name="prefs_schedulesexportimport_summary">匯出或匯入已建立的排程清單。</string>
+    <string name="intro_permission_storage_location_warning">請不要選擇主儲存空間資料夾或「下載」資料夾，建立專用於備份的資料夾。請到常見問題中了解更多詳細資訊</string>
+    <string name="finished">已完成</string>
+    <string name="batch">批次</string>
 </resources>
