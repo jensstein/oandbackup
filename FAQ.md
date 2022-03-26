@@ -1,13 +1,14 @@
 # Frequently Asked Questions:
 
+* [What is Neo-Backup?](#what-is-neo-backup)
 * [What is OAndBackupX?](#what-is-oandbackupx)
 * [Which Android Versions are supported?](#which-android-versions-are-supported)
-* [How do I use OABX?](#how-do-i-use-oabx)
+* [How do I use NB?](#how-do-i-use-nb)
 * [What are all these backup-parts (icons)? / Which parts does a backup of an app consist of?](#what-are-all-these-backup-parts-icons--which-parts-does-a-backup-of-an-app-consist-of)
 * [What are Special Backups?](#what-are-special-backups)
 * [Do I need a rooted phone?](#do-i-need-a-rooted-phone)
 * [What is root access used for?](#what-is-root-access-used-for)
-* [Why is OABX so slow?](#why-is-oabx-so-slow)
+* [Why is NB so slow?](#why-is-nb-so-slow)
 * [So why use SAF then?](#so-why-use-saf-then)
 * [I do not see any apps in the list. What can be the reason?](#i-do-not-see-any-apps-in-the-list-what-can-be-the-reason)
 * [I do not see the app which is currently backed up in the notification during batch or scheduled backups.](#i-do-not-see-the-app-which-is-currently-backed-up-in-the-notification-during-batch-or-scheduled-backups)
@@ -20,10 +21,19 @@
 * [What is the difference to the famous Titanium Backup?](#what-is-the-difference-to-the-famous-titanium-backup)
 * [How can I open encrypted backups on my computer?](#how-can-i-open-encrypted-backups-on-my-computer)
 
+#### What is Neo-Backup?
+
+Neo-Backup (short NB) is a fork of [OAndBackup](https://gitlab.com/jensstein/oandbackup) (which is inactive) with the aim to keep such a great and useful FOSS backup and recovery tool alive beyond 202x. 
+
+Most of the functionality and UI of the app was rewritten und now it shoud get more stable. It is also a goal to add features which could ease the backup/restore workflow with any device.
+
+NB requires root and allows you to backup individual apps and their data. Both backup and restore of individual programs one at a time, batch backup and restore of multiple programs, as well as scheduled backups are supported.
+
+Neo-Backup is part of the NeoApplications: https://github.com/NeoApplications
+
 #### What is OAndBackupX?
 
-OAndBackupX (short OABX) is a fork of [OAndBackup](https://gitlab.com/jensstein/oandbackup) (which is inactive) with the aim to bring it to 202x. For now most of the functionality and UI of the app are rewritten, next steps would be making it stable and adding some features which could ease the backup/restore workflow with any device.
-Requires root and allows you to backup individual apps and their data. Both backup and restore of individual programs one at a time and batch backup and restore of multiple programs are supported.
+OAndBackupX (short OABX) was the former name of the project. You may find some reference in here or in the in-app usage notes, we missed to change yet. The initial OABX release was in March 2020. The rename to NB took place more or less exactly at the second birthday of the project (between version 7 and 8), so stable version 7.0.0 still has the name OAndBackupX.
 
 #### Which Android Versions are supported?
 
@@ -32,7 +42,7 @@ Newest supported version: Android 12 - "Snow Cone"
 
 See also - [Are you going to support older Android versions?](#are-you-going-to-support-older-android-versions)
 
-#### How do I use OABX?
+#### How do I use NB?
 
 The first start will guide you through the most important preferences. It still make sense to shortly check the prefs, to see what else can bet set. E.g. you can define the amount of kept backup revisions or decide which [app parts](#what-are-all-these-backup-parts-icons--which-parts-does-a-backup-of-an-app-consist-of) should be included.
 
@@ -48,7 +58,7 @@ The fifth and very right icon of the menu-bar will open the preferences.
 A safe way to start is to do some backup and restore tests of an uncritical app via AppSheet.
 Go forward and backup multiple apps via Batch and finally define schedules e.g. with Custom lists.
 
-In case of any problems report it in [the Telegram group](https://github.com/machiav3lli/oandbackupx#on-telegram-tmeoandbackupx) first (sometimes there is an easy solution) and/or [raise an issue here in github](https://github.com/machiav3lli/oandbackupx/issues).
+In case of any problems report it in [the Telegram or Matrix group](https://github.com/NeoApplications/Neo-Backup#community) first (sometimes there is an easy solution) and/or [raise an issue here in github](https://github.com/NeoApplications/Neo-Backup/issues).
 
 #### What are all these backup-parts (icons)? / Which parts does a backup of an app consist of?
 
@@ -101,7 +111,7 @@ Each backup basically consists of the two different parts:
 
         - Default is set to not include it in backups
 
-You can individually choose which parts you want to include in the backup --> as global setting in preferences, (beginning with version OABX 6.x) per schedule or even per App.
+You can individually choose which parts you want to include in the backup --> as global setting in preferences, (beginning with version NB [OABX] 6.x) per schedule or even per App.
 
 #### What are Special Backups?
 
@@ -138,7 +148,7 @@ ls -l /data/app/<app_package_name>-VP8zj7n2sqzHID5Oqfh88w== but I have no chance
 
 You cannot access /data/data/* at all, so app data is protected between apps.
 
-#### Why is OABX so slow?
+#### Why is NB so slow?
 
 Since rebasing the app on SAF(Storage Access Framework) the performance is bound to what Android's (or Google's) framework can provide.
 Needless to say: This is how much love this framework receives from the developers... [Fuck-Storage-Access-Framework](https://github.com/K1rakishou/Fuck-Storage-Access-Framework/)
@@ -152,7 +162,7 @@ In the next Android versions Google will (most probably) force apps more and mor
 
 - standardized way of accessing files on all storage providers
 - more secure -> apps can only access their own data
-- the ability of OABX to backup to external SD card (or cloud providers) comes through SAF
+- the ability of NB to backup to external SD card (or cloud providers) comes through SAF
 - ...
 
 <ins>***Con:***</ins>
@@ -171,12 +181,12 @@ In the next Android versions Google will (most probably) force apps more and mor
 - 238 Apps - system + user apps
 - no gApps
 - root via Magisk
-- OABX - version used for the last test listed here: v7.0.0 stable
+- NB (OABX) - version used for the last test listed here: v7.0.0 stable
 - Backup folder on internal storage
 
 As this is a quite old SOC, it can be called low end benchmark. 😉
 
-OABX - Prefs ...
+Prefs ...
 (I list only the differences from default)
 Service-Prefs:
 - Encryption configured
@@ -207,7 +217,7 @@ If the default revision count (2) is used, of course, the first run, which takes
 
 ***Test 3***
 
-Refresh after starting OABX with all those apps and their bkps created under Test 2
+Refresh after starting NB with all those apps and their bkps created under Test 2
 
 ###### Measured times:
 
@@ -241,7 +251,7 @@ Side-Comment:
 Full scheduled/batch backup with last SAF free release (v3.2.0.) took about 10 minutes (for 195 apps at that time)
 --> so much faster
 The time difference (for most of the test-tasks shown here) is due to:
-- no [SAF](#why-is-oabx-so-slow)
+- no [SAF](#why-is-nb-so-slow)
 - no external data support
 - no obb files support
 - other folder structure
@@ -251,10 +261,10 @@ The time difference (for most of the test-tasks shown here) is due to:
 #### I do not see any apps in the list. What can be the reason?
 
 In most cases the you choose a special Android folder for your backups. (e.g. common mistake is root '/storage/emulated/0' or the "Downloads" folder)
-This is not supported by [SAF](#why-is-oabx-so-slow). You find a full list which folders are not allowed [here](https://developer.android.com/training/data-storage/shared/documents-files/#document-tree-access-restrictions).
+This is not supported by [SAF](#why-is-nb-so-slow). You find a full list which folders are not allowed [here](https://developer.android.com/training/data-storage/shared/documents-files/#document-tree-access-restrictions).
 
 <ins>Solution:</ins><br/>
-Create a separate/dedicated sub-folder and choose it in OABX preferences (User preferences) as your "Backup folder".
+Create a separate/dedicated sub-folder and choose it in NB preferences (User preferences) as your "Backup folder".
 
 Another mistake, which might happen is, that you set a filters, which lead to an empty result.
 
@@ -288,7 +298,7 @@ For contacts, calendar and todo-lists. We advice to use [DecSync](https://github
 #### Are you going to support older Android versions?
 
 No, Non, No, No, Nein, Nej, Niet, La... in seeable future, maybe this would change in the far future... 
-Android 7 "Nougat" and older Android version support dropped in OABX v3.1.0.
+Android 7 "Nougat" and older Android version support dropped in NB (OABX) v3.1.0.
 See also - [Which Android Versions are supported?](#which-android-versions-are-supported)
 
 #### Why do I have to login/register to app x y z again after restore?
@@ -311,10 +321,10 @@ Here are several examples - e.g.:
 
 #### What is the difference to implementations like Seedvault?
 
-The main difference is that OABX uses root to create a copy of the apps [APK and it's data](#what-are-all-these-backup-parts-icons--which-parts-does-a-backup-of-an-app-consist-of) while Seedvault relies on Google's api to backup (without forcing the user to backup to the Google-Cloud).
+The main difference is that NB uses root to create a copy of the apps [APK and it's data](#what-are-all-these-backup-parts-icons--which-parts-does-a-backup-of-an-app-consist-of) while Seedvault relies on Google's api to backup (without forcing the user to backup to the Google-Cloud).
 Seedvault repo can be found here: https://github.com/seedvault-app/seedvault - check it for latest information as the infos/comparison in the table below might be outdated.
 
-|  | OABX  | Seedvault  |
+|  | NB  | Seedvault  |
 | ---: | :--- | :--- |
 | root necessary? | [yes](#do-i-need-a-rooted-phone) | no |
 | encrypted backup | yes (optional) | yes |
@@ -326,12 +336,12 @@ Seedvault repo can be found here: https://github.com/seedvault-app/seedvault - c
 
 #### What is the difference to the famous Titanium Backup?
 
-Users tend to compare OABX and Titanium Backup (TB). There are a lot of comments in the chat.
+Users tend to compare NB and Titanium Backup (TB). There are a lot of comments in the chat.
 All the TB features are listed here: https://www.titaniumtrack.com/titanium-backup.html
 
 Feel free to share your thoughts and edit this FAQ to provide a comparison which is more on-point.
-Main points to mention: TB did not get an update for same years now (it does not use [SAF](#why-is-oabx-so-slow) and so is probably faster as long as google does not improve it) and it is not Open-Source.
+Main points to mention: TB did not get an update for same years now (it does not use [SAF](#why-is-nb-so-slow) and so is probably faster as long as google does not improve it) and it is not Open-Source.
 
 #### How can I open encrypted backups on my computer?
 
-You can find the encryption algorithm and setup in this class: [oandbackupx/Crypto.kt at master · machiav3lli/oandbackupx · GitHub](https://github.com/machiav3lli/oandbackupx/blob/main/app/src/main/java/com/machiav3lli/backup/utils/CryptoUtils.kt) . The rest depends on the version you used.
+You can find the encryption algorithm and setup in this class: [Neo-Backup - Crypto.kt · GitHub](https://github.com/NeoApplications/Neo-Backup/blob/main/app/src/main/java/com/machiav3lli/backup/utils/CryptoUtils.kt) . The rest depends on the version you used.
