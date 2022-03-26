@@ -320,4 +320,5 @@
     <string name="batch">Nhóm</string>
     <string name="spec_fingerprint">Vân tay</string>
     <string name="loading_list">Đang tải danh sách ứng dụng…</string>
+    <string name="delete">Xóa</string>
 </resources>
