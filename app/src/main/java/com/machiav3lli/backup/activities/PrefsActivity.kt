@@ -26,14 +26,14 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ActivityPrefsBinding
 import com.machiav3lli.backup.fragments.HelpSheet
-import com.machiav3lli.backup.handler.getApplicationList
-import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.handler.getPackageList
+import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.utils.*
 
 class PrefsActivity : BaseActivity() {
     lateinit var binding: ActivityPrefsBinding
     private var sheetHelp: HelpSheet? = null
-    var appInfoList: List<AppInfo> = mutableListOf()
+    var appInfoList: List<Package> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setCustomTheme()
@@ -99,7 +99,7 @@ class PrefsActivity : BaseActivity() {
         appInfoList = listOf()
         Thread {
             try {
-                appInfoList = getApplicationList(listOf())
+                appInfoList = getPackageList(listOf())
             } catch (e: FileUtils.BackupLocationInAccessibleException) {
                 e.printStackTrace()
             } catch (e: StorageLocationNotConfiguredException) {

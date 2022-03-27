@@ -30,7 +30,7 @@ import com.machiav3lli.backup.activities.PrefsActivity
 import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.ExportsHandler
 import com.machiav3lli.backup.handler.showNotification
-import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.utils.applyFilter
 import com.machiav3lli.backup.utils.getBackupDir
 import com.machiav3lli.backup.utils.setExists
@@ -71,7 +71,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
     }
 
     private fun onClickUninstalledBackupsDelete(): Boolean {
-        val deleteList = ArrayList<AppInfo>()
+        val deleteList = ArrayList<Package>()
         val message = StringBuilder()
         if (requirePrefsActivity().appInfoList.isNotEmpty()) {
             for (appInfo in requirePrefsActivity().appInfoList) {
@@ -109,7 +109,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
         return true
     }
 
-    private fun deleteBackups(deleteList: List<AppInfo>) {
+    private fun deleteBackups(deleteList: List<Package>) {
         val notificationId = System.currentTimeMillis().toInt()
         deleteList.forEachIndexed { i, ai ->
             showNotification(
@@ -121,7 +121,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
                 false
             )
             Timber.i("deleting backups of ${ai.packageLabel}")
-            ai.deleteAllBackups(requireContext())
+            ai.deleteAllBackups()
         }
         showNotification(
             requireContext(),

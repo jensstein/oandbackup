@@ -14,20 +14,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.annotation.ExperimentalCoilApi
-import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.getFormattedDate
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalCoilApi::class)
 @Composable
 fun MainPackageItem(
-    item: AppInfo,
-    onClick: (AppInfo) -> Unit = {}
+    item: Package,
+    onClick: (Package) -> Unit = {}
 ) {
     val imageData by remember(item) {
         mutableStateOf(
-            if (item.isSpecial) item.appMetaInfo.icon
-            else "android.resource://${item.packageName}/${item.appMetaInfo.icon}"
+            if (item.isSpecial) item.packageInfo.icon
+            else "android.resource://${item.packageName}/${item.packageInfo.icon}"
         )
     }
 
@@ -86,7 +86,7 @@ fun MainPackageItem(
                     )
                     AnimatedVisibility(visible = item.hasBackups) {
                         Text(
-                            text = item.latestBackup?.backupProperties?.backupDate?.getFormattedDate(
+                            text = item.latestBackup?.backupDate?.getFormattedDate(
                                 false
                             ) ?: "",
                             modifier = Modifier.align(Alignment.CenterVertically),

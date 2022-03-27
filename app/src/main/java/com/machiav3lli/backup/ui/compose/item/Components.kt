@@ -21,14 +21,14 @@ import coil.compose.SubcomposeAsyncImageContent
 import coil.compose.rememberAsyncImagePainter
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Schedule
-import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.BackupProperties
+import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.theme.*
 
 @Composable
 fun PackageIcon(
-    item: AppInfo,
+    item: Package,
     imageData: Any
 ) {
     SubcomposeAsyncImage(
@@ -86,7 +86,7 @@ fun ActionChip(
 
 @Composable
 fun PackageLabels(
-    item: AppInfo
+    item: Package
 ) {
     AnimatedVisibility(visible = item.isUpdated) {
         Icon(
@@ -164,7 +164,7 @@ fun PackageLabels(
 
 @Composable
 fun BackupLabels(
-    item: BackupProperties
+    item: Backup
 ) {
     AnimatedVisibility(visible = item.hasMediaData) {
         Icon(

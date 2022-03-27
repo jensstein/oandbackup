@@ -24,7 +24,7 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsUser
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
-import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.utils.FileUtils
 import timber.log.Timber
 import java.io.File
@@ -117,10 +117,18 @@ class ShellCommands(private var users: List<String>?) {
             try {
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
-                throw ShellActionFailedException(command, "Could not $option package $packageName", e)
+                throw ShellActionFailedException(
+                    command,
+                    "Could not $option package $packageName",
+                    e
+                )
             } catch (e: Throwable) {
                 LogsHandler.unhandledException(e, command)
-                throw ShellActionFailedException(command, "Could not $option package $packageName", e)
+                throw ShellActionFailedException(
+                    command,
+                    "Could not $option package $packageName",
+                    e
+                )
             }
         }
     }
@@ -134,9 +142,9 @@ class ShellCommands(private var users: List<String>?) {
         return try {
             val result = runAsRoot(command)
             result.out
-                    .map { obj: String -> obj.trim { it <= ' ' } }
-                    .filter { it.isNotEmpty() }
-                    .toList()
+                .map { obj: String -> obj.trim { it <= ' ' } }
+                .filter { it.isNotEmpty() }
+                .toList()
         } catch (e: ShellCommandFailedException) {
             throw ShellActionFailedException(command, "Could not fetch list of users", e)
         } catch (e: Throwable) {
@@ -145,7 +153,9 @@ class ShellCommands(private var users: List<String>?) {
         }
     }
 
-    class ShellActionFailedException(val command: String, message: String, cause: Throwable?) : Exception(message, cause)
+    class ShellActionFailedException(val command: String, message: String, cause: Throwable?) :
+        Exception(message, cause)
+
     companion object {
 
         // using reflection to get id of calling user since method getCallingUserId of UserHandle is hidden
@@ -174,19 +184,29 @@ class ShellCommands(private var users: List<String>?) {
                 return try {
                     val result = runAsUser(command)
                     result.out
-                            .filter { line: String -> line.contains("s") }
-                            .map { line: String -> line.substring(line.indexOf(':') + 1).trim { it <= ' ' } }
-                            .toList()
+                        .filter { line: String -> line.contains("s") }
+                        .map { line: String ->
+                            line.substring(line.indexOf(':') + 1).trim { it <= ' ' }
+                        }
+                        .toList()
                 } catch (e: ShellCommandFailedException) {
-                    throw ShellActionFailedException(command, "Could not fetch disabled packages", e)
+                    throw ShellActionFailedException(
+                        command,
+                        "Could not fetch disabled packages",
+                        e
+                    )
                 } catch (e: Throwable) {
                     LogsHandler.unhandledException(e, command)
-                    throw ShellActionFailedException(command, "Could not fetch disabled packages", e)
+                    throw ShellActionFailedException(
+                        command,
+                        "Could not fetch disabled packages",
+                        e
+                    )
                 }
             }
 
         @Throws(ShellActionFailedException::class)
-        fun wipeCache(context: Context, app: AppInfo) {
+        fun wipeCache(context: Context, app: Package) {
             Timber.i("${app.packageName}: Wiping cache")
             val commands = mutableListOf<String>()
             // Normal app cache always exists
@@ -212,7 +232,10 @@ class ShellCommands(private var users: List<String>?) {
             // external cache dirs are added dynamically, the bash if-else will handle the logic
             for (myCacheDir in context.externalCacheDirs) {
                 val cacheDirName = myCacheDir.name
-                val appsCacheDir = File(File(myCacheDir.parentFile?.parentFile, app.packageName), cacheDirName).absolutePath
+                val appsCacheDir = File(
+                    File(myCacheDir.parentFile?.parentFile, app.packageName),
+                    cacheDirName
+                ).absolutePath
                 commands.add(conditionalDeleteCommand(appsCacheDir))
             }
             val command = commands.joinToString(" ; ")  // no dependency

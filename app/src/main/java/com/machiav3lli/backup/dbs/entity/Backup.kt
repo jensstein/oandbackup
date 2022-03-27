@@ -112,7 +112,7 @@ data class Backup(
     )
 
     constructor(
-        base: AppInfoX,
+        base: PackageInfoX,
         backupDate: LocalDateTime,
         hasApk: Boolean,
         hasAppData: Boolean,

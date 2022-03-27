@@ -22,6 +22,7 @@ import android.content.pm.PackageManager
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.HousekeepingMoment.Companion.fromString
 import com.machiav3lli.backup.actions.*
+import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.*
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
@@ -41,7 +42,7 @@ object BackupRestoreHelper {
         context: Context,
         work: AppActionWork?,
         shell: ShellHandler,
-        appInfo: AppInfo,
+        appInfo: Package,
         backupMode: Int
     ): ActionResult {
         var reBackupMode = backupMode
@@ -85,8 +86,8 @@ object BackupRestoreHelper {
     }
 
     fun restore(
-        context: Context, work: AppActionWork?, shellHandler: ShellHandler, appInfo: AppInfo,
-        mode: Int, backupProperties: BackupProperties, backupDir: StorageFile
+        context: Context, work: AppActionWork?, shellHandler: ShellHandler, appInfo: Package,
+        mode: Int, backupProperties: Backup, backupDir: StorageFile?
     ): ActionResult {
         val action: RestoreAppAction = when {
             appInfo.isSpecial -> RestoreSpecialAction(context, work, shellHandler)
@@ -139,7 +140,7 @@ object BackupRestoreHelper {
         return true
     }
 
-    private fun housekeepingPackageBackups(context: Context, app: AppInfo, before: Boolean) {
+    private fun housekeepingPackageBackups(context: Context, app: Package, before: Boolean) {
         var numBackupRevisions =
             context.getDefaultSharedPreferences().getInt(PREFS_NUM_BACKUP_REVISIONS, 2)
         var backups = app.backupHistory
@@ -160,14 +161,14 @@ object BackupRestoreHelper {
                 val revisionsToDelete = backups.size - numBackupRevisions
                 Timber.i("[${app.packageName}] More backup revisions than configured maximum (${backups.size} > ${numBackupRevisions + if (before) 1 else 0}). Deleting $revisionsToDelete backup(s).")
                 backups = backups
-                    .sortedWith { bi1: BackupItem, bi2: BackupItem ->
-                        bi1.backupProperties.backupDate!!.compareTo(bi2.backupProperties.backupDate)
+                    .sortedWith { bi1: Backup, bi2: Backup ->
+                        bi1.backupDate.compareTo(bi2.backupDate)
                     }
                     .toMutableList()
                 (0 until revisionsToDelete).forEach {
                     val deleteInfo = backups[it]
                     Timber.i("[${app.packageName}] Deleting backup revision $deleteInfo")
-                    app.delete(context, deleteInfo)
+                    app.delete(deleteInfo)
                 }
             }
         }

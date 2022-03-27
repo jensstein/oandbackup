@@ -23,13 +23,13 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.machiav3lli.backup.*
+import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
-import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.BackupProperties
+import com.machiav3lli.backup.items.Package
 
 class RestoreDialogFragment(
-    val appInfo: AppInfo,
-    private val properties: BackupProperties,
+    val appInfo: Package,
+    private val properties: Backup,
     private val listener: ActionListener
 ) : DialogFragment() {
 
@@ -74,7 +74,7 @@ class RestoreDialogFragment(
         checkedOptions.fill(true)
 
         return AlertDialog.Builder(requireActivity())
-            .setTitle(appInfo.appMetaInfo.packageLabel)
+            .setTitle(appInfo.packageInfo.packageLabel)
             .setMultiChoiceItems(
                 labels.toTypedArray<CharSequence>(),
                 checkedOptions

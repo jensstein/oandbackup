@@ -26,28 +26,17 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import androidx.work.CoroutineWorker
-import androidx.work.Data
-import androidx.work.ForegroundInfo
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
-import androidx.work.WorkerParameters
-import androidx.work.workDataOf
+import androidx.work.*
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_MAXRETRIES
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
-import com.machiav3lli.backup.handler.BackupRestoreHelper
-import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.handler.*
 import com.machiav3lli.backup.handler.WorkHandler.Companion.getVar
 import com.machiav3lli.backup.handler.WorkHandler.Companion.setVar
-import com.machiav3lli.backup.handler.getDirectoriesInBackupRoot
-import com.machiav3lli.backup.handler.getSpecial
-import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
-import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.items.Package
 import timber.log.Timber
 
 class AppActionWork(val context: Context, workerParams: WorkerParameters) :
@@ -81,7 +70,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             setForeground(createForegroundInfo())
 
         var result: ActionResult? = null
-        var appInfo: AppInfo? = null
+        var appInfo: Package? = null
 
         try {
             val specialAppInfo = context.getSpecial(packageName)
@@ -90,7 +79,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             } else {
                 val foundItem =
                     context.packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA)
-                AppInfo(context, foundItem)
+                Package(context, foundItem)
             }
         } catch (e: PackageManager.NameNotFoundException) {
             if (packageLabel.isEmpty())
@@ -99,7 +88,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                 .find { it.name == packageName }
             backupDir?.let {
                 try {
-                    appInfo = AppInfo(context, it.name, it)
+                    appInfo = Package(context, it.name, it)
                 } catch (e: AssertionError) {
                     Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
                     result = ActionResult(
@@ -124,12 +113,12 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                                         context, this, shellHandler, ai, selectedMode
                                     )
                                 }
-                                else          -> {
+                                else -> {
                                     // Latest backup for now
                                     ai.latestBackup?.let {
                                         BackupRestoreHelper.restore(
                                             context, this, shellHandler, ai, selectedMode,
-                                            it.backupProperties, it.backupInstanceDir
+                                            it, it.getBackupInstanceFolder(ai.packageBackupDir)
                                         )
                                     }
                                 }
@@ -217,7 +206,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             .setContentTitle(
                 when {
                     backupBoolean -> context.getString(com.machiav3lli.backup.R.string.batchbackup)
-                    else          -> context.getString(com.machiav3lli.backup.R.string.batchrestore)
+                    else -> context.getString(com.machiav3lli.backup.R.string.batchrestore)
                 }
             )
             .setSmallIcon(com.machiav3lli.backup.R.drawable.ic_app)

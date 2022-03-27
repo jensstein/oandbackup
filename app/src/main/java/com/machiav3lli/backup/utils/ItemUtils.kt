@@ -29,6 +29,7 @@ import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.AppInfo
 import com.machiav3lli.backup.items.BackupItem
+import com.machiav3lli.backup.items.Package
 import timber.log.Timber
 
 val COLOR_UPDATE = Color.rgb(244, 51, 69)
@@ -46,7 +47,7 @@ fun calculateID(backup: BackupItem): Long {
     return backup.hashCode().toLong()
 }
 
-fun SheetAppBinding.pickSheetDataSizes(context: Context, app: AppInfo, update: Boolean) {
+fun SheetAppBinding.pickSheetDataSizes(context: Context, app: Package, update: Boolean) {
     if (app.isSpecial || !app.isInstalled) {
         appSizeLine.changeVisibility(View.GONE, update)
         dataSizeLine.changeVisibility(View.GONE, update)
@@ -76,9 +77,9 @@ fun SheetAppBinding.pickSheetDataSizes(context: Context, app: AppInfo, update: B
     }
 }
 
-fun SheetAppBinding.pickSheetVersionName(app: AppInfo) {
+fun SheetAppBinding.pickSheetVersionName(app: Package) {
     if (app.isUpdated) {
-        val latestBackupVersion = app.latestBackup?.backupProperties?.versionName
+        val latestBackupVersion = app.latestBackup?.versionName
         val updatedVersionString = "$latestBackupVersion (${app.versionName})"
         versionName.text = updatedVersionString
         versionName.setTextColor(COLOR_UPDATE)
@@ -88,7 +89,7 @@ fun SheetAppBinding.pickSheetVersionName(app: AppInfo) {
     }
 }
 
-fun AppCompatTextView.pickSheetAppType(app: AppInfo) {
+fun AppCompatTextView.pickSheetAppType(app: Package) {
     var color: Int
     if (app.isInstalled) {
         color = when {
@@ -105,7 +106,7 @@ fun AppCompatTextView.pickSheetAppType(app: AppInfo) {
     setTextColor(color)
 }
 
-fun getStats(appsList: MutableList<AppInfo>): Triple<Int, Int, Int> {
+fun getStats(appsList: MutableList<Package>): Triple<Int, Int, Int> {
     var backupsNumber = 0
     var updatedNumber = 0
     appsList.forEach {

@@ -17,19 +17,16 @@
  */
 package com.machiav3lli.backup.handler
 
-import android.content.Context
 import android.os.Build
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BACKUP_INSTANCE_DIR
-import com.machiav3lli.backup.items.AppMetaInfo
-import com.machiav3lli.backup.items.BackupItem
-import com.machiav3lli.backup.items.BackupProperties
+import com.machiav3lli.backup.dbs.entity.Backup
+import com.machiav3lli.backup.dbs.entity.PackageInfoX
 import com.machiav3lli.backup.items.StorageFile
 import java.time.LocalDateTime
 
 class BackupBuilder(
-    private val context: Context,
-    private val appInfo: AppMetaInfo,
+    private val packageInfo: PackageInfoX,
     backupRoot: StorageFile
 ) {
     private val backupDate: LocalDateTime = LocalDateTime.now()
@@ -48,7 +45,7 @@ class BackupBuilder(
         val dateTimeStr = BACKUP_DATE_TIME_FORMATTER.format(backupDate)
         // root/packageName/dateTimeStr-user.userId/
         return backupRoot
-            .ensureDirectory(String.format(BACKUP_INSTANCE_DIR, dateTimeStr, appInfo.profileId))
+            .ensureDirectory(String.format(BACKUP_INSTANCE_DIR, dateTimeStr, packageInfo.profileId))
     }
 
     fun setIv(iv: ByteArray) {
@@ -83,20 +80,27 @@ class BackupBuilder(
         this.cipherType = cipherType
     }
 
-    fun createBackupItem(): BackupItem {
-        return BackupItem(
-            BackupProperties(
-                appInfo, backupDate, hasApk, hasAppData, hasDevicesProtectedData,
-                hasExternalData, hasObbData, hasMediaData, cipherType, iv, cpuArch
-            ),
-            backupPath
+    fun createBackup(): Backup {
+        return Backup(
+            base = packageInfo,
+            backupDate = backupDate,
+            hasApk = hasApk,
+            hasAppData = hasAppData,
+            hasDevicesProtectedData = hasDevicesProtectedData,
+            hasExternalData = hasExternalData,
+            hasObbData = hasObbData,
+            hasMediaData = hasMediaData,
+            cipherType = cipherType,
+            iv = iv,
+            cpuArch = cpuArch,
+            permissions = listOf()
         )
     }
 
-    fun createBackupProperties(): BackupProperties {
+    /*fun createBackupProperties(): BackupProperties {
         return BackupProperties(
             appInfo, backupDate, hasApk, hasAppData, hasDevicesProtectedData,
             hasExternalData, hasObbData, hasMediaData, cipherType, iv, cpuArch
         )
-    }
+    }*/
 }

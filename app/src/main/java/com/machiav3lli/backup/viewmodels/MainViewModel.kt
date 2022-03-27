@@ -20,13 +20,13 @@ package com.machiav3lli.backup.viewmodels
 import android.app.Application
 import androidx.lifecycle.*
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
-import com.machiav3lli.backup.dbs.*
+import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.dao.AppExtrasDao
 import com.machiav3lli.backup.dbs.dao.BlocklistDao
 import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dbs.entity.Blocklist
-import com.machiav3lli.backup.handler.getApplicationList
-import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.handler.getPackageList
+import com.machiav3lli.backup.items.Package
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -39,7 +39,7 @@ class MainViewModel(
     private val appExtrasDao: AppExtrasDao = database.appExtrasDao
     private val blocklistDao: BlocklistDao = database.blocklistDao
 
-    var appInfoList = MediatorLiveData<MutableList<AppInfo>>()
+    var appInfoList = MediatorLiveData<MutableList<Package>>()
     var blocklist = MediatorLiveData<List<Blocklist>>()
     var appExtrasList: MutableList<AppExtras>
         get() = appExtrasDao.all
@@ -62,10 +62,10 @@ class MainViewModel(
         }
     }
 
-    private suspend fun recreateAppInfoList(): MutableList<AppInfo> =
+    private suspend fun recreateAppInfoList(): MutableList<Package> =
         withContext(Dispatchers.IO) {
             val blockedPackagesList = blocklist.value?.mapNotNull { it.packageName } ?: listOf()
-            appContext.getApplicationList(blockedPackagesList)
+            appContext.getPackageList(blockedPackagesList)
         }
 
     fun updatePackage(packageName: String) {
@@ -78,13 +78,13 @@ class MainViewModel(
         }
     }
 
-    private suspend fun updateListWith(packageName: String): MutableList<AppInfo>? =
+    private suspend fun updateListWith(packageName: String): MutableList<Package>? =
         withContext(Dispatchers.IO) {
             val dataList = appInfoList.value
             var appInfo = dataList?.find { it.packageName == packageName }
             dataList?.removeIf { it.packageName == packageName }
             try {
-                appInfo = AppInfo(appContext, packageName, appInfo?.backupDir)
+                appInfo = Package(appContext, packageName, appInfo?.packageBackupDir)
                 dataList?.add(appInfo)
             } catch (e: AssertionError) {
                 Timber.w(e.message ?: "")

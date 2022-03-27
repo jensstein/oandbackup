@@ -24,7 +24,7 @@ import android.util.LruCache
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
-import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import timber.log.Timber
@@ -32,7 +32,7 @@ import java.lang.ref.WeakReference
 
 class OABX : Application() {
 
-    var cache: LruCache<String, MutableList<AppInfo>> = LruCache(4000)
+    var cache: LruCache<String, MutableList<Package>> = LruCache(4000)
 
     var work: WorkHandler? = null
 
@@ -57,6 +57,7 @@ class OABX : Application() {
         })
     }
 
+    // TODO Add BroadcastReceiver for (UN)INSTALL_PACKAGE intents
     override fun onCreate() {
         super.onCreate()
         appRef = WeakReference(this)
@@ -128,6 +129,7 @@ class OABX : Application() {
         private var theWakeLock: PowerManager.WakeLock? = null
         private var wakeLockNested: Int = 0
         private const val wakeLockTag = "OABX:Application"
+
         // count the nesting levels
         // might be difficult sometimes, because
         // the lock must be transferred from one object/function to another
@@ -135,7 +137,7 @@ class OABX : Application() {
         fun wakelock(aquire: Boolean) {
             if (aquire) {
                 Timber.d("%%%%% $wakeLockTag wakelock aquire (before: $wakeLockNested)")
-                if(++wakeLockNested == 1) {
+                if (++wakeLockNested == 1) {
                     val pm = OABX.context.getSystemService(Context.POWER_SERVICE) as PowerManager
                     theWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, wakeLockTag)
                     theWakeLock?.acquire(60 * 60 * 1000L)
@@ -143,7 +145,7 @@ class OABX : Application() {
                 }
             } else {
                 Timber.d("%%%%% $wakeLockTag wakelock release (before: $wakeLockNested)")
-                if(--wakeLockNested == 0) {
+                if (--wakeLockNested == 0) {
                     Timber.d("%%%%% $wakeLockTag wakelock RELEASING")
                     theWakeLock?.release()
                 }

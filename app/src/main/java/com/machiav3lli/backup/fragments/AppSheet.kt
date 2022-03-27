@@ -37,13 +37,13 @@ import com.google.android.material.chip.ChipDrawable
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.databinding.SheetAppBinding
 import com.machiav3lli.backup.dbs.entity.AppExtras
+import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dialogs.BackupDialogFragment
 import com.machiav3lli.backup.dialogs.RestoreDialogFragment
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
-import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.BackupProperties
+import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.tasks.BackupActionTask
 import com.machiav3lli.backup.tasks.RestoreActionTask
 import com.machiav3lli.backup.ui.compose.recycler.BackupRecycler
@@ -52,7 +52,7 @@ import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.AppSheetViewModel
 import timber.log.Timber
 
-class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras) :
+class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
     BaseSheet(), ActionListener {
     private lateinit var binding: SheetAppBinding
     private lateinit var viewModel: AppSheetViewModel
@@ -89,7 +89,7 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras) :
         setup(false)
     }
 
-    fun updateApp(app: AppInfo) {
+    fun updateApp(app: Package) {
         viewModel.appInfo.value = app
         setup(true)
     }
@@ -111,9 +111,9 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras) :
                         AppTheme(
                             darkTheme = isSystemInDarkTheme()
                         ) {
-                            BackupRecycler(productsList = it.backupHistory.sortedByDescending { item -> item.backupProperties.backupDate },
+                            BackupRecycler(productsList = it.backupHistory.sortedByDescending { item -> item.backupDate },
                                 onRestore = { item ->
-                                    val properties = item.backupProperties
+                                    val properties = item
                                     viewModel.appInfo.value?.let { app ->
                                         if (!app.isSpecial && !app.isInstalled
                                             && !properties.hasApk && properties.hasAppData
@@ -209,7 +209,7 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras) :
 
     private fun setupAppInfo(update: Boolean) {
         viewModel.appInfo.value?.let {
-            val appMetaInfo = it.appMetaInfo
+            val appMetaInfo = it.packageInfo
             binding.icon.setIcon(appMetaInfo)
             binding.label.text = appMetaInfo.packageLabel
             binding.packageName.text = it.packageName
@@ -274,7 +274,7 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras) :
             viewModel.refreshNow.value = true
         }
 
-        viewModel.appInfo.value?.let { app: AppInfo ->
+        viewModel.appInfo.value?.let { app: Package ->
 
             // details
             binding.appInfo.setOnClickListener {
@@ -381,7 +381,7 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras) :
     override fun onActionCalled(
         actionType: ActionType?,
         mode: Int,
-        backupProps: BackupProperties?
+        backupProps: Backup?
     ) {
         viewModel.appInfo.value?.let {
             when {
@@ -392,8 +392,9 @@ class AppSheet(val appInfo: AppInfo, var appExtras: AppExtras) :
                     ).execute()
                 }
                 actionType === ActionType.RESTORE -> {
-                    backupProps?.let { backupProps: BackupProperties ->
-                        val backupDir = backupProps.getBackupDir(viewModel.appInfo.value?.backupDir)
+                    backupProps?.let { backupProps: Backup ->
+                        val backupDir =
+                            backupProps.getBackupInstanceFolder(viewModel.appInfo.value?.packageBackupDir)
                         RestoreActionTask(
                             it, requireMainActivity(), OABX.shellHandlerInstance!!, mode,
                             backupProps, backupDir!!, this

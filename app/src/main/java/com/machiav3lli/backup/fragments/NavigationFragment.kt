@@ -20,11 +20,11 @@ package com.machiav3lli.backup.fragments
 import androidx.fragment.app.Fragment
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dbs.entity.AppExtras
-import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.items.Package
 
 abstract class NavigationFragment : Fragment(), ProgressViewController {
     protected var sheetSortFilter: SortFilterSheet? = null
-    var appInfoList: MutableList<AppInfo>
+    var appInfoList: MutableList<Package>
         get() = requireMainActivity().viewModel.appInfoList.value
             ?: mutableListOf()
         set(value) {

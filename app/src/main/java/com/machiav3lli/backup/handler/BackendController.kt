@@ -26,9 +26,9 @@ import android.content.pm.PackageManager
 import android.os.Process
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.ignoredPackages
+import com.machiav3lli.backup.dbs.entity.SpecialInfoX
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
-import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.SpecialAppMetaInfo.Companion.getSpecialPackages
+import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import com.machiav3lli.backup.utils.*
@@ -59,10 +59,10 @@ fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
     FileUtils.BackupLocationInAccessibleException::class,
     StorageLocationNotConfiguredException::class
 )
-fun Context.getApplicationList(
+fun Context.getPackageList(
     blockList: List<String>,
     includeUninstalled: Boolean = true
-): MutableList<AppInfo> {
+): MutableList<Package> {
     val startTime = System.currentTimeMillis()
 
     invalidateCache()
@@ -75,9 +75,9 @@ fun Context.getApplicationList(
         .filterNot { it.packageName.matches(ignoredPackages) || blockList.contains(it.packageName) }
         .mapNotNull {
             try {
-                AppInfo(this, it, backupRoot)
+                Package(this, it, backupRoot)
             } catch (e: AssertionError) {
-                Timber.e("Could not create AppInfo for ${it}: $e")
+                Timber.e("Could not create Package for ${it}: $e")
                 null
             }
         }
@@ -108,9 +108,9 @@ fun Context.getApplicationList(
     // discover the backup directory and run in a special case where no the directory is empty.
     // This would mean, that no package info is available – neither from backup.properties
     // nor from PackageManager.
-    var specialList = mutableListOf<String>()
+    val specialList = mutableListOf<String>()
     if (includeSpecial) {
-        getSpecialPackages(this).forEach {
+        SpecialInfoX.getSpecialPackages(this).forEach {
             packageList.add(it)
             specialList.add(it.packageName)
         }
@@ -121,7 +121,7 @@ fun Context.getApplicationList(
             .map { it.packageName }
             .toList()
         val directoriesInBackupRoot = getDirectoriesInBackupRoot()
-        val missingAppsWithBackup: List<AppInfo> =
+        val missingAppsWithBackup: List<Package> =
         // Try to create AppInfo objects
         // if it fails, null the object for filtering in the next step to avoid crashes
             // filter out previously failed backups
@@ -135,7 +135,7 @@ fun Context.getApplicationList(
                 }
                 .mapNotNull {
                     try {
-                        AppInfo(this, it.name, it)
+                        Package(this, it.name, it)
                     } catch (e: AssertionError) {
                         Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
                         null
@@ -147,7 +147,7 @@ fun Context.getApplicationList(
 
     val afterAllTime = System.currentTimeMillis()
     OABX.activity?.showToast("all: ${((afterAllTime - startTime) / 1000 + 0.5).toInt()} sec")
-
+    // TODO add to database instead of return
     return packageList
 }
 
@@ -194,5 +194,5 @@ fun Context.getPackageStorageStats(packageName: String, storageUuid: UUID): Stor
     }
 }
 
-fun Context.getSpecial(packageName: String) = getSpecialPackages(this)
+fun Context.getSpecial(packageName: String) = SpecialInfoX.getSpecialPackages(this)
     .find { it.packageName == packageName }

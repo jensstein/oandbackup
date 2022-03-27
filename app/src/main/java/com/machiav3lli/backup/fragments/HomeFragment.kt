@@ -36,7 +36,7 @@ import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
-import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.ui.compose.recycler.HomePackageRecycler
@@ -245,11 +245,11 @@ class HomeFragment : NavigationFragment(),
 
     private fun onClickUpdateAllAction() {
         val selectedList = viewModel.updatedApps.value
-            ?.map { it.appMetaInfo }
+            ?.map { it.packageInfo }
             ?.toCollection(ArrayList()) ?: arrayListOf()
         val selectedListModes = viewModel.updatedApps.value
             ?.mapNotNull {
-                it.latestBackup?.backupProperties?.let { bp ->
+                it.latestBackup?.let { bp ->
                     when {
                         bp.hasApk && bp.hasAppData -> ALT_MODE_BOTH
                         bp.hasApk -> ALT_MODE_APK
@@ -368,7 +368,7 @@ class HomeFragment : NavigationFragment(),
         }
     }
 
-    private fun refreshAppSheet(app: AppInfo) {
+    private fun refreshAppSheet(app: Package) {
         try {
             // TODO implement auto refresh of AppSheet
             appSheet?.updateApp(app)

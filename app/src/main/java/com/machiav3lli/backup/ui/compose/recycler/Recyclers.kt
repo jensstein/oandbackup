@@ -1,17 +1,17 @@
 package com.machiav3lli.backup.ui.compose.recycler
 
 import androidx.compose.runtime.Composable
+import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Schedule
-import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.BackupItem
 import com.machiav3lli.backup.items.Log
+import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.ui.compose.item.*
 
 @Composable
 fun HomePackageRecycler(
-    productsList: List<AppInfo>?,
-    onClick: (AppInfo) -> Unit = {}
+    productsList: List<Package>?,
+    onClick: (Package) -> Unit = {}
 ) {
     VerticalItemList(list = productsList) {
         MainPackageItem(it, onClick)
@@ -20,8 +20,8 @@ fun HomePackageRecycler(
 
 @Composable
 fun UpdatedPackageRecycler(
-    productsList: List<AppInfo>?,
-    onClick: (AppInfo) -> Unit = {}
+    productsList: List<Package>?,
+    onClick: (Package) -> Unit = {}
 ) {
     HorizontalItemList(list = productsList) {
         UpdatedPackageItem(it, onClick)
@@ -30,9 +30,9 @@ fun UpdatedPackageRecycler(
 
 @Composable
 fun BackupRecycler(
-    productsList: List<BackupItem>?,
-    onRestore: (BackupItem) -> Unit = {},
-    onDelete: (BackupItem) -> Unit = {}
+    productsList: List<Backup>?,
+    onRestore: (Backup) -> Unit = {},
+    onDelete: (Backup) -> Unit = {}
 ) {
     SizedItemList(list = productsList, itemHeight = 110) {
         BackupInstanceItem(it, onRestore, onDelete)
@@ -41,13 +41,13 @@ fun BackupRecycler(
 
 @Composable
 fun BatchPackageRecycler(
-    productsList: List<AppInfo>?,
+    productsList: List<Package>?,
     restore: Boolean = false,
     apkCheckedList: List<String> = listOf(),
     dataCheckedList: List<String> = listOf(),
-    onClick: (AppInfo, Boolean, Boolean) -> Unit = { _: AppInfo, _: Boolean, _: Boolean -> },
-    onApkClick: (AppInfo, Boolean) -> Unit = { _: AppInfo, _: Boolean -> },
-    onDataClick: (AppInfo, Boolean) -> Unit = { _: AppInfo, _: Boolean -> }
+    onClick: (Package, Boolean, Boolean) -> Unit = { _: Package, _: Boolean, _: Boolean -> },
+    onApkClick: (Package, Boolean) -> Unit = { _: Package, _: Boolean -> },
+    onDataClick: (Package, Boolean) -> Unit = { _: Package, _: Boolean -> }
 ) {
     VerticalItemList(list = productsList) {
         BatchPackageItem(

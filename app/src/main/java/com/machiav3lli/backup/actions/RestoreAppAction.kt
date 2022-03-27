@@ -18,19 +18,8 @@
 package com.machiav3lli.backup.actions
 
 import android.content.Context
-import com.machiav3lli.backup.MODE_APK
-import com.machiav3lli.backup.MODE_DATA
-import com.machiav3lli.backup.MODE_DATA_DE
-import com.machiav3lli.backup.MODE_DATA_EXT
-import com.machiav3lli.backup.MODE_DATA_MEDIA
-import com.machiav3lli.backup.MODE_DATA_OBB
-import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_EXCLUDECACHE
-import com.machiav3lli.backup.PREFS_REFRESHDELAY
-import com.machiav3lli.backup.PREFS_REFRESHTIMEOUT
-import com.machiav3lli.backup.PREFS_RESTOREAVOIDTEMPCOPY
-import com.machiav3lli.backup.PREFS_RESTORETARCMD
-import com.machiav3lli.backup.R
+import com.machiav3lli.backup.*
+import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.findAssetFile
@@ -41,41 +30,24 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.handler.ShellHandler.UnexpectedCommandResult
 import com.machiav3lli.backup.items.ActionResult
-import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.BackupProperties
+import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.RootFile
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.tasks.AppActionWork
-import com.machiav3lli.backup.utils.CryptoSetupException
-import com.machiav3lli.backup.utils.decryptStream
-import com.machiav3lli.backup.utils.getCryptoSalt
-import com.machiav3lli.backup.utils.getDefaultSharedPreferences
-import com.machiav3lli.backup.utils.getEncryptionPassword
-import com.machiav3lli.backup.utils.isAllowDowngrade
-import com.machiav3lli.backup.utils.isDisableVerification
-import com.machiav3lli.backup.utils.isEncryptionEnabled
-import com.machiav3lli.backup.utils.isPauseApps
-import com.machiav3lli.backup.utils.isRestoreAllPermissions
-import com.machiav3lli.backup.utils.suCopyFileFromDocument
-import com.machiav3lli.backup.utils.suRecursiveCopyFileFromDocument
-import com.machiav3lli.backup.utils.suUnpackTo
+import com.machiav3lli.backup.utils.*
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
 import org.apache.commons.io.FileUtils
 import timber.log.Timber
-import java.io.BufferedInputStream
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.IOException
-import java.io.InputStream
+import java.io.*
 import java.nio.file.Files
 
 open class RestoreAppAction(context: Context, work: AppActionWork?, shell: ShellHandler) :
     BaseAppAction(context, work, shell) {
     fun run(
-        app: AppInfo,
-        backupProperties: BackupProperties,
-        backupDir: StorageFile,
+        app: Package,
+        backupProperties: Backup,
+        backupDir: StorageFile?,
         backupMode: Int
     ): ActionResult {
         try {
@@ -87,14 +59,21 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                 preprocessPackage(app.packageName)
             }
             try {
-                if (backupMode and MODE_APK == MODE_APK) {
-                    work?.setOperation("apk")
-                    restorePackage(backupDir, backupProperties)
-                    refreshAppInfo(context, app)    // also waits for valid paths
-                }
-                if (backupMode != MODE_APK) {
-                    restoreAllData(work, app, backupProperties, backupDir, backupMode)
-                }
+                if (backupDir != null) {
+                    if (backupMode and MODE_APK == MODE_APK) {
+                        work?.setOperation("apk")
+                        restorePackage(backupDir, backupProperties)
+                        refreshAppInfo(context, app)    // also waits for valid paths
+                    }
+                    if (backupMode != MODE_APK) {
+                        restoreAllData(work, app, backupProperties, backupDir, backupMode)
+                    }
+                } else return ActionResult(
+                    app,
+                    null,
+                    "No backup file exists",
+                    false
+                )
             } catch (e: PackageManagerDataIncompleteException) {
                 return ActionResult(
                     app,
@@ -134,12 +113,12 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     @Throws(CryptoSetupException::class, RestoreFailedException::class)
     protected open fun restoreAllData(
         work: AppActionWork?,
-        app: AppInfo,
-        backupProperties: BackupProperties,
+        app: Package,
+        backupProperties: Backup,
         backupDir: StorageFile,
         backupMode: Int
     ) {
-        if ( ! isPlausiblePath(app.dataPath, app.packageName) )
+        if (!isPlausiblePath(app.dataPath, app.packageName))
             refreshAppInfo(context, app)    // wait for valid paths
         if (backupProperties.hasAppData && backupMode and MODE_DATA == MODE_DATA) {
             Timber.i("[${backupProperties.packageName}] Restoring app's data")
@@ -197,7 +176,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     }
 
     @Throws(RestoreFailedException::class)
-    open fun restorePackage(backupDir: StorageFile, backupProperties: BackupProperties) {
+    open fun restorePackage(backupDir: StorageFile, backupProperties: Backup) {
         val packageName = backupProperties.packageName
         Timber.i("[$packageName] Restoring from $backupDir")
         val baseApkFile = backupDir.findFile(BASE_APK_FILENAME)
@@ -630,8 +609,8 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
     open fun restoreData(
-        app: AppInfo,
-        backupProperties: BackupProperties,
+        app: Package,
+        backupProperties: Backup,
         backupDir: StorageFile,
         compressed: Boolean
     ) {
@@ -678,8 +657,8 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
     open fun restoreDeviceProtectedData(
-        app: AppInfo,
-        backupProperties: BackupProperties,
+        app: Package,
+        backupProperties: Backup,
         backupDir: StorageFile,
         compressed: Boolean
     ) {
@@ -726,8 +705,8 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
     open fun restoreExternalData(
-        app: AppInfo,
-        backupProperties: BackupProperties,
+        app: Package,
+        backupProperties: Backup,
         backupDir: StorageFile,
         compressed: Boolean
     ) {
@@ -764,8 +743,8 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
 
     @Throws(RestoreFailedException::class)
     open fun restoreObbData(
-        app: AppInfo,
-        backupProperties: BackupProperties,
+        app: Package,
+        backupProperties: Backup,
         backupDir: StorageFile,
         compressed: Boolean
     ) {
@@ -813,8 +792,8 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
 
     @Throws(RestoreFailedException::class)
     open fun restoreMediaData(
-        app: AppInfo,
-        backupProperties: BackupProperties,
+        app: Package,
+        backupProperties: Backup,
         backupDir: StorageFile,
         compressed: Boolean
     ) {
@@ -880,7 +859,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         )
 
     @Throws(PackageManagerDataIncompleteException::class)
-    private fun refreshAppInfo(context: Context, app: AppInfo) {
+    private fun refreshAppInfo(context: Context, app: Package) {
         val sleepTimeMs = 1000L
 
         // delay before first try
@@ -910,7 +889,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         } while (!this.isPlausiblePackageInfo(app))
     }
 
-    private fun isPlausiblePackageInfo(app: AppInfo): Boolean {
+    private fun isPlausiblePackageInfo(app: Package): Boolean {
         return app.dataPath.isNotBlank()
                 && app.apkPath.isNotBlank()
                 && app.devicesProtectedDataPath.isNotBlank()

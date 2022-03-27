@@ -18,15 +18,15 @@
 package com.machiav3lli.backup.actions
 
 import android.content.Context
+import com.machiav3lli.backup.dbs.entity.Backup
+import com.machiav3lli.backup.dbs.entity.SpecialInfoX
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
-import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.BackupProperties
+import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.RootFile
-import com.machiav3lli.backup.items.SpecialAppMetaInfo
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.CryptoSetupException
@@ -44,8 +44,8 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
     @Throws(CryptoSetupException::class, RestoreFailedException::class)
     override fun restoreAllData(
         work: AppActionWork?,
-        app: AppInfo,
-        backupProperties: BackupProperties,
+        app: Package,
+        backupProperties: Backup,
         backupDir: StorageFile,
         backupMode: Int
     ) {
@@ -55,16 +55,17 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
     override fun restoreData(
-        app: AppInfo,
-        backupProperties: BackupProperties,
+        app: Package,
+        backupProperties: Backup,
         backupDir: StorageFile,
         compressed: Boolean
     ) {
         Timber.i("%s: Restore special data", app)
-        val metaInfo = app.appMetaInfo as SpecialAppMetaInfo
+        val metaInfo = app.packageInfo as SpecialInfoX
         val tempPath = RootFile(context.cacheDir, backupProperties.packageName ?: "")
         val isEncrypted = backupProperties.isEncrypted
-        val backupArchiveFilename = getBackupArchiveFilename(BACKUP_DIR_DATA, compressed, isEncrypted)
+        val backupArchiveFilename =
+            getBackupArchiveFilename(BACKUP_DIR_DATA, compressed, isEncrypted)
         val backupArchiveFile = backupDir.findFile(backupArchiveFilename)
             ?: throw RestoreFailedException("Backup archive at $backupArchiveFilename is missing")
         try {
@@ -80,13 +81,9 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
                 val expectedFiles = metaInfo.specialFiles
                     .map { pathname: String? -> RootFile(pathname ?: "") }
                     .toTypedArray()
-                if (filesInBackup != null && (
-                        filesInBackup.size != expectedFiles.size
-                            || ! areBasefilesSubsetOf(
-                                    expectedFiles,
-                                    filesInBackup
-                                 )
-                        )
+                if (filesInBackup != null
+                    && (filesInBackup.size != expectedFiles.size
+                            || !areBasefilesSubsetOf(expectedFiles, filesInBackup))
                 ) {
                     val errorMessage =
                         "$app: Backup is missing files. Found ${filesInBackup.map { it.absolutePath }}; needed: ${expectedFiles.map { it.absolutePath }}"
@@ -97,11 +94,11 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
                 for (restoreFile in expectedFiles) {
                     val (uid, gid, con) = try {
                         shell.suGetOwnerGroupContext(restoreFile.absolutePath)
-                    } catch(e: Throwable) {
+                    } catch (e: Throwable) {
                         // fallback to permissions of parent directory
                         shell.suGetOwnerGroupContext(
-                            restoreFile.parentFile?.absolutePath ?:
-                                        restoreFile.toPath().parent.toString()
+                            restoreFile.parentFile?.absolutePath
+                                ?: restoreFile.toPath().parent.toString()
                         )
                     }
                     commands.add(
@@ -152,23 +149,20 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
             val backupDeleted = FileUtils.deleteQuietly(tempPath)
             Timber.d("$app: Uncompressed $BACKUP_DIR_DATA was deleted: $backupDeleted")
         }
-        if (
-                app.packageName == "special.smsmms.json" ||
-                app.packageName == "special.calllogs.json"
-            ) {
+        if (app.packageName == "special.smsmms.json" || app.packageName == "special.calllogs.json") {
             for (filePath in metaInfo.specialFiles) {
                 File(filePath).delete()
             }
         }
     }
 
-    override fun restorePackage(backupDir: StorageFile, backupProperties: BackupProperties) {
+    override fun restorePackage(backupDir: StorageFile, backupProperties: Backup) {
         // stub
     }
 
     override fun restoreDeviceProtectedData(
-        app: AppInfo,
-        backupProperties: BackupProperties,
+        app: Package,
+        backupProperties: Backup,
         backupDir: StorageFile,
         compressed: Boolean
     ) {
@@ -176,8 +170,8 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
     }
 
     override fun restoreExternalData(
-        app: AppInfo,
-        backupProperties: BackupProperties,
+        app: Package,
+        backupProperties: Backup,
         backupDir: StorageFile,
         compressed: Boolean
     ) {
@@ -185,8 +179,8 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
     }
 
     override fun restoreObbData(
-        app: AppInfo,
-        backupProperties: BackupProperties,
+        app: Package,
+        backupProperties: Backup,
         backupDir: StorageFile,
         compressed: Boolean
     ) {
@@ -194,7 +188,10 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
     }
 
     companion object {
-        private fun  areBasefilesSubsetOf(set: Array<RootFile>, subsetList: Array<RootFile>): Boolean {
+        private fun areBasefilesSubsetOf(
+            set: Array<RootFile>,
+            subsetList: Array<RootFile>
+        ): Boolean {
             val baseCollection: Collection<String> = set.map { obj: File -> obj.name }.toHashSet()
             val subsetCollection: Collection<String> =
                 subsetList.map { obj: File -> obj.name }.toHashSet()

@@ -18,17 +18,17 @@
 package com.machiav3lli.backup.tasks
 
 import com.machiav3lli.backup.activities.MainActivityX
+import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.ActionResult
-import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.BackupProperties
+import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
 
 class RestoreActionTask(
-    appInfo: AppInfo, oAndBackupX: MainActivityX, shellHandler: ShellHandler, restoreMode: Int,
-    private val backupProperties: BackupProperties, private val backupDir: StorageFile,
+    appInfo: Package, oAndBackupX: MainActivityX, shellHandler: ShellHandler, restoreMode: Int,
+    private val backupProperties: Backup, private val backupDir: StorageFile,
     appSheet: AppSheet
 ) : BaseActionTask(
     appInfo, oAndBackupX, shellHandler, restoreMode,

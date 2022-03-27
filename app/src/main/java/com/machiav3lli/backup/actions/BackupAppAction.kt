@@ -19,18 +19,9 @@ package com.machiav3lli.backup.actions
 
 import android.annotation.SuppressLint
 import android.content.Context
-import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
-import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES
-import com.machiav3lli.backup.MODE_APK
-import com.machiav3lli.backup.MODE_DATA
-import com.machiav3lli.backup.MODE_DATA_DE
-import com.machiav3lli.backup.MODE_DATA_EXT
-import com.machiav3lli.backup.MODE_DATA_MEDIA
-import com.machiav3lli.backup.MODE_DATA_OBB
-import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.OABX.Companion.app
-import com.machiav3lli.backup.PREFS_BACKUPTARCMD
-import com.machiav3lli.backup.PREFS_EXCLUDECACHE
+import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.BackupBuilder
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
@@ -39,26 +30,12 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.ActionResult
-import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.BackupItem
-import com.machiav3lli.backup.items.BackupProperties
+import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.RootFile
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.tasks.AppActionWork
-import com.machiav3lli.backup.utils.CIPHER_ALGORITHM
-import com.machiav3lli.backup.utils.CryptoSetupException
+import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
-import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.encryptStream
-import com.machiav3lli.backup.utils.getCompressionLevel
-import com.machiav3lli.backup.utils.getCryptoSalt
-import com.machiav3lli.backup.utils.getDefaultSharedPreferences
-import com.machiav3lli.backup.utils.getEncryptionPassword
-import com.machiav3lli.backup.utils.initIv
-import com.machiav3lli.backup.utils.isEncryptionEnabled
-import com.machiav3lli.backup.utils.isPauseApps
-import com.machiav3lli.backup.utils.suAddFiles
-import com.machiav3lli.backup.utils.suCopyFileToDocument
 import com.topjohnwu.superuser.ShellUtils
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
@@ -71,8 +48,8 @@ import java.nio.charset.StandardCharsets
 open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellHandler) :
     BaseAppAction(context, work, shell) {
 
-    open fun run(app: AppInfo, backupMode: Int): ActionResult {
-        var backupItem: BackupItem? = null
+    open fun run(app: Package, backupMode: Int): ActionResult {
+        var backupItem: Backup? = null
         var ok = false
         try {
             Timber.i("Backing up: ${app.packageName} [${app.packageLabel}]")
@@ -110,7 +87,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                     false
                 )
             }
-            val backupBuilder = BackupBuilder(context, app.appMetaInfo, appBackupRoot)
+            val backupBuilder = BackupBuilder(app.packageInfo, appBackupRoot)
             val iv = initIv(CIPHER_ALGORITHM) // as we're using a static Cipher Algorithm
             backupBuilder.setIv(iv)
 
@@ -163,12 +140,9 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                     backupBuilder.setCipherType(CIPHER_ALGORITHM)
                 }
 
-                backupItem = backupBuilder.createBackupItem()
+                backupItem = backupBuilder.createBackup()
 
-                saveBackupProperties(
-                    appBackupRoot,
-                    backupItem.backupProperties
-                )
+                saveBackupProperties(appBackupRoot, backupItem)
 
                 ok = true
 
@@ -196,23 +170,23 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                     postprocessPackage(app.packageName)
                 }
                 if (backupItem == null)
-                    backupItem = backupBuilder.createBackupItem()
+                    backupItem = backupBuilder.createBackup()
                 if (ok)
                     app.backupHistory.add(backupItem)
                 else
-                    app.delete(context, backupItem, true)
+                    app.delete(backupItem, true)
             }
         } finally {
             work?.setOperation("end")
             Timber.i("$app: Backup done: ${backupItem ?: app.packageName}")
         }
-        return ActionResult(app, backupItem?.backupProperties, "", true)
+        return ActionResult(app, backupItem, "", true)
     }
 
     @Throws(IOException::class)
     protected fun saveBackupProperties(
         packageBackupDir: StorageFile,
-        properties: BackupProperties
+        properties: Backup
     ) {
         val propertiesFileName = String.format(
             BACKUP_INSTANCE_PROPERTIES,
@@ -279,7 +253,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     }
 
     @Throws(BackupFailedException::class)
-    protected open fun backupPackage(app: AppInfo, backupInstanceDir: StorageFile) {
+    protected open fun backupPackage(app: Package, backupInstanceDir: StorageFile) {
         Timber.i("[${app.packageName}] Backup package apks")
         var apksToBackup = arrayOf(app.apkPath)
         if (app.apkSplits.isEmpty()) {
@@ -539,7 +513,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
     protected open fun backupData(
-        app: AppInfo,
+        app: Package,
         backupInstanceDir: StorageFile,
         iv: ByteArray?
     ): Boolean {
@@ -550,7 +524,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
     protected open fun backupExternalData(
-        app: AppInfo,
+        app: Package,
         backupInstanceDir: StorageFile,
         iv: ByteArray?
     ): Boolean {
@@ -576,7 +550,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
     protected open fun backupObbData(
-        app: AppInfo,
+        app: Package,
         backupInstanceDir: StorageFile,
         iv: ByteArray?
     ): Boolean {
@@ -596,7 +570,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
     protected open fun backupMediaData(
-        app: AppInfo,
+        app: Package,
         backupInstanceDir: StorageFile,
         iv: ByteArray?
     ): Boolean {
@@ -622,7 +596,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
     protected open fun backupDeviceProtectedData(
-        app: AppInfo,
+        app: Package,
         backupInstanceDir: StorageFile,
         iv: ByteArray?
     ): Boolean {

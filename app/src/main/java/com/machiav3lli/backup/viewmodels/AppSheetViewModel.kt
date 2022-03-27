@@ -20,23 +20,23 @@ package com.machiav3lli.backup.viewmodels
 import android.app.Application
 import androidx.lifecycle.*
 import com.machiav3lli.backup.activities.MainActivityX
+import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.showNotification
-import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.BackupItem
+import com.machiav3lli.backup.items.Package
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class AppSheetViewModel(
-    app: AppInfo,
+    app: Package,
     var shellCommands: ShellCommands,
     private val appContext: Application
 ) : AndroidViewModel(appContext) {
 
-    var appInfo = MediatorLiveData<AppInfo>()
+    var appInfo = MediatorLiveData<Package>()
 
     private var notificationId: Int
 
@@ -71,7 +71,6 @@ class AppSheetViewModel(
                         appContext.getString(com.machiav3lli.backup.R.string.uninstallSuccess),
                         true
                     )
-                    it.packageInfo = null
                 } catch (e: ShellCommands.ShellActionFailedException) {
                     showNotification(
                         appContext,
@@ -105,20 +104,20 @@ class AppSheetViewModel(
         return shellCommands.getUsers()?.toTypedArray() ?: arrayOf()
     }
 
-    fun deleteBackup(backup: BackupItem) {
+    fun deleteBackup(backup: Backup) {
         viewModelScope.launch {
             delete(backup)
             refreshNow.value = true
         }
     }
 
-    private suspend fun delete(backup: BackupItem) {
+    private suspend fun delete(backup: Backup) {
         withContext(Dispatchers.IO) {
             appInfo.value?.let {
                 if (it.backupHistory.size > 1) {
-                    it.delete(appContext, backup)
+                    it.delete(backup)
                 } else {
-                    it.deleteAllBackups(appContext)
+                    it.deleteAllBackups()
                 }
             }
         }
@@ -133,12 +132,12 @@ class AppSheetViewModel(
 
     private suspend fun deleteAll() {
         withContext(Dispatchers.IO) {
-            appInfo.value?.deleteAllBackups(appContext)
+            appInfo.value?.deleteAllBackups()
         }
     }
 
     class Factory(
-        private val app: AppInfo,
+        private val app: Package,
         private val shellCommands: ShellCommands,
         private val application: Application
     ) : ViewModelProvider.Factory {

@@ -38,7 +38,7 @@ import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
-import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.ui.compose.recycler.BatchPackageRecycler
@@ -101,11 +101,11 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                                         else -> viewModel.dataCheckedList.remove(item.packageName)
                                     }
                                 },
-                                onApkClick = { item: AppInfo, b: Boolean ->
+                                onApkClick = { item: Package, b: Boolean ->
                                     if (b) viewModel.apkCheckedList.add(item.packageName)
                                     else viewModel.apkCheckedList.remove(item.packageName)
                                 },
-                                onDataClick = { item: AppInfo, b: Boolean ->
+                                onDataClick = { item: Package, b: Boolean ->
                                     if (b) viewModel.dataCheckedList.add(item.packageName)
                                     else viewModel.dataCheckedList.remove(item.packageName)
                                 },
@@ -187,7 +187,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                 viewModel.apkCheckedList.addAll(
                     viewModel.filteredList.value
                         ?.filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }
-                        ?.mapNotNull(AppInfo::packageName).orEmpty()
+                        ?.mapNotNull(Package::packageName).orEmpty()
                 )
             else
                 viewModel.apkCheckedList.clear()
@@ -201,7 +201,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                 viewModel.dataCheckedList.addAll(
                     viewModel.filteredList.value
                         ?.filter { ai -> backupBoolean || ai.hasData }
-                        ?.mapNotNull(AppInfo::packageName).orEmpty()
+                        ?.mapNotNull(Package::packageName).orEmpty()
                 )
             else
                 viewModel.dataCheckedList.clear()
@@ -239,7 +239,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         val checkedPackages = viewModel.filteredList.value
             ?.filter { it.packageName in viewModel.apkCheckedList.union(viewModel.dataCheckedList) }
             ?: listOf()
-        val selectedList = checkedPackages.map(AppInfo::appMetaInfo).toCollection(ArrayList())
+        val selectedList = checkedPackages.map(Package::packageInfo).toCollection(ArrayList())
         val selectedListModes = checkedPackages
             .map {
                 when (it.packageName) {
