@@ -59,6 +59,7 @@ fun PackageIcon(
 fun ActionChip(
     icon: Painter,
     text: String,
+    withText: Boolean = true,
     positive: Boolean = true,
     onClick: () -> Unit
 ) {
@@ -75,7 +76,7 @@ fun ActionChip(
             painter = icon,
             contentDescription = text
         )
-        Text(
+        if (withText) Text(
             modifier = Modifier.padding(start = 4.dp),
             text = text,
             textAlign = TextAlign.Center,
