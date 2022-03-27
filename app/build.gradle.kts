@@ -33,6 +33,8 @@ android {
         targetSdk = 32
         versionCode = 8000
         versionName = "8.0.0"
+        buildConfigField("int", "MAJOR", "$major")
+        buildConfigField("int","MINOR", "$minor")
 
         testApplicationId = "${applicationId}.tests"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

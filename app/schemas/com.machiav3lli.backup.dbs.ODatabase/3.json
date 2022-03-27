@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "a70a9cbba1c554cee53bafd0985708aa",
+    "identityHash": "89dc3d3d38e95d3da8c53adb041dd74f",
     "entities": [
       {
         "tableName": "Schedule",
@@ -340,8 +340,14 @@
       },
       {
         "tableName": "Backup",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`packageName` TEXT NOT NULL, `packageLabel` TEXT, `versionName` TEXT, `versionCode` INTEGER NOT NULL, `profileId` INTEGER NOT NULL, `sourceDir` TEXT, `splitSourceDirs` TEXT NOT NULL, `isSystem` INTEGER NOT NULL, `backupDate` TEXT NOT NULL, `hasApk` INTEGER NOT NULL, `hasAppData` INTEGER NOT NULL, `hasDevicesProtectedData` INTEGER NOT NULL, `hasExternalData` INTEGER NOT NULL, `hasObbData` INTEGER NOT NULL, `hasMediaData` INTEGER NOT NULL, `cipherType` TEXT, `iv` BLOB, `cpuArch` TEXT, `permissions` TEXT NOT NULL, PRIMARY KEY(`packageName`, `backupDate`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`backupVersionCode` INTEGER NOT NULL, `packageName` TEXT NOT NULL, `packageLabel` TEXT, `versionName` TEXT, `versionCode` INTEGER NOT NULL, `profileId` INTEGER NOT NULL, `sourceDir` TEXT, `splitSourceDirs` TEXT NOT NULL, `isSystem` INTEGER NOT NULL, `backupDate` TEXT NOT NULL, `hasApk` INTEGER NOT NULL, `hasAppData` INTEGER NOT NULL, `hasDevicesProtectedData` INTEGER NOT NULL, `hasExternalData` INTEGER NOT NULL, `hasObbData` INTEGER NOT NULL, `hasMediaData` INTEGER NOT NULL, `compressionType` TEXT, `cipherType` TEXT, `iv` BLOB, `cpuArch` TEXT, `permissions` TEXT NOT NULL, PRIMARY KEY(`packageName`, `backupDate`))",
         "fields": [
+          {
+            "fieldPath": "backupVersionCode",
+            "columnName": "backupVersionCode",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
           {
             "fieldPath": "packageName",
             "columnName": "packageName",
@@ -433,6 +439,12 @@
             "notNull": true
           },
           {
+            "fieldPath": "compressionType",
+            "columnName": "compressionType",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
             "fieldPath": "cipherType",
             "columnName": "cipherType",
             "affinity": "TEXT",
@@ -471,7 +483,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a70a9cbba1c554cee53bafd0985708aa')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '89dc3d3d38e95d3da8c53adb041dd74f')"
     ]
   }
 }

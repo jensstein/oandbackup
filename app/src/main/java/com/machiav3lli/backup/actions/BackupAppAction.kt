@@ -19,8 +19,18 @@ package com.machiav3lli.backup.actions
 
 import android.annotation.SuppressLint
 import android.content.Context
-import com.machiav3lli.backup.*
+import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
+import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES
+import com.machiav3lli.backup.MODE_APK
+import com.machiav3lli.backup.MODE_DATA
+import com.machiav3lli.backup.MODE_DATA_DE
+import com.machiav3lli.backup.MODE_DATA_EXT
+import com.machiav3lli.backup.MODE_DATA_MEDIA
+import com.machiav3lli.backup.MODE_DATA_OBB
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.app
+import com.machiav3lli.backup.PREFS_BACKUPTARCMD
+import com.machiav3lli.backup.PREFS_EXCLUDECACHE
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.BackupBuilder
 import com.machiav3lli.backup.handler.LogsHandler
@@ -34,8 +44,21 @@ import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.RootFile
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.tasks.AppActionWork
-import com.machiav3lli.backup.utils.*
+import com.machiav3lli.backup.utils.CIPHER_ALGORITHM
+import com.machiav3lli.backup.utils.CryptoSetupException
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
+import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
+import com.machiav3lli.backup.utils.encryptStream
+import com.machiav3lli.backup.utils.getCompressionLevel
+import com.machiav3lli.backup.utils.getCryptoSalt
+import com.machiav3lli.backup.utils.getDefaultSharedPreferences
+import com.machiav3lli.backup.utils.getEncryptionPassword
+import com.machiav3lli.backup.utils.initIv
+import com.machiav3lli.backup.utils.isCompressionEnabled
+import com.machiav3lli.backup.utils.isEncryptionEnabled
+import com.machiav3lli.backup.utils.isPauseApps
+import com.machiav3lli.backup.utils.suAddFiles
+import com.machiav3lli.backup.utils.suCopyFileToDocument
 import com.topjohnwu.superuser.ShellUtils
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
@@ -44,6 +67,8 @@ import timber.log.Timber
 import java.io.IOException
 import java.io.OutputStream
 import java.nio.charset.StandardCharsets
+
+val COMPRESSION_ALGORITHM = "gz"
 
 open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellHandler) :
     BaseAppAction(context, work, shell) {
@@ -136,6 +161,9 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                     backupBuilder.setHasMediaData(backupCreated)
                 }
 
+                if (context.isCompressionEnabled()) {
+                    backupBuilder.setCompressionType(COMPRESSION_ALGORITHM)
+                }
                 if (context.isEncryptionEnabled()) {
                     backupBuilder.setCipherType(CIPHER_ALGORITHM)
                 }
@@ -205,29 +233,33 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     @Throws(IOException::class, CryptoSetupException::class)
     protected fun createBackupArchiveTarApi(
         backupInstanceDir: StorageFile,
-        what: String,
+        dataType: String,
         allFilesToBackup: List<ShellHandler.FileInfo>,
         compress: Boolean,
         iv: ByteArray?
     ) {
         val password = context.getEncryptionPassword()
-        val compressionLevel = context.getCompressionLevel()
-        val compress = compress && (compressionLevel > 0)
+        val shouldCompress = compress && context.isCompressionEnabled()
 
-        Timber.i("Creating $what backup via API")
-        val backupFilename =
-            getBackupArchiveFilename(what, compress, iv != null && context.isEncryptionEnabled())
+        Timber.i("Creating $dataType backup via API")
+        val backupFilename = getBackupArchiveFilename(
+            dataType,
+            shouldCompress,
+            iv != null && context.isEncryptionEnabled()
+        )
         val backupFile = backupInstanceDir.createFile("application/octet-stream", backupFilename)
-
-        val gzipParams = GzipParameters()
-        gzipParams.compressionLevel = compressionLevel
 
         var outStream: OutputStream = backupFile.outputStream()!!
 
         if (iv != null && password.isNotEmpty() && context.isEncryptionEnabled()) {
             outStream = outStream.encryptStream(password, context.getCryptoSalt(), iv)
         }
-        if (compress) {
+
+        if (shouldCompress) {
+            val compressionLevel = context.getCompressionLevel()
+            val gzipParams = GzipParameters()
+            gzipParams.compressionLevel = compressionLevel
+
             outStream = GzipCompressorOutputStream(
                 outStream,
                 gzipParams
@@ -398,28 +430,29 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     ): Boolean {
         if (!ShellUtils.fastCmdResult("test -d ${quote(sourcePath)}"))
             return false
-        Timber.i("Creating $dataType backup via tar")
 
         val password = context.getEncryptionPassword()
-        val compressionLevel = context.getCompressionLevel()
-        val compress = compress && (compressionLevel > 0)
+        val shouldCompress = compress && context.isCompressionEnabled()
 
+        Timber.i("Creating $dataType backup via tar")
         val backupFilename = getBackupArchiveFilename(
             dataType,
-            compress,
+            shouldCompress,
             iv != null && context.isEncryptionEnabled()
         )
         val backupFile = backupInstanceDir.createFile("application/octet-stream", backupFilename)
-
-        val gzipParams = GzipParameters()
-        gzipParams.compressionLevel = compressionLevel
 
         var outStream: OutputStream = backupFile.outputStream()!!
 
         if (iv != null && password.isNotEmpty() && context.isEncryptionEnabled()) {
             outStream = outStream.encryptStream(password, context.getCryptoSalt(), iv)
         }
-        if (compress) {
+
+        if (shouldCompress) {
+            val compressionLevel = context.getCompressionLevel()
+            val gzipParams = GzipParameters()
+            gzipParams.compressionLevel = compressionLevel
+
             outStream = GzipCompressorOutputStream(
                 outStream,
                 gzipParams

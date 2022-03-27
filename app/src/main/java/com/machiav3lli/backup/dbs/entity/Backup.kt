@@ -24,6 +24,7 @@ import android.os.Build
 import androidx.room.Entity
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BACKUP_INSTANCE_DIR
+import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.LocalDateTimeSerializer
@@ -39,6 +40,7 @@ import java.time.LocalDateTime
 @Entity(primaryKeys = ["packageName", "backupDate"])
 @Serializable
 data class Backup constructor(
+    var backupVersionCode: Int = BuildConfig.MAJOR*1000 + BuildConfig.MINOR,
     var packageName: String,
     var packageLabel: String?,
     var versionName: String?,
@@ -55,6 +57,7 @@ data class Backup constructor(
     var hasExternalData: Boolean,
     var hasObbData: Boolean,
     var hasMediaData: Boolean,
+    var compressionType: String? = "gz",
     var cipherType: String?,
     var iv: ByteArray?,
     var cpuArch: String?,
@@ -77,6 +80,7 @@ data class Backup constructor(
         hasExternalData: Boolean,
         hasObbData: Boolean,
         hasMediaData: Boolean,
+        compressionType: String?,
         cipherType: String?,
         iv: ByteArray?,
         cpuArch: String?
@@ -101,12 +105,15 @@ data class Backup constructor(
         hasExternalData = hasExternalData,
         hasObbData = hasObbData,
         hasMediaData = hasMediaData,
+        compressionType = compressionType,
         cipherType = cipherType,
         iv = iv,
         cpuArch = cpuArch,
         permissions = pi.requestedPermissions.mapIndexedNotNull { i, permission ->
-            if ((pi.requestedPermissionsFlags[i] and PackageInfo.REQUESTED_PERMISSION_GRANTED) != 0) permission
-            else null
+            if ((pi.requestedPermissionsFlags[i] and PackageInfo.REQUESTED_PERMISSION_GRANTED) != 0)
+                permission
+            else
+                null
         }
     )
 
@@ -119,6 +126,7 @@ data class Backup constructor(
         hasExternalData: Boolean,
         hasObbData: Boolean,
         hasMediaData: Boolean,
+        compressionType: String?,
         cipherType: String?,
         iv: ByteArray?,
         cpuArch: String?,
@@ -139,11 +147,15 @@ data class Backup constructor(
         hasExternalData = hasExternalData,
         hasObbData = hasObbData,
         hasMediaData = hasMediaData,
+        compressionType = compressionType,
         cipherType = cipherType,
         iv = iv,
         cpuArch = cpuArch,
         permissions = permissions
     )
+
+    val isCompressed: Boolean
+        get() = compressionType != null && compressionType?.isNotEmpty() == true
 
     val isEncrypted: Boolean
         get() = cipherType != null && cipherType?.isNotEmpty() == true
@@ -170,15 +182,18 @@ data class Backup constructor(
             ", hasExternalData=" + hasExternalData +
             ", hasObbData=" + hasObbData +
             ", hasMediaData=" + hasMediaData +
+            ", compressionType='" + compressionType + '\'' +
             ", cipherType='" + cipherType + '\'' +
             ", iv='" + iv + '\'' +
             ", cpuArch='" + cpuArch + '\'' +
+            ", backupVersionCode='" + backupVersionCode + '\'' +
             '}'
 
     override fun equals(other: Any?): Boolean = when {
         this === other -> true
         javaClass != other?.javaClass
                 || other !is Backup
+                || backupVersionCode != other.backupVersionCode
                 || packageName != other.packageName
                 || packageLabel != other.packageLabel
                 || versionName != other.versionName
@@ -194,6 +209,7 @@ data class Backup constructor(
                 || hasExternalData != other.hasExternalData
                 || hasObbData != other.hasObbData
                 || hasMediaData != other.hasMediaData
+                || compressionType != other.compressionType
                 || cipherType != other.cipherType
                 || iv != null && other.iv == null
                 || iv != null && !iv.contentEquals(other.iv)
@@ -206,6 +222,7 @@ data class Backup constructor(
 
     override fun hashCode(): Int {
         var result = packageName.hashCode() ?: 0
+        result = 31 * result + backupVersionCode
         result = 31 * result + (packageLabel?.hashCode() ?: 0)
         result = 31 * result + (versionName?.hashCode() ?: 0)
         result = 31 * result + versionCode
@@ -220,6 +237,7 @@ data class Backup constructor(
         result = 31 * result + hasExternalData.hashCode()
         result = 31 * result + hasObbData.hashCode()
         result = 31 * result + hasMediaData.hashCode()
+        result = 31 * result + (compressionType?.hashCode() ?: 0)
         result = 31 * result + (cipherType?.hashCode() ?: 0)
         result = 31 * result + (iv?.contentHashCode() ?: 0)
         result = 31 * result + (cpuArch?.hashCode() ?: 0)
