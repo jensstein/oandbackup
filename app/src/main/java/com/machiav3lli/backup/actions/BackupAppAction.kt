@@ -210,14 +210,17 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         compress: Boolean,
         iv: ByteArray?
     ) {
+        val password = context.getEncryptionPassword()
+        val compressionLevel = context.getCompressionLevel()
+        val compress = compress && (compressionLevel > 0)
+
         Timber.i("Creating $what backup via API")
         val backupFilename =
             getBackupArchiveFilename(what, compress, iv != null && context.isEncryptionEnabled())
         val backupFile = backupInstanceDir.createFile("application/octet-stream", backupFilename)
 
-        val password = context.getEncryptionPassword()
         val gzipParams = GzipParameters()
-        gzipParams.compressionLevel = context.getCompressionLevel()
+        gzipParams.compressionLevel = compressionLevel
 
         var outStream: OutputStream = backupFile.outputStream()!!
 
@@ -396,6 +399,11 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         if (!ShellUtils.fastCmdResult("test -d ${quote(sourcePath)}"))
             return false
         Timber.i("Creating $dataType backup via tar")
+
+        val password = context.getEncryptionPassword()
+        val compressionLevel = context.getCompressionLevel()
+        val compress = compress && (compressionLevel > 0)
+
         val backupFilename = getBackupArchiveFilename(
             dataType,
             compress,
@@ -403,9 +411,8 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         )
         val backupFile = backupInstanceDir.createFile("application/octet-stream", backupFilename)
 
-        val password = context.getEncryptionPassword()
         val gzipParams = GzipParameters()
-        gzipParams.compressionLevel = context.getCompressionLevel()
+        gzipParams.compressionLevel = compressionLevel
 
         var outStream: OutputStream = backupFile.outputStream()!!
 

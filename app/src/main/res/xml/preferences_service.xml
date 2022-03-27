@@ -102,6 +102,6 @@
         android:max="9"
         android:summary="@string/prefs_compression_level_summary"
         android:title="@string/prefs_compression_level"
-        app:min="1"
+        app:min="0"
         app:showSeekBarValue="true" />
 </androidx.preference.PreferenceScreen>
