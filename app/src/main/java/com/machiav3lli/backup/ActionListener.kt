@@ -21,5 +21,5 @@ import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 
 interface ActionListener {
-    fun onActionCalled(actionType: ActionType?, mode: Int, backupProps: Backup?)
+    fun onActionCalled(actionType: ActionType?, mode: Int, backup: Backup?)
 }

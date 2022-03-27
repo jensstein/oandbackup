@@ -216,7 +216,7 @@ class MainActivityX : BaseActivity() {
 
     private fun setupOnClicks() {
         binding.buttonSettings.setOnClickListener {
-            viewModel.appInfoList.value?.let { OABX.app.cache.put("appInfoList", it) }
+            viewModel.packageList.value?.let { OABX.app.cache.put("appInfoList", it) }
             startActivity(
                 Intent(applicationContext, PrefsActivity::class.java)
             )

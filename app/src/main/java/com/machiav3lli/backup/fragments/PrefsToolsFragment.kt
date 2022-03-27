@@ -67,28 +67,28 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
     override fun onResume() {
         super.onResume()
         (requireActivity() as PrefsActivity).binding.navigationBar.setExists(true)
-        requirePrefsActivity().refreshAppsList()
+        requirePrefsActivity().refreshPackageList()
     }
 
     private fun onClickUninstalledBackupsDelete(): Boolean {
         val deleteList = ArrayList<Package>()
         val message = StringBuilder()
-        if (requirePrefsActivity().appInfoList.isNotEmpty()) {
-            for (appInfo in requirePrefsActivity().appInfoList) {
+        if (requirePrefsActivity().packageList.isNotEmpty()) {
+            for (appInfo in requirePrefsActivity().packageList) {
                 if (!appInfo.isInstalled) {
                     deleteList.add(appInfo)
                     message.append(appInfo.packageLabel).append("\n")
                 }
             }
         }
-        if (requirePrefsActivity().appInfoList.isNotEmpty()) {
+        if (requirePrefsActivity().packageList.isNotEmpty()) {
             if (deleteList.isNotEmpty()) {
                 AlertDialog.Builder(requireContext())
                     .setTitle(R.string.prefs_batchdelete)
                     .setMessage(message.toString().trim { it <= ' ' })
                     .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
                         deleteBackups(deleteList)
-                        requirePrefsActivity().refreshAppsList()
+                        requirePrefsActivity().refreshPackageList()
                     }
                     .setNegativeButton(R.string.dialogNo, null)
                     .show()
@@ -183,25 +183,25 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
     }
 
     private fun onClickSaveAppsList(): Boolean {
-        if (requirePrefsActivity().appInfoList.isNotEmpty()) {
+        if (requirePrefsActivity().packageList.isNotEmpty()) {
             AlertDialog.Builder(requireContext())
                 .setTitle(R.string.prefs_saveappslist)
                 .setPositiveButton(R.string.radio_all) { _: DialogInterface, _: Int ->
-                    writeAppsListFile(requirePrefsActivity().appInfoList
+                    writeAppsListFile(requirePrefsActivity().packageList
                         .filter { it.isSystem }
                         .map { "${it.packageLabel}: ${it.packageName}" }, false
                     )
-                    requirePrefsActivity().refreshAppsList()
+                    requirePrefsActivity().refreshPackageList()
                 }
                 .setNeutralButton(R.string.filtered_list) { _: DialogInterface, _: Int ->
                     writeAppsListFile(
-                        requirePrefsActivity().appInfoList.applyFilter(
+                        requirePrefsActivity().packageList.applyFilter(
                             requireContext().sortFilterModel,
                             requireContext()
                         ).map { "${it.packageLabel}: ${it.packageName}" },
                         true
                     )
-                    requirePrefsActivity().refreshAppsList()
+                    requirePrefsActivity().refreshPackageList()
                 }
                 .setNegativeButton(R.string.dialogNo, null)
                 .show()

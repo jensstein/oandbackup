@@ -23,7 +23,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.machiav3lli.backup.*
-import com.machiav3lli.backup.dbs.entity.AppInfoX
+import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.utils.modeIfActive
@@ -37,7 +37,7 @@ class BackupDialogFragment(val appInfo: Package, private val listener: ActionLis
         val possibleModes = possibleSchedModes.toMutableList()
 
         val pi = appInfo.packageInfo
-        val showApkBtn = pi is AppInfoX && pi.apkDir?.isNotEmpty() == true
+        val showApkBtn = pi is AppInfo && pi.apkDir?.isNotEmpty() == true
         if (showApkBtn) {
             labels.add(getString(R.string.radio_apk))
         } else {

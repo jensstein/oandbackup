@@ -33,7 +33,7 @@ import com.machiav3lli.backup.utils.*
 class PrefsActivity : BaseActivity() {
     lateinit var binding: ActivityPrefsBinding
     private var sheetHelp: HelpSheet? = null
-    var appInfoList: List<Package> = mutableListOf()
+    var packageList: List<Package> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setCustomTheme()
@@ -41,8 +41,8 @@ class PrefsActivity : BaseActivity() {
         binding = ActivityPrefsBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
         setContentView(binding.root)
-        appInfoList = OABX.app.cache.get("appInfoList") ?: mutableListOf()
-        if (appInfoList.isNullOrEmpty()) refreshAppsList()
+        packageList = OABX.app.cache.get("appInfoList") ?: mutableListOf()
+        if (packageList.isNullOrEmpty()) refreshPackageList()
     }
 
     override fun onStart() {
@@ -95,11 +95,11 @@ class PrefsActivity : BaseActivity() {
         }
     }
 
-    fun refreshAppsList() {
-        appInfoList = listOf()
+    fun refreshPackageList() {
+        packageList = listOf()
         Thread {
             try {
-                appInfoList = getPackageList(listOf())
+                packageList = getPackageList()
             } catch (e: FileUtils.BackupLocationInAccessibleException) {
                 e.printStackTrace()
             } catch (e: StorageLocationNotConfiguredException) {

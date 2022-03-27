@@ -176,7 +176,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         binding.buttonSortFilter.setOnClickListener {
             if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(
                 requireActivity().sortFilterModel,
-                getStats(appInfoList)
+                getStats(packageList)
             )
             sheetSortFilter?.showNow(requireActivity().supportFragmentManager, "SORTFILTER_SHEET")
         }
@@ -327,10 +327,10 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
 
     override fun refreshView() {
         Timber.d("refreshing")
-        sheetSortFilter = SortFilterSheet(requireActivity().sortFilterModel, getStats(appInfoList))
+        sheetSortFilter = SortFilterSheet(requireActivity().sortFilterModel, getStats(packageList))
         try {
             viewModel.filteredList.value =
-                appInfoList.applyFilter(requireActivity().sortFilterModel, requireContext())
+                packageList.applyFilter(requireActivity().sortFilterModel, requireContext())
         } catch (e: FileUtils.BackupLocationInAccessibleException) {
             Timber.e("Could not update application list: $e")
         } catch (e: StorageLocationNotConfiguredException) {

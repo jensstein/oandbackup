@@ -22,7 +22,7 @@ import android.content.pm.PackageInfo
 import androidx.room.Entity
 
 @Entity
-open class AppInfoX : PackageInfoX {
+open class AppInfo : com.machiav3lli.backup.dbs.entity.PackageInfo {
     var enabled: Boolean = true
     var installed: Boolean = false
     var apkDir: String? = ""

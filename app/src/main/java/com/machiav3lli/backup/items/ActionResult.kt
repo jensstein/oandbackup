@@ -28,7 +28,7 @@ import java.util.*
  */
 class ActionResult(
     val app: Package?,
-    val backupProperties: Backup?,
+    val backup: Backup?,
     val message: String,
     val succeeded: Boolean
 ) {

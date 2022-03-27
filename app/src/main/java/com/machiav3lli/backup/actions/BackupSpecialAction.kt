@@ -20,7 +20,7 @@ package com.machiav3lli.backup.actions
 import android.content.Context
 import com.machiav3lli.backup.MODE_APK
 import com.machiav3lli.backup.MODE_DATA
-import com.machiav3lli.backup.dbs.entity.SpecialInfoX
+import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
@@ -54,8 +54,8 @@ class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHa
         iv: ByteArray?
     ): Boolean {
         Timber.i("$app: Backup special data")
-        require(app.packageInfo is SpecialInfoX) { "Provided app is not an instance of SpecialAppMetaInfo" }
-        val appInfo = app.packageInfo as SpecialInfoX
+        require(app.packageInfo is SpecialInfo) { "Provided app is not an instance of SpecialAppMetaInfo" }
+        val appInfo = app.packageInfo as SpecialInfo
         // Get file list
         // This can be optimized, because it's known, that special backups won't meet any symlinks
         // since the list of files is fixed

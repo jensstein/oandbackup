@@ -21,12 +21,12 @@ import android.os.Build
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BACKUP_INSTANCE_DIR
 import com.machiav3lli.backup.dbs.entity.Backup
-import com.machiav3lli.backup.dbs.entity.PackageInfoX
+import com.machiav3lli.backup.dbs.entity.PackageInfo
 import com.machiav3lli.backup.items.StorageFile
 import java.time.LocalDateTime
 
 class BackupBuilder(
-    private val packageInfo: PackageInfoX,
+    private val packageInfo: PackageInfo,
     backupRoot: StorageFile
 ) {
     private val backupDate: LocalDateTime = LocalDateTime.now()

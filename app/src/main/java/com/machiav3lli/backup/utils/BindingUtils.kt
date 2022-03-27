@@ -25,7 +25,7 @@ import androidx.databinding.BindingAdapter
 import coil.load
 import com.google.android.material.chip.Chip
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.dbs.entity.PackageInfoX
+import com.machiav3lli.backup.dbs.entity.PackageInfo
 import com.machiav3lli.backup.items.Package
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -69,7 +69,7 @@ fun View.changeVisibility(nVisibility: Int, withAnimation: Boolean) =
             }
         })
 
-fun AppCompatImageView.setIcon(metaInfo: PackageInfoX?): Any =
+fun AppCompatImageView.setIcon(metaInfo: PackageInfo?): Any =
     load(
         if (metaInfo?.isSpecial == true) metaInfo.icon
         else "android.resource://${metaInfo?.packageName}/${metaInfo?.icon}"

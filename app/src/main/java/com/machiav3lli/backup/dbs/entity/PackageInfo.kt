@@ -15,20 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.machiav3lli.backup.items
+package com.machiav3lli.backup.dbs.entity
 
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.os.Build
-import kotlinx.serialization.Serializable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.io.File
 
-@Serializable
-open class AppMetaInfo(
+@Entity
+open class PackageInfo(
+    @PrimaryKey
     var packageName: String,
     var packageLabel: String? = null,
-    var versionName: String = "",
+    var versionName: String? = null,
     var versionCode: Int = 0,
     var profileId: Int = 0,
     var sourceDir: String? = null,
@@ -36,6 +38,8 @@ open class AppMetaInfo(
     var isSystem: Boolean = false,
     var icon: Int = -1
 ) {
+    open val isSpecial: Boolean
+        get() = false
 
     constructor(context: Context, pi: PackageInfo) : this(
         packageName = pi.packageName,
@@ -43,20 +47,14 @@ open class AppMetaInfo(
         versionName = pi.versionName,
         versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) pi.longVersionCode.toInt()
         else pi.versionCode,
-        // Don't have access to UserManager service; using a cheap workaround to figure out
-        // who is running by parsing it from the data path: /data/user/0/org.example.app
         profileId = try {
             File(pi.applicationInfo.dataDir).parentFile?.name?.toInt() ?: -1
         } catch (e: NumberFormatException) {
-            // Android System "App" points to /data/system
-            -1
+            -1 // Android System "App" points to /data/system
         },
         sourceDir = pi.applicationInfo.sourceDir,
         splitSourceDirs = pi.applicationInfo.splitSourceDirs ?: arrayOf(),
         isSystem = pi.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == ApplicationInfo.FLAG_SYSTEM,
         icon = pi.applicationInfo.icon
     )
-
-    open val isSpecial: Boolean
-        get() = false
 }

@@ -381,7 +381,7 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
     override fun onActionCalled(
         actionType: ActionType?,
         mode: Int,
-        backupProps: Backup?
+        backup: Backup?
     ) {
         viewModel.appInfo.value?.let {
             when {
@@ -392,7 +392,7 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
                     ).execute()
                 }
                 actionType === ActionType.RESTORE -> {
-                    backupProps?.let { backupProps: Backup ->
+                    backup?.let { backupProps: Backup ->
                         val backupDir =
                             backupProps.getBackupInstanceFolder(viewModel.appInfo.value?.packageBackupDir)
                         RestoreActionTask(

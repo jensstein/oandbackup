@@ -211,7 +211,7 @@ class HomeFragment : NavigationFragment(),
             if (sheetSortFilter != null && sheetSortFilter!!.isVisible) sheetSortFilter?.dismissAllowingStateLoss()
             sheetSortFilter = SortFilterSheet(
                 requireActivity().sortFilterModel,
-                getStats(appInfoList)
+                getStats(packageList)
             )
             sheetSortFilter?.showNow(requireActivity().supportFragmentManager, "SORTFILTER_SHEET")
         }
@@ -353,12 +353,12 @@ class HomeFragment : NavigationFragment(),
         Timber.d("refreshing")
         sheetSortFilter = SortFilterSheet(
             requireActivity().sortFilterModel, getStats(
-                appInfoList
+                packageList
             )
         )
         try {
             viewModel.filteredList.value =
-                appInfoList.applyFilter(requireActivity().sortFilterModel, requireContext())
+                packageList.applyFilter(requireActivity().sortFilterModel, requireContext())
         } catch (e: FileUtils.BackupLocationInAccessibleException) {
             Timber.e("Could not update application list: $e")
         } catch (e: StorageLocationNotConfiguredException) {

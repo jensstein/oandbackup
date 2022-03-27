@@ -25,7 +25,6 @@ import androidx.room.Entity
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BACKUP_INSTANCE_DIR
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.items.BackupItem
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.LocalDateTimeSerializer
 import kotlinx.serialization.Serializable
@@ -39,7 +38,7 @@ import java.time.LocalDateTime
 
 @Entity(primaryKeys = ["packageName", "backupDate"])
 @Serializable
-data class Backup(
+data class Backup constructor(
     var packageName: String,
     var packageLabel: String?,
     var versionName: String?,
@@ -112,7 +111,7 @@ data class Backup(
     )
 
     constructor(
-        base: PackageInfoX,
+        base: com.machiav3lli.backup.dbs.entity.PackageInfo,
         backupDate: LocalDateTime,
         hasApk: Boolean,
         hasAppData: Boolean,
@@ -152,7 +151,7 @@ data class Backup(
     fun getBackupInstanceFolder(appBackupDir: StorageFile?): StorageFile? =
         appBackupDir?.findFile(backupFolderName)
 
-    fun toAppInfoX() = AppInfoX(
+    fun toAppInfo() = AppInfo(
         packageName,
         packageLabel,
         versionName,
@@ -206,7 +205,7 @@ data class Backup(
     }
 
     override fun hashCode(): Int {
-        var result = packageName?.hashCode() ?: 0
+        var result = packageName.hashCode() ?: 0
         result = 31 * result + (packageLabel?.hashCode() ?: 0)
         result = 31 * result + (versionName?.hashCode() ?: 0)
         result = 31 * result + versionCode
@@ -214,7 +213,7 @@ data class Backup(
         result = 31 * result + (sourceDir?.hashCode() ?: 0)
         result = 31 * result + splitSourceDirs.contentHashCode()
         result = 31 * result + isSystem.hashCode()
-        result = 31 * result + (backupDate?.hashCode() ?: 0)
+        result = 31 * result + (backupDate.hashCode() ?: 0)
         result = 31 * result + hasApk.hashCode()
         result = 31 * result + hasAppData.hashCode()
         result = 31 * result + hasDevicesProtectedData.hashCode()
@@ -231,24 +230,29 @@ data class Backup(
 
     fun toJSON() = Json.encodeToString(this)
 
+    class BrokenBackupException @JvmOverloads internal constructor(
+        message: String?,
+        cause: Throwable? = null
+    ) : Exception(message, cause)
+
     companion object {
         fun fromJson(json: String) = Json.decodeFromString<Backup>(json)
 
         fun createFrom(propertiesFile: StorageFile): Backup? = try {
             fromJson(propertiesFile.inputStream()!!.reader().readText())
         } catch (e: FileNotFoundException) {
-            throw BackupItem.BrokenBackupException(
+            throw BrokenBackupException(
                 "Cannot open ${propertiesFile.name} at ${propertiesFile.path}",
                 e
             )
         } catch (e: IOException) {
-            throw BackupItem.BrokenBackupException(
+            throw BrokenBackupException(
                 "Cannot read ${propertiesFile.name} at ${propertiesFile.path}",
                 e
             )
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, propertiesFile.path)
-            throw BackupItem.BrokenBackupException("Unable to process ${propertiesFile.name} at ${propertiesFile.path}. [${e.javaClass.canonicalName}] $e")
+            throw BrokenBackupException("Unable to process ${propertiesFile.name} at ${propertiesFile.path}. [${e.javaClass.canonicalName}] $e")
         }
     }
 }

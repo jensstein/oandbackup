@@ -38,8 +38,8 @@ class RestoreSystemAppAction(context: Context, work: AppActionWork?, shell: Shel
     RestoreAppAction(context, work, shell) {
 
     @Throws(RestoreFailedException::class)
-    override fun restorePackage(backupDir: StorageFile, backupProperties: Backup) {
-        val apkTargetPath = File(backupProperties.sourceDir ?: "")
+    override fun restorePackage(backupDir: StorageFile, backup: Backup) {
+        val apkTargetPath = File(backup.sourceDir ?: "")
         backupDir.findFile(apkTargetPath.name)?.let { apkFile ->
             // Writing the apk to a temporary location to get it out of the magic storage to a local location
             // that can be accessed with shell commands.

@@ -19,14 +19,12 @@ package com.machiav3lli.backup.items
 
 import android.app.usage.StorageStats
 import android.content.Context
-import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES
-import com.machiav3lli.backup.dbs.entity.AppInfoX
+import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
-import com.machiav3lli.backup.dbs.entity.PackageInfoX
-import com.machiav3lli.backup.dbs.entity.SpecialInfoX
+import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.getPackageStorageStats
 import com.machiav3lli.backup.utils.FileUtils
@@ -38,7 +36,7 @@ import java.io.FileNotFoundException
 
 class Package {
     var packageName: String
-    var packageInfo: PackageInfoX
+    var packageInfo: com.machiav3lli.backup.dbs.entity.PackageInfo
     var packageBackupDir: StorageFile?
     var storageStats: StorageStats? = null
 
@@ -68,23 +66,23 @@ class Package {
             backupHistory.last()
         } else null
 
-    internal constructor(context: Context, appInfo: AppInfoX) {
-        packageName = appInfo.packageName.toString()
+    internal constructor(context: Context, appInfo: AppInfo) {
+        packageName = appInfo.packageName
         this.packageInfo = appInfo
         packageBackupDir = context.getBackupDir().findFile(packageName)
         refreshBackupHistory(context)
     }
 
-    constructor(context: Context, specialMetaInfoX: SpecialInfoX) {
-        packageName = specialMetaInfoX.packageName.toString()
-        this.packageInfo = specialMetaInfoX
+    constructor(context: Context, specialInfo: SpecialInfo) {
+        packageName = specialInfo.packageName
+        this.packageInfo = specialInfo
         packageBackupDir = context.getBackupDir().findFile(packageName)
         refreshBackupHistory(context)
     }
 
-    constructor(context: Context, packageInfo: PackageInfo) {
+    constructor(context: Context, packageInfo: android.content.pm.PackageInfo) {
         packageName = packageInfo.packageName
-        this.packageInfo = AppInfoX(context, packageInfo)
+        this.packageInfo = AppInfo(context, packageInfo)
         packageBackupDir = context.getBackupDir().findFile(packageName)
         refreshBackupHistory(context)
         refreshStorageStats(context)
@@ -96,11 +94,11 @@ class Package {
         refreshBackupHistory(context)
         try {
             val pi = context.packageManager.getPackageInfo(this.packageName, 0)
-            this.packageInfo = AppInfoX(context, pi)
+            this.packageInfo = AppInfo(context, pi)
             refreshStorageStats(context)
         } catch (e: PackageManager.NameNotFoundException) {
             try {
-                this.packageInfo = SpecialInfoX.getSpecialPackages(context)
+                this.packageInfo = SpecialInfo.getSpecialPackages(context)
                     .find { it.packageName == this.packageName }!!
                     .packageInfo
             } catch (e: Throwable) {
@@ -111,14 +109,18 @@ class Package {
                         e
                     )
                 }
-                this.packageInfo = latestBackup!!.toAppInfoX()
+                this.packageInfo = latestBackup!!.toAppInfo()
             }
         }
     }
 
-    constructor(context: Context, packageInfo: PackageInfo, backupRoot: StorageFile?) {
+    constructor(
+        context: Context,
+        packageInfo: android.content.pm.PackageInfo,
+        backupRoot: StorageFile?
+    ) {
         this.packageName = packageInfo.packageName
-        this.packageInfo = AppInfoX(context, packageInfo)
+        this.packageInfo = AppInfo(context, packageInfo)
         this.packageBackupDir = backupRoot?.findFile(packageName)
         refreshStorageStats(context)
         refreshBackupHistory(context)
@@ -138,7 +140,7 @@ class Package {
         Timber.d("Trying to refresh package information for $packageName from PackageManager")
         try {
             val pi = context.packageManager.getPackageInfo(packageName, 0)
-            packageInfo = AppInfoX(context, pi)
+            packageInfo = AppInfo(context, pi)
             refreshStorageStats(context)
         } catch (e: PackageManager.NameNotFoundException) {
             Timber.i("$packageName is not installed. Refresh failed")
@@ -162,7 +164,7 @@ class Package {
                         ?.forEach {
                             try {
                                 Backup.createFrom(it)?.let(backups::add)
-                            } catch (e: BackupItem.BrokenBackupException) {
+                            } catch (e: Backup.BrokenBackupException) {
                                 val message =
                                     "Incomplete backup or wrong structure found in $it"
                                 Timber.w(message)
@@ -229,13 +231,13 @@ class Package {
     }
 
     private val isApp: Boolean
-        get() = packageInfo is AppInfoX && !packageInfo.isSpecial
+        get() = packageInfo is AppInfo && !packageInfo.isSpecial
 
     val isInstalled: Boolean
-        get() = (isApp && (packageInfo as AppInfoX).installed) || packageInfo.isSpecial
+        get() = (isApp && (packageInfo as AppInfo).installed) || packageInfo.isSpecial
 
     val isDisabled: Boolean
-        get() = isInstalled && !isSpecial && (packageInfo is AppInfoX && (packageInfo as AppInfoX).enabled)
+        get() = isInstalled && !isSpecial && (packageInfo is AppInfo && (packageInfo as AppInfo).enabled)
 
     val isSystem: Boolean
         get() = packageInfo.isSystem || packageInfo.isSpecial
@@ -244,7 +246,7 @@ class Package {
         get() = packageInfo.isSpecial
 
     val specialFiles: Array<String>
-        get() = (packageInfo as SpecialInfoX).specialFiles
+        get() = (packageInfo as SpecialInfo).specialFiles
 
     val packageLabel: String
         get() = if (packageInfo.packageLabel != null) packageInfo.packageLabel!! else packageName
@@ -259,13 +261,13 @@ class Package {
         get() = backupHistory.isNotEmpty()
 
     val apkPath: String
-        get() = if (isApp) (packageInfo as AppInfoX).apkDir ?: "" else ""
+        get() = if (isApp) (packageInfo as AppInfo).apkDir ?: "" else ""
 
     val dataPath: String
-        get() = if (isApp) (packageInfo as AppInfoX).dataDir ?: "" else ""
+        get() = if (isApp) (packageInfo as AppInfo).dataDir ?: "" else ""
 
     val devicesProtectedDataPath: String
-        get() = if (isApp) (packageInfo as AppInfoX).deDataDir ?: "" else ""
+        get() = if (isApp) (packageInfo as AppInfo).deDataDir ?: "" else ""
 
     // - [] 1.Try?
     // Uses the context to get own external data directory

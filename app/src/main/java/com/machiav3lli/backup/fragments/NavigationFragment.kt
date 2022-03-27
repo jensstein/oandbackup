@@ -24,11 +24,11 @@ import com.machiav3lli.backup.items.Package
 
 abstract class NavigationFragment : Fragment(), ProgressViewController {
     protected var sheetSortFilter: SortFilterSheet? = null
-    var appInfoList: MutableList<Package>
-        get() = requireMainActivity().viewModel.appInfoList.value
+    var packageList: MutableList<Package>
+        get() = requireMainActivity().viewModel.packageList.value
             ?: mutableListOf()
         set(value) {
-            requireMainActivity().viewModel.appInfoList.value = value
+            requireMainActivity().viewModel.packageList.value = value
         }
     var appExtrasList: MutableList<AppExtras>
         get() = requireMainActivity().viewModel.appExtrasList

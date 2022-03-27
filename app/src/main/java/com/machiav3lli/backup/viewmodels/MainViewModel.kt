@@ -39,15 +39,13 @@ class MainViewModel(
     private val appExtrasDao: AppExtrasDao = database.appExtrasDao
     private val blocklistDao: BlocklistDao = database.blocklistDao
 
-    var appInfoList = MediatorLiveData<MutableList<Package>>()
+    var packageList = MediatorLiveData<MutableList<Package>>()
     var blocklist = MediatorLiveData<List<Blocklist>>()
     var appExtrasList: MutableList<AppExtras>
         get() = appExtrasDao.all
         set(value) {
             appExtrasDao.deleteAll()
-            value.forEach {
-                appExtrasDao.insert(it)
-            }
+            value.forEach { appExtrasDao.insert(it) }
         }
     val refreshNow = MutableLiveData<Boolean>()
 
@@ -57,7 +55,7 @@ class MainViewModel(
 
     fun refreshList() {
         viewModelScope.launch {
-            appInfoList.value = recreateAppInfoList()
+            packageList.value = recreateAppInfoList()
             refreshNow.value = true
         }
     }
@@ -70,9 +68,9 @@ class MainViewModel(
 
     fun updatePackage(packageName: String) {
         viewModelScope.launch {
-            val appInfo = appInfoList.value?.find { it.packageName == packageName }
-            appInfo?.let {
-                appInfoList.value = updateListWith(packageName)
+            val appPackage = packageList.value?.find { it.packageName == packageName }
+            appPackage?.let {
+                packageList.value = updateListWith(packageName)
             }
             refreshNow.value = true
         }
@@ -80,12 +78,12 @@ class MainViewModel(
 
     private suspend fun updateListWith(packageName: String): MutableList<Package>? =
         withContext(Dispatchers.IO) {
-            val dataList = appInfoList.value
-            var appInfo = dataList?.find { it.packageName == packageName }
+            val dataList = packageList.value
+            var appPackage = dataList?.find { it.packageName == packageName }
             dataList?.removeIf { it.packageName == packageName }
             try {
-                appInfo = Package(appContext, packageName, appInfo?.packageBackupDir)
-                dataList?.add(appInfo)
+                appPackage = Package(appContext, packageName, appPackage?.packageBackupDir)
+                dataList?.add(appPackage)
             } catch (e: AssertionError) {
                 Timber.w(e.message ?: "")
             }
@@ -126,7 +124,7 @@ class MainViewModel(
                     .withPackageName(packageName)
                     .build()
             )
-            appInfoList.value?.removeIf { it.packageName == packageName }
+            packageList.value?.removeIf { it.packageName == packageName }
         }
     }
 
@@ -140,7 +138,7 @@ class MainViewModel(
     private suspend fun insertIntoBlocklist(newList: Set<String>) =
         withContext(Dispatchers.IO) {
             blocklistDao.updateList(PACKAGES_LIST_GLOBAL_ID, newList)
-            appInfoList.value?.removeIf { newList.contains(it.packageName) }
+            packageList.value?.removeIf { newList.contains(it.packageName) }
         }
 
     class Factory(

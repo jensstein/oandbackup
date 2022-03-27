@@ -26,7 +26,7 @@ import android.content.pm.PackageManager
 import android.os.Process
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.ignoredPackages
-import com.machiav3lli.backup.dbs.entity.SpecialInfoX
+import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
@@ -60,7 +60,7 @@ fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
     StorageLocationNotConfiguredException::class
 )
 fun Context.getPackageList(
-    blockList: List<String>,
+    blockList: List<String> = listOf(),
     includeUninstalled: Boolean = true
 ): MutableList<Package> {
     val startTime = System.currentTimeMillis()
@@ -89,15 +89,15 @@ fun Context.getPackageList(
     if (!OABX.appsSuspendedChecked) {
         OABX.activity?.whileShowingSnackBar("cleanup any left over suspended apps") {
             // cleanup suspended package if lock file found
-            packageList.forEach { appInfo ->
+            packageList.forEach { appPackage ->
                 if (0 != (OABX.activity?.packageManager
-                        ?.getPackageInfo(appInfo.packageName, 0)
+                        ?.getPackageInfo(appPackage.packageName, 0)
                         ?.applicationInfo
                         ?.flags
                         ?: 0
                             ) and ApplicationInfo.FLAG_SUSPENDED
                 ) {
-                    runAsRoot("pm unsuspend ${appInfo.packageName}")
+                    runAsRoot("pm unsuspend ${appPackage.packageName}")
                 }
             }
             OABX.appsSuspendedChecked = true
@@ -110,7 +110,7 @@ fun Context.getPackageList(
     // nor from PackageManager.
     val specialList = mutableListOf<String>()
     if (includeSpecial) {
-        SpecialInfoX.getSpecialPackages(this).forEach {
+        SpecialInfo.getSpecialPackages(this).forEach {
             packageList.add(it)
             specialList.add(it.packageName)
         }
@@ -121,7 +121,7 @@ fun Context.getPackageList(
             .map { it.packageName }
             .toList()
         val directoriesInBackupRoot = getDirectoriesInBackupRoot()
-        val missingAppsWithBackup: List<Package> =
+        val missingPackagesWithBackup: List<Package> =
         // Try to create AppInfo objects
         // if it fails, null the object for filtering in the next step to avoid crashes
             // filter out previously failed backups
@@ -142,7 +142,7 @@ fun Context.getPackageList(
                     }
                 }
                 .toList()
-        packageList.addAll(missingAppsWithBackup)
+        packageList.addAll(missingPackagesWithBackup)
     }
 
     val afterAllTime = System.currentTimeMillis()
@@ -175,13 +175,10 @@ fun Context.getDirectoriesInBackupRoot(): List<StorageFile> {
 }
 
 @Throws(PackageManager.NameNotFoundException::class)
-fun Context.getPackageStorageStats(packageName: String): StorageStats? {
-    val storageUuid = packageManager.getApplicationInfo(packageName, 0).storageUuid
-    return getPackageStorageStats(packageName, storageUuid)
-}
-
-@Throws(PackageManager.NameNotFoundException::class)
-fun Context.getPackageStorageStats(packageName: String, storageUuid: UUID): StorageStats? {
+fun Context.getPackageStorageStats(
+    packageName: String,
+    storageUuid: UUID = packageManager.getApplicationInfo(packageName, 0).storageUuid
+): StorageStats? {
     val storageStatsManager = getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager
     return try {
         storageStatsManager.queryStatsForPackage(storageUuid, packageName, Process.myUserHandle())
@@ -194,5 +191,5 @@ fun Context.getPackageStorageStats(packageName: String, storageUuid: UUID): Stor
     }
 }
 
-fun Context.getSpecial(packageName: String) = SpecialInfoX.getSpecialPackages(this)
+fun Context.getSpecial(packageName: String) = SpecialInfo.getSpecialPackages(this)
     .find { it.packageName == packageName }

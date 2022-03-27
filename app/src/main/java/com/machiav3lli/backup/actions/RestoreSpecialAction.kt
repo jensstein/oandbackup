@@ -19,7 +19,7 @@ package com.machiav3lli.backup.actions
 
 import android.content.Context
 import com.machiav3lli.backup.dbs.entity.Backup
-import com.machiav3lli.backup.dbs.entity.SpecialInfoX
+import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
@@ -45,32 +45,32 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
     override fun restoreAllData(
         work: AppActionWork?,
         app: Package,
-        backupProperties: Backup,
+        backup: Backup,
         backupDir: StorageFile,
         backupMode: Int
     ) {
         work?.setOperation("dat")
-        restoreData(app, backupProperties, backupDir, true)
+        restoreData(app, backup, backupDir, true)
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
     override fun restoreData(
         app: Package,
-        backupProperties: Backup,
+        backup: Backup,
         backupDir: StorageFile,
         compressed: Boolean
     ) {
         Timber.i("%s: Restore special data", app)
-        val metaInfo = app.packageInfo as SpecialInfoX
-        val tempPath = RootFile(context.cacheDir, backupProperties.packageName ?: "")
-        val isEncrypted = backupProperties.isEncrypted
+        val metaInfo = app.packageInfo as SpecialInfo
+        val tempPath = RootFile(context.cacheDir, backup.packageName ?: "")
+        val isEncrypted = backup.isEncrypted
         val backupArchiveFilename =
             getBackupArchiveFilename(BACKUP_DIR_DATA, compressed, isEncrypted)
         val backupArchiveFile = backupDir.findFile(backupArchiveFilename)
             ?: throw RestoreFailedException("Backup archive at $backupArchiveFilename is missing")
         try {
             TarArchiveInputStream(
-                openArchiveFile(backupArchiveFile, compressed, isEncrypted, backupProperties.iv)
+                openArchiveFile(backupArchiveFile, compressed, isEncrypted, backup.iv)
             ).use { archiveStream ->
                 tempPath.mkdir()
                 // Extract the contents to a temporary directory
@@ -156,13 +156,13 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
         }
     }
 
-    override fun restorePackage(backupDir: StorageFile, backupProperties: Backup) {
+    override fun restorePackage(backupDir: StorageFile, backup: Backup) {
         // stub
     }
 
     override fun restoreDeviceProtectedData(
         app: Package,
-        backupProperties: Backup,
+        backup: Backup,
         backupDir: StorageFile,
         compressed: Boolean
     ) {
@@ -171,7 +171,7 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
 
     override fun restoreExternalData(
         app: Package,
-        backupProperties: Backup,
+        backup: Backup,
         backupDir: StorageFile,
         compressed: Boolean
     ) {
@@ -180,7 +180,7 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
 
     override fun restoreObbData(
         app: Package,
-        backupProperties: Backup,
+        backup: Backup,
         backupDir: StorageFile,
         compressed: Boolean
     ) {

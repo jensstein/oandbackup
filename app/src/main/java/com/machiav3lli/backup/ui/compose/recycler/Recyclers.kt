@@ -35,7 +35,7 @@ fun BackupRecycler(
     onDelete: (Backup) -> Unit = {}
 ) {
     SizedItemList(list = productsList, itemHeight = 110) {
-        BackupInstanceItem(it, onRestore, onDelete)
+        BackupItem(it, onRestore, onDelete)
     }
 }
 

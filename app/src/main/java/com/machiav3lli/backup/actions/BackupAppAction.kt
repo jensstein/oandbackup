@@ -49,7 +49,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     BaseAppAction(context, work, shell) {
 
     open fun run(app: Package, backupMode: Int): ActionResult {
-        var backupItem: Backup? = null
+        var backup: Backup? = null
         var ok = false
         try {
             Timber.i("Backing up: ${app.packageName} [${app.packageLabel}]")
@@ -140,9 +140,9 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                     backupBuilder.setCipherType(CIPHER_ALGORITHM)
                 }
 
-                backupItem = backupBuilder.createBackup()
+                backup = backupBuilder.createBackup()
 
-                saveBackupProperties(appBackupRoot, backupItem)
+                saveBackupProperties(appBackupRoot, backup)
 
                 ok = true
 
@@ -169,37 +169,37 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                     Timber.d("post-process package (to set it back to normal operation)")
                     postprocessPackage(app.packageName)
                 }
-                if (backupItem == null)
-                    backupItem = backupBuilder.createBackup()
+                if (backup == null)
+                    backup = backupBuilder.createBackup()
                 if (ok)
-                    app.backupHistory.add(backupItem)
+                    app.backupHistory.add(backup)
                 else
-                    app.delete(backupItem, true)
+                    app.delete(backup, true)
             }
         } finally {
             work?.setOperation("end")
-            Timber.i("$app: Backup done: ${backupItem ?: app.packageName}")
+            Timber.i("$app: Backup done: ${backup ?: app.packageName}")
         }
-        return ActionResult(app, backupItem, "", true)
+        return ActionResult(app, backup, "", true)
     }
 
     @Throws(IOException::class)
     protected fun saveBackupProperties(
         packageBackupDir: StorageFile,
-        properties: Backup
+        backup: Backup
     ) {
         val propertiesFileName = String.format(
             BACKUP_INSTANCE_PROPERTIES,
-            BACKUP_DATE_TIME_FORMATTER.format(properties.backupDate), properties.profileId
+            BACKUP_DATE_TIME_FORMATTER.format(backup.backupDate), backup.profileId
         )
         val propertiesFile =
             packageBackupDir.createFile("application/octet-stream", propertiesFileName)
         propertiesFile.outputStream()?.use { propertiesOut ->
             propertiesOut.write(
-                properties.toJSON().toByteArray(StandardCharsets.UTF_8)
+                backup.toJSON().toByteArray(StandardCharsets.UTF_8)
             )
         }
-        Timber.i("Wrote $propertiesFile file for backup: $properties")
+        Timber.i("Wrote $propertiesFile file for backup: $backup")
     }
 
     @Throws(IOException::class, CryptoSetupException::class)

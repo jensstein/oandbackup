@@ -17,10 +17,9 @@ import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.getFormattedDate
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BackupInstanceItem(
+fun BackupItem(
     item: Backup,
     onRestore: (Backup) -> Unit = { },
     onDelete: (Backup) -> Unit = { },

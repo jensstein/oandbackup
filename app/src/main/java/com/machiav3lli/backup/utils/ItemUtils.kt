@@ -27,8 +27,6 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.SheetAppBinding
 import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.BackupItem
 import com.machiav3lli.backup.items.Package
 import timber.log.Timber
 
@@ -38,14 +36,6 @@ val COLOR_USER = Color.rgb(254, 144, 69)
 val COLOR_SPECIAL = Color.rgb(144, 69, 254)
 const val COLOR_DISABLED = Color.DKGRAY
 const val COLOR_UNINSTALLED = Color.GRAY
-
-fun calculateID(app: AppInfo): Long {
-    return app.hashCode().toLong()
-}
-
-fun calculateID(backup: BackupItem): Long {
-    return backup.hashCode().toLong()
-}
 
 fun SheetAppBinding.pickSheetDataSizes(context: Context, app: Package, update: Boolean) {
     if (app.isSpecial || !app.isInstalled) {
