@@ -131,14 +131,14 @@ dependencies {
 
     // UI
     implementation("androidx.appcompat:appcompat:1.6.0-alpha01")
-    implementation("androidx.fragment:fragment-ktx:1.5.0-alpha03")
-    implementation("com.google.android.material:material:1.6.0-alpha03")
+    implementation("androidx.fragment:fragment-ktx:1.5.0-alpha04")
+    implementation("com.google.android.material:material:1.6.0-beta01")
     implementation("androidx.preference:preference-ktx:1.2.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
     implementation("androidx.navigation:navigation-fragment-ktx:2.5.0-alpha03")
     implementation("androidx.navigation:navigation-ui-ktx:2.5.0-alpha03")
-    implementation("io.coil-kt:coil:2.0.0-rc01")
-    implementation("io.coil-kt:coil-compose:2.0.0-rc01")
+    implementation("io.coil-kt:coil:2.0.0-rc02")
+    implementation("io.coil-kt:coil-compose:2.0.0-rc02")
 
     // Compose
     implementation("androidx.compose.runtime:runtime:1.1.1")
@@ -147,8 +147,8 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:1.1.1")
     implementation("androidx.compose.runtime:runtime-livedata:1.1.1")
     implementation("androidx.compose.material:material:1.1.1")
-    implementation("com.google.android.material:compose-theme-adapter:1.1.5")
-    implementation("androidx.compose.material3:material3:1.0.0-alpha07")
+    implementation("com.google.android.material:compose-theme-adapter:1.1.6")
+    implementation("androidx.compose.material3:material3:1.0.0-alpha08")
 
     // Testing
     implementation("androidx.test.ext:junit-ktx:1.1.3")
