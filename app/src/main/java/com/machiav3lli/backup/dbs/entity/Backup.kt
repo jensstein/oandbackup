@@ -40,7 +40,7 @@ import java.time.LocalDateTime
 @Entity(primaryKeys = ["packageName", "backupDate"])
 @Serializable
 data class Backup constructor(
-    var backupVersionCode: Int = BuildConfig.MAJOR*1000 + BuildConfig.MINOR,
+    var backupVersionCode: Int,
     var packageName: String,
     var packageLabel: String?,
     var versionName: String?,
@@ -85,6 +85,7 @@ data class Backup constructor(
         iv: ByteArray?,
         cpuArch: String?
     ) : this(
+        backupVersionCode = BuildConfig.MAJOR * 1000 + BuildConfig.MINOR,
         packageName = pi.packageName,
         packageLabel = pi.applicationInfo.loadLabel(context.packageManager).toString(),
         versionName = pi.versionName,
@@ -132,6 +133,7 @@ data class Backup constructor(
         cpuArch: String?,
         permissions: List<String>
     ) : this(
+        backupVersionCode = BuildConfig.MAJOR * 1000 + BuildConfig.MINOR,
         packageName = base.packageName,
         packageLabel = base.packageLabel,
         versionName = base.versionName,
