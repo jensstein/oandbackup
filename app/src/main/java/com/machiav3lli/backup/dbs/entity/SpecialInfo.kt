@@ -142,19 +142,6 @@ open class SpecialInfo : PackageInfo {
                         .add(
                             Package(
                                 context, SpecialInfo(
-                                    "special.appwidgets",
-                                    specPrefix + context.getString(R.string.spec_appwidgets),
-                                    Build.VERSION.RELEASE,
-                                    Build.VERSION.SDK_INT, arrayOf(
-                                        "$userDir/appwidgets.xml"
-                                    )
-                                )
-                            )
-                        )
-                    specialPackages
-                        .add(
-                            Package(
-                                context, SpecialInfo(
                                     "special.bluetooth",
                                     specPrefix + context.getString(R.string.spec_bluetooth),
                                     Build.VERSION.RELEASE,
