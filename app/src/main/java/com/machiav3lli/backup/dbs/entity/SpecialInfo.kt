@@ -23,8 +23,9 @@ open class SpecialInfo : PackageInfo {
         label: String? = "",
         versionName: String? = "",
         versionCode: Int = 0,
-        specialFiles: Array<String> = arrayOf()
-    ) : super(packageName, label, versionName, versionCode, 0, null, arrayOf(), true) {
+        specialFiles: Array<String> = arrayOf(),
+        icon: Int = -1
+    ) : super(packageName, label, versionName, versionCode, 0, null, arrayOf(), true, icon) {
         this.specialFiles = specialFiles
     }
 
@@ -36,7 +37,8 @@ open class SpecialInfo : PackageInfo {
         profileId: Int,
         sourceDir: String?,
         splitSourceDirs: Array<String> = arrayOf(),
-        isSystem: Boolean
+        isSystem: Boolean,
+        icon: Int = -1
     ) : super(
         packageName,
         packageLabel,
@@ -45,7 +47,8 @@ open class SpecialInfo : PackageInfo {
         profileId,
         sourceDir,
         splitSourceDirs,
-        isSystem
+        isSystem,
+        icon
     )
 
     override val isSpecial: Boolean
@@ -107,7 +110,7 @@ open class SpecialInfo : PackageInfo {
                                         Build.VERSION.RELEASE,
                                         Build.VERSION.SDK_INT, arrayOf(
                                             "${context.cacheDir.absolutePath}/special.smsmms.json.json"
-                                        )
+                                        ), R.drawable.ic_sms
                                     )
                                 )
                             )
@@ -120,7 +123,7 @@ open class SpecialInfo : PackageInfo {
                                         Build.VERSION.RELEASE,
                                         Build.VERSION.SDK_INT, arrayOf(
                                             "${context.cacheDir.absolutePath}/special.calllogs.json.json"
-                                        )
+                                        ), R.drawable.ic_call_logs
                                     )
                                 )
                             )
@@ -134,7 +137,7 @@ open class SpecialInfo : PackageInfo {
                                     Build.VERSION.RELEASE,
                                     Build.VERSION.SDK_INT, arrayOf(
                                         "$systemCeDir/accounts_ce.db"
-                                    )
+                                    ), R.drawable.ic_accounts
                                 )
                             )
                         )
@@ -147,7 +150,7 @@ open class SpecialInfo : PackageInfo {
                                     Build.VERSION.RELEASE,
                                     Build.VERSION.SDK_INT, arrayOf(
                                         "$miscDir/bluedroid/bt_config.conf"
-                                    )
+                                    ), R.drawable.ic_bluetooth
                                 )
                             )
                         )
@@ -161,7 +164,7 @@ open class SpecialInfo : PackageInfo {
                                     Build.VERSION.SDK_INT, arrayOf(
                                         "$systemDir/netpolicy.xml",
                                         "$systemDir/netstats/"
-                                    )
+                                    ), R.drawable.ic_privacy
                                 )
                             )
                         )
@@ -175,7 +178,7 @@ open class SpecialInfo : PackageInfo {
                                     Build.VERSION.SDK_INT, arrayOf(
                                         "$userDir/settings_fingerprint.xml",
                                         "$vendorDeDir/fpdata/"
-                                    )
+                                    ), R.drawable.ic_fingerprint
                                 )
                             )
                         )
@@ -189,7 +192,7 @@ open class SpecialInfo : PackageInfo {
                                     Build.VERSION.SDK_INT, arrayOf(
                                         "$userDir/wallpaper",
                                         "$userDir/wallpaper_info.xml"
-                                    )
+                                    ), R.drawable.ic_wallpaper
                                 )
                             )
                         )
@@ -208,7 +211,7 @@ open class SpecialInfo : PackageInfo {
                                     Build.VERSION.RELEASE,
                                     Build.VERSION.SDK_INT, arrayOf(
                                         wifiConfigLocation
-                                    )
+                                    ), R.drawable.ic_wifi
                                 )
                             )
                         )
