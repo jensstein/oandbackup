@@ -19,12 +19,15 @@ package com.machiav3lli.backup
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.PowerManager
 import android.util.LruCache
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import timber.log.Timber
@@ -63,6 +66,14 @@ class OABX : Application() {
         appRef = WeakReference(this)
 
         initShellHandler()
+        registerReceiver(
+            PackageUnInstalledReceiver(),
+            IntentFilter().apply {
+                addAction(Intent.ACTION_PACKAGE_ADDED)
+                addAction(Intent.ACTION_PACKAGE_REMOVED)
+                addDataScheme("package")
+            }
+        )
 
         work = WorkHandler(context)
         if (prefFlag("cancelOnStart", false))
