@@ -104,10 +104,16 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                                 onApkClick = { item: Package, b: Boolean ->
                                     if (b) viewModel.apkCheckedList.add(item.packageName)
                                     else viewModel.apkCheckedList.remove(item.packageName)
+                                    binding.apkBatch.isChecked =
+                                        viewModel.apkCheckedList.size == viewModel.filteredList.value
+                                            ?.filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }?.size
                                 },
                                 onDataClick = { item: Package, b: Boolean ->
                                     if (b) viewModel.dataCheckedList.add(item.packageName)
                                     else viewModel.dataCheckedList.remove(item.packageName)
+                                    binding.dataBatch.isChecked =
+                                        viewModel.dataCheckedList.size == viewModel.filteredList.value
+                                            ?.filter { ai -> backupBoolean || ai.hasData }?.size
                                 },
                             )
                         }
