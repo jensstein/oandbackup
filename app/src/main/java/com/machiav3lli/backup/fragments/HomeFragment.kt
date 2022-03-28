@@ -79,24 +79,7 @@ class HomeFragment : NavigationFragment(),
         viewModel.filteredList.observe(viewLifecycleOwner) { list ->
             try {
                 viewModel.updatedApps.value = list?.filter { it.isUpdated }
-                binding.recyclerView.setContent {
-                    AppTheme(
-                        darkTheme = isSystemInDarkTheme()
-                    ) {
-                        Scaffold {
-                            HomePackageRecycler(productsList = list,
-                                onClick = { item ->
-                                    if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                                    appSheet = AppSheet(item, AppExtras())
-                                    appSheet?.showNow(
-                                        parentFragmentManager,
-                                        "Package ${item.packageName}"
-                                    )
-                                }
-                            )
-                        }
-                    }
-                }
+                redrawList(list, viewModel.searchQuery.value)
                 setupSearch()
                 list?.find { it.packageName == appSheet?.appInfo?.packageName }
                     ?.let { sheetApp -> if (appSheet != null) refreshAppSheet(sheetApp) }
@@ -219,25 +202,17 @@ class HomeFragment : NavigationFragment(),
     }
 
     private fun setupSearch() {
-        /*val filterPredicate = { item: HomeItemX, cs: CharSequence? ->
-            item.appExtras.customTags
-                .plus(item.app.packageName)
-                .plus(item.app.packageLabel)
-                .find { it.contains(cs.toString(), true) } != null
-        }*/
         binding.searchBar.maxWidth = Int.MAX_VALUE
         binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
-                // TODO apply query
-                //homeItemAdapter.filter(newText)
-                //homeItemAdapter.itemFilter.filterPredicate = filterPredicate
+                viewModel.searchQuery.value = newText
+                redrawList(viewModel.filteredList.value, newText)
                 return true
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {
-                // TODO apply query
-                //homeItemAdapter.filter(query)
-                //homeItemAdapter.itemFilter.filterPredicate = filterPredicate
+                viewModel.searchQuery.value = query
+                redrawList(viewModel.filteredList.value, query)
                 return true
             }
         })
@@ -386,5 +361,33 @@ class HomeFragment : NavigationFragment(),
 
     override fun hideProgress() {
         binding.progressBar.visibility = View.GONE
+    }
+
+    fun redrawList(list: List<Package>?, query: String? = "") {
+        binding.recyclerView.setContent {
+
+            // TODO include tags in search
+            val filterPredicate = { item: Package ->
+                query.isNullOrEmpty() || listOf(item.packageName, item.packageLabel)
+                    .find { it.contains(query, true) } != null
+            }
+
+            AppTheme(
+                darkTheme = isSystemInDarkTheme()
+            ) {
+                Scaffold {
+                    HomePackageRecycler(productsList = list?.filter(filterPredicate),
+                        onClick = { item ->
+                            if (appSheet != null) appSheet?.dismissAllowingStateLoss()
+                            appSheet = AppSheet(item, AppExtras())
+                            appSheet?.showNow(
+                                parentFragmentManager,
+                                "Package ${item.packageName}"
+                            )
+                        }
+                    )
+                }
+            }
+        }
     }
 }

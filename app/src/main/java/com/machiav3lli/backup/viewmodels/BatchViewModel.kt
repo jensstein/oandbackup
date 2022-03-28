@@ -29,6 +29,7 @@ class BatchViewModel(appContext: Application) : AndroidViewModel(appContext) {
     val apkCheckedList = mutableListOf<String>()
     val dataCheckedList = mutableListOf<String>()
     val refreshNow = MutableLiveData<Boolean>()
+    val searchQuery = MutableLiveData<String>()
 
     init {
         filteredList.value = null

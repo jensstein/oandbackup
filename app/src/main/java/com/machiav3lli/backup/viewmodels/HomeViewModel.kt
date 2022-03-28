@@ -29,6 +29,7 @@ class HomeViewModel(appContext: Application) : AndroidViewModel(appContext) {
     val nUpdatedApps: MutableLiveData<Int> = MutableLiveData()
     val updatedApps: MutableLiveData<List<Package>> = MutableLiveData()
     val refreshNow = MutableLiveData<Boolean>()
+    val searchQuery = MutableLiveData<String>()
 
     init {
         filteredList.value = null

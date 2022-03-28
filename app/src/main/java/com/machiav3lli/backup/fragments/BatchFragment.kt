@@ -78,47 +78,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         }
         viewModel.filteredList.observe(viewLifecycleOwner) { list ->
             try {
-                binding.recyclerView.setContent {
-                    AppTheme(
-                        darkTheme = isSystemInDarkTheme()
-                    ) {
-                        Scaffold {
-                            BatchPackageRecycler(
-                                productsList = list?.filter {
-                                    if (backupBoolean) it.isInstalled
-                                    else it.hasBackups
-                                },
-                                !backupBoolean,
-                                viewModel.apkCheckedList,
-                                viewModel.dataCheckedList,
-                                onClick = { item, checkApk, checkData ->
-                                    when (checkApk) {
-                                        true -> viewModel.apkCheckedList.add(item.packageName)
-                                        else -> viewModel.apkCheckedList.remove(item.packageName)
-                                    }
-                                    when (checkData) {
-                                        true -> viewModel.dataCheckedList.add(item.packageName)
-                                        else -> viewModel.dataCheckedList.remove(item.packageName)
-                                    }
-                                },
-                                onApkClick = { item: Package, b: Boolean ->
-                                    if (b) viewModel.apkCheckedList.add(item.packageName)
-                                    else viewModel.apkCheckedList.remove(item.packageName)
-                                    binding.apkBatch.isChecked =
-                                        viewModel.apkCheckedList.size == viewModel.filteredList.value
-                                            ?.filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }?.size
-                                },
-                                onDataClick = { item: Package, b: Boolean ->
-                                    if (b) viewModel.dataCheckedList.add(item.packageName)
-                                    else viewModel.dataCheckedList.remove(item.packageName)
-                                    binding.dataBatch.isChecked =
-                                        viewModel.dataCheckedList.size == viewModel.filteredList.value
-                                            ?.filter { ai -> backupBoolean || ai.hasData }?.size
-                                },
-                            )
-                        }
-                    }
-                }
+                redrawList(list, viewModel.searchQuery.value)
                 setupSearch()
                 viewModel.refreshNow.value = false
             } catch (e: Throwable) {
@@ -217,25 +177,17 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     }
 
     private fun setupSearch() {
-        /*val filterPredicate = { item: BatchItemX, cs: CharSequence? ->
-            item.appExtras.customTags
-                .plus(item.app.packageName)
-                .plus(item.app.packageLabel)
-                .find { it.contains(cs.toString(), true) } != null
-        }*/
         binding.searchBar.maxWidth = Int.MAX_VALUE
         binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
-                // TODO apply query
-                //batchItemAdapter.filter(newText)
-                //batchItemAdapter.itemFilter.filterPredicate = filterPredicate
+                viewModel.searchQuery.value = newText
+                redrawList(viewModel.filteredList.value, newText)
                 return true
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {
-                // TODO apply query
-                //batchItemAdapter.filter(query)
-                //batchItemAdapter.itemFilter.filterPredicate = filterPredicate
+                viewModel.searchQuery.value = query
+                redrawList(viewModel.filteredList.value, query)
                 return true
             }
         })
@@ -354,6 +306,57 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
 
     override fun hideProgress() {
         binding.progressBar.visibility = View.GONE
+    }
+
+    fun redrawList(list: List<Package>?, query: String? = "") {
+        binding.recyclerView.setContent {
+
+            // TODO include tags in search
+            val filterPredicate = { item: Package ->
+                val includedBoolean = if (backupBoolean) item.isInstalled else item.hasBackups
+                val queryBoolean =
+                    query.isNullOrEmpty() || listOf(item.packageName, item.packageLabel)
+                        .find { it.contains(query, true) } != null
+                includedBoolean && queryBoolean
+            }
+
+            AppTheme(
+                darkTheme = isSystemInDarkTheme()
+            ) {
+                Scaffold {
+                    BatchPackageRecycler(
+                        productsList = list?.filter(filterPredicate),
+                        !backupBoolean,
+                        viewModel.apkCheckedList,
+                        viewModel.dataCheckedList,
+                        onClick = { item, checkApk, checkData ->
+                            when (checkApk) {
+                                true -> viewModel.apkCheckedList.add(item.packageName)
+                                else -> viewModel.apkCheckedList.remove(item.packageName)
+                            }
+                            when (checkData) {
+                                true -> viewModel.dataCheckedList.add(item.packageName)
+                                else -> viewModel.dataCheckedList.remove(item.packageName)
+                            }
+                        },
+                        onApkClick = { item: Package, b: Boolean ->
+                            if (b) viewModel.apkCheckedList.add(item.packageName)
+                            else viewModel.apkCheckedList.remove(item.packageName)
+                            binding.apkBatch.isChecked =
+                                viewModel.apkCheckedList.size == viewModel.filteredList.value
+                                    ?.filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }?.size
+                        },
+                        onDataClick = { item: Package, b: Boolean ->
+                            if (b) viewModel.dataCheckedList.add(item.packageName)
+                            else viewModel.dataCheckedList.remove(item.packageName)
+                            binding.dataBatch.isChecked =
+                                viewModel.dataCheckedList.size == viewModel.filteredList.value
+                                    ?.filter { ai -> backupBoolean || ai.hasData }?.size
+                        },
+                    )
+                }
+            }
+        }
     }
 
     class BackupFragment : BatchFragment(true)
