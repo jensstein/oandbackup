@@ -17,9 +17,7 @@
  */
 package com.machiav3lli.backup.fragments
 
-import android.content.Context
 import android.os.Bundle
-import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -86,7 +84,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
             }
         }
 
-        if (requireMainActivity().viewModel.refreshNow.value == true) refreshView()
+        packageList.observe(requireActivity()) { refreshView(it) }
     }
 
     override fun onStart() {
@@ -102,11 +100,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         setupSearch()
         setupOnClicks()
         requireMainActivity().setRefreshViewController(this)
-    }
-
-    override fun onInflate(context: Context, attrs: AttributeSet, savedInstanceState: Bundle?) {
-        super.onInflate(context, attrs, savedInstanceState)
-        refreshView()
     }
 
     override fun setupViews() {
@@ -142,7 +135,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         binding.buttonSortFilter.setOnClickListener {
             if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(
                 requireActivity().sortFilterModel,
-                getStats(packageList)
+                getStats(packageList.value ?: mutableListOf())
             )
             sheetSortFilter?.showNow(requireActivity().supportFragmentManager, "SORTFILTER_SHEET")
         }
@@ -283,12 +276,13 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         }
     }
 
-    override fun refreshView() {
+    override fun refreshView(list: MutableList<Package>?) {
         Timber.d("refreshing")
-        sheetSortFilter = SortFilterSheet(requireActivity().sortFilterModel, getStats(packageList))
+        sheetSortFilter =
+            SortFilterSheet(requireActivity().sortFilterModel, getStats(list ?: mutableListOf()))
         try {
             viewModel.filteredList.value =
-                packageList.applyFilter(requireActivity().sortFilterModel, requireContext())
+                list?.applyFilter(requireActivity().sortFilterModel, requireContext())
         } catch (e: FileUtils.BackupLocationInAccessibleException) {
             Timber.e("Could not update application list: $e")
         } catch (e: StorageLocationNotConfiguredException) {

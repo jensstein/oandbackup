@@ -18,18 +18,15 @@
 package com.machiav3lli.backup.fragments
 
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MediatorLiveData
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.items.Package
 
 abstract class NavigationFragment : Fragment(), ProgressViewController {
     protected var sheetSortFilter: SortFilterSheet? = null
-    var packageList: MutableList<Package>
-        get() = requireMainActivity().viewModel.packageList.value
-            ?: mutableListOf()
-        set(value) {
-            requireMainActivity().viewModel.packageList.value = value
-        }
+    val packageList: MediatorLiveData<MutableList<Package>>
+        get() = requireMainActivity().viewModel.packageList
     var appExtrasList: MutableList<AppExtras>
         get() = requireMainActivity().viewModel.appExtrasList
         set(value) {
@@ -48,7 +45,7 @@ abstract class NavigationFragment : Fragment(), ProgressViewController {
 }
 
 interface RefreshViewController {
-    fun refreshView()
+    fun refreshView(list: MutableList<Package>?)
 }
 
 interface ProgressViewController {

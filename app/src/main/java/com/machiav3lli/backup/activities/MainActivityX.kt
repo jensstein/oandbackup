@@ -29,11 +29,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
-import com.machiav3lli.backup.BuildConfig
-import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_CATCHUNCAUGHT
-import com.machiav3lli.backup.PREFS_SKIPPEDENCRYPTION
-import com.machiav3lli.backup.R
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.databinding.ActivityMainXBinding
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.AppExtras
@@ -43,17 +39,7 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.utils.getPrivateSharedPrefs
-import com.machiav3lli.backup.utils.isEncryptionEnabled
-import com.machiav3lli.backup.utils.isNeedRefresh
-import com.machiav3lli.backup.utils.isRememberFiltering
-import com.machiav3lli.backup.utils.itemIdToOrder
-import com.machiav3lli.backup.utils.navigateLeft
-import com.machiav3lli.backup.utils.navigateRight
-import com.machiav3lli.backup.utils.setCustomTheme
-import com.machiav3lli.backup.utils.showToast
-import com.machiav3lli.backup.utils.sortFilterModel
-import com.machiav3lli.backup.utils.sortOrder
+import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.MainViewModel
 import com.topjohnwu.superuser.Shell
 import timber.log.Timber
@@ -133,6 +119,7 @@ class MainActivityX : BaseActivity() {
         viewModel.refreshNow.observe(this) {
             if (it) refreshView()
         }
+        viewModel.packageList.observe(this) { }
 
         runOnUiThread { showEncryptionDialog() }
 
@@ -244,7 +231,7 @@ class MainActivityX : BaseActivity() {
     }
 
     fun refreshView() {
-        if (::refreshViewController.isInitialized) refreshViewController.refreshView()
+        if (::refreshViewController.isInitialized) refreshViewController.refreshView(viewModel.packageList.value)
     }
 
     fun setProgressViewController(progressViewController: ProgressViewController) {

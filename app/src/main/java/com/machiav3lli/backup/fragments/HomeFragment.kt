@@ -150,7 +150,7 @@ class HomeFragment : NavigationFragment(),
             }
         }
 
-        if (requireMainActivity().viewModel.refreshNow.value == true) refreshView()
+        packageList.observe(requireActivity()) { refreshView(it) }
     }
 
     override fun onStart() {
@@ -194,7 +194,7 @@ class HomeFragment : NavigationFragment(),
             if (sheetSortFilter != null && sheetSortFilter!!.isVisible) sheetSortFilter?.dismissAllowingStateLoss()
             sheetSortFilter = SortFilterSheet(
                 requireActivity().sortFilterModel,
-                getStats(packageList)
+                getStats(packageList.value ?: mutableListOf())
             )
             sheetSortFilter?.showNow(requireActivity().supportFragmentManager, "SORTFILTER_SHEET")
         }
@@ -324,16 +324,14 @@ class HomeFragment : NavigationFragment(),
         }
     }
 
-    override fun refreshView() {
+    override fun refreshView(list: MutableList<Package>?) {
         Timber.d("refreshing")
         sheetSortFilter = SortFilterSheet(
-            requireActivity().sortFilterModel, getStats(
-                packageList
-            )
+            requireActivity().sortFilterModel, getStats(list ?: mutableListOf())
         )
         try {
             viewModel.filteredList.value =
-                packageList.applyFilter(requireActivity().sortFilterModel, requireContext())
+                list?.applyFilter(requireActivity().sortFilterModel, requireContext())
         } catch (e: FileUtils.BackupLocationInAccessibleException) {
             Timber.e("Could not update application list: $e")
         } catch (e: StorageLocationNotConfiguredException) {
