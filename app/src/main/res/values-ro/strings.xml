@@ -66,7 +66,7 @@
         <item quantity="other">%d de aplicații actualizate</item>
     </plurals>
     <string name="help_changelog">Jurnalul schimbărilor</string>
-    <string name="all_data">Verifică toate datele</string>
+    <string name="all_data">Bifează toate datele</string>
     <string name="sortPackageName">Numele pachetului</string>
     <string name="sortDataSize">Dimensiunea datelor</string>
     <string name="other_filters_options">Filtre speciale:</string>
@@ -112,4 +112,19 @@
     <string name="applyFilter">Aplică</string>
     <string name="showOnlyApkBackedUp">Aplicații la care s-a făcut backup numai pentru APK</string>
     <string name="showOnlyDataBackedUp">Aplicații la care s-a făcut backup numai pentru date</string>
+    <string name="dialogCancel">Anulează</string>
+    <string name="dialogOK">OK</string>
+    <string name="radio_launchable">Aplicații lansabile</string>
+    <string name="stats_updated">Actualizate</string>
+    <string name="stats_backups">Backupuri</string>
+    <string name="all_apk">Bifează toate fișierele APK</string>
+    <string name="showDisabled">Aplicații dezactivate</string>
+    <string name="sortBackupDate">Data backupului</string>
+    <string name="sortByLabel">Sortează după etichetă</string>
+    <string name="sort">Sortează și filtrează</string>
+    <string name="sched_excludeSystemCheckBox">Exclude aplicațiile de sistem</string>
+    <string name="sortLabel">Etichetă</string>
+    <string name="stats_apps">Aplicații</string>
+    <string name="loading_list">Se încarcă lista de aplicații…</string>
+    <string name="prefs_encryption_summary">Activează pentru a cripta backupurile datelor</string>
 </resources>
