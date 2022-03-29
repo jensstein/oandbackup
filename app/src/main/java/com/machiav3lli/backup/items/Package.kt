@@ -71,6 +71,7 @@ class Package {
         this.packageInfo = appInfo
         packageBackupDir = context.getBackupDir().findFile(packageName)
         refreshBackupHistory(context)
+        if (appInfo.installed) refreshStorageStats(context)
     }
 
     constructor(context: Context, specialInfo: SpecialInfo) {
