@@ -74,7 +74,7 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
             ).use { archiveStream ->
                 tempPath.mkdir()
                 // Extract the contents to a temporary directory
-                archiveStream.suUnpackTo(tempPath)
+                archiveStream.suUnpackTo(tempPath, isOldVersion(backup))
 
                 // check if all expected files are there
                 val filesInBackup = tempPath.listFiles()

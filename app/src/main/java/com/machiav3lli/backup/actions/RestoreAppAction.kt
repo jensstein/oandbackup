@@ -405,7 +405,8 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         isCompressed: Boolean,
         isEncrypted: Boolean,
         iv: ByteArray?,
-        cachePath: File?
+        cachePath: File?,
+        forceOldVersion: Boolean = false
     ) {
         // Check if the archive exists, uncompressTo can also throw FileNotFoundException
         if (!archive.exists()) {
@@ -422,13 +423,13 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                         targetPath,
                         DATA_EXCLUDED_BASENAMES
                     )
-                    archiveStream.suUnpackTo(RootFile(targetPath))
+                    archiveStream.suUnpackTo(RootFile(targetPath), forceOldVersion)
                 } else {
                     // Create a temporary directory in OABX's cache directory and uncompress the data into it
                     //File(cachePath, "restore_${UUID.randomUUID()}").also { it.mkdirs() }.let {
                     Files.createTempDirectory(cachePath?.toPath(), "restore_")?.toFile()?.let {
                         tempDir = RootFile(it)
-                        archiveStream.suUnpackTo(tempDir!!)
+                        archiveStream.suUnpackTo(tempDir!!, forceOldVersion)
                         // clear the data from the final directory
                         wipeDirectory(
                             targetPath,
@@ -569,10 +570,11 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         isCompressed: Boolean,
         isEncrypted: Boolean,
         iv: ByteArray?,
-        cachePath: File?
+        cachePath: File?,
+        forceOldVersion: Boolean = false
     ) {
         Timber.i("${OABX.app.packageName} -> $targetPath")
-        if (OABX.prefFlag(PREFS_RESTORETARCMD, true)) {
+        if ( ! forceOldVersion && OABX.prefFlag(PREFS_RESTORETARCMD, true)) {
             return genericRestoreFromArchiveTarCmd(
                 dataType,
                 archive,
@@ -589,7 +591,8 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                 isCompressed,
                 isEncrypted,
                 iv,
-                cachePath
+                cachePath,
+                forceOldVersion
             )
         }
     }
@@ -679,7 +682,8 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             backup.isCompressed,
             backup.isEncrypted,
             backup.iv,
-            RootFile(context.cacheDir)
+            RootFile(context.cacheDir),
+            isOldVersion(backup)
         )
         genericRestorePermissions(
             dataType,
@@ -727,7 +731,8 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             backup.isCompressed,
             backup.isEncrypted,
             backup.iv,
-            RootFile(deviceProtectedStorageContext.cacheDir)
+            RootFile(deviceProtectedStorageContext.cacheDir),
+            isOldVersion(backup)
         )
         genericRestorePermissions(
             dataType,
@@ -770,7 +775,8 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             backup.isCompressed,
             backup.isEncrypted,
             backup.iv,
-            context.externalCacheDir?.let { RootFile(it) }
+            context.externalCacheDir?.let { RootFile(it) },
+            isOldVersion(backup)
         )
     }
 
@@ -781,46 +787,47 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         backupDir: StorageFile,
         compressed: Boolean
     ) {
-        /*
-        val extractTo = app.getObbFilesPath(context)
-        if(!isPlausiblePath(extractTo, app.packageName))
-            throw RestoreFailedException(
-            "path '$extractTo' does not contain ${app.packageName}"
-            )
-        genericRestoreDataByCopying(
-            extractTo,
-            backupDir,
-            BACKUP_DIR_OBB_FILES
-        )
-        */
-        val dataType = BACKUP_DIR_OBB_FILES
-        val backupFilename = getBackupArchiveFilename(
-            dataType,
-            backup.isCompressed,
-            backup.isEncrypted
-        )
-        Timber.d(LOG_EXTRACTING_S, backup.packageName, backupFilename)
-        val backupArchive = backupDir.findFile(backupFilename)
-            ?: throw RestoreFailedException(
-                String.format(
-                    LOG_BACKUP_ARCHIVE_MISSING,
-                    backupFilename
-                )
-            )
         val extractTo = app.getObbFilesPath(context)
         if (!isPlausiblePath(extractTo, app.packageName))
             throw RestoreFailedException(
                 "path '$extractTo' does not contain ${app.packageName}"
             )
-        genericRestoreFromArchive(
-            dataType,
-            backupArchive,
-            extractTo,
-            backup.isCompressed,
-            backup.isEncrypted,
-            backup.iv,
-            context.externalCacheDir?.let { RootFile(it) }
-        )
+
+        if (isOldVersion(backup)) {
+
+            genericRestoreDataByCopying(
+                extractTo,
+                backupDir,
+                BACKUP_DIR_OBB_FILES
+            )
+
+        } else {
+
+            val dataType = BACKUP_DIR_OBB_FILES
+            val backupFilename = getBackupArchiveFilename(
+                dataType,
+                backup.isCompressed,
+                backup.isEncrypted
+            )
+            Timber.d(LOG_EXTRACTING_S, backup.packageName, backupFilename)
+            val backupArchive = backupDir.findFile(backupFilename)
+                ?: throw RestoreFailedException(
+                    String.format(
+                        LOG_BACKUP_ARCHIVE_MISSING,
+                        backupFilename
+                    )
+                )
+            genericRestoreFromArchive(
+                dataType,
+                backupArchive,
+                extractTo,
+                backup.isCompressed,
+                backup.isEncrypted,
+                backup.iv,
+                context.externalCacheDir?.let { RootFile(it) },
+            )
+
+        }
     }
 
     @Throws(RestoreFailedException::class)
@@ -830,46 +837,47 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         backupDir: StorageFile,
         compressed: Boolean
     ) {
-        /*
         val extractTo = app.getMediaFilesPath(context)
         if (!isPlausiblePath(extractTo, app.packageName))
             throw RestoreFailedException(
                 "path '$extractTo' does not contain ${app.packageName}"
             )
-        genericRestoreDataByCopying(
-            extractTo,
-            backupDir,
-            BACKUP_DIR_MEDIA_FILES
-        )
-        */
-        val dataType = BACKUP_DIR_MEDIA_FILES
-        val backupFilename = getBackupArchiveFilename(
-            dataType,
-            backup.isCompressed,
-            backup.isEncrypted
-        )
-        Timber.d(LOG_EXTRACTING_S, backup.packageName, backupFilename)
-        val backupArchive = backupDir.findFile(backupFilename)
-            ?: throw RestoreFailedException(
-                String.format(
-                    LOG_BACKUP_ARCHIVE_MISSING,
-                    backupFilename
+
+        if (isOldVersion(backup)) {
+
+            genericRestoreDataByCopying(
+                extractTo,
+                backupDir,
+                BACKUP_DIR_MEDIA_FILES
+            )
+
+        } else {
+
+            val dataType = BACKUP_DIR_MEDIA_FILES
+            val backupFilename = getBackupArchiveFilename(
+                dataType,
+                backup.isCompressed,
+                backup.isEncrypted
+            )
+            Timber.d(LOG_EXTRACTING_S, backup.packageName, backupFilename)
+            val backupArchive = backupDir.findFile(backupFilename)
+                ?: throw RestoreFailedException(
+                    String.format(
+                        LOG_BACKUP_ARCHIVE_MISSING,
+                        backupFilename
+                    )
                 )
+            genericRestoreFromArchive(
+                dataType,
+                backupArchive,
+                extractTo,
+                backup.isCompressed,
+                backup.isEncrypted,
+                backup.iv,
+                context.externalCacheDir?.let { RootFile(it) }
             )
-        val extractTo = app.getMediaFilesPath(context)
-        if (!isPlausiblePath(extractTo, app.packageName))
-            throw RestoreFailedException(
-                "path '$extractTo' does not contain ${app.packageName}"
-            )
-        genericRestoreFromArchive(
-            dataType,
-            backupArchive,
-            extractTo,
-            backup.isCompressed,
-            backup.isEncrypted,
-            backup.iv,
-            context.externalCacheDir?.let { RootFile(it) }
-        )
+
+        }
     }
 
     /**
@@ -947,5 +955,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             "Backup directory %s is missing. Cannot restore"
         const val LOG_EXTRACTING_S = "[%s] Extracting %s"
         const val LOG_BACKUP_ARCHIVE_MISSING = "Backup archive %s is missing. Cannot restore"
+
+        fun isOldVersion(backup: Backup) = backup.backupVersionCode < 8000
     }
 }

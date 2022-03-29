@@ -40,7 +40,7 @@ import java.time.LocalDateTime
 @Entity(primaryKeys = ["packageName", "backupDate"])
 @Serializable
 data class Backup constructor(
-    var backupVersionCode: Int,
+    var backupVersionCode: Int = 0,
     var packageName: String,
     var packageLabel: String?,
     var versionName: String?,
@@ -58,7 +58,7 @@ data class Backup constructor(
     var hasObbData: Boolean,
     var hasMediaData: Boolean,
     var compressionType: String? = "gz",
-    var cipherType: String?,
+    var cipherType: String? = null,
     var iv: ByteArray?,
     var cpuArch: String?,
     var permissions: List<String> = listOf()
