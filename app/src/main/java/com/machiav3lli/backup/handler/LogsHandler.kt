@@ -111,7 +111,7 @@ class LogsHandler(var context: Context) {
                         ""
                 }${
                     if(e.cause != null)
-                        "\ncause: ${e.cause}" 
+                        "\ncause: ${e.cause}"
                     else
                         ""
                 }${
@@ -121,7 +121,12 @@ class LogsHandler(var context: Context) {
                         ""
                 }"
 
-        fun logException(e: Throwable, what: Any? = null, prefix: String? = null) {
+        fun logException(
+            e: Throwable,
+            what: Any? = null,
+            backTrace: Boolean = false,
+            prefix: String? = null
+        ) {
             var whatStr = ""
             if (what != null) {
                 whatStr = what.toString()
@@ -130,11 +135,11 @@ class LogsHandler(var context: Context) {
                 else
                     "$whatStr : "
             }
-            Timber.e("$prefix$whatStr\n${message(e, true)}")
+            Timber.e("$prefix$whatStr\n${message(e, backTrace)}")
         }
 
         fun unhandledException(e: Throwable, what: Any? = null) {
-            logException(e, what, "unexpected: ")
+            logException(e, what, backTrace = true, "unexpected: ")
         }
 
         fun handleErrorMessages(context: Context, errorText: String?): String? {
