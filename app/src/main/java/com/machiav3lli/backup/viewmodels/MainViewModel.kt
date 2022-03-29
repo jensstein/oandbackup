@@ -33,24 +33,22 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class MainViewModel(
-    database: ODatabase,
+    private val db: ODatabase,
     private val appContext: Application
 ) : AndroidViewModel(appContext) {
-    private val appExtrasDao: AppExtrasDao = database.appExtrasDao
-    private val blocklistDao: BlocklistDao = database.blocklistDao
 
     var packageList = MediatorLiveData<MutableList<Package>>()
     var blocklist = MediatorLiveData<List<Blocklist>>()
     var appExtrasList: MutableList<AppExtras>
-        get() = appExtrasDao.all
+        get() = db.appExtrasDao.all
         set(value) {
-            appExtrasDao.deleteAll()
-            value.forEach { appExtrasDao.insert(it) }
+            db.appExtrasDao.deleteAll()
+            value.forEach { db.appExtrasDao.insert(it) }
         }
     val refreshNow = MutableLiveData<Boolean>()
 
     init {
-        blocklist.addSource(blocklistDao.liveAll, blocklist::setValue)
+        blocklist.addSource(db.blocklistDao.liveAll, blocklist::setValue)
     }
 
     fun refreshList() {
@@ -98,12 +96,12 @@ class MainViewModel(
 
     private suspend fun updateExtrasWith(appExtras: AppExtras) {
         withContext(Dispatchers.IO) {
-            val oldExtras = appExtrasDao.all.find { it.packageName == appExtras.packageName }
+            val oldExtras = db.appExtrasDao.all.find { it.packageName == appExtras.packageName }
             if (oldExtras != null) {
                 appExtras.id = oldExtras.id
-                appExtrasDao.update(appExtras)
+                db.appExtrasDao.update(appExtras)
             } else
-                appExtrasDao.insert(appExtras)
+                db.appExtrasDao.insert(appExtras)
             true
         }
     }
@@ -117,7 +115,7 @@ class MainViewModel(
 
     private suspend fun insertIntoBlocklist(packageName: String) {
         withContext(Dispatchers.IO) {
-            blocklistDao.insert(
+            db.blocklistDao.insert(
                 Blocklist.Builder()
                     .withId(0)
                     .withBlocklistId(PACKAGES_LIST_GLOBAL_ID)
@@ -137,7 +135,7 @@ class MainViewModel(
 
     private suspend fun insertIntoBlocklist(newList: Set<String>) =
         withContext(Dispatchers.IO) {
-            blocklistDao.updateList(PACKAGES_LIST_GLOBAL_ID, newList)
+            db.blocklistDao.updateList(PACKAGES_LIST_GLOBAL_ID, newList)
             packageList.value?.removeIf { newList.contains(it.packageName) }
         }
 
