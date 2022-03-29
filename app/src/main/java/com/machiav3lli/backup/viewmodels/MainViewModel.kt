@@ -21,11 +21,11 @@ import android.app.Application
 import androidx.lifecycle.*
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
 import com.machiav3lli.backup.dbs.ODatabase
-import com.machiav3lli.backup.dbs.dao.AppExtrasDao
-import com.machiav3lli.backup.dbs.dao.BlocklistDao
 import com.machiav3lli.backup.dbs.entity.AppExtras
+import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Blocklist
-import com.machiav3lli.backup.handler.getPackageList
+import com.machiav3lli.backup.handler.toPackageList
+import com.machiav3lli.backup.handler.updateAppInfoTable
 import com.machiav3lli.backup.items.Package
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -49,19 +49,24 @@ class MainViewModel(
 
     init {
         blocklist.addSource(db.blocklistDao.liveAll, blocklist::setValue)
+        packageList.addSource(db.appInfoDao.allLive) {
+            packageList.value = it.toPackageList(
+                appContext,
+                blocklist.value?.mapNotNull(Blocklist::packageName) ?: listOf()
+            )
+        }
     }
 
     fun refreshList() {
         viewModelScope.launch {
-            packageList.value = recreateAppInfoList()
+            recreateAppInfoList()
             refreshNow.value = true
         }
     }
 
-    private suspend fun recreateAppInfoList(): MutableList<Package> =
+    private suspend fun recreateAppInfoList() =
         withContext(Dispatchers.IO) {
-            val blockedPackagesList = blocklist.value?.mapNotNull { it.packageName } ?: listOf()
-            appContext.getPackageList(blockedPackagesList)
+            appContext.updateAppInfoTable(db.appInfoDao)
         }
 
     fun updatePackage(packageName: String) {
@@ -81,6 +86,7 @@ class MainViewModel(
             dataList?.removeIf { it.packageName == packageName }
             try {
                 appPackage = Package(appContext, packageName, appPackage?.packageBackupDir)
+                if (!appPackage.isSpecial) db.appInfoDao.update(appPackage.packageInfo as AppInfo)
                 dataList?.add(appPackage)
             } catch (e: AssertionError) {
                 Timber.w(e.message ?: "")
