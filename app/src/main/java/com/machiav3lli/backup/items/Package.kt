@@ -26,6 +26,7 @@ import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
 import com.machiav3lli.backup.handler.getPackageStorageStats
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
@@ -132,7 +133,7 @@ class Package {
             storageStats = context.getPackageStorageStats(packageName)
             true
         } catch (e: PackageManager.NameNotFoundException) {
-            Timber.e("Could not refresh StorageStats. Package was not found: ${e.message}")
+            logException(e, "Could not refresh StorageStats. Package was not found")
             false
         }
     }
@@ -144,7 +145,7 @@ class Package {
             packageInfo = AppInfo(context, pi)
             refreshStorageStats(context)
         } catch (e: PackageManager.NameNotFoundException) {
-            Timber.i("$packageName is not installed. Refresh failed")
+            logException(e, "$packageName is not installed. Refresh failed")
             return false
         }
         return true
@@ -163,28 +164,25 @@ class Package {
                             try {
                                 Backup.createFrom(it)?.let(backups::add)
                             } catch (e: Backup.BrokenBackupException) {
-                                val message =
-                                    "Incomplete backup or wrong structure found in $it"
-                                Timber.w(message)
+                                logException(e, "Incomplete backup or wrong structure found in $it")
                             } catch (e: NullPointerException) {
-                                val message =
-                                    "(Null) Incomplete backup or wrong structure found in $it"
-                                Timber.w(message)
+                                logException(e, "Incomplete backup or wrong structure found in $it")
                             } catch (e: Throwable) {
-                                val message =
-                                    "(catchall) Incomplete backup or wrong structure found in $it"
-                                LogsHandler.unhandledException(e, message)
+                                LogsHandler.unhandledException(e,
+                                    "Incomplete backup or wrong structure found in $it"
+                                )
                             }
                         }
                 } catch (e: FileNotFoundException) {
-                    Timber.w("Failed getting backup history: $e")
+                    logException(e, "Failed getting backup history")
                 } catch (e: InterruptedException) {
                     return@Thread
                 } catch (e: Throwable) {
                     LogsHandler.unhandledException(e, packageBackupDir)
+                } finally {
+                    historyCollectorThread = null
                 }
                 backupHistoryCache = Pair(backups, context)
-                historyCollectorThread = null
             }
             historyCollectorThread?.start()
         }
