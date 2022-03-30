@@ -337,10 +337,215 @@ Seedvault repo can be found here: https://github.com/seedvault-app/seedvault - c
 #### What is the difference to the famous Titanium Backup?
 
 Users tend to compare NB and Titanium Backup (TB). There are a lot of comments in the chat.
-All the TB features are listed here: https://www.titaniumtrack.com/titanium-backup.html
 
 Feel free to share your thoughts and edit this FAQ to provide a comparison which is more on-point.
-Main points to mention: TB did not get an update for same years now (it does not use [SAF](#why-is-nb-so-slow) and so is probably faster as long as google does not improve it) and it is not Open-Source.
+Main points to mention:
+* TB did not get an update for same years now
+* TB does not use [SAF](#why-is-nb-so-slow) and so is probably faster as long as google does not improve it)
+* it is not Open-Source.
+
+All the TB features are listed here: https://www.titaniumtrack.com/titanium-backup.html
+Here it is to be edited (BIG letters is NB status):
+
+* Very fast app listing (~1 second for 300 apps)
+
+  this isn't because of SAF, it's probably because NB uses official interfaces of Android.
+  I guess, TB simply scans the directories in /data/data/ or a similar technique.
+  Reasoning: it sees com.google.android.trichromelibrary* which most backup solutions don't see.
+
+* Sort apps by name / last backup / backup frequency
+
+  YES / YES / NO (don't remember what frequency means)
+
+* Filter apps by name / type / status / Apps Organizer labels (also affects Batch operations)
+  
+  YES / YES(?) / YES(?) / NO (not yet) 
+  
+* Backup/restore regular apps + their settings
+  
+  YES
+  
+* Backup/restore protected apps + their settings
+  
+  PROBABLY(what is it exactly?)
+
+* Backup/restore system apps + their settings (incl. Wi-Fi AP list)
+  
+  YES (some system data, called special backups, "package" names special.*, label starts with $)
+
+* Backup/restore external app data
+  
+  YES (external_data, obb, media)
+  
+* Restores the Market links when restoring apps
+  
+  NO
+  
+* Zero-click background batch backup
+  
+  YES (but what's zero click?)
+  
+* Interactive batch restore
+  
+  NO
+
+* Many batch scenarios (eg: if more than N days since last backup, etc)
+  
+  NO (only backup and restore)
+
+* Zero-click app un-installer
+  
+  YES (but one click?)
+  
+* Zero-click system app un-installer
+  
+  YES (it's there, not sure if it works, never tried, but on click?)
+
+* Move app to/from SD card
+  
+  NO
+  
+* Move app data to/from SD card (needs ext2/3/4 partition)
+  
+  NO
+
+* Desktop widgets
+  
+  YES (but I guess it only works for stock (like) launchers)
+
+* A single weekly or biweekly scheduled backup
+  
+  YES (any schedules)
+  
+* User-defined apps lists with filtering, coloring and scheduling support
+  
+  TB has better filtering support...e.g. tags
+
+* Built-in Android Market information viewer (Android 2.0+)
+  
+  ???
+
+* Ability to remove orphan app data
+  
+  NO (at least not as a batch, can TB do this? don't remember)
+
+* Multiple backups per app (history length can be chosen)
+  
+  YES
+  (TB can also throw backups for a filtered list)
+  
+* Zero-click background batch restore
+  
+  YES (but what is zero click?)
+
+* Encryption of your backups (asymmetric crypto: the passphrase is needed on restore only)
+  
+  YES
+
+* Backup/restore SMS, MMS, call log, bookmarks and Wi-Fi networks in the portable XML format
+
+  YES, YES, YES, NO (for which browser?), NO
+  
+* Multi-user support for some apps (eg: games) with a widget for quick switching!
+
+  NO
+
+* Batch verification of your backups
+
+  NO
+  
+* Create an “update.zip” file containing apps+data, which can be flashed in recovery mode to restore everything in one shot
+
+  NO
+  
+* Migrate some system data (eg: SMS/MMS) across incompatible ROMs
+
+  YES (only SMS/MMS/call logs)
+  
+* Convert users apps to system apps
+
+  NO
+  
+* Ultra fast HyperShell (much faster for almost everything)
+
+  NO (not sure how fast this is, NB currently uses toybox, which might also be fast)
+
+* App freezer can disable an app (and make it invisible) without un-installing it
+
+  YES
+
+* Batch app freezing/defrosting
+
+  NO
+  (TB can do many operations in batch mode with all it's power of filtering. NB can't yet)
+
+* Full support for paid apps that must normally be installed through the Market!
+
+  not sure, what is necessary for that?
+  
+* Market “auto updating” manager, to easily verify, enable or disable auto updates on several apps at once!
+
+  don't remember what this is
+  
+* Unlimited, independent scheduled backups (each of which can run 1 to 7 times a week)
+
+  YES
+  (TB is more flexible with it's filtering)
+
+* Market Doctor can retrieve or re-create any broken Market links (for your updates to appear in Market again)
+
+  NO
+
+* Dalvik cache cleaner can free up precious internal memory
+
+  NO
+  
+* Integrate updated system apps directly into your ROM to free up even more internal memory
+
+  NO
+  
+* Synchronize all (or some of) your backups to Dropbox, Box and Google Drive
+
+  NO (only via external methods like rclone and SAF providers)
+
+* Retrieve all your backups from Dropbox, Box and Google Drive (in case of lost phone or SD card failure)
+
+  NO (only via external methods like rclone and SAF providers)
+  
+* TB Web Server: download/upload all your backups as a single ZIP file on your computer through a Web interface
+
+  NO
+  
+* Load/Save a Filter (from the Filters screen) and use it in Widgets/Schedules
+
+  NO
+  
+* Change the device’s Android ID, restore it from a backup or after a factory reset
+
+  NO
+
+* Protect backup against deletion
+
+  NO
+  
+* Send backup (by e-mail / Google Drive / Dropbox) which can be imported/restored very easily
+
+  NO
+  (useful)
+  
+* CSV data export from any app’s DB, to e-mail or Google Docs
+
+  NO
+  (very useful)
+  
+* Convert app data to/from Gingerbread’s faster WAL DB format
+
+  NO
+  (as far as I know, WAL was also used as a portable format)
+
+* Brand the app with your name
+
+  NO
 
 #### How can I open encrypted backups on my computer?
 
