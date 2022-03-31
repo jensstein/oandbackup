@@ -275,7 +275,7 @@ fun ScheduleTypes(item: Schedule) {
 fun ScheduleFilters(
     item: Schedule
 ) {
-    AnimatedVisibility(visible = item.filter and MAIN_FILTER_USER == MAIN_FILTER_USER) {
+    AnimatedVisibility(visible = item.filter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM) {
         Icon(
             modifier = Modifier.size(24.dp),
             painter = painterResource(id = R.drawable.ic_system),
