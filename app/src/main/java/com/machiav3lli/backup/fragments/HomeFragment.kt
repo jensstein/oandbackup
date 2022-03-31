@@ -205,14 +205,18 @@ class HomeFragment : NavigationFragment(),
         binding.searchBar.maxWidth = Int.MAX_VALUE
         binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
-                viewModel.searchQuery.value = newText
-                redrawList(viewModel.filteredList.value, newText)
+                if (viewModel.searchQuery.value != newText) {
+                    viewModel.searchQuery.value = newText
+                    redrawList(viewModel.filteredList.value, newText)
+                }
                 return true
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {
-                viewModel.searchQuery.value = query
-                redrawList(viewModel.filteredList.value, query)
+                if (viewModel.searchQuery.value != query) {
+                    viewModel.searchQuery.value = query
+                    redrawList(viewModel.filteredList.value, query)
+                }
                 return true
             }
         })
