@@ -61,16 +61,15 @@
 
                 <androidx.appcompat.widget.SearchView
                     android:id="@+id/searchBar"
-                    style="@android:style/Widget.Material.SearchView"
+                    style="@style/Widget.AppCompat.SearchView"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:autofillHints="@string/searchHint"
                     android:background="@drawable/bg_bar_static_round_accent"
                     android:elevation="@dimen/cards_spacing"
                     android:foregroundGravity="center_horizontal"
                     android:imeOptions="flagNoExtractUi|actionSearch"
                     android:inputType="text"
-                    android:paddingHorizontal="@dimen/small_spacing"
                     android:singleLine="true"
                     android:textAppearance="@style/TextAppearance.Title"
                     app:closeIcon="@drawable/ic_close"
