@@ -65,7 +65,7 @@
         <item quantity="few">%d aplicații actualizate</item>
         <item quantity="other">%d de aplicații actualizate</item>
     </plurals>
-    <string name="help_changelog">Jurnalul schimbărilor</string>
+    <string name="help_changelog">Jurnalul modificărilor</string>
     <string name="all_data">Bifează toate datele</string>
     <string name="sortPackageName">Numele pachetului</string>
     <string name="sortDataSize">Dimensiunea datelor</string>
@@ -127,4 +127,22 @@
     <string name="stats_apps">Aplicații</string>
     <string name="loading_list">Se încarcă lista de aplicații…</string>
     <string name="prefs_encryption_summary">Activează pentru a cripta backupurile datelor</string>
+    <string name="permission_not_granted">Este necesară permisiunea de a accesa spațiul de stocare extern</string>
+    <string name="empty_filtered_list">Lista filtrată este goală.</string>
+    <string name="failed_unzipping">Eroare la dezarhivarea datelor, verifică parola de criptare!</string>
+    <string name="enable_encryption_title">Criptarea datelor</string>
+    <string name="intro_permission_storage">Aplicația folosește permisiunea de citire/scriere a spațiului de stocare pentru a putea accesa spațiul de stocare extern și pentru a oferi posibilitatea de a face backup datelor externe/obb-urilor ale altor aplicații.</string>
+    <string name="prefs_encryption">Criptare</string>
+    <string name="prefs_password_summary">Lasă gol pentru a dezactiva criptarea</string>
+    <string name="prefs_password">Parolă de criptare</string>
+    <string name="prefs_passwordconfirmation">Confirmarea parolei de criptare</string>
+    <string name="prefs_excludecache">Exclude cache-ul aplicațiilor</string>
+    <string name="prefs_excludecache_summary">Exclude cache-ul aplicațiilor din backupul datelor</string>
+    <string name="prefs_password_match_true">Parolele coincid</string>
+    <string name="prefs_password_match_false">Parolele nu coincid</string>
+    <string name="prefs_externaldata">Fă backup datelor externe</string>
+    <string name="error_encryptionpassword">Parola de criptare fie nu este setată, fie este greșită!</string>
+    <string name="prefs_rememberfiltering_summary">Salvează metoda de sortare și filtrare aleasă. Sunt luate în considerare doar cele marcate cu o casetă de selectare în meniu.</string>
+    <string name="enable_encryption_message">Nu este sigur să îți păstrezi datele pe dispozitivul necriptat. Pentru siguranța datelor tale, activează criptarea și setează o parolă.</string>
+    <string name="storage_access">Acces la spațiul de stocare</string>
 </resources>
