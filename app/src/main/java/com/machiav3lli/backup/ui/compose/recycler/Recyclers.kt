@@ -1,6 +1,8 @@
 package com.machiav3lli.backup.ui.compose.recycler
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.Log
@@ -41,20 +43,21 @@ fun BackupRecycler(
 
 @Composable
 fun BatchPackageRecycler(
+    modifier: Modifier = Modifier.fillMaxSize(),
     productsList: List<Package>?,
     restore: Boolean = false,
-    apkCheckedList: List<String> = listOf(),
-    dataCheckedList: List<String> = listOf(),
-    onClick: (Package, Boolean, Boolean) -> Unit = { _: Package, _: Boolean, _: Boolean -> },
+    apkCheckedList: MutableSet<String> = mutableSetOf(),
+    dataCheckedList: MutableSet<String> = mutableSetOf(),
     onApkClick: (Package, Boolean) -> Unit = { _: Package, _: Boolean -> },
-    onDataClick: (Package, Boolean) -> Unit = { _: Package, _: Boolean -> }
+    onDataClick: (Package, Boolean) -> Unit = { _: Package, _: Boolean -> },
+    onClick: (Package, Boolean, Boolean) -> Unit = { _: Package, _: Boolean, _: Boolean -> }
 ) {
-    VerticalItemList(list = productsList) {
+    VerticalItemList(modifier = modifier, list = productsList) {
         BatchPackageItem(
             it,
             restore,
-            apkCheckedList.any { s -> s == it.packageName },
-            dataCheckedList.any { s -> s == it.packageName },
+            apkCheckedList.contains(it.packageName),
+            dataCheckedList.contains(it.packageName),
             onClick,
             onApkClick,
             onDataClick
