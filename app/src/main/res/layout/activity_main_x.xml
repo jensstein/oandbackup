@@ -76,15 +76,14 @@
                 android:background="@android:color/transparent"
                 app:menu="@menu/navi_menu_main" />
 
-            <androidx.appcompat.widget.AppCompatImageButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonSettings"
                 style="@style/Button.Rectangular"
                 android:layout_width="52dp"
                 android:layout_height="match_parent"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@drawable/ic_settings"
-                android:tooltipText="@string/prefs_title" />
+                android:tooltipText="@string/prefs_title"
+                app:icon="@drawable/ic_settings"
+                app:iconSize="@dimen/icon_medium" />
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -152,15 +152,16 @@
             app:layout_constraintTop_toBottomOf="@id/recyclerView">
 
             <!--  TODO fix view when no room for text -->
-            <androidx.appcompat.widget.AppCompatButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonUpdated"
                 style="@style/Button.Rectangular"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/ic_arrow_down"
                 android:maxLines="2"
                 android:text="@string/place_holder"
-                android:textColor="?colorControlNormal"
+                app:icon="@drawable/ic_arrow_down"
+                app:iconGravity="end"
+                app:iconSize="@dimen/icon_small"
                 app:layout_constraintBottom_toTopOf="@id/updatedRecycler"
                 app:layout_constraintEnd_toStartOf="@id/buttonUpdateAll"
                 app:layout_constraintStart_toStartOf="parent"

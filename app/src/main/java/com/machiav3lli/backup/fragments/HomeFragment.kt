@@ -112,31 +112,16 @@ class HomeFragment : NavigationFragment(),
                 binding.root.context.resources.getQuantityString(R.plurals.updated_apps, it, it)
             if (it > 0) {
                 binding.updatedBar.visibility = View.VISIBLE
-                binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                    0,
-                    0,
-                    R.drawable.ic_arrow_up,
-                    0
-                )
+                binding.buttonUpdated.setIconResource(R.drawable.ic_arrow_up)
                 binding.buttonUpdateAll.visibility = View.VISIBLE
                 binding.buttonUpdated.setOnClickListener {
                     binding.updatedRecycler.visibility = when (binding.updatedRecycler.visibility) {
                         View.VISIBLE -> {
-                            binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                                0,
-                                0,
-                                R.drawable.ic_arrow_up,
-                                0
-                            )
+                            binding.buttonUpdated.setIconResource(R.drawable.ic_arrow_up)
                             View.GONE
                         }
                         else -> {
-                            binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                                0,
-                                0,
-                                R.drawable.ic_arrow_down,
-                                0
-                            )
+                            binding.buttonUpdated.setIconResource(R.drawable.ic_arrow_down)
                             View.VISIBLE
                         }
                     }
@@ -145,7 +130,7 @@ class HomeFragment : NavigationFragment(),
                 binding.updatedBar.visibility = View.GONE
                 binding.updatedRecycler.visibility = View.GONE
                 binding.buttonUpdateAll.visibility = View.GONE
-                binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+                binding.buttonUpdated.setIconResource(0)
                 binding.buttonUpdated.setOnClickListener(null)
             }
         }
