@@ -103,17 +103,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     }
 
     override fun setupViews() {
-        binding.buttonAction.setText(if (backupBoolean) R.string.backup else R.string.restore)
-        /*binding.refreshLayout.setColorSchemeColors(requireContext().colorAccent)
-        binding.refreshLayout.setProgressBackgroundColorSchemeColor(
-            resources.getColor(
-                R.color.app_primary_base,
-                requireActivity().theme
-            )
-        )
-        binding.refreshLayout.setProgressViewOffset(false, 72, 144)
-        binding.refreshLayout.setOnRefreshListener { requireMainActivity().viewModel.refreshList() }*/
-        binding.buttonAction.setOnClickListener { onClickBatchAction(backupBoolean) }
     }
 
     override fun setupOnClicks() {
@@ -138,34 +127,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                 getStats(packageList.value ?: mutableListOf())
             )
             sheetSortFilter?.showNow(requireActivity().supportFragmentManager, "SORTFILTER_SHEET")
-        }
-        binding.apkBatch.setOnClickListener {
-            val checkBoolean = (it as AppCompatCheckBox).isChecked
-            binding.apkBatch.isChecked = checkBoolean
-            if (checkBoolean)
-                viewModel.apkCheckedList.addAll(
-                    viewModel.filteredList.value
-                        ?.filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }
-                        ?.mapNotNull(Package::packageName).orEmpty()
-                )
-            else
-                viewModel.apkCheckedList.clear()
-            binding.recyclerView.refreshDrawableState()
-            // TODO make it react to changes in checked list
-        }
-        binding.dataBatch.setOnClickListener {
-            val checkBoolean = (it as AppCompatCheckBox).isChecked
-            binding.dataBatch.isChecked = checkBoolean
-            if (checkBoolean)
-                viewModel.dataCheckedList.addAll(
-                    viewModel.filteredList.value
-                        ?.filter { ai -> backupBoolean || ai.hasData }
-                        ?.mapNotNull(Package::packageName).orEmpty()
-                )
-            else
-                viewModel.dataCheckedList.clear()
-            binding.recyclerView.refreshDrawableState()
-            // TODO make it react to changes in checked list
         }
     }
 
