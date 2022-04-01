@@ -30,6 +30,7 @@ import androidx.work.*
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_MAXRETRIES
+import com.machiav3lli.backup.PREFS_USEFOREGROUND
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.*
@@ -66,7 +67,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         }
         Timber.i(message)
 
-        if (OABX.prefFlag("useForeground", false))
+        if (OABX.prefFlag(PREFS_USEFOREGROUND, true))
             setForeground(createForegroundInfo())
 
         var result: ActionResult? = null

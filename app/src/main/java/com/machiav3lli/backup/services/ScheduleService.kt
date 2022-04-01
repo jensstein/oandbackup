@@ -31,6 +31,7 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.PREFS_USEFOREGROUND
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
@@ -60,7 +61,7 @@ open class ScheduleService : Service() {
         OABX.service = this
         this.notificationId = System.currentTimeMillis().toInt()
 
-        if (OABX.prefFlag("useForeground", false)) {
+        if (OABX.prefFlag(PREFS_USEFOREGROUND, true)) {
             createNotificationChannel()
             createForegroundInfo()
             startForeground(notification.hashCode(), this.notification)

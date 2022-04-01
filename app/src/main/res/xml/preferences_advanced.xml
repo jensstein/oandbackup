@@ -75,7 +75,7 @@
             android:title="useExactAlarm" />
 
         <androidx.preference.CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="useForeground"
             android:summary="use forground notifications to ensure app keeps runninig (if wakelock isn't enough)"
             android:title="useForeground" />

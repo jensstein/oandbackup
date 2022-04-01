@@ -76,7 +76,7 @@ class OABX : Application() {
         )
 
         work = WorkHandler(context)
-        if (prefFlag("cancelOnStart", false))
+        if (prefFlag(PREFS_CANCELONSTART, false))
             work?.cancel()
         work?.prune()
     }

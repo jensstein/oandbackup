@@ -68,7 +68,7 @@ class MainActivityX : BaseActivity() {
         if (OABX.prefFlag(PREFS_CATCHUNCAUGHT, true)) {
             Thread.setDefaultUncaughtExceptionHandler { _, e ->
                 try {
-                    val maxCrashLines = OABX.prefInt("maxCrashLines", 100)
+                    val maxCrashLines = OABX.prefInt(PREFS_MAXCRASHLINES, 100)
                     LogsHandler.unhandledException(e)
                     LogsHandler(context).writeToLogFile(
                         "uncaught exception happened:\n\n" +
