@@ -19,18 +19,8 @@ package com.machiav3lli.backup.actions
 
 import android.annotation.SuppressLint
 import android.content.Context
-import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
-import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES
-import com.machiav3lli.backup.MODE_APK
-import com.machiav3lli.backup.MODE_DATA
-import com.machiav3lli.backup.MODE_DATA_DE
-import com.machiav3lli.backup.MODE_DATA_EXT
-import com.machiav3lli.backup.MODE_DATA_MEDIA
-import com.machiav3lli.backup.MODE_DATA_OBB
-import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.*
 import com.machiav3lli.backup.OABX.Companion.app
-import com.machiav3lli.backup.PREFS_BACKUPTARCMD
-import com.machiav3lli.backup.PREFS_EXCLUDECACHE
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.BackupBuilder
 import com.machiav3lli.backup.handler.LogsHandler
@@ -44,21 +34,8 @@ import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.RootFile
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.tasks.AppActionWork
-import com.machiav3lli.backup.utils.CIPHER_ALGORITHM
-import com.machiav3lli.backup.utils.CryptoSetupException
+import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
-import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.encryptStream
-import com.machiav3lli.backup.utils.getCompressionLevel
-import com.machiav3lli.backup.utils.getCryptoSalt
-import com.machiav3lli.backup.utils.getDefaultSharedPreferences
-import com.machiav3lli.backup.utils.getEncryptionPassword
-import com.machiav3lli.backup.utils.initIv
-import com.machiav3lli.backup.utils.isCompressionEnabled
-import com.machiav3lli.backup.utils.isEncryptionEnabled
-import com.machiav3lli.backup.utils.isPauseApps
-import com.machiav3lli.backup.utils.suAddFiles
-import com.machiav3lli.backup.utils.suCopyFileToDocument
 import com.topjohnwu.superuser.ShellUtils
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
@@ -559,7 +536,13 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     ): Boolean {
         val dataType = BACKUP_DIR_DATA
         Timber.i(LOG_START_BACKUP, app.packageName, dataType)
-        return genericBackupData(dataType, backupInstanceDir, app.dataPath, true, iv)
+        return genericBackupData(
+            dataType,
+            backupInstanceDir,
+            app.dataPath,
+            OABX.context.isCompressionEnabled(),
+            iv
+        )
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
@@ -575,7 +558,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 dataType,
                 backupInstanceDir,
                 app.getExternalDataPath(context),
-                true,
+                OABX.context.isCompressionEnabled(),
                 iv
             )
         } catch (ex: BackupFailedException) {
@@ -597,7 +580,13 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         val dataType = BACKUP_DIR_OBB_FILES
         Timber.i(LOG_START_BACKUP, app.packageName, dataType)
         return try {
-            genericBackupData(dataType, backupInstanceDir, app.getObbFilesPath(context), false, iv)
+            genericBackupData(
+                dataType,
+                backupInstanceDir,
+                app.getObbFilesPath(context),
+                OABX.context.isCompressionEnabled(),
+                iv
+            )
         } catch (ex: BackupFailedException) {
             if (ex.cause is ShellCommandFailedException && isFileNotFoundException(ex.cause)) {
                 // no such data found
@@ -621,7 +610,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 dataType,
                 backupInstanceDir,
                 app.getMediaFilesPath(context),
-                false,
+                OABX.context.isCompressionEnabled(),
                 iv
             )
         } catch (ex: BackupFailedException) {
@@ -643,7 +632,13 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         val dataType = BACKUP_DIR_DEVICE_PROTECTED_FILES
         Timber.i(LOG_START_BACKUP, app.packageName, dataType)
         return try {
-            genericBackupData(dataType, backupInstanceDir, app.devicesProtectedDataPath, true, iv)
+            genericBackupData(
+                dataType,
+                backupInstanceDir,
+                app.devicesProtectedDataPath,
+                OABX.context.isCompressionEnabled(),
+                iv
+            )
         } catch (ex: BackupFailedException) {
             if (ex.cause is ShellCommandFailedException && isFileNotFoundException(ex.cause)) {
                 // no such data found
