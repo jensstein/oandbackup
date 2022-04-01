@@ -5,10 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
@@ -29,8 +26,8 @@ fun BatchPackageItem(
     onApkClick: (Package, Boolean) -> Unit = { _: Package, _: Boolean -> },
     onDataClick: (Package, Boolean) -> Unit = { _: Package, _: Boolean -> }
 ) {
-    val apkChecked = remember { mutableStateOf(isApkChecked) }
-    val dataChecked = remember { mutableStateOf(isDataChecked) }
+    var apkChecked by remember(isApkChecked) { mutableStateOf(isApkChecked) }
+    var dataChecked by remember(isDataChecked) { mutableStateOf(isDataChecked) }
     val showApk by remember(item) {
         mutableStateOf(
             when {
@@ -55,11 +52,11 @@ fun BatchPackageItem(
         containerColor = MaterialTheme.colorScheme.background,
         elevation = CardDefaults.cardElevation(4.dp),
         onClick = {
-            val checked = (apkChecked.value || !showApk) && (dataChecked.value || !showData)
-            if (showApk) apkChecked.value = !checked
-            if (showData) dataChecked.value = !checked
-            onClick(item, apkChecked.value, dataChecked.value)
-        },
+            val checked = (apkChecked || !showApk) && (dataChecked || !showData)
+            if (showApk) apkChecked = !checked
+            if (showData) dataChecked = !checked
+            onClick(item, apkChecked, dataChecked)
+        }
     ) {
         Row(
             modifier = Modifier
@@ -68,17 +65,17 @@ fun BatchPackageItem(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Checkbox(checked = apkChecked.value,
+            Checkbox(checked = apkChecked,
                 enabled = showApk,
                 onCheckedChange = {
-                    apkChecked.value = it
+                    apkChecked = it
                     onApkClick(item, it)
                 }
             )
-            Checkbox(checked = dataChecked.value,
+            Checkbox(checked = dataChecked,
                 enabled = showData,
                 onCheckedChange = {
-                    dataChecked.value = it
+                    dataChecked = it
                     onDataClick(item, it)
                 }
             )

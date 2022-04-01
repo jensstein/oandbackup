@@ -21,16 +21,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.SearchView
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.machiav3lli.backup.*
+import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.FragmentBatchBinding
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
@@ -39,8 +50,12 @@ import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
+import com.machiav3lli.backup.ui.compose.item.ActionButton
+import com.machiav3lli.backup.ui.compose.item.StateChip
 import com.machiav3lli.backup.ui.compose.recycler.BatchPackageRecycler
+import com.machiav3lli.backup.ui.compose.theme.APK
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
+import com.machiav3lli.backup.ui.compose.theme.Data
 import com.machiav3lli.backup.utils.*
 import com.machiav3lli.backup.viewmodels.BatchViewModel
 import timber.log.Timber
@@ -274,17 +289,40 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                         .find { it.contains(query, true) } != null
                 includedBoolean && queryBoolean
             }
+            var allApkChecked by remember {
+                mutableStateOf(viewModel.apkCheckedList.size == list?.size)
+            }
+            var allDataChecked by remember {
+                mutableStateOf(viewModel.dataCheckedList.size == list?.size)
+            }
 
             AppTheme(
                 darkTheme = isSystemInDarkTheme()
             ) {
                 Scaffold {
-                    BatchPackageRecycler(
-                        productsList = list?.filter(filterPredicate),
-                        !backupBoolean,
-                        viewModel.apkCheckedList,
-                        viewModel.dataCheckedList,
-                        onClick = { item, checkApk, checkData ->
+                    Column(modifier = Modifier.fillMaxSize()) {
+
+                        BatchPackageRecycler(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth(),
+                            productsList = list?.filter(filterPredicate),
+                            !backupBoolean,
+                            viewModel.apkCheckedList,
+                            viewModel.dataCheckedList,
+                            onApkClick = { item: Package, b: Boolean ->
+                                if (b) viewModel.apkCheckedList.add(item.packageName)
+                                else viewModel.apkCheckedList.remove(item.packageName)
+                                allApkChecked =
+                                    viewModel.apkCheckedList.size == viewModel.filteredList.value
+                                        ?.filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }?.size
+                            }, onDataClick = { item: Package, b: Boolean ->
+                                if (b) viewModel.dataCheckedList.add(item.packageName)
+                                else viewModel.dataCheckedList.remove(item.packageName)
+                                allDataChecked =
+                                    viewModel.dataCheckedList.size == viewModel.filteredList.value
+                                        ?.filter { ai -> backupBoolean || ai.hasData }?.size
+                            }) { item, checkApk, checkData ->
                             when (checkApk) {
                                 true -> viewModel.apkCheckedList.add(item.packageName)
                                 else -> viewModel.apkCheckedList.remove(item.packageName)
@@ -293,22 +331,71 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                                 true -> viewModel.dataCheckedList.add(item.packageName)
                                 else -> viewModel.dataCheckedList.remove(item.packageName)
                             }
-                        },
-                        onApkClick = { item: Package, b: Boolean ->
-                            if (b) viewModel.apkCheckedList.add(item.packageName)
-                            else viewModel.apkCheckedList.remove(item.packageName)
-                            binding.apkBatch.isChecked =
+                            allApkChecked =
                                 viewModel.apkCheckedList.size == viewModel.filteredList.value
                                     ?.filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }?.size
-                        },
-                        onDataClick = { item: Package, b: Boolean ->
-                            if (b) viewModel.dataCheckedList.add(item.packageName)
-                            else viewModel.dataCheckedList.remove(item.packageName)
-                            binding.dataBatch.isChecked =
+                            allDataChecked =
                                 viewModel.dataCheckedList.size == viewModel.filteredList.value
                                     ?.filter { ai -> backupBoolean || ai.hasData }?.size
-                        },
-                    )
+                        }
+                        Row(
+                            modifier = Modifier
+                                .background(MaterialTheme.colorScheme.surface)
+                                .padding(horizontal = 8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            StateChip(
+                                modifier = Modifier.padding(start = 8.dp, end = 4.dp),
+                                icon = painterResource(id = R.drawable.ic_apk),
+                                text = stringResource(id = R.string.all_apk),
+                                checked = allApkChecked,
+                                color = APK
+                            ) {
+                                val checkBoolean = !allApkChecked
+                                allApkChecked = checkBoolean
+                                if (checkBoolean)
+                                    viewModel.apkCheckedList.addAll(
+                                        viewModel.filteredList.value
+                                            ?.filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }
+                                            ?.mapNotNull(Package::packageName).orEmpty()
+                                    )
+                                else
+                                    viewModel.apkCheckedList.clear()
+                                redrawList(
+                                    viewModel.filteredList.value,
+                                    viewModel.searchQuery.value
+                                )
+                            }
+                            StateChip(
+                                icon = painterResource(id = R.drawable.ic_data),
+                                text = stringResource(id = R.string.all_data),
+                                checked = allDataChecked,
+                                color = Data
+                            ) {
+                                val checkBoolean = !allDataChecked
+                                allDataChecked = checkBoolean
+                                if (checkBoolean)
+                                    viewModel.dataCheckedList.addAll(
+                                        viewModel.filteredList.value
+                                            ?.filter { ai -> backupBoolean || ai.hasData }
+                                            ?.mapNotNull(Package::packageName).orEmpty()
+                                    )
+                                else
+                                    viewModel.dataCheckedList.clear()
+                                redrawList(
+                                    viewModel.filteredList.value,
+                                    viewModel.searchQuery.value
+                                )
+                            }
+                            ActionButton(
+                                modifier = Modifier.weight(1f),
+                                text = stringResource(id = if (backupBoolean) R.string.backup else R.string.restore),
+                                positive = true
+                            ) {
+                                onClickBatchAction(backupBoolean)
+                            }
+                        }
+                    }
                 }
             }
         }

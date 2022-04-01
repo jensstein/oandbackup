@@ -26,8 +26,8 @@ import com.machiav3lli.backup.items.Package
 
 class BatchViewModel(appContext: Application) : AndroidViewModel(appContext) {
     val filteredList: MutableLiveData<List<Package>?> = MutableLiveData()
-    val apkCheckedList = mutableListOf<String>()
-    val dataCheckedList = mutableListOf<String>()
+    val apkCheckedList = mutableSetOf<String>()
+    val dataCheckedList = mutableSetOf<String>()
     val refreshNow = MutableLiveData<Boolean>()
     val searchQuery = MutableLiveData<String>()
 
