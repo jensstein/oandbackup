@@ -32,6 +32,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_CATCHUNCAUGHT
+import com.machiav3lli.backup.PREFS_MAXCRASHLINES
 import com.machiav3lli.backup.PREFS_SKIPPEDENCRYPTION
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ActivityMainXBinding
