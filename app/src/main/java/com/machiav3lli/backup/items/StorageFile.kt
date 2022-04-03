@@ -153,6 +153,9 @@ open class StorageFile {
     val isDirectory: Boolean
         get() = file?.isDirectory ?: context?.let { context -> _uri?.isDirectory(context) } ?: false
 
+    val isPropertyFile: Boolean
+        get() = name?.endsWith(".properties") ?: false
+
     fun exists(): Boolean =
         file?.exists() ?: context?.let { context -> _uri?.exists(context) } ?: false
 

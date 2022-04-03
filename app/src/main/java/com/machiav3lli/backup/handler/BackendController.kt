@@ -31,7 +31,9 @@ import com.machiav3lli.backup.MAIN_FILTER_USER
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.ignoredPackages
 import com.machiav3lli.backup.dbs.dao.AppInfoDao
+import com.machiav3lli.backup.dbs.dao.BackupDao
 import com.machiav3lli.backup.dbs.entity.AppInfo
+import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
@@ -280,6 +282,40 @@ fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
 
     val afterAllTime = System.currentTimeMillis()
     OABX.activity?.showToast("all: ${((afterAllTime - startTime) / 1000 + 0.5).toInt()} sec")
+}
+
+fun Context.updateBackupTable(backupDao: BackupDao) {
+    val directoriesInBackupRoot = getDirectoriesInBackupRoot()
+    val backupList = mutableListOf<Backup>()
+    directoriesInBackupRoot
+        .filterNot {
+            it.name?.let { name ->
+                name == EXPORTS_FOLDER_NAME || name == LOG_FOLDER_NAME
+            } ?: true
+        }.map {
+            it.listFiles()
+                .filter(StorageFile::isPropertyFile)
+                .forEach { propFile ->
+                    try {
+                        Backup.createFrom(propFile)?.let(backupList::add)
+                    } catch (e: Backup.BrokenBackupException) {
+                        val message =
+                            "Incomplete backup or wrong structure found in $propFile"
+                        Timber.w(message)
+                    } catch (e: NullPointerException) {
+                        val message =
+                            "(Null) Incomplete backup or wrong structure found in $propFile"
+                        Timber.w(message)
+                    } catch (e: Throwable) {
+                        val message =
+                            "(catchall) Incomplete backup or wrong structure found in $propFile"
+                        LogsHandler.unhandledException(e, message)
+                    }
+                }
+        }
+
+    backupDao.emptyTable()
+    backupDao.insert()
 }
 
 @Throws(
