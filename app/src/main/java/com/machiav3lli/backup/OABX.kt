@@ -21,6 +21,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.PowerManager
 import android.util.LruCache
 import com.machiav3lli.backup.activities.MainActivityX
@@ -161,6 +162,10 @@ class OABX : Application() {
                     theWakeLock?.release()
                 }
             }
+        }
+
+        fun minSDK(sdk: Int): Boolean {
+            return Build.VERSION.SDK_INT >= sdk
         }
     }
 }
