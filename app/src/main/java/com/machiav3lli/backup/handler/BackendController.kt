@@ -55,7 +55,7 @@ List of packages to be ignored for said reasons
 
 // TODO respect special filter
 fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
-    packageManager.getInstalledPackages(0)
+    packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS)
         .filter { packageInfo: PackageInfo ->
             val isSystem =
                 packageInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == ApplicationInfo.FLAG_SYSTEM
@@ -82,7 +82,7 @@ fun Context.getPackageList(
     val includeSpecial = specialBackupsEnabled
     val pm = packageManager
     val backupRoot = getBackupDir()
-    val packageInfoList = pm.getInstalledPackages(0)
+    val packageInfoList = pm.getInstalledPackages(PackageManager.GET_PERMISSIONS)
     val packageList = packageInfoList
         .filterNotNull()
         .filterNot { it.packageName.matches(ignoredPackages) || blockList.contains(it.packageName) }
@@ -231,7 +231,7 @@ fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
     val startTime = System.currentTimeMillis()
     invalidateCache()
     val pm = packageManager
-    val installedAppList = pm.getInstalledPackages(0)
+    val installedAppList = pm.getInstalledPackages(PackageManager.GET_PERMISSIONS)
     val installedAppNames = installedAppList.map { it.packageName }.toList()
     val specialList = SpecialInfo.getSpecialPackages(this).map { it.packageName }
 
