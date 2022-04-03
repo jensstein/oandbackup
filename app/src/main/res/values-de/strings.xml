@@ -180,7 +180,7 @@
     <string name="dialog_unlock">Entsperren</string>
     <string name="dialog_start">Los!</string>
     <string name="storage_access">Speicherzugriff</string>
-    <string name="welcome_to_oabx">Willkommen zu OABX!</string>
+    <string name="welcome_to_oabx">Willkommen zu Neo Backup!</string>
     <string name="intro_welcome_message">OAndBackupX ist eine Abspaltung des gut bekannten OAndBackup mit dem Ziel, es für 2020 und darüber hinaus vorzubereiten. Momentan sind die meisten Funktionen und die Benutzeroberfläche der Anwendung neu geschrieben und einige Andere wurden hinzugefügt.
 \nDie Anwendung befindet sich noch im Beta-Stadium, und es werden oft viele Rebasings durchgeführt. Bitte lesen Sie daher das Changelog mit jeder neuen Version sorgfältig durch.
 \nAlle Arten von Beiträgen sind willkommen, egal ob es sich um Übersetzungen, Ideen, Fehlermeldungen oder Code-Arbeiten handelt.

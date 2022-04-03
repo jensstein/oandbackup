@@ -197,7 +197,7 @@
     <string name="prefs_password_match_false">Les mots de passe ne correspondent pas</string>
     <string name="prefs_password_match_true">Les mots de passe correspondent</string>
     <string name="prefs_passwordconfirmation">Confirmation du mot de passe du cryptage</string>
-    <string name="welcome_to_oabx">Bienvenue sur OABX !</string>
+    <string name="welcome_to_oabx">Bienvenue sur Neo Backup !</string>
     <string name="storage_access">Accès au stockage</string>
     <string name="dialog_unlock">Déverouiller</string>
     <string name="dialog_start">Allons-y !</string>
