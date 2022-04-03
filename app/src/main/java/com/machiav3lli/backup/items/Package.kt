@@ -150,9 +150,6 @@ class Package {
         return true
     }
 
-    private val StorageFile.isPropertyFile: Boolean
-        get() = name?.endsWith(".properties") ?: false
-
     fun refreshBackupHistory(context: Context) {
         packageBackupDir.let { packageBackupDir ->
             historyCollectorThread?.interrupt()

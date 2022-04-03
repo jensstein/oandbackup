@@ -40,6 +40,7 @@ class OABX : Application() {
 
     var work: WorkHandler? = null
 
+    // TODO Add database here
     init {
         Timber.plant(object : Timber.DebugTree() {
 

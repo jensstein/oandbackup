@@ -11,12 +11,28 @@ import com.machiav3lli.backup.PREFS_SHADOWROOTFILE
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
-import com.machiav3lli.backup.utils.*
+import com.machiav3lli.backup.utils.exists
+import com.machiav3lli.backup.utils.getName
+import com.machiav3lli.backup.utils.isDirectory
+import com.machiav3lli.backup.utils.isFile
+import com.machiav3lli.backup.utils.suRecursiveCopyFilesToDocument
 import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStream
 import java.io.OutputStream
+import kotlin.collections.ArrayList
+import kotlin.collections.List
+import kotlin.collections.MutableMap
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.forEach
+import kotlin.collections.joinToString
+import kotlin.collections.listOf
+import kotlin.collections.map
+import kotlin.collections.mutableMapOf
+import kotlin.collections.set
+import kotlin.collections.toList
 
 // TODO MAYBE migrate at some point to FuckSAF
 
@@ -41,7 +57,10 @@ open class StorageFile {
         parent: StorageFile?,
         context: Context?,
         uri: Uri?,
-        allowShadowing: Boolean = OABX.prefFlag(PREFS_ALLOWSHADOWINGDEFAULT, false) // Storage files that should be shadowable should be explicitly decalred as such
+        allowShadowing: Boolean = OABX.prefFlag(
+            PREFS_ALLOWSHADOWINGDEFAULT,
+            false
+        ) // Storage files that should be shadowable should be explicitly decalred as such
     ) {
         this.parent = parent
         this.context = context

@@ -275,7 +275,9 @@ fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
             }
             .toList()
     val appInfoList =
-        installedAppList.map { AppInfo(this, it) }.toMutableList().union(missingPackagesWithBackup)
+        installedAppList.map { AppInfo(this, it) }
+            .toMutableList()
+            .union(missingPackagesWithBackup)
             .toTypedArray()
     appInfoDao.emptyTable()
     appInfoDao.replaceInsert(*appInfoList)
