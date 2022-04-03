@@ -18,11 +18,17 @@
 package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dbs.entity.AppInfo
+import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Blocklist
 import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.handler.updateAppInfoTable
@@ -38,6 +44,7 @@ class MainViewModel(
 ) : AndroidViewModel(appContext) {
 
     var packageList = MediatorLiveData<MutableList<Package>>()
+    var backupsMap = MediatorLiveData<Map<String, List<Backup>>>()
     var blocklist = MediatorLiveData<List<Blocklist>>()
     var appExtrasList: MutableList<AppExtras>
         get() = db.appExtrasDao.all
@@ -49,6 +56,9 @@ class MainViewModel(
 
     init {
         blocklist.addSource(db.blocklistDao.liveAll, blocklist::setValue)
+        backupsMap.addSource(db.backupDao.allLive) {
+            backupsMap.value = it.groupBy(Backup::packageName)
+        }
         packageList.addSource(db.appInfoDao.allLive) {
             packageList.value = it.toPackageList(
                 appContext,
