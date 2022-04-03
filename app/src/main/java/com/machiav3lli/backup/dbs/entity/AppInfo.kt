@@ -59,8 +59,8 @@ open class AppInfo : com.machiav3lli.backup.dbs.entity.PackageInfo {
         this.apkDir = pi.applicationInfo.sourceDir
         this.dataDir = pi.applicationInfo.dataDir
         this.deDataDir = pi.applicationInfo.deviceProtectedDataDir
-        permissions = pi.requestedPermissions.filterIndexed { index, permission ->
+        permissions = pi.requestedPermissions?.filterIndexed { index, permission ->
             pi.requestedPermissionsFlags[index] and PackageInfo.REQUESTED_PERMISSION_GRANTED == PackageInfo.REQUESTED_PERMISSION_GRANTED
-        }
+        }.orEmpty()
     }
 }

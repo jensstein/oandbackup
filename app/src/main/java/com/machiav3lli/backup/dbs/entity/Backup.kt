@@ -110,9 +110,9 @@ data class Backup constructor(
         cipherType = cipherType,
         iv = iv,
         cpuArch = cpuArch,
-        permissions = pi.requestedPermissions.filterIndexed { i, permission ->
+        permissions = pi.requestedPermissions?.filterIndexed { i, permission ->
             pi.requestedPermissionsFlags[i] and PackageInfo.REQUESTED_PERMISSION_GRANTED == PackageInfo.REQUESTED_PERMISSION_GRANTED
-        }
+        }.orEmpty()
     )
 
     constructor(
