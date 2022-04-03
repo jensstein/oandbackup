@@ -28,6 +28,7 @@ open class AppInfo : com.machiav3lli.backup.dbs.entity.PackageInfo {
     var apkDir: String? = ""
     var dataDir: String? = ""
     var deDataDir: String? = ""
+    var permissions: List<String> = listOf()
 
     constructor(
         packageName: String,
@@ -37,7 +38,8 @@ open class AppInfo : com.machiav3lli.backup.dbs.entity.PackageInfo {
         profileId: Int,
         sourceDir: String?,
         splitSourceDirs: Array<String> = arrayOf(),
-        isSystem: Boolean
+        isSystem: Boolean,
+        permissions: List<String>
     ) : super(
         packageName,
         packageLabel,
@@ -46,8 +48,10 @@ open class AppInfo : com.machiav3lli.backup.dbs.entity.PackageInfo {
         profileId,
         sourceDir,
         splitSourceDirs,
-        isSystem
-    )
+        isSystem,
+    ) {
+        this.permissions = permissions
+    }
 
     constructor(context: Context, pi: PackageInfo) : super(context, pi) {
         this.installed = true
@@ -55,5 +59,8 @@ open class AppInfo : com.machiav3lli.backup.dbs.entity.PackageInfo {
         this.apkDir = pi.applicationInfo.sourceDir
         this.dataDir = pi.applicationInfo.dataDir
         this.deDataDir = pi.applicationInfo.deviceProtectedDataDir
+        permissions = pi.requestedPermissions.filterIndexed { index, permission ->
+            pi.requestedPermissionsFlags[index] and PackageInfo.REQUESTED_PERMISSION_GRANTED == PackageInfo.REQUESTED_PERMISSION_GRANTED
+        }
     }
 }

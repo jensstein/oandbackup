@@ -34,7 +34,7 @@ import com.machiav3lli.backup.dbs.entity.*
         AppInfo::class,
         SpecialInfo::class,
         Backup::class],
-    version = 4,
+    version = 5,
     exportSchema = true,
     autoMigrations = []
 )

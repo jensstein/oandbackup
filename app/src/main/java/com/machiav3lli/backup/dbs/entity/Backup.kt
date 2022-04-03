@@ -110,11 +110,8 @@ data class Backup constructor(
         cipherType = cipherType,
         iv = iv,
         cpuArch = cpuArch,
-        permissions = pi.requestedPermissions.mapIndexedNotNull { i, permission ->
-            if ((pi.requestedPermissionsFlags[i] and PackageInfo.REQUESTED_PERMISSION_GRANTED) != 0)
-                permission
-            else
-                null
+        permissions = pi.requestedPermissions.filterIndexed { i, permission ->
+            pi.requestedPermissionsFlags[i] and PackageInfo.REQUESTED_PERMISSION_GRANTED == PackageInfo.REQUESTED_PERMISSION_GRANTED
         }
     )
 
@@ -173,7 +170,8 @@ data class Backup constructor(
         profileId,
         sourceDir,
         splitSourceDirs,
-        isSystem
+        isSystem,
+        permissions
     )
 
     override fun toString(): String = "Backup{" +
