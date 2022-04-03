@@ -122,7 +122,7 @@ fun Context.getPackageList(
     val specialList = mutableListOf<String>()
     if (includeSpecial) {
         SpecialInfo.getSpecialPackages(this).forEach {
-            packageList.add(it)
+            if (!blockList.contains(it.packageName)) packageList.add(it)
             specialList.add(it.packageName)
         }
     }
@@ -188,7 +188,7 @@ fun List<AppInfo>.toPackageList(
     val specialList = mutableListOf<String>()
     if (includeSpecial) {
         SpecialInfo.getSpecialPackages(context).forEach {
-            packageList.add(it)
+            if (!blockList.contains(it.packageName)) packageList.add(it)
             specialList.add(it.packageName)
         }
     }
