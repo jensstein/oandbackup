@@ -29,9 +29,12 @@ const val BACKUP_INSTANCE_DIR = "%s-user_%s"
 const val EXPORTS_INSTANCE = "%s.scheds"
 
 const val SCHEDULES_DB_NAME = "schedules.db"
-const val BLOCKLIST_DB_NAME = "blocklist.db"
-const val APPEXTRAS_DB_NAME = "appextras.db"
 const val PACKAGES_LIST_GLOBAL_ID = -1L
+
+const val ACTION_CANCEL = "cancel"
+const val ACTION_SCHEDULE = "schedule"
+const val ACTION_RESCHEDULE = "reschedule"
+const val ACTION_CRASH = "crash"
 
 const val PREFS_SORT_FILTER = "sortFilter"
 const val PREFS_SORT_ORDER = "sortOrder"

@@ -43,7 +43,7 @@ class MainViewModel(
         get() = db.appExtrasDao.all
         set(value) {
             db.appExtrasDao.deleteAll()
-            value.forEach { db.appExtrasDao.insert(it) }
+            db.appExtrasDao.insert(*value.toTypedArray())
         }
     val refreshNow = MutableLiveData<Boolean>()
 

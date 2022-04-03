@@ -124,7 +124,7 @@ fun Context.setEncryptionPasswordConfirmation(value: String) =
 
 fun Context.isCompressionEnabled(): Boolean =
     getCompressionLevel() > 0
-        // && compression algorithm != null
+// && compression algorithm != null
 
 fun Context.getCompressionLevel() =
     getDefaultSharedPreferences().getInt(PREFS_COMPRESSION_LEVEL, 5)
@@ -418,7 +418,7 @@ val Context.checkUsageStatsPermission: Boolean
                     packageName
                 )
             else ->
-                appOps.checkOpNoThrow(  //TODO 'checkOpNoThrow(String, Int, String): Int' is deprecated. Deprecated in Java
+                appOps.checkOpNoThrow(  //TODO 'checkOpNoThrow(String, Int, String): Int' is deprecated. Deprecated in Java. @machiav3lli not replaceable without increasing minSDK as the two functions have different minSDK
                     AppOpsManager.OPSTR_GET_USAGE_STATS,
                     Process.myUid(),
                     packageName

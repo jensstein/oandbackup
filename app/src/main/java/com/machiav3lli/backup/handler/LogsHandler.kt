@@ -105,6 +105,11 @@ class LogsHandler(var context: Context) {
         fun stackTrace(e: Throwable) = e.stackTrace.joinToString("\nat ", "at ")
         fun message(e: Throwable, backTrace: Boolean = false) =
                 "${e::class.simpleName}${
+                    if(e.message != null)
+                        "\n${e.message}"
+                    else
+                        ""
+                }${
                     if(e.cause != null)
                         "\ncause: ${e.cause}" 
                     else

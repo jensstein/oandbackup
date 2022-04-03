@@ -29,6 +29,8 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.Observer
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
+import com.machiav3lli.backup.ACTION_CANCEL
+import com.machiav3lli.backup.ACTION_SCHEDULE
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_USEFOREGROUND
@@ -106,23 +108,22 @@ open class ScheduleService : Service() {
         Timber.i(message)
 
         if (intent != null) {
-            val action = intent.action
-            when (action) {
-                "cancel"   -> {
+            when (val action = intent.action) {
+                ACTION_CANCEL -> {
                     Timber.i("action $action")
                     OABX.work.cancel(name)
                     OABX.wakelock(false)
                     Timber.d("%%%%% service stop")
                     stopSelf()
                 }
-                "schedule" -> {
+                ACTION_SCHEDULE -> {
                     // scheduleId already read from extras
                     Timber.i("action $action")
                 }
-                null       -> {
+                null -> {
                     // no action = standard action, simply continue with extra data
                 }
-                else       -> {
+                else -> {
                     Timber.d("action $action unknown, ignored")
                     //OABX.wakelock(false)
                     //return START_NOT_STICKY
@@ -263,7 +264,7 @@ open class ScheduleService : Service() {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
         val cancelIntent = Intent(this, ScheduleService::class.java).apply {
-            action = "cancel"
+            action = ACTION_CANCEL
         }
         val cancelPendingIntent = PendingIntent.getBroadcast(
             this,
