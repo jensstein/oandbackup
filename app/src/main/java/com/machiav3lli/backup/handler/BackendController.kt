@@ -24,7 +24,11 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Process
-import com.machiav3lli.backup.*
+import com.machiav3lli.backup.EXPORTS_FOLDER_NAME
+import com.machiav3lli.backup.LOG_FOLDER_NAME
+import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
+import com.machiav3lli.backup.MAIN_FILTER_USER
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.ignoredPackages
 import com.machiav3lli.backup.dbs.dao.AppInfoDao
 import com.machiav3lli.backup.dbs.entity.AppInfo
@@ -33,7 +37,11 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
-import com.machiav3lli.backup.utils.*
+import com.machiav3lli.backup.utils.FileUtils
+import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
+import com.machiav3lli.backup.utils.getBackupDir
+import com.machiav3lli.backup.utils.showToast
+import com.machiav3lli.backup.utils.specialBackupsEnabled
 import timber.log.Timber
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -268,7 +276,7 @@ fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
         installedAppList.map { AppInfo(this, it) }.toMutableList().union(missingPackagesWithBackup)
             .toTypedArray()
     appInfoDao.emptyTable()
-    appInfoDao.insert(*appInfoList)
+    appInfoDao.replaceInsert(*appInfoList)
 
     val afterAllTime = System.currentTimeMillis()
     OABX.activity?.showToast("all: ${((afterAllTime - startTime) / 1000 + 0.5).toInt()} sec")
