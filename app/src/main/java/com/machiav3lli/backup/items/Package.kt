@@ -235,7 +235,7 @@ class Package {
         get() = (isApp && (packageInfo as AppInfo).installed) || packageInfo.isSpecial
 
     val isDisabled: Boolean
-        get() = isInstalled && !isSpecial && (packageInfo is AppInfo && (packageInfo as AppInfo).enabled)
+        get() = isInstalled && !isSpecial && !(packageInfo is AppInfo && (packageInfo as AppInfo).enabled)
 
     val isSystem: Boolean
         get() = packageInfo.isSystem || packageInfo.isSpecial
