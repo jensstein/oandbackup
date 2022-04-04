@@ -21,18 +21,9 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStream
 import java.io.OutputStream
-import kotlin.collections.ArrayList
-import kotlin.collections.List
-import kotlin.collections.MutableMap
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.collections.forEach
-import kotlin.collections.joinToString
-import kotlin.collections.listOf
-import kotlin.collections.map
-import kotlin.collections.mutableMapOf
 import kotlin.collections.set
-import kotlin.collections.toList
 
 // TODO MAYBE migrate at some point to FuckSAF
 
@@ -90,13 +81,13 @@ open class StorageFile {
                                 // e.g. /storage/emulated/$user
                                 val possiblePaths = listOf(
                                     "/mnt/pass_through/$user/$storage/$subpath",
-                                    "/mnt/media_rw/$storage/$subpath",
                                     "/mnt/runtime/full/$storage/$subpath",
                                     "/mnt/runtime/default/$storage/$subpath",
 
                                     // lockups! primary links to /storage/emulated/$user and all self etc.
                                     //"/storage/$storage/$subpath",
                                     //"/storage/self/$storage/$subpath",
+                                    //"/mnt/media_rw/$storage/$subpath",
                                     //"/mnt/runtime/default/self/$storage/$subpath"
                                     //"/mnt/user/$user/$storage/$subpath",
                                     //"/mnt/user/$user/self/$storage/$subpath",
