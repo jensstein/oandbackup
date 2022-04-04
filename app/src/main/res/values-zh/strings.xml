@@ -6,7 +6,7 @@
     <string name="restoreConfirmation">确认还原以下应用吗？</string>
     <string name="handleApk">APK</string>
     <string name="handleData">数据</string>
-    <string name="handleBoth">同时</string>
+    <string name="handleBoth">APK+数据</string>
     <string name="radio_all">所有的应用</string>
     <string name="radio_user">用户应用</string>
     <string name="radio_system">系统应用</string>
@@ -114,12 +114,12 @@
     <string name="sched_timeLeft">剩余时间：</string>
     <string name="sched_excludeSystemCheckBox">排除系统应用</string>
     <string name="sched_blocklist">黑名单</string>
-    <string name="spec_accounts">账户</string>
-    <string name="spec_appwidgets">应用微件</string>
-    <string name="spec_bluetooth">蓝牙</string>
-    <string name="spec_data">数据使用和政策</string>
+    <string name="spec_accounts">系统账户</string>
+    <string name="spec_appwidgets">桌面小部件</string>
+    <string name="spec_bluetooth">蓝牙设置</string>
+    <string name="spec_data">系统的使用数据和策略</string>
     <string name="spec_wallpaper">壁纸</string>
-    <string name="spec_wifiAccessPoints">无线接入点</string>
+    <string name="spec_wifiAccessPoints">无线接入点数据</string>
     <!-- filebrowser_createDirectoryError: an error occured while trying to create the directory. format: string + " " + directory name -->
     <string name="error_creating_notification_channel">无法创建通知</string>
     <string name="error_updating_schedule_mode">更新定时任务 %2$d 的 %1$s 出错</string>
@@ -163,7 +163,7 @@
     <string name="data_size">数据大小：</string>
     <string name="cache_size">缓存大小：</string>
     <string name="help_license">许可证</string>
-    <string name="intro_permission_batteryoptimization">定时任务备份可能会遇到一些问题，它是由一些采用激进电池优化的 ROM(例如 MIUI) 产生的。当然即使在 vanilla AOSP 上也可能出现这种问题。</string>
+    <string name="intro_permission_batteryoptimization">定时备份任务可能会遇到一些问题，它是由一些采用激进电池优化的 ROM(例如 MIUI) 导致的。当然即使在 vanilla AOSP 上也有可能出现这种问题。</string>
     <string name="intro_permission_usageaccess">该应用需要此权限才能获得统计信息，从而获得应用的缓存及数据大小。</string>
     <string name="intro_permission_storage">本应用程序使用存储的读/写权限来访问外部存储，从而获得备份其他应用的外部数据的权限。</string>
     <string name="intro_welcome_message">OAndBackupX 是 OAndBackup 的分支，旨在让其重返2020年+。目前该应用的大部分功能和用户界面都被重写，同时我们也加入了一些新的功能。
@@ -180,7 +180,7 @@
     <string name="sort_and_filter">排序&amp;筛选</string>
     <string name="enable_encryption_message">在设备上不加密保存你的数据是很不安全的。为了你的数据的安全，请启用加密并设置一个密码。</string>
     <string name="enable_encryption_title">数据加密</string>
-    <string name="apptype_special">特别备份</string>
+    <string name="apptype_special">特殊备份</string>
     <string name="sortDataSize">数据大小</string>
     <string name="dialog_unlock">解锁</string>
     <string name="dialog_start">让我们开始吧！</string>
@@ -241,7 +241,7 @@
     </plurals>
     <string name="forceKillMessage">你确定要强制停止该应用吗？</string>
     <string name="sched_name">名称：</string>
-    <string name="prefs_enablespecial_summary">这个模式仍然在测试中，它很可能导致应用启动失败。始终欢迎反馈此模式相关信息。</string>
+    <string name="prefs_enablespecial_summary">这些备份模式仍然在测试中，它很可能导致系统应用出现问题。始终欢迎反馈此模式相关信息。</string>
     <string name="copyOwnApkFailed">未能将应用的 APK 复制到备份目录</string>
     <string name="copyOwnApkSuccess">已将应用程序的 APK 复制到备份目录</string>
     <string name="prefs_devicelock_summary">使用设备凭据保护此应用程序</string>
@@ -274,7 +274,7 @@
     <string name="global_blocklist_add">添加到全局拦截列表</string>
     <string name="forceKill">强制停止</string>
     <string name="backup_all_updated">备份全部已更新的应用</string>
-    <string name="prefs_secondary_color">次生色</string>
+    <string name="prefs_secondary_color">副主题色</string>
     <string name="prefs_accent_color">主题色</string>
     <string name="prefs_secondary_7">深蓝色</string>
     <string name="prefs_secondary_6">深灰色</string>
@@ -294,7 +294,7 @@
     <string name="prefs_accent_0">红色</string>
     <string name="error_encryptionpassword">加密密码为空或设置错误！</string>
     <string name="title_tags">标签：</string>
-    <string name="title_note">附注：</string>
+    <string name="title_note">备注：</string>
     <string name="sortBackupDate">备份日期</string>
     <string name="prefs_mediadata_summary">备份和恢复放置在外部存储设备上的应用程序媒体文件（例如 /storage/emulated/0/Android/media/)</string>
     <string name="prefs_mediadata">备份媒体文件</string>
@@ -309,7 +309,7 @@
     <string name="prefs_compression_level">压缩级别</string>
     <string name="prefs_compression_level_summary">压缩级别越低，压缩速度越快，但文件越大。级别越高，压缩效果越好，但是会花费更多的时间来压缩。</string>
     <string name="error_pmDataIncompleteException_dataRestoreFailed">尚未恢复应用数据。</string>
-    <string name="spec_calllogsjson">通话记录 JSON</string>
+    <string name="spec_calllogsjson">通话记录的JSON数据</string>
     <string name="calllogs_permission_title">通话记录权限</string>
     <string name="grant_calllogs_message">要能备份/还原你的通话记录，这是必要的权限。</string>
     <string name="contacts_permission_title">联系人权限</string>
@@ -319,11 +319,11 @@
     <string name="batch">批量</string>
     <string name="smsmms_permission_title">短信/彩信权限</string>
     <string name="grant_smsmms_message">要能备份/还原你的短信/彩信，这是必要的权限。</string>
-    <string name="spec_smsmmsjson">短信/彩信 JSON</string>
+    <string name="spec_smsmmsjson">短信/彩信的JSON数据</string>
     <string name="grant_contacts_message">要能将联系人匹配到短信/彩信，这是必要的权限。</string>
     <string name="intro_permission_smsmms">本应用需要这个权限才能备份/恢复你的短信/彩信。</string>
     <string name="intro_permission_calllogs">本应用需要此权限才能备份/还原你的通话记录。</string>
-    <string name="spec_fingerprint">指纹</string>
+    <string name="spec_fingerprint">指纹数据</string>
     <string name="loading_list">正在加载应用列表…</string>
     <string name="delete">删除</string>
 </resources>
