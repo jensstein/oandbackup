@@ -32,6 +32,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -46,7 +47,7 @@ data class Backup constructor(
     var versionName: String?,
     var versionCode: Int,
     var profileId: Int,
-    var sourceDir: String?,
+    var sourceDir: String? = null,
     var splitSourceDirs: Array<String> = arrayOf(),
     var isSystem: Boolean,
     @Serializable(with = LocalDateTimeSerializer::class)
@@ -254,7 +255,10 @@ data class Backup constructor(
     ) : Exception(message, cause)
 
     companion object {
-        fun fromJson(json: String) = Json.decodeFromString<Backup>(json)
+        fun fromJson(json: String): Backup? {
+            Timber.d("json: $json")
+            return Json.decodeFromString<Backup>(json)
+        }
 
         fun createFrom(propertiesFile: StorageFile): Backup? = try {
             fromJson(propertiesFile.inputStream()!!.reader().readText())
