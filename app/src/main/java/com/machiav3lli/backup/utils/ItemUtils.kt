@@ -108,6 +108,9 @@ fun getStats(appsList: MutableList<Package>): Triple<Int, Int, Int> {
     return Triple(appsList.size, backupsNumber, updatedNumber)
 }
 
+fun PackageManager.getInstalledPackagesWithPermissions() =
+    getInstalledPackages(0).map { getPackageInfo(it.packageName, PackageManager.GET_PERMISSIONS) }
+
 fun List<AppExtras>.get(packageName: String) =
     find { it.packageName == packageName } ?: AppExtras(packageName)
 

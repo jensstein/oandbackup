@@ -42,6 +42,7 @@ import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupDir
+import com.machiav3lli.backup.utils.getInstalledPackagesWithPermissions
 import com.machiav3lli.backup.utils.showToast
 import com.machiav3lli.backup.utils.specialBackupsEnabled
 import timber.log.Timber
@@ -55,7 +56,7 @@ List of packages to be ignored for said reasons
 
 // TODO respect special filter
 fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
-    packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS)
+    packageManager.getInstalledPackagesWithPermissions()
         .filter { packageInfo: PackageInfo ->
             val isSystem =
                 packageInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == ApplicationInfo.FLAG_SYSTEM
@@ -82,7 +83,7 @@ fun Context.getPackageList(
     val includeSpecial = specialBackupsEnabled
     val pm = packageManager
     val backupRoot = getBackupDir()
-    val packageInfoList = pm.getInstalledPackages(PackageManager.GET_PERMISSIONS)
+    val packageInfoList = pm.getInstalledPackagesWithPermissions()
     val packageList = packageInfoList
         .filterNotNull()
         .filterNot { it.packageName.matches(ignoredPackages) || blockList.contains(it.packageName) }
@@ -231,7 +232,7 @@ fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
     val startTime = System.currentTimeMillis()
     invalidateCache()
     val pm = packageManager
-    val installedAppList = pm.getInstalledPackages(PackageManager.GET_PERMISSIONS)
+    val installedAppList = pm.getInstalledPackagesWithPermissions()
     val installedAppNames = installedAppList.map { it.packageName }.toList()
     val specialList = SpecialInfo.getSpecialPackages(this).map { it.packageName }
 
