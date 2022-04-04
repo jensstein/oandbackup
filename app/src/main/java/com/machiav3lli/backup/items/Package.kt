@@ -105,7 +105,7 @@ class Package {
                     .packageInfo
             } catch (e: Throwable) {
                 Timber.i("$packageName is not installed")
-                if (this.backupHistory.isNullOrEmpty()) {
+                if (this.backupHistory.isEmpty()) {
                     throw AssertionError(
                         "Backup History is empty and package is not installed. The package is completely unknown?",
                         e
