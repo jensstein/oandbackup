@@ -97,7 +97,7 @@
     <string name="prefs_externaldata_summary">备份/还原放置在外部存储（例如 /storage/emulated/0/Android/data/）上的数据</string>
     <string name="prefs_password_summary">设为空表示不加密</string>
     <string name="prefs_encryption_summary">启用以加密数据备份</string>
-    <string name="prefs_excludecache_summary">从数据备份中排除应用程序的缓存</string>
+    <string name="prefs_excludecache_summary">数据备份时排除应用程序的缓存</string>
     <string name="prefs_acquirewakelock_summary">在批处理操作期间获取一个唤醒锁以防止睡眠。这将大大加快备份和还原的速度，但会消耗更多电量。</string>
     <string name="prefs_oldbackups_summary">指定多少天后属于“显示旧备份”筛选的天数。</string>
     <string name="prefs_copyselfapk_summary">将 OAndBackupX 的一份副本放在备份文件夹内</string>
@@ -108,7 +108,7 @@
     <string name="sched_interval">间隔天数:</string>
     <string name="sched_hourOfDay">执行时间:</string>
     <string name="sched_checkbox">启用</string>
-    <string name="sched_activateButton">现在开始</string>
+    <string name="sched_activateButton">立即执行</string>
     <string name="sched_startingbackup">正在开始定时备份…</string>
     <string name="sched_mode">备份模式:</string>
     <string name="sched_timeLeft">剩余时间：</string>
@@ -154,7 +154,7 @@
     <string name="ignore_battery_optimization_title">电池优化</string>
     <string name="ignore_battery_optimization_message">备份有时会意外停止。为避免这种情况，请关闭电池优化</string>
     <string name="ignore_battery_optimization_not_supported">此设备不支持忽略电池优化！</string>
-    <string name="failed_unzipping">解压数据时出错，请检查加密密码！</string>
+    <string name="failed_unzipping">解压数据时出错，请检查加密密码是否正确！</string>
     <string name="split_apks">拆分的APKs：</string>
     <string name="backup_filters">备份筛选：</string>
     <string name="grant_usage_access_title">允许查看使用情况</string>
@@ -163,9 +163,9 @@
     <string name="data_size">数据大小：</string>
     <string name="cache_size">缓存大小：</string>
     <string name="help_license">许可证</string>
-    <string name="intro_permission_batteryoptimization">计划任务备份可能会遇到一些问题，它是由一些采用激进电池优化的 ROM(例如 MIUI) 产生的。当然即使在 vanilla AOSP 上也可能出现这种问题。</string>
+    <string name="intro_permission_batteryoptimization">定时任务备份可能会遇到一些问题，它是由一些采用激进电池优化的 ROM(例如 MIUI) 产生的。当然即使在 vanilla AOSP 上也可能出现这种问题。</string>
     <string name="intro_permission_usageaccess">该应用需要此权限才能获得统计信息，从而获得应用的缓存及数据大小。</string>
-    <string name="intro_permission_storage">本应用程序使用存储的读/写权限来访问外部存储，从获得备份其他应用的外部数据的权限。</string>
+    <string name="intro_permission_storage">本应用程序使用存储的读/写权限来访问外部存储，从而获得备份其他应用的外部数据的权限。</string>
     <string name="intro_welcome_message">OAndBackupX 是 OAndBackup 的分支，旨在让其重返2020年+。目前该应用的大部分功能和用户界面都被重写，同时我们也加入了一些新的功能。
 \n该应用仍处于测试阶段，并且经常需要进行很多基础调整。因此请在每次发布新版本时仔细阅读更新日志。
 \n欢迎任何形式的贡献：翻译、想法、报告错误或是代码工作。
@@ -175,7 +175,7 @@
 \n•支持单独备份和还原单个应用，也支持批量备份和还原。
 \n•可以无需重启来还原系统应用，但是我们仍然建议重启。
 \n•支持计划任务，可同时添加多个计划任务，并且可以创建自定义列表。</string>
-    <string name="welcome_to_oabx">欢迎使用 OABX!</string>
+    <string name="welcome_to_oabx">欢迎使用 Neo Backup！</string>
     <string name="storage_access">访问存储空间</string>
     <string name="sort_and_filter">排序&amp;筛选</string>
     <string name="enable_encryption_message">在设备上不加密保存你的数据是很不安全的。为了你的数据的安全，请启用加密并设置一个密码。</string>
@@ -197,7 +197,7 @@
     <string name="radio_updated">已更新的应用</string>
     <string name="help_legend">图例:</string>
     <string name="msg_appkill_warning">所选的应用程序将收到停止运行的信号，它们在任务完成后将恢复运行。请在任务完成后检查已处理的应用程序(并避免在任务尚在进行时就启动它们)。</string>
-    <string name="prefs_numBackupRevisions_summary">创建新备份时，如果已有的备份数量超过了允许的最大值，则将自动删除最老的版本。将其设置为0以保留所有备份。</string>
+    <string name="prefs_numBackupRevisions_summary">创建新备份时，如果已有的备份数量超过了允许的最大值，则将自动删除最老的备份。将其设置为0以保留所有备份。</string>
     <string name="prefs_numBackupRevisions">备份修订数</string>
     <string name="prefs_stopcont_summary">仅供专家使用: 如果应用程序在备份过程中更改文件，且备份失败，这可能会有所帮助。</string>
     <string name="prefs_stopcont">备份/恢复之前强制停止应用程序进程</string>
@@ -244,7 +244,7 @@
     <string name="prefs_enablespecial_summary">这个模式仍然在测试中，它很可能导致应用启动失败。始终欢迎反馈此模式相关信息。</string>
     <string name="copyOwnApkFailed">未能将应用的 APK 复制到备份目录</string>
     <string name="copyOwnApkSuccess">已将应用程序的 APK 复制到备份目录</string>
-    <string name="prefs_devicelock_summary">使用设备凭据保护这个应用程序</string>
+    <string name="prefs_devicelock_summary">使用设备凭据保护此应用程序</string>
     <string name="prefs_devicelock">设备锁</string>
     <string name="wait_noappslist">应用列表未加载完成，请等待…</string>
     <string name="prefs_saveappslist_summary">将应用列表及其包名写入用户备份目录中的 list 文件</string>
@@ -276,22 +276,22 @@
     <string name="backup_all_updated">备份全部已更新的应用</string>
     <string name="prefs_secondary_color">次生色</string>
     <string name="prefs_accent_color">主题色</string>
-    <string name="prefs_secondary_7">天青蓝</string>
-    <string name="prefs_secondary_6">石板色</string>
-    <string name="prefs_secondary_5">火烈粉</string>
-    <string name="prefs_secondary_4">熔岩橙</string>
-    <string name="prefs_secondary_3">琥珀</string>
-    <string name="prefs_secondary_2">青柠绿</string>
-    <string name="prefs_secondary_1">水鸭色</string>
-    <string name="prefs_secondary_0">北极青</string>
-    <string name="prefs_accent_7">杏橙</string>
-    <string name="prefs_accent_6">闪电黄</string>
-    <string name="prefs_accent_5">黄绿色石灰</string>
-    <string name="prefs_accent_4">深绿</string>
-    <string name="prefs_accent_3">蓝绿</string>
-    <string name="prefs_accent_2">平静靛蓝</string>
+    <string name="prefs_secondary_7">深蓝色</string>
+    <string name="prefs_secondary_6">深灰色</string>
+    <string name="prefs_secondary_5">粉红色</string>
+    <string name="prefs_secondary_4">红色</string>
+    <string name="prefs_secondary_3">浅黄色</string>
+    <string name="prefs_secondary_2">青绿色</string>
+    <string name="prefs_secondary_1">深绿色</string>
+    <string name="prefs_secondary_0">蓝绿色</string>
+    <string name="prefs_accent_7">橙色</string>
+    <string name="prefs_accent_6">亮黄色</string>
+    <string name="prefs_accent_5">黄绿色</string>
+    <string name="prefs_accent_4">绿色</string>
+    <string name="prefs_accent_3">蓝绿色</string>
+    <string name="prefs_accent_2">深蓝色</string>
     <string name="prefs_accent_1">紫色</string>
-    <string name="prefs_accent_0">红慧星</string>
+    <string name="prefs_accent_0">红色</string>
     <string name="error_encryptionpassword">加密密码为空或设置错误！</string>
     <string name="title_tags">标签：</string>
     <string name="title_note">附注：</string>
@@ -303,8 +303,8 @@
     <string name="all_apk">检查所有 APK</string>
     <string name="all_data">检查所有数据</string>
     <string name="home">主页</string>
-    <string name="prefs_secondary_8">薄荷</string>
-    <string name="prefs_accent_8">南瓜佩拉诺</string>
+    <string name="prefs_secondary_8">浅绿色</string>
+    <string name="prefs_accent_8">浅紫色</string>
     <string name="showDisabled">已停用应用</string>
     <string name="prefs_compression_level">压缩级别</string>
     <string name="prefs_compression_level_summary">压缩级别越低，压缩速度越快，但文件越大。级别越高，压缩效果越好，但是会花费更多的时间来压缩。</string>
@@ -318,7 +318,7 @@
     <string name="finished">已完成</string>
     <string name="batch">批量</string>
     <string name="smsmms_permission_title">短信/彩信权限</string>
-    <string name="grant_smsmms_message">要备份/还原你的短信/彩信，这是必要的权限。</string>
+    <string name="grant_smsmms_message">要能备份/还原你的短信/彩信，这是必要的权限。</string>
     <string name="spec_smsmmsjson">短信/彩信 JSON</string>
     <string name="grant_contacts_message">要能将联系人匹配到短信/彩信，这是必要的权限。</string>
     <string name="intro_permission_smsmms">本应用需要这个权限才能备份/恢复你的短信/彩信。</string>
