@@ -1,12 +1,10 @@
 package tests
 
 import android.util.Log
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.machiav3lli.backup.PREFS_ENCRYPTION
 import com.machiav3lli.backup.actions.BackupAppAction
 import com.machiav3lli.backup.actions.RestoreAppAction
-import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
@@ -20,7 +18,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.BeforeClass
-import org.junit.Rule
 import org.junit.Test
 import java.io.File
 import java.text.SimpleDateFormat
@@ -143,6 +140,7 @@ class Test_BackupRestore {
                 contentCount++
             }
 
+            /*
             run {
                 val name = "..dir"
                 val dotdotdir = RootFile(dir, name)
@@ -150,6 +148,7 @@ class Test_BackupRestore {
                 checks["$name/type"] = { it.isDirectory }
                 contentCount++
             }
+            */
 
             contentLs = listContent(dir)
 
@@ -157,8 +156,12 @@ class Test_BackupRestore {
         }
     }
 
-    @get:Rule
-    var activityRule = ActivityScenarioRule(MainActivityX::class.java)
+    //val intent = Intent(ApplicationProvider.getApplicationContext(), MainActivityX::class.java)
+    //    .putExtra("title", "Testing rules!")
+
+    //@get:Rule
+    //val activityRule = activityScenarioRule<MainActivityX>( /* intent */ )
+    //var activityRule = ActivityScenarioRule(MainActivityX::class.java)
 
     lateinit var tempStorage : StorageFile
     lateinit var shellHandler : ShellHandler
@@ -168,14 +171,15 @@ class Test_BackupRestore {
     lateinit var archiveTarCmd : StorageFile
     lateinit var restoreCache : File
 
+    fun archiveTarApi(compress: Boolean) = StorageFile(backupDirTarApi, "data.tar${if (compress) ".gz" else ""}")
+    fun archiveTarCmd(compress: Boolean) = StorageFile(backupDirTarCmd, "data.tar${if (compress) ".gz" else ""}")
+
     @Before
     fun init() {
         tempStorage = StorageFile(tempDir)
         shellHandler = ShellHandler()
         backupDirTarApi = tempStorage.createDirectory("backup_tarapi")
         backupDirTarCmd = tempStorage.createDirectory("backup_tarcmd")
-        archiveTarApi = StorageFile(backupDirTarApi, "data.tar.gz")
-        archiveTarCmd = StorageFile(backupDirTarCmd, "data.tar.gz")
         //restoreCache = RootFile(tempDir, "restore").also { it.mkdirs() }
         //restoreCache = RootFile(context.cacheDir)
         restoreCache = File(context.cacheDir, "restore").also { it.mkdirs() }
@@ -209,7 +213,7 @@ class Test_BackupRestore {
         checkDirectory(testDir)
     }
 
-    fun backup() {
+    fun backup(compress: Boolean) {
         if(!backupCreated) {
             context.applicationContext.getPrivateSharedPrefs().edit().putBoolean(PREFS_ENCRYPTION, false)
             val iv = null     //initIv(CIPHER_ALGORITHM)
@@ -217,11 +221,11 @@ class Test_BackupRestore {
             val fromDir = StorageFile(testDir)
             backupAction.genericBackupDataTarApi(
                 "data", backupDirTarApi, fromDir.toString(),
-                true, iv
+                compress, iv
             )
             backupAction.genericBackupDataTarCmd(
                 "data", backupDirTarCmd, fromDir.toString(),
-                true, iv
+                compress, iv
             )
             backupCreated = true
         }
@@ -244,23 +248,26 @@ class Test_BackupRestore {
     */
 
     fun checkRestore(toType: String, fromType: String) {
-        backup()
+        val compress = false
+
+        backup(compress)
+
         val archive = if(fromType == "tarapi")
-                            archiveTarApi
+                            archiveTarApi(compress)
                         else
-                            archiveTarCmd
+                            archiveTarCmd(compress)
         val restoreAction = RestoreAppAction(context, null, shellHandler)
         val restoreDir = RootFile(tempDir, "restore_" + toType)
         restoreDir.mkdirs()
         if(toType == "tarapi")
             restoreAction.genericRestoreFromArchiveTarApi(
                 "data", archive, restoreDir.toString(),
-                true, false, null, restoreCache
+                compress, false, null, restoreCache
             )
         else
             restoreAction.genericRestoreFromArchiveTarCmd(
                 "data", archive, restoreDir.toString(),
-                true, false, null
+                compress, false, null
             )
         checkDirectory(restoreDir)
     }
