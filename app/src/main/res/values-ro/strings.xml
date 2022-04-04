@@ -125,7 +125,7 @@
     <string name="sched_excludeSystemCheckBox">Exclude aplicațiile de sistem</string>
     <string name="sortLabel">Etichetă</string>
     <string name="stats_apps">Aplicații</string>
-    <string name="loading_list">Se încarcă lista de aplicații…</string>
+    <string name="loading_list">Se încarcă lista…</string>
     <string name="prefs_encryption_summary">Activează pentru a cripta backupurile datelor</string>
     <string name="permission_not_granted">Este necesară permisiunea de a accesa spațiul de stocare extern</string>
     <string name="empty_filtered_list">Lista filtrată este goală.</string>

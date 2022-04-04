@@ -330,6 +330,6 @@
     <string name="schedule">Schedule</string>
     <string name="finished">finished</string>
     <string name="batch">Batch</string>
-    <string name="loading_list">Loading apps\' list…</string>
+    <string name="loading_list">Loading list…</string>
     <string name="delete">Delete</string>
 </resources>

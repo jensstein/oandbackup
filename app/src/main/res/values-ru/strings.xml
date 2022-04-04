@@ -334,6 +334,6 @@
     <string name="spec_calllogsjson">JSON истории звонков</string>
     <string name="schedule">Расписание</string>
     <string name="spec_fingerprint">Отпечатки пальцев</string>
-    <string name="loading_list">Загрузка списка приложений…</string>
+    <string name="loading_list">Загрузка списка…</string>
     <string name="delete">Удалить</string>
 </resources>

@@ -325,7 +325,7 @@
     <string name="batch">Stapelverarbeitung</string>
     <string name="spec_calllogsjson">Anruf-Protokolldatei JSON</string>
     <string name="intro_permission_smsmms">Die App benötigt diese Berechtigung, um SMS/MMS zu sichern und wiederherstellen zu können.</string>
-    <string name="loading_list">Die App-Liste wird geladen …</string>
+    <string name="loading_list">Die Liste wird geladen …</string>
     <string name="spec_smsmmsjson">SMS/MMS JSON</string>
     <string name="spec_fingerprint">Fingerprints</string>
     <string name="smsmms_permission_title">SMS/MMS Berechtigungen</string>

@@ -328,6 +328,6 @@
     <string name="contacts_permission_title">Дозволи контактів</string>
     <string name="intro_permission_calllogs">Застосунку потрібен цей дозвіл, щоб створювати й відновлювати резервні копії журналів ваших викликів.</string>
     <string name="batch">Декілька</string>
-    <string name="loading_list">Завантаження списку застосунків…</string>
+    <string name="loading_list">Завантаження списку…</string>
     <string name="delete">Видалити</string>
 </resources>
