@@ -20,6 +20,7 @@ package com.machiav3lli.backup.handler
 import android.os.Build
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BACKUP_INSTANCE_DIR
+import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.PackageInfo
 import com.machiav3lli.backup.items.StorageFile
@@ -99,7 +100,7 @@ class BackupBuilder(
             cipherType = cipherType,
             iv = iv,
             cpuArch = cpuArch,
-            permissions = listOf()
+            permissions = if (packageInfo is AppInfo) packageInfo.permissions else emptyList()
         )
     }
 
