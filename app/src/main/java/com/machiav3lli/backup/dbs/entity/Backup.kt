@@ -23,6 +23,7 @@ import android.content.pm.PackageInfo
 import android.os.Build
 import androidx.room.Entity
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
+import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER_OLD
 import com.machiav3lli.backup.BACKUP_INSTANCE_DIR
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.handler.LogsHandler
@@ -45,26 +46,32 @@ data class Backup constructor(
     var backupVersionCode: Int = 0,
     var packageName: String,
     var packageLabel: String?,
-    var versionName: String?,
-    var versionCode: Int,
-    var profileId: Int,
+    var versionName: String? = "-",
+    var versionCode: Int = 0,
+    var profileId: Int = 0,
     var sourceDir: String? = null,
     var splitSourceDirs: Array<String> = arrayOf(),
-    var isSystem: Boolean,
+    var isSystem: Boolean = false,
     @Serializable(with = LocalDateTimeSerializer::class)
     var backupDate: LocalDateTime,
-    var hasApk: Boolean,
-    var hasAppData: Boolean,
-    var hasDevicesProtectedData: Boolean,
-    var hasExternalData: Boolean,
-    var hasObbData: Boolean,
-    var hasMediaData: Boolean,
+    var hasApk: Boolean = false,
+    var hasAppData: Boolean = false,
+    var hasDevicesProtectedData: Boolean = false,
+    var hasExternalData: Boolean = false,
+    var hasObbData: Boolean = false,
+    var hasMediaData: Boolean = false,
     var compressionType: String? = "gz",
     var cipherType: String? = null,
     var iv: ByteArray?,
     var cpuArch: String?,
     var permissions: List<String> = listOf()
 ) {
+    private val backupFolderNameOld
+        get() = String.format(
+            BACKUP_INSTANCE_DIR,
+            BACKUP_DATE_TIME_FORMATTER_OLD.format(backupDate),
+            profileId
+        )
     private val backupFolderName
         get() = String.format(
             BACKUP_INSTANCE_DIR,
@@ -160,7 +167,8 @@ data class Backup constructor(
         get() = cipherType != null && cipherType?.isNotEmpty() == true
 
     fun getBackupInstanceFolder(appBackupDir: StorageFile?): StorageFile? =
-        appBackupDir?.findFile(backupFolderName)
+        appBackupDir?.findFile(backupFolderName) ?:
+        appBackupDir?.findFile(backupFolderNameOld)
 
     fun toAppInfo() = AppInfo(
         packageName,
@@ -257,26 +265,30 @@ data class Backup constructor(
     ) : Exception(message, cause)
 
     companion object {
-        fun fromJson(json: String): Backup? {
+        fun fromJson(json: String): Backup {
             Timber.d("json: $json")
             return Json.decodeFromString<Backup>(json)
         }
 
-        fun createFrom(propertiesFile: StorageFile): Backup? = try {
-            fromJson(propertiesFile.inputStream()!!.reader().readText())
-        } catch (e: FileNotFoundException) {
-            throw BrokenBackupException(
-                "Cannot open ${propertiesFile.name} at ${propertiesFile.path}",
-                e
-            )
-        } catch (e: IOException) {
-            throw BrokenBackupException(
-                "Cannot read ${propertiesFile.name} at ${propertiesFile.path}",
-                e
-            )
-        } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, propertiesFile.path)
-            throw BrokenBackupException("Unable to process ${propertiesFile.name} at ${propertiesFile.path}. [${e.javaClass.canonicalName}] $e")
+        fun createFrom(propertiesFile: StorageFile): Backup? {
+            var json = ""
+            try {
+                json = propertiesFile.inputStream()!!.reader().readText()
+                return fromJson(json)
+            } catch (e: FileNotFoundException) {
+                throw BrokenBackupException(
+                    "Cannot open ${propertiesFile.path}\n$json",
+                    e
+                )
+            } catch (e: IOException) {
+                throw BrokenBackupException(
+                    "Cannot read ${propertiesFile.path}\n$json",
+                    e
+                )
+            } catch (e: Throwable) {
+                LogsHandler.unhandledException(e, "file: ${propertiesFile.path} =\n$json")
+                throw BrokenBackupException("Unable to process ${propertiesFile.path}. [${e.javaClass.canonicalName}] $e\n$json")
+            }
         }
     }
 }
