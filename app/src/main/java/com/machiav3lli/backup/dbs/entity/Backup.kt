@@ -111,7 +111,7 @@ data class Backup constructor(
         cipherType = cipherType,
         iv = iv,
         cpuArch = cpuArch,
-        permissions = pi.requestedPermissions?.filterIndexed { i, permission ->
+        permissions = pi.requestedPermissions?.filterIndexed { i, _ ->
             pi.requestedPermissionsFlags[i] and PackageInfo.REQUESTED_PERMISSION_GRANTED == PackageInfo.REQUESTED_PERMISSION_GRANTED
         }.orEmpty()
     )
@@ -188,6 +188,7 @@ data class Backup constructor(
             ", iv='" + iv + '\'' +
             ", cpuArch='" + cpuArch + '\'' +
             ", backupVersionCode='" + backupVersionCode + '\'' +
+            ", permissions='" + permissions + '\'' +
             '}'
 
     override fun equals(other: Any?): Boolean = when {
@@ -217,12 +218,13 @@ data class Backup constructor(
                 || iv == null && other.iv != null
                 || cpuArch != other.cpuArch
                 || backupFolderName != other.backupFolderName
-                || isEncrypted != other.isEncrypted -> false
+                || isEncrypted != other.isEncrypted
+                || permissions != other.permissions -> false
         else -> true
     }
 
     override fun hashCode(): Int {
-        var result = packageName.hashCode() ?: 0
+        var result = packageName.hashCode()
         result = 31 * result + backupVersionCode
         result = 31 * result + (packageLabel?.hashCode() ?: 0)
         result = 31 * result + (versionName?.hashCode() ?: 0)
@@ -231,7 +233,7 @@ data class Backup constructor(
         result = 31 * result + (sourceDir?.hashCode() ?: 0)
         result = 31 * result + splitSourceDirs.contentHashCode()
         result = 31 * result + isSystem.hashCode()
-        result = 31 * result + (backupDate.hashCode() ?: 0)
+        result = 31 * result + backupDate.hashCode()
         result = 31 * result + hasApk.hashCode()
         result = 31 * result + hasAppData.hashCode()
         result = 31 * result + hasDevicesProtectedData.hashCode()
@@ -244,6 +246,7 @@ data class Backup constructor(
         result = 31 * result + (cpuArch?.hashCode() ?: 0)
         result = 31 * result + backupFolderName.hashCode()
         result = 31 * result + isEncrypted.hashCode()
+        result = 31 * result + permissions.hashCode()
         return result
     }
 
