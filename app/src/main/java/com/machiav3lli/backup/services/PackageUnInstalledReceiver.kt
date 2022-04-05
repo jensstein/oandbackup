@@ -38,7 +38,7 @@ class PackageUnInstalledReceiver : BroadcastReceiver() {
                     context.packageManager.getPackageInfo(packageName, 0)?.let { packageInfo ->
                         val appInfo = AppInfo(context, packageInfo)
                         GlobalScope.launch(Dispatchers.IO) {
-                            db.appInfoDao.insert(appInfo)
+                            db.appInfoDao.replaceInsert(appInfo)
                         }
                     }
                 }
