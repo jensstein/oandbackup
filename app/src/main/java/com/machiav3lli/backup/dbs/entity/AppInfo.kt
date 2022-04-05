@@ -20,6 +20,7 @@ package com.machiav3lli.backup.dbs.entity
 import android.content.Context
 import android.content.pm.PackageInfo
 import androidx.room.Entity
+import com.machiav3lli.backup.handler.grantedPermissions
 
 @Entity
 open class AppInfo : com.machiav3lli.backup.dbs.entity.PackageInfo {
@@ -59,8 +60,6 @@ open class AppInfo : com.machiav3lli.backup.dbs.entity.PackageInfo {
         this.apkDir = pi.applicationInfo.sourceDir
         this.dataDir = pi.applicationInfo.dataDir
         this.deDataDir = pi.applicationInfo.deviceProtectedDataDir
-        permissions = pi.requestedPermissions?.filterIndexed { index, _ ->
-            pi.requestedPermissionsFlags[index] and PackageInfo.REQUESTED_PERMISSION_GRANTED == PackageInfo.REQUESTED_PERMISSION_GRANTED
-        }.orEmpty()
+        permissions = pi.grantedPermissions
     }
 }

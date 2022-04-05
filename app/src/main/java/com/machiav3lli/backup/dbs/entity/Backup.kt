@@ -26,6 +26,7 @@ import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BACKUP_INSTANCE_DIR
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.handler.grantedPermissions
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.LocalDateTimeSerializer
 import kotlinx.serialization.Serializable
@@ -111,9 +112,7 @@ data class Backup constructor(
         cipherType = cipherType,
         iv = iv,
         cpuArch = cpuArch,
-        permissions = pi.requestedPermissions?.filterIndexed { i, _ ->
-            pi.requestedPermissionsFlags[i] and PackageInfo.REQUESTED_PERMISSION_GRANTED == PackageInfo.REQUESTED_PERMISSION_GRANTED
-        }.orEmpty()
+        permissions = pi.grantedPermissions
     )
 
     constructor(

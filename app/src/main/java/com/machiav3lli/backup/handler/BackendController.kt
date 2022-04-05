@@ -363,3 +363,8 @@ fun Context.getPackageStorageStats(
 
 fun Context.getSpecial(packageName: String) = SpecialInfo.getSpecialPackages(this)
     .find { it.packageName == packageName }
+
+val PackageInfo.grantedPermissions: List<String>
+    get() = requestedPermissions?.filterIndexed { index, _ ->
+        requestedPermissionsFlags[index] and PackageInfo.REQUESTED_PERMISSION_GRANTED == PackageInfo.REQUESTED_PERMISSION_GRANTED
+    }.orEmpty()
