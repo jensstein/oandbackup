@@ -20,7 +20,7 @@ class Converters {
     @TypeConverter
     fun toStringList(string: String): List<String> =
         if (string == "") emptyList()
-        else string.split(",")
+        else string.removeSurrounding("[", "]").split(",")
 
     @TypeConverter
     fun toString(list: List<String>): String = list.toString()
