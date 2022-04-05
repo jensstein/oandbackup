@@ -290,7 +290,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             sb.append(
                 getPackageInstallCommand(
                     RootFile(stagingApkPath, "$packageName.${baseApkFile.name}"),
-                    // backupProperties.profileId
+                    backup.profileId
                 )
             )
             // If split apk resources exist, install them afterwards (order does not matter)
@@ -299,7 +299,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                     sb.append(" ; ").append(
                         getPackageInstallCommand(
                             RootFile(stagingApkPath, "$packageName.${it.name}"),
-                            // backupProperties.profileId,
+                            backup.profileId,
                             backup.packageName
                         )
                     )
@@ -889,11 +889,12 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
      * @return a complete shell command
      */
     private fun getPackageInstallCommand(
-        apkPath: RootFile, /*profilId: Int,*/
+        apkPath: RootFile,
+        profilId: Int,
         basePackageName: String? = null
     ): String =
         String.format(
-            "cat \"${apkPath.absolutePath}\" | pm install%s -t -r%s%s -S ${apkPath.length()}", // TODO add --user $profilId
+            "cat \"${apkPath.absolutePath}\" | pm install%s -t -r%s%s -S ${apkPath.length()} --user $profilId",
             if (basePackageName != null) " -p $basePackageName" else "",
             if (context.isRestoreAllPermissions) " -g" else "",
             if (context.isAllowDowngrade) " -d" else ""
