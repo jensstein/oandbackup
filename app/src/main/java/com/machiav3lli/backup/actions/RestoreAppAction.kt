@@ -305,6 +305,8 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                     )
                 }
             }
+            if (!context.isRestoreAllPermissions)
+                backup.permissions.forEach { p -> sb.append(" ; pm grant ${backup.packageName} $p") }
 
             val command = sb.toString()
             runAsRoot(command)
