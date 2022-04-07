@@ -127,7 +127,7 @@ object BackupRestoreHelper {
                 suCopyFileToDocument(fileInfos[0], backupRoot)
                 // Invalidating cache, otherwise the next call will fail
                 // Can cost a lot time, but this function won't be run that often
-                invalidateCache { it.contains(BuildConfig.APPLICATION_ID) }
+                invalidateCache() //TODO hg42 how to filter only the apk? or eliminate the need to invalidate
                 val baseApkFile = backupRoot.findFile(fileInfos[0].filename)
                 if (baseApkFile != null) {
                     baseApkFile.renameTo(filename)
