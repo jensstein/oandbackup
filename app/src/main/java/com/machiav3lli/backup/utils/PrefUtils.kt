@@ -72,6 +72,7 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import com.topjohnwu.superuser.Shell
 import java.nio.charset.StandardCharsets
 import java.util.*

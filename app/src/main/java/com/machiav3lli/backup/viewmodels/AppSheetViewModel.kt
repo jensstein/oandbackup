@@ -18,13 +18,19 @@
 package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -105,6 +111,7 @@ class AppSheetViewModel(
     }
 
     fun deleteBackup(backup: Backup) {
+        invalidateCache { it.contains(backup.packageName) }
         viewModelScope.launch {
             delete(backup)
             refreshNow.value = true
@@ -131,6 +138,9 @@ class AppSheetViewModel(
     }
 
     private suspend fun deleteAll() {
+        appInfo.value?.packageName?.let { packageName ->
+            invalidateCache { it.contains(packageName) }
+        }
         withContext(Dispatchers.IO) {
             appInfo.value?.deleteAllBackups()
         }

@@ -266,6 +266,7 @@ open class StorageFile {
 
     fun findFile(displayName: String): StorageFile? {
         try {
+            //TODO hg42 use fileListCache ? but beware of invalidating entries that we change
             file?.let {
                 var found = StorageFile(this, displayName)
                 return if (found.exists()) found else null
@@ -301,7 +302,7 @@ open class StorageFile {
             file?.let { dir ->
                 fileListCache[id] = dir.listFiles()?.map { child ->
                     StorageFile(this, child)
-                }?.toList()
+                }
             } ?: run {
                 context?.contentResolver?.let { resolver ->
                     val childrenUri = try {
@@ -370,9 +371,10 @@ open class StorageFile {
     }
 
     companion object {
-        val fileListCache: MutableMap<String, List<StorageFile>?> = mutableMapOf()
-        val uriStorageFileCache: MutableMap<String, StorageFile> = mutableMapOf()
-        var cacheDirty = true
+        //TODO hg42 manage file trees instead of single files and let StorageFile and caches use them
+        var fileListCache = mutableMapOf<String, List<StorageFile>?>() //TODO hg42 access should automatically checkCache
+        var uriStorageFileCache = mutableMapOf<String, StorageFile>()
+        var invalidateFilters = mutableListOf<(String) -> Boolean>()
 
         fun fromUri(context: Context, uri: Uri): StorageFile {
             // Todo: Figure out what's wrong with the Uris coming from the intent and why they need to be processed
@@ -402,15 +404,20 @@ open class StorageFile {
             }
         }
 
+        fun invalidateCache(filter: (String) -> Boolean) {
+            invalidateFilters.add(filter)
+        }
+
         fun invalidateCache() {
-            cacheDirty = true
+            invalidateFilters = mutableListOf({true})
         }
 
         fun checkCache() {
-            if (cacheDirty) {
-                fileListCache.clear()
-                uriStorageFileCache.clear()
-                cacheDirty = false
+            while (invalidateFilters.size > 0) {
+                invalidateFilters.removeFirst().let { isInvalid ->
+                    fileListCache       =       fileListCache.filterNot { isInvalid(it.key) }.toMutableMap()
+                    uriStorageFileCache = uriStorageFileCache.filterNot { isInvalid(it.key) }.toMutableMap()
+                }
             }
         }
 

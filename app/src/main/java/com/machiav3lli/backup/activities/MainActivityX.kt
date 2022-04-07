@@ -233,7 +233,7 @@ class MainActivityX : BaseActivity() {
     }
 
     fun updatePackage(packageName: String) {
-        StorageFile.invalidateCache()
+        StorageFile.invalidateCache { it.contains(packageName) }
         viewModel.updatePackage(packageName)
     }
 

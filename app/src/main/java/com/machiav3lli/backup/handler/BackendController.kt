@@ -79,7 +79,6 @@ fun Context.getPackageList(
 ): MutableList<Package> {
     val startTime = System.currentTimeMillis()
 
-    invalidateCache()
     val includeSpecial = specialBackupsEnabled
     val pm = packageManager
     val backupRoot = getBackupDir()
@@ -230,7 +229,6 @@ fun List<AppInfo>.toPackageList(
 
 fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
     val startTime = System.currentTimeMillis()
-    invalidateCache()
     val pm = packageManager
     val installedAppList = pm.getInstalledPackagesWithPermissions()
     val installedAppNames = installedAppList.map { it.packageName }.toList()
