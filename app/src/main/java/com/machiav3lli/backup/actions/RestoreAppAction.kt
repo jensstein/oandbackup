@@ -353,7 +353,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     }
 
     @Throws(RestoreFailedException::class)
-    private fun genericRestoreDataByCopying(    // TODO: hg42: use if archive is a directory
+    private fun genericRestoreDataByCopying(
         targetPath: String,
         backupInstanceDir: StorageFile,
         what: String
