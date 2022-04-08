@@ -255,6 +255,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             batchName: String
         ) = OneTimeWorkRequest.Builder(AppActionWork::class.java)
             .addTag("name:$batchName")
+            .addTag("package:$packageName")
             .setInputData(
                 workDataOf(
                     "packageName" to packageName,
