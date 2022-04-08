@@ -324,6 +324,6 @@
     <string name="intro_permission_smsmms">本应用需要这个权限才能备份/恢复你的短信/彩信。</string>
     <string name="intro_permission_calllogs">本应用需要此权限才能备份/还原你的通话记录。</string>
     <string name="spec_fingerprint">指纹数据</string>
-    <string name="loading_list">正在加载应用列表…</string>
+    <string name="loading_list">正在加载列表…</string>
     <string name="delete">删除</string>
 </resources>
