@@ -60,6 +60,7 @@ fun ActionButton(
     modifier: Modifier = Modifier.fillMaxWidth(),
     text: String,
     positive: Boolean = true,
+    icon: Painter? = null,
     onClick: () -> Unit
 ) {
     TextButton(
@@ -75,6 +76,15 @@ fun ActionButton(
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.titleSmall
         )
+        if (icon != null) {
+            Spacer(modifier = Modifier.weight(1f))
+            Icon(
+                modifier = Modifier.size(18.dp),
+                painter = icon,
+                contentDescription = text
+            )
+        }
+    }
     }
 }
 
