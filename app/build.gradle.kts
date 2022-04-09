@@ -89,7 +89,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.1.1"
+        kotlinCompilerExtensionVersion = "1.2.0-alpha07"
     }
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
@@ -143,14 +143,15 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.0.0-rc02")
 
     // Compose
-    implementation("androidx.compose.runtime:runtime:1.1.1")
-    implementation("androidx.compose.ui:ui:1.1.1")
-    implementation("androidx.compose.ui:ui-tooling:1.1.1")
-    implementation("androidx.compose.foundation:foundation:1.1.1")
-    implementation("androidx.compose.runtime:runtime-livedata:1.1.1")
-    implementation("androidx.compose.material:material:1.1.1")
+    val compose = "1.2.0-alpha07"
+    implementation("androidx.compose.runtime:runtime:$compose")
+    implementation("androidx.compose.ui:ui:$compose")
+    implementation("androidx.compose.ui:ui-tooling:$compose")
+    implementation("androidx.compose.foundation:foundation:$compose")
+    implementation("androidx.compose.runtime:runtime-livedata:$compose")
+    implementation("androidx.compose.material:material:$compose")
     implementation("com.google.android.material:compose-theme-adapter:1.1.6")
-    implementation("androidx.compose.material3:material3:1.0.0-alpha08")
+    implementation("androidx.compose.material3:material3:1.0.0-alpha09")
 
     // Testing
     implementation("androidx.test.ext:junit-ktx:1.1.3")
