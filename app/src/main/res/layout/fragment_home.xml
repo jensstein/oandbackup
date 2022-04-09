@@ -136,60 +136,10 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:clipToPadding="false"
-            app:layout_constraintBottom_toTopOf="@id/updatedBar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/topBar" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/updatedBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?colorPrimaryDark"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/recyclerView">
-
-            <!--  TODO fix view when no room for text -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonUpdated"
-                style="@style/Button.Rectangular"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:maxLines="2"
-                android:text="@string/place_holder"
-                app:icon="@drawable/ic_arrow_down"
-                app:iconGravity="end"
-                app:iconSize="@dimen/icon_small"
-                app:layout_constraintBottom_toTopOf="@id/updatedRecycler"
-                app:layout_constraintEnd_toStartOf="@id/buttonUpdateAll"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.compose.ui.platform.ComposeView
-                android:id="@+id/updatedRecycler"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/buttonUpdated" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonUpdateAll"
-                style="@style/Widget.Material3.Button.ElevatedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginHorizontal="@dimen/cards_spacing"
-                android:ellipsize="end"
-                android:text="@string/backup_all_updated"
-                app:icon="@drawable/ic_update"
-                app:layout_constraintBottom_toTopOf="@id/updatedRecycler"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/buttonUpdated"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintTop_toBottomOf="@id/topBar" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
 

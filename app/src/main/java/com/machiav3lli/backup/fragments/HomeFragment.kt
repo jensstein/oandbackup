@@ -89,23 +89,6 @@ class HomeFragment : NavigationFragment(),
             }
         }
         viewModel.updatedApps.observe(viewLifecycleOwner) {
-            binding.updatedRecycler.setContent {
-                AppTheme(
-                    darkTheme = isSystemInDarkTheme()
-                ) {
-                    UpdatedPackageRecycler(productsList = it,
-                        onClick = { item ->
-                            if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                            appSheet = AppSheet(item, AppExtras())
-                            appSheet?.showNow(
-                                parentFragmentManager,
-                                "Package ${item.packageName}"
-                            )
-                        }
-                    )
-                }
-            }
-        }
             viewModel.nUpdatedApps = it?.size ?: 0
         }
 
@@ -157,7 +140,6 @@ class HomeFragment : NavigationFragment(),
             )
             sheetSortFilter?.showNow(requireActivity().supportFragmentManager, "SORTFILTER_SHEET")
         }
-        binding.buttonUpdateAll.setOnClickListener { onClickUpdateAllAction() }
     }
 
     private fun setupSearch() {
