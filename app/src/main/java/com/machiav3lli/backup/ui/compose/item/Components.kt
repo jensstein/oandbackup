@@ -2,9 +2,22 @@ package com.machiav3lli.backup.ui.compose.item
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,12 +32,36 @@ import androidx.core.content.ContextCompat
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import coil.compose.rememberAsyncImagePainter
-import com.machiav3lli.backup.*
+import com.machiav3lli.backup.MAIN_FILTER_SPECIAL
+import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
+import com.machiav3lli.backup.MAIN_FILTER_USER
+import com.machiav3lli.backup.MODE_APK
+import com.machiav3lli.backup.MODE_DATA
+import com.machiav3lli.backup.MODE_DATA_DE
+import com.machiav3lli.backup.MODE_DATA_EXT
+import com.machiav3lli.backup.MODE_DATA_MEDIA
+import com.machiav3lli.backup.MODE_DATA_OBB
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.SPECIAL_FILTER_ALL
+import com.machiav3lli.backup.SPECIAL_FILTER_DISABLED
+import com.machiav3lli.backup.SPECIAL_FILTER_LAUNCHABLE
+import com.machiav3lli.backup.SPECIAL_FILTER_OLD
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.Package
-import com.machiav3lli.backup.ui.compose.theme.*
+import com.machiav3lli.backup.ui.compose.theme.APK
+import com.machiav3lli.backup.ui.compose.theme.Data
+import com.machiav3lli.backup.ui.compose.theme.DeData
+import com.machiav3lli.backup.ui.compose.theme.Exodus
+import com.machiav3lli.backup.ui.compose.theme.ExtDATA
+import com.machiav3lli.backup.ui.compose.theme.LocalShapes
+import com.machiav3lli.backup.ui.compose.theme.Media
+import com.machiav3lli.backup.ui.compose.theme.OBB
+import com.machiav3lli.backup.ui.compose.theme.Special
+import com.machiav3lli.backup.ui.compose.theme.System
+import com.machiav3lli.backup.ui.compose.theme.Updated
+import com.machiav3lli.backup.ui.compose.theme.User
 
 @Composable
 fun PackageIcon(
@@ -85,6 +122,37 @@ fun ActionButton(
             )
         }
     }
+}
+
+@Composable
+fun ElevatedActionButton(
+    modifier: Modifier = Modifier.fillMaxWidth(),
+    text: String,
+    positive: Boolean = true,
+    icon: Painter? = null,
+    onClick: () -> Unit
+) {
+    ElevatedButton(
+        modifier = modifier,
+        colors = ButtonDefaults.elevatedButtonColors(
+            contentColor = if (positive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+        ),
+        onClick = onClick
+    ) {
+        if (icon != null) {
+            Icon(
+                modifier = Modifier.size(18.dp),
+                painter = icon,
+                contentDescription = text
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+        }
+        Text(
+            modifier = Modifier.padding(start = 4.dp),
+            text = text,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleSmall
+        )
     }
 }
 
