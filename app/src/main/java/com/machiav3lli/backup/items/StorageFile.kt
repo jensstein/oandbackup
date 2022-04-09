@@ -11,12 +11,19 @@ import com.machiav3lli.backup.PREFS_SHADOWROOTFILE
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
-import com.machiav3lli.backup.utils.*
+import com.machiav3lli.backup.utils.exists
+import com.machiav3lli.backup.utils.getName
+import com.machiav3lli.backup.utils.isDirectory
+import com.machiav3lli.backup.utils.isFile
+import com.machiav3lli.backup.utils.suRecursiveCopyFilesToDocument
 import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStream
 import java.io.OutputStream
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.set
 
 // TODO MAYBE migrate at some point to FuckSAF
 
@@ -41,7 +48,10 @@ open class StorageFile {
         parent: StorageFile?,
         context: Context?,
         uri: Uri?,
-        allowShadowing: Boolean = OABX.prefFlag(PREFS_ALLOWSHADOWINGDEFAULT, false) // Storage files that should be shadowable should be explicitly decalred as such
+        allowShadowing: Boolean = OABX.prefFlag(
+            PREFS_ALLOWSHADOWINGDEFAULT,
+            false
+        ) // Storage files that should be shadowable should be explicitly decalred as such
     ) {
         this.parent = parent
         this.context = context
@@ -71,13 +81,13 @@ open class StorageFile {
                                 // e.g. /storage/emulated/$user
                                 val possiblePaths = listOf(
                                     "/mnt/pass_through/$user/$storage/$subpath",
-                                    "/mnt/media_rw/$storage/$subpath",
                                     "/mnt/runtime/full/$storage/$subpath",
                                     "/mnt/runtime/default/$storage/$subpath",
 
                                     // lockups! primary links to /storage/emulated/$user and all self etc.
                                     //"/storage/$storage/$subpath",
                                     //"/storage/self/$storage/$subpath",
+                                    //"/mnt/media_rw/$storage/$subpath",
                                     //"/mnt/runtime/default/self/$storage/$subpath"
                                     //"/mnt/user/$user/$storage/$subpath",
                                     //"/mnt/user/$user/self/$storage/$subpath",
@@ -152,6 +162,9 @@ open class StorageFile {
 
     val isDirectory: Boolean
         get() = file?.isDirectory ?: context?.let { context -> _uri?.isDirectory(context) } ?: false
+
+    val isPropertyFile: Boolean
+        get() = name?.endsWith(".properties") ?: false
 
     fun exists(): Boolean =
         file?.exists() ?: context?.let { context -> _uri?.exists(context) } ?: false
@@ -253,6 +266,7 @@ open class StorageFile {
 
     fun findFile(displayName: String): StorageFile? {
         try {
+            //TODO hg42 use fileListCache ? but beware of invalidating entries that we change
             file?.let {
                 var found = StorageFile(this, displayName)
                 return if (found.exists()) found else null
@@ -288,7 +302,7 @@ open class StorageFile {
             file?.let { dir ->
                 fileListCache[id] = dir.listFiles()?.map { child ->
                     StorageFile(this, child)
-                }?.toList()
+                }
             } ?: run {
                 context?.contentResolver?.let { resolver ->
                     val childrenUri = try {
@@ -357,9 +371,10 @@ open class StorageFile {
     }
 
     companion object {
-        val fileListCache: MutableMap<String, List<StorageFile>?> = mutableMapOf()
-        val uriStorageFileCache: MutableMap<String, StorageFile> = mutableMapOf()
-        var cacheDirty = true
+        //TODO hg42 manage file trees instead of single files and let StorageFile and caches use them
+        var fileListCache = mutableMapOf<String, List<StorageFile>?>() //TODO hg42 access should automatically checkCache
+        var uriStorageFileCache = mutableMapOf<String, StorageFile>()
+        var invalidateFilters = mutableListOf<(String) -> Boolean>()
 
         fun fromUri(context: Context, uri: Uri): StorageFile {
             // Todo: Figure out what's wrong with the Uris coming from the intent and why they need to be processed
@@ -389,15 +404,20 @@ open class StorageFile {
             }
         }
 
+        fun invalidateCache(filter: (String) -> Boolean) {
+            invalidateFilters.add(filter)
+        }
+
         fun invalidateCache() {
-            cacheDirty = true
+            invalidateFilters = mutableListOf({true})
         }
 
         fun checkCache() {
-            if (cacheDirty) {
-                fileListCache.clear()
-                uriStorageFileCache.clear()
-                cacheDirty = false
+            while (invalidateFilters.size > 0) {
+                invalidateFilters.removeFirst().let { isInvalid ->
+                    fileListCache       =       fileListCache.filterNot { isInvalid(it.key) }.toMutableMap()
+                    uriStorageFileCache = uriStorageFileCache.filterNot { isInvalid(it.key) }.toMutableMap()
+                }
             }
         }
 

@@ -236,7 +236,7 @@
 \n • يتم دعم كل من النسخ الاحتياطي واستعادة البرامج الفردية في وقت واحد والنسخ الاحتياطي دفعة واستعادة برامج متعددة.
 \n • يجب أن تكون استعادة تطبيقات النظام ممكنة دون الحاجة إلى إعادة التشغيل بعد ذلك ، ولكننا ما زلنا لا ننصح بالقيام بذلك.
 \n • يمكن جدولة النسخ الاحتياطية بدون حد لعدد الجداول الفردية وهناك إمكانية لإنشاء قوائم مخصصة فريدة.</string>
-    <string name="welcome_to_oabx">مرحبا بك في OABX!</string>
+    <string name="welcome_to_oabx">مرحبا بك في Neo Backup!</string>
     <string name="storage_access">الوصول إلى التخزين</string>
     <string name="sort_and_filter">فرز &amp; وتصفية</string>
     <string name="enable_encryption_message">ليس من الآمن إبقاء بياناتك على جهازك غير مشفرة. لسلامة البيانات الخاصة بك تمكين التشفير وتعيين كلمة مرور.</string>
@@ -334,4 +334,6 @@
     <string name="intro_permission_smsmms">يحتاج التطبيق إلى هذا الإذن ليتمكن من نسخ / استعادة رسائل SMS / MMS الخاصة بك.</string>
     <string name="intro_permission_contacts">يحتاج التطبيق إلى هذا الإذن ليتمكن من مطابقة جهة اتصال مع رسالة SMS/MMS.</string>
     <string name="spec_fingerprint">البصمات</string>
+    <string name="loading_list">جارٍ تحميل قائمة التطبيقات …</string>
+    <string name="delete">حذف</string>
 </resources>

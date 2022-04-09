@@ -17,15 +17,14 @@ import com.machiav3lli.backup.R
 
 @Composable
 fun <T> VerticalItemList(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.fillMaxSize(),
     list: List<T>?,
     itemKey: ((T) -> Any)? = null,
     itemContent: @Composable LazyItemScope.(T) -> Unit
 ) {
     Box(
         modifier = modifier
-            .background(MaterialTheme.colorScheme.background)
-            .fillMaxSize(),
+            .background(MaterialTheme.colorScheme.background),
         contentAlignment = if (list.isNullOrEmpty()) Alignment.Center else Alignment.TopStart
     ) {
         when {
@@ -61,7 +60,7 @@ fun <T> SizedItemList(
     Box(
         modifier = modifier
             .background(MaterialTheme.colorScheme.background)
-            .requiredHeight(if (list != null) ((list.size - 1) * 8 + list.size * itemHeight).dp else 20.dp),
+            .requiredHeight(if (list != null) (list.size * (8 + itemHeight) + 8).dp else 20.dp),
         contentAlignment = if (list.isNullOrEmpty()) Alignment.Center else Alignment.TopStart
     ) {
         when {

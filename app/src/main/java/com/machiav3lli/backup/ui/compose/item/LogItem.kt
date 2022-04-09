@@ -88,28 +88,20 @@ fun LogItem(
                         )
                     }
                 }
-                Button(
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                    ), onClick = { onShare(item) }
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_share),
-                        contentDescription = stringResource(id = R.string.shareTitle)
-                    )
-                }
-                Button(
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                    ), onClick = { onDelete(item) }
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_delete),
-                        contentDescription = stringResource(id = R.string.delete)
-                    )
-                }
+                ActionChip(
+                    icon = painterResource(id = R.drawable.ic_share),
+                    text = stringResource(id = R.string.shareTitle),
+                    withText = false,
+                    positive = true,
+                    onClick = { onShare(item) }
+                )
+                ActionChip(
+                    icon = painterResource(id = R.drawable.ic_delete),
+                    text = stringResource(id = R.string.delete),
+                    withText = false,
+                    positive = false,
+                    onClick = { onDelete(item) }
+                )
             }
             Text(
                 text = item.logText ?: "",

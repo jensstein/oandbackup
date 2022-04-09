@@ -17,9 +17,9 @@
  */
 package com.machiav3lli.backup
 
+import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
-import com.machiav3lli.backup.items.BackupProperties
 
 interface ActionListener {
-    fun onActionCalled(actionType: ActionType?, mode: Int, backupProps: BackupProperties?)
+    fun onActionCalled(actionType: ActionType?, mode: Int, backup: Backup?)
 }

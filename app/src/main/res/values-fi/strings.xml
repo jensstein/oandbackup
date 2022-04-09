@@ -3,7 +3,7 @@
     <string name="radio_system">Järjestelmäsovellukset</string>
     <string name="radio_obbdata">OBB Data</string>
     <string name="restore">Palauta</string>
-    <string name="handleBoth">Molemmat</string>
+    <string name="handleBoth">APK ja data</string>
     <string name="radio_apk">APK</string>
     <string name="backupConfirmation">Varmuuskopioidaanko\?</string>
     <string name="restoreConfirmation">Palautetaanko\?</string>
@@ -27,7 +27,7 @@
     <string name="uninstall">Poista sovellus</string>
     <string name="uninstallProgress">Poistetaan…</string>
     <string name="showNotBackedup">Sovellukset ilman varmuuskopiota</string>
-    <string name="showNotInstalled">Sovellukset, joita ei ole asennettuna</string>
+    <string name="showNotInstalled">Sovellukset, jotka eivät ole asennettuna</string>
     <string name="showNewAndUpdated">Uudet ja päivitetyt sovellukset</string>
     <string name="showOldBackups">Vanhat varmuuskopiot</string>
     <string name="showOnlyApkBackedUp">Sovellukset, joista pelkästään APK varmuuskopioitu</string>
@@ -65,7 +65,7 @@
     <string name="prefs_theme_system">Järjestelmän teema</string>
     <string name="prefs_languages">Kieli</string>
     <string name="prefs_language_system">Järjestelmän oletus</string>
-    <string name="prefs_pathbackupfolder">Varmuuskopiointihakemisto</string>
+    <string name="prefs_pathbackupfolder">Varmuuskopioiden sijainti</string>
     <string name="prefs_devicelock">Laitteen lukitus</string>
     <string name="prefs_devicelock_summary">Suojaa sovellus laitteen lukituksilla</string>
     <string name="prefs_biometriclock">Biometrinen lukitus</string>
@@ -101,7 +101,7 @@
     <string name="prefs_stopcont">Sovellusten STOP-CONT esi- ja jälkiprosessointi varmuuskopioidessa/palauttaessa</string>
     <string name="prefs_stopcont_summary">Vain eksperteille: Tämä voi auttaa, jos sovellus muuttaa tiedostoja varmuuskopioinnin aikana ja varmuuskopiointi epäonnistuu.</string>
     <string name="prefs_copyselfapk">Kopioi oma APK</string>
-    <string name="prefs_saveappslist_summary">Tallentaa listan sovelluksista tekstitiedostoon varmuuskopiointikansioon</string>
+    <string name="prefs_saveappslist_summary">Tallentaa listan sovelluksista tekstitiedostona varmuuskopiointikansioon</string>
     <string name="prefs_logviewer">Näytä loki</string>
     <string name="sched_name">Nimi:</string>
     <string name="sched_title">Ajastus</string>
@@ -181,7 +181,7 @@
     <string name="logs_text_empty">Mitään ei ole näytettävissä!</string>
     <string name="help_issues">Tiedossa olevat ongelmat</string>
     <string name="help">Ohje</string>
-    <string name="main">Päänäkymä</string>
+    <string name="main">Aloitus</string>
     <string name="usage_notes_title">Käyttöön liittyvät huomiot</string>
     <string name="launch_app">Käynnistä sovellus</string>
     <string name="forceKillMessage">Haluako varmasti pakottaa sovelluksen lopettamisen\?</string>
@@ -194,7 +194,7 @@
     <string name="sched_exported">Ajastusten vienti onnistui</string>
     <string name="sched_imported">Ajastusten tuonti onnistui</string>
     <string name="logs_share_failed">Lokitiedostoa ei löytynyt</string>
-    <string name="sortAscDesc">Nouseva-Laskeva</string>
+    <string name="sortAscDesc">Nouseva-laskeva</string>
     <string name="forceKill">Pakota lopetus</string>
     <string name="global_blocklist_add">Lisää yleiseen estolistaan</string>
     <string name="prefs_accent_1">Hieno liila</string>
@@ -202,7 +202,7 @@
     <string name="prefs_accent_4">Tuhti vihreä</string>
     <string name="prefs_accent_5">Raikas lime</string>
     <string name="prefs_accent_6">Myrskynkeltainen</string>
-    <string name="backup">Varmuuskopioi</string>
+    <string name="backup">Varmuuskopio</string>
     <string name="showDisabled">Käytöstä poistetut sovellukset</string>
     <string name="prefs_accent_7">Aprikoosin oranssi</string>
     <string name="prefs_secondary_0">Arktinen syaani</string>
@@ -264,7 +264,7 @@
     <string name="prefs_numBackupRevisions_summary">Vanhin varmuuskopio poistetaan uuden varmuuskopion luomisen yhteydessä, mikäli määrä ylittyy. Aseta arvoksi 0 säilyttääksesi kaikki versiot.</string>
     <string name="prefs_housekeepingmoment_summary">Valitse, poistetaanko vanhin varmuuskopio ennen vai jälkeen uuden varmuuskopion luomisen, vapauttaaksesi tallennustilaa.</string>
     <string name="prefs_batchdelete_summary">Poista niiden sovellusten varmuuskopiot, jotka eivät ole juuri nyt asennettuna.</string>
-    <string name="prefs_copyselfapk_summary">Sijoita kopio OAndBackupX:n asennustiedostosta varmuuskopiointikansion juureen</string>
+    <string name="prefs_copyselfapk_summary">Kopioi Neo Backupin asennustiedosto varmuuskopiointikansion juureen</string>
     <string name="prefs_saveappslist">Tallenna sovelluslista</string>
     <string name="error_updating_schedule_mode">Ajastuksen %2$d %1$s päivitys epäonnistui</string>
     <string name="dialogYes">Kyllä</string>
@@ -286,10 +286,29 @@
     <string name="sortBackupDate">Varmuuskopion päivämäärä</string>
     <string name="prefs_secondary_4">Laavan oranssi</string>
     <string name="stats_apps">Sovellukset</string>
-    <string name="backup_all_updated">Varmuuskopioi kaikki päivitetyt sovellukset</string>
+    <string name="backup_all_updated">Varmuuskopioi päivitetyt sovellukset</string>
     <string name="prefs_accent_0">Punainen komeetta</string>
     <string name="prefs_accent_3">Turkoosi</string>
     <string name="prefs_secondary_1">Merenvihreä</string>
     <string name="prefs_accent_color">Aksenttiväri</string>
     <string name="home">Kotisivu</string>
+    <string name="loading_list">Ladataan sovelluslistaa…</string>
+    <string name="intro_permission_smsmms">Sovellus tarvitsee tämän käyttöoikeuden voidakseen varmuuskopioida ja palauttaa SMS/MMS-viestejä.</string>
+    <string name="intro_permission_calllogs">Sovellus tarvitsee tämän käyttöoikeuden voidakseen varmuuskopioida ja palauttaa puheluhistorian.</string>
+    <string name="fetching_action_list">Haetaan sovelluslistaa kohteelle %1$s…</string>
+    <string name="stats_updated">Päivitetyt</string>
+    <string name="no_file_manager_title">Ei SAF-hallintaa</string>
+    <string name="schedule">Ajasta</string>
+    <string name="finished">valmis</string>
+    <string name="intro_permission_storage">Sovellus tarvitsee tallennustilan luku- ja kirjoitusoikeuden voidakseen käyttää ulkoista tallennustilaa ja tarjotakseen myös ulkoisen datan/obb-tiedostojen varmuuskopioinnin.</string>
+    <string name="intro_permission_storage_location">Sovellus tarvitsee sijainnin varmuuskopioinnin tallentamiseen. Täysi varmuuskopio käyttää useita gigatavuja ja tiedostojärjestelmän kyselyitä tehdään paljon. Huomioi tämä, jos valitset verkkosijainnin varmuuskopioille.</string>
+    <string name="intro_permission_usageaccess">Sovellus tarvitsee tämän käyttöoikeuden voidakseen arvioida sovellustesi tilatiedot, datan koon sekä välimuistin.</string>
+    <string name="intro_permission_batteryoptimization">Ajastetut varmuuskopiot saattavat kohdata ongelmia joillain ROMeilla, joissa on aggressiivinen akun optimointi (kuten MIUI), mutta myös puhtaalla AOSP:lla ongelmia voi tulla.</string>
+    <string name="intro_permission_contacts">Sovellus tarvitsee tämän käyttöoikeuden voidakseen yhdistää yhteystietoja SMS/MMS-viesteihin.</string>
+    <string name="msg_appkill_warning">Valituille sovelluksille lähetetään stop-signaali ja niiden ajoa jatketaan tehtävän valmistumisen jälkeen. Tarkista prosessoidut sovellukset jälkeenpäin (ja vältä niiden käynnistämistä, kun tehtävä on käynnissä).</string>
+    <string name="radio_launchable">Käynnistettävät sovellukset</string>
+    <string name="no_file_manager_message">SAF-hallintaan sopivaa tiedostonhallintaa ei löytynyt. Kenties olet ottanut sisäänrakennetun tiedostonhallinnan pois käytöstä. Palauta tai ota se käyttöön uudelleen.</string>
+    <string name="shell_initproblem">Komentokehotteen käyttöönotto epäonnistui. Joko toybox/busybox puuttuu, tai sovelluksen root-oikeudet ovat poissa käytöstä.</string>
+    <string name="intro_permission_storage_location_warning">Älä valitse juurihakemistoa tai Lataukset-kansiota vaan luo uusi kansion vain varmuuskopioita varten. Lue lisää FAQ:sta</string>
+    <string name="delete">Poista</string>
 </resources>

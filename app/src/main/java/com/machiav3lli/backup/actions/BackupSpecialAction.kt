@@ -20,43 +20,42 @@ package com.machiav3lli.backup.actions
 import android.content.Context
 import com.machiav3lli.backup.MODE_APK
 import com.machiav3lli.backup.MODE_DATA
+import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.ActionResult
-import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.SpecialAppMetaInfo
+import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.CryptoSetupException
 import timber.log.Timber
 import java.io.File
 
-class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHandler)
-    : BackupAppAction(context, work, shell)
-{
-    override fun run(app: AppInfo, backupMode: Int): ActionResult {
+class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHandler) :
+    BackupAppAction(context, work, shell) {
+    override fun run(app: Package, backupMode: Int): ActionResult {
         if (backupMode and MODE_APK == MODE_APK) {
             Timber.e("Special contents don't have APKs to backup. Ignoring")
         }
-        return  if (backupMode and MODE_DATA == MODE_DATA)
-                    super.run(app, MODE_DATA)
-                else ActionResult(
-                    app, null,
-                    "Special backup only backups data, but data was not selected for backup",
-                    false
-                )
+        return if (backupMode and MODE_DATA == MODE_DATA)
+            super.run(app, MODE_DATA)
+        else ActionResult(
+            app, null,
+            "Special backup only backups data, but data was not selected for backup",
+            false
+        )
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
     override fun backupData(
-        app: AppInfo,
+        app: Package,
         backupInstanceDir: StorageFile,
         iv: ByteArray?
     ): Boolean {
         Timber.i("$app: Backup special data")
-        require(app.appMetaInfo is SpecialAppMetaInfo) { "Provided app is not an instance of SpecialAppMetaInfo" }
-        val appInfo = app.appMetaInfo as SpecialAppMetaInfo
+        require(app.packageInfo is SpecialInfo) { "Provided app is not an instance of SpecialAppMetaInfo" }
+        val appInfo = app.packageInfo as SpecialInfo
         // Get file list
         // This can be optimized, because it's known, that special backups won't meet any symlinks
         // since the list of files is fixed
@@ -115,10 +114,7 @@ class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHa
             LogsHandler.unhandledException(e, app)
             throw BackupFailedException("unhandled exception", e)
         }
-        if (
-                app.packageName == "special.smsmms.json" ||
-                app.packageName == "special.calllogs.json"
-            ) {
+        if (app.packageName == "special.smsmms.json" || app.packageName == "special.calllogs.json") {
             for (filePath in appInfo.specialFiles) {
                 File(filePath).delete()
             }
@@ -127,26 +123,26 @@ class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHa
     }
 
     // Stubbing some functions, to avoid executing them with potentially dangerous results
-    override fun backupPackage(app: AppInfo, backupInstanceDir: StorageFile) {
+    override fun backupPackage(app: Package, backupInstanceDir: StorageFile) {
         // stub
     }
 
     override fun backupDeviceProtectedData(
-        app: AppInfo,
+        app: Package,
         backupInstanceDir: StorageFile,
         iv: ByteArray?
     ): Boolean = // stub
         false
 
     override fun backupExternalData(
-        app: AppInfo,
+        app: Package,
         backupInstanceDir: StorageFile,
         iv: ByteArray?
     ): Boolean = // stub
         false
 
     override fun backupObbData(
-        app: AppInfo,
+        app: Package,
         backupInstanceDir: StorageFile,
         iv: ByteArray?
     ): Boolean = // stub

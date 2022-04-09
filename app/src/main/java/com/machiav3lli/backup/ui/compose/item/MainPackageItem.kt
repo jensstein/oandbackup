@@ -2,9 +2,19 @@ package com.machiav3lli.backup.ui.compose.item
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -14,20 +24,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.annotation.ExperimentalCoilApi
-import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.getFormattedDate
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalCoilApi::class)
 @Composable
 fun MainPackageItem(
-    item: AppInfo,
-    onClick: (AppInfo) -> Unit = {}
+    item: Package,
+    onClick: (Package) -> Unit = {}
 ) {
     val imageData by remember(item) {
         mutableStateOf(
-            if (item.isSpecial) item.appMetaInfo.icon
-            else "android.resource://${item.packageName}/${item.appMetaInfo.icon}"
+            if (item.isSpecial) item.packageInfo.icon
+            else "android.resource://${item.packageName}/${item.packageInfo.icon}"
         )
     }
 
@@ -86,9 +96,9 @@ fun MainPackageItem(
                     )
                     AnimatedVisibility(visible = item.hasBackups) {
                         Text(
-                            text = item.latestBackup?.backupProperties?.backupDate?.getFormattedDate(
+                            text = (item.latestBackup?.backupDate?.getFormattedDate(
                                 false
-                            ) ?: "",
+                                    ) ?: "") + " - ${item.backupHistory.size}",
                             modifier = Modifier.align(Alignment.CenterVertically),
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1,

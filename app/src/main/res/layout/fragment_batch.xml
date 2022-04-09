@@ -63,14 +63,12 @@
                     android:id="@+id/searchBar"
                     style="@android:style/Widget.Material.SearchView"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:autofillHints="@string/searchHint"
                     android:background="@drawable/bg_bar_static_round_accent"
-                    android:elevation="4dp"
-                    android:foregroundGravity="center_horizontal"
+                    android:elevation="@dimen/cards_spacing"
                     android:imeOptions="flagNoExtractUi|actionSearch"
                     android:inputType="text"
-                    android:paddingHorizontal="@dimen/small_spacing"
                     android:singleLine="true"
                     android:textAppearance="@style/TextAppearance.Title"
                     app:closeIcon="@drawable/ic_close"
@@ -140,52 +138,10 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:clipToPadding="false"
-            app:layout_constraintBottom_toTopOf="@id/buttonBar"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/topBar" />
-
-        <FrameLayout
-            android:id="@+id/buttonBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?colorPrimaryDark"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/apkBatch"
-                    style="@style/Chip.Apk"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/large_spacing"
-                    android:tooltipText="@string/all_apk"
-                    app:chipIconEnabled="true" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/dataBatch"
-                    style="@style/Chip.Data"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginHorizontal="@dimen/cards_spacing"
-                    android:tooltipText="@string/all_data"
-                    app:chipIconEnabled="true" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/buttonAction"
-                    style="@style/Button.Rectangular"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/place_holder"
-                    android:textColor="?colorAccent" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-        </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
 

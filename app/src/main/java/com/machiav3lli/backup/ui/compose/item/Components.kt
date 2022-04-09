@@ -1,14 +1,14 @@
 package com.machiav3lli.backup.ui.compose.item
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -21,14 +21,14 @@ import coil.compose.SubcomposeAsyncImageContent
 import coil.compose.rememberAsyncImagePainter
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Schedule
-import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.BackupProperties
+import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.theme.*
 
 @Composable
 fun PackageIcon(
-    item: AppInfo,
+    item: Package,
     imageData: Any
 ) {
     SubcomposeAsyncImage(
@@ -56,9 +56,33 @@ fun PackageIcon(
 }
 
 @Composable
+fun ActionButton(
+    modifier: Modifier = Modifier.fillMaxWidth(),
+    text: String,
+    positive: Boolean = true,
+    onClick: () -> Unit
+) {
+    TextButton(
+        modifier = modifier,
+        colors = ButtonDefaults.textButtonColors(
+            contentColor = if (positive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+        ),
+        onClick = onClick
+    ) {
+        Text(
+            modifier = Modifier.padding(start = 4.dp),
+            text = text,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleSmall
+        )
+    }
+}
+
+@Composable
 fun ActionChip(
     icon: Painter,
     text: String,
+    withText: Boolean = true,
     positive: Boolean = true,
     onClick: () -> Unit
 ) {
@@ -75,7 +99,7 @@ fun ActionChip(
             painter = icon,
             contentDescription = text
         )
-        Text(
+        if (withText) Text(
             modifier = Modifier.padding(start = 4.dp),
             text = text,
             textAlign = TextAlign.Center,
@@ -85,8 +109,36 @@ fun ActionChip(
 }
 
 @Composable
+fun StateChip(
+    modifier: Modifier = Modifier,
+    icon: Painter,
+    text: String,
+    color: Color,
+    checked: Boolean,
+    onClick: () -> Unit
+) {
+    OutlinedButton(
+        modifier = modifier.defaultMinSize(minWidth = 1.dp, minHeight = 1.dp),
+        contentPadding = PaddingValues(8.dp),
+        colors = ButtonDefaults.outlinedButtonColors(
+            contentColor = if (checked) MaterialTheme.colorScheme.onSurface else color,
+            containerColor = if (checked) color else Color.Transparent
+        ),
+        shape = RoundedCornerShape(LocalShapes.current.medium),
+        border = BorderStroke(1.dp, color),
+        onClick = onClick,
+    ) {
+        Icon(
+            modifier = Modifier.size(20.dp),
+            painter = icon,
+            contentDescription = text
+        )
+    }
+}
+
+@Composable
 fun PackageLabels(
-    item: AppInfo
+    item: Package
 ) {
     AnimatedVisibility(visible = item.isUpdated) {
         Icon(
@@ -164,7 +216,7 @@ fun PackageLabels(
 
 @Composable
 fun BackupLabels(
-    item: BackupProperties
+    item: Backup
 ) {
     AnimatedVisibility(visible = item.hasMediaData) {
         Icon(
@@ -274,7 +326,7 @@ fun ScheduleTypes(item: Schedule) {
 fun ScheduleFilters(
     item: Schedule
 ) {
-    AnimatedVisibility(visible = item.filter and MAIN_FILTER_USER == MAIN_FILTER_USER) {
+    AnimatedVisibility(visible = item.filter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM) {
         Icon(
             modifier = Modifier.size(24.dp),
             painter = painterResource(id = R.drawable.ic_system),

@@ -30,11 +30,11 @@
     <uses-permission android:name="android.permission.RECEIVE_MMS" />
     <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH" />
     <uses-permission android:name="android.provider.Telephony.SMS_RECEIVED" />
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <!-- special.calllog.json -->
-    <uses-permission android:name="android.permission.READ_CALL_LOG"/>
-    <uses-permission android:name="android.permission.WRITE_CALL_LOG"/>
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <uses-permission android:name="android.permission.WRITE_CALL_LOG" />
 
 
     <uses-feature
@@ -43,7 +43,7 @@
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
-    
+
     <!-- special.smsmms.json -->
     <uses-feature
         android:name="android.hardware.telephony"
@@ -51,16 +51,17 @@
 
     <application
         android:name=".OABX"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:allowClearUserData="true"
         android:banner="@mipmap/ic_launcher"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="true"
         android:icon="${appIcon}"
-        android:roundIcon="${appIconRound}"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
+        android:roundIcon="${appIconRound}"
         android:theme="@style/AppTheme"
-        tools:targetApi="29">
+        tools:targetApi="32">
 
         <receiver
             android:name=".services.MmsReceiver"

@@ -28,10 +28,14 @@ const val BACKUP_INSTANCE_PROPERTIES = "%s-user_%s.properties"
 const val BACKUP_INSTANCE_DIR = "%s-user_%s"
 const val EXPORTS_INSTANCE = "%s.scheds"
 
+// TODO FOR RELEASE rename the DB and reset version
 const val SCHEDULES_DB_NAME = "schedules.db"
-const val BLOCKLIST_DB_NAME = "blocklist.db"
-const val APPEXTRAS_DB_NAME = "appextras.db"
 const val PACKAGES_LIST_GLOBAL_ID = -1L
+
+const val ACTION_CANCEL = "cancel"
+const val ACTION_SCHEDULE = "schedule"
+const val ACTION_RESCHEDULE = "reschedule"
+const val ACTION_CRASH = "crash"
 
 const val PREFS_SORT_FILTER = "sortFilter"
 const val PREFS_SORT_ORDER = "sortOrder"
@@ -65,6 +69,10 @@ const val PREFS_HOUSEKEEPING_MOMENT = "housekeepingMoment"
 const val PREFS_DISABLEVERIFICATION = "disableVerification"
 const val PREFS_RESTOREWITHALLPERMISSIONS = "giveAllPermissions"
 const val PREFS_ALLOWDOWNGRADE = "allowDowngrade"
+const val PREFS_CANCELONSTART = "cancelOnStart"
+const val PREFS_USEALARMCLOCK = "useAlarmClock"
+const val PREFS_USEEXACTRALARM = "useExactAlarm"
+const val PREFS_USEFOREGROUND = "useForeground"
 const val PREFS_PAUSEAPPS = "pauseApps"
 const val PREFS_PMSUSPEND = "pmSuspend"
 const val PREFS_BACKUPTARCMD = "backupTarCmd"
@@ -74,6 +82,7 @@ const val PREFS_RESTOREAVOIDTEMPCOPY = "restoreAvoidTemporaryCopy"
 const val PREFS_SHADOWROOTFILE = "shadowRootFileForSAF"
 const val PREFS_ALLOWSHADOWINGDEFAULT = "allowShadowingDefault"
 const val PREFS_CATCHUNCAUGHT = "catchUncaughtException"
+const val PREFS_MAXCRASHLINES = "maxCrashLines"
 const val PREFS_CACHEROOTFILEATTRIBUTES = "cacheRootFileAttributes"
 const val PREFS_MAXRETRIES = "maxRetriesPerPackage"
 const val PREFS_REFRESHDELAY = "delayBeforeRefreshAppInfo"
@@ -136,14 +145,16 @@ const val DEFAULT_RETRIEVE_APP_META_MAXWAIT = 30;
 const val BUNDLE_USERS = "users"
 const val NEED_REFRESH = "needRefresh"
 
-const val HELP_CHANGELOG = "https://github.com/machiav3lli/oandbackupx/blob/master/CHANGELOG.md"
-const val HELP_TELEGRAM = "https://t.me/OAndBackupX"
+const val HELP_CHANGELOG = "https://github.com/NeoApplications/Neo-Backup/blob/master/CHANGELOG.md"
+const val HELP_TELEGRAM = "https://t.me/neo_backup"
 const val HELP_ELEMENT =
     "https://matrix.to/#/!PiXJUneYCnkWAjekqX:matrix.org?via=matrix.org&via=chat.astafu.de&via=zerc.net"
-const val HELP_LICENSE = "https://github.com/machiav3lli/oandbackupx/blob/master/LICENSE.md"
-const val HELP_ISSUES = "https://github.com/machiav3lli/oandbackupx/blob/master/ISSUES.md"
-const val HELP_FAQ = "https://github.com/machiav3lli/oandbackupx/blob/master/FAQ.md"
+const val HELP_LICENSE = "https://github.com/NeoApplications/Neo-Backup/blob/master/LICENSE.md"
+const val HELP_ISSUES = "https://github.com/NeoApplications/Neo-Backup/blob/master/ISSUES.md"
+const val HELP_FAQ = "https://github.com/NeoApplications/Neo-Backup/blob/master/FAQ.md"
 
+val BACKUP_DATE_TIME_FORMATTER_OLD: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss")
 val BACKUP_DATE_TIME_FORMATTER: DateTimeFormatter =
     DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSS")
 

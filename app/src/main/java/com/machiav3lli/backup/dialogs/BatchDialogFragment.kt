@@ -23,13 +23,13 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.items.AppMetaInfo
+import com.machiav3lli.backup.dbs.entity.PackageInfo
 import com.machiav3lli.backup.utils.altModeToMode
 import com.machiav3lli.backup.utils.modeToStringAlt
 import timber.log.Timber
 
 class BatchDialogFragment(
-    private var backupBoolean: Boolean, private val selectedApps: ArrayList<AppMetaInfo>,
+    private var backupBoolean: Boolean, private val selectedApps: ArrayList<PackageInfo>,
     private val selectedModes: ArrayList<Int>, private val confirmListener: ConfirmListener
 ) : DialogFragment() {
 

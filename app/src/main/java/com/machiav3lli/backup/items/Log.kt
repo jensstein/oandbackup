@@ -18,6 +18,7 @@
 package com.machiav3lli.backup.items
 
 import android.content.Context
+import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.utils.LocalDateTimeSerializer
 import kotlinx.serialization.Serializable
@@ -62,18 +63,18 @@ open class Log {
                 this.logText = item.logText
             }
         } catch (e: FileNotFoundException) {
-            throw BackupItem.BrokenBackupException(
+            throw Backup.BrokenBackupException(
                 "Cannot open $logFile",
                 e
             )
         } catch (e: IOException) {
-            throw BackupItem.BrokenBackupException(
+            throw Backup.BrokenBackupException(
                 "Cannot read $logFile",
                 e
             )
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, logFile)
-            throw BackupItem.BrokenBackupException("Unable to process $logFile. [${e.javaClass.canonicalName}] $e")
+            throw Backup.BrokenBackupException("Unable to process $logFile. [${e.javaClass.canonicalName}] $e")
         }
     }
 

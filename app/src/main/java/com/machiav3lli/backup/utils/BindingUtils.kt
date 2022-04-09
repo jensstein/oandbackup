@@ -25,8 +25,8 @@ import androidx.databinding.BindingAdapter
 import coil.load
 import com.google.android.material.chip.Chip
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.AppMetaInfo
+import com.machiav3lli.backup.dbs.entity.PackageInfo
+import com.machiav3lli.backup.items.Package
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -69,7 +69,7 @@ fun View.changeVisibility(nVisibility: Int, withAnimation: Boolean) =
             }
         })
 
-fun AppCompatImageView.setIcon(metaInfo: AppMetaInfo?): Any =
+fun AppCompatImageView.setIcon(metaInfo: PackageInfo?): Any =
     load(
         if (metaInfo?.isSpecial == true) metaInfo.icon
         else "android.resource://${metaInfo?.packageName}/${metaInfo?.icon}"
@@ -83,7 +83,7 @@ fun AppCompatImageView.setIcon(metaInfo: AppMetaInfo?): Any =
         error(placeholder)
     }
 
-fun AppCompatImageView.setAppType(appInfo: AppInfo) {
+fun AppCompatImageView.setAppType(appInfo: Package) {
     var color: ColorStateList
     when {
         appInfo.isSpecial -> {

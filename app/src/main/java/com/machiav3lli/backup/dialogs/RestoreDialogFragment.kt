@@ -23,13 +23,13 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.machiav3lli.backup.*
+import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
-import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.BackupProperties
+import com.machiav3lli.backup.items.Package
 
 class RestoreDialogFragment(
-    val appInfo: AppInfo,
-    private val properties: BackupProperties,
+    val appPackage: Package,
+    private val backup: Backup,
     private val listener: ActionListener
 ) : DialogFragment() {
 
@@ -38,32 +38,32 @@ class RestoreDialogFragment(
         var selectedMode = MODE_UNSET
         val possibleModes = possibleSchedModes.toMutableList()
 
-        if (properties.hasApk) {
+        if (backup.hasApk) {
             labels.add(getString(R.string.radio_apk))
         } else {
             possibleModes.remove(MODE_APK)
         }
-        if (properties.hasAppData) {
+        if (backup.hasAppData) {
             labels.add(getString(R.string.radio_data))
         } else {
             possibleModes.remove(MODE_DATA)
         }
-        if (properties.hasDevicesProtectedData) {
+        if (backup.hasDevicesProtectedData) {
             labels.add(getString(R.string.radio_deviceprotecteddata))
         } else {
             possibleModes.remove(MODE_DATA_DE)
         }
-        if (properties.hasExternalData) {
+        if (backup.hasExternalData) {
             labels.add(getString(R.string.radio_externaldata))
         } else {
             possibleModes.remove(MODE_DATA_EXT)
         }
-        if (properties.hasObbData) {
+        if (backup.hasObbData) {
             labels.add(getString(R.string.radio_obbdata))
         } else {
             possibleModes.remove(MODE_DATA_OBB)
         }
-        if (properties.hasMediaData) {
+        if (backup.hasMediaData) {
             labels.add(getString(R.string.radio_mediadata))
         } else {
             possibleModes.remove(MODE_DATA_MEDIA)
@@ -74,7 +74,7 @@ class RestoreDialogFragment(
         checkedOptions.fill(true)
 
         return AlertDialog.Builder(requireActivity())
-            .setTitle(appInfo.appMetaInfo.packageLabel)
+            .setTitle(appPackage.packageInfo.packageLabel)
             .setMultiChoiceItems(
                 labels.toTypedArray<CharSequence>(),
                 checkedOptions
@@ -83,7 +83,7 @@ class RestoreDialogFragment(
             }
             .setPositiveButton(R.string.restore) { _: DialogInterface?, _: Int ->
                 if (selectedMode != MODE_UNSET)
-                    listener.onActionCalled(ActionType.RESTORE, selectedMode, properties)
+                    listener.onActionCalled(ActionType.RESTORE, selectedMode, backup)
             }
             .setNegativeButton(R.string.dialogCancel) { dialog: DialogInterface?, _: Int -> dialog?.cancel() }
             .create()

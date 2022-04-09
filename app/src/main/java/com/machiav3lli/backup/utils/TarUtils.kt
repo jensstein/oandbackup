@@ -184,9 +184,9 @@ fun setAttributes(targetFile: RootFile, tarEntry: TarArchiveEntry) {
 }
 
 @Throws(IOException::class)
-fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile) {
+fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile, forceOldVersion: Boolean = false) {
     val qUtilBox = ShellHandler.utilBoxQ
-    val strictHardLinks = OABX.prefFlag(PREFS_STRICTHARDLINKS, false)
+    val strictHardLinks = OABX.prefFlag(PREFS_STRICTHARDLINKS, false) && ! forceOldVersion
     val postponeInfo = mutableMapOf<String, TarArchiveEntry>()
     generateSequence { nextTarEntry }.forEach { tarEntry ->
         val targetFile = RootFile(targetDir, tarEntry.name)

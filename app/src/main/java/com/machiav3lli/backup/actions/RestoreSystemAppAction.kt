@@ -19,12 +19,12 @@ package com.machiav3lli.backup.actions
 
 import android.content.Context
 import android.os.Build
+import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
-import com.machiav3lli.backup.items.BackupProperties
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.tasks.AppActionWork
 import org.apache.commons.io.IOUtils
@@ -38,8 +38,8 @@ class RestoreSystemAppAction(context: Context, work: AppActionWork?, shell: Shel
     RestoreAppAction(context, work, shell) {
 
     @Throws(RestoreFailedException::class)
-    override fun restorePackage(backupDir: StorageFile, backupProperties: BackupProperties) {
-        val apkTargetPath = File(backupProperties.sourceDir ?: "")
+    override fun restorePackage(backupDir: StorageFile, backup: Backup) {
+        val apkTargetPath = File(backup.sourceDir ?: "")
         backupDir.findFile(apkTargetPath.name)?.let { apkFile ->
             // Writing the apk to a temporary location to get it out of the magic storage to a local location
             // that can be accessed with shell commands.
@@ -66,13 +66,13 @@ class RestoreSystemAppAction(context: Context, work: AppActionWork?, shell: Shel
             apkTargetPath.parentFile?.absoluteFile?.let { appDir ->
                 val command =
                     "(mount -o remount,rw ${quote(mountPoint)} && " +
-                        "mkdir -p ${quote(appDir)} && (" +  // chmod might be obsolete
+                            "mkdir -p ${quote(appDir)} && (" +  // chmod might be obsolete
                             "$utilBoxQ chmod 755 ${quote(appDir)} ; " +  // for some reason a permissions error is thrown if the apk path is not created first
                             "$utilBoxQ touch ${quote(apkTargetPath)} ; " + // with touch, a reboot is not necessary after restoring system apps
                             "$utilBoxQ mv -f ${quote(tempPath)} ${quote(apkTargetPath)} ; " +
                             "$utilBoxQ chmod 644 ${quote(apkTargetPath)}" +
-                        ")" +
-                    "); mount -o remount,ro $mountPoint"
+                            ")" +
+                            "); mount -o remount,ro $mountPoint"
                 try {
                     runAsRoot(command)
                 } catch (e: ShellCommandFailedException) {

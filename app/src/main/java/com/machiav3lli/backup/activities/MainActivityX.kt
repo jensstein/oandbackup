@@ -31,8 +31,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.OABX.Companion.appsSuspendedChecked
 import com.machiav3lli.backup.PREFS_CATCHUNCAUGHT
+import com.machiav3lli.backup.PREFS_MAXCRASHLINES
 import com.machiav3lli.backup.PREFS_SKIPPEDENCRYPTION
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ActivityMainXBinding
@@ -58,23 +58,10 @@ import com.machiav3lli.backup.utils.sortOrder
 import com.machiav3lli.backup.viewmodels.MainViewModel
 import com.topjohnwu.superuser.Shell
 import timber.log.Timber
-import java.lang.ref.WeakReference
 import kotlin.system.exitProcess
 
 
 class MainActivityX : BaseActivity() {
-
-    companion object {
-
-        var activityRef: WeakReference<MainActivityX> = WeakReference(null)
-        var activity: MainActivityX?
-            get() {
-                return activityRef.get()
-            }
-            set(activity) {
-                activityRef = WeakReference(activity)
-            }
-    }
 
     private lateinit var prefs: SharedPreferences
     private lateinit var refreshViewController: RefreshViewController
@@ -86,18 +73,17 @@ class MainActivityX : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val context = this
-        activity = this
         OABX.activity = this
 
         setCustomTheme()
         super.onCreate(savedInstanceState)
 
-        appsSuspendedChecked = false
+        OABX.appsSuspendedChecked = false
 
         if (OABX.prefFlag(PREFS_CATCHUNCAUGHT, true)) {
             Thread.setDefaultUncaughtExceptionHandler { _, e ->
                 try {
-                    val maxCrashLines = OABX.prefInt("maxCrashLines", 100)
+                    val maxCrashLines = OABX.prefInt(PREFS_MAXCRASHLINES, 100)
                     LogsHandler.unhandledException(e)
                     LogsHandler(context).writeToLogFile(
                         "uncaught exception happened:\n\n" +
@@ -112,8 +98,8 @@ class MainActivityX : BaseActivity() {
                             Looper.prepare()
                             repeat(5) {
                                 Toast.makeText(
-                                    activity,
-                                    "Uncaught Exception\n${e.message}\nrestarting application...",
+                                    context,
+                                    "Uncaught Exception\n${e.message}\n${e.cause}\nrestarting application...",
                                     Toast.LENGTH_LONG
                                 ).show()
                             }
@@ -148,6 +134,7 @@ class MainActivityX : BaseActivity() {
         viewModel.refreshNow.observe(this) {
             if (it) refreshView()
         }
+        viewModel.packageList.observe(this) { }
 
         runOnUiThread { showEncryptionDialog() }
 
@@ -164,6 +151,7 @@ class MainActivityX : BaseActivity() {
     }
 
     override fun onResume() {
+        OABX.activity = this    // just in case 'this' object is recreated
         super.onResume()
         if (isNeedRefresh) {
             viewModel.refreshList()
@@ -189,7 +177,7 @@ class MainActivityX : BaseActivity() {
                 // ignore?
             }
             else -> {
-                activity?.showToast("Main: unknown command '$command'")
+                showToast("Main: unknown command '$command'")
             }
         }
         return false
@@ -216,7 +204,7 @@ class MainActivityX : BaseActivity() {
 
     private fun setupOnClicks() {
         binding.buttonSettings.setOnClickListener {
-            viewModel.appInfoList.value?.let { OABX.app.cache.put("appInfoList", it) }
+            viewModel.packageList.value?.let { OABX.app.cache.put("appInfoList", it) }
             startActivity(
                 Intent(applicationContext, PrefsActivity::class.java)
             )
@@ -245,7 +233,7 @@ class MainActivityX : BaseActivity() {
     }
 
     fun updatePackage(packageName: String) {
-        StorageFile.invalidateCache()
+        StorageFile.invalidateCache { it.contains(packageName) }
         viewModel.updatePackage(packageName)
     }
 
@@ -258,7 +246,7 @@ class MainActivityX : BaseActivity() {
     }
 
     fun refreshView() {
-        if (::refreshViewController.isInitialized) refreshViewController.refreshView()
+        if (::refreshViewController.isInitialized) refreshViewController.refreshView(viewModel.packageList.value)
     }
 
     fun setProgressViewController(progressViewController: ProgressViewController) {
@@ -287,12 +275,12 @@ class MainActivityX : BaseActivity() {
     }
 
     fun whileShowingSnackBar(message: String, todo: () -> Unit) {
-        activity?.runOnUiThread {
-            activity?.showSnackBar(message)
+        runOnUiThread {
+            showSnackBar(message)
         }
         todo()
-        activity?.runOnUiThread {
-            activity?.dismissSnackBar()
+        runOnUiThread {
+            dismissSnackBar()
         }
     }
 

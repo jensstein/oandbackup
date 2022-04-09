@@ -20,14 +20,16 @@ package com.machiav3lli.backup.dbs.entity
 import android.content.Context
 import android.content.pm.PackageInfo
 import androidx.room.Entity
+import com.machiav3lli.backup.handler.grantedPermissions
 
 @Entity
-open class AppInfoX : PackageInfoX {
+open class AppInfo : com.machiav3lli.backup.dbs.entity.PackageInfo {
     var enabled: Boolean = true
     var installed: Boolean = false
     var apkDir: String? = ""
     var dataDir: String? = ""
     var deDataDir: String? = ""
+    var permissions: List<String> = listOf()
 
     constructor(
         packageName: String,
@@ -37,7 +39,8 @@ open class AppInfoX : PackageInfoX {
         profileId: Int,
         sourceDir: String?,
         splitSourceDirs: Array<String> = arrayOf(),
-        isSystem: Boolean
+        isSystem: Boolean,
+        permissions: List<String>
     ) : super(
         packageName,
         packageLabel,
@@ -46,8 +49,10 @@ open class AppInfoX : PackageInfoX {
         profileId,
         sourceDir,
         splitSourceDirs,
-        isSystem
-    )
+        isSystem,
+    ) {
+        this.permissions = permissions
+    }
 
     constructor(context: Context, pi: PackageInfo) : super(context, pi) {
         this.installed = true
@@ -55,5 +60,6 @@ open class AppInfoX : PackageInfoX {
         this.apkDir = pi.applicationInfo.sourceDir
         this.dataDir = pi.applicationInfo.dataDir
         this.deDataDir = pi.applicationInfo.deviceProtectedDataDir
+        permissions = pi.grantedPermissions
     }
 }

@@ -31,10 +31,10 @@ import com.machiav3lli.backup.dbs.entity.*
         Schedule::class,
         Blocklist::class,
         AppExtras::class,
-        AppInfoX::class,
-        SpecialInfoX::class,
+        AppInfo::class,
+        SpecialInfo::class,
         Backup::class],
-    version = 3,
+    version = 5,
     exportSchema = true,
     autoMigrations = []
 )

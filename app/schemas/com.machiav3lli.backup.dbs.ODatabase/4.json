@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 3,
-    "identityHash": "89dc3d3d38e95d3da8c53adb041dd74f",
+    "version": 4,
+    "identityHash": "41972af530623d54e335f87f2787aa67",
     "entities": [
       {
         "tableName": "Schedule",
@@ -167,7 +167,7 @@
         "foreignKeys": []
       },
       {
-        "tableName": "AppInfoX",
+        "tableName": "AppInfo",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`enabled` INTEGER NOT NULL, `installed` INTEGER NOT NULL, `apkDir` TEXT, `dataDir` TEXT, `deDataDir` TEXT, `packageName` TEXT NOT NULL, `packageLabel` TEXT, `versionName` TEXT, `versionCode` INTEGER NOT NULL, `profileId` INTEGER NOT NULL, `sourceDir` TEXT, `splitSourceDirs` TEXT NOT NULL, `isSystem` INTEGER NOT NULL, `icon` INTEGER NOT NULL, PRIMARY KEY(`packageName`))",
         "fields": [
           {
@@ -265,7 +265,7 @@
         "foreignKeys": []
       },
       {
-        "tableName": "SpecialInfoX",
+        "tableName": "SpecialInfo",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`specialFiles` TEXT NOT NULL, `packageName` TEXT NOT NULL, `packageLabel` TEXT, `versionName` TEXT, `versionCode` INTEGER NOT NULL, `profileId` INTEGER NOT NULL, `sourceDir` TEXT, `splitSourceDirs` TEXT NOT NULL, `isSystem` INTEGER NOT NULL, `icon` INTEGER NOT NULL, PRIMARY KEY(`packageName`))",
         "fields": [
           {
@@ -483,7 +483,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '89dc3d3d38e95d3da8c53adb041dd74f')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '41972af530623d54e335f87f2787aa67')"
     ]
   }
 }

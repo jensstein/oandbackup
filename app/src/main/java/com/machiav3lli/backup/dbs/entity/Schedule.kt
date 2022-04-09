@@ -24,7 +24,6 @@ import androidx.room.migration.AutoMigrationSpec
 import com.machiav3lli.backup.*
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
-import com.machiav3lli.backup.items.BackupItem
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.mainFilterToId
 import com.machiav3lli.backup.utils.modeToId
@@ -85,18 +84,18 @@ data class Schedule(
                 this.blockList = item.blockList
             }
         } catch (e: FileNotFoundException) {
-            throw BackupItem.BrokenBackupException(
+            throw Backup.BrokenBackupException(
                 "Cannot open ${exportFile.name} at ${exportFile.path}",
                 e
             )
         } catch (e: IOException) {
-            throw BackupItem.BrokenBackupException(
+            throw Backup.BrokenBackupException(
                 "Cannot read ${exportFile.name} at ${exportFile.path}",
                 e
             )
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, exportFile.path)
-            throw BackupItem.BrokenBackupException("Unable to process ${exportFile.name} at ${exportFile.path}. [${e.javaClass.canonicalName}] $e")
+            throw Backup.BrokenBackupException("Unable to process ${exportFile.name} at ${exportFile.path}. [${e.javaClass.canonicalName}] $e")
         }
     }
 

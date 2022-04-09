@@ -19,6 +19,7 @@ package com.machiav3lli.backup.actions
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_PMSUSPEND
@@ -144,6 +145,7 @@ abstract class BaseAppAction protected constructor(
             "cache",
             "trash",
             ".thumbnails",
+            if (OABX.minSDK(Build.VERSION_CODES.R)) "..*" else null
         )
 
         val ignoredPackages = ("""(?x)

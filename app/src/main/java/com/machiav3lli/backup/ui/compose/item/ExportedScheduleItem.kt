@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -92,37 +91,22 @@ fun ExportedScheduleItem(
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                FilledTonalButton(
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                    ),
+                ActionChip(
+                    icon = painterResource(id = R.drawable.ic_restore),
+                    text = stringResource(id = R.string.dialog_import),
+                    positive = true,
                     onClick = { onRestore(item) }
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_restore),
-                        contentDescription = stringResource(id = R.string.dialog_import)
-                    )
-                    Text(
-                        modifier = Modifier.weight(1f),
-                        text = stringResource(id = R.string.dialog_import),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
+                )
 
-                FilledTonalButton(
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                    ), onClick = { onDelete(file) }
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_delete),
-                        contentDescription = stringResource(id = R.string.delete)
-                    )
-                }
+                Spacer(modifier = Modifier.weight(1f))
+
+                ActionChip(
+                    icon = painterResource(id = R.drawable.ic_delete),
+                    text = stringResource(id = R.string.delete),
+                    withText = false,
+                    positive = false,
+                    onClick = { onDelete(file) }
+                )
             }
         }
     }

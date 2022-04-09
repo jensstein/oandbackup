@@ -112,11 +112,14 @@
 
     <style name="Button.Round" parent="Widget.MaterialComponents.Button">
         <item name="android:background">@drawable/bg_button_round_accent</item>
-        <item name="android:elevation">4dp</item>
+        <item name="android:elevation">@dimen/cards_spacing</item>
     </style>
 
-    <style name="Button.Rectangular" parent="Widget.Material3.Button">
+    <style name="Button.Rectangular" parent="Widget.Material3.Button.TextButton.Icon">
         <item name="android:background">@drawable/bg_button_rectangular_transparent</item>
+        <item name="iconTint">?colorControlNormal</item>
+        <item name="android:textColor">?colorControlNormal</item>
+        <item name="android:padding">@dimen/cards_spacing</item>
     </style>
 
     <style name="Chip.Group" parent="Widget.Material3.ChipGroup">

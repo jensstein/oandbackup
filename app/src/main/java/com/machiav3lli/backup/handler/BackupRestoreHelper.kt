@@ -19,11 +19,23 @@ package com.machiav3lli.backup.handler
 
 import android.content.Context
 import android.content.pm.PackageManager
-import com.machiav3lli.backup.*
+import com.machiav3lli.backup.BuildConfig
+import com.machiav3lli.backup.HousekeepingMoment
 import com.machiav3lli.backup.HousekeepingMoment.Companion.fromString
-import com.machiav3lli.backup.actions.*
+import com.machiav3lli.backup.MODE_APK
+import com.machiav3lli.backup.MODE_DATA
+import com.machiav3lli.backup.PREFS_HOUSEKEEPING_MOMENT
+import com.machiav3lli.backup.PREFS_NUM_BACKUP_REVISIONS
+import com.machiav3lli.backup.actions.BackupAppAction
+import com.machiav3lli.backup.actions.BackupSpecialAction
+import com.machiav3lli.backup.actions.RestoreAppAction
+import com.machiav3lli.backup.actions.RestoreSpecialAction
+import com.machiav3lli.backup.actions.RestoreSystemAppAction
+import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
-import com.machiav3lli.backup.items.*
+import com.machiav3lli.backup.items.ActionResult
+import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
@@ -41,7 +53,7 @@ object BackupRestoreHelper {
         context: Context,
         work: AppActionWork?,
         shell: ShellHandler,
-        appInfo: AppInfo,
+        appInfo: Package,
         backupMode: Int
     ): ActionResult {
         var reBackupMode = backupMode
@@ -85,8 +97,8 @@ object BackupRestoreHelper {
     }
 
     fun restore(
-        context: Context, work: AppActionWork?, shellHandler: ShellHandler, appInfo: AppInfo,
-        mode: Int, backupProperties: BackupProperties, backupDir: StorageFile
+        context: Context, work: AppActionWork?, shellHandler: ShellHandler, appInfo: Package,
+        mode: Int, backupProperties: Backup, backupDir: StorageFile?
     ): ActionResult {
         val action: RestoreAppAction = when {
             appInfo.isSpecial -> RestoreSpecialAction(context, work, shellHandler)
@@ -115,7 +127,7 @@ object BackupRestoreHelper {
                 suCopyFileToDocument(fileInfos[0], backupRoot)
                 // Invalidating cache, otherwise the next call will fail
                 // Can cost a lot time, but this function won't be run that often
-                invalidateCache()
+                invalidateCache() //TODO hg42 how to filter only the apk? or eliminate the need to invalidate
                 val baseApkFile = backupRoot.findFile(fileInfos[0].filename)
                 if (baseApkFile != null) {
                     baseApkFile.renameTo(filename)
@@ -139,7 +151,7 @@ object BackupRestoreHelper {
         return true
     }
 
-    private fun housekeepingPackageBackups(context: Context, app: AppInfo, before: Boolean) {
+    private fun housekeepingPackageBackups(context: Context, app: Package, before: Boolean) {
         var numBackupRevisions =
             context.getDefaultSharedPreferences().getInt(PREFS_NUM_BACKUP_REVISIONS, 2)
         var backups = app.backupHistory
@@ -160,14 +172,14 @@ object BackupRestoreHelper {
                 val revisionsToDelete = backups.size - numBackupRevisions
                 Timber.i("[${app.packageName}] More backup revisions than configured maximum (${backups.size} > ${numBackupRevisions + if (before) 1 else 0}). Deleting $revisionsToDelete backup(s).")
                 backups = backups
-                    .sortedWith { bi1: BackupItem, bi2: BackupItem ->
-                        bi1.backupProperties.backupDate!!.compareTo(bi2.backupProperties.backupDate)
+                    .sortedWith { bi1: Backup, bi2: Backup ->
+                        bi1.backupDate.compareTo(bi2.backupDate)
                     }
                     .toMutableList()
                 (0 until revisionsToDelete).forEach {
                     val deleteInfo = backups[it]
                     Timber.i("[${app.packageName}] Deleting backup revision $deleteInfo")
-                    app.delete(context, deleteInfo)
+                    app.delete(deleteInfo)
                 }
             }
         }

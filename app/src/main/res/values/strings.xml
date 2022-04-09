@@ -228,7 +228,7 @@
     <string name="enable_encryption_message">It\'s not safe to keep your data on your device not encrypted. For the safety of your data enable encryption and set a password.</string>
     <string name="sort_and_filter"><![CDATA[Sort & Filter]]></string>
     <string name="storage_access">Storage Access</string>
-    <string name="welcome_to_oabx">Welcome to OABX!</string>
+    <string name="welcome_to_oabx">Welcome to Neo Backup!</string>
     <string name="intro_welcome_message"> OAndBackupX is a fork of the infamous OAndBackup with the aim to bring it to 2020 and further. For now most of the functionality and UI of the app are rewritten and some are added.
         \n The app is still in beta stages and a lot of rebasing is done often. So please read the changelog carefully with each new release.
         \n All types of contribution are welcome was it translation, ideas, reporting bugs or code work.
@@ -330,6 +330,6 @@
     <string name="schedule">Schedule</string>
     <string name="finished">finished</string>
     <string name="batch">Batch</string>
-    <string name="loading_list">Loading apps\' list…</string>
+    <string name="loading_list">Loading list…</string>
     <string name="delete">Delete</string>
 </resources>

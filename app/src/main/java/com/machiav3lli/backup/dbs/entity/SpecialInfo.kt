@@ -1,10 +1,12 @@
-package com.machiav3lli.backup.items
+package com.machiav3lli.backup.dbs.entity
 
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.room.Entity
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.ShellCommands
+import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import timber.log.Timber
@@ -12,21 +14,48 @@ import timber.log.Timber
 /**
  * This class is used to describe special backup files that use a hardcoded list of file paths
  */
-open class SpecialAppMetaInfo(
-    packageName: String,
-    label: String?,
-    versionName: String,
-    versionCode: Int,
-    fileList: Array<String>,
-    icon: Int = -1
-) : AppMetaInfo(packageName, label, versionName, versionCode, 0, null, arrayOf(), true, icon) {
-    var specialFiles: Array<String> = fileList
+@Entity
+open class SpecialInfo : PackageInfo {
+    var specialFiles: Array<String> = arrayOf()
+
+    constructor(
+        packageName: String,
+        label: String? = "",
+        versionName: String? = "",
+        versionCode: Int = 0,
+        specialFiles: Array<String> = arrayOf(),
+        icon: Int = -1
+    ) : super(packageName, label, versionName, versionCode, 0, null, arrayOf(), true, icon) {
+        this.specialFiles = specialFiles
+    }
+
+    constructor(
+        packageName: String,
+        packageLabel: String?,
+        versionName: String?,
+        versionCode: Int,
+        profileId: Int,
+        sourceDir: String?,
+        splitSourceDirs: Array<String> = arrayOf(),
+        isSystem: Boolean,
+        icon: Int = -1
+    ) : super(
+        packageName,
+        packageLabel,
+        versionName,
+        versionCode,
+        profileId,
+        sourceDir,
+        splitSourceDirs,
+        isSystem,
+        icon
+    )
 
     override val isSpecial: Boolean
         get() = true
 
     companion object {
-        private val specialPackages: MutableList<AppInfo> = mutableListOf()
+        private val specialPackages: MutableList<Package> = mutableListOf()
 
         /**
          * Returns the list of special (virtual) packages
@@ -36,14 +65,14 @@ open class SpecialAppMetaInfo(
          * @throws BackupLocationInAccessibleException   when the backup location cannot be read for any reason
          * @throws StorageLocationNotConfiguredException when the backup location is not set in the configuration
          */
-        var threadCount = 0
-        var locked = false
+        private var threadCount = 0
+        private var locked = false
 
         @Throws(
             BackupLocationInAccessibleException::class,
             StorageLocationNotConfiguredException::class
         )
-        fun getSpecialPackages(context: Context): List<AppInfo> {
+        fun getSpecialPackages(context: Context): List<Package> {
             // Careful: It is possible to specify whole directories, but there are two rules:
             // 1. Directories must end with a slash e.g. "/data/system/netstats/"
             // 2. The name of the directory must be unique:
@@ -74,8 +103,8 @@ open class SpecialAppMetaInfo(
                     if (context.packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
                         specialPackages
                             .add(
-                                AppInfo(
-                                    context, SpecialAppMetaInfo(
+                                Package(
+                                    context, SpecialInfo(
                                         "special.smsmms.json",
                                         specPrefix + context.getString(R.string.spec_smsmmsjson),
                                         Build.VERSION.RELEASE,
@@ -87,8 +116,8 @@ open class SpecialAppMetaInfo(
                             )
                         specialPackages
                             .add(
-                                AppInfo(
-                                    context, SpecialAppMetaInfo(
+                                Package(
+                                    context, SpecialInfo(
                                         "special.calllogs.json",
                                         specPrefix + context.getString(R.string.spec_calllogsjson),
                                         Build.VERSION.RELEASE,
@@ -101,8 +130,8 @@ open class SpecialAppMetaInfo(
                     }
                     specialPackages
                         .add(
-                            AppInfo(
-                                context, SpecialAppMetaInfo(
+                            Package(
+                                context, SpecialInfo(
                                     "special.accounts",
                                     specPrefix + context.getString(R.string.spec_accounts),
                                     Build.VERSION.RELEASE,
@@ -114,8 +143,8 @@ open class SpecialAppMetaInfo(
                         )
                     specialPackages
                         .add(
-                            AppInfo(
-                                context, SpecialAppMetaInfo(
+                            Package(
+                                context, SpecialInfo(
                                     "special.bluetooth",
                                     specPrefix + context.getString(R.string.spec_bluetooth),
                                     Build.VERSION.RELEASE,
@@ -127,8 +156,8 @@ open class SpecialAppMetaInfo(
                         )
                     specialPackages
                         .add(
-                            AppInfo(
-                                context, SpecialAppMetaInfo(
+                            Package(
+                                context, SpecialInfo(
                                     "special.data.usage.policy",
                                     specPrefix + context.getString(R.string.spec_data),
                                     Build.VERSION.RELEASE,
@@ -141,8 +170,8 @@ open class SpecialAppMetaInfo(
                         )
                     specialPackages
                         .add(
-                            AppInfo(
-                                context, SpecialAppMetaInfo(
+                            Package(
+                                context, SpecialInfo(
                                     "special.fingerprint",
                                     specPrefix + context.getString(R.string.spec_fingerprint),
                                     Build.VERSION.RELEASE,
@@ -155,8 +184,8 @@ open class SpecialAppMetaInfo(
                         )
                     specialPackages
                         .add(
-                            AppInfo(
-                                context, SpecialAppMetaInfo(
+                            Package(
+                                context, SpecialInfo(
                                     "special.wallpaper",
                                     specPrefix + context.getString(R.string.spec_wallpaper),
                                     Build.VERSION.RELEASE,
@@ -175,8 +204,8 @@ open class SpecialAppMetaInfo(
                     }
                     specialPackages
                         .add(
-                            AppInfo(
-                                context, SpecialAppMetaInfo(
+                            Package(
+                                context, SpecialInfo(
                                     "special.wifi.access.points",
                                     specPrefix + context.getString(R.string.spec_wifiAccessPoints),
                                     Build.VERSION.RELEASE,

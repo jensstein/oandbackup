@@ -28,13 +28,13 @@ import com.machiav3lli.backup.handler.LogsHandler.Companion.logErrors
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
-import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.utils.showActionResult
 import java.lang.ref.WeakReference
 import java.util.concurrent.CountDownLatch
 
 abstract class BaseActionTask(
-    val app: AppInfo, oAndBackupX: MainActivityX, val shellHandler: ShellHandler,
+    val app: Package, oAndBackupX: MainActivityX, val shellHandler: ShellHandler,
     val mode: Int, private val actionType: ActionType,
     private val appSheet: AppSheet
 ) : CoroutinesAsyncTask<Void?, Void?, ActionResult>() {

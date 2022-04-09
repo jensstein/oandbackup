@@ -56,8 +56,6 @@
                 style="@style/Button.Round"
                 android:layout_width="52dp"
                 android:layout_height="match_parent"
-                android:clickable="true"
-                android:focusable="true"
                 android:tint="?colorControlNormal"
                 android:tooltipText="@string/help"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -99,14 +97,13 @@
                 android:background="@android:color/transparent"
                 app:menu="@menu/navi_menu_prefs" />
 
-            <androidx.appcompat.widget.AppCompatImageButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/backButton"
                 style="@style/Button.Rectangular"
                 android:layout_width="52dp"
                 android:layout_height="match_parent"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@drawable/ic_arrow_back" />
+                app:icon="@drawable/ic_arrow_back"
+                app:iconSize="@dimen/icon_medium" />
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

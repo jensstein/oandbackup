@@ -18,74 +18,86 @@
 package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
-import com.machiav3lli.backup.dbs.*
-import com.machiav3lli.backup.dbs.dao.AppExtrasDao
-import com.machiav3lli.backup.dbs.dao.BlocklistDao
+import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.AppExtras
+import com.machiav3lli.backup.dbs.entity.AppInfo
+import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Blocklist
-import com.machiav3lli.backup.handler.getApplicationList
-import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.handler.toPackageList
+import com.machiav3lli.backup.handler.updateAppInfoTable
+import com.machiav3lli.backup.items.Package
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class MainViewModel(
-    database: ODatabase,
+    private val db: ODatabase,
     private val appContext: Application
 ) : AndroidViewModel(appContext) {
-    private val appExtrasDao: AppExtrasDao = database.appExtrasDao
-    private val blocklistDao: BlocklistDao = database.blocklistDao
 
-    var appInfoList = MediatorLiveData<MutableList<AppInfo>>()
+    var packageList = MediatorLiveData<MutableList<Package>>()
+    var backupsMap = MediatorLiveData<Map<String, List<Backup>>>()
     var blocklist = MediatorLiveData<List<Blocklist>>()
     var appExtrasList: MutableList<AppExtras>
-        get() = appExtrasDao.all
+        get() = db.appExtrasDao.all
         set(value) {
-            appExtrasDao.deleteAll()
-            value.forEach {
-                appExtrasDao.insert(it)
-            }
+            db.appExtrasDao.deleteAll()
+            db.appExtrasDao.insert(*value.toTypedArray())
         }
     val refreshNow = MutableLiveData<Boolean>()
 
     init {
-        blocklist.addSource(blocklistDao.liveAll, blocklist::setValue)
+        blocklist.addSource(db.blocklistDao.liveAll, blocklist::setValue)
+        backupsMap.addSource(db.backupDao.allLive) {
+            backupsMap.value = it.groupBy(Backup::packageName)
+        }
+        packageList.addSource(db.appInfoDao.allLive) {
+            packageList.value = it.toPackageList(
+                appContext,
+                blocklist.value?.mapNotNull(Blocklist::packageName) ?: listOf()
+            )
+        }
     }
 
     fun refreshList() {
         viewModelScope.launch {
-            appInfoList.value = recreateAppInfoList()
+            recreateAppInfoList()
             refreshNow.value = true
         }
     }
 
-    private suspend fun recreateAppInfoList(): MutableList<AppInfo> =
+    private suspend fun recreateAppInfoList() =
         withContext(Dispatchers.IO) {
-            val blockedPackagesList = blocklist.value?.mapNotNull { it.packageName } ?: listOf()
-            appContext.getApplicationList(blockedPackagesList)
+            appContext.updateAppInfoTable(db.appInfoDao)
         }
 
     fun updatePackage(packageName: String) {
         viewModelScope.launch {
-            val appInfo = appInfoList.value?.find { it.packageName == packageName }
-            appInfo?.let {
-                appInfoList.value = updateListWith(packageName)
+            val appPackage = packageList.value?.find { it.packageName == packageName }
+            appPackage?.let {
+                packageList.value = updateListWith(packageName)
             }
             refreshNow.value = true
         }
     }
 
-    private suspend fun updateListWith(packageName: String): MutableList<AppInfo>? =
+    private suspend fun updateListWith(packageName: String): MutableList<Package>? =
         withContext(Dispatchers.IO) {
-            val dataList = appInfoList.value
-            var appInfo = dataList?.find { it.packageName == packageName }
+            val dataList = packageList.value
+            var appPackage = dataList?.find { it.packageName == packageName }
             dataList?.removeIf { it.packageName == packageName }
             try {
-                appInfo = AppInfo(appContext, packageName, appInfo?.backupDir)
-                dataList?.add(appInfo)
+                appPackage = Package(appContext, packageName, appPackage?.packageBackupDir)
+                if (!appPackage.isSpecial) db.appInfoDao.update(appPackage.packageInfo as AppInfo)
+                dataList?.add(appPackage)
             } catch (e: AssertionError) {
                 Timber.w(e.message ?: "")
             }
@@ -100,12 +112,12 @@ class MainViewModel(
 
     private suspend fun updateExtrasWith(appExtras: AppExtras) {
         withContext(Dispatchers.IO) {
-            val oldExtras = appExtrasDao.all.find { it.packageName == appExtras.packageName }
+            val oldExtras = db.appExtrasDao.all.find { it.packageName == appExtras.packageName }
             if (oldExtras != null) {
                 appExtras.id = oldExtras.id
-                appExtrasDao.update(appExtras)
+                db.appExtrasDao.update(appExtras)
             } else
-                appExtrasDao.insert(appExtras)
+                db.appExtrasDao.insert(appExtras)
             true
         }
     }
@@ -119,14 +131,14 @@ class MainViewModel(
 
     private suspend fun insertIntoBlocklist(packageName: String) {
         withContext(Dispatchers.IO) {
-            blocklistDao.insert(
+            db.blocklistDao.insert(
                 Blocklist.Builder()
                     .withId(0)
                     .withBlocklistId(PACKAGES_LIST_GLOBAL_ID)
                     .withPackageName(packageName)
                     .build()
             )
-            appInfoList.value?.removeIf { it.packageName == packageName }
+            packageList.value?.removeIf { it.packageName == packageName }
         }
     }
 
@@ -139,8 +151,8 @@ class MainViewModel(
 
     private suspend fun insertIntoBlocklist(newList: Set<String>) =
         withContext(Dispatchers.IO) {
-            blocklistDao.updateList(PACKAGES_LIST_GLOBAL_ID, newList)
-            appInfoList.value?.removeIf { newList.contains(it.packageName) }
+            db.blocklistDao.updateList(PACKAGES_LIST_GLOBAL_ID, newList)
+            packageList.value?.removeIf { newList.contains(it.packageName) }
         }
 
     class Factory(

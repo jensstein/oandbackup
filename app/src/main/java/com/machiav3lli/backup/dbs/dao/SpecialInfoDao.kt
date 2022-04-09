@@ -20,28 +20,28 @@ package com.machiav3lli.backup.dbs.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
-import com.machiav3lli.backup.dbs.entity.SpecialInfoX
+import com.machiav3lli.backup.dbs.entity.SpecialInfo
 
 @Dao
-interface SpecialInfoDao : BaseDao<SpecialInfoX> {
-    @Query("SELECT COUNT(*) FROM specialinfox")
+interface SpecialInfoDao : BaseDao<SpecialInfo> {
+    @Query("SELECT COUNT(*) FROM specialinfo")
     fun count(): Long
 
-    @get:Query("SELECT * FROM specialinfox ORDER BY packageName ASC")
-    val all: MutableList<SpecialInfoX>
+    @get:Query("SELECT * FROM specialinfo ORDER BY packageName ASC")
+    val all: MutableList<SpecialInfo>
 
-    @get:Query("SELECT * FROM specialinfox ORDER BY packageName ASC")
-    val allLive: LiveData<MutableList<SpecialInfoX>>
+    @get:Query("SELECT * FROM specialinfo ORDER BY packageName ASC")
+    val allLive: LiveData<MutableList<SpecialInfo>>
 
-    @Query("SELECT * FROM specialinfox WHERE packageName = :packageName")
-    fun get(packageName: String): MutableList<SpecialInfoX>
+    @Query("SELECT * FROM specialinfo WHERE packageName = :packageName")
+    fun get(packageName: String): MutableList<SpecialInfo>
 
-    @Query("SELECT * FROM specialinfox WHERE packageName = :packageName")
-    fun getLive(packageName: String): LiveData<List<SpecialInfoX>>
+    @Query("SELECT * FROM specialinfo WHERE packageName = :packageName")
+    fun getLive(packageName: String): LiveData<List<SpecialInfo>>
 
-    @Query("DELETE FROM specialinfox")
+    @Query("DELETE FROM specialinfo")
     fun emptyTable()
 
-    @Query("DELETE FROM specialinfox WHERE packageName = :packageName")
+    @Query("DELETE FROM specialinfo WHERE packageName = :packageName")
     fun deleteAllOf(packageName: String)
 }

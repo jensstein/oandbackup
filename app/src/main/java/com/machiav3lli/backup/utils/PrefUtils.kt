@@ -21,7 +21,11 @@ import android.Manifest
 import android.app.Activity
 import android.app.AppOpsManager
 import android.app.KeyguardManager
-import android.content.*
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -36,10 +40,39 @@ import androidx.core.app.ActivityCompat
 import androidx.preference.PreferenceManager
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.machiav3lli.backup.*
+import com.machiav3lli.backup.NEED_REFRESH
+import com.machiav3lli.backup.PREFS_ACCENT_COLOR
+import com.machiav3lli.backup.PREFS_ALLOWDOWNGRADE
+import com.machiav3lli.backup.PREFS_BIOMETRICLOCK
+import com.machiav3lli.backup.PREFS_COMPRESSION_LEVEL
+import com.machiav3lli.backup.PREFS_DEVICELOCK
+import com.machiav3lli.backup.PREFS_DEVICEPROTECTEDDATA
+import com.machiav3lli.backup.PREFS_DISABLEVERIFICATION
+import com.machiav3lli.backup.PREFS_ENABLESPECIALBACKUPS
+import com.machiav3lli.backup.PREFS_ENCRYPTION
+import com.machiav3lli.backup.PREFS_EXTERNALDATA
+import com.machiav3lli.backup.PREFS_IGNORE_BATTERY_OPTIMIZATION
+import com.machiav3lli.backup.PREFS_LANGUAGES
+import com.machiav3lli.backup.PREFS_LANGUAGES_DEFAULT
+import com.machiav3lli.backup.PREFS_MEDIADATA
+import com.machiav3lli.backup.PREFS_OBBDATA
+import com.machiav3lli.backup.PREFS_PASSWORD
+import com.machiav3lli.backup.PREFS_PASSWORD_CONFIRMATION
+import com.machiav3lli.backup.PREFS_PATH_BACKUP_DIRECTORY
+import com.machiav3lli.backup.PREFS_PAUSEAPPS
+import com.machiav3lli.backup.PREFS_REMEMBERFILTERING
+import com.machiav3lli.backup.PREFS_RESTOREWITHALLPERMISSIONS
+import com.machiav3lli.backup.PREFS_SALT
+import com.machiav3lli.backup.PREFS_SECONDARY_COLOR
+import com.machiav3lli.backup.PREFS_SHARED_PRIVATE
+import com.machiav3lli.backup.PREFS_SORT_FILTER
+import com.machiav3lli.backup.PREFS_SORT_ORDER
+import com.machiav3lli.backup.PREFS_THEME
+import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import com.topjohnwu.superuser.Shell
 import java.nio.charset.StandardCharsets
 import java.util.*
@@ -74,8 +107,7 @@ fun Context.getCryptoSalt(): ByteArray {
 
 fun Context.isEncryptionEnabled(): Boolean =
     getDefaultSharedPreferences().getBoolean(PREFS_ENCRYPTION, false)
-            && getPrivateSharedPrefs().getString(PREFS_PASSWORD, "")?.isNotEmpty()
-            ?: false
+            && getEncryptionPassword().isNotEmpty()
 
 fun Context.getEncryptionPassword(): String =
     getPrivateSharedPrefs().getString(PREFS_PASSWORD, "")
@@ -90,6 +122,10 @@ fun Context.getEncryptionPasswordConfirmation(): String =
 
 fun Context.setEncryptionPasswordConfirmation(value: String) =
     getPrivateSharedPrefs().edit().putString(PREFS_PASSWORD_CONFIRMATION, value).commit()
+
+fun Context.isCompressionEnabled(): Boolean =
+    getCompressionLevel() > 0
+// && compression algorithm != null
 
 fun Context.getCompressionLevel() =
     getDefaultSharedPreferences().getInt(PREFS_COMPRESSION_LEVEL, 5)
@@ -383,7 +419,7 @@ val Context.checkUsageStatsPermission: Boolean
                     packageName
                 )
             else ->
-                appOps.checkOpNoThrow(  //TODO 'checkOpNoThrow(String, Int, String): Int' is deprecated. Deprecated in Java
+                appOps.checkOpNoThrow(  //TODO 'checkOpNoThrow(String, Int, String): Int' is deprecated. Deprecated in Java. @machiav3lli not replaceable without increasing minSDK as the two functions have different minSDK
                     AppOpsManager.OPSTR_GET_USAGE_STATS,
                     Process.myUid(),
                     packageName
@@ -485,6 +521,10 @@ fun Context.getLocaleOfCode(localeCode: String): Locale = when {
     localeCode.contains("-r") -> Locale(
         localeCode.substring(0, 2),
         localeCode.substring(4)
+    )
+    localeCode.contains("_") -> Locale(
+        localeCode.substring(0, 2),
+        localeCode.substring(3)
     )
     else -> Locale(localeCode)
 }

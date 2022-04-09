@@ -26,9 +26,9 @@ import androidx.fragment.app.DialogFragment
 import com.machiav3lli.backup.MAIN_FILTER_SPECIAL
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.getPackageInfoList
-import com.machiav3lli.backup.items.AppInfo
-import com.machiav3lli.backup.items.SpecialAppMetaInfo
+import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.utils.specialBackupsEnabled
 
 class PackagesListDialogFragment(
@@ -58,8 +58,8 @@ class PackagesListDialogFragment(
         val selections = mutableListOf<Int>()
         var i = 0
         if (requireContext().specialBackupsEnabled && filter and MAIN_FILTER_SPECIAL == MAIN_FILTER_SPECIAL) {
-            var specialInfos = SpecialAppMetaInfo.getSpecialPackages(OABX.app)
-            specialInfos = specialInfos.sortedWith { ai1: AppInfo, ai2: AppInfo ->
+            var specialInfos = SpecialInfo.getSpecialPackages(OABX.app)
+            specialInfos = specialInfos.sortedWith { ai1: Package, ai2: Package ->
                 val b1 = selectedPackages.contains(ai1.packageName)
                 val b2 = selectedPackages.contains(ai2.packageName)
                 if (b1 != b2)

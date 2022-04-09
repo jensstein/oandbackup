@@ -45,7 +45,7 @@ fun Context.setCustomTheme() {
 fun Context.setLanguage(): Configuration {
     var setLocalCode = language
     if (setLocalCode == PREFS_LANGUAGES_DEFAULT) {
-        setLocalCode = Locale.getDefault().language
+        setLocalCode = Locale.getDefault().toString()
     }
     val config = resources.configuration
     val sysLocale = config.locales[0]

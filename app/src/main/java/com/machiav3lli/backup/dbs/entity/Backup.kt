@@ -23,15 +23,18 @@ import android.content.pm.PackageInfo
 import android.os.Build
 import androidx.room.Entity
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
+import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER_OLD
 import com.machiav3lli.backup.BACKUP_INSTANCE_DIR
+import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.items.BackupItem
+import com.machiav3lli.backup.handler.grantedPermissions
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.LocalDateTimeSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -39,28 +42,36 @@ import java.time.LocalDateTime
 
 @Entity(primaryKeys = ["packageName", "backupDate"])
 @Serializable
-data class Backup(
+data class Backup constructor(
+    var backupVersionCode: Int = 0,
     var packageName: String,
     var packageLabel: String?,
-    var versionName: String?,
-    var versionCode: Int,
-    var profileId: Int,
-    var sourceDir: String?,
+    var versionName: String? = "-",
+    var versionCode: Int = 0,
+    var profileId: Int = 0,
+    var sourceDir: String? = null,
     var splitSourceDirs: Array<String> = arrayOf(),
-    var isSystem: Boolean,
+    var isSystem: Boolean = false,
     @Serializable(with = LocalDateTimeSerializer::class)
     var backupDate: LocalDateTime,
-    var hasApk: Boolean,
-    var hasAppData: Boolean,
-    var hasDevicesProtectedData: Boolean,
-    var hasExternalData: Boolean,
-    var hasObbData: Boolean,
-    var hasMediaData: Boolean,
-    var cipherType: String?,
+    var hasApk: Boolean = false,
+    var hasAppData: Boolean = false,
+    var hasDevicesProtectedData: Boolean = false,
+    var hasExternalData: Boolean = false,
+    var hasObbData: Boolean = false,
+    var hasMediaData: Boolean = false,
+    var compressionType: String? = "gz",
+    var cipherType: String? = null,
     var iv: ByteArray?,
     var cpuArch: String?,
     var permissions: List<String> = listOf()
 ) {
+    private val backupFolderNameOld
+        get() = String.format(
+            BACKUP_INSTANCE_DIR,
+            BACKUP_DATE_TIME_FORMATTER_OLD.format(backupDate),
+            profileId
+        )
     private val backupFolderName
         get() = String.format(
             BACKUP_INSTANCE_DIR,
@@ -78,10 +89,12 @@ data class Backup(
         hasExternalData: Boolean,
         hasObbData: Boolean,
         hasMediaData: Boolean,
+        compressionType: String?,
         cipherType: String?,
         iv: ByteArray?,
         cpuArch: String?
     ) : this(
+        backupVersionCode = BuildConfig.MAJOR * 1000 + BuildConfig.MINOR,
         packageName = pi.packageName,
         packageLabel = pi.applicationInfo.loadLabel(context.packageManager).toString(),
         versionName = pi.versionName,
@@ -102,17 +115,15 @@ data class Backup(
         hasExternalData = hasExternalData,
         hasObbData = hasObbData,
         hasMediaData = hasMediaData,
+        compressionType = compressionType,
         cipherType = cipherType,
         iv = iv,
         cpuArch = cpuArch,
-        permissions = pi.requestedPermissions.mapIndexedNotNull { i, permission ->
-            if ((pi.requestedPermissionsFlags[i] and PackageInfo.REQUESTED_PERMISSION_GRANTED) != 0) permission
-            else null
-        }
+        permissions = pi.grantedPermissions
     )
 
     constructor(
-        base: AppInfoX,
+        base: com.machiav3lli.backup.dbs.entity.PackageInfo,
         backupDate: LocalDateTime,
         hasApk: Boolean,
         hasAppData: Boolean,
@@ -120,11 +131,13 @@ data class Backup(
         hasExternalData: Boolean,
         hasObbData: Boolean,
         hasMediaData: Boolean,
+        compressionType: String?,
         cipherType: String?,
         iv: ByteArray?,
         cpuArch: String?,
         permissions: List<String>
     ) : this(
+        backupVersionCode = BuildConfig.MAJOR * 1000 + BuildConfig.MINOR,
         packageName = base.packageName,
         packageLabel = base.packageLabel,
         versionName = base.versionName,
@@ -140,19 +153,24 @@ data class Backup(
         hasExternalData = hasExternalData,
         hasObbData = hasObbData,
         hasMediaData = hasMediaData,
+        compressionType = compressionType,
         cipherType = cipherType,
         iv = iv,
         cpuArch = cpuArch,
         permissions = permissions
     )
 
+    val isCompressed: Boolean
+        get() = compressionType != null && compressionType?.isNotEmpty() == true
+
     val isEncrypted: Boolean
         get() = cipherType != null && cipherType?.isNotEmpty() == true
 
     fun getBackupInstanceFolder(appBackupDir: StorageFile?): StorageFile? =
-        appBackupDir?.findFile(backupFolderName)
+        appBackupDir?.findFile(backupFolderName) ?:
+        appBackupDir?.findFile(backupFolderNameOld)
 
-    fun toAppInfoX() = AppInfoX(
+    fun toAppInfo() = AppInfo(
         packageName,
         packageLabel,
         versionName,
@@ -160,7 +178,8 @@ data class Backup(
         profileId,
         sourceDir,
         splitSourceDirs,
-        isSystem
+        isSystem,
+        permissions
     )
 
     override fun toString(): String = "Backup{" +
@@ -171,15 +190,19 @@ data class Backup(
             ", hasExternalData=" + hasExternalData +
             ", hasObbData=" + hasObbData +
             ", hasMediaData=" + hasMediaData +
+            ", compressionType='" + compressionType + '\'' +
             ", cipherType='" + cipherType + '\'' +
             ", iv='" + iv + '\'' +
             ", cpuArch='" + cpuArch + '\'' +
+            ", backupVersionCode='" + backupVersionCode + '\'' +
+            ", permissions='" + permissions + '\'' +
             '}'
 
     override fun equals(other: Any?): Boolean = when {
         this === other -> true
         javaClass != other?.javaClass
                 || other !is Backup
+                || backupVersionCode != other.backupVersionCode
                 || packageName != other.packageName
                 || packageLabel != other.packageLabel
                 || versionName != other.versionName
@@ -195,18 +218,21 @@ data class Backup(
                 || hasExternalData != other.hasExternalData
                 || hasObbData != other.hasObbData
                 || hasMediaData != other.hasMediaData
+                || compressionType != other.compressionType
                 || cipherType != other.cipherType
                 || iv != null && other.iv == null
                 || iv != null && !iv.contentEquals(other.iv)
                 || iv == null && other.iv != null
                 || cpuArch != other.cpuArch
                 || backupFolderName != other.backupFolderName
-                || isEncrypted != other.isEncrypted -> false
+                || isEncrypted != other.isEncrypted
+                || permissions != other.permissions -> false
         else -> true
     }
 
     override fun hashCode(): Int {
-        var result = packageName?.hashCode() ?: 0
+        var result = packageName.hashCode()
+        result = 31 * result + backupVersionCode
         result = 31 * result + (packageLabel?.hashCode() ?: 0)
         result = 31 * result + (versionName?.hashCode() ?: 0)
         result = 31 * result + versionCode
@@ -214,41 +240,55 @@ data class Backup(
         result = 31 * result + (sourceDir?.hashCode() ?: 0)
         result = 31 * result + splitSourceDirs.contentHashCode()
         result = 31 * result + isSystem.hashCode()
-        result = 31 * result + (backupDate?.hashCode() ?: 0)
+        result = 31 * result + backupDate.hashCode()
         result = 31 * result + hasApk.hashCode()
         result = 31 * result + hasAppData.hashCode()
         result = 31 * result + hasDevicesProtectedData.hashCode()
         result = 31 * result + hasExternalData.hashCode()
         result = 31 * result + hasObbData.hashCode()
         result = 31 * result + hasMediaData.hashCode()
+        result = 31 * result + (compressionType?.hashCode() ?: 0)
         result = 31 * result + (cipherType?.hashCode() ?: 0)
         result = 31 * result + (iv?.contentHashCode() ?: 0)
         result = 31 * result + (cpuArch?.hashCode() ?: 0)
         result = 31 * result + backupFolderName.hashCode()
         result = 31 * result + isEncrypted.hashCode()
+        result = 31 * result + permissions.hashCode()
         return result
     }
 
     fun toJSON() = Json.encodeToString(this)
 
-    companion object {
-        fun fromJson(json: String) = Json.decodeFromString<Backup>(json)
+    class BrokenBackupException @JvmOverloads internal constructor(
+        message: String?,
+        cause: Throwable? = null
+    ) : Exception(message, cause)
 
-        fun createFrom(propertiesFile: StorageFile): Backup? = try {
-            fromJson(propertiesFile.inputStream()!!.reader().readText())
-        } catch (e: FileNotFoundException) {
-            throw BackupItem.BrokenBackupException(
-                "Cannot open ${propertiesFile.name} at ${propertiesFile.path}",
-                e
-            )
-        } catch (e: IOException) {
-            throw BackupItem.BrokenBackupException(
-                "Cannot read ${propertiesFile.name} at ${propertiesFile.path}",
-                e
-            )
-        } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, propertiesFile.path)
-            throw BackupItem.BrokenBackupException("Unable to process ${propertiesFile.name} at ${propertiesFile.path}. [${e.javaClass.canonicalName}] $e")
+    companion object {
+        fun fromJson(json: String): Backup {
+            Timber.d("json: $json")
+            return Json.decodeFromString<Backup>(json)
+        }
+
+        fun createFrom(propertiesFile: StorageFile): Backup? {
+            var json = ""
+            try {
+                json = propertiesFile.inputStream()!!.reader().readText()
+                return fromJson(json)
+            } catch (e: FileNotFoundException) {
+                throw BrokenBackupException(
+                    "Cannot open ${propertiesFile.path}\n$json",
+                    e
+                )
+            } catch (e: IOException) {
+                throw BrokenBackupException(
+                    "Cannot read ${propertiesFile.path}\n$json",
+                    e
+                )
+            } catch (e: Throwable) {
+                LogsHandler.unhandledException(e, "file: ${propertiesFile.path} =\n$json")
+                throw BrokenBackupException("Unable to process ${propertiesFile.path}. [${e.javaClass.canonicalName}] $e\n$json")
+            }
         }
     }
 }

@@ -36,7 +36,7 @@ import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
-import com.machiav3lli.backup.items.AppInfo
+import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.ui.compose.recycler.HomePackageRecycler
@@ -68,7 +68,6 @@ class HomeFragment : NavigationFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
-        if (requireMainActivity().viewModel.refreshNow.value == true) refreshView()
 
         viewModel.refreshNow.observe(requireActivity()) {
             //binding.refreshLayout.isRefreshing = it
@@ -77,9 +76,20 @@ class HomeFragment : NavigationFragment(),
                 requireMainActivity().viewModel.refreshList()
             }
         }
-
+        viewModel.filteredList.observe(viewLifecycleOwner) { list ->
+            try {
+                viewModel.updatedApps.value = list?.filter { it.isUpdated }
+                redrawList(list, viewModel.searchQuery.value)
+                setupSearch()
+                list?.find { it.packageName == appSheet?.appInfo?.packageName }
+                    ?.let { sheetApp -> if (appSheet != null) refreshAppSheet(sheetApp) }
+                viewModel.refreshNow.value = false
+            } catch (e: Throwable) {
+                LogsHandler.unhandledException(e)
+            }
+        }
         viewModel.updatedApps.observe(viewLifecycleOwner) {
-            viewModel.nUpdatedApps.value = it.size
+            viewModel.nUpdatedApps.value = it?.size ?: 0
             binding.updatedRecycler.setContent {
                 AppTheme(
                     darkTheme = isSystemInDarkTheme()
@@ -87,7 +97,7 @@ class HomeFragment : NavigationFragment(),
                     UpdatedPackageRecycler(productsList = it,
                         onClick = { item ->
                             if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                            appSheet = AppSheet(item, AppExtras(), it.indexOf(item))
+                            appSheet = AppSheet(item, AppExtras())
                             appSheet?.showNow(
                                 parentFragmentManager,
                                 "Package ${item.packageName}"
@@ -102,31 +112,16 @@ class HomeFragment : NavigationFragment(),
                 binding.root.context.resources.getQuantityString(R.plurals.updated_apps, it, it)
             if (it > 0) {
                 binding.updatedBar.visibility = View.VISIBLE
-                binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                    0,
-                    0,
-                    R.drawable.ic_arrow_up,
-                    0
-                )
+                binding.buttonUpdated.setIconResource(R.drawable.ic_arrow_up)
                 binding.buttonUpdateAll.visibility = View.VISIBLE
                 binding.buttonUpdated.setOnClickListener {
                     binding.updatedRecycler.visibility = when (binding.updatedRecycler.visibility) {
                         View.VISIBLE -> {
-                            binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                                0,
-                                0,
-                                R.drawable.ic_arrow_up,
-                                0
-                            )
+                            binding.buttonUpdated.setIconResource(R.drawable.ic_arrow_up)
                             View.GONE
                         }
                         else -> {
-                            binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                                0,
-                                0,
-                                R.drawable.ic_arrow_down,
-                                0
-                            )
+                            binding.buttonUpdated.setIconResource(R.drawable.ic_arrow_down)
                             View.VISIBLE
                         }
                     }
@@ -135,10 +130,12 @@ class HomeFragment : NavigationFragment(),
                 binding.updatedBar.visibility = View.GONE
                 binding.updatedRecycler.visibility = View.GONE
                 binding.buttonUpdateAll.visibility = View.GONE
-                binding.buttonUpdated.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+                binding.buttonUpdated.setIconResource(0)
                 binding.buttonUpdated.setOnClickListener(null)
             }
         }
+
+        packageList.observe(requireActivity()) { refreshView(it) }
     }
 
     override fun onStart() {
@@ -182,7 +179,7 @@ class HomeFragment : NavigationFragment(),
             if (sheetSortFilter != null && sheetSortFilter!!.isVisible) sheetSortFilter?.dismissAllowingStateLoss()
             sheetSortFilter = SortFilterSheet(
                 requireActivity().sortFilterModel,
-                getStats(appInfoList)
+                getStats(packageList.value ?: mutableListOf())
             )
             sheetSortFilter?.showNow(requireActivity().supportFragmentManager, "SORTFILTER_SHEET")
         }
@@ -190,25 +187,21 @@ class HomeFragment : NavigationFragment(),
     }
 
     private fun setupSearch() {
-        /*val filterPredicate = { item: HomeItemX, cs: CharSequence? ->
-            item.appExtras.customTags
-                .plus(item.app.packageName)
-                .plus(item.app.packageLabel)
-                .find { it.contains(cs.toString(), true) } != null
-        }*/
         binding.searchBar.maxWidth = Int.MAX_VALUE
         binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
-                // TODO apply query
-                //homeItemAdapter.filter(newText)
-                //homeItemAdapter.itemFilter.filterPredicate = filterPredicate
+                if (viewModel.searchQuery.value != newText) {
+                    viewModel.searchQuery.value = newText
+                    redrawList(viewModel.filteredList.value, newText)
+                }
                 return true
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {
-                // TODO apply query
-                //homeItemAdapter.filter(query)
-                //homeItemAdapter.itemFilter.filterPredicate = filterPredicate
+                if (viewModel.searchQuery.value != query) {
+                    viewModel.searchQuery.value = query
+                    redrawList(viewModel.filteredList.value, query)
+                }
                 return true
             }
         })
@@ -216,11 +209,11 @@ class HomeFragment : NavigationFragment(),
 
     private fun onClickUpdateAllAction() {
         val selectedList = viewModel.updatedApps.value
-            ?.map { it.appMetaInfo }
+            ?.map { it.packageInfo }
             ?.toCollection(ArrayList()) ?: arrayListOf()
         val selectedListModes = viewModel.updatedApps.value
             ?.mapNotNull {
-                it.latestBackup?.backupProperties?.let { bp ->
+                it.latestBackup?.let { bp ->
                     when {
                         bp.hasApk && bp.hasAppData -> ALT_MODE_BOTH
                         bp.hasApk -> ALT_MODE_APK
@@ -320,79 +313,30 @@ class HomeFragment : NavigationFragment(),
         }
     }
 
-    override fun refreshView() {
+    override fun refreshView(list: MutableList<Package>?) {
         Timber.d("refreshing")
         sheetSortFilter = SortFilterSheet(
-            requireActivity().sortFilterModel, getStats(
-                appInfoList
-            )
+            requireActivity().sortFilterModel, getStats(list ?: mutableListOf())
         )
-        Thread {
-            try {
-                val filteredList =
-                    appInfoList.applyFilter(requireActivity().sortFilterModel, requireContext())
-                refreshMain(filteredList, appSheet != null)
-            } catch (e: FileUtils.BackupLocationInAccessibleException) {
-                Timber.e("Could not update application list: $e")
-            } catch (e: StorageLocationNotConfiguredException) {
-                Timber.e("Could not update application list: $e")
-            } catch (e: Throwable) {
-                LogsHandler.unhandledException(e)
-            }
-        }.start()
-    }
-
-    private fun refreshMain(filteredList: List<AppInfo>, appSheetBoolean: Boolean) {
-        //val mainList = createMainAppsList(filteredList)
-        //val updatedList = createUpdatedAppsList(filteredList)
-        requireActivity().runOnUiThread {
-            try {
-                viewModel.updatedApps.value = filteredList.filter { it.isUpdated }
-                binding.recyclerView.setContent {
-                    AppTheme(
-                        darkTheme = isSystemInDarkTheme()
-                    ) {
-                        Scaffold {
-                            HomePackageRecycler(productsList = filteredList,
-                                onClick = { item ->
-                                    if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                                    appSheet =
-                                        AppSheet(item, AppExtras(), filteredList.indexOf(item))
-                                    appSheet?.showNow(
-                                        parentFragmentManager,
-                                        "Package ${item.packageName}"
-                                    )
-                                }
-                            )
-                        }
-                    }
-                }
-                setupSearch()
-                if (appSheetBoolean) refreshAppSheet()
-                viewModel.refreshNow.value = false
-            } catch (e: Throwable) {
-                LogsHandler.unhandledException(e)
-            }
+        try {
+            viewModel.filteredList.value =
+                list?.applyFilter(requireActivity().sortFilterModel, requireContext())
+        } catch (e: FileUtils.BackupLocationInAccessibleException) {
+            Timber.e("Could not update application list: $e")
+        } catch (e: StorageLocationNotConfiguredException) {
+            Timber.e("Could not update application list: $e")
+        } catch (e: Throwable) {
+            LogsHandler.unhandledException(e)
         }
     }
 
-    private fun refreshAppSheet() {
+    private fun refreshAppSheet(app: Package) {
         try {
-            val position = appSheet?.position ?: -1
             // TODO implement auto refresh of AppSheet
-            /*if (homeItemAdapter.itemList.size() > position && position != -1) {
-                val sheetAppInfo = homeFastAdapter?.getItem(position)?.app
-                sheetAppInfo?.let {
-                    if (appSheet?.packageName == sheetAppInfo.packageName) {
-                        homeFastAdapter?.getItem(position)?.let { appSheet?.updateApp(it) }
-                    } else
-                        appSheet?.dismissAllowingStateLoss()
-                }
-            } else
-                appSheet?.dismissAllowingStateLoss()*/
+            appSheet?.updateApp(app)
         } catch (e: Throwable) {
             appSheet?.dismissAllowingStateLoss()
-            //LogsHandler.unhandledException(e)
+            LogsHandler.unhandledException(e)
         }
     }
 
@@ -404,5 +348,33 @@ class HomeFragment : NavigationFragment(),
 
     override fun hideProgress() {
         binding.progressBar.visibility = View.GONE
+    }
+
+    fun redrawList(list: List<Package>?, query: String? = "") {
+        binding.recyclerView.setContent {
+
+            // TODO include tags in search
+            val filterPredicate = { item: Package ->
+                query.isNullOrEmpty() || listOf(item.packageName, item.packageLabel)
+                    .find { it.contains(query, true) } != null
+            }
+
+            AppTheme(
+                darkTheme = isSystemInDarkTheme()
+            ) {
+                Scaffold {
+                    HomePackageRecycler(productsList = list?.filter(filterPredicate),
+                        onClick = { item ->
+                            if (appSheet != null) appSheet?.dismissAllowingStateLoss()
+                            appSheet = AppSheet(item, AppExtras())
+                            appSheet?.showNow(
+                                parentFragmentManager,
+                                "Package ${item.packageName}"
+                            )
+                        }
+                    )
+                }
+            }
+        }
     }
 }

@@ -17,6 +17,7 @@
  */
 package com.machiav3lli.backup.items
 
+import com.machiav3lli.backup.dbs.entity.Backup
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.*
@@ -26,8 +27,8 @@ import java.util.*
  * Can be null, if succeeded is set to false
  */
 class ActionResult(
-    val app: AppInfo?,
-    val backupProperties: BackupProperties?,
+    val app: Package?,
+    val backup: Backup?,
     val message: String,
     val succeeded: Boolean
 ) {

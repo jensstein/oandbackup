@@ -328,5 +328,5 @@
     <string name="spec_smsmmsjson">SMS/MMS JSON</string>
     <string name="spec_fingerprint">Huellas dactilares</string>
     <string name="calllogs_permission_title">Permisos de registros de llamadas</string>
-    <string name="loading_list">Cargando lista de aplicaciones…</string>
+    <string name="loading_list">Cargando lista…</string>
 </resources>

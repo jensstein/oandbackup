@@ -3,6 +3,10 @@ package com.machiav3lli.backup.services
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.machiav3lli.backup.ACTION_CANCEL
+import com.machiav3lli.backup.ACTION_CRASH
+import com.machiav3lli.backup.ACTION_RESCHEDULE
+import com.machiav3lli.backup.ACTION_SCHEDULE
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.utils.scheduleAlarm
@@ -11,20 +15,24 @@ import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CommandReceiver : BroadcastReceiver() {        //TODO hg42 how to maintain security?
+class CommandReceiver : //TODO hg42 how to maintain security?
+                        //TODO machiav3lli by making the receiver only internally accessible (not exported)
+                        //TODO hg42 but it's one of the purposes to be remotely controllable from other apps like Tasker
+                        //TODO hg42 no big prob for now: cancel, starting or changing schedule isn't very critical
+    BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         if (intent == null) return
         val command = intent.action
         Timber.i("Command: command $command")
         when (command) {
-            "cancel" -> {
+            ACTION_CANCEL -> {
                 intent.getStringExtra("name")?.let { batchName ->
                     Timber.d("################################################### command intent cancel -------------> name=$batchName")
                     OABX.activity?.showToast("$command $batchName")
                     OABX.work.cancel(batchName)
                 }
             }
-            "schedule" -> {
+            ACTION_SCHEDULE -> {
                 intent.getStringExtra("name")?.let { name ->
                     OABX.activity?.showToast("$command $name")
                     Timber.d("################################################### command intent schedule -------------> name=$name")
@@ -40,7 +48,7 @@ class CommandReceiver : BroadcastReceiver() {        //TODO hg42 how to maintain
                     }.start()
                 }
             }
-            "reschedule" -> {
+            ACTION_RESCHEDULE -> {
                 intent.getStringExtra("name")?.let { name ->
                     val now = System.currentTimeMillis()
                     val time = intent.getStringExtra("time")
@@ -60,7 +68,7 @@ class CommandReceiver : BroadcastReceiver() {        //TODO hg42 how to maintain
                     }.start()
                 }
             }
-            "crash" -> {
+            ACTION_CRASH -> {
                 throw Exception("this is an unknown exception sent from command intent")
             }
             null -> {
