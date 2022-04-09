@@ -104,7 +104,6 @@ class HomeFragment : NavigationFragment(),
         viewModel.refreshNow.observe(requireActivity()) {
             //binding.refreshLayout.isRefreshing = it
             if (it) {
-                binding.searchBar.setQuery("", false)
                 requireMainActivity().viewModel.refreshList()
             }
         }

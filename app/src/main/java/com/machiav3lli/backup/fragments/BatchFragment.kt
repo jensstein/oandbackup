@@ -98,7 +98,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         viewModel.refreshNow.observe(requireActivity()) {
             //binding.refreshLayout.isRefreshing = it
             if (it) {
-                binding.searchBar.setQuery("", false)
                 requireMainActivity().viewModel.refreshList()
             }
         }
