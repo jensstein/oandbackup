@@ -362,6 +362,7 @@ class HomeFragment : NavigationFragment(),
                     Column(
                         modifier = Modifier
                             .background(color = MaterialTheme.colorScheme.surface)
+                            .padding(bottom = paddingValues.calculateBottomPadding())
                             .fillMaxSize()
                     ) {
                         HomePackageRecycler(

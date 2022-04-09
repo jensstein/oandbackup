@@ -312,8 +312,12 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
             AppTheme(
                 darkTheme = isSystemInDarkTheme()
             ) {
-                Scaffold {
-                    Column(modifier = Modifier.fillMaxSize()) {
+                Scaffold { paddingValues ->
+                    Column(
+                        modifier = Modifier
+                            .padding(bottom = paddingValues.calculateBottomPadding())
+                            .fillMaxSize()
+                    ) {
 
                         BatchPackageRecycler(
                             modifier = Modifier

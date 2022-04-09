@@ -22,7 +22,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.databinding.FragmentSchedulerBinding
@@ -64,8 +67,12 @@ class SchedulerFragment : NavigationFragment() {
                 AppTheme(
                     darkTheme = isSystemInDarkTheme()
                 ) {
-                    Scaffold {
-                        ScheduleRecycler(productsList = list,
+                    Scaffold { paddingValues ->
+                        ScheduleRecycler(
+                            modifier = Modifier
+                                .padding(bottom = paddingValues.calculateBottomPadding())
+                                .fillMaxSize(),
+                            productsList = list,
                             onClick = { item ->
                                 if (sheetSchedule != null) sheetSchedule?.dismissAllowingStateLoss()
                                 sheetSchedule = ScheduleSheet(item.id)
