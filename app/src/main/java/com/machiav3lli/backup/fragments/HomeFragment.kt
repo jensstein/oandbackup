@@ -89,7 +89,6 @@ class HomeFragment : NavigationFragment(),
             }
         }
         viewModel.updatedApps.observe(viewLifecycleOwner) {
-            viewModel.nUpdatedApps.value = it?.size ?: 0
             binding.updatedRecycler.setContent {
                 AppTheme(
                     darkTheme = isSystemInDarkTheme()
@@ -107,32 +106,7 @@ class HomeFragment : NavigationFragment(),
                 }
             }
         }
-        viewModel.nUpdatedApps.observe(requireActivity()) {
-            binding.buttonUpdated.text =
-                binding.root.context.resources.getQuantityString(R.plurals.updated_apps, it, it)
-            if (it > 0) {
-                binding.updatedBar.visibility = View.VISIBLE
-                binding.buttonUpdated.setIconResource(R.drawable.ic_arrow_up)
-                binding.buttonUpdateAll.visibility = View.VISIBLE
-                binding.buttonUpdated.setOnClickListener {
-                    binding.updatedRecycler.visibility = when (binding.updatedRecycler.visibility) {
-                        View.VISIBLE -> {
-                            binding.buttonUpdated.setIconResource(R.drawable.ic_arrow_up)
-                            View.GONE
-                        }
-                        else -> {
-                            binding.buttonUpdated.setIconResource(R.drawable.ic_arrow_down)
-                            View.VISIBLE
-                        }
-                    }
-                }
-            } else {
-                binding.updatedBar.visibility = View.GONE
-                binding.updatedRecycler.visibility = View.GONE
-                binding.buttonUpdateAll.visibility = View.GONE
-                binding.buttonUpdated.setIconResource(0)
-                binding.buttonUpdated.setOnClickListener(null)
-            }
+            viewModel.nUpdatedApps = it?.size ?: 0
         }
 
         packageList.observe(requireActivity()) { refreshView(it) }
