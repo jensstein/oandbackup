@@ -22,14 +22,40 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Scaffold
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.machiav3lli.backup.*
+import com.machiav3lli.backup.ALT_MODE_APK
+import com.machiav3lli.backup.ALT_MODE_BOTH
+import com.machiav3lli.backup.ALT_MODE_DATA
+import com.machiav3lli.backup.ALT_MODE_UNSET
+import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
+import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.FragmentHomeBinding
 import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
@@ -39,10 +65,16 @@ import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
+import com.machiav3lli.backup.ui.compose.item.ActionButton
+import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.recycler.HomePackageRecycler
 import com.machiav3lli.backup.ui.compose.recycler.UpdatedPackageRecycler
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
-import com.machiav3lli.backup.utils.*
+import com.machiav3lli.backup.utils.FileUtils
+import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
+import com.machiav3lli.backup.utils.applyFilter
+import com.machiav3lli.backup.utils.getStats
+import com.machiav3lli.backup.utils.sortFilterModel
 import com.machiav3lli.backup.viewmodels.HomeViewModel
 import timber.log.Timber
 
@@ -306,6 +338,7 @@ class HomeFragment : NavigationFragment(),
         binding.progressBar.visibility = View.GONE
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     fun redrawList(list: List<Package>?, query: String? = "") {
         binding.recyclerView.setContent {
 
@@ -314,21 +347,81 @@ class HomeFragment : NavigationFragment(),
                 query.isNullOrEmpty() || listOf(item.packageName, item.packageLabel)
                     .find { it.contains(query, true) } != null
             }
+            val queriedList = list?.filter(filterPredicate)
+            val updatedBarVisible by remember(viewModel.filteredList.value) {
+                mutableStateOf(
+                    viewModel.updatedApps.value.orEmpty().isNotEmpty()
+                )
+            }
+            var updatedVisible by remember(viewModel.filteredList.value) { mutableStateOf(false) }
 
             AppTheme(
                 darkTheme = isSystemInDarkTheme()
             ) {
-                Scaffold {
-                    HomePackageRecycler(productsList = list?.filter(filterPredicate),
-                        onClick = { item ->
-                            if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                            appSheet = AppSheet(item, AppExtras())
-                            appSheet?.showNow(
-                                parentFragmentManager,
-                                "Package ${item.packageName}"
-                            )
+                Scaffold { paddingValues ->
+                    Column(
+                        modifier = Modifier
+                            .background(color = MaterialTheme.colorScheme.surface)
+                            .fillMaxSize()
+                    ) {
+                        HomePackageRecycler(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth(),
+                            productsList = queriedList,
+                            onClick = { item ->
+                                if (appSheet != null) appSheet?.dismissAllowingStateLoss()
+                                appSheet = AppSheet(item, AppExtras())
+                                appSheet?.showNow(
+                                    parentFragmentManager,
+                                    "Package ${item.packageName}"
+                                )
+                            }
+                        )
+                        AnimatedVisibility(visible = updatedBarVisible) {
+                            Column(
+                                modifier = Modifier.wrapContentHeight()
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .padding(horizontal = 8.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                ) {
+                                    ActionButton(
+                                        modifier = Modifier.weight(1f),
+                                        text = LocalContext.current.resources
+                                            .getQuantityString(
+                                                R.plurals.updated_apps,
+                                                viewModel.nUpdatedApps,
+                                                viewModel.nUpdatedApps
+                                            ),
+                                        icon = painterResource(id = if (updatedVisible) R.drawable.ic_arrow_down else R.drawable.ic_arrow_up)
+                                    ) {
+                                        updatedVisible = !updatedVisible
+                                    }
+                                    ElevatedActionButton(
+                                        modifier = Modifier,
+                                        text = stringResource(id = R.string.backup_all_updated),
+                                        icon = painterResource(id = R.drawable.ic_update)
+                                    ) {
+                                        onClickUpdateAllAction()
+                                    }
+                                }
+                                AnimatedVisibility(visible = updatedVisible) {
+                                    UpdatedPackageRecycler(productsList = viewModel.updatedApps.value,
+                                        onClick = { item ->
+                                            if (appSheet != null) appSheet?.dismissAllowingStateLoss()
+                                            appSheet = AppSheet(item, AppExtras())
+                                            appSheet?.showNow(
+                                                parentFragmentManager,
+                                                "Package ${item.packageName}"
+                                            )
+                                        }
+                                    )
+                                }
+                            }
                         }
-                    )
+                    }
                 }
             }
         }
