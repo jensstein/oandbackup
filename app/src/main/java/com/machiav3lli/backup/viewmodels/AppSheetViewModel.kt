@@ -121,7 +121,7 @@ class AppSheetViewModel(
     private suspend fun delete(backup: Backup) {
         withContext(Dispatchers.IO) {
             appInfo.value?.let {
-                if (it.backupHistory.size > 1) {
+                if (it.backupList.size > 1) {
                     it.delete(backup)
                 } else {
                     it.deleteAllBackups()

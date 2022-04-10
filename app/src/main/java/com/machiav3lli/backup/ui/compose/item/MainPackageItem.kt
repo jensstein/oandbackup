@@ -98,7 +98,7 @@ fun MainPackageItem(
                         Text(
                             text = (item.latestBackup?.backupDate?.getFormattedDate(
                                 false
-                                    ) ?: "") + " - ${item.backupHistory.size}",
+                            ) ?: "") + " - ${item.backupList.size}",
                             modifier = Modifier.align(Alignment.CenterVertically),
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1,

@@ -203,7 +203,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 if (backup == null)
                     backup = backupBuilder.createBackup()
                 if (ok)
-                    app.backupHistory.add(backup)
+                    app.backupList.add(backup)
                 else
                     app.delete(backup, true)
             }

@@ -31,18 +31,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipDrawable
-import com.machiav3lli.backup.*
-import com.machiav3lli.backup.databinding.SheetAppBinding
-import com.machiav3lli.backup.dbs.entity.AppExtras
-import com.machiav3lli.backup.dbs.entity.Backup
-import com.machiav3lli.backup.dialogs.BackupDialogFragment
-import com.machiav3lli.backup.dialogs.RestoreDialogFragment
-import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
-import com.machiav3lli.backup.handler.ShellCommands
-import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.tasks.BackupActionTask
 import com.machiav3lli.backup.tasks.RestoreActionTask
@@ -111,7 +99,7 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
                         AppTheme(
                             darkTheme = isSystemInDarkTheme()
                         ) {
-                            BackupRecycler(productsList = it.backupHistory.sortedByDescending { item -> item.backupDate },
+                            BackupRecycler(productsList = it.backupList.sortedByDescending { item -> item.backupDate },
                                 onRestore = { item ->
                                     val properties = item
                                     viewModel.appInfo.value?.let { app ->

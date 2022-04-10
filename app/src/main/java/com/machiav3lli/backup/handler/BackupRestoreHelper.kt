@@ -154,7 +154,7 @@ object BackupRestoreHelper {
     private fun housekeepingPackageBackups(context: Context, app: Package, before: Boolean) {
         var numBackupRevisions =
             context.getDefaultSharedPreferences().getInt(PREFS_NUM_BACKUP_REVISIONS, 2)
-        var backups = app.backupHistory
+        var backups = app.backupList
         if (numBackupRevisions == 0) {
             Timber.i("[${app.packageName}] Infinite backup revisions configured. Not deleting any backup. ${backups.size} (valid) backups available")
             return
