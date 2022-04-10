@@ -30,8 +30,10 @@ import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Blocklist
+import com.machiav3lli.backup.handler.addBackups
 import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.handler.updateAppInfoTable
+import com.machiav3lli.backup.handler.updateBackupTable
 import com.machiav3lli.backup.items.Package
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -58,11 +60,13 @@ class MainViewModel(
         blocklist.addSource(db.blocklistDao.liveAll, blocklist::setValue)
         backupsMap.addSource(db.backupDao.allLive) {
             backupsMap.value = it.groupBy(Backup::packageName)
+            packageList.value?.addBackups(it.groupBy(Backup::packageName))
         }
         packageList.addSource(db.appInfoDao.allLive) {
             packageList.value = it.toPackageList(
                 appContext,
-                blocklist.value?.mapNotNull(Blocklist::packageName) ?: listOf()
+                blocklist.value?.mapNotNull(Blocklist::packageName) ?: listOf(),
+                backupsMap.value.orEmpty()
             )
         }
     }

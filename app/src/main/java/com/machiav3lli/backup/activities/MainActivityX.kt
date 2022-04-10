@@ -135,6 +135,7 @@ class MainActivityX : BaseActivity() {
             if (it) refreshView()
         }
         viewModel.packageList.observe(this) { }
+        viewModel.backupsMap.observe(this) { }
 
         runOnUiThread { showEncryptionDialog() }
 

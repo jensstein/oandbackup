@@ -166,6 +166,7 @@ fun Context.getPackageList(
 fun List<AppInfo>.toPackageList(
     context: Context,
     blockList: List<String> = listOf(),
+    backupMap: Map<String, List<Backup>> = mapOf(),
     includeUninstalled: Boolean = true
 ): MutableList<Package> {
     val includeSpecial = context.specialBackupsEnabled
@@ -174,7 +175,7 @@ fun List<AppInfo>.toPackageList(
         this.filterNot { it.packageName.matches(ignoredPackages) || it.packageName in blockList }
             .mapNotNull {
                 try {
-                    Package(context, it)
+                    Package(context, it, backupMap[it.packageName].orEmpty())
                 } catch (e: AssertionError) {
                     Timber.e("Could not create Package for ${it}: $e")
                     null
@@ -190,7 +191,10 @@ fun List<AppInfo>.toPackageList(
     val specialList = mutableListOf<String>()
     if (includeSpecial) {
         SpecialInfo.getSpecialPackages(context).forEach {
-            if (!blockList.contains(it.packageName)) packageList.add(it)
+            if (!blockList.contains(it.packageName)) {
+                it.updateBackupList(backupMap[it.packageName].orEmpty())
+                packageList.add(it)
+            }
             specialList.add(it.packageName)
         }
     }
@@ -214,7 +218,7 @@ fun List<AppInfo>.toPackageList(
                 }
                 .mapNotNull {
                     try {
-                        Package(context, it.name, it)
+                        Package(context, it.name, it, backupMap[it.name].orEmpty())
                     } catch (e: AssertionError) {
                         Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
                         null
@@ -225,6 +229,10 @@ fun List<AppInfo>.toPackageList(
     }
 
     return packageList
+}
+
+fun List<Package>.addBackups(backupsMap: Map<String, List<Backup>>) = this.forEach {
+    it.updateBackupList(backupsMap[it.packageName].orEmpty())
 }
 
 fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
