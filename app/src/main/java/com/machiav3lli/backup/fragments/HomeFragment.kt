@@ -44,27 +44,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
 import com.machiav3lli.backup.ALT_MODE_APK
 import com.machiav3lli.backup.ALT_MODE_BOTH
 import com.machiav3lli.backup.ALT_MODE_DATA
 import com.machiav3lli.backup.ALT_MODE_UNSET
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
-import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.FragmentHomeBinding
 import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.Package
-import com.machiav3lli.backup.tasks.AppActionWork
-import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.ui.compose.item.ActionButton
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.recycler.HomePackageRecycler
@@ -216,87 +208,13 @@ class HomeFragment : NavigationFragment(),
         }
     }
 
-    // TODO abstract this to fit for Main- & BatchFragment
     override fun onConfirmed(
         selectedPackages: List<String?>,
         selectedModes: List<Int>
     ) {
-        val now = System.currentTimeMillis()
-        val notificationId = now.toInt()
-        val batchType = getString(R.string.backup)
-        val batchName = WorkHandler.getBatchName(batchType, now)
-
-        val selectedItems = selectedPackages
-            .mapIndexed { i, packageName ->
-                if (packageName.isNullOrEmpty()) null
-                else Pair(packageName, selectedModes[i])
-            }
-            .filterNotNull()
-
-        var errors = ""
-        var resultsSuccess = true
-        var counter = 0
-        val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
-        val workManager = WorkManager.getInstance(requireContext())
-        OABX.work.beginBatch(batchName)
-        selectedItems.forEach { (packageName, mode) ->
-
-            val oneTimeWorkRequest =
-                AppActionWork.Request(packageName, mode, true, notificationId, batchName)
-            worksList.add(oneTimeWorkRequest)
-
-            val oneTimeWorkLiveData = WorkManager.getInstance(requireContext())
-                .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
-            oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
-                override fun onChanged(t: WorkInfo?) {
-                    if (t?.state == WorkInfo.State.SUCCEEDED) {
-                        counter += 1
-
-                        val (succeeded, packageLabel, error) = AppActionWork.getOutput(t)
-                        if (error.isNotEmpty()) errors = "$errors$packageLabel: ${
-                            LogsHandler.handleErrorMessages(
-                                requireContext(),
-                                error
-                            )
-                        }\n"
-
-                        resultsSuccess = resultsSuccess and succeeded
-                        oneTimeWorkLiveData.removeObserver(this)
-                    }
-                }
-            })
-        }
-
-        val finishWorkRequest = FinishWork.Request(resultsSuccess, true, batchName)
-
-        /*
-        val finishWorkLiveData = WorkManager.getInstance(requireContext())
-            .getWorkInfoByIdLiveData(finishWorkRequest.id)
-        finishWorkLiveData.observeForever(object : Observer<WorkInfo> {
-            override fun onChanged(t: WorkInfo?) {
-                if (t?.state == WorkInfo.State.SUCCEEDED) {
-                    val (message, title) = FinishWork.getOutput(t)
-                    showNotification(
-                        requireContext(), MainActivityX::class.java,
-                        notificationId, title, message, true
-                    )
-                    val overAllResult = ActionResult(null, null, errors, resultsSuccess)
-                    requireActivity().showActionResult(overAllResult) { _: DialogInterface?, _: Int ->
-                        LogsHandler.logErrors(requireContext(), errors.dropLast(2))
-                    }
-
-                    finishWorkLiveData.removeObserver(this)
-                    viewModel.refreshNow.value = true
-                }
-            }
-        })
-        */
-
-        if (worksList.isNotEmpty()) {
-            workManager
-                .beginWith(worksList)
-                .then(finishWorkRequest)
-                .enqueue()
+        startBatchAction(true, selectedPackages, selectedModes) {
+            viewModel.refreshNow.value = true
+            it.removeObserver(this)
         }
     }
 
