@@ -28,7 +28,12 @@ import com.machiav3lli.backup.databinding.ActivityPrefsBinding
 import com.machiav3lli.backup.fragments.HelpSheet
 import com.machiav3lli.backup.handler.getPackageList
 import com.machiav3lli.backup.items.Package
-import com.machiav3lli.backup.utils.*
+import com.machiav3lli.backup.utils.FileUtils
+import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
+import com.machiav3lli.backup.utils.itemIdToOrder
+import com.machiav3lli.backup.utils.navigateLeft
+import com.machiav3lli.backup.utils.navigateRight
+import com.machiav3lli.backup.utils.setCustomTheme
 
 class PrefsActivity : BaseActivity() {
     lateinit var binding: ActivityPrefsBinding
@@ -95,6 +100,7 @@ class PrefsActivity : BaseActivity() {
         }
     }
 
+    // TODO use database-based structure
     fun refreshPackageList() {
         packageList = listOf()
         Thread {

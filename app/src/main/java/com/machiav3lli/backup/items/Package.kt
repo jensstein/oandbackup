@@ -34,6 +34,7 @@ import com.machiav3lli.backup.utils.getBackupDir
 import timber.log.Timber
 import java.io.File
 
+// TODO need to handle some emergent props with empty backupList constructors
 class Package {
     var packageName: String
     var packageInfo: com.machiav3lli.backup.dbs.entity.PackageInfo
@@ -155,6 +156,7 @@ class Package {
         backupList.addAll(new)
     }
 
+    // TODO respect set size
     fun addBackup(vararg new: Backup) {
         backupList.addAll(new)
     }

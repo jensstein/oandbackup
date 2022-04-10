@@ -38,7 +38,6 @@ import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupDir
@@ -68,7 +67,7 @@ fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
         }
         .toList()
 
-// TODO replace fully
+// TODO Fix package constructors (no backups are read in this situation) + remove fully
 @Throws(
     FileUtils.BackupLocationInAccessibleException::class,
     StorageLocationNotConfiguredException::class

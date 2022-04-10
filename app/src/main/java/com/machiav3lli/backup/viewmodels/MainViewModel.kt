@@ -40,6 +40,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
+// TODO Add loading indicator
 class MainViewModel(
     private val db: ODatabase,
     private val appContext: Application

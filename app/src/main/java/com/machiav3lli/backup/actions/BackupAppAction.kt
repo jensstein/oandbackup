@@ -202,6 +202,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 invalidateCache { it.contains(app.packageName) }
                 if (backup == null)
                     backup = backupBuilder.createBackup()
+                // TODO maybe need to handle some emergant props
                 if (ok)
                     app.backupList.add(backup)
                 else
