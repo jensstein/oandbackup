@@ -48,29 +48,50 @@ class Package {
             backupList.last()
         } else null
 
-    internal constructor(context: Context, appInfo: AppInfo) {
+    internal constructor(
+        context: Context,
+        appInfo: AppInfo,
+        backups: List<Backup> = emptyList()
+    ) {
         packageName = appInfo.packageName
         this.packageInfo = appInfo
         packageBackupDir = context.getBackupDir().findFile(packageName)
         if (appInfo.installed) refreshStorageStats(context)
+        updateBackupList(backups)
     }
 
-    constructor(context: Context, specialInfo: SpecialInfo) {
+    constructor(
+        context: Context,
+        specialInfo: SpecialInfo,
+        backups: List<Backup> = emptyList()
+    ) {
         packageName = specialInfo.packageName
         this.packageInfo = specialInfo
         packageBackupDir = context.getBackupDir().findFile(packageName)
+        updateBackupList(backups)
     }
 
-    constructor(context: Context, packageInfo: android.content.pm.PackageInfo) {
+    constructor(
+        context: Context,
+        packageInfo: android.content.pm.PackageInfo,
+        backups: List<Backup> = emptyList()
+    ) {
         packageName = packageInfo.packageName
         this.packageInfo = AppInfo(context, packageInfo)
         packageBackupDir = context.getBackupDir().findFile(packageName)
         refreshStorageStats(context)
+        updateBackupList(backups)
     }
 
-    constructor(context: Context, packageName: String?, backupDir: StorageFile?) {
+    constructor(
+        context: Context,
+        packageName: String?,
+        backupDir: StorageFile?,
+        backups: List<Backup> = emptyList()
+    ) {
         this.packageBackupDir = backupDir
         this.packageName = packageName ?: backupDir?.name!!
+        updateBackupList(backups)
         try {
             val pi = context.packageManager.getPackageInfo(this.packageName, 0)
             this.packageInfo = AppInfo(context, pi)
@@ -96,12 +117,14 @@ class Package {
     constructor(
         context: Context,
         packageInfo: android.content.pm.PackageInfo,
-        backupRoot: StorageFile?
+        backupRoot: StorageFile?,
+        backups: List<Backup> = emptyList()
     ) {
         this.packageName = packageInfo.packageName
         this.packageInfo = AppInfo(context, packageInfo)
         this.packageBackupDir = backupRoot?.findFile(packageName)
         refreshStorageStats(context)
+        updateBackupList(backups)
     }
 
     private fun refreshStorageStats(context: Context): Boolean {
@@ -127,6 +150,13 @@ class Package {
         return true
     }
 
+    fun updateBackupList(new: List<Backup>) {
+        backupList.clear()
+        backupList.addAll(new)
+    }
+
+    fun addBackup(vararg new: Backup) {
+        backupList.addAll(new)
     }
 
     @Throws(
