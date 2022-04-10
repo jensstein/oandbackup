@@ -77,6 +77,7 @@ class MainViewModel(
     private suspend fun recreateAppInfoList() =
         withContext(Dispatchers.IO) {
             appContext.updateAppInfoTable(db.appInfoDao)
+            appContext.updateBackupTable(db.backupDao)
         }
 
     fun updatePackage(packageName: String) {
