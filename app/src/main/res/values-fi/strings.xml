@@ -176,7 +176,7 @@
     <string name="enable_encryption_message">Salaamattoman tiedon pitäminen laitteella ei ole turvallista. Ota salaus käyttöön ja aseta salasana.</string>
     <string name="sort_and_filter">Lajittele &amp; suodata</string>
     <string name="storage_access">Tallennustilan käyttö</string>
-    <string name="welcome_to_oabx">Tervetuloa sovellukseen OABX!</string>
+    <string name="welcome_to_oabx">Tervetuloa Neo Backupiin!</string>
     <string name="delete_all_backups">Poista kaikki varmuuskopiot</string>
     <string name="logs_text_empty">Mitään ei ole näytettävissä!</string>
     <string name="help_issues">Tiedossa olevat ongelmat</string>
@@ -292,7 +292,7 @@
     <string name="prefs_secondary_1">Merenvihreä</string>
     <string name="prefs_accent_color">Aksenttiväri</string>
     <string name="home">Kotisivu</string>
-    <string name="loading_list">Ladataan sovelluslistaa…</string>
+    <string name="loading_list">Ladataan listaa…</string>
     <string name="intro_permission_smsmms">Sovellus tarvitsee tämän käyttöoikeuden voidakseen varmuuskopioida ja palauttaa SMS/MMS-viestejä.</string>
     <string name="intro_permission_calllogs">Sovellus tarvitsee tämän käyttöoikeuden voidakseen varmuuskopioida ja palauttaa puheluhistorian.</string>
     <string name="fetching_action_list">Haetaan sovelluslistaa kohteelle %1$s…</string>
@@ -311,4 +311,6 @@
     <string name="shell_initproblem">Komentokehotteen käyttöönotto epäonnistui. Joko toybox/busybox puuttuu, tai sovelluksen root-oikeudet ovat poissa käytöstä.</string>
     <string name="intro_permission_storage_location_warning">Älä valitse juurihakemistoa tai Lataukset-kansiota vaan luo uusi kansion vain varmuuskopioita varten. Lue lisää FAQ:sta</string>
     <string name="delete">Poista</string>
+    <string name="prefs_unset">Ei asetettu</string>
+    <string name="batch">Erä</string>
 </resources>
