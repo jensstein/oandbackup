@@ -44,10 +44,7 @@ class Package {
     val backupList: MutableList<Backup> = mutableListOf()
 
     val latestBackup: Backup?
-        get() = if (backupList.isNotEmpty()) {
-            backupList.sortBy { it.backupDate }
-            backupList.last()
-        } else null
+        get() = backupList.maxByOrNull { it.backupDate }
 
     internal constructor(
         context: Context,
@@ -207,10 +204,12 @@ class Package {
         }
     }
 
+
     fun deleteAllBackups() {
         Timber.i("Deleting ${backupList.size} backups of ${this.packageName}")
-        packageBackupDir?.delete()
+        packageBackupDir?.deleteRecursive()
         backupList.clear()
+        StorageFile.invalidateCache { it.contains(packageName) }
         packageBackupDir = null
     }
 
@@ -232,6 +231,7 @@ class Package {
         }
         if (removeFromHistory)
             backupList.remove(backupItem)
+        StorageFile.invalidateCache { it.contains(packageName) }
     }
 
     private val isApp: Boolean

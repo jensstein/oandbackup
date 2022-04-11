@@ -75,6 +75,7 @@ class MainViewModel(
         }
     }
 
+    // TODO add to interface
     fun refreshList() {
         viewModelScope.launch {
             recreateAppInfoList()
@@ -100,7 +101,6 @@ class MainViewModel(
             val appPackage = packageList.value?.find { it.packageName == packageName }
             try {
                 appPackage?.apply {
-                    StorageFile.invalidateCache { it.contains(this.packageName) }
                     val new =
                         Package(appContext, packageName, appPackage.getAppBackupRoot(appContext))
                     new.refreshBackupList(appContext)

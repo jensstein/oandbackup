@@ -210,9 +210,7 @@ fun List<AppInfo>.toPackageList(
             directoriesInBackupRoot
                 .filterNot {
                     it.name?.let { name ->
-                        installedPackageNames.contains(name)
-                                || blockList.contains(name)
-                                || specialList.contains(name)
+                        name in installedPackageNames.union(blockList).union(specialList)
                     } ?: true
                 }
                 .mapNotNull {
@@ -228,10 +226,6 @@ fun List<AppInfo>.toPackageList(
     }
 
     return packageList
-}
-
-fun List<Package>.addBackups(backupsMap: Map<String, List<Backup>>) = this.forEach {
-    it.updateBackupList(backupsMap[it.packageName].orEmpty())
 }
 
 fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
@@ -331,6 +325,7 @@ fun Context.updateBackupTable(backupDao: BackupDao) {
     StorageLocationNotConfiguredException::class
 )
 fun Context.getDirectoriesInBackupRoot(): List<StorageFile> {
+    StorageFile.invalidateCache()
     val backupRoot = getBackupDir()
     try {
         return backupRoot.listFiles()

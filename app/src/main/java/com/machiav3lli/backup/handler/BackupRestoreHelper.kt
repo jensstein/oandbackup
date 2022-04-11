@@ -53,7 +53,7 @@ object BackupRestoreHelper {
         context: Context,
         work: AppActionWork?,
         shell: ShellHandler,
-        appInfo: Package,
+        packageItem: Package,
         backupMode: Int
     ): ActionResult {
         var reBackupMode = backupMode
@@ -63,15 +63,15 @@ object BackupRestoreHelper {
                 ?: HousekeepingMoment.AFTER.value
         )
         if (housekeepingWhen == HousekeepingMoment.BEFORE) {
-            housekeepingPackageBackups(context, appInfo, true)
+            housekeepingPackageBackups(context, packageItem, true)
         }
         // Select and prepare the action to use
         val action: BackupAppAction = when {
-            appInfo.isSpecial -> {
+            packageItem.isSpecial -> {
                 if (reBackupMode and MODE_APK == MODE_APK) {
-                    Timber.e("[${appInfo.packageName}] Special Backup called with MODE_APK or MODE_BOTH. Masking invalid settings.")
+                    Timber.e("[${packageItem.packageName}] Special Backup called with MODE_APK or MODE_BOTH. Masking invalid settings.")
                     reBackupMode = reBackupMode and MODE_DATA
-                    Timber.d("[${appInfo.packageName}] New backup mode: $reBackupMode")
+                    Timber.d("[${packageItem.packageName}] New backup mode: $reBackupMode")
                 }
                 BackupSpecialAction(context, work, shell)
             }
@@ -79,19 +79,19 @@ object BackupRestoreHelper {
                 BackupAppAction(context, work, shell)
             }
         }
-        Timber.d("[${appInfo.packageName}] Using ${action.javaClass.simpleName} class")
+        Timber.d("[${packageItem.packageName}] Using ${action.javaClass.simpleName} class")
 
         // create the new backup
-        val result = action.run(appInfo, reBackupMode)
+        val result = action.run(packageItem, reBackupMode)
 
         if (result.succeeded)
-            Timber.i("[${appInfo.packageName}] Backup succeeded: ${result.succeeded}")
+            Timber.i("[${packageItem.packageName}] Backup succeeded: ${result.succeeded}")
         else {
-            Timber.i("[${appInfo.packageName}] Backup FAILED: ${result.succeeded} ${result.message}")
+            Timber.i("[${packageItem.packageName}] Backup FAILED: ${result.succeeded} ${result.message}")
         }
 
         if (housekeepingWhen == HousekeepingMoment.AFTER) {
-            housekeepingPackageBackups(context, appInfo, false)
+            housekeepingPackageBackups(context, packageItem, false)
         }
         return result
     }
@@ -122,7 +122,7 @@ object BackupRestoreHelper {
                 val fileInfos =
                     shell.suGetDetailedDirectoryContents(myInfo.applicationInfo.sourceDir, false)
                 if (fileInfos.size != 1) {
-                    throw FileNotFoundException("Could not find OAndBackupX's own apk file")
+                    throw FileNotFoundException("Could not find Neo Backup's own apk file")
                 }
                 suCopyFileToDocument(fileInfos[0], backupRoot)
                 // Invalidating cache, otherwise the next call will fail

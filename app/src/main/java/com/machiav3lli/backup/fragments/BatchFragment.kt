@@ -191,7 +191,8 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         selectedModes: List<Int>
     ) {
         startBatchAction(backupBoolean, selectedPackages, selectedModes) {
-            viewModel.refreshNow.value = true
+            //viewModel.refreshNow.value = true
+            // TODO refresh only the influenced packages
             it.removeObserver(this)
         }
     }

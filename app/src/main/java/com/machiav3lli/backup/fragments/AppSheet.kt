@@ -81,7 +81,7 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
         val shellCommands = ShellCommands(users)
         val viewModelFactory =
             AppSheetViewModel.Factory(appInfo, shellCommands, requireActivity().application)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(AppSheetViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory)[AppSheetViewModel::class.java]
 
         viewModel.refreshNow.observe(viewLifecycleOwner) {
             if (it) {

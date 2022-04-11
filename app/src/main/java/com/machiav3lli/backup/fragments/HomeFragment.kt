@@ -85,7 +85,7 @@ class HomeFragment : NavigationFragment(),
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         val viewModelFactory = HomeViewModel.Factory(requireActivity().application)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(HomeViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory)[HomeViewModel::class.java]
         return binding.root
     }
 
@@ -105,7 +105,10 @@ class HomeFragment : NavigationFragment(),
                 redrawList(list, viewModel.searchQuery.value)
                 setupSearch()
                 list?.find { it.packageName == appSheet?.appInfo?.packageName }
-                    ?.let { sheetApp -> if (appSheet != null) refreshAppSheet(sheetApp) }
+                    ?.let { sheetApp ->
+                        if (appSheet != null && sheetApp != appSheet?.appInfo)
+                            refreshAppSheet(sheetApp)
+                    }
                 viewModel.refreshNow.value = false
             } catch (e: Throwable) {
                 LogsHandler.unhandledException(e)
@@ -213,7 +216,8 @@ class HomeFragment : NavigationFragment(),
         selectedModes: List<Int>
     ) {
         startBatchAction(true, selectedPackages, selectedModes) {
-            viewModel.refreshNow.value = true
+            //viewModel.refreshNow.value = true
+            // TODO refresh only the influenced packages
             it.removeObserver(this)
         }
     }
