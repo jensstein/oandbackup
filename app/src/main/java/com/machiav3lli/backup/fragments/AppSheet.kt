@@ -405,7 +405,9 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
                 actionType === ActionType.RESTORE -> {
                     backup?.let { backupProps: Backup ->
                         val backupDir =
-                            backupProps.getBackupInstanceFolder(viewModel.appInfo.value?.packageBackupDir)
+                            backupProps.getBackupInstanceFolder(
+                                viewModel.appInfo.value?.getAppBackupRoot(requireContext())
+                            )
                         RestoreActionTask(
                             it, requireMainActivity(), OABX.shellHandlerInstance!!, mode,
                             backupProps, backupDir!!, this

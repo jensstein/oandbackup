@@ -38,7 +38,7 @@ import java.io.File
 class Package {
     var packageName: String
     var packageInfo: com.machiav3lli.backup.dbs.entity.PackageInfo
-    private var packageBackupDir: StorageFile?
+    private var packageBackupDir: StorageFile? = null
     var storageStats: StorageStats? = null
 
     val backupList: MutableList<Backup> = mutableListOf()
@@ -56,7 +56,7 @@ class Package {
     ) {
         packageName = appInfo.packageName
         this.packageInfo = appInfo
-        packageBackupDir = getAppBackupRoot(context)
+        getAppBackupRoot(context)
         if (appInfo.installed) refreshStorageStats(context)
         updateBackupList(backups)
     }
@@ -68,7 +68,7 @@ class Package {
     ) {
         packageName = specialInfo.packageName
         this.packageInfo = specialInfo
-        packageBackupDir = getAppBackupRoot(context)
+        getAppBackupRoot(context)
         updateBackupList(backups)
     }
 
@@ -79,7 +79,7 @@ class Package {
     ) {
         packageName = packageInfo.packageName
         this.packageInfo = AppInfo(context, packageInfo)
-        packageBackupDir = getAppBackupRoot(context)
+        getAppBackupRoot(context)
         refreshStorageStats(context)
         updateBackupList(backups)
     }
@@ -169,12 +169,15 @@ class Package {
         context: Context,
         create: Boolean = false,
         packageName: String = this.packageName
-    ): StorageFile? {
-        if (packageBackupDir == null) StorageFile.invalidateCache { it == packageName }
-        return when {
-            packageBackupDir != null && packageBackupDir?.exists() == true -> packageBackupDir
-            create -> context.getBackupDir().ensureDirectory(packageName)
-            else -> context.getBackupDir().findFile(packageName)
+    ): StorageFile? = when {
+        packageBackupDir != null && packageBackupDir?.exists() == true -> packageBackupDir
+        create -> {
+            packageBackupDir = context.getBackupDir().ensureDirectory(packageName)
+            packageBackupDir
+        }
+        else -> {
+            packageBackupDir = context.getBackupDir().findFile(packageName)
+            packageBackupDir
         }
     }
 

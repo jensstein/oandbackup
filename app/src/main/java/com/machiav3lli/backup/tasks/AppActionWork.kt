@@ -129,8 +129,10 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                                     // Latest backup for now
                                     ai.latestBackup?.let {
                                         BackupRestoreHelper.restore(
-                                            context, this, shellHandler, ai, selectedMode,
-                                            it, it.getBackupInstanceFolder(ai.packageBackupDir)
+                                            context, this,
+                                            shellHandler, pi,
+                                            selectedMode, it,
+                                            it.getBackupInstanceFolder(pi.getAppBackupRoot(context))
                                         )
                                     }
                                 }
