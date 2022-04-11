@@ -156,6 +156,32 @@ class Package {
         backupList.addAll(new)
     }
 
+    fun refreshBackupList(context: Context) {
+        val backupDir = context.getBackupDir()
+        if (packageBackupDir == null) StorageFile.invalidateCache {
+            it.contains(backupDir.name ?: packageName)
+        }
+        getAppBackupRoot(context)?.listFiles()
+            ?.filter(StorageFile::isPropertyFile)
+            ?.forEach { propFile ->
+                try {
+                    Backup.createFrom(propFile)?.let(backupList::add)
+                } catch (e: Backup.BrokenBackupException) {
+                    val message =
+                        "Incomplete backup or wrong structure found in $propFile"
+                    Timber.w(message)
+                } catch (e: NullPointerException) {
+                    val message =
+                        "(Null) Incomplete backup or wrong structure found in $propFile"
+                    Timber.w(message)
+                } catch (e: Throwable) {
+                    val message =
+                        "(catchall) Incomplete backup or wrong structure found in $propFile"
+                    LogsHandler.unhandledException(e, message)
+                }
+            }
+    }
+
     // TODO respect set size
     fun addBackup(vararg new: Backup) {
         backupList.addAll(new)

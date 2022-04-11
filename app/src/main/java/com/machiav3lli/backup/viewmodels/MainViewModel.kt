@@ -20,7 +20,6 @@ package com.machiav3lli.backup.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -30,11 +29,11 @@ import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Blocklist
-import com.machiav3lli.backup.handler.addBackups
 import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.handler.updateAppInfoTable
 import com.machiav3lli.backup.handler.updateBackupTable
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.items.StorageFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -59,8 +58,7 @@ class MainViewModel(
     init {
         blocklist.addSource(db.blocklistDao.liveAll, blocklist::setValue)
         backupsMap.addSource(db.backupDao.allLive) {
-            backupsMap.value = it.groupBy(Backup::packageName)
-            packageList.value?.addBackups(it.groupBy(Backup::packageName))
+            backupsMap.postValue(it.groupBy(Backup::packageName))
         }
         packageList.addSource(db.appInfoDao.allLive) {
             packageList.value = it.toPackageList(
@@ -68,6 +66,12 @@ class MainViewModel(
                 blocklist.value?.mapNotNull(Blocklist::packageName) ?: listOf(),
                 backupsMap.value.orEmpty()
             )
+        }
+        packageList.addSource(backupsMap) { map ->
+            packageList.value = packageList.value?.map {
+                it.updateBackupList(map[it.packageName].orEmpty())
+                it
+            }.orEmpty().toMutableList()
         }
     }
 
@@ -85,26 +89,27 @@ class MainViewModel(
 
     fun updatePackage(packageName: String) {
         viewModelScope.launch {
-            val appPackage = packageList.value?.find { it.packageName == packageName }
-            appPackage?.let {
-                packageList.value = updateListWith(packageName)
+            packageList.value?.find { it.packageName == packageName }?.let {
+                updateDataOf(packageName)
             }
         }
     }
 
-    private suspend fun updateListWith(packageName: String): MutableList<Package>? =
+    private suspend fun updateDataOf(packageName: String) =
         withContext(Dispatchers.IO) {
-            val dataList = packageList.value
-            var appPackage = dataList?.find { it.packageName == packageName }
-            dataList?.removeIf { it.packageName == packageName }
+            val appPackage = packageList.value?.find { it.packageName == packageName }
             try {
-                appPackage = Package(appContext, packageName, appPackage?.packageBackupDir)
-                if (!appPackage.isSpecial) db.appInfoDao.update(appPackage.packageInfo as AppInfo)
-                dataList?.add(appPackage)
+                appPackage?.apply {
+                    StorageFile.invalidateCache { it.contains(this.packageName) }
+                    val new =
+                        Package(appContext, packageName, appPackage.getAppBackupRoot(appContext))
+                    new.refreshBackupList(appContext)
+                    if (!isSpecial) db.appInfoDao.update(new.packageInfo as AppInfo)
+                    db.backupDao.updateList(new)
+                }
             } catch (e: AssertionError) {
                 Timber.w(e.message ?: "")
             }
-            dataList
         }
 
     fun updateExtras(appExtras: AppExtras) {
