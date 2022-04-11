@@ -41,20 +41,21 @@ fun BatchPackageItem(
     onApkClick: (Package, Boolean) -> Unit = { _: Package, _: Boolean -> },
     onDataClick: (Package, Boolean) -> Unit = { _: Package, _: Boolean -> }
 ) {
+    val packageItem by remember(item) { mutableStateOf(item) }
     var apkChecked by remember(isApkChecked) { mutableStateOf(isApkChecked) }
     var dataChecked by remember(isDataChecked) { mutableStateOf(isDataChecked) }
-    val showApk by remember(item) {
+    val showApk by remember(packageItem) {
         mutableStateOf(
             when {
-                item.isSpecial || (restore && !item.hasApk) -> false
+                packageItem.isSpecial || (restore && !packageItem.hasApk) -> false
                 else -> true
             }
         )
     }
-    val showData by remember(item) {
+    val showData by remember(packageItem) {
         mutableStateOf(
             when {
-                restore && !item.hasData -> false
+                restore && !packageItem.hasData -> false
                 else -> true
             }
         )
@@ -70,7 +71,7 @@ fun BatchPackageItem(
             val checked = (apkChecked || !showApk) && (dataChecked || !showData)
             if (showApk) apkChecked = !checked
             if (showData) dataChecked = !checked
-            onClick(item, apkChecked, dataChecked)
+            onClick(packageItem, apkChecked, dataChecked)
         }
     ) {
         Row(
@@ -84,14 +85,14 @@ fun BatchPackageItem(
                 enabled = showApk,
                 onCheckedChange = {
                     apkChecked = it
-                    onApkClick(item, it)
+                    onApkClick(packageItem, it)
                 }
             )
             Checkbox(checked = dataChecked,
                 enabled = showData,
                 onCheckedChange = {
                     dataChecked = it
-                    onDataClick(item, it)
+                    onDataClick(packageItem, it)
                 }
             )
 
@@ -104,7 +105,7 @@ fun BatchPackageItem(
                         .fillMaxHeight(0.4f),
                 ) {
                     Text(
-                        text = item.packageLabel,
+                        text = packageItem.packageLabel,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .weight(1f),
@@ -113,7 +114,7 @@ fun BatchPackageItem(
                         maxLines = 1,
                         style = MaterialTheme.typography.titleMedium
                     )
-                    PackageLabels(item = item)
+                    PackageLabels(item = packageItem)
                 }
                 Row(
                     modifier = Modifier
@@ -121,7 +122,7 @@ fun BatchPackageItem(
                         .fillMaxHeight(0.4f),
                 ) {
                     Text(
-                        text = item.packageName,
+                        text = packageItem.packageName,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .weight(1f),
@@ -130,11 +131,11 @@ fun BatchPackageItem(
                         maxLines = 1,
                         style = MaterialTheme.typography.bodySmall
                     )
-                    AnimatedVisibility(visible = item.hasBackups) {
+                    AnimatedVisibility(visible = packageItem.hasBackups) {
                         Text(
-                            text = (item.latestBackup?.backupDate?.getFormattedDate(
+                            text = (packageItem.latestBackup?.backupDate?.getFormattedDate(
                                 false
-                            ) ?: "") + " - ${item.backupList.size}",
+                            ) ?: "") + " - ${packageItem.backupList.size}",
                             modifier = Modifier.align(Alignment.CenterVertically),
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1,

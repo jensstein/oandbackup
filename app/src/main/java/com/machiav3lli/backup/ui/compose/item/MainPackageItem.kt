@@ -34,10 +34,11 @@ fun MainPackageItem(
     item: Package,
     onClick: (Package) -> Unit = {}
 ) {
-    val imageData by remember(item) {
+    val packageItem by remember(item) { mutableStateOf(item) }
+    val imageData by remember(packageItem) {
         mutableStateOf(
-            if (item.isSpecial) item.packageInfo.icon
-            else "android.resource://${item.packageName}/${item.packageInfo.icon}"
+            if (packageItem.isSpecial) packageItem.packageInfo.icon
+            else "android.resource://${packageItem.packageName}/${packageItem.packageInfo.icon}"
         )
     }
 
@@ -47,7 +48,7 @@ fun MainPackageItem(
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface),
         containerColor = MaterialTheme.colorScheme.background,
         elevation = CardDefaults.cardElevation(4.dp),
-        onClick = { onClick(item) },
+        onClick = { onClick(packageItem) },
     ) {
         Row(
             modifier = Modifier
@@ -56,7 +57,7 @@ fun MainPackageItem(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            PackageIcon(item = item, imageData = imageData)
+            PackageIcon(item = packageItem, imageData = imageData)
 
             Column(
                 modifier = Modifier.wrapContentHeight()
@@ -67,7 +68,7 @@ fun MainPackageItem(
                         .fillMaxHeight(0.4f),
                 ) {
                     Text(
-                        text = item.packageLabel,
+                        text = packageItem.packageLabel,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .weight(1f),
@@ -76,7 +77,7 @@ fun MainPackageItem(
                         maxLines = 1,
                         style = MaterialTheme.typography.titleMedium
                     )
-                    PackageLabels(item = item)
+                    PackageLabels(item = packageItem)
                 }
                 Row(
                     modifier = Modifier
@@ -84,7 +85,7 @@ fun MainPackageItem(
                         .fillMaxHeight(0.4f),
                 ) {
                     Text(
-                        text = item.packageName,
+                        text = packageItem.packageName,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .weight(1f),
@@ -94,11 +95,11 @@ fun MainPackageItem(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    AnimatedVisibility(visible = item.hasBackups) {
+                    AnimatedVisibility(visible = packageItem.hasBackups) {
                         Text(
-                            text = (item.latestBackup?.backupDate?.getFormattedDate(
+                            text = (packageItem.latestBackup?.backupDate?.getFormattedDate(
                                 false
-                            ) ?: "") + " - ${item.backupList.size}",
+                            ) ?: "") + " - ${packageItem.backupList.size}",
                             modifier = Modifier.align(Alignment.CenterVertically),
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1,
