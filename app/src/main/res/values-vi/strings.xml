@@ -61,7 +61,7 @@
 \n• Cả hai việc sao lưu và khôi phục từng chương trình một cái một lúc và sao lưu và khôi phục hàng loạt nhiều chương trình đều được hỗ trợ.
 \n• Việc khôi phục ứng dụng hệ thống có thể sẽ làm được mà không yêu cầu khởi động lại sau đó, nhưng chúng tôi vẫn không khuyên bạn làm vậy.
 \n• Các bản sao lưu có thể được lên lịch không giới hạn số lượng lịch trình riêng lẻ và có khả năng tạo các danh sách tuỳ chỉnh độc nhất.</string>
-    <string name="welcome_to_oabx">Chào mừng đến OABX!</string>
+    <string name="welcome_to_oabx">Chào mừng đến Neo Backup!</string>
     <string name="storage_access">Quyền truy cập bộ nhớ</string>
     <string name="sort_and_filter">Sắp xếp &amp; Lọc</string>
     <string name="enable_encryption_message">Việc giữ cho dữ liệu của bạn trên thiết bị không được mã hoá là không an toàn. Để dữ liệu của bạn được an toàn, hãy bật mã hoá và đặt một mật khẩu.</string>
@@ -319,6 +319,6 @@
     <string name="intro_permission_calllogs">Ứng dụng cần quyền này để có thể sao lưu/khôi phục nhật ký cuộc gọi.</string>
     <string name="batch">Nhóm</string>
     <string name="spec_fingerprint">Vân tay</string>
-    <string name="loading_list">Đang tải danh sách ứng dụng…</string>
+    <string name="loading_list">Đang tải danh sách…</string>
     <string name="delete">Xóa</string>
 </resources>
