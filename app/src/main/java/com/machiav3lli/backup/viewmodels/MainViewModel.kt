@@ -55,7 +55,6 @@ class MainViewModel(
             db.appExtrasDao.deleteAll()
             db.appExtrasDao.insert(*value.toTypedArray())
         }
-    val refreshNow = MutableLiveData<Boolean>()
 
     init {
         blocklist.addSource(db.blocklistDao.liveAll, blocklist::setValue)
@@ -75,7 +74,6 @@ class MainViewModel(
     fun refreshList() {
         viewModelScope.launch {
             recreateAppInfoList()
-            refreshNow.value = true
         }
     }
 
@@ -91,7 +89,6 @@ class MainViewModel(
             appPackage?.let {
                 packageList.value = updateListWith(packageName)
             }
-            refreshNow.value = true
         }
     }
 
@@ -131,7 +128,6 @@ class MainViewModel(
     fun addToBlocklist(packageName: String) {
         viewModelScope.launch {
             insertIntoBlocklist(packageName)
-            refreshNow.value = true
         }
     }
 
@@ -151,7 +147,6 @@ class MainViewModel(
     fun updateBlocklist(newList: Set<String>) {
         viewModelScope.launch {
             insertIntoBlocklist(newList)
-            refreshNow.value = true
         }
     }
 

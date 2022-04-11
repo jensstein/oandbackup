@@ -131,9 +131,6 @@ class MainActivityX : BaseActivity() {
         viewModel.blocklist.observe(this) {
             viewModel.refreshList()
         }
-        viewModel.refreshNow.observe(this) {
-            if (it) refreshView()
-        }
         viewModel.packageList.observe(this) { }
         viewModel.backupsMap.observe(this) { }
 
