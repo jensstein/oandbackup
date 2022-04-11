@@ -38,7 +38,7 @@ import java.io.File
 class Package {
     var packageName: String
     var packageInfo: com.machiav3lli.backup.dbs.entity.PackageInfo
-    var packageBackupDir: StorageFile?
+    private var packageBackupDir: StorageFile?
     var storageStats: StorageStats? = null
 
     val backupList: MutableList<Backup> = mutableListOf()
@@ -56,7 +56,7 @@ class Package {
     ) {
         packageName = appInfo.packageName
         this.packageInfo = appInfo
-        packageBackupDir = context.getBackupDir().findFile(packageName)
+        packageBackupDir = getAppBackupRoot(context)
         if (appInfo.installed) refreshStorageStats(context)
         updateBackupList(backups)
     }
@@ -68,7 +68,7 @@ class Package {
     ) {
         packageName = specialInfo.packageName
         this.packageInfo = specialInfo
-        packageBackupDir = context.getBackupDir().findFile(packageName)
+        packageBackupDir = getAppBackupRoot(context)
         updateBackupList(backups)
     }
 
@@ -79,7 +79,7 @@ class Package {
     ) {
         packageName = packageInfo.packageName
         this.packageInfo = AppInfo(context, packageInfo)
-        packageBackupDir = context.getBackupDir().findFile(packageName)
+        packageBackupDir = getAppBackupRoot(context)
         refreshStorageStats(context)
         updateBackupList(backups)
     }
@@ -165,11 +165,17 @@ class Package {
         FileUtils.BackupLocationInAccessibleException::class,
         StorageLocationNotConfiguredException::class
     )
-    fun getAppBackupRoot(context: Context, create: Boolean): StorageFile {
-        if (create && packageBackupDir == null) {
-            packageBackupDir = context.getBackupDir().ensureDirectory(packageName)
+    fun getAppBackupRoot(
+        context: Context,
+        create: Boolean = false,
+        packageName: String = this.packageName
+    ): StorageFile? {
+        if (packageBackupDir == null) StorageFile.invalidateCache { it == packageName }
+        return when {
+            packageBackupDir != null && packageBackupDir?.exists() == true -> packageBackupDir
+            create -> context.getBackupDir().ensureDirectory(packageName)
+            else -> context.getBackupDir().findFile(packageName)
         }
-        return packageBackupDir!!
     }
 
     fun deleteAllBackups() {
