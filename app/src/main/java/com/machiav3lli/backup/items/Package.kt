@@ -22,6 +22,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.SpecialInfo
@@ -53,7 +54,7 @@ class Package {
     ) {
         packageName = appInfo.packageName
         this.packageInfo = appInfo
-        getAppBackupRoot(context)
+        getAppBackupRoot()
         if (appInfo.installed) refreshStorageStats(context)
         updateBackupList(backups)
     }
@@ -65,7 +66,7 @@ class Package {
     ) {
         packageName = specialInfo.packageName
         this.packageInfo = specialInfo
-        getAppBackupRoot(context)
+        getAppBackupRoot()
         updateBackupList(backups)
     }
 
@@ -76,7 +77,7 @@ class Package {
     ) {
         packageName = packageInfo.packageName
         this.packageInfo = AppInfo(context, packageInfo)
-        getAppBackupRoot(context)
+        getAppBackupRoot()
         refreshStorageStats(context)
         updateBackupList(backups)
     }
@@ -158,7 +159,7 @@ class Package {
         if (packageBackupDir == null) StorageFile.invalidateCache {
             it.contains(backupDir.name ?: packageName)
         }
-        getAppBackupRoot(context)?.listFiles()
+        getAppBackupRoot()?.listFiles()
             ?.filter(StorageFile::isPropertyFile)
             ?.forEach { propFile ->
                 try {
@@ -189,17 +190,16 @@ class Package {
         StorageLocationNotConfiguredException::class
     )
     fun getAppBackupRoot(
-        context: Context,
         create: Boolean = false,
         packageName: String = this.packageName
     ): StorageFile? = when {
         packageBackupDir != null && packageBackupDir?.exists() == true -> packageBackupDir
         create -> {
-            packageBackupDir = context.getBackupDir().ensureDirectory(packageName)
+            packageBackupDir = OABX.context.getBackupDir().ensureDirectory(packageName)
             packageBackupDir
         }
         else -> {
-            packageBackupDir = context.getBackupDir().findFile(packageName)
+            packageBackupDir = OABX.context.getBackupDir().findFile(packageName)
             packageBackupDir
         }
     }

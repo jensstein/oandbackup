@@ -102,7 +102,7 @@ class MainViewModel(
             try {
                 appPackage?.apply {
                     val new =
-                        Package(appContext, packageName, appPackage.getAppBackupRoot(appContext))
+                        Package(appContext, packageName, appPackage.getAppBackupRoot())
                     new.refreshBackupList(appContext)
                     if (!isSpecial) db.appInfoDao.update(new.packageInfo as AppInfo)
                     db.backupDao.updateList(new)

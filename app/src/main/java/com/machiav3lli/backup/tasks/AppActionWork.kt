@@ -132,7 +132,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                                             context, this,
                                             shellHandler, pi,
                                             selectedMode, it,
-                                            it.getBackupInstanceFolder(pi.getAppBackupRoot(context))
+                                            it.getBackupInstanceFolder(pi.getAppBackupRoot())
                                         )
                                     }
                                 }
