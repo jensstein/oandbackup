@@ -21,17 +21,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Scaffold
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
+import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.FragmentSchedulerBinding
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
+import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.recycler.ScheduleRecycler
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.specialBackupsEnabled
@@ -58,6 +68,7 @@ class SchedulerFragment : NavigationFragment() {
         return binding.root
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
@@ -67,32 +78,48 @@ class SchedulerFragment : NavigationFragment() {
                 AppTheme(
                     darkTheme = isSystemInDarkTheme()
                 ) {
-                    Scaffold { paddingValues ->
-                        ScheduleRecycler(
-                            modifier = Modifier
-                                .padding(bottom = paddingValues.calculateBottomPadding())
-                                .fillMaxSize(),
-                            productsList = list,
-                            onClick = { item ->
-                                if (sheetSchedule != null) sheetSchedule?.dismissAllowingStateLoss()
-                                sheetSchedule = ScheduleSheet(item.id)
-                                sheetSchedule?.showNow(
-                                    requireActivity().supportFragmentManager,
-                                    "Schedule ${item.id}"
-                                )
-                            },
-                            onCheckChanged = { item: Schedule, b: Boolean ->
-                                item.enabled = b
-                                Thread(
-                                    ScheduleSheet.UpdateRunnable(
-                                        item,
-                                        requireContext(),
-                                        database.scheduleDao,
-                                        true
+                    Scaffold {
+                        Column {
+                            ScheduleRecycler(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth(),
+                                productsList = list,
+                                onClick = { item ->
+                                    if (sheetSchedule != null) sheetSchedule?.dismissAllowingStateLoss()
+                                    sheetSchedule = ScheduleSheet(item.id)
+                                    sheetSchedule?.showNow(
+                                        requireActivity().supportFragmentManager,
+                                        "Schedule ${item.id}"
                                     )
-                                ).start()
+                                },
+                                onCheckChanged = { item: Schedule, b: Boolean ->
+                                    item.enabled = b
+                                    Thread(
+                                        ScheduleSheet.UpdateRunnable(
+                                            item,
+                                            requireContext(),
+                                            database.scheduleDao,
+                                            true
+                                        )
+                                    ).start()
+                                }
+                            )
+                            Row(
+                                modifier = Modifier
+                                    .background(MaterialTheme.colorScheme.surface)
+                                    .padding(horizontal = 8.dp)
+                            ) {
+                                ElevatedActionButton(
+                                    text = stringResource(id = R.string.sched_add),
+                                    modifier = Modifier.fillMaxWidth(),
+                                    fullWidth = true,
+                                    icon = painterResource(id = R.drawable.ic_add_sched)
+                                ) {
+                                    viewModel.addSchedule(requireContext().specialBackupsEnabled)
+                                }
                             }
-                        )
+                        }
                     }
                 }
             }
