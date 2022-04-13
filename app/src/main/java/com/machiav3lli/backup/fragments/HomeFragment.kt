@@ -25,6 +25,20 @@ import androidx.appcompat.widget.SearchView
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -42,6 +56,13 @@ import com.machiav3lli.backup.databinding.FragmentHomeBinding
 import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
+import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.ui.compose.item.ActionButton
+import com.machiav3lli.backup.ui.compose.item.ActionChip
+import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
+import com.machiav3lli.backup.ui.compose.recycler.HomePackageRecycler
+import com.machiav3lli.backup.ui.compose.recycler.UpdatedPackageRecycler
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
@@ -49,6 +70,9 @@ import com.machiav3lli.backup.utils.applyFilter
 import com.machiav3lli.backup.utils.getStats
 import com.machiav3lli.backup.utils.sortFilterModel
 import com.machiav3lli.backup.viewmodels.HomeViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class HomeFragment : NavigationFragment(),
@@ -237,13 +261,57 @@ class HomeFragment : NavigationFragment(),
             AppTheme(
                 darkTheme = isSystemInDarkTheme()
             ) {
-                Scaffold { paddingValues ->
+                Scaffold { _ ->
                     Column(
                         modifier = Modifier
                             .background(color = MaterialTheme.colorScheme.surface)
-                            .padding(bottom = paddingValues.calculateBottomPadding())
                             .fillMaxSize()
                     ) {
+                        Row(
+                            modifier = Modifier
+                                .background(MaterialTheme.colorScheme.surface)
+                                .padding(horizontal = 8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            ActionChip(
+                                icon = painterResource(id = R.drawable.ic_blocklist),
+                                text = stringResource(id = R.string.sched_blocklist),
+                                positive = true
+                            ) {
+                                GlobalScope.launch(Dispatchers.IO) {
+                                    val blocklistedPackages =
+                                        requireMainActivity().viewModel.blocklist.value
+                                            ?.mapNotNull { it.packageName }
+                                            ?: listOf()
+
+                                    PackagesListDialogFragment(
+                                        blocklistedPackages,
+                                        MAIN_FILTER_DEFAULT,
+                                        true
+                                    ) { newList: Set<String> ->
+                                        requireMainActivity().viewModel.updateBlocklist(newList)
+                                    }.show(
+                                        requireActivity().supportFragmentManager,
+                                        "BLOCKLIST_DIALOG"
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.weight(1f))
+                            ActionChip(
+                                icon = painterResource(id = R.drawable.ic_filter),
+                                text = stringResource(id = R.string.sort_and_filter),
+                                positive = true
+                            ) {
+                                if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(
+                                    requireActivity().sortFilterModel,
+                                    getStats(packageList.value ?: mutableListOf())
+                                )
+                                sheetSortFilter?.showNow(
+                                    requireActivity().supportFragmentManager,
+                                    "SORTFILTER_SHEET"
+                                )
+                            }
+                        }
                         HomePackageRecycler(
                             modifier = Modifier
                                 .weight(1f)

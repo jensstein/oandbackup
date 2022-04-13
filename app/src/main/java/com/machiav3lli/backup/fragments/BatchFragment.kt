@@ -27,11 +27,13 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Scaffold
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,6 +54,7 @@ import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.item.ActionButton
+import com.machiav3lli.backup.ui.compose.item.ActionChip
 import com.machiav3lli.backup.ui.compose.item.StateChip
 import com.machiav3lli.backup.ui.compose.recycler.BatchPackageRecycler
 import com.machiav3lli.backup.ui.compose.theme.APK
@@ -63,6 +66,9 @@ import com.machiav3lli.backup.utils.applyFilter
 import com.machiav3lli.backup.utils.getStats
 import com.machiav3lli.backup.utils.sortFilterModel
 import com.machiav3lli.backup.viewmodels.BatchViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragment(),
@@ -201,6 +207,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         binding.progressBar.visibility = View.GONE
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     fun redrawList(list: List<Package>?, query: String? = "") {
         binding.recyclerView.setContent {
 
@@ -219,6 +226,62 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                 mutableStateOf(viewModel.dataCheckedList.size == list?.size)
             }
 
+            AppTheme(
+                darkTheme = isSystemInDarkTheme()
+            ) {
+                Scaffold { _ ->
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .background(MaterialTheme.colorScheme.surface)
+                                .padding(horizontal = 8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            ActionChip(
+                                icon = painterResource(id = R.drawable.ic_blocklist),
+                                text = stringResource(id = R.string.sched_blocklist),
+                                positive = true
+                            ) {
+                                GlobalScope.launch(Dispatchers.IO) {
+                                    val blocklistedPackages =
+                                        requireMainActivity().viewModel.blocklist.value
+                                            ?.mapNotNull { it.packageName }
+                                            ?: listOf()
+
+                                    PackagesListDialogFragment(
+                                        blocklistedPackages,
+                                        MAIN_FILTER_DEFAULT,
+                                        true
+                                    ) { newList: Set<String> ->
+                                        requireMainActivity().viewModel.updateBlocklist(newList)
+                                    }.show(
+                                        requireActivity().supportFragmentManager,
+                                        "BLOCKLIST_DIALOG"
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.weight(1f))
+                            ActionChip(
+                                icon = painterResource(id = R.drawable.ic_filter),
+                                text = stringResource(id = R.string.sort_and_filter),
+                                positive = true
+                            ) {
+                                if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(
+                                    requireActivity().sortFilterModel,
+                                    getStats(packageList.value ?: mutableListOf())
+                                )
+                                sheetSortFilter?.showNow(
+                                    requireActivity().supportFragmentManager,
+                                    "SORTFILTER_SHEET"
+                                )
+                            }
+                        }
+                        BatchPackageRecycler(
+                            modifier = Modifier
+                                .weight(1f)
                                 .fillMaxWidth(),
                             productsList = list?.filter(filterPredicate),
                             !backupBoolean,
