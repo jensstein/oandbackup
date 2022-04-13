@@ -96,31 +96,10 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:clipToPadding="false"
-            app:layout_constraintBottom_toTopOf="@id/buttonBar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/topBar" />
-
-        <FrameLayout
-            android:id="@+id/buttonBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?colorPrimaryDark"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/recyclerView">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/addSchedule"
-                style="@style/Widget.Material3.Button.ElevatedButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/cards_spacing"
-                android:paddingVertical="@dimen/large_spacing"
-                android:text="@string/sched_add"
-                app:icon="@drawable/ic_add_sched" />
-        </FrameLayout>
+            app:layout_constraintTop_toBottomOf="@id/topBar" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
 

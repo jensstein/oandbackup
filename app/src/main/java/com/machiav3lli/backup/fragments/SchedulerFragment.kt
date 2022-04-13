@@ -123,9 +123,6 @@ class SchedulerFragment : NavigationFragment() {
                 }.show(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
             }.start()
         }
-        binding.addSchedule.setOnClickListener {
-            viewModel.addSchedule(requireContext().specialBackupsEnabled)
-        }
     }
 
     override fun updateProgress(progress: Int, max: Int) {
