@@ -48,7 +48,7 @@ import com.machiav3lli.backup.ALT_MODE_BOTH
 import com.machiav3lli.backup.ALT_MODE_DATA
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.databinding.FragmentBatchBinding
+import com.machiav3lli.backup.databinding.FragmentMainBinding
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
@@ -73,7 +73,7 @@ import timber.log.Timber
 
 open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragment(),
     BatchDialogFragment.ConfirmListener, RefreshViewController {
-    private lateinit var binding: FragmentBatchBinding
+    private lateinit var binding: FragmentMainBinding
     lateinit var viewModel: BatchViewModel
 
     override fun onCreateView(
@@ -82,7 +82,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         savedInstanceState: Bundle?
     ): View? {
         super.onCreate(savedInstanceState)
-        binding = FragmentBatchBinding.inflate(inflater, container, false)
+        binding = FragmentMainBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         val viewModelFactory = BatchViewModel.Factory(requireActivity().application)
         viewModel = ViewModelProvider(this, viewModelFactory)[BatchViewModel::class.java]

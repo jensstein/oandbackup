@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><!--
- ~ OAndBackupX: open-source apps backup and restore app.
- ~ Copyright (C) 2020  Antonios Hazim
+ ~ Neo Backup: open-source apps backup and restore app.
+ ~ Copyright (C) 2021  Antonios Hazim
  ~
  ~ This program is free software: you can redistribute it and/or modify
  ~ it under the terms of the GNU Affero General Public License as
@@ -61,12 +61,13 @@
 
                 <androidx.appcompat.widget.SearchView
                     android:id="@+id/searchBar"
-                    style="@android:style/Widget.Material.SearchView"
+                    style="@style/Widget.AppCompat.SearchView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:autofillHints="@string/searchHint"
                     android:background="@drawable/bg_bar_static_round_accent"
                     android:elevation="@dimen/cards_spacing"
+                    android:foregroundGravity="center_horizontal"
                     android:imeOptions="flagNoExtractUi|actionSearch"
                     android:inputType="text"
                     android:singleLine="true"
@@ -103,4 +104,3 @@
             app:layout_constraintTop_toBottomOf="@id/topBar" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
-
