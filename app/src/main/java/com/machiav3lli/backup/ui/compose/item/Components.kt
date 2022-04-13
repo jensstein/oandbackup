@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
@@ -130,6 +129,7 @@ fun ElevatedActionButton(
     text: String,
     positive: Boolean = true,
     icon: Painter? = null,
+    fullWidth: Boolean = false,
     onClick: () -> Unit
 ) {
     ElevatedButton(
@@ -145,10 +145,12 @@ fun ElevatedActionButton(
                 painter = icon,
                 contentDescription = text
             )
-            Spacer(modifier = Modifier.width(8.dp))
         }
         Text(
-            modifier = Modifier.padding(start = 4.dp),
+            modifier = when {
+                fullWidth -> Modifier.weight(1f)
+                else -> Modifier.padding(start = 8.dp)
+            },
             text = text,
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.titleSmall
