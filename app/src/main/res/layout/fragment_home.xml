@@ -87,48 +87,10 @@
                 android:layout_height="@dimen/large_spacing"
                 android:layout_marginHorizontal="@dimen/cards_spacing"
                 android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@id/modeBar"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/appBar" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/modeBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:orientation="horizontal"
-                android:paddingHorizontal="@dimen/cards_spacing"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/progressBar">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/buttonBlocklist"
-                    style="@style/Chip.Action.Positive"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sched_blocklist"
-                    app:chipIcon="@drawable/ic_blocklist"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/buttonSortFilter"
-                    app:layout_constraintHorizontal_chainStyle="spread_inside"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/buttonSortFilter"
-                    style="@style/Chip.Action.Positive"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sort_and_filter"
-                    app:chipIcon="@drawable/ic_filter"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/buttonBlocklist"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.compose.ui.platform.ComposeView

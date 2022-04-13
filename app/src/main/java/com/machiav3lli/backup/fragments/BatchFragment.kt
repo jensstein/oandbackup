@@ -125,28 +125,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     }
 
     override fun setupOnClicks() {
-        binding.buttonBlocklist.setOnClickListener {
-            Thread {
-                val blocklistedPackages = requireMainActivity().viewModel.blocklist.value
-                    ?.mapNotNull { it.packageName }
-                    ?: listOf()
-
-                PackagesListDialogFragment(
-                    blocklistedPackages,
-                    MAIN_FILTER_DEFAULT,
-                    true
-                ) { newList: Set<String> ->
-                    requireMainActivity().viewModel.updateBlocklist(newList)
-                }.show(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
-            }.start()
-        }
-        binding.buttonSortFilter.setOnClickListener {
-            if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(
-                requireActivity().sortFilterModel,
-                getStats(packageList.value ?: mutableListOf())
-            )
-            sheetSortFilter?.showNow(requireActivity().supportFragmentManager, "SORTFILTER_SHEET")
-        }
     }
 
     private fun setupSearch() {
@@ -241,19 +219,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                 mutableStateOf(viewModel.dataCheckedList.size == list?.size)
             }
 
-            AppTheme(
-                darkTheme = isSystemInDarkTheme()
-            ) {
-                Scaffold { paddingValues ->
-                    Column(
-                        modifier = Modifier
-                            .padding(bottom = paddingValues.calculateBottomPadding())
-                            .fillMaxSize()
-                    ) {
-
-                        BatchPackageRecycler(
-                            modifier = Modifier
-                                .weight(1f)
                                 .fillMaxWidth(),
                             productsList = list?.filter(filterPredicate),
                             !backupBoolean,
