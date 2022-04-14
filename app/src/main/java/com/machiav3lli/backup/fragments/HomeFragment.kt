@@ -96,7 +96,6 @@ class HomeFragment : NavigationFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupViews()
 
         viewModel.refreshNow.observe(requireActivity()) {
             //binding.refreshLayout.isRefreshing = it
@@ -108,7 +107,6 @@ class HomeFragment : NavigationFragment(),
             try {
                 viewModel.updatedApps.value = list?.filter { it.isUpdated }
                 redrawList(list, viewModel.searchQuery.value)
-                setupSearch()
                 list?.find { it.packageName == appSheet?.appInfo?.packageName }
                     ?.let { sheetApp ->
                         if (appSheet != null && sheetApp != appSheet?.appInfo)
@@ -126,24 +124,9 @@ class HomeFragment : NavigationFragment(),
         packageList.observe(requireActivity()) { refreshView(it) }
     }
 
-    override fun onStart() {
-        super.onStart()
-    }
-
     override fun onResume() {
         super.onResume()
-        setupOnClicks()
-        setupSearch()
         requireMainActivity().setRefreshViewController(this)
-    }
-
-    override fun setupViews() {
-    }
-
-    override fun setupOnClicks() {
-    }
-
-    private fun setupSearch() {
     }
 
     private fun onClickUpdateAllAction() {

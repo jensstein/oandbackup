@@ -44,9 +44,6 @@ abstract class NavigationFragment : Fragment(), ProgressViewController {
             requireMainActivity().viewModel.appExtrasList = value
         }
 
-    abstract fun setupViews()
-    abstract fun setupOnClicks()
-
     override fun onResume() {
         super.onResume()
         requireMainActivity().setProgressViewController(this)

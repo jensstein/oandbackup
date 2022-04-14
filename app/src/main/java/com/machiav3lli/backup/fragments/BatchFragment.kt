@@ -91,7 +91,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupViews()
 
         viewModel.refreshNow.observe(requireActivity()) {
             //binding.refreshLayout.isRefreshing = it
@@ -102,7 +101,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         viewModel.filteredList.observe(viewLifecycleOwner) { list ->
             try {
                 redrawList(list, viewModel.searchQuery.value)
-                setupSearch()
                 viewModel.refreshNow.value = false
             } catch (e: Throwable) {
                 LogsHandler.unhandledException(e)
@@ -112,24 +110,9 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         packageList.observe(requireActivity()) { refreshView(it) }
     }
 
-    override fun onStart() {
-        super.onStart()
-    }
-
     override fun onResume() {
         super.onResume()
-        setupSearch()
-        setupOnClicks()
         requireMainActivity().setRefreshViewController(this)
-    }
-
-    override fun setupViews() {
-    }
-
-    override fun setupOnClicks() {
-    }
-
-    private fun setupSearch() {
     }
 
     private fun onClickBatchAction(backupBoolean: Boolean) {

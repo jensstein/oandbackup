@@ -71,7 +71,6 @@ class SchedulerFragment : NavigationFragment() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupViews()
 
         viewModel.schedules.observe(requireActivity()) { list ->
             binding.recyclerView.setContent {
@@ -124,17 +123,6 @@ class SchedulerFragment : NavigationFragment() {
                 }
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        setupOnClicks()
-    }
-
-    override fun setupViews() {
-    }
-
-    override fun setupOnClicks() {
     }
 
     override fun updateProgress(progress: Int, max: Int) {
