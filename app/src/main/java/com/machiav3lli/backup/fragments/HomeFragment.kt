@@ -128,7 +128,6 @@ class HomeFragment : NavigationFragment(),
 
     override fun onStart() {
         super.onStart()
-        binding.pageHeadline.text = resources.getText(R.string.main)
     }
 
     override fun onResume() {
@@ -139,36 +138,12 @@ class HomeFragment : NavigationFragment(),
     }
 
     override fun setupViews() {
-        /*binding.refreshLayout.setColorSchemeColors(requireContext().colorAccent)
-        binding.refreshLayout.setProgressBackgroundColorSchemeColor(
-            resources.getColor(R.color.app_primary_base, requireActivity().theme)
-        )
-        binding.refreshLayout.setProgressViewOffset(false, 72, 144)
-        binding.refreshLayout.setOnRefreshListener { requireMainActivity().viewModel.refreshList() }*/
     }
 
     override fun setupOnClicks() {
     }
 
     private fun setupSearch() {
-        binding.searchBar.maxWidth = Int.MAX_VALUE
-        binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextChange(newText: String): Boolean {
-                if (viewModel.searchQuery.value != newText) {
-                    viewModel.searchQuery.value = newText
-                    redrawList(viewModel.filteredList.value, newText)
-                }
-                return true
-            }
-
-            override fun onQueryTextSubmit(query: String): Boolean {
-                if (viewModel.searchQuery.value != query) {
-                    viewModel.searchQuery.value = query
-                    redrawList(viewModel.filteredList.value, query)
-                }
-                return true
-            }
-        })
     }
 
     private fun onClickUpdateAllAction() {
@@ -232,13 +207,13 @@ class HomeFragment : NavigationFragment(),
     }
 
     override fun updateProgress(progress: Int, max: Int) {
-        binding.progressBar.visibility = View.VISIBLE
-        binding.progressBar.max = max
-        binding.progressBar.progress = progress
+        //binding.progressBar.visibility = View.VISIBLE
+        //binding.progressBar.max = max
+        //binding.progressBar.progress = progress
     }
 
     override fun hideProgress() {
-        binding.progressBar.visibility = View.GONE
+        //binding.progressBar.visibility = View.GONE
     }
 
     @OptIn(ExperimentalMaterial3Api::class)

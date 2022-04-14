@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><!--
- ~ OAndBackupX: open-source apps backup and restore app.
- ~ Copyright (C) 2020  Antonios Hazim
+ ~ Neo Backup: open-source apps backup and restore app.
+ ~ Copyright (C) 2021  Antonios Hazim
  ~
  ~ This program is free software: you can redistribute it and/or modify
  ~ it under the terms of the GNU Affero General Public License as
@@ -15,91 +15,21 @@
  ~ You should have received a copy of the GNU Affero General Public License
  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  -->
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/coordinator"
+    <com.google.android.material.circularreveal.CircularRevealFrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipChildren="false"
-        android:clipToPadding="false">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/topBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?colorPrimaryDark"
-            app:layout_constraintBottom_toTopOf="@id/recyclerView"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/appBar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:elevation="8dp"
-                android:padding="@dimen/cards_spacing"
-                app:layout_constraintBottom_toTopOf="@id/progressBar"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/pageHeadline"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:ellipsize="marquee"
-                    android:gravity="center_vertical"
-                    android:singleLine="true"
-                    android:text="@string/sched_title"
-                    android:textAppearance="@style/TextAppearance.Headline"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/buttonBlocklist"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/buttonBlocklist"
-                    style="@style/Button.Round"
-                    android:layout_width="56dp"
-                    android:layout_height="wrap_content"
-                    android:tooltipText="@string/sched_blocklist"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_blocklist" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <com.google.android.material.progressindicator.LinearProgressIndicator
-                android:id="@+id/progressBar"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/large_spacing"
-                android:layout_marginHorizontal="@dimen/cards_spacing"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/appBar" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_height="match_parent">
 
         <androidx.compose.ui.platform.ComposeView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:clipToPadding="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/topBar" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_height="match_parent"
+            android:clipToPadding="false" />
+    </com.google.android.material.circularreveal.CircularRevealFrameLayout>
 </layout>
 

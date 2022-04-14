@@ -135,30 +135,15 @@ class SchedulerFragment : NavigationFragment() {
     }
 
     override fun setupOnClicks() {
-        binding.buttonBlocklist.setOnClickListener {
-            Thread {
-                val blocklistedPackages = requireMainActivity().viewModel.blocklist.value
-                    ?.mapNotNull { it.packageName }
-                    ?: listOf()
-
-                PackagesListDialogFragment(
-                    blocklistedPackages,
-                    MAIN_FILTER_DEFAULT,
-                    true
-                ) { newList: Set<String> ->
-                    requireMainActivity().viewModel.updateBlocklist(newList)
-                }.show(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
-            }.start()
-        }
     }
 
     override fun updateProgress(progress: Int, max: Int) {
-        binding.progressBar.visibility = View.VISIBLE
-        binding.progressBar.max = max
-        binding.progressBar.progress = progress
+        //binding.progressBar.visibility = View.VISIBLE
+        //binding.progressBar.max = max
+        //binding.progressBar.progress = progress
     }
 
     override fun hideProgress() {
-        binding.progressBar.visibility = View.GONE
+        //binding.progressBar.visibility = View.GONE
     }
 }

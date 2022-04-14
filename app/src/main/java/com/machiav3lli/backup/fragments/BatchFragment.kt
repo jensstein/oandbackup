@@ -114,10 +114,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
 
     override fun onStart() {
         super.onStart()
-        binding.pageHeadline.text = when {
-            backupBoolean -> resources.getText(R.string.backup)
-            else -> resources.getText(R.string.restore)
-        }
     }
 
     override fun onResume() {
@@ -134,20 +130,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     }
 
     private fun setupSearch() {
-        binding.searchBar.maxWidth = Int.MAX_VALUE
-        binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextChange(newText: String): Boolean {
-                viewModel.searchQuery.value = newText
-                redrawList(viewModel.filteredList.value, newText)
-                return true
-            }
-
-            override fun onQueryTextSubmit(query: String): Boolean {
-                viewModel.searchQuery.value = query
-                redrawList(viewModel.filteredList.value, query)
-                return true
-            }
-        })
     }
 
     private fun onClickBatchAction(backupBoolean: Boolean) {
@@ -198,13 +180,13 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     }
 
     override fun updateProgress(progress: Int, max: Int) {
-        binding.progressBar.visibility = View.VISIBLE
-        binding.progressBar.max = max
-        binding.progressBar.progress = progress
+        //binding.progressBar.visibility = View.VISIBLE
+        //binding.progressBar.max = max
+        //binding.progressBar.progress = progress
     }
 
     override fun hideProgress() {
-        binding.progressBar.visibility = View.GONE
+        //binding.progressBar.visibility = View.GONE
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
