@@ -1,6 +1,9 @@
 package com.machiav3lli.backup.ui.compose.item
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +21,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -158,6 +162,30 @@ fun ElevatedActionButton(
     }
 }
 
+
+@Composable
+fun TopBarButton(
+    modifier: Modifier = Modifier
+        .padding(4.dp)
+        .size(52.dp),
+    icon: Painter,
+    description: String = "",
+    onClick: () -> Unit
+) {
+    ElevatedButton(
+        modifier = modifier,
+        colors = ButtonDefaults.elevatedButtonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        ),
+        contentPadding = PaddingValues(horizontal = 2.dp, vertical = 10.dp),
+        shape = MaterialTheme.shapes.medium,
+        onClick = { onClick() }
+    ) {
+        Icon(painter = icon, contentDescription = description)
+    }
+}
+
 @Composable
 fun ActionChip(
     icon: Painter,
@@ -214,6 +242,26 @@ fun StateChip(
             contentDescription = text
         )
     }
+}
+
+@Composable
+fun HorizontalExpandingVisibility(
+    expanded: Boolean = false,
+    expandedView: @Composable (AnimatedVisibilityScope.() -> Unit),
+    collapsedView: @Composable (AnimatedVisibilityScope.() -> Unit)
+) {
+    AnimatedVisibility(
+        visible = expanded,
+        enter = expandHorizontally(expandFrom = Alignment.Start),
+        exit = shrinkHorizontally(shrinkTowards = Alignment.Start),
+        content = expandedView
+    )
+    AnimatedVisibility(
+        visible = !expanded,
+        enter = expandHorizontally(expandFrom = Alignment.End),
+        exit = shrinkHorizontally(shrinkTowards = Alignment.End),
+        content = collapsedView
+    )
 }
 
 @Composable
