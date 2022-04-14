@@ -356,11 +356,11 @@ class WorkHandler {
                                     running++
                                     val shortPackageName =
                                         packageName
-                                            ?.replace(Regex("""\bcom\b"""), "c")
-                                            ?.replace(Regex("""\borg\b"""), "o")
-                                            ?.replace(Regex("""\bandroid\b"""), "a")
-                                            ?.replace(Regex("""\bgoogle\b"""), "g")
-                                            ?.replace(Regex("""\bproviders\b"""), "p")
+                                            ?.replace(Regex("""\bcom\b"""), "C")
+                                            ?.replace(Regex("""\borg\b"""), "O")
+                                            ?.replace(Regex("""\bandroid\b"""), "A")
+                                            ?.replace(Regex("""\bgoogle\b"""), "G")
+                                            ?.replace(Regex("""\bproviders\b"""), "P")
                                     if (!packageName.isNullOrEmpty() and !operation.isNullOrEmpty())
                                         bigText +=
                                             "<p>" +
