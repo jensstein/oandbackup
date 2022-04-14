@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.databinding.FragmentSchedulerBinding
+import com.machiav3lli.backup.databinding.FragmentMainBinding
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
@@ -48,7 +48,7 @@ import com.machiav3lli.backup.utils.specialBackupsEnabled
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
 
 class SchedulerFragment : NavigationFragment() {
-    private lateinit var binding: FragmentSchedulerBinding
+    private lateinit var binding: FragmentMainBinding
     private var sheetSchedule: ScheduleSheet? = null
     private lateinit var viewModel: SchedulerViewModel
     private lateinit var database: ODatabase
@@ -59,7 +59,7 @@ class SchedulerFragment : NavigationFragment() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreate(savedInstanceState)
-        binding = FragmentSchedulerBinding.inflate(inflater, container, false)
+        binding = FragmentMainBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         database = ODatabase.getInstance(requireContext())
         val dataSource = database.scheduleDao
