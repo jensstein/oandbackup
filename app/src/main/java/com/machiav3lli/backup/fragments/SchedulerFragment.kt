@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -42,10 +43,15 @@ import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
+import com.machiav3lli.backup.ui.compose.item.TopBar
+import com.machiav3lli.backup.ui.compose.item.TopBarButton
 import com.machiav3lli.backup.ui.compose.recycler.ScheduleRecycler
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.specialBackupsEnabled
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class SchedulerFragment : NavigationFragment() {
     private lateinit var binding: FragmentMainBinding
@@ -68,7 +74,7 @@ class SchedulerFragment : NavigationFragment() {
         return binding.root
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -77,7 +83,36 @@ class SchedulerFragment : NavigationFragment() {
                 AppTheme(
                     darkTheme = isSystemInDarkTheme()
                 ) {
-                    Scaffold {
+                    Scaffold(
+                        topBar = {
+                            TopBar(title = stringResource(id = R.string.sched_title)) {
+                                TopBarButton(
+                                    icon = painterResource(id = R.drawable.ic_blocklist),
+                                    description = stringResource(id = R.string.sched_blocklist),
+                                    onClick = {
+                                        GlobalScope.launch(Dispatchers.IO) {
+                                            val blocklistedPackages =
+                                                requireMainActivity().viewModel.blocklist.value
+                                                    ?.mapNotNull { it.packageName }.orEmpty()
+
+                                            PackagesListDialogFragment(
+                                                blocklistedPackages,
+                                                MAIN_FILTER_DEFAULT,
+                                                true
+                                            ) { newList: Set<String> ->
+                                                requireMainActivity().viewModel.updateBlocklist(
+                                                    newList
+                                                )
+                                            }.show(
+                                                requireActivity().supportFragmentManager,
+                                                "BLOCKLIST_DIALOG"
+                                            )
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    ) {
                         Column {
                             ScheduleRecycler(
                                 modifier = Modifier

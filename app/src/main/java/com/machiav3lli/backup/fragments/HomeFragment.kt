@@ -21,7 +21,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.SearchView
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -61,6 +60,8 @@ import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.item.ActionButton
 import com.machiav3lli.backup.ui.compose.item.ActionChip
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
+import com.machiav3lli.backup.ui.compose.item.ExpandableSearchAction
+import com.machiav3lli.backup.ui.compose.item.TopBar
 import com.machiav3lli.backup.ui.compose.recycler.HomePackageRecycler
 import com.machiav3lli.backup.ui.compose.recycler.UpdatedPackageRecycler
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
@@ -219,7 +220,23 @@ class HomeFragment : NavigationFragment(),
             AppTheme(
                 darkTheme = isSystemInDarkTheme()
             ) {
-                Scaffold { _ ->
+                Scaffold(
+                    topBar = {
+                        TopBar(title = stringResource(id = R.string.main)) {
+                            ExpandableSearchAction(
+                                query = viewModel.searchQuery.value.orEmpty(),
+                                onQueryChanged = { new ->
+                                    viewModel.searchQuery.value = new
+                                    redrawList(viewModel.filteredList.value, new)
+                                },
+                                onClose = {
+                                    viewModel.searchQuery.value = ""
+                                    redrawList(viewModel.filteredList.value)
+                                }
+                            )
+                        }
+                    }
+                ) { _ ->
                     Column(
                         modifier = Modifier
                             .background(color = MaterialTheme.colorScheme.surface)

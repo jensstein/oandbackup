@@ -21,7 +21,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.SearchView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -55,7 +54,9 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.item.ActionButton
 import com.machiav3lli.backup.ui.compose.item.ActionChip
+import com.machiav3lli.backup.ui.compose.item.ExpandableSearchAction
 import com.machiav3lli.backup.ui.compose.item.StateChip
+import com.machiav3lli.backup.ui.compose.item.TopBar
 import com.machiav3lli.backup.ui.compose.recycler.BatchPackageRecycler
 import com.machiav3lli.backup.ui.compose.theme.APK
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
@@ -194,7 +195,27 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
             AppTheme(
                 darkTheme = isSystemInDarkTheme()
             ) {
-                Scaffold { _ ->
+                Scaffold(
+                    topBar = {
+                        TopBar(
+                            title = stringResource(
+                                id = if (backupBoolean) R.string.backup else R.string.restore
+                            )
+                        ) {
+                            ExpandableSearchAction(
+                                query = viewModel.searchQuery.value.orEmpty(),
+                                onQueryChanged = { new ->
+                                    viewModel.searchQuery.value = new
+                                    redrawList(viewModel.filteredList.value, new)
+                                },
+                                onClose = {
+                                    viewModel.searchQuery.value = ""
+                                    redrawList(viewModel.filteredList.value)
+                                }
+                            )
+                        }
+                    }
+                ) { _ ->
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
