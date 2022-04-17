@@ -32,13 +32,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.databinding.FragmentRecyclerBinding
+import com.machiav3lli.backup.databinding.FragmentComposeBinding
 import com.machiav3lli.backup.ui.compose.recycler.LogRecycler
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.viewmodels.LogViewModel
 
 class LogsFragment : Fragment() {
-    private lateinit var binding: FragmentRecyclerBinding
+    private lateinit var binding: FragmentComposeBinding
     private lateinit var viewModel: LogViewModel
 
     override fun onCreateView(
@@ -47,7 +47,7 @@ class LogsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreate(savedInstanceState)
-        binding = FragmentRecyclerBinding.inflate(inflater, container, false)
+        binding = FragmentComposeBinding.inflate(inflater, container, false)
 
         //TODO apparently the actions below take a lot of time before setContent is even called
         //TODO preset it here with a "loading..." message or may be a spinner or animation,
@@ -56,7 +56,7 @@ class LogsFragment : Fragment() {
         //TODO they all do something to retrieve data and setting up databases, LiveData etc. needs trime
         //TODO loading_list content should probably be a compose function for consistency
         //TODO note: loading_list string changed to not include "application"
-        binding.recyclerView.setContent {
+        binding.composeView.setContent {
             Box(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.background),
@@ -79,7 +79,7 @@ class LogsFragment : Fragment() {
             if (it) refresh()
         }
         viewModel.logsList.observe(viewLifecycleOwner) { list ->
-            binding.recyclerView.setContent {
+            binding.composeView.setContent {
                 AppTheme(
                     darkTheme = isSystemInDarkTheme()
                 ) {

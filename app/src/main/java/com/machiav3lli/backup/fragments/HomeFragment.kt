@@ -51,7 +51,7 @@ import com.machiav3lli.backup.ALT_MODE_DATA
 import com.machiav3lli.backup.ALT_MODE_UNSET
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.databinding.FragmentMainBinding
+import com.machiav3lli.backup.databinding.FragmentComposeBinding
 import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
@@ -78,7 +78,7 @@ import timber.log.Timber
 
 class HomeFragment : NavigationFragment(),
     BatchDialogFragment.ConfirmListener, RefreshViewController {
-    private lateinit var binding: FragmentMainBinding
+    private lateinit var binding: FragmentComposeBinding
     lateinit var viewModel: HomeViewModel
     private var appSheet: AppSheet? = null
 
@@ -88,7 +88,7 @@ class HomeFragment : NavigationFragment(),
         savedInstanceState: Bundle?
     ): View {
         super.onCreate(savedInstanceState)
-        binding = FragmentMainBinding.inflate(inflater, container, false)
+        binding = FragmentComposeBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         val viewModelFactory = HomeViewModel.Factory(requireActivity().application)
         viewModel = ViewModelProvider(this, viewModelFactory)[HomeViewModel::class.java]
@@ -202,7 +202,7 @@ class HomeFragment : NavigationFragment(),
 
     @OptIn(ExperimentalMaterial3Api::class)
     fun redrawList(list: List<Package>?, query: String? = "") {
-        binding.recyclerView.setContent {
+        binding.composeView.setContent {
 
             // TODO include tags in search
             val filterPredicate = { item: Package ->

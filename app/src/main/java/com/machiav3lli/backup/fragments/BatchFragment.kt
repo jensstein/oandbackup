@@ -47,7 +47,7 @@ import com.machiav3lli.backup.ALT_MODE_BOTH
 import com.machiav3lli.backup.ALT_MODE_DATA
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.databinding.FragmentMainBinding
+import com.machiav3lli.backup.databinding.FragmentComposeBinding
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
@@ -74,7 +74,7 @@ import timber.log.Timber
 
 open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragment(),
     BatchDialogFragment.ConfirmListener, RefreshViewController {
-    private lateinit var binding: FragmentMainBinding
+    private lateinit var binding: FragmentComposeBinding
     lateinit var viewModel: BatchViewModel
 
     override fun onCreateView(
@@ -83,7 +83,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         savedInstanceState: Bundle?
     ): View? {
         super.onCreate(savedInstanceState)
-        binding = FragmentMainBinding.inflate(inflater, container, false)
+        binding = FragmentComposeBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         val viewModelFactory = BatchViewModel.Factory(requireActivity().application)
         viewModel = ViewModelProvider(this, viewModelFactory)[BatchViewModel::class.java]
@@ -175,7 +175,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
 
     @OptIn(ExperimentalMaterial3Api::class)
     fun redrawList(list: List<Package>?, query: String? = "") {
-        binding.recyclerView.setContent {
+        binding.composeView.setContent {
 
             // TODO include tags in search
             val filterPredicate = { item: Package ->
@@ -203,17 +203,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                             )
                         ) {
                             ExpandableSearchAction(
-                                query = viewModel.searchQuery.value.orEmpty(),
-                                onQueryChanged = { new ->
-                                    viewModel.searchQuery.value = new
-                                    redrawList(viewModel.filteredList.value, new)
-                                },
-                                onClose = {
-                                    viewModel.searchQuery.value = ""
-                                    redrawList(viewModel.filteredList.value)
-                                }
-                            )
-                        }
                     }
                 ) { _ ->
                     Column(
@@ -231,14 +220,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                                 text = stringResource(id = R.string.sched_blocklist),
                                 positive = true
                             ) {
-                                GlobalScope.launch(Dispatchers.IO) {
-                                    val blocklistedPackages =
-                                        requireMainActivity().viewModel.blocklist.value
-                                            ?.mapNotNull { it.packageName }
-                                            ?: listOf()
-
-                                    PackagesListDialogFragment(
-                                        blocklistedPackages,
                                         MAIN_FILTER_DEFAULT,
                                         true
                                     ) { newList: Set<String> ->
@@ -321,13 +302,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                                         viewModel.filteredList.value
                                             ?.filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }
                                             ?.mapNotNull(Package::packageName).orEmpty()
-                                    )
-                                else
-                                    viewModel.apkCheckedList.clear()
-                                redrawList(
-                                    viewModel.filteredList.value,
-                                    viewModel.searchQuery.value
-                                )
                             }
                             StateChip(
                                 icon = painterResource(id = R.drawable.ic_data),
@@ -342,13 +316,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                                         viewModel.filteredList.value
                                             ?.filter { ai -> backupBoolean || ai.hasData }
                                             ?.mapNotNull(Package::packageName).orEmpty()
-                                    )
-                                else
-                                    viewModel.dataCheckedList.clear()
-                                redrawList(
-                                    viewModel.filteredList.value,
-                                    viewModel.searchQuery.value
-                                )
                             }
                             ActionButton(
                                 modifier = Modifier.weight(1f),

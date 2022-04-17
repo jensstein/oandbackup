@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.databinding.FragmentMainBinding
+import com.machiav3lli.backup.databinding.FragmentComposeBinding
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
@@ -54,7 +54,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class SchedulerFragment : NavigationFragment() {
-    private lateinit var binding: FragmentMainBinding
+    private lateinit var binding: FragmentComposeBinding
     private var sheetSchedule: ScheduleSheet? = null
     private lateinit var viewModel: SchedulerViewModel
     private lateinit var database: ODatabase
@@ -65,7 +65,7 @@ class SchedulerFragment : NavigationFragment() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreate(savedInstanceState)
-        binding = FragmentMainBinding.inflate(inflater, container, false)
+        binding = FragmentComposeBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         database = ODatabase.getInstance(requireContext())
         val dataSource = database.scheduleDao
@@ -79,7 +79,6 @@ class SchedulerFragment : NavigationFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.schedules.observe(requireActivity()) { list ->
-            binding.recyclerView.setContent {
                 AppTheme(
                     darkTheme = isSystemInDarkTheme()
                 ) {
@@ -157,6 +156,7 @@ class SchedulerFragment : NavigationFragment() {
                     }
                 }
             }
+            binding.composeView.setContent {
         }
     }
 

@@ -25,14 +25,14 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Scaffold
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.machiav3lli.backup.databinding.FragmentRecyclerBinding
+import com.machiav3lli.backup.databinding.FragmentComposeBinding
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.ui.compose.recycler.ExportedScheduleRecycler
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.viewmodels.ExportsViewModel
 
 class ExportsFragment : Fragment() {
-    private lateinit var binding: FragmentRecyclerBinding
+    private lateinit var binding: FragmentComposeBinding
     private lateinit var viewModel: ExportsViewModel
 
     override fun onCreateView(
@@ -41,7 +41,7 @@ class ExportsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreate(savedInstanceState)
-        binding = FragmentRecyclerBinding.inflate(inflater, container, false)
+        binding = FragmentComposeBinding.inflate(inflater, container, false)
 
         val dataSource = ODatabase.getInstance(requireContext()).scheduleDao
         val viewModelFactory = ExportsViewModel.Factory(dataSource, requireActivity().application)
@@ -54,7 +54,7 @@ class ExportsFragment : Fragment() {
             if (it) refresh()
         }
         viewModel.exportsList.observe(viewLifecycleOwner) { list ->
-            binding.recyclerView.setContent {
+            binding.composeView.setContent {
                 AppTheme(
                     darkTheme = isSystemInDarkTheme()
                 ) {
