@@ -93,20 +93,23 @@ class MainActivityX : BaseActivity() {
                                     "logcat -d -t $maxCrashLines --pid=${Process.myPid()}"  // -d = dump and exit
                                 ).out.joinToString("\n")
                     )
+                    val longToastTime = 3500
+                    val showTime = 21*1000
                     object : Thread() {
                         override fun run() {
                             Looper.prepare()
-                            repeat(5) {
+                            repeat(showTime/longToastTime) {
                                 Toast.makeText(
                                     context,
                                     "Uncaught Exception\n${e.message}\n${e.cause}\nrestarting application...",
                                     Toast.LENGTH_LONG
                                 ).show()
+                                sleep(longToastTime.toLong())
                             }
                             Looper.loop()
                         }
                     }.start()
-                    Thread.sleep(5000)
+                    Thread.sleep(showTime.toLong())
                 } catch (e: Throwable) {
                     // ignore
                 } finally {
