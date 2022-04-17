@@ -81,7 +81,7 @@ class LogsFragment : Fragment() {
                 darkTheme = isSystemInDarkTheme()
             ) {
                 Scaffold {
-                    LogRecycler(productsList = list,
+                    LogRecycler(productsList = list.sortedByDescending(Log::logDate),
                         onShare = { viewModel.shareLog(it) },
                         onDelete = { viewModel.deleteLog(it) }
                     )
