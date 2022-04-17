@@ -107,7 +107,7 @@ class HomeFragment : NavigationFragment(),
         viewModel.filteredList.observe(viewLifecycleOwner) { list ->
             try {
                 viewModel.updatedApps.value = list?.filter { it.isUpdated }
-                redrawList(list, viewModel.searchQuery.value)
+                redrawPage(list, viewModel.searchQuery.value)
                 list?.find { it.packageName == appSheet?.appInfo?.packageName }
                     ?.let { sheetApp ->
                         if (appSheet != null && sheetApp != appSheet?.appInfo)
@@ -201,7 +201,7 @@ class HomeFragment : NavigationFragment(),
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
-    fun redrawList(list: List<Package>?, query: String? = "") {
+    fun redrawPage(list: List<Package>?, query: String? = "") {
         binding.composeView.setContent {
 
             // TODO include tags in search
@@ -227,11 +227,11 @@ class HomeFragment : NavigationFragment(),
                                 query = viewModel.searchQuery.value.orEmpty(),
                                 onQueryChanged = { new ->
                                     viewModel.searchQuery.value = new
-                                    redrawList(viewModel.filteredList.value, new)
+                                    redrawPage(viewModel.filteredList.value, new)
                                 },
                                 onClose = {
                                     viewModel.searchQuery.value = ""
-                                    redrawList(viewModel.filteredList.value)
+                                    redrawPage(viewModel.filteredList.value)
                                 }
                             )
                         }
@@ -256,8 +256,7 @@ class HomeFragment : NavigationFragment(),
                                 GlobalScope.launch(Dispatchers.IO) {
                                     val blocklistedPackages =
                                         requireMainActivity().viewModel.blocklist.value
-                                            ?.mapNotNull { it.packageName }
-                                            ?: listOf()
+                                            ?.mapNotNull { it.packageName }.orEmpty()
 
                                     PackagesListDialogFragment(
                                         blocklistedPackages,

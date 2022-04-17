@@ -101,7 +101,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         }
         viewModel.filteredList.observe(viewLifecycleOwner) { list ->
             try {
-                redrawList(list, viewModel.searchQuery.value)
+                redrawPage(list, viewModel.searchQuery.value)
                 viewModel.refreshNow.value = false
             } catch (e: Throwable) {
                 LogsHandler.unhandledException(e)
@@ -174,7 +174,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
-    fun redrawList(list: List<Package>?, query: String? = "") {
+    fun redrawPage(list: List<Package>?, query: String? = "") {
         binding.composeView.setContent {
 
             // TODO include tags in search
@@ -203,6 +203,17 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                             )
                         ) {
                             ExpandableSearchAction(
+                                query = viewModel.searchQuery.value.orEmpty(),
+                                onQueryChanged = { new ->
+                                    viewModel.searchQuery.value = new
+                                    redrawPage(viewModel.filteredList.value, new)
+                                },
+                                onClose = {
+                                    viewModel.searchQuery.value = ""
+                                    redrawPage(viewModel.filteredList.value)
+                                }
+                            )
+                        }
                     }
                 ) { _ ->
                     Column(
@@ -220,6 +231,13 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                                 text = stringResource(id = R.string.sched_blocklist),
                                 positive = true
                             ) {
+                                GlobalScope.launch(Dispatchers.IO) {
+                                    val blocklistedPackages =
+                                        requireMainActivity().viewModel.blocklist.value
+                                            ?.mapNotNull { it.packageName }.orEmpty()
+
+                                    PackagesListDialogFragment(
+                                        blocklistedPackages,
                                         MAIN_FILTER_DEFAULT,
                                         true
                                     ) { newList: Set<String> ->
@@ -302,6 +320,13 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                                         viewModel.filteredList.value
                                             ?.filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }
                                             ?.mapNotNull(Package::packageName).orEmpty()
+                                    )
+                                else
+                                    viewModel.apkCheckedList.clear()
+                                redrawPage(
+                                    viewModel.filteredList.value,
+                                    viewModel.searchQuery.value
+                                )
                             }
                             StateChip(
                                 icon = painterResource(id = R.drawable.ic_data),
@@ -316,6 +341,13 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                                         viewModel.filteredList.value
                                             ?.filter { ai -> backupBoolean || ai.hasData }
                                             ?.mapNotNull(Package::packageName).orEmpty()
+                                    )
+                                else
+                                    viewModel.dataCheckedList.clear()
+                                redrawPage(
+                                    viewModel.filteredList.value,
+                                    viewModel.searchQuery.value
+                                )
                             }
                             ActionButton(
                                 modifier = Modifier.weight(1f),
