@@ -38,7 +38,6 @@ import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupDir
@@ -68,7 +67,7 @@ fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
         }
         .toList()
 
-// TODO replace fully
+// TODO Fix package constructors (no backups are read in this situation) + remove fully
 @Throws(
     FileUtils.BackupLocationInAccessibleException::class,
     StorageLocationNotConfiguredException::class
@@ -166,6 +165,7 @@ fun Context.getPackageList(
 fun List<AppInfo>.toPackageList(
     context: Context,
     blockList: List<String> = listOf(),
+    backupMap: Map<String, List<Backup>> = mapOf(),
     includeUninstalled: Boolean = true
 ): MutableList<Package> {
     val includeSpecial = context.specialBackupsEnabled
@@ -174,7 +174,7 @@ fun List<AppInfo>.toPackageList(
         this.filterNot { it.packageName.matches(ignoredPackages) || it.packageName in blockList }
             .mapNotNull {
                 try {
-                    Package(context, it)
+                    Package(context, it, backupMap[it.packageName].orEmpty())
                 } catch (e: AssertionError) {
                     Timber.e("Could not create Package for ${it}: $e")
                     null
@@ -190,7 +190,10 @@ fun List<AppInfo>.toPackageList(
     val specialList = mutableListOf<String>()
     if (includeSpecial) {
         SpecialInfo.getSpecialPackages(context).forEach {
-            if (!blockList.contains(it.packageName)) packageList.add(it)
+            if (!blockList.contains(it.packageName)) {
+                it.updateBackupList(backupMap[it.packageName].orEmpty())
+                packageList.add(it)
+            }
             specialList.add(it.packageName)
         }
     }
@@ -207,14 +210,12 @@ fun List<AppInfo>.toPackageList(
             directoriesInBackupRoot
                 .filterNot {
                     it.name?.let { name ->
-                        installedPackageNames.contains(name)
-                                || blockList.contains(name)
-                                || specialList.contains(name)
+                        name in installedPackageNames.union(blockList).union(specialList)
                     } ?: true
                 }
                 .mapNotNull {
                     try {
-                        Package(context, it.name, it)
+                        Package(context, it.name, it, backupMap[it.name].orEmpty())
                     } catch (e: AssertionError) {
                         Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
                         null
@@ -316,7 +317,7 @@ fun Context.updateBackupTable(backupDao: BackupDao) {
         }
 
     backupDao.emptyTable()
-    backupDao.insert()
+    backupDao.insert(*backupList.toTypedArray())
 }
 
 @Throws(
@@ -324,6 +325,7 @@ fun Context.updateBackupTable(backupDao: BackupDao) {
     StorageLocationNotConfiguredException::class
 )
 fun Context.getDirectoriesInBackupRoot(): List<StorageFile> {
+    StorageFile.invalidateCache()
     val backupRoot = getBackupDir()
     try {
         return backupRoot.listFiles()

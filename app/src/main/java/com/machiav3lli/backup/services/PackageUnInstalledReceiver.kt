@@ -26,6 +26,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+// TODO make main way of refresh & handle new installed and backup list
 class PackageUnInstalledReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {

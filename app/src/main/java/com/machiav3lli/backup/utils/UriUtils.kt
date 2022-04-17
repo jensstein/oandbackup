@@ -133,6 +133,8 @@ fun Uri.exists(context: Context): Boolean {
             ), null, null, null
         )
         cursor?.count ?: 0 > 0
+    } catch (e: IllegalArgumentException) {
+        false
     } catch (e: Throwable) {
         LogsHandler.unhandledException(e, this)
         false

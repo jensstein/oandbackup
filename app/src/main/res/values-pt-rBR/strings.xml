@@ -318,4 +318,8 @@
     <string name="intro_permission_contacts">O aplicativo precisa desta permissão para associar um contato a um SMS/MMS.</string>
     <string name="schedule">Agendar</string>
     <string name="batch">Lote</string>
+    <string name="spec_fingerprint">Impressões digitais</string>
+    <string name="loading_list">Carregando lista de apps…</string>
+    <string name="delete">Excluir</string>
+    <string name="finished">finalizado</string>
 </resources>

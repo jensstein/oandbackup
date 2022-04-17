@@ -576,7 +576,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         forceOldVersion: Boolean = false
     ) {
         Timber.i("${OABX.app.packageName} -> $targetPath")
-        if ( ! forceOldVersion && OABX.prefFlag(PREFS_RESTORETARCMD, true)) {
+        if (!forceOldVersion && OABX.prefFlag(PREFS_RESTORETARCMD, true)) {
             return genericRestoreFromArchiveTarCmd(
                 dataType,
                 archive,

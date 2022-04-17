@@ -34,12 +34,16 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
-import com.machiav3lli.backup.*
+import com.machiav3lli.backup.ActionListener
+import com.machiav3lli.backup.BUNDLE_USERS
+import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.SheetAppBinding
 import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dialogs.BackupDialogFragment
 import com.machiav3lli.backup.dialogs.RestoreDialogFragment
+import com.machiav3lli.backup.exodusUrl
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
@@ -48,7 +52,13 @@ import com.machiav3lli.backup.tasks.BackupActionTask
 import com.machiav3lli.backup.tasks.RestoreActionTask
 import com.machiav3lli.backup.ui.compose.recycler.BackupRecycler
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
-import com.machiav3lli.backup.utils.*
+import com.machiav3lli.backup.utils.changeVisibility
+import com.machiav3lli.backup.utils.pickSheetAppType
+import com.machiav3lli.backup.utils.pickSheetDataSizes
+import com.machiav3lli.backup.utils.pickSheetVersionName
+import com.machiav3lli.backup.utils.setIcon
+import com.machiav3lli.backup.utils.showError
+import com.machiav3lli.backup.utils.showToast
 import com.machiav3lli.backup.viewmodels.AppSheetViewModel
 import timber.log.Timber
 
@@ -71,7 +81,7 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
         val shellCommands = ShellCommands(users)
         val viewModelFactory =
             AppSheetViewModel.Factory(appInfo, shellCommands, requireActivity().application)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(AppSheetViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory)[AppSheetViewModel::class.java]
 
         viewModel.refreshNow.observe(viewLifecycleOwner) {
             if (it) {
@@ -111,7 +121,7 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
                         AppTheme(
                             darkTheme = isSystemInDarkTheme()
                         ) {
-                            BackupRecycler(productsList = it.backupHistory.sortedByDescending { item -> item.backupDate },
+                            BackupRecycler(productsList = it.backupList.sortedByDescending { item -> item.backupDate },
                                 onRestore = { item ->
                                     val properties = item
                                     viewModel.appInfo.value?.let { app ->
@@ -385,6 +395,7 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
     ) {
         viewModel.appInfo.value?.let {
             when {
+                // TODO fix not refreshing when the package does the first backup
                 actionType === ActionType.BACKUP -> {
                     BackupActionTask(
                         it, requireMainActivity(), OABX.shellHandlerInstance!!, mode,
@@ -394,7 +405,9 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
                 actionType === ActionType.RESTORE -> {
                     backup?.let { backupProps: Backup ->
                         val backupDir =
-                            backupProps.getBackupInstanceFolder(viewModel.appInfo.value?.packageBackupDir)
+                            backupProps.getBackupInstanceFolder(
+                                viewModel.appInfo.value?.getAppBackupRoot(requireContext())
+                            )
                         RestoreActionTask(
                             it, requireMainActivity(), OABX.shellHandlerInstance!!, mode,
                             backupProps, backupDir!!, this

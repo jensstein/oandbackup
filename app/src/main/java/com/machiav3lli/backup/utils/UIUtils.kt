@@ -33,6 +33,24 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.ActionResult
+import com.machiav3lli.backup.ui.compose.theme.ApricotOrange
+import com.machiav3lli.backup.ui.compose.theme.ArcticCyan
+import com.machiav3lli.backup.ui.compose.theme.AzureBlue
+import com.machiav3lli.backup.ui.compose.theme.BoldGreen
+import com.machiav3lli.backup.ui.compose.theme.CalmIndigo
+import com.machiav3lli.backup.ui.compose.theme.ChartreuseLime
+import com.machiav3lli.backup.ui.compose.theme.FinePurple
+import com.machiav3lli.backup.ui.compose.theme.FlamingoPink
+import com.machiav3lli.backup.ui.compose.theme.LavaOrange
+import com.machiav3lli.backup.ui.compose.theme.Limette
+import com.machiav3lli.backup.ui.compose.theme.Mint
+import com.machiav3lli.backup.ui.compose.theme.OceanTeal
+import com.machiav3lli.backup.ui.compose.theme.PumpkinPerano
+import com.machiav3lli.backup.ui.compose.theme.RedComet
+import com.machiav3lli.backup.ui.compose.theme.Slate
+import com.machiav3lli.backup.ui.compose.theme.ThunderYellow
+import com.machiav3lli.backup.ui.compose.theme.TigerAmber
+import com.machiav3lli.backup.ui.compose.theme.Turquoise
 import java.util.*
 
 fun Context.setCustomTheme() {
@@ -157,6 +175,18 @@ fun getAccentStyle(accent: String) = when (accent.last().digitToInt()) {
     else -> R.style.Accent0
 }
 
+fun getPrimaryColor(accent: String) = when (accent.last().digitToInt()) {
+    1 -> FinePurple
+    2 -> CalmIndigo
+    3 -> Turquoise
+    4 -> BoldGreen
+    5 -> ChartreuseLime
+    6 -> ThunderYellow
+    7 -> ApricotOrange
+    8 -> PumpkinPerano
+    else -> RedComet
+}
+
 fun getSecondaryStyle(secondary: String) = when (secondary.last().digitToInt()) {
     1 -> R.style.Secondary1
     2 -> R.style.Secondary2
@@ -167,6 +197,18 @@ fun getSecondaryStyle(secondary: String) = when (secondary.last().digitToInt()) 
     7 -> R.style.Secondary7
     8 -> R.style.Secondary8
     else -> R.style.Secondary0
+}
+
+fun getSecondaryColor(secondary: String) = when (secondary.last().digitToInt()) {
+    1 -> OceanTeal
+    2 -> Limette
+    3 -> TigerAmber
+    4 -> LavaOrange
+    5 -> FlamingoPink
+    6 -> Slate
+    7 -> AzureBlue
+    8 -> Mint
+    else -> ArcticCyan
 }
 
 fun NavController.navigateRight(itemId: Int) = this.navigate(

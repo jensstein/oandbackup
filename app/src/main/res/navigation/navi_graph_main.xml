@@ -7,17 +7,17 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.machiav3lli.backup.fragments.HomeFragment"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_main" />
 
     <fragment
         android:id="@+id/backupFragment"
         android:name="com.machiav3lli.backup.fragments.BatchFragment$BackupFragment"
-        tools:layout="@layout/fragment_batch" />
+        tools:layout="@layout/fragment_main" />
 
     <fragment
         android:id="@+id/restoreFragment"
         android:name="com.machiav3lli.backup.fragments.BatchFragment$RestoreFragment"
-        tools:layout="@layout/fragment_batch" />
+        tools:layout="@layout/fragment_main" />
 
     <fragment
         android:id="@+id/schedulerFragment"

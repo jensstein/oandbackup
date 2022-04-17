@@ -21,21 +21,40 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.Scaffold
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
-import com.machiav3lli.backup.databinding.FragmentSchedulerBinding
+import com.machiav3lli.backup.R
+import com.machiav3lli.backup.databinding.FragmentMainBinding
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
+import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
+import com.machiav3lli.backup.ui.compose.item.TopBar
+import com.machiav3lli.backup.ui.compose.item.TopBarButton
 import com.machiav3lli.backup.ui.compose.recycler.ScheduleRecycler
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.specialBackupsEnabled
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class SchedulerFragment : NavigationFragment() {
-    private lateinit var binding: FragmentSchedulerBinding
+    private lateinit var binding: FragmentMainBinding
     private var sheetSchedule: ScheduleSheet? = null
     private lateinit var viewModel: SchedulerViewModel
     private lateinit var database: ODatabase
@@ -46,7 +65,7 @@ class SchedulerFragment : NavigationFragment() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreate(savedInstanceState)
-        binding = FragmentSchedulerBinding.inflate(inflater, container, false)
+        binding = FragmentMainBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         database = ODatabase.getInstance(requireContext())
         val dataSource = database.scheduleDao
@@ -55,79 +74,99 @@ class SchedulerFragment : NavigationFragment() {
         return binding.root
     }
 
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupViews()
 
         viewModel.schedules.observe(requireActivity()) { list ->
             binding.recyclerView.setContent {
                 AppTheme(
                     darkTheme = isSystemInDarkTheme()
                 ) {
-                    Scaffold {
-                        ScheduleRecycler(productsList = list,
-                            onClick = { item ->
-                                if (sheetSchedule != null) sheetSchedule?.dismissAllowingStateLoss()
-                                sheetSchedule = ScheduleSheet(item.id)
-                                sheetSchedule?.showNow(
-                                    requireActivity().supportFragmentManager,
-                                    "Schedule ${item.id}"
+                    Scaffold(
+                        topBar = {
+                            TopBar(title = stringResource(id = R.string.sched_title)) {
+                                TopBarButton(
+                                    icon = painterResource(id = R.drawable.ic_blocklist),
+                                    description = stringResource(id = R.string.sched_blocklist),
+                                    onClick = {
+                                        GlobalScope.launch(Dispatchers.IO) {
+                                            val blocklistedPackages =
+                                                requireMainActivity().viewModel.blocklist.value
+                                                    ?.mapNotNull { it.packageName }.orEmpty()
+
+                                            PackagesListDialogFragment(
+                                                blocklistedPackages,
+                                                MAIN_FILTER_DEFAULT,
+                                                true
+                                            ) { newList: Set<String> ->
+                                                requireMainActivity().viewModel.updateBlocklist(
+                                                    newList
+                                                )
+                                            }.show(
+                                                requireActivity().supportFragmentManager,
+                                                "BLOCKLIST_DIALOG"
+                                            )
+                                        }
+                                    }
                                 )
-                            },
-                            onCheckChanged = { item: Schedule, b: Boolean ->
-                                item.enabled = b
-                                Thread(
-                                    ScheduleSheet.UpdateRunnable(
-                                        item,
-                                        requireContext(),
-                                        database.scheduleDao,
-                                        true
-                                    )
-                                ).start()
                             }
-                        )
+                        }
+                    ) {
+                        Column {
+                            ScheduleRecycler(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth(),
+                                productsList = list,
+                                onClick = { item ->
+                                    if (sheetSchedule != null) sheetSchedule?.dismissAllowingStateLoss()
+                                    sheetSchedule = ScheduleSheet(item.id)
+                                    sheetSchedule?.showNow(
+                                        requireActivity().supportFragmentManager,
+                                        "Schedule ${item.id}"
+                                    )
+                                },
+                                onCheckChanged = { item: Schedule, b: Boolean ->
+                                    item.enabled = b
+                                    Thread(
+                                        ScheduleSheet.UpdateRunnable(
+                                            item,
+                                            requireContext(),
+                                            database.scheduleDao,
+                                            true
+                                        )
+                                    ).start()
+                                }
+                            )
+                            Row(
+                                modifier = Modifier
+                                    .background(MaterialTheme.colorScheme.surface)
+                                    .padding(horizontal = 8.dp)
+                            ) {
+                                ElevatedActionButton(
+                                    text = stringResource(id = R.string.sched_add),
+                                    modifier = Modifier.fillMaxWidth(),
+                                    fullWidth = true,
+                                    icon = painterResource(id = R.drawable.ic_add_sched)
+                                ) {
+                                    viewModel.addSchedule(requireContext().specialBackupsEnabled)
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        setupOnClicks()
-    }
-
-    override fun setupViews() {
-    }
-
-    override fun setupOnClicks() {
-        binding.buttonBlocklist.setOnClickListener {
-            Thread {
-                val blocklistedPackages = requireMainActivity().viewModel.blocklist.value
-                    ?.mapNotNull { it.packageName }
-                    ?: listOf()
-
-                PackagesListDialogFragment(
-                    blocklistedPackages,
-                    MAIN_FILTER_DEFAULT,
-                    true
-                ) { newList: Set<String> ->
-                    requireMainActivity().viewModel.updateBlocklist(newList)
-                }.show(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
-            }.start()
-        }
-        binding.addSchedule.setOnClickListener {
-            viewModel.addSchedule(requireContext().specialBackupsEnabled)
-        }
-    }
-
     override fun updateProgress(progress: Int, max: Int) {
-        binding.progressBar.visibility = View.VISIBLE
-        binding.progressBar.max = max
-        binding.progressBar.progress = progress
+        //binding.progressBar.visibility = View.VISIBLE
+        //binding.progressBar.max = max
+        //binding.progressBar.progress = progress
     }
 
     override fun hideProgress() {
-        binding.progressBar.visibility = View.GONE
+        //binding.progressBar.visibility = View.GONE
     }
 }

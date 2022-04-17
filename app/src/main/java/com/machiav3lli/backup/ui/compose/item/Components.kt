@@ -1,11 +1,27 @@
 package com.machiav3lli.backup.ui.compose.item
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -19,12 +35,36 @@ import androidx.core.content.ContextCompat
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import coil.compose.rememberAsyncImagePainter
-import com.machiav3lli.backup.*
+import com.machiav3lli.backup.MAIN_FILTER_SPECIAL
+import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
+import com.machiav3lli.backup.MAIN_FILTER_USER
+import com.machiav3lli.backup.MODE_APK
+import com.machiav3lli.backup.MODE_DATA
+import com.machiav3lli.backup.MODE_DATA_DE
+import com.machiav3lli.backup.MODE_DATA_EXT
+import com.machiav3lli.backup.MODE_DATA_MEDIA
+import com.machiav3lli.backup.MODE_DATA_OBB
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.SPECIAL_FILTER_ALL
+import com.machiav3lli.backup.SPECIAL_FILTER_DISABLED
+import com.machiav3lli.backup.SPECIAL_FILTER_LAUNCHABLE
+import com.machiav3lli.backup.SPECIAL_FILTER_OLD
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.Package
-import com.machiav3lli.backup.ui.compose.theme.*
+import com.machiav3lli.backup.ui.compose.theme.APK
+import com.machiav3lli.backup.ui.compose.theme.Data
+import com.machiav3lli.backup.ui.compose.theme.DeData
+import com.machiav3lli.backup.ui.compose.theme.Exodus
+import com.machiav3lli.backup.ui.compose.theme.ExtDATA
+import com.machiav3lli.backup.ui.compose.theme.LocalShapes
+import com.machiav3lli.backup.ui.compose.theme.Media
+import com.machiav3lli.backup.ui.compose.theme.OBB
+import com.machiav3lli.backup.ui.compose.theme.Special
+import com.machiav3lli.backup.ui.compose.theme.System
+import com.machiav3lli.backup.ui.compose.theme.Updated
+import com.machiav3lli.backup.ui.compose.theme.User
 
 @Composable
 fun PackageIcon(
@@ -60,6 +100,7 @@ fun ActionButton(
     modifier: Modifier = Modifier.fillMaxWidth(),
     text: String,
     positive: Boolean = true,
+    icon: Painter? = null,
     onClick: () -> Unit
 ) {
     TextButton(
@@ -75,6 +116,73 @@ fun ActionButton(
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.titleSmall
         )
+        if (icon != null) {
+            Spacer(modifier = Modifier.weight(1f))
+            Icon(
+                modifier = Modifier.size(18.dp),
+                painter = icon,
+                contentDescription = text
+            )
+        }
+    }
+}
+
+@Composable
+fun ElevatedActionButton(
+    modifier: Modifier = Modifier.fillMaxWidth(),
+    text: String,
+    positive: Boolean = true,
+    icon: Painter? = null,
+    fullWidth: Boolean = false,
+    onClick: () -> Unit
+) {
+    ElevatedButton(
+        modifier = modifier,
+        colors = ButtonDefaults.elevatedButtonColors(
+            contentColor = if (positive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+        ),
+        onClick = onClick
+    ) {
+        if (icon != null) {
+            Icon(
+                modifier = Modifier.size(18.dp),
+                painter = icon,
+                contentDescription = text
+            )
+        }
+        Text(
+            modifier = when {
+                fullWidth -> Modifier.weight(1f)
+                else -> Modifier.padding(start = 8.dp)
+            },
+            text = text,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleSmall
+        )
+    }
+}
+
+
+@Composable
+fun TopBarButton(
+    modifier: Modifier = Modifier
+        .padding(4.dp)
+        .size(52.dp),
+    icon: Painter,
+    description: String = "",
+    onClick: () -> Unit
+) {
+    ElevatedButton(
+        modifier = modifier,
+        colors = ButtonDefaults.elevatedButtonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        ),
+        contentPadding = PaddingValues(horizontal = 2.dp, vertical = 10.dp),
+        shape = MaterialTheme.shapes.medium,
+        onClick = { onClick() }
+    ) {
+        Icon(painter = icon, contentDescription = description)
     }
 }
 
@@ -134,6 +242,26 @@ fun StateChip(
             contentDescription = text
         )
     }
+}
+
+@Composable
+fun HorizontalExpandingVisibility(
+    expanded: Boolean = false,
+    expandedView: @Composable (AnimatedVisibilityScope.() -> Unit),
+    collapsedView: @Composable (AnimatedVisibilityScope.() -> Unit)
+) {
+    AnimatedVisibility(
+        visible = expanded,
+        enter = expandHorizontally(expandFrom = Alignment.Start),
+        exit = shrinkHorizontally(shrinkTowards = Alignment.Start),
+        content = expandedView
+    )
+    AnimatedVisibility(
+        visible = !expanded,
+        enter = expandHorizontally(expandFrom = Alignment.End),
+        exit = shrinkHorizontally(shrinkTowards = Alignment.End),
+        content = collapsedView
+    )
 }
 
 @Composable

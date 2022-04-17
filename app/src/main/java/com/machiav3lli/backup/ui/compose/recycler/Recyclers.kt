@@ -8,14 +8,21 @@ import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.ui.compose.item.*
+import com.machiav3lli.backup.ui.compose.item.BackupItem
+import com.machiav3lli.backup.ui.compose.item.BatchPackageItem
+import com.machiav3lli.backup.ui.compose.item.ExportedScheduleItem
+import com.machiav3lli.backup.ui.compose.item.LogItem
+import com.machiav3lli.backup.ui.compose.item.MainPackageItem
+import com.machiav3lli.backup.ui.compose.item.ScheduleItem
+import com.machiav3lli.backup.ui.compose.item.UpdatedPackageItem
 
 @Composable
 fun HomePackageRecycler(
+    modifier: Modifier = Modifier.fillMaxSize(),
     productsList: List<Package>?,
     onClick: (Package) -> Unit = {}
 ) {
-    VerticalItemList(list = productsList) {
+    VerticalItemList(modifier = modifier, list = productsList) {
         MainPackageItem(it, onClick)
     }
 }
@@ -67,11 +74,12 @@ fun BatchPackageRecycler(
 
 @Composable
 fun ScheduleRecycler(
+    modifier: Modifier = Modifier.fillMaxSize(),
     productsList: List<Schedule>?,
     onClick: (Schedule) -> Unit = {},
     onCheckChanged: (Schedule, Boolean) -> Unit = { _: Schedule, _: Boolean -> }
 ) {
-    VerticalItemList(list = productsList) {
+    VerticalItemList(modifier = modifier, list = productsList) {
         ScheduleItem(it, onClick, onCheckChanged)
     }
 }

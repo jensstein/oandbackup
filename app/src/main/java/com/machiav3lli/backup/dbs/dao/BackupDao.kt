@@ -20,7 +20,9 @@ package com.machiav3lli.backup.dbs.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Transaction
 import com.machiav3lli.backup.dbs.entity.Backup
+import com.machiav3lli.backup.items.Package
 
 @Dao
 interface BackupDao : BaseDao<Backup> {
@@ -44,4 +46,10 @@ interface BackupDao : BaseDao<Backup> {
 
     @Query("DELETE FROM backup WHERE packageName = :packageName")
     fun deleteAllOf(packageName: String)
+
+    @Transaction
+    fun updateList(packageItem: Package) {
+        deleteAllOf(packageItem.packageName)
+        insert(*packageItem.backupList.toTypedArray())
+    }
 }

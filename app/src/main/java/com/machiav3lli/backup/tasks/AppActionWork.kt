@@ -82,11 +82,11 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             setForeground(createForegroundInfo())
 
         var result: ActionResult? = null
-        var appInfo: Package? = null
+        var packageItem: Package? = null
 
         try {
             val specialAppInfo = context.getSpecial(packageName)
-            appInfo = if (specialAppInfo != null) {
+            packageItem = if (specialAppInfo != null) {
                 specialAppInfo
             } else {
                 val foundItem =
@@ -95,12 +95,12 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             }
         } catch (e: PackageManager.NameNotFoundException) {
             if (packageLabel.isEmpty())
-                packageLabel = appInfo?.packageLabel ?: "NONAME"
+                packageLabel = packageItem?.packageLabel ?: "NONAME"
             val backupDir = context.getDirectoriesInBackupRoot()
                 .find { it.name == packageName }
             backupDir?.let {
                 try {
-                    appInfo = Package(context, it.name, it)
+                    packageItem = Package(context, it.name, it)
                 } catch (e: AssertionError) {
                     Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
                     result = ActionResult(
@@ -116,21 +116,23 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         try {
             if (!isStopped) {
 
-                appInfo?.let { ai ->
+                packageItem?.let { pi ->
                     try {
                         OABX.shellHandlerInstance?.let { shellHandler ->
                             result = when {
                                 backupBoolean -> {
                                     BackupRestoreHelper.backup(
-                                        context, this, shellHandler, ai, selectedMode
+                                        context, this, shellHandler, pi, selectedMode
                                     )
                                 }
                                 else -> {
                                     // Latest backup for now
-                                    ai.latestBackup?.let {
+                                    pi.latestBackup?.let {
                                         BackupRestoreHelper.restore(
-                                            context, this, shellHandler, ai, selectedMode,
-                                            it, it.getBackupInstanceFolder(ai.packageBackupDir)
+                                            context, this,
+                                            shellHandler, pi,
+                                            selectedMode, it,
+                                            it.getBackupInstanceFolder(pi.getAppBackupRoot(context))
                                         )
                                     }
                                 }
@@ -138,10 +140,10 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                         }
                     } catch (e: Throwable) {
                         result = ActionResult(
-                            ai, null,
+                            pi, null,
                             "not processed: $packageLabel: $e\n${e.stackTrace}", false
                         )
-                        Timber.w("package: ${ai.packageLabel} result: $e")
+                        Timber.w("package: ${pi.packageLabel} result: $e")
                     }
                 }
             }

@@ -89,7 +89,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.1.1"
+        kotlinCompilerExtensionVersion = "1.2.0-alpha07"
     }
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
@@ -133,24 +133,26 @@ dependencies {
 
     // UI
     implementation("androidx.appcompat:appcompat:1.6.0-alpha01")
-    implementation("androidx.fragment:fragment-ktx:1.5.0-alpha04")
+    implementation("androidx.fragment:fragment-ktx:1.5.0-alpha05")
     implementation("com.google.android.material:material:1.6.0-beta01")
     implementation("androidx.preference:preference-ktx:1.2.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.5.0-alpha03")
-    implementation("androidx.navigation:navigation-ui-ktx:2.5.0-alpha03")
-    implementation("io.coil-kt:coil:2.0.0-rc02")
-    implementation("io.coil-kt:coil-compose:2.0.0-rc02")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.5.0-alpha04")
+    implementation("androidx.navigation:navigation-ui-ktx:2.5.0-alpha04")
+    implementation("io.coil-kt:coil:2.0.0-rc03")
+    implementation("io.coil-kt:coil-compose:2.0.0-rc03")
 
     // Compose
-    implementation("androidx.compose.runtime:runtime:1.1.1")
-    implementation("androidx.compose.ui:ui:1.1.1")
-    implementation("androidx.compose.ui:ui-tooling:1.1.1")
-    implementation("androidx.compose.foundation:foundation:1.1.1")
-    implementation("androidx.compose.runtime:runtime-livedata:1.1.1")
-    implementation("androidx.compose.material:material:1.1.1")
+    val compose = "1.2.0-alpha07"
+    implementation("androidx.compose.runtime:runtime:$compose")
+    implementation("androidx.compose.ui:ui:$compose")
+    implementation("androidx.compose.ui:ui-tooling:$compose")
+    implementation("androidx.compose.foundation:foundation:$compose")
+    implementation("androidx.compose.runtime:runtime-livedata:$compose")
+    implementation("androidx.compose.material:material:$compose")
+    implementation("androidx.navigation:navigation-compose:2.5.0-alpha04")
     implementation("com.google.android.material:compose-theme-adapter:1.1.6")
-    implementation("androidx.compose.material3:material3:1.0.0-alpha08")
+    implementation("androidx.compose.material3:material3:1.0.0-alpha09")
 
     // Testing
     implementation("androidx.test.ext:junit-ktx:1.1.3")
