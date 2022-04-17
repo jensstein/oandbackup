@@ -150,6 +150,7 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:$compose")
     implementation("androidx.compose.runtime:runtime-livedata:$compose")
     implementation("androidx.compose.material:material:$compose")
+    implementation("androidx.navigation:navigation-compose:2.5.0-alpha04")
     implementation("com.google.android.material:compose-theme-adapter:1.1.6")
     implementation("androidx.compose.material3:material3:1.0.0-alpha09")
 
