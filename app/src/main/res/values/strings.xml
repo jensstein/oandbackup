@@ -171,6 +171,7 @@
     <string name="restart_dialog">The app seems needing to be restarted</string>
     <string name="dialogOK">OK</string>
     <string name="dialogCancel">Cancel</string>
+    <string name="dialogCancelAll">Cancel all</string>
     <string name="dialogYes">Yes</string>
     <string name="dialogNo">No</string>
     <string name="dialogSave">Save</string>

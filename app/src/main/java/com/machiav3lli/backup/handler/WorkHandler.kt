@@ -497,7 +497,7 @@ class WorkHandler {
                             )
                             .addAction(
                                 R.drawable.ic_close,
-                                "Cancel all",
+                                appContext.getString(R.string.dialogCancelAll),
                                 cancelAllPendingIntent
                             )
                     } else {

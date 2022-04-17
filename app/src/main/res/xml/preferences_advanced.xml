@@ -76,12 +76,6 @@
 
         <androidx.preference.CheckBoxPreference
             android:defaultValue="true"
-            android:key="useForeground"
-            android:summary="use forground notifications to ensure app keeps runninig (if wakelock isn't enough)"
-            android:title="useForeground" />
-
-        <androidx.preference.CheckBoxPreference
-            android:defaultValue="true"
             android:key="pauseApps"
             android:summary="pause apps during backups and restores to avoid inconsistent backups caused by ongoing file changes or other conflicts"
             android:title="pauseApps" />
@@ -179,6 +173,18 @@
             android:title="refreshAppInfoTimeout"
             app:min="0"
             app:showSeekBarValue="true" />
+
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="false"
+            android:key="useForeground"
+            android:summary="use forground notifications to ensure app keeps running (if wakelock isn't enough)"
+            android:title="useForeground" />
+
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="useExpedited"
+            android:summary="use work manager forground to overcome 10 minute job timeouts"
+            android:title="useExpedited" />
 
     </androidx.preference.PreferenceCategory>
 
