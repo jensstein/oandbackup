@@ -44,26 +44,6 @@ class LogsFragment : Fragment() {
         super.onCreate(savedInstanceState)
         binding = FragmentComposeBinding.inflate(inflater, container, false)
 
-        //TODO apparently the actions below take a lot of time before setContent is even called
-        //TODO preset it here with a "loading..." message or may be a spinner or animation,
-        //TODO because a lot of things can happen before the content exists
-        //TODO do it like this for other recyclers, too, e.g. search, schedules, ...
-        //TODO they all do something to retrieve data and setting up databases, LiveData etc. needs trime
-        //TODO loading_list content should probably be a compose function for consistency
-        //TODO note: loading_list string changed to not include "application"
-        binding.composeView.setContent {
-            Box(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.background),
-                contentAlignment = Alignment.Center
-            ) {
-                androidx.compose.material3.Text(
-                    text = stringResource(id = R.string.loading_list),
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-            }
-        }
-
         val viewModelFactory = LogViewModel.Factory(requireActivity().application)
         viewModel = ViewModelProvider(this, viewModelFactory)[LogViewModel::class.java]
 
