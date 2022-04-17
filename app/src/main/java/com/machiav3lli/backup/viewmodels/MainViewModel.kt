@@ -33,7 +33,6 @@ import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.handler.updateAppInfoTable
 import com.machiav3lli.backup.handler.updateBackupTable
 import com.machiav3lli.backup.items.Package
-import com.machiav3lli.backup.items.StorageFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

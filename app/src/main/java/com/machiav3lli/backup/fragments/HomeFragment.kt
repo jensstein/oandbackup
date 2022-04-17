@@ -293,7 +293,7 @@ class HomeFragment : NavigationFragment(),
                             productsList = queriedList,
                             onClick = { item ->
                                 if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                                appSheet = AppSheet(item, AppExtras())
+                                appSheet = AppSheet(item, AppExtras(item.packageName))
                                 appSheet?.showNow(
                                     parentFragmentManager,
                                     "Package ${item.packageName}"
@@ -333,7 +333,7 @@ class HomeFragment : NavigationFragment(),
                                     UpdatedPackageRecycler(productsList = viewModel.updatedApps.value,
                                         onClick = { item ->
                                             if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                                            appSheet = AppSheet(item, AppExtras())
+                                            appSheet = AppSheet(item, AppExtras(item.packageName))
                                             appSheet?.showNow(
                                                 parentFragmentManager,
                                                 "Package ${item.packageName}"
