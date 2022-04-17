@@ -22,6 +22,7 @@ import android.content.Context
 import android.content.Intent
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.AppInfo
+import com.machiav3lli.backup.items.StorageFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -34,6 +35,7 @@ class PackageUnInstalledReceiver : BroadcastReceiver() {
         val packageName =
             intent.data?.let { if (it.scheme == "package") it.schemeSpecificPart else null }
         if (packageName != null) {
+            StorageFile.invalidateCache { it.contains(packageName) }
             when (intent.action.orEmpty()) {
                 Intent.ACTION_PACKAGE_ADDED -> {
                     context.packageManager.getPackageInfo(packageName, 0)?.let { packageInfo ->
