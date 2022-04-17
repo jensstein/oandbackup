@@ -37,6 +37,9 @@ const val ACTION_SCHEDULE = "schedule"
 const val ACTION_RESCHEDULE = "reschedule"
 const val ACTION_CRASH = "crash"
 
+const val NAV_MAIN = 0
+const val NAV_PREFS = 1
+
 const val PREFS_SORT_FILTER = "sortFilter"
 const val PREFS_SORT_ORDER = "sortOrder"
 const val PREFS_FIRST_LAUNCH = "firstLaunch"
