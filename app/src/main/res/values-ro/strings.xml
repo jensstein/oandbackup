@@ -212,6 +212,20 @@
     <string name="prefs_housekeepingmoment_before">Înainte de backup</string>
     <string name="prefs_allowdowngrade">Permite revenirea la versiuni anterioare</string>
     <string name="prefs_enablespecial_summary">Necesită încă testare intensivă, încearcă cunoscând pericolul că poate provoca bootloopuri. Feedbackul este mereu binevenit.</string>
-    <string name="prefs_allowdowngrade_summary">Permite restaurarea unei versiuni mai vechi a aplicațiilor instalate.</string>
+    <string name="prefs_allowdowngrade_summary">Permite restaurarea unor versiuni mai vechi a aplicațiilor instalate.</string>
     <string name="disablePackageTitle">Dezactivează aplicația pentru utilizatori</string>
+    <string name="prefs_schedulesexportimport_summary">Exportă sau importă lista de planificări pe care le-ai creat.</string>
+    <string name="copyOwnApkSuccess">APK-ul aplicației a fost copiat în directorul pentru backupuri</string>
+    <string name="copyOwnApkFailed">Nu s-a reușit copierea APK-ului aplicației în directorul pentru backupuri</string>
+    <string name="filtered_list">Listă filtrată</string>
+    <string name="dialog_export">Exportă</string>
+    <string name="dialog_import">Importă</string>
+    <string name="uninstallDialogMessage">Dezinstalezi această aplicație\?</string>
+    <string name="enablePackage">Activează aplicația</string>
+    <string name="enablePackageTitle">Activează aplicația pentru utilizatori</string>
+    <string name="prefs_copyselfapk">Copiază propriul APK</string>
+    <string name="sched_checkbox">Activează</string>
+    <string name="sched_activateButton">Începe acum</string>
+    <string name="filter_options">Filtre:</string>
+    <string name="clear_cache">Golește cache-ul</string>
 </resources>
