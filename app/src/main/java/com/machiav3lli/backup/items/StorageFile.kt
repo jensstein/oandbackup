@@ -80,6 +80,7 @@ open class StorageFile {
                                 // NOTE: lockups occur in emulator (or A12?) for certain paths
                                 // e.g. /storage/emulated/$user
                                 val possiblePaths = listOf(
+                                    "/mnt/media_rw/$storage/$subpath",
                                     "/mnt/pass_through/$user/$storage/$subpath",
                                     "/mnt/runtime/full/$storage/$subpath",
                                     "/mnt/runtime/default/$storage/$subpath",
@@ -87,7 +88,6 @@ open class StorageFile {
                                     // lockups! primary links to /storage/emulated/$user and all self etc.
                                     //"/storage/$storage/$subpath",
                                     //"/storage/self/$storage/$subpath",
-                                    //"/mnt/media_rw/$storage/$subpath",
                                     //"/mnt/runtime/default/self/$storage/$subpath"
                                     //"/mnt/user/$user/$storage/$subpath",
                                     //"/mnt/user/$user/self/$storage/$subpath",
