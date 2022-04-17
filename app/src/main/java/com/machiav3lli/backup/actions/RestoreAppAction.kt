@@ -887,25 +887,23 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         }
     }
 
-    /**
-     * Returns an installation command for adb/shell installation.
-     * Supports base packages and additional packages (split apk addons)
-     *
-     * @param apkPath         path to the apk to be installed (should be in the staging dir)
-     * @param basePackageName null, if it's a base package otherwise the name of the base package
-     * @return a complete shell command
-     */
     private fun getPackageInstallCommand(
         apkPath: RootFile,
-        profilId: Int,
+        profileId: Int,
         basePackageName: String? = null
     ): String =
-        String.format(
-            "cat \"${apkPath.absolutePath}\" | pm install%s -t -r%s%s -S ${apkPath.length()} --user $profilId",
-            if (basePackageName != null) " -p $basePackageName" else "",
-            if (context.isRestoreAllPermissions) " -g" else "",
-            if (context.isAllowDowngrade) " -d" else ""
-        )
+        listOf(
+            "cat", quote(apkPath.absolutePath),
+            "|",
+            "pm", "install",
+                basePackageName?.let {"-p $basePackageName"},
+                if (context.isRestoreAllPermissions) "-g" else null,
+                if (context.isAllowDowngrade) "-d" else null,
+                "-t",
+                "-r",
+                "-S", apkPath.length().toString(),
+                "--user", profileId,
+        ).filterNotNull().joinToString(" ")
 
     @Throws(PackageManagerDataIncompleteException::class)
     private fun refreshAppInfo(context: Context, app: Package) {
@@ -929,7 +927,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                 throw PackageManagerDataIncompleteException(maxWaitMs / 1000L)
             }
             if (timeWaitedMs > 0) {
-                Timber.d("[${app.packageName}] paths were missing after data fetching data from PackageManager; attempt $attemptNo, waited ${timeWaitedMs / 1000L} of $maxWaitMs seconds")
+                Timber.d("[${app.packageName}] PackageManager returned invalid data paths, attempt $attemptNo, waited ${timeWaitedMs / 1000L} of $maxWaitMs seconds")
                 Thread.sleep(sleepTimeMs)
             }
             app.refreshFromPackageManager(context)
