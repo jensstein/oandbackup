@@ -204,6 +204,16 @@
             android:summary="use work manager forground to overcome 10 minute job timeouts"
             android:title="useExpedited" />
 
+        <androidx.preference.SeekBarPreference
+            android:defaultValue="0"
+            android:inputType="number"
+            android:key="fakeBackupMinutes"
+            android:max="60"
+            android:summary="[minutes] time for faked backups, 0 = do not fake"
+            android:title="fakeBackupMinutes"
+            app:min="0"
+            app:showSeekBarValue="true" />
+
     </androidx.preference.PreferenceCategory>
 
 </androidx.preference.PreferenceScreen>

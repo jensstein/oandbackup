@@ -50,6 +50,7 @@ import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.services.CommandReceiver
+import kotlinx.coroutines.delay
 import timber.log.Timber
 
 class AppActionWork(val context: Context, workerParams: WorkerParameters) :
@@ -78,6 +79,43 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             message += " ui=${context.isUiContext}"
         }
         Timber.i(message)
+
+        if(OABX.prefInt("fakeBackupMinutes", 0) > 0) {
+
+            val step = 1000L * 1
+            val startTime = System.currentTimeMillis()
+            do {
+                val now = System.currentTimeMillis()
+                val minutes = (now - startTime)/60.0/1000.0
+                setOperation((minutes*10).toInt().toString().padStart(3, '0'))
+                delay(step)
+            } while (minutes < OABX.prefInt("fakeBackupMinutes", 0))
+
+            val succeeded = true // random() < 0.75
+
+            return if (succeeded) {
+                setOperation("OK.")
+                Timber.w("package: $packageName OK")
+                Result.success(getWorkData("OK", result))
+            } else {
+                failures++
+                setVar(batchName, packageName, "failures", failures.toString())
+                if (failures <= OABX.prefInt(PREFS_MAXRETRIES, 1)) {
+                    setOperation("err")
+                    Timber.w("package: $packageName failures: $failures -> retry")
+                    Result.retry()
+                } else {
+                    val message = "$packageName\n${result?.message}"
+                    showNotification(
+                        context, MainActivityX::class.java,
+                        result.hashCode(), packageLabel, result?.message, message, false
+                    )
+                    setOperation("ERR")
+                    Timber.w("package: $packageName FAILED")
+                    Result.failure(getWorkData("ERR", result))
+                }
+            }
+        }
 
         val selectedMode = inputData.getInt("selectedMode", MODE_UNSET)
 
