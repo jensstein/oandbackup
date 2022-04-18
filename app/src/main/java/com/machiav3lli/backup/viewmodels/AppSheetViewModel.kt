@@ -53,7 +53,9 @@ class AppSheetViewModel(
         notificationId = System.currentTimeMillis().toInt()
         refreshNow.observeForever {
             StorageFile.invalidateCache { file ->
-                appInfo.value?.let { appInfo -> file.contains(appInfo.packageName) } ?: false
+                appInfo.value?.let { appInfo ->
+                    file.contains(appInfo.packageName)
+                } ?: false
             }
         }
     }
@@ -142,7 +144,9 @@ class AppSheetViewModel(
     }
 
     private suspend fun deleteAll() {
+        Timber.w("deleteAll")
         withContext(Dispatchers.IO) {
+            Timber.w("now deleteAllBackups")
             appInfo.value?.deleteAllBackups()
         }
     }

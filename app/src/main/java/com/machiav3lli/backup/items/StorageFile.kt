@@ -182,40 +182,47 @@ open class StorageFile {
     }
 
     fun createDirectory(displayName: String): StorageFile {
-        return file?.let {
-            val newDir = RootFile(it, displayName)
-            newDir.mkdirs()
-            return StorageFile(this, newDir)
-        } ?: run {
-            return StorageFile(
-                this,
-                context!!,
-                createFile(context!!, _uri!!, DocumentsContract.Document.MIME_TYPE_DIR, displayName)
-            )
-        }
+        val newFile =
+                file?.let {
+                    val newDir = RootFile(it, displayName)
+                    newDir.mkdirs()
+                    StorageFile(this, newDir)
+                } ?: run {
+                    StorageFile(this, context!!,
+                        createFile(context!!, _uri!!,
+                            DocumentsContract.Document.MIME_TYPE_DIR, displayName)
+                    )
+                }
+        path?.let { cacheAdd(it, newFile) }
+        return newFile
     }
 
     fun createFile(mimeType: String, displayName: String): StorageFile {
-        return file?.let {
-            if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
-                val newDir = RootFile(it, displayName)
-                newDir.mkdirs()
-                return StorageFile(this, newDir)
-            } else {
-                val newFile = RootFile(it, displayName)
-                newFile.createNewFile()
-                return StorageFile(this, newFile)
-            }
-        } ?: run {
-            StorageFile(this, context, createFile(context!!, _uri!!, mimeType, displayName))
-        }
+        val newFile =
+                file?.let {
+                    if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
+                        val newDir = RootFile(it, displayName)
+                        newDir.mkdirs()
+                        StorageFile(this, newDir)
+                    } else {
+                        val newFile = RootFile(it, displayName)
+                        newFile.createNewFile()
+                        StorageFile(this, newFile)
+                    }
+                } ?: run {
+                    StorageFile(this, context,
+                        createFile(context!!, _uri!!, mimeType, displayName)
+                    )
+                }
+        path?.let { cacheAdd(it, newFile) }
+        return newFile
     }
 
     fun delete(): Boolean {
+        path?.let { cacheRemove(it, this) }
         return try {
-            file?.let {
-                it.deleteRecursive()
-            } ?: DocumentsContract.deleteDocument(context!!.contentResolver, _uri!!)
+            file?.deleteRecursive()
+                ?: DocumentsContract.deleteDocument(context!!.contentResolver, _uri!!)
         } catch (e: FileNotFoundException) {
             false
         } catch (e: Throwable) {
@@ -225,6 +232,7 @@ open class StorageFile {
     }
 
     fun renameTo(displayName: String): Boolean {
+        path?.let { cacheRemove(it, this) }
         var ok = false
         file?.let { oldFile ->
             val newFile = RootFile(oldFile.parent, displayName)
@@ -247,6 +255,7 @@ open class StorageFile {
             LogsHandler.unhandledException(e, _uri)
             ok = false
         }
+        path?.let { cacheAdd(it, this) }
         return ok
     }
 
@@ -268,7 +277,7 @@ open class StorageFile {
         try {
             //TODO hg42 use fileListCache ? but beware of invalidating entries that we change
             file?.let {
-                var found = StorageFile(this, displayName)
+                val found = StorageFile(this, displayName)
                 return if (found.exists()) found else null
             }
             for (file in listFiles()) {
@@ -302,7 +311,7 @@ open class StorageFile {
             file?.let { dir ->
                 fileListCache[id] = dir.listFiles()?.map { child ->
                     StorageFile(this, child)
-                }
+                }?.toMutableList() ?: mutableListOf()
             } ?: run {
                 context?.contentResolver?.let { resolver ->
                     val childrenUri = try {
@@ -313,7 +322,7 @@ open class StorageFile {
                     } catch (e: IllegalArgumentException) {
                         return listOf()
                     }
-                    val results = ArrayList<Uri>()
+                    val results = mutableListOf<Uri>()
                     var cursor: Cursor? = null
                     try {
                         cursor = resolver.query(
@@ -336,7 +345,7 @@ open class StorageFile {
                     }
                     fileListCache[id] = results.map { uri ->
                         StorageFile(this, context, uri)
-                    }
+                    }.toMutableList()
                 }
             }
         }
@@ -372,20 +381,28 @@ open class StorageFile {
 
     companion object {
         //TODO hg42 manage file trees instead of single files and let StorageFile and caches use them
-        var fileListCache = mutableMapOf<String, List<StorageFile>?>() //TODO hg42 access should automatically checkCache
+        var fileListCache = mutableMapOf<String, MutableList<StorageFile>>() //TODO hg42 access should automatically checkCache
         var uriStorageFileCache = mutableMapOf<String, StorageFile>()
         var invalidateFilters = mutableListOf<(String) -> Boolean>()
 
         fun fromUri(context: Context, uri: Uri): StorageFile {
             // Todo: Figure out what's wrong with the Uris coming from the intent and why they need to be processed
             //  with DocumentsContract.buildDocumentUriUsingTree(value, DocumentsContract.getTreeDocumentId(value)) first
-            checkCache()
-            val id = uri.toString()
-            return uriStorageFileCache[id] ?: StorageFile(
-                null,
-                context,
-                uri
-            ).also { uriStorageFileCache[id] = it }
+            if(true) {
+                return StorageFile(
+                    null,
+                    context,
+                    uri
+                )
+            } else {
+                checkCache()
+                val id = uri.toString()
+                return uriStorageFileCache[id] ?: StorageFile(
+                    null,
+                    context,
+                    uri
+                ).also { uriStorageFileCache[id] = it }
+            }
         }
 
         fun createFile(context: Context, uri: Uri, mimeType: String, displayName: String): Uri? {
@@ -410,6 +427,24 @@ open class StorageFile {
 
         fun invalidateCache() {
             invalidateFilters = mutableListOf({true})
+        }
+
+        fun cacheAdd(path: String, file: StorageFile) {
+            fileListCache[path]?.run {
+                add(file)
+            } ?: run {
+                fileListCache[path] = mutableListOf(file)
+            }
+        }
+
+        fun cacheRemove(path: String, file: StorageFile?) {
+            file?.let {
+                fileListCache[path]?.run {
+                    remove(file)
+                } ?: run {
+                    fileListCache.remove(path)
+                }
+            } ?: fileListCache.remove(path)
         }
 
         fun checkCache() {

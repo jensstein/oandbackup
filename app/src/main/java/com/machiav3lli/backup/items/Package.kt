@@ -193,7 +193,9 @@ class Package {
         create: Boolean = false,
         packageName: String = this.packageName
     ): StorageFile? = when {
-        packageBackupDir != null && packageBackupDir?.exists() == true -> packageBackupDir
+        packageBackupDir != null && packageBackupDir?.exists() == true -> {
+            packageBackupDir
+        }
         create -> {
             packageBackupDir = OABX.context.getBackupDir().ensureDirectory(packageName)
             packageBackupDir
@@ -206,7 +208,7 @@ class Package {
 
 
     fun deleteAllBackups() {
-        Timber.i("Deleting ${backupList.size} backups of ${this.packageName}")
+        Timber.i("Deleting ${backupList.size} backups of $packageName from $packageBackupDir")
         packageBackupDir?.deleteRecursive()
         backupList.clear()
         StorageFile.invalidateCache { it.contains(packageName) }
