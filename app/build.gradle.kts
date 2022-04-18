@@ -153,6 +153,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.5.0-alpha04")
     implementation("com.google.android.material:compose-theme-adapter:1.1.6")
     implementation("androidx.compose.material3:material3:1.0.0-alpha09")
+    implementation("com.google.accompanist:accompanist-flowlayout:0.24.6-alpha")
 
     // Testing
     implementation("androidx.test.ext:junit-ktx:1.1.3")
