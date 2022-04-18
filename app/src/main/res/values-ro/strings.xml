@@ -84,9 +84,9 @@
     <string name="backup">Fă backup</string>
     <string name="handleApk">APK</string>
     <string name="handleBoth">Ambele</string>
-    <string name="radio_user">Aplicațiile utilizatorului</string>
+    <string name="radio_user">Aplicații de utilizator</string>
     <string name="radio_system">Aplicații de sistem</string>
-    <string name="radio_updated">Actualizat</string>
+    <string name="radio_updated">Actualizate</string>
     <string name="radio_externaldata">Date externe</string>
     <string name="radio_deviceprotecteddata">Date protejate ale dispozitivului</string>
     <string name="radio_obbdata">Date OBB</string>
@@ -107,7 +107,7 @@
     <string name="handleData">Date</string>
     <string name="refresh">Reîmprospătează</string>
     <string name="searchHint">Caută aplicații</string>
-    <string name="showOnlyUser">Numai aplicațiile utilizatorului</string>
+    <string name="showOnlyUser">Numai aplicațiile de utilizator</string>
     <string name="resetFilter">Resetează</string>
     <string name="applyFilter">Aplică</string>
     <string name="showOnlyApkBackedUp">Aplicații la care s-a făcut backup numai pentru APK</string>
@@ -228,4 +228,18 @@
     <string name="sched_activateButton">Începe acum</string>
     <string name="filter_options">Filtre:</string>
     <string name="clear_cache">Golește cache-ul</string>
+    <string name="intro_permission_storage_location">Aplicația necesită o locație de backup pentru a stoca backupurile. Este posibil ca aplicația să necesite câțiva gigabyți de spațiu de stocare pentru un backup complet și să interogheze frecvent sistemul de fișiere. Te rugăm să ții cont de acest aspect atunci când alegi locații de stocare bazate pe rețea.</string>
+    <string name="apptype_system">Aplicație de sistem</string>
+    <string name="apptype_user">Aplicație de utilizator</string>
+    <string name="split_apks">Split-APK:</string>
+    <string name="exodus_report">Raport Exodus</string>
+    <string name="launch_app">Lansează aplicația</string>
+    <string name="forceKillMessage">Sigur vrei să forțezi oprirea aplicației\?</string>
+    <string name="backupSuccess">Backup complet</string>
+    <string name="batchSuccess">Operațiune completă</string>
+    <string name="batchFailure">Completată cu erori</string>
+    <string name="backupProgress">Se face backup…</string>
+    <string name="uninstallSuccess">Dezinstalare completă</string>
+    <string name="usage_notes_title">Note privind utilizarea</string>
+    <string name="main">Start</string>
 </resources>
