@@ -22,7 +22,7 @@
 * [What is the difference to the famous Titanium Backup?](#what-is-the-difference-to-the-famous-titanium-backup)
 * [How can I open encrypted backups on my computer?](#how-can-i-open-encrypted-backups-on-my-computer)
 * [What does the notification of schedules and batch jobs tell me?](#what-does-the-notification-of-schedules-and-batch-jobs-tell-me)
-* [Does NB support multi-user setups / work-profile?](#Does-NB-support-multi-user-setups--work-profile) 
+* [Does NB support multi-user setups / work-profile?](#does-nb-support-multi-user-setups--work-profile) 
 
 #### What is Neo-Backup?
 
@@ -40,7 +40,7 @@ OAndBackupX (short OABX) was the former name of the project. You may find some r
 
 #### Which Android Versions are supported?
 
-Oldest supported version: Android  8 - "Oreo"
+Oldest supported version: Android  8 - "Oreo" </br>
 Newest supported version: Android 12 - "Snow Cone"
 
 See also - [Are you going to support older Android versions?](#are-you-going-to-support-older-android-versions)
@@ -143,8 +143,10 @@ You can individually choose which parts you want to include in the backup --> as
 
 #### What are Special Backups?
 
-Special backups describes system data that's bound to the user and not to certain apps.
-For the moment we don't provide them with full support, try with your own responsibility
+Special backups describes system data that's bound to the user and not to certain apps. </br>***Enable special backups in advanced prefs to see them.***</br>
+For the moment we don't provide them with full support, try with your own responsibility.
+
+Beginning with version 8 some of them are supported. See also [How can I backup SMS &amp; Call log?](#how-can-i-backup-sms--call-log)
 
 #### Do I need a rooted phone?
 
@@ -302,6 +304,8 @@ Another mistake, which might happen is, that you set a filters, which lead to an
 
 #### I do not see the app which is currently backed up in the notification during batch or scheduled backups.
 
+*obsolate beginning with version 8* - see also [What does the notification of schedules and batch jobs tell me?](#what-does-the-notification-of-schedules-and-batch-jobs-tell-me)
+   
 To optimize the performance of scheduled and batch backups, these tasks are executed in parallel, based on the amount of cores, your SOC's CPU contains.
 So notification always shows the last app backup, which was started on whatever free core of your SOC's CPU.
 
@@ -326,7 +330,7 @@ In newer Android versions every app directory is mounted and usually only visibl
 **SMS/MMS and Call-logs** </br>
 Those are saved in data providers like some other special data. The one you should go for is com.android.providers.telephony. Sometimes you would need to restart after restoring its data. Same goes for contacts too, with the only difference that they're kept in the data of com.android.providers.contacts.
 
-NB starts supporting backup SMS/MMS and Call logs beginning with version 8. Enable special backups in advanced prefs to see them.   
+NB starts supporting backup SMS/MMS and Call logs beginning with version 8. 
    
 For **contacts, calendar** and todo-lists. 
 We advice to use [DecSync](https://github.com/39aldo39/DecSync) with its diverse apps.
@@ -462,7 +466,7 @@ You can find the encryption algorithm and setup in this class: [Neo-Backup - Cr
 - below the notification headline you will see 
   - the name (in case it is a schedule) and the start-time
 - when you expand the notification you will see more details of the parallel tasks which will run (parallelism is based on the amount of cores of the devices SoCs CPU)
-  - the first 3 characters show what NB is currently working on (PREparation, APK, EXTernal data, OBB, etc.)
+  - the first 3 characters show what NB is currently working on (**pre**paration, **apk**, **ext**ernal data, **obb**, **med**ia, etc.)
   - after the dot you will see the package name 
 
 ***When it's finished...***
