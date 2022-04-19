@@ -336,4 +336,5 @@
     <string name="spec_fingerprint">البصمات</string>
     <string name="loading_list">تحميل القائمة …</string>
     <string name="delete">حذف</string>
+    <string name="dialogCancelAll">إلغاء الكل</string>
 </resources>
