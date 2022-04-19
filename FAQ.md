@@ -327,6 +327,8 @@ In newer Android versions every app directory is mounted and usually only visibl
 
 #### How can I backup SMS & Call log?
 
+Generally see * [What are Special Backups?](#what-are-special-backups) first.
+
 **SMS/MMS and Call-logs** </br>
 Those are saved in data providers like some other special data. The one you should go for is com.android.providers.telephony. Sometimes you would need to restart after restoring its data. Same goes for contacts too, with the only difference that they're kept in the data of com.android.providers.contacts.
 
