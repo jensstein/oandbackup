@@ -22,7 +22,7 @@
 * [What is the difference to the famous Titanium Backup?](#what-is-the-difference-to-the-famous-titanium-backup)
 * [How can I open encrypted backups on my computer?](#how-can-i-open-encrypted-backups-on-my-computer)
 * [What does the notification of schedules and batch jobs tell me?](#what-does-the-notification-of-schedules-and-batch-jobs-tell-me)
-* [Does NB support multi-user setups / work-profile?](Does-NB-support-multi-user-setups--work-profile) 
+* [Does NB support multi-user setups / work-profile?](#Does-NB-support-multi-user-setups--work-profile) 
 
 #### What is Neo-Backup?
 
@@ -358,7 +358,7 @@ Here are several examples - e.g.:
 
 #### Is there a roadmap / an overview of features planned to be implemented?
 
-A rough backlog without any guarantee can be found here as Kanban board: </br>
+A rough backlog (without any guarantee that the devs will 100% stick to it) can be found here as Kanban board: </br>
 https://tree.taiga.io/project/machiav3lli-neo-backup/kanban
 
 Not all features will be listed there, but maybe the bigger / frequently asked ones.
