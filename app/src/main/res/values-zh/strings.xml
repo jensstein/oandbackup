@@ -326,4 +326,5 @@
     <string name="spec_fingerprint">指纹数据</string>
     <string name="loading_list">正在加载列表…</string>
     <string name="delete">删除</string>
+    <string name="dialogCancelAll">全部取消</string>
 </resources>
