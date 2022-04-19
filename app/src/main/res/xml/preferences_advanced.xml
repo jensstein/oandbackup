@@ -139,6 +139,24 @@
             app:showSeekBarValue="true" />
 
         <androidx.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="invalidateSelective"
+            android:summary=""
+            android:title="invalidateSelective" />
+
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="cacheUris"
+            android:summary=""
+            android:title="cacheUris" />
+
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="cacheFileLists"
+            android:summary=""
+            android:title="cacheFileLists" />
+
+        <androidx.preference.CheckBoxPreference
             android:defaultValue="false"
             android:key="cacheRootFileAttributes"
             android:summary="cache some attributes like exists, isDirectory, isFile, saves many shell commands but may fail if external changes happen"
