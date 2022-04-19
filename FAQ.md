@@ -17,9 +17,12 @@
 * [Are you going to support older Android versions?](#are-you-going-to-support-older-android-versions)
 * [Why do I have to login/register to app x y z again after restore?](#why-do-i-have-to-loginregister-to-app-x-y-z-again-after-restore)
 * [Why is it not recommended to backup system apps?](#why-is-it-not-recommended-to-backup-system-apps)
+* [Is there a roadmap / an overview of features planned to be implemented?](#is-there-a-roadmap--an-overview-of-features-planned-to-be-implemented)
 * [What is the difference to implementations like Seedvault?](#what-is-the-difference-to-implementations-like-seedvault)
 * [What is the difference to the famous Titanium Backup?](#what-is-the-difference-to-the-famous-titanium-backup)
 * [How can I open encrypted backups on my computer?](#how-can-i-open-encrypted-backups-on-my-computer)
+* [What does the notification of schedules and batch jobs tell me?](#what-does-the-notification-of-schedules-and-batch-jobs-tell-me)
+* [Does NB support multi-user setups / work-profile?](Does-NB-support-multi-user-setups--work-profile) 
 
 #### What is Neo-Backup?
 
@@ -320,9 +323,14 @@ In newer Android versions every app directory is mounted and usually only visibl
 
 #### How can I backup SMS & Call log?
 
-Those are saved in data providers like some other special data. The one you should go for is com.android.providers.telephony. Sometimes you would need to restart after restoring its data.
-Same goes for contacts too, with the only difference that they're kept in the data of com.android.providers.contacts.
-For contacts, calendar and todo-lists. We advice to use [DecSync](https://github.com/39aldo39/DecSync) with its diverse apps.
+**SMS/MMS and Call-logs** </br>
+Those are saved in data providers like some other special data. The one you should go for is com.android.providers.telephony. Sometimes you would need to restart after restoring its data. Same goes for contacts too, with the only difference that they're kept in the data of com.android.providers.contacts.
+
+NB starts supporting backup SMS/MMS and Call logs beginning with version 8. Enable special backups in advanced prefs to see them.   
+   
+For **contacts, calendar** and todo-lists. 
+We advice to use [DecSync](https://github.com/39aldo39/DecSync) with its diverse apps.
+Alternatively use a CalDAV/CardDAV management app (like DavX5) and sync them with a trustworthy mail provider account.
 
 #### Are you going to support older Android versions?
 
@@ -338,7 +346,7 @@ Here are several examples - e.g.:
 - Nextcloud
 - Signal
 - Threema
-- Whatsapp
+- Whatsapp (?)
 - Facebook
 - you name it
 
@@ -347,6 +355,13 @@ Here are several examples - e.g.:
 - ... as they change over the android version and restore might un-stabilize the system
 - You've done your backup on 4.0.0, then you should place the data you want to restore at the same directory as when they got backed up.
   - --> In 5.0.0 this is already fixed. 
+
+#### Is there a roadmap / an overview of features planned to be implemented?
+
+A rough backlog without any guarantee can be found here as Kanban board: </br>
+https://tree.taiga.io/project/machiav3lli-neo-backup/kanban
+
+Not all features will be listed there, but maybe the bigger / frequently asked ones.
 
 #### What is the difference to implementations like Seedvault?
 
@@ -434,3 +449,37 @@ Here is a quick status overview, what NB is capable of - to be edited.
 #### How can I open encrypted backups on my computer?
 
 You can find the encryption algorithm and setup in this class: [Neo-Backup - Crypto.kt · GitHub](https://github.com/NeoApplications/Neo-Backup/blob/main/app/src/main/java/com/machiav3lli/backup/utils/CryptoUtils.kt) . The rest depends on the version you used.
+
+#### What does the notification of schedules and batch jobs tell me?
+
+*this decribes the notification beginning with version 8*
+
+***While it is running...***
+- the notification will show in its name / heading:
+  - The NB-Logo followed by "Neo-Backup"
+  - :runner: - app-backups currently running
+  - :people_holding_hands: - app-backups queued/outstanding/not yet started
+- below the notification headline you will see 
+  - the name (in case it is a schedule) and the start-time
+- when you expand the notification you will see more details of the parallel tasks which will run (parallelism is based on the amount of cores of the devices SoCs CPU)
+  - the first 3 characters show what NB is currently working on (PREparation, APK, EXTernal data, OBB, etc.)
+  - after the dot you will see the package name 
+
+***When it's finished...***
+- heading:
+  - green NB-Icon in case there were no error 
+  - red NB-Icon in case some backups failed
+  - count of processed apps and overall apps in the job
+- below it will show
+  - the name again (in case it is a schedule) 
+  - start-time
+  - "OK" (in case no errors)
+- below that the overall time it took
+
+#### Does NB support multi-user setups / work-profile?
+
+Disabled / not support for now as it led to strange behavior that apk and/or data was overwritten in both profiles.
+For now NB will only handle the main profile / user and ignore the others. 
+
+So this also answers if it works together with Apps which utilize the work profile (like Shelter or Island).
+You can try to clone NB into it, but it is not recommended.
