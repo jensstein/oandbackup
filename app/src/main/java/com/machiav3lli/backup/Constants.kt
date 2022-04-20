@@ -17,6 +17,7 @@
  */
 package com.machiav3lli.backup
 
+import com.machiav3lli.backup.ui.item.ChipItem
 import java.time.format.DateTimeFormatter
 
 const val PREFS_SHARED_PRIVATE = "com.machiav3lli.backup"
@@ -123,6 +124,18 @@ val possibleBackupFilters =
         MODE_DATA_MEDIA
     )
 
+val scheduleBackupModeChipItems = listOf(
+    ChipItem.Apk,
+    ChipItem.Data,
+    ChipItem.DeData,
+    ChipItem.ExtData,
+    ChipItem.ObbData,
+    ChipItem.MediaData
+)
+
+val mainBackupModeChipItems: List<ChipItem> =
+    listOf(ChipItem.None).plus(scheduleBackupModeChipItems)
+
 const val MAIN_SORT_LABEL = 0
 const val MAIN_SORT_PACKAGENAME = 1
 const val MAIN_SORT_DATASIZE = 2
@@ -136,12 +149,24 @@ const val MAIN_FILTER_USER = 0b010
 const val MAIN_FILTER_SPECIAL = 0b001
 val possibleMainFilters = listOf(MAIN_FILTER_SYSTEM, MAIN_FILTER_USER, MAIN_FILTER_SPECIAL)
 
+val mainFilterChipItems = listOf(ChipItem.System, ChipItem.User, ChipItem.Special)
+
 const val SPECIAL_FILTER_ALL = 0
 const val SPECIAL_FILTER_LAUNCHABLE = 1
 const val SPECIAL_FILTER_NEW_UPDATED = 2
 const val SPECIAL_FILTER_OLD = 3
 const val SPECIAL_FILTER_NOT_INSTALLED = 4
 const val SPECIAL_FILTER_DISABLED = 5
+
+val schedSpecialFilterChipItems = listOf(
+    ChipItem.All,
+    ChipItem.Launchable,
+    ChipItem.NewUpdated,
+    ChipItem.Old,
+    ChipItem.Disabled
+)
+
+val mainSpecialFilterChipItems = schedSpecialFilterChipItems.plus(ChipItem.NotInstalled)
 
 const val DEFAULT_RETRIEVE_APP_META_MAXWAIT = 30;
 
