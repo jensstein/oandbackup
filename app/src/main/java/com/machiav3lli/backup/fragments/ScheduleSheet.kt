@@ -26,14 +26,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.chip.ChipGroup
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.databinding.SheetScheduleBinding
+import com.machiav3lli.backup.databinding.FragmentComposeBinding
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.dao.ScheduleDao
 import com.machiav3lli.backup.dbs.entity.Schedule
@@ -51,14 +49,14 @@ import kotlin.math.abs
 
 class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
     private lateinit var viewModel: ScheduleViewModel
-    private lateinit var binding: SheetScheduleBinding
+    private lateinit var binding: FragmentComposeBinding
     private lateinit var database: ODatabase
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = SheetScheduleBinding.inflate(inflater, container, false)
+        binding = FragmentComposeBinding.inflate(inflater, container, false)
         database = ODatabase.getInstance(requireContext())
         val viewModelFactory = ScheduleViewModel.Factory(
             scheduleId,
@@ -68,100 +66,26 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
         viewModel = ViewModelProvider(this, viewModelFactory)[ScheduleViewModel::class.java]
 
         viewModel.schedule.observe(viewLifecycleOwner) {
-            binding.schedName.text = it.name
-            it.filterIds.forEach { id ->
-                binding.schedFilter.check(id)
-            }
-            it.modeIds.forEach { id ->
-                binding.schedMode.check(id)
-            }
-            binding.schedSpecialFilter.check(specialFilterToId(it.specialFilter))
-            binding.enableCheckbox.isChecked = it.enabled
-            binding.customListButton.setTextColor(it.customList)
-            binding.customListButton.setChipIconColor(it.customList)
-            binding.buttonBlocklist.setTextColor(it.blockList)
-            binding.buttonBlocklist.setChipIconColor(it.blockList)
-            setTimeLeft(it, System.currentTimeMillis())
-            binding.timeOfDay.text = LocalTime.of(it.timeHour, it.timeMinute).toString()
-            binding.intervalDays.text = java.lang.String.valueOf(it.interval)
         }
 
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupOnClicks()
-    }
-
-    private fun setupOnClicks() {
-        binding.dismiss.setOnClickListener { dismissAllowingStateLoss() }
-        binding.schedName.setOnClickListener {
-            ScheduleNameDialog(binding.schedName.text) {
-                viewModel.schedule.value?.name = it
-                refresh(false)
-            }.show(requireActivity().supportFragmentManager, "SCHEDULENAME_DIALOG")
-        }
-        binding.schedSpecialFilter.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int ->
-            viewModel.schedule.value?.specialFilter = idToSpecialFilter(checkedId)
-            refresh(false)
-        }
-        binding.schedFilter.children.forEach {
-            it.setOnClickListener {
-                viewModel.schedule.value?.let { schedule ->
-                    schedule.filter = schedule.filter xor idToFilter(it.id)
-                }
-                refresh(false)
-            }
-        }
-        binding.schedMode.children.forEach {
-            it.setOnClickListener {
-                viewModel.schedule.value?.let { schedule ->
-                    schedule.mode = schedule.mode xor idToMode(it.id)
-                }
-                refresh(false)
-            }
-        }
-        if (requireContext().specialBackupsEnabled) {
-            binding.filterSpecial.visibility = View.VISIBLE
-        } else {
-            binding.filterSpecial.visibility = View.GONE
-        }
-        binding.timeOfDay.setOnClickListener { showTimePickerDialog() }
-        binding.intervalDays.setOnClickListener { showIntervalSetterDialog(binding.intervalDays.text) }
-        binding.customListButton.setOnClickListener { showCustomListDialog() }
-        binding.buttonBlocklist.setOnClickListener { showBlockListDialog() }
-        binding.enableCheckbox.setOnClickListener {
-            viewModel.schedule.value?.enabled = (it as AppCompatCheckBox).isChecked
-            refresh(true)
-        }
-        binding.removeButton.setOnClickListener {
-            viewModel.deleteSchedule()
-            cancelAlarm(requireContext(), scheduleId)
-            dismissAllowingStateLoss()
-        }
-        binding.activateButton.setOnClickListener { startSchedule() }
-    }
-
-    private fun setTimeLeft(schedule: Schedule, now: Long) {
-        if (!schedule.enabled) {
-            binding.timeLeft.text = ""
-            binding.timeLeftLine.visibility = View.GONE
-        } else {
+    private fun getTimeLeft(schedule: Schedule): String {
+        var text = ""
+        if (schedule.enabled) {
+            val now = System.currentTimeMillis()
             val timeDiff = abs(calculateTimeToRun(schedule, now) - now)
             val days = TimeUnit.MILLISECONDS.toDays(timeDiff).toInt()
-            if (days == 0) {
-                binding.daysLeft.visibility = View.GONE
-            } else {
-                binding.daysLeft.visibility = View.VISIBLE
-                binding.daysLeft.text =
-                    requireContext().resources.getQuantityString(R.plurals.days_left, days, days)
+            if (days != 0) {
+                text += requireContext().resources
+                    .getQuantityString(R.plurals.days_left, days, days)
             }
             val hours = TimeUnit.MILLISECONDS.toHours(timeDiff).toInt() % 24
             val minutes = TimeUnit.MILLISECONDS.toMinutes(timeDiff).toInt() % 60
-            binding.timeLeft.text = LocalTime.of(hours, minutes).toString()
-            binding.timeLeftLine.visibility = View.VISIBLE
+            text += LocalTime.of(hours, minutes).toString()
         }
+        return text
     }
 
     private fun refresh(rescheduleBoolean: Boolean) {
