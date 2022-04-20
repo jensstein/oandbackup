@@ -127,47 +127,10 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
         } else {
             binding.filterSpecial.visibility = View.GONE
         }
-        binding.timeOfDay.setOnClickListener {
-            TimePickerDialog(
-                requireContext(),
-                com.google.android.material.R.style.ThemeOverlay_Material3_MaterialTimePicker,
-                { _, hourOfDay, minute ->
-                    viewModel.schedule.value?.timeHour = hourOfDay
-                    viewModel.schedule.value?.timeMinute = minute
-                    refresh(true)
-                },
-                viewModel.schedule.value?.timeHour ?: 0,
-                viewModel.schedule.value?.timeMinute ?: 0,
-                true
-            )
-                .show()
-        }
-        binding.intervalDays.setOnClickListener {
-            IntervalInDaysDialog(binding.intervalDays.text) { intervalInDays: Int ->
-                viewModel.schedule.value?.interval = intervalInDays
-                refresh(true)
-            }.show(requireActivity().supportFragmentManager, "INTERVALDAYS_DIALOG")
-        }
-        binding.customListButton.setOnClickListener {
-            val selectedPackages = viewModel.schedule.value?.customList?.toList() ?: listOf()
-            PackagesListDialogFragment(
-                selectedPackages, viewModel.schedule.value?.filter
-                    ?: MAIN_FILTER_DEFAULT, false
-            ) { newList: Set<String> ->
-                viewModel.schedule.value?.customList = newList
-                refresh(false)
-            }.show(requireActivity().supportFragmentManager, "CUSTOMLIST_DIALOG")
-        }
-        binding.buttonBlocklist.setOnClickListener {
-            val blocklistedPackages = viewModel.schedule.value?.blockList?.toList() ?: listOf()
-            PackagesListDialogFragment(
-                blocklistedPackages, viewModel.schedule.value?.filter
-                    ?: MAIN_FILTER_DEFAULT, true
-            ) { newList: Set<String> ->
-                viewModel.schedule.value?.blockList = newList
-                refresh(false)
-            }.show(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
-        }
+        binding.timeOfDay.setOnClickListener { showTimePickerDialog() }
+        binding.intervalDays.setOnClickListener { showIntervalSetterDialog(binding.intervalDays.text) }
+        binding.customListButton.setOnClickListener { showCustomListDialog() }
+        binding.buttonBlocklist.setOnClickListener { showBlockListDialog() }
         binding.enableCheckbox.setOnClickListener {
             viewModel.schedule.value?.enabled = (it as AppCompatCheckBox).isChecked
             refresh(true)
@@ -308,5 +271,57 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                 }
             }.start()
         }
+    }
+
+    private fun showNameEditorDialog() {
+        ScheduleNameDialog(viewModel.schedule.value?.name.toString()) {
+            viewModel.schedule.value?.name = it
+            refresh(false)
+        }.show(requireActivity().supportFragmentManager, "SCHEDULENAME_DIALOG")
+    }
+
+    private fun showTimePickerDialog() {
+        TimePickerDialog(
+            requireContext(),
+            com.google.android.material.R.style.ThemeOverlay_Material3_MaterialTimePicker,
+            { _, hourOfDay, minute ->
+                viewModel.schedule.value?.timeHour = hourOfDay
+                viewModel.schedule.value?.timeMinute = minute
+                refresh(true)
+            },
+            viewModel.schedule.value?.timeHour ?: 0,
+            viewModel.schedule.value?.timeMinute ?: 0,
+            true
+        )
+            .show()
+    }
+
+    private fun showIntervalSetterDialog() {
+        IntervalInDaysDialog(viewModel.schedule.value?.interval.toString()) { newInterval: Int ->
+            viewModel.schedule.value?.interval = newInterval
+            refresh(true)
+        }.show(requireActivity().supportFragmentManager, "INTERVALDAYS_DIALOG")
+    }
+
+    private fun showCustomListDialog() {
+        val selectedPackages = viewModel.schedule.value?.customList?.toList() ?: listOf()
+        PackagesListDialogFragment(
+            selectedPackages, viewModel.schedule.value?.filter
+                ?: MAIN_FILTER_DEFAULT, false
+        ) { newList: Set<String> ->
+            viewModel.schedule.value?.customList = newList
+            refresh(false)
+        }.show(requireActivity().supportFragmentManager, "CUSTOMLIST_DIALOG")
+    }
+
+    private fun showBlockListDialog() {
+        val blocklistedPackages = viewModel.schedule.value?.blockList?.toList() ?: listOf()
+        PackagesListDialogFragment(
+            blocklistedPackages, viewModel.schedule.value?.filter
+                ?: MAIN_FILTER_DEFAULT, true
+        ) { newList: Set<String> ->
+            viewModel.schedule.value?.blockList = newList
+            refresh(false)
+        }.show(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
     }
 }
