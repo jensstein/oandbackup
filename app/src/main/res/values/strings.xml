@@ -333,4 +333,6 @@
     <string name="batch">Batch</string>
     <string name="loading_list">Loading list…</string>
     <string name="delete">Delete</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="enabled">Enabled</string>
 </resources>
