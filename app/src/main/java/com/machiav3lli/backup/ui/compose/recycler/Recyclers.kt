@@ -1,7 +1,6 @@
 package com.machiav3lli.backup.ui.compose.recycler
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -137,8 +136,7 @@ fun SelectableChipGroup(
 
     FlowRow(
         modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background),
+            .fillMaxWidth(),
         mainAxisSpacing = 8.dp
     ) {
         list.forEach {
@@ -199,8 +197,7 @@ fun MultiSelectableChipGroup(
 
     FlowRow(
         modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background),
+            .fillMaxWidth(),
         mainAxisSpacing = 8.dp
     ) {
         list.forEach {
