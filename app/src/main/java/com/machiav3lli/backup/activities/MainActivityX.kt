@@ -182,6 +182,7 @@ class MainActivityX : BaseActivity() {
         return false
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     private fun setupNavigation() {
         try {
             val navHostFragment =

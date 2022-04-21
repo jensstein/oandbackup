@@ -18,7 +18,18 @@
 package com.machiav3lli.backup.utils
 
 import android.content.Context
-import com.machiav3lli.backup.*
+import com.machiav3lli.backup.ALT_MODE_APK
+import com.machiav3lli.backup.ALT_MODE_BOTH
+import com.machiav3lli.backup.ALT_MODE_DATA
+import com.machiav3lli.backup.MODE_APK
+import com.machiav3lli.backup.MODE_DATA
+import com.machiav3lli.backup.MODE_DATA_DE
+import com.machiav3lli.backup.MODE_DATA_EXT
+import com.machiav3lli.backup.MODE_DATA_MEDIA
+import com.machiav3lli.backup.MODE_DATA_OBB
+import com.machiav3lli.backup.MODE_UNSET
+import com.machiav3lli.backup.R
+import com.machiav3lli.backup.possibleSchedModes
 
 fun altModeToMode(context: Context, mode: Int) = when (mode) {
     ALT_MODE_APK -> MODE_APK
@@ -44,27 +55,6 @@ fun modeIfActive(context: Context, mode: Int) = when {
 
 fun modeToModes(mode: Int): List<Int> = possibleSchedModes
     .filter { mode and it == it }
-
-fun modeToId(mode: Int) = when (mode) {
-    MODE_APK -> R.id.backupApk
-    MODE_DATA -> R.id.backupData
-    MODE_DATA_DE -> R.id.backupDataDe
-    MODE_DATA_EXT -> R.id.backupDataExt
-    MODE_DATA_OBB -> R.id.backupDataObb
-    MODE_DATA_MEDIA -> R.id.backupDataMedia
-    else -> R.id.backupNone
-}
-
-fun idToMode(id: Int) = when (id) {
-    R.id.backupNone -> MODE_NONE
-    R.id.backupApk -> MODE_APK
-    R.id.backupData -> MODE_DATA
-    R.id.backupDataDe -> MODE_DATA_DE
-    R.id.backupDataExt -> MODE_DATA_EXT
-    R.id.backupDataObb -> MODE_DATA_OBB
-    R.id.backupDataMedia -> MODE_DATA_MEDIA
-    else -> MODE_UNSET
-}
 
 fun modeToString(context: Context, mode: Int): String = when (mode) {
     MODE_APK -> context.getString(R.string.radio_apk)

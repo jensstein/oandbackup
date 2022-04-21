@@ -42,7 +42,6 @@ const val NAV_MAIN = 0
 const val NAV_PREFS = 1
 
 const val PREFS_SORT_FILTER = "sortFilter"
-const val PREFS_SORT_ORDER = "sortOrder"
 const val PREFS_FIRST_LAUNCH = "firstLaunch"
 const val PREFS_IGNORE_BATTERY_OPTIMIZATION = "ignoreBatteryOptimization"
 const val PREFS_SKIPPEDENCRYPTION = "skippedEncryptionCounter"

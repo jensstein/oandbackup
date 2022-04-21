@@ -21,12 +21,13 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.RenameColumn
 import androidx.room.migration.AutoMigrationSpec
-import com.machiav3lli.backup.*
+import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
+import com.machiav3lli.backup.MAIN_FILTER_DEFAULT_WITHOUT_SPECIAL
+import com.machiav3lli.backup.MODE_APK
+import com.machiav3lli.backup.SPECIAL_FILTER_ALL
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.utils.mainFilterToId
-import com.machiav3lli.backup.utils.modeToId
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -57,16 +58,6 @@ data class Schedule(
     var customList: Set<String> = setOf()
 
     var blockList: Set<String> = setOf()
-
-    val filterIds: List<Int>
-        get() = possibleMainFilters
-            .filter { it and filter == it }
-            .map { mainFilterToId(it) }
-
-    val modeIds: List<Int>
-        get() = possibleSchedModes
-            .filter { it and mode == it }
-            .map { modeToId(it) }
 
     constructor(exportFile: StorageFile) : this() {
         try {

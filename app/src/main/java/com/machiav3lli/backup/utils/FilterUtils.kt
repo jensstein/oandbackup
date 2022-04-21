@@ -19,9 +19,29 @@ package com.machiav3lli.backup.utils
 
 import android.content.Context
 import android.content.Intent
-import com.machiav3lli.backup.*
+import com.machiav3lli.backup.MAIN_FILTER_SPECIAL
+import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
+import com.machiav3lli.backup.MAIN_FILTER_USER
+import com.machiav3lli.backup.MAIN_SORT_BACKUPDATE
+import com.machiav3lli.backup.MAIN_SORT_DATASIZE
+import com.machiav3lli.backup.MAIN_SORT_PACKAGENAME
+import com.machiav3lli.backup.MODE_APK
+import com.machiav3lli.backup.MODE_DATA
+import com.machiav3lli.backup.MODE_DATA_DE
+import com.machiav3lli.backup.MODE_DATA_EXT
+import com.machiav3lli.backup.MODE_DATA_MEDIA
+import com.machiav3lli.backup.MODE_DATA_OBB
+import com.machiav3lli.backup.MODE_NONE
+import com.machiav3lli.backup.PREFS_OLDBACKUPS
+import com.machiav3lli.backup.R
+import com.machiav3lli.backup.SPECIAL_FILTER_DISABLED
+import com.machiav3lli.backup.SPECIAL_FILTER_LAUNCHABLE
+import com.machiav3lli.backup.SPECIAL_FILTER_NEW_UPDATED
+import com.machiav3lli.backup.SPECIAL_FILTER_NOT_INSTALLED
+import com.machiav3lli.backup.SPECIAL_FILTER_OLD
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.SortFilterModel
+import com.machiav3lli.backup.possibleMainFilters
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -107,36 +127,6 @@ private fun List<Package>.applySort(sort: Int, sortAsc: Boolean): List<Package> 
             else -> sortedBy { it.packageLabel.lowercase() }
         }
     }
-
-fun mainFilterToId(filter: Int) = when (filter) {
-    MAIN_FILTER_USER -> R.id.filterUser
-    MAIN_FILTER_SPECIAL -> R.id.filterSpecial
-    else -> R.id.filterSystem
-}
-
-fun specialFilterToId(specialFilter: Int): Int = when (specialFilter) {
-    SPECIAL_FILTER_LAUNCHABLE -> R.id.specialLaunchable
-    SPECIAL_FILTER_NEW_UPDATED -> R.id.specialNewUpdated
-    SPECIAL_FILTER_OLD -> R.id.specialOld
-    SPECIAL_FILTER_NOT_INSTALLED -> R.id.specialNotInstalled
-    SPECIAL_FILTER_DISABLED -> R.id.specialDisabled
-    else -> R.id.specialAll
-}
-
-fun idToFilter(id: Int): Int = when (id) {
-    R.id.filterUser -> MAIN_FILTER_USER
-    R.id.filterSpecial -> MAIN_FILTER_SPECIAL
-    else -> MAIN_FILTER_SYSTEM
-}
-
-fun idToSpecialFilter(id: Int): Int = when (id) {
-    R.id.specialLaunchable -> SPECIAL_FILTER_LAUNCHABLE
-    R.id.specialNewUpdated -> SPECIAL_FILTER_NEW_UPDATED
-    R.id.specialOld -> SPECIAL_FILTER_OLD
-    R.id.specialNotInstalled -> SPECIAL_FILTER_NOT_INSTALLED
-    R.id.specialDisabled -> SPECIAL_FILTER_DISABLED
-    else -> SPECIAL_FILTER_ALL
-}
 
 fun filterToString(context: Context, filter: Int): String {
     val activeFilters = possibleMainFilters.filter { it and filter == it }
