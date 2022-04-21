@@ -54,7 +54,6 @@ import com.machiav3lli.backup.utils.navigateRight
 import com.machiav3lli.backup.utils.setCustomTheme
 import com.machiav3lli.backup.utils.showToast
 import com.machiav3lli.backup.utils.sortFilterModel
-import com.machiav3lli.backup.utils.sortOrder
 import com.machiav3lli.backup.viewmodels.MainViewModel
 import com.topjohnwu.superuser.Shell
 import timber.log.Timber
@@ -129,7 +128,6 @@ class MainActivityX : BaseActivity() {
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
         if (!isRememberFiltering) {
             this.sortFilterModel = SortFilterModel()
-            this.sortOrder = false
         }
         viewModel.blocklist.observe(this) {
             viewModel.refreshList()

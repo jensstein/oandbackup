@@ -34,7 +34,7 @@ fun List<Package>.applyFilter(filter: SortFilterModel, context: Context): List<P
     return filter(predicate)
         .applyBackupFilter(filter.backupFilter)
         .applySpecialFilter(filter.specialFilter, context)
-        .applySort(filter.sort, context)
+        .applySort(filter.sort, filter.sortAsc)
 }
 
 private fun List<Package>.applyBackupFilter(backupFilter: Int): List<Package> {
@@ -91,8 +91,8 @@ private fun List<Package>.applySpecialFilter(
     return filter(predicate)
 }
 
-private fun List<Package>.applySort(sort: Int, context: Context): List<Package> =
-    if (context.sortOrder) {
+private fun List<Package>.applySort(sort: Int, sortAsc: Boolean): List<Package> =
+    if (!sortAsc) {
         when (sort) {
             MAIN_SORT_PACKAGENAME -> sortedByDescending { it.packageName.lowercase() }
             MAIN_SORT_DATASIZE -> sortedByDescending { it.dataBytes }
