@@ -187,32 +187,44 @@ fun TopBarButton(
 }
 
 @Composable
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
 fun ActionChip(
+    modifier: Modifier = Modifier,
     icon: Painter,
     text: String,
     withText: Boolean = true,
     positive: Boolean = true,
+    fullWidth: Boolean = false,
     onClick: () -> Unit
 ) {
-    FilledTonalButton(
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (positive) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer,
+    Chip(
+        modifier = modifier,
+        colors = ChipDefaults.chipColors(
+            backgroundColor = if (positive) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer,
             contentColor = if (positive) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer
         ),
         onClick = onClick,
     ) {
-        Icon(
-            modifier = Modifier.size(18.dp),
-            painter = icon,
-            contentDescription = text
-        )
-        if (withText) Text(
-            modifier = Modifier.padding(start = 4.dp),
-            text = text,
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleSmall
-        )
+        Row(
+            Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                modifier = Modifier.size(20.dp),
+                painter = icon,
+                contentDescription = text
+            )
+            if (withText) Text(
+                modifier = when {
+                    fullWidth -> Modifier.weight(1f)
+                    else -> Modifier.padding(start = 8.dp)
+                },
+                text = text,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleSmall
+            )
+        }
     }
 }
 
