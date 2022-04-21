@@ -3,6 +3,10 @@ package com.machiav3lli.backup.ui.item
 import com.machiav3lli.backup.MAIN_FILTER_SPECIAL
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
+import com.machiav3lli.backup.MAIN_SORT_BACKUPDATE
+import com.machiav3lli.backup.MAIN_SORT_DATASIZE
+import com.machiav3lli.backup.MAIN_SORT_LABEL
+import com.machiav3lli.backup.MAIN_SORT_PACKAGENAME
 import com.machiav3lli.backup.MODE_APK
 import com.machiav3lli.backup.MODE_DATA
 import com.machiav3lli.backup.MODE_DATA_DE
@@ -121,6 +125,30 @@ data class ChipItem(
             R.string.showNotInstalled,
             R.drawable.ic_delete,
             R.color.chip_icon_secondary
+        )
+        val Label = ChipItem(
+            MAIN_SORT_LABEL,
+            R.string.sortByLabel,
+            R.drawable.ic_label,
+            R.color.ic_obb
+        )
+        val PackageName = ChipItem(
+            MAIN_SORT_PACKAGENAME,
+            R.string.sortPackageName,
+            R.drawable.ic_apk,
+            R.color.ic_exodus
+        )
+        val DataSize = ChipItem(
+            MAIN_SORT_DATASIZE,
+            R.string.sortDataSize,
+            R.drawable.ic_sizes,
+            R.color.ic_data
+        )
+        val BackupDate = ChipItem(
+            MAIN_SORT_BACKUPDATE,
+            R.string.sortBackupDate,
+            R.drawable.ic_old,
+            R.color.ic_exodus
         )
     }
 }
