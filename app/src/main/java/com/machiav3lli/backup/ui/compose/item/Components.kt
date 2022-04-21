@@ -119,7 +119,7 @@ fun ActionButton(
         if (icon != null) {
             Spacer(modifier = Modifier.weight(1f))
             Icon(
-                modifier = Modifier.size(18.dp),
+                modifier = Modifier.size(20.dp),
                 painter = icon,
                 contentDescription = text
             )
@@ -145,7 +145,7 @@ fun ElevatedActionButton(
     ) {
         if (icon != null) {
             Icon(
-                modifier = Modifier.size(18.dp),
+                modifier = Modifier.size(20.dp),
                 painter = icon,
                 contentDescription = text
             )
