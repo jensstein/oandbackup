@@ -5,6 +5,8 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,11 +14,13 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Chip
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FilterChip
+import androidx.compose.material.SelectableChipColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,6 +31,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,6 +43,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import coil.compose.SubcomposeAsyncImage
@@ -313,6 +320,87 @@ fun CheckChip(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun SwitchChip(
+    firstTextId: Int,
+    firstIconId: Int,
+    secondTextId: Int,
+    secondIconId: Int,
+    firstSelected: Boolean = true,
+    colors: SelectableChipColors = ChipDefaults.filterChipColors(
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        selectedContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        backgroundColor = MaterialTheme.colorScheme.surface,
+        selectedBackgroundColor = MaterialTheme.colorScheme.primaryContainer
+    ),
+    onCheckedChange: (Boolean) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .background(
+                MaterialTheme.colorScheme.surface,
+                MaterialTheme.shapes.small.copy(CornerSize(percent = 50))
+            )
+            .padding(horizontal = 6.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        val (firstSelected, selectFirst) = remember { mutableStateOf(firstSelected) }
+
+        FilterChip(
+            modifier = Modifier.weight(1f),
+            selected = firstSelected,
+            colors = colors,
+            onClick = {
+                onCheckedChange(true)
+                selectFirst(true)
+            }) {
+            Icon(
+                painterResource(id = firstIconId),
+                contentDescription = stringResource(id = firstTextId),
+                modifier = Modifier.size(24.dp)
+            )
+            Row(
+                Modifier
+                    .padding(vertical = 8.dp, horizontal = 4.dp)
+                    .weight(1f)
+            ) {
+                Text(
+                    text = stringResource(id = firstTextId),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+        FilterChip(
+            modifier = Modifier.weight(1f),
+            selected = !firstSelected,
+            colors = colors,
+            onClick = {
+                onCheckedChange(false)
+                selectFirst(false)
+            }) {
+            Row(
+                Modifier
+                    .padding(vertical = 8.dp, horizontal = 4.dp)
+                    .weight(1f)
+            ) {
+                Text(
+                    text = stringResource(id = secondTextId),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            Icon(
+                painterResource(id = secondIconId),
+                contentDescription = stringResource(id = secondTextId),
+                modifier = Modifier.size(24.dp)
+            )
+        }
+    }
+}
+
 @Composable
 fun HorizontalExpandingVisibility(
     expanded: Boolean = false,
@@ -575,3 +663,26 @@ fun TitleText(textId: Int) = Text(
     style = MaterialTheme.typography.titleMedium,
     fontWeight = FontWeight.Bold
 )
+
+@Composable
+fun DoubleVerticalText(
+    upperText: String,
+    bottomText: String,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = upperText,
+            style = MaterialTheme.typography.titleMedium
+        )
+        Text(
+            text = bottomText,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            style = MaterialTheme.typography.bodyMedium.copy(MaterialTheme.colorScheme.onSurfaceVariant)
+        )
+    }
+}
