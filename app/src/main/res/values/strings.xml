@@ -335,4 +335,6 @@
     <string name="delete">Delete</string>
     <string name="dismiss">Dismiss</string>
     <string name="enabled">Enabled</string>
+    <string name="sortAsc">Ascending</string>
+    <string name="sortDesc">Descending</string>
 </resources>
