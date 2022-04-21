@@ -6,16 +6,22 @@ import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Chip
+import androidx.compose.material.ChipDefaults
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FilterChip
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -29,6 +35,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -187,6 +194,22 @@ fun TopBarButton(
 }
 
 @Composable
+fun RoundButton(
+    modifier: Modifier = Modifier
+        .padding(4.dp)
+        .size(52.dp),
+    icon: Painter,
+    description: String = "",
+    onClick: () -> Unit
+) {
+    IconButton(
+        modifier = modifier,
+        onClick = { onClick() }
+    ) {
+        Icon(painter = icon, contentDescription = description)
+    }
+}
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ActionChip(
@@ -253,6 +276,40 @@ fun StateChip(
             painter = icon,
             contentDescription = text
         )
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
+@Composable
+fun CheckChip(
+    checked: Boolean,
+    textId: Int,
+    checkedTextId: Int,
+    modifier: Modifier = Modifier,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    FilterChip(
+        modifier = modifier,
+        selected = checked,
+        colors = ChipDefaults.filterChipColors(
+            contentColor = MaterialTheme.colorScheme.onBackground,
+            selectedContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            backgroundColor = MaterialTheme.colorScheme.background,
+            selectedBackgroundColor = MaterialTheme.colorScheme.primaryContainer
+        ),
+        selectedIcon = {
+            Icon(
+                painterResource(id = R.drawable.ic_all),
+                contentDescription = "",
+                modifier = Modifier.size(24.dp)
+            )
+        },
+        onClick = { onCheckedChange(!checked) }) {
+        Row(
+            Modifier.padding(vertical = 8.dp, horizontal = 4.dp)
+        ) {
+            Text(text = if (checked) stringResource(id = checkedTextId) else stringResource(id = textId))
+        }
     }
 }
 
@@ -511,3 +568,10 @@ fun ScheduleFilters(
         )
     }
 }
+
+@Composable
+fun TitleText(textId: Int) = Text(
+    text = stringResource(id = textId),
+    style = MaterialTheme.typography.titleMedium,
+    fontWeight = FontWeight.Bold
+)
