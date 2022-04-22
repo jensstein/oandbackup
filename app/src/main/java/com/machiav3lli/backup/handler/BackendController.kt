@@ -78,6 +78,8 @@ fun Context.getPackageList(
 ): MutableList<Package> {
     val startTime = System.currentTimeMillis()
 
+    OABX.activity?.showToast("loading packages")
+
     val includeSpecial = specialBackupsEnabled
     val pm = packageManager
     val backupRoot = getBackupDir()
@@ -159,6 +161,7 @@ fun Context.getPackageList(
 
     val afterAllTime = System.currentTimeMillis()
     OABX.activity?.showToast("all: ${((afterAllTime - startTime) / 1000 + 0.5).toInt()} sec")
+
     return packageList
 }
 
@@ -168,7 +171,11 @@ fun List<AppInfo>.toPackageList(
     backupMap: Map<String, List<Backup>> = mapOf(),
     includeUninstalled: Boolean = true
 ): MutableList<Package> {
+    val startTime = System.currentTimeMillis()
+
     val includeSpecial = context.specialBackupsEnabled
+
+    OABX.activity?.showToast("loading Packages")
 
     val packageList =
         this.filterNot { it.packageName.matches(ignoredPackages) || it.packageName in blockList }
@@ -181,6 +188,9 @@ fun List<AppInfo>.toPackageList(
                 }
             }
             .toMutableList()
+
+    val afterPackagesTime = System.currentTimeMillis()
+    OABX.activity?.showToast("Packages: ${((afterPackagesTime - startTime) / 1000 + 0.5).toInt()} sec")
 
     // Special Backups must added before the uninstalled packages, because otherwise it would
     // discover the backup directory and run in a special case where no the directory is empty.
@@ -224,6 +234,9 @@ fun List<AppInfo>.toPackageList(
                 .toList()
         packageList.addAll(missingPackagesWithBackup)
     }
+
+    val afterAllTime = System.currentTimeMillis()
+    OABX.activity?.showToast("All: ${((afterAllTime - startTime) / 1000 + 0.5).toInt()} sec")
 
     return packageList
 }
