@@ -331,4 +331,5 @@
     <string name="smsmms_permission_title">SMS/MMS Berechtigungen</string>
     <string name="grant_smsmms_message">Dies ist notwendig, um SMS/MMS zu sichern und wiederherstellen zu können.</string>
     <string name="delete">Löschen</string>
+    <string name="dialogCancelAll">Alles abbrechen</string>
 </resources>
