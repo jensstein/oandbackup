@@ -201,6 +201,36 @@ fun TopBarButton(
     }
 }
 
+
+@Composable
+fun CardButton(
+    modifier: Modifier = Modifier,
+    icon: Painter,
+    tint: Color,
+    description: String,
+    onClick: () -> Unit
+) {
+    ElevatedButton(
+        modifier = modifier.padding(4.dp),
+        colors = ButtonDefaults.elevatedButtonColors(
+            containerColor = tint,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ),
+        contentPadding = PaddingValues(12.dp),
+        shape = MaterialTheme.shapes.medium,
+        onClick = { onClick() }
+    ) {
+        Icon(painter = icon, contentDescription = description)
+        /*Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = description,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+        }*/
+    }
+}
+
 @Composable
 fun RoundButton(
     modifier: Modifier = Modifier
