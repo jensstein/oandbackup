@@ -153,7 +153,8 @@ fun ElevatedActionButton(
     ElevatedButton(
         modifier = modifier,
         colors = ButtonDefaults.elevatedButtonColors(
-            contentColor = if (positive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+            contentColor = if (positive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary,
+            containerColor = if (positive) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer
         ),
         onClick = onClick
     ) {
@@ -225,15 +226,28 @@ fun ActionChip(
     text: String,
     withText: Boolean = true,
     positive: Boolean = true,
+    colored: Boolean = true,
+    enabled: Boolean = true,
     fullWidth: Boolean = false,
     onClick: () -> Unit
 ) {
     Chip(
         modifier = modifier,
         colors = ChipDefaults.chipColors(
-            backgroundColor = if (positive) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer,
-            contentColor = if (positive) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer
+            backgroundColor = when {
+                positive && colored -> MaterialTheme.colorScheme.primaryContainer
+                colored -> MaterialTheme.colorScheme.secondaryContainer
+                else -> MaterialTheme.colorScheme.surface
+            },
+            contentColor = when {
+                positive && colored -> MaterialTheme.colorScheme.onPrimaryContainer
+                colored -> MaterialTheme.colorScheme.onSecondaryContainer
+                else -> MaterialTheme.colorScheme.onSurface
+            },
+            disabledBackgroundColor = MaterialTheme.colorScheme.background,
+            disabledContentColor = MaterialTheme.colorScheme.surface
         ),
+        enabled = enabled,
         onClick = onClick,
     ) {
         Row(
@@ -252,6 +266,8 @@ fun ActionChip(
                 },
                 text = text,
                 textAlign = TextAlign.Center,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleSmall
             )
         }
@@ -300,7 +316,7 @@ fun CheckChip(
         selected = checked,
         colors = ChipDefaults.filterChipColors(
             contentColor = MaterialTheme.colorScheme.onBackground,
-            selectedContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            selectedContentColor = MaterialTheme.colorScheme.primary,
             backgroundColor = MaterialTheme.colorScheme.background,
             selectedBackgroundColor = MaterialTheme.colorScheme.primaryContainer
         ),
@@ -330,7 +346,7 @@ fun SwitchChip(
     firstSelected: Boolean = true,
     colors: SelectableChipColors = ChipDefaults.filterChipColors(
         contentColor = MaterialTheme.colorScheme.onSurface,
-        selectedContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        selectedContentColor = MaterialTheme.colorScheme.primary,
         backgroundColor = MaterialTheme.colorScheme.surface,
         selectedBackgroundColor = MaterialTheme.colorScheme.primaryContainer
     ),
