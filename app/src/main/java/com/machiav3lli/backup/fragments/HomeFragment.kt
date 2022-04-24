@@ -35,11 +35,14 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -51,7 +54,6 @@ import com.machiav3lli.backup.ALT_MODE_DATA
 import com.machiav3lli.backup.ALT_MODE_UNSET
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.databinding.FragmentComposeBinding
 import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
@@ -78,7 +80,6 @@ import timber.log.Timber
 
 class HomeFragment : NavigationFragment(),
     BatchDialogFragment.ConfirmListener, RefreshViewController {
-    private lateinit var binding: FragmentComposeBinding
     lateinit var viewModel: HomeViewModel
     private var appSheet: AppSheet? = null
 
@@ -88,16 +89,16 @@ class HomeFragment : NavigationFragment(),
         savedInstanceState: Bundle?
     ): View {
         super.onCreate(savedInstanceState)
-        binding = FragmentComposeBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = this
         val viewModelFactory = HomeViewModel.Factory(requireActivity().application)
         viewModel = ViewModelProvider(this, viewModelFactory)[HomeViewModel::class.java]
-        return binding.root
+        return ComposeView(requireContext()).apply {
+            setContent { HomePage() }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        // TODO clean up
         viewModel.refreshNow.observe(requireActivity()) {
             //binding.refreshLayout.isRefreshing = it
             if (it) {
@@ -107,7 +108,6 @@ class HomeFragment : NavigationFragment(),
         viewModel.filteredList.observe(viewLifecycleOwner) { list ->
             try {
                 viewModel.updatedApps.value = list?.filter { it.isUpdated }
-                redrawPage(list, viewModel.searchQuery.value)
                 list?.find { it.packageName == appSheet?.appInfo?.packageName }
                     ?.let { sheetApp ->
                         if (appSheet != null && sheetApp != appSheet?.appInfo)
@@ -201,146 +201,146 @@ class HomeFragment : NavigationFragment(),
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
-    fun redrawPage(list: List<Package>?, query: String? = "") {
-        binding.composeView.setContent {
+    @Composable
+    fun HomePage() {
+        // TODO include tags in search
+        val list by viewModel.filteredList.observeAsState()
+        val query by viewModel.searchQuery.observeAsState("")
 
-            // TODO include tags in search
-            val filterPredicate = { item: Package ->
-                query.isNullOrEmpty() || listOf(item.packageName, item.packageLabel)
-                    .find { it.contains(query, true) } != null
-            }
-            val queriedList = list?.filter(filterPredicate)
-            val updatedBarVisible by remember(viewModel.filteredList.value) {
-                mutableStateOf(
-                    viewModel.updatedApps.value.orEmpty().isNotEmpty()
-                )
-            }
-            var updatedVisible by remember(viewModel.filteredList.value) { mutableStateOf(false) }
+        val filterPredicate = { item: Package ->
+            query.isNullOrEmpty() || listOf(item.packageName, item.packageLabel)
+                .find { it.contains(query, true) } != null
+        }
+        val queriedList = list?.filter(filterPredicate)
+        val updatedBarVisible by remember(viewModel.filteredList.value) {
+            mutableStateOf(
+                viewModel.updatedApps.value.orEmpty().isNotEmpty()
+            )
+        }
+        var updatedVisible by remember(viewModel.filteredList.value) { mutableStateOf(false) }
 
-            AppTheme(
-                darkTheme = isSystemInDarkTheme()
-            ) {
-                Scaffold(
-                    topBar = {
-                        TopBar(title = stringResource(id = R.string.main)) {
-                            ExpandableSearchAction(
-                                query = viewModel.searchQuery.value.orEmpty(),
-                                onQueryChanged = { new ->
-                                    viewModel.searchQuery.value = new
-                                    redrawPage(viewModel.filteredList.value, new)
-                                },
-                                onClose = {
-                                    viewModel.searchQuery.value = ""
-                                    redrawPage(viewModel.filteredList.value)
-                                }
+        AppTheme(
+            darkTheme = isSystemInDarkTheme()
+        ) {
+            Scaffold(
+                topBar = {
+                    TopBar(title = stringResource(id = R.string.main)) {
+                        ExpandableSearchAction(
+                            query = viewModel.searchQuery.value.orEmpty(),
+                            onQueryChanged = { new ->
+                                viewModel.searchQuery.value = new
+                            },
+                            onClose = {
+                                viewModel.searchQuery.value = ""
+                            }
+                        )
+                    }
+                }
+            ) { paddingValues ->
+                Column(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .background(color = MaterialTheme.colorScheme.surface)
+                        .fillMaxSize()
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .background(MaterialTheme.colorScheme.surface)
+                            .padding(horizontal = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        ActionChip(
+                            icon = painterResource(id = R.drawable.ic_blocklist),
+                            text = stringResource(id = R.string.sched_blocklist),
+                            positive = true
+                        ) {
+                            GlobalScope.launch(Dispatchers.IO) {
+                                val blocklistedPackages =
+                                    requireMainActivity().viewModel.blocklist.value
+                                        ?.mapNotNull { it.packageName }.orEmpty()
+
+                                PackagesListDialogFragment(
+                                    blocklistedPackages,
+                                    MAIN_FILTER_DEFAULT,
+                                    true
+                                ) { newList: Set<String> ->
+                                    requireMainActivity().viewModel.updateBlocklist(newList)
+                                }.show(
+                                    requireActivity().supportFragmentManager,
+                                    "BLOCKLIST_DIALOG"
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.weight(1f))
+                        ActionChip(
+                            icon = painterResource(id = R.drawable.ic_filter),
+                            text = stringResource(id = R.string.sort_and_filter),
+                            positive = true
+                        ) {
+                            if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(
+                                requireActivity().sortFilterModel,
+                                getStats(packageList.value ?: mutableListOf())
+                            )
+                            sheetSortFilter?.showNow(
+                                requireActivity().supportFragmentManager,
+                                "SORTFILTER_SHEET"
                             )
                         }
                     }
-                ) { _ ->
-                    Column(
+                    HomePackageRecycler(
                         modifier = Modifier
-                            .background(color = MaterialTheme.colorScheme.surface)
-                            .fillMaxSize()
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .background(MaterialTheme.colorScheme.surface)
-                                .padding(horizontal = 8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            ActionChip(
-                                icon = painterResource(id = R.drawable.ic_blocklist),
-                                text = stringResource(id = R.string.sched_blocklist),
-                                positive = true
-                            ) {
-                                GlobalScope.launch(Dispatchers.IO) {
-                                    val blocklistedPackages =
-                                        requireMainActivity().viewModel.blocklist.value
-                                            ?.mapNotNull { it.packageName }.orEmpty()
-
-                                    PackagesListDialogFragment(
-                                        blocklistedPackages,
-                                        MAIN_FILTER_DEFAULT,
-                                        true
-                                    ) { newList: Set<String> ->
-                                        requireMainActivity().viewModel.updateBlocklist(newList)
-                                    }.show(
-                                        requireActivity().supportFragmentManager,
-                                        "BLOCKLIST_DIALOG"
-                                    )
-                                }
-                            }
-                            Spacer(modifier = Modifier.weight(1f))
-                            ActionChip(
-                                icon = painterResource(id = R.drawable.ic_filter),
-                                text = stringResource(id = R.string.sort_and_filter),
-                                positive = true
-                            ) {
-                                if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(
-                                    requireActivity().sortFilterModel,
-                                    getStats(packageList.value ?: mutableListOf())
-                                )
-                                sheetSortFilter?.showNow(
-                                    requireActivity().supportFragmentManager,
-                                    "SORTFILTER_SHEET"
-                                )
-                            }
+                            .weight(1f)
+                            .fillMaxWidth(),
+                        productsList = queriedList,
+                        onClick = { item ->
+                            if (appSheet != null) appSheet?.dismissAllowingStateLoss()
+                            appSheet = AppSheet(item, AppExtras(item.packageName))
+                            appSheet?.showNow(
+                                parentFragmentManager,
+                                "Package ${item.packageName}"
+                            )
                         }
-                        HomePackageRecycler(
-                            modifier = Modifier
-                                .weight(1f)
-                                .fillMaxWidth(),
-                            productsList = queriedList,
-                            onClick = { item ->
-                                if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                                appSheet = AppSheet(item, AppExtras(item.packageName))
-                                appSheet?.showNow(
-                                    parentFragmentManager,
-                                    "Package ${item.packageName}"
-                                )
-                            }
-                        )
-                        AnimatedVisibility(visible = updatedBarVisible) {
-                            Column(
-                                modifier = Modifier.wrapContentHeight()
+                    )
+                    AnimatedVisibility(visible = updatedBarVisible) {
+                        Column(
+                            modifier = Modifier.wrapContentHeight()
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .padding(horizontal = 8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
-                                Row(
-                                    modifier = Modifier
-                                        .padding(horizontal = 8.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                ActionButton(
+                                    modifier = Modifier.weight(1f),
+                                    text = LocalContext.current.resources
+                                        .getQuantityString(
+                                            R.plurals.updated_apps,
+                                            viewModel.nUpdatedApps,
+                                            viewModel.nUpdatedApps
+                                        ),
+                                    icon = painterResource(id = if (updatedVisible) R.drawable.ic_arrow_down else R.drawable.ic_arrow_up)
                                 ) {
-                                    ActionButton(
-                                        modifier = Modifier.weight(1f),
-                                        text = LocalContext.current.resources
-                                            .getQuantityString(
-                                                R.plurals.updated_apps,
-                                                viewModel.nUpdatedApps,
-                                                viewModel.nUpdatedApps
-                                            ),
-                                        icon = painterResource(id = if (updatedVisible) R.drawable.ic_arrow_down else R.drawable.ic_arrow_up)
-                                    ) {
-                                        updatedVisible = !updatedVisible
-                                    }
-                                    ElevatedActionButton(
-                                        modifier = Modifier,
-                                        text = stringResource(id = R.string.backup_all_updated),
-                                        icon = painterResource(id = R.drawable.ic_update)
-                                    ) {
-                                        onClickUpdateAllAction()
-                                    }
+                                    updatedVisible = !updatedVisible
                                 }
-                                AnimatedVisibility(visible = updatedVisible) {
-                                    UpdatedPackageRecycler(productsList = viewModel.updatedApps.value,
-                                        onClick = { item ->
-                                            if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                                            appSheet = AppSheet(item, AppExtras(item.packageName))
-                                            appSheet?.showNow(
-                                                parentFragmentManager,
-                                                "Package ${item.packageName}"
-                                            )
-                                        }
-                                    )
+                                ElevatedActionButton(
+                                    modifier = Modifier,
+                                    text = stringResource(id = R.string.backup_all_updated),
+                                    icon = painterResource(id = R.drawable.ic_update)
+                                ) {
+                                    onClickUpdateAllAction()
                                 }
+                            }
+                            AnimatedVisibility(visible = updatedVisible) {
+                                UpdatedPackageRecycler(productsList = viewModel.updatedApps.value,
+                                    onClick = { item ->
+                                        if (appSheet != null) appSheet?.dismissAllowingStateLoss()
+                                        appSheet = AppSheet(item, AppExtras(item.packageName))
+                                        appSheet?.showNow(
+                                            parentFragmentManager,
+                                            "Package ${item.packageName}"
+                                        )
+                                    }
+                                )
                             }
                         }
                     }
