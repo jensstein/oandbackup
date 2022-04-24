@@ -26,6 +26,14 @@ import android.content.res.Configuration
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import com.machiav3lli.backup.PREFS_LANGUAGES_DEFAULT
@@ -236,3 +244,38 @@ fun Context.restartApp() = startActivity(
         ComponentName(this, MainActivityX::class.java)
     )
 )
+
+fun <T> LazyListScope.gridItems(
+    items: List<T>,
+    columns: Int,
+    modifier: Modifier = Modifier,
+    horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
+    itemContent: @Composable BoxScope.(T) -> Unit,
+) {
+    val itemsCount = items.count()
+    val rows = when {
+        itemsCount >= 1 -> 1 + (itemsCount - 1) / columns
+        else -> 0
+    }
+    items(rows, key = { it.hashCode() }) { rowIndex ->
+        Row(
+            horizontalArrangement = horizontalArrangement,
+            modifier = modifier
+        ) {
+            (0 until columns).forEach { columnIndex ->
+                val itemIndex = columns * rowIndex + columnIndex
+                if (itemIndex < itemsCount) {
+                    Box(
+                        modifier = Modifier.weight(1f),
+                        propagateMinConstraints = true
+                    ) {
+                        itemContent(items[itemIndex])
+                    }
+                } else {
+                    Spacer(Modifier.weight(1f))
+                }
+            }
+        }
+    }
+}
+
