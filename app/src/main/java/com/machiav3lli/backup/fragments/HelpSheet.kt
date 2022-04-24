@@ -21,93 +21,178 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.core.text.HtmlCompat
-import com.machiav3lli.backup.*
-import com.machiav3lli.backup.databinding.SheetHelpBinding
+import com.machiav3lli.backup.R
+import com.machiav3lli.backup.legendList
+import com.machiav3lli.backup.linksList
+import com.machiav3lli.backup.ui.compose.item.LegendItem
+import com.machiav3lli.backup.ui.compose.item.LinkItem
+import com.machiav3lli.backup.ui.compose.item.RoundButton
+import com.machiav3lli.backup.ui.compose.item.TitleText
+import com.machiav3lli.backup.ui.compose.theme.AppTheme
+import com.machiav3lli.backup.utils.gridItems
 import java.io.IOException
 import java.io.InputStream
 import java.util.*
 
 class HelpSheet : BaseSheet() {
-    private lateinit var binding: SheetHelpBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = SheetHelpBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupOnClicks()
-        setupViews()
-    }
-
-    private fun setupOnClicks() {
-        binding.dismiss.setOnClickListener { dismissAllowingStateLoss() }
-        binding.changelog.setOnClickListener {
-            requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_CHANGELOG)))
-        }
-        binding.telegram.setOnClickListener {
-            requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_TELEGRAM)))
-        }
-        binding.element.setOnClickListener {
-            requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_ELEMENT)))
-        }
-        binding.license.setOnClickListener {
-            requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_LICENSE)))
-        }
-        binding.issues.setOnClickListener {
-            requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_ISSUES)))
-        }
-        binding.faq.setOnClickListener {
-            requireContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(HELP_FAQ)))
-        }
-        binding.usageNotesTitle.setOnClickListener {
-            usageNotesExtendShrink(binding.usageNotesHtml.visibility == View.VISIBLE)
-        }
-        binding.extendShrink.setOnClickListener {
-            usageNotesExtendShrink(binding.usageNotesHtml.visibility == View.VISIBLE)
+        super.onCreate(savedInstanceState)
+        return ComposeView(requireContext()).apply {
+            setContent { HelpPage() }
         }
     }
 
-    private fun setupViews() {
-        try {
-            binding.helpVersionName.text = requireActivity().packageManager.getPackageInfo(
-                requireActivity().packageName,
-                0
-            ).versionName
-            val stream = resources.openRawResource(R.raw.help)
-            val htmlString = convertStreamToString(stream)
-            stream.close()
-            binding.usageNotesHtml.text =
-                HtmlCompat.fromHtml(htmlString, HtmlCompat.FROM_HTML_MODE_LEGACY).dropLast(2)
-            binding.usageNotesHtml.movementMethod = LinkMovementMethod.getInstance()
-        } catch (e: IOException) {
-            binding.usageNotesHtml.text = e.toString()
-        } catch (ignored: PackageManager.NameNotFoundException) {
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    private fun HelpPage() {
+        AppTheme(
+            darkTheme = isSystemInDarkTheme()
+        ) {
+            Scaffold(
+                topBar = {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.app_name),
+                            style = MaterialTheme.typography.headlineMedium,
+                            modifier = Modifier.weight(1f),
+                            maxLines = 1
+                        )
+                        RoundButton(icon = painterResource(id = R.drawable.ic_arrow_down)) {
+                            dismissAllowingStateLoss()
+                        }
+                    }
+                }
+            ) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(8.dp)
+                ) {
+                    item {
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            containerColor = MaterialTheme.colorScheme.background,
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface)
+                        ) {
+                            linksList.forEach {
+                                LinkItem(
+                                    item = it,
+                                    onClick = { uriString ->
+                                        requireContext().startActivity(
+                                            Intent(
+                                                Intent.ACTION_VIEW,
+                                                Uri.parse(uriString)
+                                            )
+                                        )
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    item { TitleText(R.string.help_legend) }
+                    gridItems(
+                        items = legendList,
+                        columns = 2,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        LegendItem(item = it)
+                    }
+                    item {
+                        Text(
+                            text = stringResource(id = R.string.help_appTypeHint),
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+                    item {
+                        val (showNotes, extendNotes) = remember { mutableStateOf(false) }
+
+                        OutlinedCard(
+                            modifier = Modifier.fillMaxWidth(),
+                            containerColor = MaterialTheme.colorScheme.background,
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { extendNotes(!showNotes) }
+                                    .padding(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                TitleText(
+                                    textId = R.string.usage_notes_title,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                Icon(
+                                    painter = painterResource(
+                                        id = if (showNotes) R.drawable.ic_arrow_up
+                                        else R.drawable.ic_arrow_down
+                                    ),
+                                    contentDescription = null
+                                )
+                            }
+                            AnimatedVisibility(
+                                visible = showNotes,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(text = getUsageNotes(), modifier = Modifier.padding(8.dp))
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
-    private fun usageNotesExtendShrink(extended: Boolean) {
-        val rotate = AnimationUtils.loadAnimation(context, R.anim.anim_rotate)
-        if (extended) {
-            binding.usageNotesHtml.visibility = View.GONE
-            binding.extendShrink.startAnimation(rotate)
-            binding.extendShrink.rotation = 0.0F
-        } else {
-            binding.usageNotesHtml.visibility = View.VISIBLE
-            binding.extendShrink.startAnimation(rotate)
-            binding.extendShrink.rotation = 180.0F
-        }
+    private fun getUsageNotes(): String = try {
+        // binding.helpVersionName.text = requireActivity().packageManager.getPackageInfo(requireActivity().packageName, 0).versionName
+        val stream = resources.openRawResource(R.raw.help)
+        val htmlString = convertStreamToString(stream)
+        stream.close()
+        HtmlCompat.fromHtml(htmlString, HtmlCompat.FROM_HTML_MODE_LEGACY).dropLast(2).toString()
+    } catch (e: IOException) {
+        e.toString()
+    } catch (ignored: PackageManager.NameNotFoundException) {
+        ""
     }
 
     companion object {
