@@ -80,7 +80,7 @@ class MainActivityX : BaseActivity() {
 
         OABX.appsSuspendedChecked = false
 
-        if (OABX.prefFlag(PREFS_CATCHUNCAUGHT, true)) {
+        if (OABX.prefFlag(PREFS_CATCHUNCAUGHT, false)) {
             Thread.setDefaultUncaughtExceptionHandler { _, e ->
                 try {
                     val maxCrashLines = OABX.prefInt(PREFS_MAXCRASHLINES, 100)
