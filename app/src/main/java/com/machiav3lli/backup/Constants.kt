@@ -18,6 +18,8 @@
 package com.machiav3lli.backup
 
 import com.machiav3lli.backup.ui.item.ChipItem
+import com.machiav3lli.backup.ui.item.Legend
+import com.machiav3lli.backup.ui.item.Link
 import java.time.format.DateTimeFormatter
 
 const val PREFS_SHARED_PRIVATE = "com.machiav3lli.backup"
@@ -186,6 +188,26 @@ const val HELP_ELEMENT =
 const val HELP_LICENSE = "https://github.com/NeoApplications/Neo-Backup/blob/master/LICENSE.md"
 const val HELP_ISSUES = "https://github.com/NeoApplications/Neo-Backup/blob/master/ISSUES.md"
 const val HELP_FAQ = "https://github.com/NeoApplications/Neo-Backup/blob/master/FAQ.md"
+
+val linksList =
+    listOf(Link.Changelog, Link.Telegram, Link.Matrix, Link.License, Link.Issues, Link.FAQ)
+
+val legendList = listOf(
+    Legend.Exodus,
+    Legend.Launch,
+    Legend.Disable,
+    Legend.Enable,
+    Legend.System,
+    Legend.User,
+    Legend.Special,
+    Legend.APK,
+    Legend.Data,
+    Legend.DE_Data,
+    Legend.External,
+    Legend.OBB,
+    Legend.Media,
+    Legend.Updated
+)
 
 val BACKUP_DATE_TIME_FORMATTER_OLD: DateTimeFormatter =
     DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss")
