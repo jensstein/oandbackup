@@ -707,10 +707,14 @@ fun ScheduleFilters(
 }
 
 @Composable
-fun TitleText(textId: Int) = Text(
+fun TitleText(
+    textId: Int,
+    modifier: Modifier = Modifier
+) = Text(
     text = stringResource(id = textId),
     style = MaterialTheme.typography.titleMedium,
-    fontWeight = FontWeight.Bold
+    fontWeight = FontWeight.Bold,
+    modifier = modifier
 )
 
 @Composable
