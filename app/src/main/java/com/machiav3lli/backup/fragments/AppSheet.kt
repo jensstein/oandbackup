@@ -21,24 +21,56 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.TypedValue
+import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Text
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipDrawable
 import com.machiav3lli.backup.ActionListener
 import com.machiav3lli.backup.BUNDLE_USERS
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.databinding.SheetAppBinding
+import com.machiav3lli.backup.databinding.FragmentComposeBinding
 import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dialogs.BackupDialogFragment
@@ -50,13 +82,15 @@ import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.tasks.BackupActionTask
 import com.machiav3lli.backup.tasks.RestoreActionTask
+import com.machiav3lli.backup.ui.compose.item.ActionChip
+import com.machiav3lli.backup.ui.compose.item.CardButton
+import com.machiav3lli.backup.ui.compose.item.PackageIcon
+import com.machiav3lli.backup.ui.compose.item.RoundButton
+import com.machiav3lli.backup.ui.compose.item.TitleText
 import com.machiav3lli.backup.ui.compose.recycler.BackupRecycler
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
-import com.machiav3lli.backup.utils.changeVisibility
-import com.machiav3lli.backup.utils.pickSheetAppType
-import com.machiav3lli.backup.utils.pickSheetDataSizes
-import com.machiav3lli.backup.utils.pickSheetVersionName
-import com.machiav3lli.backup.utils.setIcon
+import com.machiav3lli.backup.ui.compose.theme.LocalShapes
+import com.machiav3lli.backup.ui.compose.theme.Updated
 import com.machiav3lli.backup.utils.showError
 import com.machiav3lli.backup.utils.showToast
 import com.machiav3lli.backup.viewmodels.AppSheetViewModel
@@ -64,7 +98,7 @@ import timber.log.Timber
 
 class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
     BaseSheet(), ActionListener {
-    private lateinit var binding: SheetAppBinding
+    private lateinit var binding: FragmentComposeBinding
     private lateinit var viewModel: AppSheetViewModel
 
     val packageName: String?
@@ -75,7 +109,7 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = SheetAppBinding.inflate(inflater, container, false)
+        binding = FragmentComposeBinding.inflate(inflater, container, false)
         val users =
             if (savedInstanceState != null) savedInstanceState.getStringArrayList(BUNDLE_USERS) else ArrayList()
         val shellCommands = ShellCommands(users)
@@ -96,148 +130,433 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setup(false)
+        redrawPage()
     }
 
     fun updateApp(app: Package) {
         viewModel.appInfo.value = app
-        setup(true)
+        redrawPage()
     }
 
-    private fun setup(update: Boolean) {
-        setupOnClicks()
-        setupChips(update)
-        setupAppInfo(update)
-        setupExtras()
-        setupBackupList()
-    }
-
-    private fun setupBackupList() {
+    @OptIn(ExperimentalMaterial3Api::class)
+    private fun redrawPage() {
         viewModel.appInfo.value?.let {
-            when {
-                it.hasBackups -> {
-                    binding.recyclerView.visibility = View.VISIBLE
-                    binding.recyclerView.setContent {
-                        AppTheme(
-                            darkTheme = isSystemInDarkTheme()
+            binding.composeView.setContent {
+                val imageData by remember(it) {
+                    mutableStateOf(
+                        if (it.isSpecial) it.packageInfo.icon
+                        else "android.resource://${it.packageName}/${it.packageInfo.icon}"
+                    )
+                }
+                val snackbarText by viewModel.snackbarText.observeAsState()
+
+                AppTheme(
+                    darkTheme = isSystemInDarkTheme()
+                ) {
+                    CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState())
+                                .padding(horizontal = 8.dp),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
-                            BackupRecycler(productsList = it.backupList.sortedByDescending { item -> item.backupDate },
-                                onRestore = { item ->
-                                    val properties = item
-                                    viewModel.appInfo.value?.let { app ->
-                                        if (!app.isSpecial && !app.isInstalled
-                                            && !properties.hasApk && properties.hasAppData
+                            OutlinedCard(
+                                modifier = Modifier.padding(top = 8.dp),
+                                shape = RoundedCornerShape(LocalShapes.current.medium),
+                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface),
+                                //colors = CardDefaults.outlinedCardColors(
+                                containerColor = MaterialTheme.colorScheme.background
+                                //)
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(IntrinsicSize.Min)
+                                        .padding(8.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    PackageIcon(item = it, imageData = imageData)
+
+                                    Column(
+                                        modifier = Modifier
+                                            .wrapContentHeight()
+                                            .width(IntrinsicSize.Min)
+                                            .weight(1f)
+                                    ) {
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .fillMaxHeight(0.4f),
                                         ) {
-                                            requireActivity().showToast(getString(R.string.notInstalledModeDataWarning))
-                                        } else {
-                                            RestoreDialogFragment(app, properties, this@AppSheet)
-                                                .show(
-                                                    requireActivity().supportFragmentManager,
-                                                    "restoreDialog"
-                                                )
+                                            Text(
+                                                text = it.packageLabel,
+                                                modifier = Modifier
+                                                    .align(Alignment.CenterVertically)
+                                                    .weight(1f),
+                                                softWrap = true,
+                                                overflow = TextOverflow.Ellipsis,
+                                                maxLines = 1,
+                                                style = MaterialTheme.typography.titleMedium
+                                            )
+                                        }
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .fillMaxHeight(0.4f),
+                                        ) {
+                                            Text(
+                                                text = it.packageName,
+                                                modifier = Modifier
+                                                    .align(Alignment.CenterVertically)
+                                                    .weight(1f),
+                                                softWrap = true,
+                                                overflow = TextOverflow.Ellipsis,
+                                                maxLines = 1,
+                                                style = MaterialTheme.typography.bodySmall,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
                                         }
                                     }
-                                },
-                                onDelete = { item ->
-                                    viewModel.appInfo.value?.let { app ->
-                                        AlertDialog.Builder(requireContext())
-                                            .setTitle(app.packageLabel)
-                                            .setMessage(R.string.deleteBackupDialogMessage)
-                                            .setPositiveButton(R.string.dialogYes) { dialog: DialogInterface?, _: Int ->
-                                                requireActivity().showToast(
-                                                    "${app.packageLabel}: ${
-                                                        getString(
-                                                            R.string.deleteBackup
-                                                        )
-                                                    }"
-                                                )
-                                                if (!app.hasBackups) {
-                                                    Timber.w("UI Issue! Tried to delete backups for app without backups.")
-                                                    dialog?.dismiss()
-                                                }
-                                                viewModel.deleteBackup(item)
-                                            }
-                                            .setNegativeButton(R.string.dialogNo, null)
-                                            .show()
+                                    AnimatedVisibility(visible = it.isInstalled && !it.isSpecial) {
+                                        RoundButton(
+                                            icon = painterResource(id = R.drawable.ic_info),
+                                            modifier = Modifier.fillMaxHeight()
+                                        ) {
+                                            val intent =
+                                                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                            intent.data =
+                                                Uri.fromParts("package", it.packageName, null)
+                                            startActivity(intent)
+                                        }
+                                    }
+                                    RoundButton(
+                                        icon = painterResource(id = R.drawable.ic_arrow_down),
+                                        modifier = Modifier.fillMaxHeight()
+                                    ) {
+                                        dismissAllowingStateLoss()
                                     }
                                 }
-                            )
+                            }
+                            AnimatedVisibility(visible = !snackbarText.isNullOrEmpty()) {
+                                Text(
+                                    text = snackbarText.toString(),
+                                    color = MaterialTheme.colorScheme.primary,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                            AnimatedVisibility(
+                                modifier = Modifier.fillMaxWidth(),
+                                visible = !it.isSpecial
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(IntrinsicSize.Min),
+                                    horizontalArrangement = Arrangement.spacedBy(2.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    // TODO Add enabled state
+                                    CardButton(
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .weight(1f),
+                                        icon = painterResource(id = R.drawable.ic_exodus),
+                                        tint = colorResource(id = R.color.ic_exodus),
+                                        description = stringResource(id = R.string.exodus_report)
+                                    ) {
+                                        requireContext().startActivity(
+                                            Intent(
+                                                Intent.ACTION_VIEW,
+                                                Uri.parse(exodusUrl(it.packageName))
+                                            )
+                                        )
+                                    }
+                                    AnimatedVisibility(
+                                        visible = it.isInstalled,
+                                        modifier = Modifier.weight(1f)
+                                    ) {
+                                        CardButton(
+                                            modifier = Modifier
+                                                .fillMaxHeight()
+                                                .weight(1f),
+                                            icon = painterResource(id = R.drawable.ic_launchable),
+                                            tint = colorResource(id = R.color.ic_obb),
+                                            description = stringResource(id = R.string.launch_app)
+                                        ) {
+                                            requireContext().packageManager.getLaunchIntentForPackage(
+                                                it.packageName
+                                            )?.let {
+                                                startActivity(it)
+                                            }
+                                        }
+                                    }
+                                    AnimatedVisibility(
+                                        visible = it.isInstalled,
+                                        modifier = Modifier.weight(1f)
+                                    ) {
+                                        CardButton(
+                                            modifier = Modifier
+                                                .fillMaxHeight()
+                                                .weight(1f),
+                                            icon = painterResource(
+                                                id = if (it.isDisabled) R.drawable.ic_battery_optimization
+                                                else R.drawable.ic_exclude
+                                            ),
+                                            tint = if (it.isDisabled) MaterialTheme.colorScheme.primaryContainer
+                                            else MaterialTheme.colorScheme.secondary,
+                                            description = stringResource(
+                                                id = if (it.isDisabled) R.string.enablePackage
+                                                else R.string.disablePackage
+                                            ),
+                                            onClick = { showEnableDisableDialog(it.isDisabled) }
+                                        )
+                                    }
+                                    AnimatedVisibility(
+                                        visible = it.isInstalled && !it.isSystem,
+                                        modifier = Modifier.weight(1f)
+                                    ) {
+                                        CardButton(
+                                            modifier = Modifier
+                                                .fillMaxHeight()
+                                                .weight(1f),
+                                            icon = painterResource(id = R.drawable.ic_delete),
+                                            tint = MaterialTheme.colorScheme.secondary,
+                                            description = stringResource(id = R.string.uninstall),
+                                            onClick = { showUninstallDialog(it) }
+                                        )
+                                    }
+                                    CardButton(
+                                        modifier = Modifier
+                                            .weight(1f),
+                                        icon = painterResource(id = R.drawable.ic_blocklist),
+                                        tint = colorResource(id = R.color.ic_updated),
+                                        description = stringResource(id = R.string.global_blocklist_add)
+                                    ) {
+                                        requireMainActivity().viewModel.addToBlocklist(it.packageName)
+                                    }
+                                }
+                            }
+                            AnimatedVisibility(
+                                visible = !it.isSpecial,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .width(IntrinsicSize.Min)
+                                ) {
+                                    Row {
+                                        Text(text = stringResource(id = R.string.app_s_type_title))
+                                        Text(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.End,
+                                            text = stringResource(id = if (it.isSpecial) R.string.apptype_special else if (it.isSystem) R.string.apptype_system else R.string.apptype_user),
+                                            color = when {
+                                                !it.isInstalled -> MaterialTheme.colorScheme.onSurfaceVariant
+                                                it.isDisabled -> MaterialTheme.colorScheme.surfaceVariant
+                                                it.isSpecial -> colorResource(R.color.ic_special)
+                                                it.isSystem -> colorResource(R.color.ic_system)
+                                                else -> colorResource(R.color.ic_user)
+                                            }
+                                        )
+                                    }
+                                    Row {
+                                        Text(text = stringResource(id = R.string.version_name_title))
+                                        Text(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.End,
+                                            text = if (it.isUpdated) "${it.latestBackup?.versionName.orEmpty()} (${it.versionName})"
+                                            else it.versionName.orEmpty(),
+                                            color = if (it.isUpdated) Updated else MaterialTheme.colorScheme.onBackground
+                                        )
+                                    }
+                                    AnimatedVisibility(
+                                        visible = it.isInstalled,
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(IntrinsicSize.Min),
+                                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                        ) {
+                                            Column(
+                                                modifier = Modifier
+                                                    .weight(1f)
+                                                    .width(IntrinsicSize.Min)
+                                            ) {
+                                                Text(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    text = stringResource(id = R.string.app_size)
+                                                )
+                                                Text(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    textAlign = TextAlign.End,
+                                                    text = Formatter.formatFileSize(
+                                                        requireContext(),
+                                                        it.storageStats?.appBytes ?: 0
+                                                    )
+                                                )
+                                                Text(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    text = stringResource(id = R.string.split_apks)
+                                                )
+                                                Text(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    textAlign = TextAlign.End,
+                                                    text = stringResource(id = if (it.apkSplits.isNullOrEmpty()) R.string.dialogNo else R.string.dialogYes)
+                                                )
+                                            }
+                                            Divider(
+                                                color = MaterialTheme.colorScheme.surface,
+                                                modifier = Modifier
+                                                    .fillMaxHeight()
+                                                    .width(1.dp)
+                                            )
+                                            Column(
+                                                modifier = Modifier
+                                                    .weight(1f)
+                                                    .width(IntrinsicSize.Min)
+                                            ) {
+                                                AnimatedVisibility(
+                                                    visible = it.isInstalled,
+                                                    modifier = Modifier.fillMaxWidth()
+                                                ) {
+                                                    Column {
+                                                        Text(
+                                                            modifier = Modifier.fillMaxWidth(),
+                                                            text = stringResource(id = R.string.data_size)
+                                                        )
+                                                        Text(
+                                                            modifier = Modifier.fillMaxWidth(),
+                                                            textAlign = TextAlign.End,
+                                                            text = Formatter.formatFileSize(
+                                                                requireContext(),
+                                                                it.storageStats?.dataBytes ?: 0
+                                                            ),
+                                                        )
+                                                        Text(
+                                                            modifier = Modifier.fillMaxWidth(),
+                                                            text = stringResource(id = R.string.cache_size)
+                                                        )
+                                                        Text(
+                                                            modifier = Modifier.fillMaxWidth(),
+                                                            textAlign = TextAlign.End,
+                                                            text = Formatter.formatFileSize(
+                                                                requireContext(),
+                                                                it.storageStats?.cacheBytes ?: 0
+                                                            ),
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            TitleText(textId = R.string.available_actions)
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                AnimatedVisibility(visible = it.isInstalled || it.isSpecial) {
+                                    ActionChip(
+                                        icon = painterResource(id = R.drawable.ic_backup),
+                                        text = stringResource(id = R.string.backup),
+                                        fullWidth = true,
+                                        enabled = snackbarText.isNullOrEmpty(),
+                                        onClick = { showBackupDialog(it) }
+                                    )
+                                }
+                                AnimatedVisibility(visible = it.hasBackups) {
+                                    ActionChip(
+                                        icon = painterResource(id = R.drawable.ic_delete),
+                                        text = stringResource(id = R.string.delete_all_backups),
+                                        fullWidth = true,
+                                        positive = false,
+                                        enabled = snackbarText.isNullOrEmpty(),
+                                        onClick = { showDeleteAllBackupsDialog(it) }
+                                    )
+                                }
+                                AnimatedVisibility(visible = it.isInstalled && !it.isSpecial) {
+                                    ActionChip(
+                                        icon = painterResource(id = R.drawable.ic_force_kill),
+                                        text = stringResource(id = R.string.forceKill),
+                                        fullWidth = true,
+                                        colored = false,
+                                        onClick = { showForceKillDialog(it) }
+                                    )
+                                }
+                                AnimatedVisibility(visible = it.isInstalled && !it.isSpecial && it.storageStats?.dataBytes ?: 0 >= 0L) {
+                                    ActionChip(
+                                        icon = painterResource(id = R.drawable.ic_delete),
+                                        text = stringResource(id = R.string.clear_cache),
+                                        fullWidth = true,
+                                        colored = false,
+                                        onClick = { showClearCacheDialog(it) }
+                                    )
+                                }
+                            }
+                            if (it.hasBackups) {
+                                BackupRecycler(productsList = it.backupList.sortedByDescending { item -> item.backupDate },
+                                    onRestore = { item ->
+                                        viewModel.appInfo.value?.let { app ->
+                                            if (!app.isSpecial && !app.isInstalled
+                                                && !item.hasApk && item.hasAppData
+                                            ) {
+                                                requireActivity().showToast(getString(R.string.notInstalledModeDataWarning))
+                                            } else {
+                                                RestoreDialogFragment(
+                                                    app,
+                                                    item,
+                                                    this@AppSheet
+                                                )
+                                                    .show(
+                                                        requireActivity().supportFragmentManager,
+                                                        "restoreDialog"
+                                                    )
+                                            }
+                                        }
+                                    },
+                                    onDelete = { item ->
+                                        viewModel.appInfo.value?.let { app ->
+                                            AlertDialog.Builder(requireContext())
+                                                .setTitle(app.packageLabel)
+                                                .setMessage(R.string.deleteBackupDialogMessage)
+                                                .setPositiveButton(R.string.dialogYes) { dialog: DialogInterface?, _: Int ->
+                                                    requireActivity().showToast(
+                                                        "${app.packageLabel}: ${
+                                                            getString(
+                                                                R.string.deleteBackup
+                                                            )
+                                                        }"
+                                                    )
+                                                    if (!app.hasBackups) {
+                                                        Timber.w("UI Issue! Tried to delete backups for app without backups.")
+                                                        dialog?.dismiss()
+                                                    }
+                                                    viewModel.deleteBackup(item)
+                                                }
+                                                .setNegativeButton(R.string.dialogNo, null)
+                                                .show()
+                                        }
+                                    }
+                                )
+                            }
                         }
                     }
                 }
-                else -> binding.recyclerView.visibility = View.GONE
             }
         }
     }
 
-    private fun setupChips(update: Boolean) {
-        viewModel.appInfo.value?.let {
-            if (!it.isInstalled || it.isSpecial) {
-                // TODO add isLaunchable attribute to AppInfo
-                binding.launchApp.changeVisibility(View.INVISIBLE, update)
-                binding.uninstall.changeVisibility(View.INVISIBLE, update)
-                binding.enableDisable.changeVisibility(View.INVISIBLE, update)
-                binding.appInfo.changeVisibility(View.GONE, update)
-                binding.appSizeLine.changeVisibility(View.GONE, update)
-                binding.dataSizeLine.changeVisibility(View.GONE, update)
-                binding.splitsLine.changeVisibility(View.GONE, update)
-                binding.cacheSizeLine.changeVisibility(View.GONE, update)
-                binding.forceKill.changeVisibility(View.GONE, update)
-                binding.wipeCache.changeVisibility(View.GONE, update)
-                if (it.isSpecial) {
-                    binding.manager.changeVisibility(View.GONE, update)
-                    binding.backup.changeVisibility(View.VISIBLE, update)
-                } else {
-                    binding.manager.changeVisibility(View.VISIBLE, update)
-                    binding.backup.changeVisibility(View.GONE, update)
-                }
-            } else {
-                binding.launchApp.changeVisibility(View.VISIBLE, update)
-                binding.uninstall.changeVisibility(View.VISIBLE, update)
-                binding.enableDisable.changeVisibility(View.VISIBLE, update)
-                binding.appInfo.changeVisibility(View.VISIBLE, update)
-                binding.appSizeLine.changeVisibility(View.VISIBLE, update)
-                binding.dataSizeLine.changeVisibility(View.VISIBLE, update)
-                binding.splitsLine.changeVisibility(View.VISIBLE, update)
-                binding.cacheSizeLine.changeVisibility(View.VISIBLE, update)
-                binding.forceKill.changeVisibility(View.VISIBLE, update)
-                binding.wipeCache.changeVisibility(View.VISIBLE, update)
-                binding.backup.changeVisibility(View.VISIBLE, update)
-                if (it.isDisabled) {
-                    binding.enableDisable.setImageResource(R.drawable.ic_battery_optimization)
-                    binding.enableDisable.tooltipText = getString(R.string.enablePackage)
-                } else {
-                    binding.enableDisable.setImageResource(R.drawable.ic_exclude)
-                    binding.enableDisable.tooltipText = getString(R.string.disablePackage)
-                }
-            }
-            if (it.isSystem) {
-                binding.uninstall.changeVisibility(View.INVISIBLE, update)
-            }
-        }
-    }
-
-    private fun setupAppInfo(update: Boolean) {
-        viewModel.appInfo.value?.let {
-            val appMetaInfo = it.packageInfo
-            binding.icon.setIcon(appMetaInfo)
-            binding.label.text = appMetaInfo.packageLabel
-            binding.packageName.text = it.packageName
-            binding.appType.setText(if (appMetaInfo.isSystem) R.string.apptype_system else R.string.apptype_user)
-            context?.let { context -> binding.pickSheetDataSizes(context, it, update) }
-            binding.appSplits.setText(if (it.apkSplits.isNullOrEmpty()) R.string.dialogNo else R.string.dialogYes)
-            binding.versionName.text = appMetaInfo.versionName
-            if (it.hasBackups) {
-                binding.pickSheetVersionName(it)
-                binding.deleteAll.visibility = View.VISIBLE
-            } else {
-                binding.deleteAll.visibility = View.GONE
-            }
-            binding.appType.pickSheetAppType(it)
-        }
-    }
-
+    /* TODO re-add extras
     private fun setupExtras() {
+
         binding.noteText.setText(appExtras.note.toCharArray(), 0, appExtras.note.length)
         binding.tagsGroup.removeAllViews()
         appExtras.customTags.forEach { pn ->
@@ -267,10 +586,6 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
     }
 
     private fun setupOnClicks() {
-
-        // close
-        binding.dismiss.setOnClickListener { dismissAllowingStateLoss() }
-
         // tags
         binding.addTag.setOnClickListener {
             appExtras.customTags = appExtras.customTags.plus(binding.newTag.text.toString())
@@ -283,110 +598,7 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
             appExtras.note = binding.noteText.text.toString()
             viewModel.refreshNow.value = true
         }
-
-        viewModel.appInfo.value?.let { app: Package ->
-
-            // details
-            binding.appInfo.setOnClickListener {
-                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                intent.data = Uri.fromParts("package", app.packageName, null)
-                this.startActivity(intent)
-            }
-
-            // exodus
-            binding.exodusReport.setOnClickListener {
-                requireContext().startActivity(
-                    Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse(exodusUrl(app.packageName))
-                    )
-                )
-            }
-
-            // launch
-            binding.launchApp.setOnClickListener {
-                requireContext().packageManager.getLaunchIntentForPackage(app.packageName)?.let {
-                    startActivity(it)
-                }
-            }
-
-            // enable/disable
-            binding.enableDisable.setOnClickListener { displayDialogEnableDisable(app.isDisabled) }
-
-            // uninstall
-            binding.uninstall.setOnClickListener {
-                AlertDialog.Builder(requireContext())
-                    .setTitle(app.packageLabel)
-                    .setMessage(R.string.uninstallDialogMessage)
-                    .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
-                        requireActivity().showToast("${app.packageLabel}: ${getString(R.string.uninstallProgress)}")
-                        viewModel.uninstallApp()
-                    }
-                    .setNegativeButton(R.string.dialogNo, null)
-                    .show()
-            }
-
-            // blocklist
-            binding.addToBlocklist.setOnClickListener {
-                requireMainActivity().viewModel.addToBlocklist(app.packageName)
-            }
-
-            // backup
-            binding.backup.setOnClickListener {
-                BackupDialogFragment(app, this)
-                    .show(requireActivity().supportFragmentManager, "backupDialog")
-            }
-
-            // delete all backups
-            binding.deleteAll.setOnClickListener {
-                AlertDialog.Builder(requireContext())
-                    .setTitle(app.packageLabel)
-                    .setMessage(R.string.deleteBackupDialogMessage)
-                    .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
-                        requireActivity().showToast("${app.packageLabel}: ${getString(R.string.delete_all_backups)}")
-                        viewModel.deleteAllBackups()
-                    }
-                    .setNegativeButton(R.string.dialogNo, null)
-                    .show()
-            }
-
-            // force-kill (TODO hg42 force-stop, force-close, ... ? I think these are different ones, and I don't know which)
-            binding.forceKill.setOnClickListener {
-                AlertDialog.Builder(requireContext())
-                    .setTitle(app.packageLabel)
-                    .setMessage(R.string.forceKillMessage)
-                    .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
-                        (requireContext().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
-                            .killBackgroundProcesses(app.packageName)
-                    }
-                    .setNegativeButton(R.string.dialogNo, null)
-                    .show()
-            }
-
-            // clear cache
-            binding.wipeCache.setOnClickListener {
-                try {
-                    Timber.i("$it: Wiping cache")
-                    ShellCommands.wipeCache(requireContext(), app)
-                    viewModel.refreshNow.value = true
-                } catch (e: ShellCommands.ShellActionFailedException) {
-                    // Not a critical issue
-                    val errorMessage: String =
-                        when (e.cause) {
-                            is ShellHandler.ShellCommandFailedException -> {
-                                e.cause.shellResult.err.joinToString(
-                                    " "
-                                )
-                            }
-                            else -> {
-                                e.cause?.message ?: "unknown error"
-                            }
-                        }
-                    Timber.w("Cache couldn't be deleted: $errorMessage")
-                }
-            }
-        }
-    }
+    } */
 
     override fun onActionCalled(
         actionType: ActionType?,
@@ -419,7 +631,7 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
         }
     }
 
-    private fun displayDialogEnableDisable(enable: Boolean) {
+    private fun showEnableDisableDialog(enable: Boolean) {
         val title =
             if (enable) getString(R.string.enablePackageTitle) else getString(R.string.disablePackageTitle)
         try {
@@ -454,18 +666,81 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
         }
     }
 
-    fun showSnackBar(message: String) {
-        binding.snackbarText.apply {
-            text = message
-            visibility = View.VISIBLE
+    private fun showUninstallDialog(app: Package) {
+        AlertDialog.Builder(requireContext())
+            .setTitle(app.packageLabel)
+            .setMessage(R.string.uninstallDialogMessage)
+            .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
+                requireActivity().showToast("${app.packageLabel}: ${getString(R.string.uninstallProgress)}")
+                viewModel.uninstallApp()
+            }
+            .setNegativeButton(R.string.dialogNo, null)
+            .show()
+    }
+
+    private fun showBackupDialog(app: Package) {
+        BackupDialogFragment(app, this)
+            .show(requireActivity().supportFragmentManager, "backupDialog")
+    }
+
+    private fun showDeleteAllBackupsDialog(app: Package) {
+        AlertDialog.Builder(requireContext())
+            .setTitle(app.packageLabel)
+            .setMessage(R.string.deleteBackupDialogMessage)
+            .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
+                requireActivity().showToast(
+                    "${app.packageLabel}: ${
+                        getString(
+                            R.string.delete_all_backups
+                        )
+                    }"
+                )
+                viewModel.deleteAllBackups()
+            }
+            .setNegativeButton(R.string.dialogNo, null)
+            .show()
+    }
+
+    // TODO hg42 force-stop, force-close, ... ? I think these are different ones, and I don't know which
+    private fun showForceKillDialog(app: Package) {
+        AlertDialog.Builder(requireContext())
+            .setTitle(app.packageLabel)
+            .setMessage(R.string.forceKillMessage)
+            .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
+                (requireContext().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
+                    .killBackgroundProcesses(app.packageName)
+            }
+            .setNegativeButton(R.string.dialogNo, null)
+            .show()
+    }
+
+    private fun showClearCacheDialog(app: Package) {
+        try {
+            Timber.i("${app.packageLabel}: Wiping cache")
+            ShellCommands.wipeCache(requireContext(), app)
+            viewModel.refreshNow.value = true
+        } catch (e: ShellCommands.ShellActionFailedException) {
+            // Not a critical issue
+            val errorMessage: String =
+                when (e.cause) {
+                    is ShellHandler.ShellCommandFailedException -> {
+                        e.cause.shellResult.err.joinToString(
+                            " "
+                        )
+                    }
+                    else -> {
+                        e.cause?.message ?: "unknown error"
+                    }
+                }
+            Timber.w("Cache couldn't be deleted: $errorMessage")
         }
-        binding.backup.isEnabled = false
-        binding.deleteAll.isEnabled = false
+    }
+
+    fun showSnackBar(message: String) {
+        viewModel.snackbarText.value = message
     }
 
     fun dismissSnackBar() {
-        binding.snackbarText.visibility = View.GONE
-        binding.backup.isEnabled = true
-        binding.deleteAll.isEnabled = true
+        viewModel.snackbarText.value = ""
     }
 }

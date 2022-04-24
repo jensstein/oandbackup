@@ -47,6 +47,7 @@ class AppSheetViewModel(
     private var notificationId: Int
 
     val refreshNow = MutableLiveData<Boolean>()
+    val snackbarText = MutableLiveData<String>()
 
     init {
         appInfo.value = app
