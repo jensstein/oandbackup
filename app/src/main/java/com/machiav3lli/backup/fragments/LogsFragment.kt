@@ -22,8 +22,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.ui.Modifier
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.machiav3lli.backup.databinding.FragmentComposeBinding
@@ -80,8 +83,12 @@ class LogsFragment : Fragment() {
             AppTheme(
                 darkTheme = isSystemInDarkTheme()
             ) {
-                Scaffold {
-                    LogRecycler(productsList = list.sortedByDescending(Log::logDate),
+                Scaffold { paddingValues ->
+                    LogRecycler(
+                        modifier = Modifier
+                            .padding(paddingValues)
+                            .fillMaxSize(),
+                        productsList = list.sortedByDescending(Log::logDate),
                         onShare = { viewModel.shareLog(it) },
                         onDelete = { viewModel.deleteLog(it) }
                     )

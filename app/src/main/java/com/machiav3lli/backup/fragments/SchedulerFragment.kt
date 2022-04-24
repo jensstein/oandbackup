@@ -123,10 +123,11 @@ class SchedulerFragment : NavigationFragment() {
                             )
                         }
                     }
-                ) {
+                ) { paddingValues ->
                     Column {
                         ScheduleRecycler(
                             modifier = Modifier
+                                .padding(paddingValues)
                                 .weight(1f)
                                 .fillMaxWidth(),
                             productsList = list,

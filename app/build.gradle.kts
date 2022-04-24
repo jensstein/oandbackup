@@ -19,9 +19,9 @@ import com.android.build.gradle.internal.tasks.factory.dependsOn
 
 plugins {
     id("com.android.application")
-    id("kotlin-android")
-    id("kotlin-kapt")
-    kotlin("plugin.serialization") version "1.6.10"
+    kotlin("android")
+    kotlin("kapt")
+    kotlin("plugin.serialization").version("1.6.10")
 }
 
 android {
@@ -34,7 +34,7 @@ android {
         versionCode = 8000
         versionName = "8.0.0"
         buildConfigField("int", "MAJOR", "8")
-        buildConfigField("int","MINOR", "0")
+        buildConfigField("int", "MINOR", "0")
 
         testApplicationId = "${applicationId}.tests"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

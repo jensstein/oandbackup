@@ -80,7 +80,7 @@ class SortFilterSheet(
         mSortFilterModel = requireContext().sortFilterModel
 
         return ComposeView(requireContext()).apply {
-            setContent { ScheduleSheetPage() }
+            setContent { SortFilterPage() }
         }
     }
 
@@ -90,7 +90,7 @@ class SortFilterSheet(
         ExperimentalLayoutApi::class
     )
     @Composable
-    fun ScheduleSheetPage() {
+    fun SortFilterPage() {
         AppTheme(
             darkTheme = isSystemInDarkTheme()
         ) {
@@ -110,7 +110,9 @@ class SortFilterSheet(
                         ) {
                             OutlinedCard(
                                 modifier = Modifier.padding(top = 4.dp),
-                                containerColor = MaterialTheme.colorScheme.background,
+                                //colors = CardDefaults.outlinedCardColors(
+                                    containerColor = MaterialTheme.colorScheme.background,
+                                //),
                                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface)
                             ) {
                                 Row(

@@ -27,6 +27,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import com.machiav3lli.backup.BuildConfig
@@ -93,11 +94,11 @@ class MainActivityX : BaseActivity() {
                                 ).out.joinToString("\n")
                     )
                     val longToastTime = 3500
-                    val showTime = 21*1000
+                    val showTime = 21 * 1000
                     object : Thread() {
                         override fun run() {
                             Looper.prepare()
-                            repeat(showTime/longToastTime) {
+                            repeat(showTime / longToastTime) {
                                 Toast.makeText(
                                     context,
                                     "Uncaught Exception\n${e.message}\n${e.cause}\nrestarting application...",

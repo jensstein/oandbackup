@@ -107,15 +107,14 @@ fun cancelAlarm(context: Context, scheduleId: Long) {
 
 fun createPendingIntent(context: Context, scheduleId: Long): PendingIntent {
     val alarmIntent = Intent(context, AlarmReceiver::class.java).apply {
-        setAction("schedule")
+        action = "schedule"
         putExtra("scheduleId", scheduleId)
         addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
     }
-    val pendingIntent = PendingIntent.getBroadcast(
+    return PendingIntent.getBroadcast(
         context,
         scheduleId.toInt(),
         alarmIntent,
         PendingIntent.FLAG_IMMUTABLE
     )
-    return pendingIntent
 }
