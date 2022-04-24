@@ -169,7 +169,7 @@
     <string name="intro_permission_batteryoptimization">Uygulama, agresif pil optimizasyonları kullanan bazı ROM\'larda, örn. MIUI, zamanlanmış yedekleme yaparken bazı sorunlarla karşılaşabilir ancak sıradan AOSP\'de bile böyle bir sorun meydana gelebilir.</string>
     <string name="intro_permission_usageaccess">Uygulamanın, verilerinizin istatistikleri ve boyutları ile uygulamalarınızın önbelleğini denetleyebilmesi için bu izne ihtiyacı vardır.</string>
     <string name="intro_permission_storage">Bu uygulama, harici depolamaya erişmek ve diğer uygulamaların harici verilerinin/obb\'sinin yedeklenmesine olanak sağlamak için depolama okuma/yazma iznini kullanır.</string>
-    <string name="welcome_to_oabx">OABX\'e hoş geldiniz!</string>
+    <string name="welcome_to_oabx">Neo Backup\'a hoş geldiniz!</string>
     <string name="storage_access">Depolama Erişimi</string>
     <string name="sort_and_filter">Sırala ve Filtrele</string>
     <string name="enable_encryption_message">Verilerinizi cihazınızda şifrelenmemiş halde tutmak güvenli değildir. Verilerinizin güvenliği için şifrelemeyi etkinleştirin ve bir parola belirleyin.</string>
@@ -303,4 +303,12 @@
     <string name="prefs_mediadata_summary">Uygulamanın harici depolama birimine yerleştirilen medya dosyalarını yedekler ve geri yükler (Ör. /storage/emulated/0/Android/media/)</string>
     <string name="prefs_mediadata">Medya dosyalarını yedekleyin</string>
     <string name="radio_mediadata">Medya Verileri</string>
+    <string name="dialogCancelAll">Tümünü iptal et</string>
+    <string name="smsmms_permission_title">SMS/MMS İzinleri</string>
+    <string name="calllogs_permission_title">Çağrı Günlükleri İzinleri</string>
+    <string name="prefs_compression_level">Sıkıştırma Seviyesi</string>
+    <string name="spec_fingerprint">Parmak izleri</string>
+    <string name="spec_smsmmsjson">SMS/MMS JSON</string>
+    <string name="prefs_compression_level_summary">Daha düşük bir değer daha hızlı sıkıştırılır ancak daha büyük dosyalara neden olur. Daha yüksek bir değer daha iyi sıkıştırır ancak daha fazla zaman alır.</string>
+    <string name="spec_calllogsjson">Çağrı Günlükleri JSON</string>
 </resources>
