@@ -52,7 +52,7 @@ fun PermissionItem(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
-                style = MaterialTheme.typography.headlineSmall,
+                style = MaterialTheme.typography.titleLarge,
             )
         }
         Text(
