@@ -34,6 +34,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.core.graphics.ColorUtils
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import com.machiav3lli.backup.PREFS_LANGUAGES_DEFAULT
@@ -279,3 +282,18 @@ fun <T> LazyListScope.gridItems(
     }
 }
 
+fun Color.brighter(rate: Float): Color {
+    val hslVal = FloatArray(3)
+    ColorUtils.colorToHSL(this.toArgb(), hslVal)
+    hslVal[2] += rate * hslVal[2]
+    hslVal[2] = hslVal[2].coerceIn(0f..1f)
+    return Color(ColorUtils.HSLToColor(hslVal))
+}
+
+fun Color.darker(rate: Float): Color {
+    val hslVal = FloatArray(3)
+    ColorUtils.colorToHSL(this.toArgb(), hslVal)
+    hslVal[2] -= rate * hslVal[2]
+    hslVal[2] = hslVal[2].coerceIn(0f..1f)
+    return Color(ColorUtils.HSLToColor(hslVal))
+}
