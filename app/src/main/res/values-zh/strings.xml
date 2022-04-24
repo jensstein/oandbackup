@@ -327,4 +327,8 @@
     <string name="loading_list">正在加载列表…</string>
     <string name="delete">删除</string>
     <string name="dialogCancelAll">全部取消</string>
+    <string name="dismiss">忽略</string>
+    <string name="enabled">开启</string>
+    <string name="sortAsc">升序</string>
+    <string name="sortDesc">降序</string>
 </resources>
