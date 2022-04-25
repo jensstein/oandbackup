@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -100,7 +99,7 @@ fun MainPackageItem(
                         Text(
                             text = (packageItem.latestBackup?.backupDate?.getFormattedDate(
                                 false
-                            ) ?: "") + " - ${packageItem.numberOfBackups}",
+                            ) ?: "") + " • ${packageItem.numberOfBackups}",
                             modifier = Modifier.align(Alignment.CenterVertically),
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1,

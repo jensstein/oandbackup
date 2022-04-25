@@ -135,7 +135,7 @@ fun BatchPackageItem(
                         Text(
                             text = (packageItem.latestBackup?.backupDate?.getFormattedDate(
                                 false
-                            ) ?: "") + " - ${packageItem.numberOfBackups}",
+                            ) ?: "") + " • ${packageItem.numberOfBackups}",
                             modifier = Modifier.align(Alignment.CenterVertically),
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1,
