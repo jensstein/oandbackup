@@ -201,9 +201,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
             Scaffold(
                 topBar = {
                     TopBar(
-                        title = stringResource(
-                            id = if (backupBoolean) R.string.backup else R.string.restore
-                        )
+                        title = stringResource(id = if (backupBoolean) R.string.backup else R.string.restore)
                     ) {
                         ExpandableSearchAction(
                             query = viewModel.searchQuery.value.orEmpty(),
@@ -325,7 +323,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                                 )
                             else
                                 viewModel.apkCheckedList.clear()
-                            //redrawPage(viewModel.filteredList.value, viewModel.searchQuery.value)
                         }
                         StateChip(
                             icon = painterResource(id = R.drawable.ic_data),
@@ -343,7 +340,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                                 )
                             else
                                 viewModel.dataCheckedList.clear()
-                            //redrawPage( viewModel.filteredList.value, viewModel.searchQuery.value )
                         }
                         ActionButton(
                             modifier = Modifier.weight(1f),

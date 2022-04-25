@@ -491,7 +491,7 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
                                         onClick = { showForceKillDialog(it) }
                                     )
                                 }
-                                AnimatedVisibility(visible = it.isInstalled && !it.isSpecial && it.storageStats?.dataBytes ?: 0 >= 0L) {
+                                AnimatedVisibility(visible = it.isInstalled && !it.isSpecial && ((it.storageStats?.dataBytes ?: 0L) >= 0L)) {
                                     ActionChip(
                                         icon = painterResource(id = R.drawable.ic_delete),
                                         text = stringResource(id = R.string.clear_cache),
