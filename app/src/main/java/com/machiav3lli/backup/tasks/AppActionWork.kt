@@ -87,13 +87,15 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         var packageItem: Package? = null
 
         try {
-            val specialAppInfo = context.getSpecial(packageName)
-            packageItem = if (specialAppInfo != null) {
-                specialAppInfo
-            } else {
-                val foundItem =
-                    context.packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA)
-                Package(context, foundItem)
+            packageItem = Package.get(packageName) {
+                context.getSpecial(packageName) ?: run {
+                    val foundItem =
+                        context.packageManager.getPackageInfo(
+                            packageName,
+                            PackageManager.GET_META_DATA
+                        )
+                    Package(context, foundItem)
+                }
             }
         } catch (e: PackageManager.NameNotFoundException) {
             if (packageLabel.isEmpty())
@@ -120,6 +122,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
 
                 packageItem?.let { pi ->
                     try {
+                        pi.refreshBackupList()  // optional, be up to date when the job is finally executed
                         OABX.shellHandlerInstance?.let { shellHandler ->
                             result = when {
                                 backupBoolean -> {
@@ -140,6 +143,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                                 }
                             }
                         }
+                        pi.refreshBackupList()  // who knows what happened in external space?
                     } catch (e: Throwable) {
                         result = ActionResult(
                             pi, null,

@@ -9,6 +9,7 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_ALLOWSHADOWINGDEFAULT
 import com.machiav3lli.backup.PREFS_SHADOWROOTFILE
 import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.utils.exists
@@ -386,8 +387,8 @@ open class StorageFile {
     companion object {
         //TODO hg42 manage file trees instead of single files and let StorageFile and caches use them
         private var fileListCache = mutableMapOf<String, MutableList<StorageFile>>() //TODO hg42 access should automatically checkCache
-        var uriStorageFileCache = mutableMapOf<String, StorageFile>()
-        var invalidateFilters = mutableListOf<(String) -> Boolean>()
+        private var uriStorageFileCache = mutableMapOf<String, StorageFile>()
+        private var invalidateFilters = mutableListOf<(String) -> Boolean>()
 
         fun fromUri(context: Context, uri: Uri): StorageFile {
             // Todo: Figure out what's wrong with the Uris coming from the intent and why they need to be processed
@@ -429,7 +430,7 @@ open class StorageFile {
         fun invalidateCache(filter: (String) -> Boolean) {
             if(OABX.prefFlag("invalidateSelective", true)) {
                 invalidateFilters.add(filter)
-                cacheCheck()
+                cacheCheck() //TODO
             } else {
                 invalidateCache()
             }
@@ -437,16 +438,16 @@ open class StorageFile {
 
         fun invalidateCache() {
             invalidateFilters = mutableListOf({true})
-            cacheCheck()
+            cacheCheck() //TODO
         }
 
-        fun cacheGetFiles(id: String): MutableList<StorageFile>? {
+        fun cacheGetFiles(id: String): List<StorageFile>? {
             cacheCheck()
             return fileListCache[id]
         }
 
-        fun cacheSetFiles(id: String, files: MutableList<StorageFile>) {
-            fileListCache[id] = files
+        fun cacheSetFiles(id: String, files: List<StorageFile>) {
+            fileListCache[id] = files.toMutableList()
         }
 
         private fun cacheGetUri(id: String): StorageFile? {
@@ -477,11 +478,15 @@ open class StorageFile {
         }
 
         private fun cacheCheck() {
-            while (invalidateFilters.size > 0) {
-                invalidateFilters.removeFirst().let { isInvalid ->
-                    fileListCache       =       fileListCache.filterNot { isInvalid(it.key) }.toMutableMap()
-                    uriStorageFileCache = uriStorageFileCache.filterNot { isInvalid(it.key) }.toMutableMap()
+            try {
+                while (invalidateFilters.size > 0) {
+                    invalidateFilters.removeFirst().let { isInvalid ->
+                        fileListCache       =       fileListCache.toMap().filterNot { isInvalid(it.key) }.toMutableMap()
+                        uriStorageFileCache = uriStorageFileCache.toMap().filterNot { isInvalid(it.key) }.toMutableMap()
+                    }
                 }
+            } catch(e: Throwable) {
+                logException(e)
             }
         }
 

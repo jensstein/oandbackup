@@ -23,6 +23,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.AppExtras
@@ -33,6 +34,8 @@ import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.handler.updateAppInfoTable
 import com.machiav3lli.backup.handler.updateBackupTable
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.items.Package.Companion.invalidateCacheForPackage
+import com.machiav3lli.backup.utils.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -77,7 +80,11 @@ class MainViewModel(
     // TODO add to interface
     fun refreshList() {
         viewModelScope.launch {
+            val startTime = System.currentTimeMillis()
+            OABX.activity?.showToast("recreateAppInfoList ...")
             recreateAppInfoList()
+            val after = System.currentTimeMillis()
+            OABX.activity?.showToast("recreateAppInfoList: ${((after - startTime) / 1000 + 0.5).toInt()} sec")
         }
     }
 
@@ -97,12 +104,13 @@ class MainViewModel(
 
     private suspend fun updateDataOf(packageName: String) =
         withContext(Dispatchers.IO) {
+            invalidateCacheForPackage(packageName)
             val appPackage = packageList.value?.find { it.packageName == packageName }
             try {
                 appPackage?.apply {
                     val new =
                         Package(appContext, packageName, appPackage.getAppBackupRoot())
-                    new.refreshBackupList(appContext)
+                    new.refreshBackupList() //TODO hg42 such optimizations should be encapsulated (in Package)
                     if (!isSpecial) db.appInfoDao.update(new.packageInfo as AppInfo)
                     db.backupDao.updateList(new)
                 }

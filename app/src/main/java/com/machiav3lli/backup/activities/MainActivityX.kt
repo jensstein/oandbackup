@@ -44,7 +44,6 @@ import com.machiav3lli.backup.fragments.RefreshViewController
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.SortFilterModel
-import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.getPrivateSharedPrefs
 import com.machiav3lli.backup.utils.isEncryptionEnabled
 import com.machiav3lli.backup.utils.isNeedRefresh
@@ -234,7 +233,6 @@ class MainActivityX : BaseActivity() {
     }
 
     fun updatePackage(packageName: String) {
-        StorageFile.invalidateCache { it.contains(packageName) }
         viewModel.updatePackage(packageName)
     }
 

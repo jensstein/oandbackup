@@ -78,15 +78,17 @@ fun Context.getPackageList(
 ): MutableList<Package> {
     val startTime = System.currentTimeMillis()
 
-    OABX.activity?.showToast("loading packages")
+    OABX.activity?.showToast("getPackageList...")
 
     val includeSpecial = specialBackupsEnabled
     val pm = packageManager
     val backupRoot = getBackupDir()
     val packageInfoList = pm.getInstalledPackagesWithPermissions()
-    val packageList = packageInfoList
+    var packageList = packageInfoList
         .filterNotNull()
-        .filterNot { it.packageName.matches(ignoredPackages) || blockList.contains(it.packageName) }
+        .filterNot {
+            it.packageName.matches(ignoredPackages) || blockList.contains(it.packageName)
+        }
         .mapNotNull {
             try {
                 Package(this, it, backupRoot)
@@ -98,7 +100,7 @@ fun Context.getPackageList(
         .toMutableList()
 
     val afterPackagesTime = System.currentTimeMillis()
-    OABX.activity?.showToast("packages: ${((afterPackagesTime - startTime) / 1000 + 0.5).toInt()} sec")
+    OABX.activity?.showToast("getPackageList: packages: ${((afterPackagesTime - startTime) / 1000 + 0.5).toInt()} sec")
 
     if (!OABX.appsSuspendedChecked) {
         OABX.activity?.whileShowingSnackBar("cleanup any left over suspended apps") {
@@ -135,16 +137,15 @@ fun Context.getPackageList(
             .map { it.packageName }
             .toList()
         val directoriesInBackupRoot = getDirectoriesInBackupRoot()
-        val missingPackagesWithBackup: List<Package> =
+        val packagesWithBackup: MutableList<Package> =
         // Try to create AppInfo objects
         // if it fails, null the object for filtering in the next step to avoid crashes
             // filter out previously failed backups
             directoriesInBackupRoot
                 .filterNot {
                     it.name?.let { name ->
-                        installedPackageNames.contains(name)
-                                || blockList.contains(name)
-                                || specialList.contains(name)
+                        /* installedPackageNames.contains(name) || */
+                        blockList.contains(name) || specialList.contains(name)
                     } ?: true
                 }
                 .mapNotNull {
@@ -155,12 +156,12 @@ fun Context.getPackageList(
                         null
                     }
                 }
-                .toList()
-        packageList.addAll(missingPackagesWithBackup)
+                .toMutableList()
+        packageList = (packageList.filterNot { it.packageName in packagesWithBackup.map { it.packageName } } + packagesWithBackup).toMutableList()
     }
 
     val afterAllTime = System.currentTimeMillis()
-    OABX.activity?.showToast("all: ${((afterAllTime - startTime) / 1000 + 0.5).toInt()} sec")
+    OABX.activity?.showToast("getPackageList: all: ${((afterAllTime - startTime) / 1000 + 0.5).toInt()} sec")
 
     return packageList
 }
@@ -175,10 +176,12 @@ fun List<AppInfo>.toPackageList(
 
     val includeSpecial = context.specialBackupsEnabled
 
-    OABX.activity?.showToast("loading Packages")
+    OABX.activity?.showToast("toPackageList...")
 
-    val packageList =
-        this.filterNot { it.packageName.matches(ignoredPackages) || it.packageName in blockList }
+    var packageList =
+        this.filterNot {
+                it.packageName.matches(ignoredPackages) || it.packageName in blockList
+            }
             .mapNotNull {
                 try {
                     Package(context, it, backupMap[it.packageName].orEmpty())
@@ -190,7 +193,7 @@ fun List<AppInfo>.toPackageList(
             .toMutableList()
 
     val afterPackagesTime = System.currentTimeMillis()
-    OABX.activity?.showToast("Packages: ${((afterPackagesTime - startTime) / 1000 + 0.5).toInt()} sec")
+    OABX.activity?.showToast("toPackageList: packages: ${((afterPackagesTime - startTime) / 1000 + 0.5).toInt()} sec")
 
     // Special Backups must added before the uninstalled packages, because otherwise it would
     // discover the backup directory and run in a special case where no the directory is empty.
@@ -209,18 +212,15 @@ fun List<AppInfo>.toPackageList(
     }
 
     if (includeUninstalled) {
-        val installedPackageNames = packageList
-            .map { it.packageName }
-            .toList()
         val directoriesInBackupRoot = context.getDirectoriesInBackupRoot()
-        val missingPackagesWithBackup: List<Package> =
+        val packagesWithBackup: List<Package> =
         // Try to create AppInfo objects
         // if it fails, null the object for filtering in the next step to avoid crashes
             // filter out previously failed backups
             directoriesInBackupRoot
                 .filterNot {
                     it.name?.let { name ->
-                        name in installedPackageNames.union(blockList).union(specialList)
+                        blockList.contains(name) || specialList.contains(name)
                     } ?: true
                 }
                 .mapNotNull {
@@ -232,17 +232,19 @@ fun List<AppInfo>.toPackageList(
                     }
                 }
                 .toList()
-        packageList.addAll(missingPackagesWithBackup)
+        packageList = (packageList.filterNot { it.packageName in packagesWithBackup.map { it.packageName } } + packagesWithBackup).toMutableList()
     }
 
     val afterAllTime = System.currentTimeMillis()
-    OABX.activity?.showToast("All: ${((afterAllTime - startTime) / 1000 + 0.5).toInt()} sec")
+    OABX.activity?.showToast("toPackageList: all: ${((afterAllTime - startTime) / 1000 + 0.5).toInt()} sec")
 
     return packageList
 }
 
 fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
     val startTime = System.currentTimeMillis()
+    OABX.activity?.showToast("updateInfoTable...")
+
     val pm = packageManager
     val installedAppList = pm.getInstalledPackagesWithPermissions()
     val installedAppNames = installedAppList.map { it.packageName }.toList()
@@ -267,14 +269,14 @@ fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
     }
 
     val directoriesInBackupRoot = getDirectoriesInBackupRoot()
-    val missingPackagesWithBackup: List<AppInfo> =
+    val packagesWithBackup: List<AppInfo> =
     // Try to create AppInfo objects
     // if it fails, null the object for filtering in the next step to avoid crashes
         // filter out previously failed backups
         directoriesInBackupRoot
             .filterNot {
                 it.name?.let { name ->
-                    installedAppNames.contains(name) || specialList.contains(name)
+                    /* installedAppNames.contains(name) || */ specialList.contains(name)
                 } ?: true
             }
             .mapNotNull {
@@ -288,15 +290,16 @@ fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
             }
             .toList()
     val appInfoList =
-        installedAppList.map { AppInfo(this, it) }
-            .toMutableList()
-            .union(missingPackagesWithBackup)
+        installedAppList
+            .filterNot { it.packageName in packagesWithBackup.map { it.packageName } }
+            .map { AppInfo(this, it) }
+            .union(packagesWithBackup)
             .toTypedArray()
     appInfoDao.emptyTable()
     appInfoDao.replaceInsert(*appInfoList)
 
-    val afterAllTime = System.currentTimeMillis()
-    OABX.activity?.showToast("all: ${((afterAllTime - startTime) / 1000 + 0.5).toInt()} sec")
+    val afterTime = System.currentTimeMillis()
+    OABX.activity?.showToast("updateInfoTable: ${((afterTime - startTime) / 1000 + 0.5).toInt()} sec")
 }
 
 fun Context.updateBackupTable(backupDao: BackupDao) {

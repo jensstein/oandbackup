@@ -27,7 +27,7 @@ fun getStats(appsList: MutableList<Package>): Triple<Int, Int, Int> {
     var updatedNumber = 0
     appsList.forEach {
         if (it.hasBackups) {
-            backupsNumber += it.backupList.size
+            backupsNumber += it.numberOfBackups
             if (it.isUpdated) updatedNumber += 1
         }
     }

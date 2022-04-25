@@ -26,7 +26,6 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ActivityPrefsBinding
 import com.machiav3lli.backup.fragments.HelpSheet
-import com.machiav3lli.backup.handler.getPackageList
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
@@ -38,7 +37,9 @@ import com.machiav3lli.backup.utils.setCustomTheme
 class PrefsActivity : BaseActivity() {
     lateinit var binding: ActivityPrefsBinding
     private var sheetHelp: HelpSheet? = null
-    var packageList: List<Package> = mutableListOf()
+    //var packageList: List<Package> = mutableListOf()
+    val packageList: MutableList<Package>
+            get() = OABX.activity?.viewModel?.packageList?.value ?: mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setCustomTheme()
@@ -46,8 +47,8 @@ class PrefsActivity : BaseActivity() {
         binding = ActivityPrefsBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
         setContentView(binding.root)
-        packageList = OABX.app.cache.get("appInfoList") ?: mutableListOf()
-        if (packageList.isNullOrEmpty()) refreshPackageList()
+        //packageList = OABX.app.cache.get("appInfoList") ?: mutableListOf()
+        //if (packageList.isNullOrEmpty()) refreshPackageList()
     }
 
     override fun onStart() {
@@ -102,10 +103,10 @@ class PrefsActivity : BaseActivity() {
 
     // TODO use database-based structure
     fun refreshPackageList() {
-        packageList = listOf()
+        //packageList = listOf()
         Thread {
             try {
-                packageList = getPackageList()
+                //packageList = getPackageList()
             } catch (e: FileUtils.BackupLocationInAccessibleException) {
                 e.printStackTrace()
             } catch (e: StorageLocationNotConfiguredException) {

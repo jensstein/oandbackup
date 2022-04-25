@@ -50,6 +50,6 @@ interface BackupDao : BaseDao<Backup> {
     @Transaction
     fun updateList(packageItem: Package) {
         deleteAllOf(packageItem.packageName)
-        insert(*packageItem.backupList.toTypedArray())
+        insert(*packageItem.backupsNewestFirst.toTypedArray())
     }
 }

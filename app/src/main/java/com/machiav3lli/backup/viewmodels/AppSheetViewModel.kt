@@ -30,7 +30,7 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.Package
-import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.items.Package.Companion.invalidateCacheForPackage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -53,10 +53,8 @@ class AppSheetViewModel(
         appInfo.value = app
         notificationId = System.currentTimeMillis().toInt()
         refreshNow.observeForever {
-            StorageFile.invalidateCache { file ->
-                appInfo.value?.let { appInfo ->
-                    file.contains(appInfo.packageName)
-                } ?: false
+            appInfo.value?.let {
+                invalidateCacheForPackage(it.packageName)
             }
         }
     }
@@ -127,13 +125,7 @@ class AppSheetViewModel(
 
     private suspend fun delete(backup: Backup) {
         withContext(Dispatchers.IO) {
-            appInfo.value?.let {
-                if (it.backupList.size > 1) {
-                    it.delete(backup)
-                } else {
-                    it.deleteAllBackups()
-                }
-            }
+            appInfo.value?.deleteBackup(backup)
         }
     }
 
@@ -145,9 +137,7 @@ class AppSheetViewModel(
     }
 
     private suspend fun deleteAll() {
-        Timber.w("deleteAll")
         withContext(Dispatchers.IO) {
-            Timber.w("now deleteAllBackups")
             appInfo.value?.deleteAllBackups()
         }
     }

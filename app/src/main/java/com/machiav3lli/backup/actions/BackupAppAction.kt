@@ -43,7 +43,6 @@ import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.RootFile
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.CIPHER_ALGORITHM
 import com.machiav3lli.backup.utils.CryptoSetupException
@@ -79,7 +78,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         var ok = false
         try {
             Timber.i("Backing up: ${app.packageName} [${app.packageLabel}]")
-            invalidateCache { it.contains(app.packageName) }
+            //invalidateCacheForPackage(app.packageName)
             work?.setOperation("pre")
             val appBackupRoot: StorageFile = try {
                 app.getAppBackupRoot(true)!!
@@ -172,7 +171,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
 
                 backup = backupBuilder.createBackup()
 
-                saveBackupProperties(appBackupRoot, backup)
+                saveBackupProperties(appBackupRoot, backup)  //TODO hg42 move to Package
 
                 ok = true
 
@@ -199,14 +198,14 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                     Timber.d("post-process package (to set it back to normal operation)")
                     postprocessPackage(app.packageName)
                 }
-                invalidateCache { it.contains(app.packageName) }
+                //invalidateCacheForPackage(app.packageName)
                 if (backup == null)
                     backup = backupBuilder.createBackup()
                 // TODO maybe need to handle some emergant props
                 if (ok)
-                    app.backupList.add(backup)
+                    app.addBackup(backup)
                 else
-                    app.delete(backup, true)
+                    app.deleteBackup(backup)
             }
         } finally {
             work?.setOperation("end")

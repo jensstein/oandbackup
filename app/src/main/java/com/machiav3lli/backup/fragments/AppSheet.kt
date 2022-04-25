@@ -502,7 +502,7 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
                                 }
                             }
                             if (it.hasBackups) {
-                                BackupRecycler(productsList = it.backupList.sortedByDescending { item -> item.backupDate },
+                                BackupRecycler(productsList = it.backupsNewestFirst,
                                     onRestore = { item ->
                                         viewModel.appInfo.value?.let { app ->
                                             if (!app.isSpecial && !app.isInstalled
