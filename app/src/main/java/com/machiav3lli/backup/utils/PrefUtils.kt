@@ -66,13 +66,11 @@ import com.machiav3lli.backup.PREFS_SALT
 import com.machiav3lli.backup.PREFS_SECONDARY_COLOR
 import com.machiav3lli.backup.PREFS_SHARED_PRIVATE
 import com.machiav3lli.backup.PREFS_SORT_FILTER
-import com.machiav3lli.backup.PREFS_SORT_ORDER
 import com.machiav3lli.backup.PREFS_THEME
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import com.topjohnwu.superuser.Shell
 import java.nio.charset.StandardCharsets
 import java.util.*
@@ -479,13 +477,6 @@ var Context.sortFilterModel: SortFilterModel
     }
     set(value) =
         getDefaultSharedPreferences().edit().putString(PREFS_SORT_FILTER, value.toString()).apply()
-
-
-var Context.sortOrder: Boolean
-    get() =
-        getDefaultSharedPreferences().getBoolean(PREFS_SORT_ORDER, false)
-    set(value) =
-        getDefaultSharedPreferences().edit().putBoolean(PREFS_SORT_ORDER, value).apply()
 
 val Context.isRememberFiltering: Boolean
     get() = getDefaultSharedPreferences().getBoolean(PREFS_REMEMBERFILTERING, true)

@@ -171,6 +171,7 @@
     <string name="restart_dialog">The app seems needing to be restarted</string>
     <string name="dialogOK">OK</string>
     <string name="dialogCancel">Cancel</string>
+    <string name="dialogCancelAll">Cancel all</string>
     <string name="dialogYes">Yes</string>
     <string name="dialogNo">No</string>
     <string name="dialogSave">Save</string>
@@ -332,4 +333,8 @@
     <string name="batch">Batch</string>
     <string name="loading_list">Loading list…</string>
     <string name="delete">Delete</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="enabled">Enabled</string>
+    <string name="sortAsc">Ascending</string>
+    <string name="sortDesc">Descending</string>
 </resources>

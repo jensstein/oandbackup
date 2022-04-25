@@ -26,11 +26,10 @@ class CommandReceiver : //TODO hg42 how to maintain security?
         Timber.i("Command: command $command")
         when (command) {
             ACTION_CANCEL -> {
-                intent.getStringExtra("name")?.let { batchName ->
-                    Timber.d("################################################### command intent cancel -------------> name=$batchName")
-                    OABX.activity?.showToast("$command $batchName")
-                    OABX.work.cancel(batchName)
-                }
+                val batchName = intent.getStringExtra("name")
+                Timber.d("################################################### command intent cancel -------------> name=$batchName")
+                OABX.activity?.showToast("$command $batchName")
+                OABX.work.cancel(batchName)
             }
             ACTION_SCHEDULE -> {
                 intent.getStringExtra("name")?.let { name ->
@@ -69,7 +68,7 @@ class CommandReceiver : //TODO hg42 how to maintain security?
                 }
             }
             ACTION_CRASH -> {
-                throw Exception("this is an unknown exception sent from command intent")
+                throw Exception("this is a crash via command intent")
             }
             null -> {
                 // ignore?

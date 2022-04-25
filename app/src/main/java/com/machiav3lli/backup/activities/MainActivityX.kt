@@ -27,6 +27,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import com.machiav3lli.backup.BuildConfig
@@ -54,7 +55,6 @@ import com.machiav3lli.backup.utils.navigateRight
 import com.machiav3lli.backup.utils.setCustomTheme
 import com.machiav3lli.backup.utils.showToast
 import com.machiav3lli.backup.utils.sortFilterModel
-import com.machiav3lli.backup.utils.sortOrder
 import com.machiav3lli.backup.viewmodels.MainViewModel
 import com.topjohnwu.superuser.Shell
 import timber.log.Timber
@@ -80,7 +80,7 @@ class MainActivityX : BaseActivity() {
 
         OABX.appsSuspendedChecked = false
 
-        if (OABX.prefFlag(PREFS_CATCHUNCAUGHT, true)) {
+        if (OABX.prefFlag(PREFS_CATCHUNCAUGHT, false)) {
             Thread.setDefaultUncaughtExceptionHandler { _, e ->
                 try {
                     val maxCrashLines = OABX.prefInt(PREFS_MAXCRASHLINES, 100)
@@ -93,20 +93,23 @@ class MainActivityX : BaseActivity() {
                                     "logcat -d -t $maxCrashLines --pid=${Process.myPid()}"  // -d = dump and exit
                                 ).out.joinToString("\n")
                     )
+                    val longToastTime = 3500
+                    val showTime = 21 * 1000
                     object : Thread() {
                         override fun run() {
                             Looper.prepare()
-                            repeat(5) {
+                            repeat(showTime / longToastTime) {
                                 Toast.makeText(
                                     context,
                                     "Uncaught Exception\n${e.message}\n${e.cause}\nrestarting application...",
                                     Toast.LENGTH_LONG
                                 ).show()
+                                sleep(longToastTime.toLong())
                             }
                             Looper.loop()
                         }
                     }.start()
-                    Thread.sleep(5000)
+                    Thread.sleep(showTime.toLong())
                 } catch (e: Throwable) {
                     // ignore
                 } finally {
@@ -126,7 +129,6 @@ class MainActivityX : BaseActivity() {
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
         if (!isRememberFiltering) {
             this.sortFilterModel = SortFilterModel()
-            this.sortOrder = false
         }
         viewModel.blocklist.observe(this) {
             viewModel.refreshList()
@@ -181,6 +183,7 @@ class MainActivityX : BaseActivity() {
         return false
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     private fun setupNavigation() {
         try {
             val navHostFragment =

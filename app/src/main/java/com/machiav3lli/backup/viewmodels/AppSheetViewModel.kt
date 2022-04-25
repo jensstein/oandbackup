@@ -30,7 +30,7 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.Package
-import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
+import com.machiav3lli.backup.items.StorageFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -47,10 +47,18 @@ class AppSheetViewModel(
     private var notificationId: Int
 
     val refreshNow = MutableLiveData<Boolean>()
+    val snackbarText = MutableLiveData<String>()
 
     init {
         appInfo.value = app
         notificationId = System.currentTimeMillis().toInt()
+        refreshNow.observeForever {
+            StorageFile.invalidateCache { file ->
+                appInfo.value?.let { appInfo ->
+                    file.contains(appInfo.packageName)
+                } ?: false
+            }
+        }
     }
 
     fun uninstallApp() {
@@ -111,7 +119,6 @@ class AppSheetViewModel(
     }
 
     fun deleteBackup(backup: Backup) {
-        invalidateCache { it.contains(backup.packageName) }
         viewModelScope.launch {
             delete(backup)
             refreshNow.value = true
@@ -138,10 +145,9 @@ class AppSheetViewModel(
     }
 
     private suspend fun deleteAll() {
-        appInfo.value?.packageName?.let { packageName ->
-            invalidateCache { it.contains(packageName) }
-        }
+        Timber.w("deleteAll")
         withContext(Dispatchers.IO) {
+            Timber.w("now deleteAllBackups")
             appInfo.value?.deleteAllBackups()
         }
     }

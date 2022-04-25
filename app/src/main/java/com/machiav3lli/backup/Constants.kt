@@ -17,6 +17,9 @@
  */
 package com.machiav3lli.backup
 
+import com.machiav3lli.backup.ui.item.ChipItem
+import com.machiav3lli.backup.ui.item.Legend
+import com.machiav3lli.backup.ui.item.Link
 import java.time.format.DateTimeFormatter
 
 const val PREFS_SHARED_PRIVATE = "com.machiav3lli.backup"
@@ -41,7 +44,6 @@ const val NAV_MAIN = 0
 const val NAV_PREFS = 1
 
 const val PREFS_SORT_FILTER = "sortFilter"
-const val PREFS_SORT_ORDER = "sortOrder"
 const val PREFS_FIRST_LAUNCH = "firstLaunch"
 const val PREFS_IGNORE_BATTERY_OPTIMIZATION = "ignoreBatteryOptimization"
 const val PREFS_SKIPPEDENCRYPTION = "skippedEncryptionCounter"
@@ -123,10 +125,29 @@ val possibleBackupFilters =
         MODE_DATA_MEDIA
     )
 
+val scheduleBackupModeChipItems = listOf(
+    ChipItem.Apk,
+    ChipItem.Data,
+    ChipItem.DeData,
+    ChipItem.ExtData,
+    ChipItem.ObbData,
+    ChipItem.MediaData
+)
+
+val mainBackupModeChipItems: List<ChipItem> =
+    listOf(ChipItem.None).plus(scheduleBackupModeChipItems)
+
 const val MAIN_SORT_LABEL = 0
 const val MAIN_SORT_PACKAGENAME = 1
 const val MAIN_SORT_DATASIZE = 2
 const val MAIN_SORT_BACKUPDATE = 3
+
+val sortChipItems = listOf(
+    ChipItem.Label,
+    ChipItem.PackageName,
+    ChipItem.DataSize,
+    ChipItem.BackupDate
+)
 
 const val MAIN_FILTER_DEFAULT = 0b111
 const val MAIN_FILTER_DEFAULT_WITHOUT_SPECIAL = 0b110
@@ -136,12 +157,24 @@ const val MAIN_FILTER_USER = 0b010
 const val MAIN_FILTER_SPECIAL = 0b001
 val possibleMainFilters = listOf(MAIN_FILTER_SYSTEM, MAIN_FILTER_USER, MAIN_FILTER_SPECIAL)
 
+val mainFilterChipItems = listOf(ChipItem.System, ChipItem.User, ChipItem.Special)
+
 const val SPECIAL_FILTER_ALL = 0
 const val SPECIAL_FILTER_LAUNCHABLE = 1
 const val SPECIAL_FILTER_NEW_UPDATED = 2
 const val SPECIAL_FILTER_OLD = 3
 const val SPECIAL_FILTER_NOT_INSTALLED = 4
 const val SPECIAL_FILTER_DISABLED = 5
+
+val schedSpecialFilterChipItems = listOf(
+    ChipItem.All,
+    ChipItem.Launchable,
+    ChipItem.NewUpdated,
+    ChipItem.Old,
+    ChipItem.Disabled
+)
+
+val mainSpecialFilterChipItems = schedSpecialFilterChipItems.plus(ChipItem.NotInstalled)
 
 const val DEFAULT_RETRIEVE_APP_META_MAXWAIT = 30;
 
@@ -155,6 +188,26 @@ const val HELP_ELEMENT =
 const val HELP_LICENSE = "https://github.com/NeoApplications/Neo-Backup/blob/master/LICENSE.md"
 const val HELP_ISSUES = "https://github.com/NeoApplications/Neo-Backup/blob/master/ISSUES.md"
 const val HELP_FAQ = "https://github.com/NeoApplications/Neo-Backup/blob/master/FAQ.md"
+
+val linksList =
+    listOf(Link.Changelog, Link.Telegram, Link.Matrix, Link.License, Link.Issues, Link.FAQ)
+
+val legendList = listOf(
+    Legend.Exodus,
+    Legend.Launch,
+    Legend.Disable,
+    Legend.Enable,
+    Legend.System,
+    Legend.User,
+    Legend.Special,
+    Legend.APK,
+    Legend.Data,
+    Legend.DE_Data,
+    Legend.External,
+    Legend.OBB,
+    Legend.Media,
+    Legend.Updated
+)
 
 val BACKUP_DATE_TIME_FORMATTER_OLD: DateTimeFormatter =
     DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss")

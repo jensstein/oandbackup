@@ -33,7 +33,6 @@ import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.handler.updateAppInfoTable
 import com.machiav3lli.backup.handler.updateBackupTable
 import com.machiav3lli.backup.items.Package
-import com.machiav3lli.backup.items.StorageFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -102,7 +101,7 @@ class MainViewModel(
             try {
                 appPackage?.apply {
                     val new =
-                        Package(appContext, packageName, appPackage.getAppBackupRoot(appContext))
+                        Package(appContext, packageName, appPackage.getAppBackupRoot())
                     new.refreshBackupList(appContext)
                     if (!isSpecial) db.appInfoDao.update(new.packageInfo as AppInfo)
                     db.backupDao.updateList(new)

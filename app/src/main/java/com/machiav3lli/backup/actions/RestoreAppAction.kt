@@ -294,6 +294,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                 )
             )
             // If split apk resources exist, install them afterwards (order does not matter)
+            //TODO hg42 gather results, eventually ignore grant errors, use script?
             if (splitApksInBackup.isNotEmpty()) {
                 splitApksInBackup.forEach {
                     sb.append(" ; ").append(
@@ -306,7 +307,11 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                 }
             }
             if (!context.isRestoreAllPermissions)
-                backup.permissions.forEach { p -> sb.append(" ; pm grant ${backup.packageName} $p") }
+                backup.permissions
+                    .filterNot { it.isEmpty() }
+                    .forEach {
+                            p -> sb.append(" ; pm grant ${backup.packageName} $p")
+                    }
 
             val command = sb.toString()
             runAsRoot(command)

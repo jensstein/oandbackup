@@ -17,12 +17,14 @@
  */
 package com.machiav3lli.backup.items
 
-import com.machiav3lli.backup.*
-import com.machiav3lli.backup.utils.mainFilterToId
-import com.machiav3lli.backup.utils.modeToId
+import com.machiav3lli.backup.BACKUP_FILTER_DEFAULT
+import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
+import com.machiav3lli.backup.MAIN_SORT_LABEL
+import com.machiav3lli.backup.SPECIAL_FILTER_ALL
 
 class SortFilterModel(
     var sort: Int = MAIN_SORT_LABEL,
+    var sortAsc: Boolean = true,
     var mainFilter: Int = MAIN_FILTER_DEFAULT,
     var backupFilter: Int = BACKUP_FILTER_DEFAULT,
     var specialFilter: Int = SPECIAL_FILTER_ALL
@@ -30,38 +32,12 @@ class SortFilterModel(
 
     constructor(sortFilterCode: String) : this() {
         sort = sortFilterCode[0].digitToInt()
-        mainFilter = sortFilterCode[1].digitToInt()
-        specialFilter = sortFilterCode[2].digitToInt()
-        backupFilter = sortFilterCode.substring(3).toInt()
-    }
-
-    val sortById: Int
-        get() = when (sort) {
-            MAIN_SORT_PACKAGENAME -> R.id.sortByPackageName
-            MAIN_SORT_DATASIZE -> R.id.sortByDataSize
-            MAIN_SORT_BACKUPDATE -> R.id.sortByBackupDate
-            else -> R.id.sortByLabel
-        }
-
-    val filterIds: List<Int>
-        get() = possibleMainFilters
-            .filter { it and mainFilter == it }
-            .map { mainFilterToId(it) }
-
-    val backupFilterIds: List<Int>
-        get() = possibleBackupFilters
-            .filter { it and backupFilter == it }
-            .map { modeToId(it) }
-
-    fun putSortBy(id: Int) {
-        sort = when (id) {
-            R.id.sortByPackageName -> MAIN_SORT_PACKAGENAME
-            R.id.sortByDataSize -> MAIN_SORT_DATASIZE
-            R.id.sortByBackupDate -> MAIN_SORT_BACKUPDATE
-            else -> MAIN_SORT_LABEL
-        }
+        sortAsc = sortFilterCode[1].digitToInt() == 1
+        mainFilter = sortFilterCode[2].digitToInt()
+        specialFilter = sortFilterCode[3].digitToInt()
+        backupFilter = sortFilterCode.substring(4).toInt()
     }
 
     override fun toString(): String =
-        "$sort$mainFilter$specialFilter$backupFilter"
+        "$sort${sortAsc.compareTo(false)}$mainFilter$specialFilter$backupFilter"
 }

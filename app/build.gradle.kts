@@ -19,9 +19,9 @@ import com.android.build.gradle.internal.tasks.factory.dependsOn
 
 plugins {
     id("com.android.application")
-    id("kotlin-android")
-    id("kotlin-kapt")
-    kotlin("plugin.serialization") version "1.6.10"
+    kotlin("android")
+    kotlin("kapt")
+    kotlin("plugin.serialization").version("1.6.10")
 }
 
 android {
@@ -34,7 +34,7 @@ android {
         versionCode = 8000
         versionName = "8.0.0"
         buildConfigField("int", "MAJOR", "8")
-        buildConfigField("int","MINOR", "0")
+        buildConfigField("int", "MINOR", "0")
 
         testApplicationId = "${applicationId}.tests"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -114,10 +114,10 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.10")
 
     // Libs
-    implementation("androidx.room:room-runtime:2.4.2")
-    implementation("androidx.room:room-ktx:2.4.2")
-    kapt("androidx.room:room-compiler:2.4.2")
-    implementation("androidx.work:work-runtime-ktx:2.7.1")
+    implementation("androidx.room:room-runtime:2.5.0-alpha01")
+    implementation("androidx.room:room-ktx:2.5.0-alpha01")
+    kapt("androidx.room:room-compiler:2.5.0-alpha01")
+    implementation("androidx.work:work-runtime-ktx:2.8.0-alpha02")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.1")
     implementation("androidx.security:security-crypto-ktx:1.1.0-alpha03")
@@ -134,7 +134,7 @@ dependencies {
     // UI
     implementation("androidx.appcompat:appcompat:1.6.0-alpha01")
     implementation("androidx.fragment:fragment-ktx:1.5.0-alpha05")
-    implementation("com.google.android.material:material:1.6.0-beta01")
+    implementation("com.google.android.material:material:1.7.0-alpha01")
     implementation("androidx.preference:preference-ktx:1.2.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
     implementation("androidx.navigation:navigation-fragment-ktx:2.5.0-alpha04")
@@ -153,6 +153,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.5.0-alpha04")
     implementation("com.google.android.material:compose-theme-adapter:1.1.6")
     implementation("androidx.compose.material3:material3:1.0.0-alpha09")
+    implementation("com.google.accompanist:accompanist-flowlayout:0.24.6-alpha")
 
     // Testing
     implementation("androidx.test.ext:junit-ktx:1.1.3")

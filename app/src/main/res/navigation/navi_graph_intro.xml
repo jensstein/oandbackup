@@ -7,10 +7,10 @@
     <fragment
         android:id="@+id/welcomeFragment"
         android:name="com.machiav3lli.backup.fragments.WelcomeFragment"
-        tools:layout="@layout/fragment_welcome" />
+        tools:layout="@layout/fragment_compose" />
 
     <fragment
         android:id="@+id/permissionsFragment"
         android:name="com.machiav3lli.backup.fragments.PermissionsFragment"
-        tools:layout="@layout/fragment_permissions" />
+        tools:layout="@layout/fragment_compose" />
 </navigation>

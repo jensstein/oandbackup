@@ -1,8 +1,11 @@
 package com.machiav3lli.backup.ui.compose.recycler
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.Log
@@ -43,8 +46,12 @@ fun BackupRecycler(
     onRestore: (Backup) -> Unit = {},
     onDelete: (Backup) -> Unit = {}
 ) {
-    SizedItemList(list = productsList, itemHeight = 110) {
-        BackupItem(it, onRestore, onDelete)
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        productsList?.forEach {
+            BackupItem(it, onRestore, onDelete)
+        }
     }
 }
 
@@ -86,22 +93,24 @@ fun ScheduleRecycler(
 
 @Composable
 fun ExportedScheduleRecycler(
+    modifier: Modifier = Modifier,
     productsList: List<Pair<Schedule, StorageFile>>?,
     onImport: (Schedule) -> Unit = {},
     onDelete: (StorageFile) -> Unit = {}
 ) {
-    VerticalItemList(list = productsList) {
+    VerticalItemList(modifier = modifier, list = productsList) {
         ExportedScheduleItem(it.first, it.second, onImport, onDelete)
     }
 }
 
 @Composable
 fun LogRecycler(
+    modifier: Modifier = Modifier,
     productsList: List<Log>?,
     onShare: (Log) -> Unit = {},
     onDelete: (Log) -> Unit = {}
 ) {
-    VerticalItemList(list = productsList) {
+    VerticalItemList(modifier = modifier, list = productsList) {
         LogItem(it, onShare, onDelete)
     }
 }

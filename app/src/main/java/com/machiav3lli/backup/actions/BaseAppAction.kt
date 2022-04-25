@@ -151,15 +151,15 @@ abstract class BaseAppAction protected constructor(
         val ignoredPackages = ("""(?x)
             # complete matches
               android
-            | com\.android\.shell
-            | com\.android\.systemui
-            | com\.android\.externalstorage
-            | com\.android\.mtp
-            | com\.android\.providers\.downloads\.ui
-            | com\.google\.android\.gms
-            | com\.google\.android\.gsf
             # pattern matches
-            | com\.android\.providers\.media\b.*
+            | .*\.android\.shell
+            | .*\.android\.systemui
+            | .*\.android\.externalstorage
+            | .*\.android\.mtp
+            | .*\.android\.providers\.downloads\.ui
+            | .*\.android\.gms
+            | .*\.android\.gsf
+            | .*\.android\.providers\.media\b.*
             # program values
             | """ + Regex.escape(BuildConfig.APPLICATION_ID) + """
             """).toRegex()
@@ -167,15 +167,16 @@ abstract class BaseAppAction protected constructor(
         val doNotStop = ("""(?x)
             # complete matches
               android
-            | com\.android\.shell
-            | com\.android\.systemui
-            | com\.android\.externalstorage
-            | com\.android\.mtp
-            | com\.android\.providers\.downloads\.ui
-            | com\.google\.android\.gms
-            | com\.google\.android\.gsf
             # pattern matches
-            | com\.android\.providers\.media\b.*
+            | .*\.android\.shell
+            | .*\.android\.systemui
+            | .*\.android\.externalstorage
+            | .*\.android\.mtp
+            | .*\.android\.providers\.downloads\.ui
+            | .*\.android\.gms
+            | .*\.android\.gsf
+            | .*\.android\.providers\.media\b.*
+            | .*\.android\.providers\..*
             # program values
             | """ + Regex.escape(BuildConfig.APPLICATION_ID) + """
             """).toRegex()

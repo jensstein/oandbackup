@@ -18,7 +18,11 @@
 package com.machiav3lli.backup.fragments
 
 import android.app.Activity
-import android.content.*
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -30,16 +34,45 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import com.machiav3lli.backup.PREFS_IGNORE_BATTERY_OPTIMIZATION
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.IntroActivityX
-import com.machiav3lli.backup.databinding.FragmentPermissionsBinding
-import com.machiav3lli.backup.utils.*
+import com.machiav3lli.backup.databinding.FragmentComposeBinding
+import com.machiav3lli.backup.ui.compose.item.PermissionItem
+import com.machiav3lli.backup.ui.compose.theme.AppTheme
+import com.machiav3lli.backup.ui.item.Permission
+import com.machiav3lli.backup.utils.WRITE_PERMISSION
+import com.machiav3lli.backup.utils.canAccessExternalStorage
+import com.machiav3lli.backup.utils.checkBatteryOptimization
+import com.machiav3lli.backup.utils.checkCallLogsPermission
+import com.machiav3lli.backup.utils.checkContactsPermission
+import com.machiav3lli.backup.utils.checkSMSMMSPermission
+import com.machiav3lli.backup.utils.checkUsageStatsPermission
+import com.machiav3lli.backup.utils.getPrivateSharedPrefs
+import com.machiav3lli.backup.utils.getStoragePermission
+import com.machiav3lli.backup.utils.hasStoragePermissions
+import com.machiav3lli.backup.utils.isStorageDirSetAndOk
+import com.machiav3lli.backup.utils.requireCallLogsPermission
+import com.machiav3lli.backup.utils.requireContactsPermission
+import com.machiav3lli.backup.utils.requireSMSMMSPermission
+import com.machiav3lli.backup.utils.requireStorageLocation
+import com.machiav3lli.backup.utils.setBackupDir
 import timber.log.Timber
 
 class PermissionsFragment : Fragment() {
-    private lateinit var binding: FragmentPermissionsBinding
+    private lateinit var binding: FragmentComposeBinding
     private lateinit var powerManager: PowerManager
     private lateinit var prefs: SharedPreferences
 
@@ -59,14 +92,14 @@ class PermissionsFragment : Fragment() {
     private val smsmmsPermission: Unit
         get() {
             AlertDialog.Builder(requireContext())
-                    .setTitle(R.string.smsmms_permission_title)
-                    .setMessage(R.string.grant_smsmms_message)
-                    .setPositiveButton(R.string.dialog_approve) { _: DialogInterface?, _: Int ->
-                        requireActivity().requireSMSMMSPermission()
-                    }
-                    .setNeutralButton(getString(R.string.dialog_refuse)) { _: DialogInterface?, _: Int -> }
-                    .setCancelable(false)
-                    .show()
+                .setTitle(R.string.smsmms_permission_title)
+                .setMessage(R.string.grant_smsmms_message)
+                .setPositiveButton(R.string.dialog_approve) { _: DialogInterface?, _: Int ->
+                    requireActivity().requireSMSMMSPermission()
+                }
+                .setNeutralButton(getString(R.string.dialog_refuse)) { _: DialogInterface?, _: Int -> }
+                .setCancelable(false)
+                .show()
         }
 
     private val callLogsPermission: Unit
@@ -85,14 +118,14 @@ class PermissionsFragment : Fragment() {
     private val contactsPermission: Unit
         get() {
             AlertDialog.Builder(requireContext())
-                    .setTitle(R.string.contacts_permission_title)
-                    .setMessage(R.string.grant_contacts_message)
-                    .setPositiveButton(R.string.dialog_approve) { _: DialogInterface?, _: Int ->
-                        requireActivity().requireContactsPermission()
-                    }
-                    .setNeutralButton(getString(R.string.dialog_refuse)) { _: DialogInterface?, _: Int -> }
-                    .setCancelable(false)
-                    .show()
+                .setTitle(R.string.contacts_permission_title)
+                .setMessage(R.string.grant_contacts_message)
+                .setPositiveButton(R.string.dialog_approve) { _: DialogInterface?, _: Int ->
+                    requireActivity().requireContactsPermission()
+                }
+                .setNeutralButton(getString(R.string.dialog_refuse)) { _: DialogInterface?, _: Int -> }
+                .setCancelable(false)
+                .show()
         }
 
     private val usageStatsPermission: Unit
@@ -114,14 +147,15 @@ class PermissionsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreate(savedInstanceState)
-        binding = FragmentPermissionsBinding.inflate(inflater, container, false)
+        binding = FragmentComposeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupViews()
-        setupOnClicks()
+        binding.composeView.setContent {
+            PermissionsPage()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -135,41 +169,44 @@ class PermissionsFragment : Fragment() {
         updateState()
     }
 
-    private fun setupViews() {
-        binding.cardStoragePermission.visibility =
-            if (requireContext().hasStoragePermissions) View.GONE
-            else View.VISIBLE
-        binding.cardStorageLocation.visibility =
-            if (requireContext().isStorageDirSetAndOk) View.GONE
-            else View.VISIBLE
-        binding.cardSMSMMSPermission.visibility =
-                if (requireContext().checkSMSMMSPermission) View.GONE
-                else View.VISIBLE
-        binding.cardCallLogsPermission.visibility =
-            if (requireContext().checkCallLogsPermission) View.GONE
-            else View.VISIBLE
-        binding.cardContactsPermission.visibility =
-                if (requireContext().checkContactsPermission) View.GONE
-                else View.VISIBLE
-        binding.cardUsageAccess.visibility =
-            if (requireContext().checkUsageStatsPermission) View.GONE
-            else View.VISIBLE
-        binding.cardBatteryOptimization.visibility =
-            if (requireContext().checkBatteryOptimization(prefs, powerManager)) View.GONE
-            else View.VISIBLE
-    }
-
-    private fun setupOnClicks() {
-        binding.cardStoragePermission.setOnClickListener { requireActivity().getStoragePermission() }
-        binding.cardStorageLocation.setOnClickListener {
-            requireActivity().requireStorageLocation(askForDirectory)
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    private fun PermissionsPage() {
+        val permissionsList = buildList {
+            if (!requireContext().hasStoragePermissions)
+                add(Pair(Permission.StorageAccess) { requireActivity().getStoragePermission() })
+            if (!requireContext().isStorageDirSetAndOk)
+                add(Pair(Permission.StorageLocation) {
+                    requireActivity().requireStorageLocation(askForDirectory)
+                })
+            if (!requireContext().checkBatteryOptimization(prefs, powerManager))
+                add(Pair(Permission.BatteryOptimization) {
+                    showBatteryOptimizationDialog(powerManager)
+                })
+            if (!requireContext().checkUsageStatsPermission)
+                add(Pair(Permission.UsageStats) { usageStatsPermission })
+            if (!requireContext().checkSMSMMSPermission)
+                add(Pair(Permission.SMSMMS) { smsmmsPermission })
+            if (!requireContext().checkCallLogsPermission)
+                add(Pair(Permission.CallLogs) { callLogsPermission })
+            if (!requireContext().checkContactsPermission)
+                add(Pair(Permission.Contacts) { contactsPermission })
         }
-        binding.cardSMSMMSPermission.setOnClickListener { smsmmsPermission }
-        binding.cardCallLogsPermission.setOnClickListener { callLogsPermission }
-        binding.cardContactsPermission.setOnClickListener { contactsPermission }
-        binding.cardUsageAccess.setOnClickListener { usageStatsPermission }
-        binding.cardBatteryOptimization.setOnClickListener {
-            showBatteryOptimizationDialog(powerManager)
+
+        AppTheme(
+            darkTheme = isSystemInDarkTheme()
+        ) {
+            Scaffold {
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(8.dp)
+                ) {
+                    items(permissionsList) {
+                        PermissionItem(it.first, it.second)
+                    }
+                }
+            }
         }
     }
 
@@ -185,7 +222,9 @@ class PermissionsFragment : Fragment() {
         ) {
             (requireActivity() as IntroActivityX).moveTo(3)
         } else {
-            setupViews()
+            binding.composeView.setContent {
+                PermissionsPage()
+            }
         }
     }
 

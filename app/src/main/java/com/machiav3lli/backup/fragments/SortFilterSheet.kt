@@ -21,79 +21,201 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.children
-import com.google.android.material.chip.ChipGroup
-import com.machiav3lli.backup.databinding.SheetSortFilterBinding
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import com.machiav3lli.backup.R
 import com.machiav3lli.backup.items.SortFilterModel
-import com.machiav3lli.backup.utils.*
+import com.machiav3lli.backup.mainBackupModeChipItems
+import com.machiav3lli.backup.mainFilterChipItems
+import com.machiav3lli.backup.mainSpecialFilterChipItems
+import com.machiav3lli.backup.sortChipItems
+import com.machiav3lli.backup.ui.compose.item.ActionChip
+import com.machiav3lli.backup.ui.compose.item.DoubleVerticalText
+import com.machiav3lli.backup.ui.compose.item.RoundButton
+import com.machiav3lli.backup.ui.compose.item.SwitchChip
+import com.machiav3lli.backup.ui.compose.item.TitleText
+import com.machiav3lli.backup.ui.compose.recycler.MultiSelectableChipGroup
+import com.machiav3lli.backup.ui.compose.recycler.SelectableChipGroup
+import com.machiav3lli.backup.ui.compose.theme.AppTheme
+import com.machiav3lli.backup.ui.item.ChipItem
+import com.machiav3lli.backup.utils.sortFilterModel
+import com.machiav3lli.backup.utils.specialBackupsEnabled
 
 class SortFilterSheet(
     private var mSortFilterModel: SortFilterModel = SortFilterModel(),
     private val stats: Triple<Int, Int, Int>
 ) : BaseSheet() {
-    private lateinit var binding: SheetSortFilterBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = SheetSortFilterBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         mSortFilterModel = requireContext().sortFilterModel
-        setupOnClicks()
-        setupChips()
+
+        return ComposeView(requireContext()).apply {
+            setContent { SortFilterPage() }
+        }
     }
 
-    private fun setupOnClicks() {
-        binding.dismiss.setOnClickListener { dismissAllowingStateLoss() }
-        binding.reset.setOnClickListener {
-            requireContext().sortFilterModel = SortFilterModel()
-            requireContext().sortOrder = false
-            requireMainActivity().refreshView()
-            dismissAllowingStateLoss()
-        }
-        binding.apply.setOnClickListener {
-            requireContext().sortFilterModel = mSortFilterModel
-            requireContext().sortOrder = binding.sortAscDesc.isChecked
-            requireMainActivity().refreshView()
-            dismissAllowingStateLoss()
-        }
-        binding.appsNum.text = stats.first.toString()
-        binding.backupsNum.text = stats.second.toString()
-        binding.updatedNum.text = stats.third.toString()
-    }
-
-    private fun setupChips() {
-        binding.sortBy.check(mSortFilterModel.sortById)
-        binding.sortBy.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int ->
-            mSortFilterModel.putSortBy(checkedId)
-        }
-        binding.sortAscDesc.isChecked = requireContext().sortOrder
-        mSortFilterModel.filterIds.forEach { binding.filters.check(it) }
-        binding.filters.children.forEach {
-            it.setOnClickListener { view ->
-                mSortFilterModel.mainFilter = mSortFilterModel.mainFilter xor idToFilter(view.id)
+    // TODO Omit using layout fully in next iteration
+    @OptIn(
+        ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class,
+        ExperimentalLayoutApi::class
+    )
+    @Composable
+    fun SortFilterPage() {
+        AppTheme(
+            darkTheme = isSystemInDarkTheme()
+        ) {
+            mSortFilterModel.let {
+                Column(
+                    modifier = Modifier.height(IntrinsicSize.Min)
+                ) {
+                    CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onBackground) {
+                        Column(
+                            modifier = Modifier
+                                .background(color = Color.Transparent)
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp)
+                                .weight(1f)
+                                .verticalScroll(rememberScrollState()),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            OutlinedCard(
+                                modifier = Modifier.padding(top = 4.dp),
+                                //colors = CardDefaults.outlinedCardColors(
+                                    containerColor = MaterialTheme.colorScheme.background,
+                                //),
+                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface)
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    DoubleVerticalText(
+                                        upperText = stats.first.toString(),
+                                        bottomText = stringResource(id = R.string.stats_apps),
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    DoubleVerticalText(
+                                        upperText = stats.second.toString(),
+                                        bottomText = stringResource(id = R.string.stats_backups),
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    DoubleVerticalText(
+                                        upperText = stats.third.toString(),
+                                        bottomText = stringResource(id = R.string.stats_updated),
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    RoundButton(icon = painterResource(id = R.drawable.ic_arrow_down)) {
+                                        dismissAllowingStateLoss()
+                                    }
+                                }
+                            }
+                            TitleText(R.string.sort_options)
+                            SelectableChipGroup(
+                                list = sortChipItems,
+                                selectedFlag = it.sort
+                            ) { flag ->
+                                it.sort = flag
+                            }
+                            SwitchChip(
+                                firstTextId = R.string.sortAsc,
+                                firstIconId = R.drawable.ic_arrow_up,
+                                secondTextId = R.string.sortDesc,
+                                secondIconId = R.drawable.ic_arrow_down,
+                                firstSelected = it.sortAsc,
+                                onCheckedChange = { checked -> it.sortAsc = checked }
+                            )
+                            TitleText(R.string.filter_options)
+                            MultiSelectableChipGroup(
+                                list = if (requireContext().specialBackupsEnabled) mainFilterChipItems
+                                else mainFilterChipItems.minus(ChipItem.Special),
+                                selectedFlags = it.mainFilter
+                            ) { flag ->
+                                it.mainFilter = it.mainFilter xor flag
+                            }
+                            TitleText(R.string.backup_filters)
+                            MultiSelectableChipGroup(
+                                list = mainBackupModeChipItems,
+                                selectedFlags = it.backupFilter
+                            ) { flag ->
+                                it.backupFilter = it.backupFilter xor flag
+                            }
+                            TitleText(R.string.other_filters_options)
+                            SelectableChipGroup(
+                                list = mainSpecialFilterChipItems,
+                                selectedFlag = it.specialFilter
+                            ) { flag ->
+                                it.specialFilter = flag
+                            }
+                        }
+                    }
+                    CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
+                        Row(
+                            modifier = Modifier
+                                .background(color = MaterialTheme.colorScheme.surface)
+                                .fillMaxWidth()
+                                .padding(8.dp)
+                                .wrapContentHeight(),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            ActionChip(
+                                text = stringResource(id = R.string.resetFilter),
+                                icon = painterResource(id = R.drawable.ic_reset),
+                                modifier = Modifier.weight(1f),
+                                fullWidth = true,
+                                positive = false,
+                                onClick = {
+                                    requireContext().sortFilterModel = SortFilterModel()
+                                    requireMainActivity().refreshView()
+                                    dismissAllowingStateLoss()
+                                }
+                            )
+                            ActionChip(
+                                text = stringResource(id = R.string.applyFilter),
+                                icon = painterResource(id = R.drawable.ic_apply),
+                                modifier = Modifier.weight(1f),
+                                fullWidth = true,
+                                positive = true,
+                                onClick = {
+                                    requireContext().sortFilterModel = mSortFilterModel
+                                    requireMainActivity().refreshView()
+                                    dismissAllowingStateLoss()
+                                }
+                            )
+                        }
+                    }
+                }
             }
-        }
-        mSortFilterModel.backupFilterIds.forEach { binding.backupFilters.check(it) }
-        binding.backupFilters.children.forEach {
-            it.setOnClickListener { view ->
-                mSortFilterModel.backupFilter = mSortFilterModel.backupFilter xor idToMode(view.id)
-            }
-        }
-        binding.specialFilters.check(specialFilterToId(mSortFilterModel.specialFilter))
-        binding.specialFilters.setOnCheckedChangeListener { _: ChipGroup?, checkedId: Int ->
-            mSortFilterModel.specialFilter = idToSpecialFilter(checkedId)
-        }
-        if (requireContext().specialBackupsEnabled) {
-            binding.filterSpecial.visibility = View.VISIBLE
-        } else {
-            binding.filterSpecial.visibility = View.GONE
         }
     }
 }

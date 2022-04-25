@@ -17,9 +17,12 @@
 * [Are you going to support older Android versions?](#are-you-going-to-support-older-android-versions)
 * [Why do I have to login/register to app x y z again after restore?](#why-do-i-have-to-loginregister-to-app-x-y-z-again-after-restore)
 * [Why is it not recommended to backup system apps?](#why-is-it-not-recommended-to-backup-system-apps)
+* [Is there a roadmap / an overview of features planned to be implemented?](#is-there-a-roadmap--an-overview-of-features-planned-to-be-implemented)
 * [What is the difference to implementations like Seedvault?](#what-is-the-difference-to-implementations-like-seedvault)
 * [What is the difference to the famous Titanium Backup?](#what-is-the-difference-to-the-famous-titanium-backup)
 * [How can I open encrypted backups on my computer?](#how-can-i-open-encrypted-backups-on-my-computer)
+* [What does the notification of schedules and batch jobs tell me?](#what-does-the-notification-of-schedules-and-batch-jobs-tell-me)
+* [Does NB support multi-user setups / work-profile?](#does-nb-support-multi-user-setups--work-profile) 
 
 #### What is Neo-Backup?
 
@@ -37,7 +40,7 @@ OAndBackupX (short OABX) was the former name of the project. You may find some r
 
 #### Which Android Versions are supported?
 
-Oldest supported version: Android  8 - "Oreo"
+Oldest supported version: Android  8 - "Oreo" </br>
 Newest supported version: Android 12 - "Snow Cone"
 
 See also - [Are you going to support older Android versions?](#are-you-going-to-support-older-android-versions)
@@ -64,27 +67,41 @@ In case of any problems report it in [the Telegram or Matrix group](https://gith
 
 Each backup basically consists of the two different parts:
 
-1. the software itself (stored in a so called APK file) and
+1. the software itself (stored in a so called **APK** file / some bigger apps have multiple - so called split APK files) and
 
-2. its data (created while using an app, settings, etc.)
+2. its **data** (created while using an app, settings, etc.)
    The data can be split again into several data types:
 
-   2.1. normal data
-
+   2.1. ***"normal" data*** 
+   
+      <details><summary>Show details ...</summary>
+   
         - Stored usually in /data/data
         - Default is set to include it in the backup
+   
+      </details>     
+   
+   2.2. ***external*** data
 
-   2.2. external data
+      <details><summary>Show details ...</summary>
 
        - Stored usually in /Android/data/ in the external storage (internal storage in android current terminology)
        - Default is set to not include it in the backup (possibility to enable in prefs)
 
-   2.3. obb files
+      </details>        
+   
+   2.3. ***obb*** files
 
+      <details><summary>Show details ...</summary>
+   
         - Stored usually in /Android/obb/ in the external storage (internal storage in android current terminology)
         - Default is set to not include it in the backup (possibility to enable in prefs)
 
-   2.4. device protected data
+      </details>     
+   
+   2.4. ***device protected*** data
+
+      <details><summary>Show details ...</summary>
 
         - Stored usually in /data/user_de/
         - It's usual data, but can be accessed before even unlocking your phone (authentication).
@@ -92,8 +109,12 @@ Each backup basically consists of the two different parts:
           E.g. a preference which decides if your app should start on device boot or not.
         - Default is set to include it in the backup
 
-   2.5. media
+      </details>     
 
+   2.5. ***media***
+
+      <details><summary>Show details ...</summary>   
+   
         - this type is related to a controversial change that originally was slated for Android 10
           it is mandatory for all new apps since August 2020 and/or every app targeting Android 11 (SDK 30)
         - the main thing here is called "Scoped Storage"
@@ -107,16 +128,25 @@ Each backup basically consists of the two different parts:
           ... an in them, a folder of each app's package name
         - Default is set to not include it in the backup (possibility to enable in prefs)
 
+      </details>     
+
    2.5. cache
 
-        - Default is set to not include it in backups
+      <details><summary>Show details ...</summary>   
 
+        - Default is set to not include it in backups
+   
+      </details>     
+   
+   
 You can individually choose which parts you want to include in the backup --> as global setting in preferences, (beginning with version NB [OABX] 6.x) per schedule or even per App.
 
 #### What are Special Backups?
 
-Special backups describes system data that's bound to the user and not to certain apps.
-For the moment we don't provide them with full support, try with your own responsibility
+Special backups describes system data that's bound to the user and not to certain apps. </br>***Enable special backups in advanced prefs to see them.***</br>
+For the moment we don't provide them with full support, try with your own responsibility.
+
+Beginning with version 8 some of them are supported. See also [How can I backup SMS &amp; Call log?](#how-can-i-backup-sms--call-log)
 
 #### Do I need a rooted phone?
 
@@ -170,9 +200,11 @@ In the next Android versions Google will (most probably) force apps more and mor
 - Performance, more of Performance and tons of Performance
 - obfuscation of the classical path structure
 
-##### Some "performance" or time measuring infos from an older phone
+##### Below some "performance" or time measuring infos from an older phone
 
 *related to a lot of SAF comments in the chat*
+
+<details><summary>Click here to show the test-details ...</summary>
 
 ###### General facts:
 - Device: Fairphone 2 (SoC: Qualcomm MSM8974AB-AB)
@@ -187,7 +219,7 @@ In the next Android versions Google will (most probably) force apps more and mor
 As this is a quite old SOC, it can be called low end benchmark. 😉
 
 Prefs ...
-(I list only the differences from default)
+(I list only the differences from default)<br/>
 Service-Prefs:
 - Encryption configured
 - Back up external data - enabled
@@ -258,6 +290,8 @@ The time difference (for most of the test-tasks shown here) is due to:
 - different encryption
 - (no external sd-card support )
 
+</details>   
+   
 #### I do not see any apps in the list. What can be the reason?
 
 In most cases the you choose a special Android folder for your backups. (e.g. common mistake is root '/storage/emulated/0' or the "Downloads" folder)
@@ -270,6 +304,8 @@ Another mistake, which might happen is, that you set a filters, which lead to an
 
 #### I do not see the app which is currently backed up in the notification during batch or scheduled backups.
 
+*obsolate beginning with version 8* - see also [What does the notification of schedules and batch jobs tell me?](#what-does-the-notification-of-schedules-and-batch-jobs-tell-me)
+   
 To optimize the performance of scheduled and batch backups, these tasks are executed in parallel, based on the amount of cores, your SOC's CPU contains.
 So notification always shows the last app backup, which was started on whatever free core of your SOC's CPU.
 
@@ -291,9 +327,16 @@ In newer Android versions every app directory is mounted and usually only visibl
 
 #### How can I backup SMS & Call log?
 
-Those are saved in data providers like some other special data. The one you should go for is com.android.providers.telephony. Sometimes you would need to restart after restoring its data.
-Same goes for contacts too, with the only difference that they're kept in the data of com.android.providers.contacts.
-For contacts, calendar and todo-lists. We advice to use [DecSync](https://github.com/39aldo39/DecSync) with its diverse apps.
+Generally see * [What are Special Backups?](#what-are-special-backups) first.
+
+**SMS/MMS and Call-logs** </br>
+Those are saved in data providers like some other special data. The one you should go for is com.android.providers.telephony. Sometimes you would need to restart after restoring its data. Same goes for contacts too, with the only difference that they're kept in the data of com.android.providers.contacts.
+
+NB starts supporting backup SMS/MMS and Call logs beginning with version 8. 
+   
+For **contacts, calendar** and todo-lists. 
+We advice to use [DecSync](https://github.com/39aldo39/DecSync) with its diverse apps.
+Alternatively use a CalDAV/CardDAV management app (like DavX5) and sync them with a trustworthy mail provider account.
 
 #### Are you going to support older Android versions?
 
@@ -309,7 +352,7 @@ Here are several examples - e.g.:
 - Nextcloud
 - Signal
 - Threema
-- Whatsapp
+- Whatsapp (?)
 - Facebook
 - you name it
 
@@ -318,6 +361,13 @@ Here are several examples - e.g.:
 - ... as they change over the android version and restore might un-stabilize the system
 - You've done your backup on 4.0.0, then you should place the data you want to restore at the same directory as when they got backed up.
   - --> In 5.0.0 this is already fixed. 
+
+#### Is there a roadmap / an overview of features planned to be implemented?
+
+A rough backlog (without any guarantee that the devs will 100% stick to it) can be found here as Kanban board: </br>
+https://tree.taiga.io/project/machiav3lli-neo-backup/kanban
+
+Not all features will be listed there, but maybe the bigger / frequently asked ones.
 
 #### What is the difference to implementations like Seedvault?
 
@@ -338,215 +388,104 @@ Seedvault repo can be found here: https://github.com/seedvault-app/seedvault - c
 
 Users tend to compare NB and Titanium Backup (TB). There are a lot of comments in the chat.
 
-Feel free to share your thoughts and edit this FAQ to provide a comparison which is more on-point.
-Main points to mention:
-* TB did not get an update for same years now
+Feel free to share your thoughts and edit this FAQ (e.g. the table below) to provide more details for this comparison.
+
+The main points to are mention:
+* TB did not get an update for some years now (since November 2019 - https://play.google.com/store/apps/details?id=com.keramidas.TitaniumBackup )
 * TB does not use [SAF](#why-is-nb-so-slow) and so is probably faster as long as google does not improve it)
-* it is not Open-Source.
+* TB is not Open-Source.
 
-All the TB features are listed here: https://www.titaniumtrack.com/titanium-backup.html
-Here it is to be edited (BIG letters is NB status):
+All the TB features are listed here: https://www.titaniumtrack.com/titanium-backup.html <br/>
+Here is a quick status overview, what NB is capable of - to be edited.
+<details><summary>Click here to show the comparison table ...</summary>
 
-* Very fast app listing (~1 second for 300 apps)
+| TB feature  | NB status |
+| :--- | :--- |
+| Very fast app listing (~1 second for 300 apps) | this isn't because of SAF, it's probably because NB uses official interfaces of Android. I guess, TB simply scans the directories in /data/data/ or a similar technique. <br/>Reasoning: it sees com.google.android.trichromelibrary* which most backup solutions don't see. |
+| Sort apps by name / last backup / backup frequency | YES / YES / NO (don't remember what frequency means) |
+| Filter apps by name / type / status / Apps Organizer labels (also affects Batch operations) | YES / YES(?) / YES(?) / NO (not yet) |
+| Backup/restore regular apps + their settings | YES |
+| Backup/restore protected apps + their settings | PROBABLY (what is it exactly? - maybe device protected data? -> YES) |
+| Backup/restore system apps + their settings (incl. Wi-Fi AP list) | YES (some system data, called special backups, "package" names special.*, label starts with $) |
+| Backup/restore external app data | YES (external_data, obb, media) | 
+| Restores the Market links when restoring apps | NO |
+| Zero-click background batch backup | YES (batch backup, but what is zero click?) |
+| Interactive batch restore | NO |
+| Many batch scenarios (eg: if more than N days since last backup, etc) | NO (only backup and restore) |
+| Zero-click app un-installer | YES (but again, what is zero click?) |
+| Zero-click system app un-installer | YES (it's there, not sure if it works, never tried ... but again, what is zero click?) |
+| Move app to/from SD card | NO |
+| Move app data to/from SD card (needs ext2/3/4 partition) | NO |
+| Desktop widgets | YES (but I guess it only works for stock (like) launchers) |
+| A single weekly or biweekly scheduled backup | YES (any schedules) |
+| User-defined apps lists with filtering, coloring and scheduling support | TB has better filtering support...e.g. tags |
+| Built-in Android Market information viewer (Android 2.0+) | ??? | 
+| Ability to remove orphan app data | NO (at least not as a batch, can TB do this? don't remember) |
+| Multiple backups per app (history length can be chosen) | YES (TB can also throw backups for a filtered list) |
+| Zero-click background batch restore | YES (but again, what is zero click?) |
+| Encryption of your backups (asymmetric crypto: the passphrase is needed on restore only) | YES |
+| Backup/restore SMS, MMS, call log, bookmarks and Wi-Fi networks in the portable XML format | NB > v7 ... YES, YES, YES, NO (for which browser?), NO |
+| Multi-user support for some apps (eg: games) with a widget for quick switching! | NO |
+| Batch verification of your backups | NO |
+| Create an “update.zip” file containing apps+data, which can be flashed in recovery mode to restore everything in one shot | NO |
+| Migrate some system data (eg: SMS/MMS) across incompatible ROMs | YES (only SMS/MMS/call logs) |
+| Convert users apps to system apps | NO |
+| Ultra fast HyperShell (much faster for almost everything) | NO (not sure how fast this is, NB currently uses toybox, which might also be fast) |
+| App freezer can disable an app (and make it invisible) without un-installing it | YES |
+| Batch app freezing/defrosting | NO (TB can do many operations in batch mode with all it's power of filtering. NB can't yet) | 
+| Full support for paid apps that must normally be installed through the Market! | not sure, what is necessary for that? | 
+| Market “auto updating” manager, to easily verify, enable or disable auto updates on several apps at once! | don't remember what this is |
+| Unlimited, independent scheduled backups (each of which can run 1 to 7 times a week) | YES (TB is more flexible with it's filtering) |
+| Market Doctor can retrieve or re-create any broken Market links (for your updates to appear in Market again) | NO |
+| Dalvik cache cleaner can free up precious internal memory | NO |
+| Integrate updated system apps directly into your ROM to free up even more internal memory | NO |
+| Synchronize all (or some of) your backups to Dropbox, Box and Google Drive | NO (only via external methods like rclone and SAF providers) |
+| Retrieve all your backups from Dropbox, Box and Google Drive (in case of lost phone or SD card failure) | NO (only via external methods like rclone and SAF providers) |
+| TB Web Server: download/upload all your backups as a single ZIP file on your computer through a Web interface | NO |
+| Load/Save a Filter (from the Filters screen) and use it in Widgets/Schedules | NO | 
+| Change the device’s Android ID, restore it from a backup or after a factory reset | NO |
+| Protect backup against deletion | NO |
+| Send backup (by e-mail / Google Drive / Dropbox) which can be imported/restored very easily | NO (useful) |
+| CSV data export from any app’s DB, to e-mail or Google Docs | NO (very useful) | 
+| Convert app data to/from Gingerbread’s faster WAL DB format | NO (as far as I know, WAL was also used as a portable format) |
+| Brand the app with your name | NO |
 
-  this isn't because of SAF, it's probably because NB uses official interfaces of Android.
-  I guess, TB simply scans the directories in /data/data/ or a similar technique.
-  Reasoning: it sees com.google.android.trichromelibrary* which most backup solutions don't see.
-
-* Sort apps by name / last backup / backup frequency
-
-  YES / YES / NO (don't remember what frequency means)
-
-* Filter apps by name / type / status / Apps Organizer labels (also affects Batch operations)
-  
-  YES / YES(?) / YES(?) / NO (not yet) 
-  
-* Backup/restore regular apps + their settings
-  
-  YES
-  
-* Backup/restore protected apps + their settings
-  
-  PROBABLY(what is it exactly?)
-
-* Backup/restore system apps + their settings (incl. Wi-Fi AP list)
-  
-  YES (some system data, called special backups, "package" names special.*, label starts with $)
-
-* Backup/restore external app data
-  
-  YES (external_data, obb, media)
-  
-* Restores the Market links when restoring apps
-  
-  NO
-  
-* Zero-click background batch backup
-  
-  YES (but what's zero click?)
-  
-* Interactive batch restore
-  
-  NO
-
-* Many batch scenarios (eg: if more than N days since last backup, etc)
-  
-  NO (only backup and restore)
-
-* Zero-click app un-installer
-  
-  YES (but one click?)
-  
-* Zero-click system app un-installer
-  
-  YES (it's there, not sure if it works, never tried, but on click?)
-
-* Move app to/from SD card
-  
-  NO
-  
-* Move app data to/from SD card (needs ext2/3/4 partition)
-  
-  NO
-
-* Desktop widgets
-  
-  YES (but I guess it only works for stock (like) launchers)
-
-* A single weekly or biweekly scheduled backup
-  
-  YES (any schedules)
-  
-* User-defined apps lists with filtering, coloring and scheduling support
-  
-  TB has better filtering support...e.g. tags
-
-* Built-in Android Market information viewer (Android 2.0+)
-  
-  ???
-
-* Ability to remove orphan app data
-  
-  NO (at least not as a batch, can TB do this? don't remember)
-
-* Multiple backups per app (history length can be chosen)
-  
-  YES
-  (TB can also throw backups for a filtered list)
-  
-* Zero-click background batch restore
-  
-  YES (but what is zero click?)
-
-* Encryption of your backups (asymmetric crypto: the passphrase is needed on restore only)
-  
-  YES
-
-* Backup/restore SMS, MMS, call log, bookmarks and Wi-Fi networks in the portable XML format
-
-  YES, YES, YES, NO (for which browser?), NO
-  
-* Multi-user support for some apps (eg: games) with a widget for quick switching!
-
-  NO
-
-* Batch verification of your backups
-
-  NO
-  
-* Create an “update.zip” file containing apps+data, which can be flashed in recovery mode to restore everything in one shot
-
-  NO
-  
-* Migrate some system data (eg: SMS/MMS) across incompatible ROMs
-
-  YES (only SMS/MMS/call logs)
-  
-* Convert users apps to system apps
-
-  NO
-  
-* Ultra fast HyperShell (much faster for almost everything)
-
-  NO (not sure how fast this is, NB currently uses toybox, which might also be fast)
-
-* App freezer can disable an app (and make it invisible) without un-installing it
-
-  YES
-
-* Batch app freezing/defrosting
-
-  NO
-  (TB can do many operations in batch mode with all it's power of filtering. NB can't yet)
-
-* Full support for paid apps that must normally be installed through the Market!
-
-  not sure, what is necessary for that?
-  
-* Market “auto updating” manager, to easily verify, enable or disable auto updates on several apps at once!
-
-  don't remember what this is
-  
-* Unlimited, independent scheduled backups (each of which can run 1 to 7 times a week)
-
-  YES
-  (TB is more flexible with it's filtering)
-
-* Market Doctor can retrieve or re-create any broken Market links (for your updates to appear in Market again)
-
-  NO
-
-* Dalvik cache cleaner can free up precious internal memory
-
-  NO
-  
-* Integrate updated system apps directly into your ROM to free up even more internal memory
-
-  NO
-  
-* Synchronize all (or some of) your backups to Dropbox, Box and Google Drive
-
-  NO (only via external methods like rclone and SAF providers)
-
-* Retrieve all your backups from Dropbox, Box and Google Drive (in case of lost phone or SD card failure)
-
-  NO (only via external methods like rclone and SAF providers)
-  
-* TB Web Server: download/upload all your backups as a single ZIP file on your computer through a Web interface
-
-  NO
-  
-* Load/Save a Filter (from the Filters screen) and use it in Widgets/Schedules
-
-  NO
-  
-* Change the device’s Android ID, restore it from a backup or after a factory reset
-
-  NO
-
-* Protect backup against deletion
-
-  NO
-  
-* Send backup (by e-mail / Google Drive / Dropbox) which can be imported/restored very easily
-
-  NO
-  (useful)
-  
-* CSV data export from any app’s DB, to e-mail or Google Docs
-
-  NO
-  (very useful)
-  
-* Convert app data to/from Gingerbread’s faster WAL DB format
-
-  NO
-  (as far as I know, WAL was also used as a portable format)
-
-* Brand the app with your name
-
-  NO
+</details>
 
 #### How can I open encrypted backups on my computer?
 
 You can find the encryption algorithm and setup in this class: [Neo-Backup - Crypto.kt · GitHub](https://github.com/NeoApplications/Neo-Backup/blob/main/app/src/main/java/com/machiav3lli/backup/utils/CryptoUtils.kt) . The rest depends on the version you used.
+
+#### What does the notification of schedules and batch jobs tell me?
+
+*this decribes the notification beginning with version 8*
+
+***While it is running...***
+- the notification will show in its name / heading:
+  - The NB-Logo followed by "Neo-Backup"
+  - :runner: - app-backups currently running
+  - :people_holding_hands: - app-backups queued/outstanding/not yet started
+- below the notification headline you will see 
+  - the name (in case it is a schedule) and the start-time
+- when you expand the notification you will see more details of the parallel tasks which will run (parallelism is based on the amount of cores of the devices SoCs CPU)
+  - the first 3 characters show what NB is currently working on (**pre**paration, **apk**, **ext**ernal data, **obb**, **med**ia, etc.)
+  - after the dot you will see the package name 
+
+***When it's finished...***
+- heading:
+  - green NB-Icon in case there were no error 
+  - red NB-Icon in case some backups failed
+  - count of processed apps and overall apps in the job
+- below it will show
+  - the name again (in case it is a schedule) 
+  - start-time
+  - "OK" (in case no errors)
+- below that the overall time it took
+
+#### Does NB support multi-user setups / work-profile?
+
+Disabled / not support for now as it led to strange behavior that apk and/or data was overwritten in both profiles.
+For now NB will only handle the main profile / user and ignore the others. 
+
+So this also answers if it works together with Apps which utilize the work profile (like Shelter or Island).
+You can try to clone NB into it, but it is not recommended.
