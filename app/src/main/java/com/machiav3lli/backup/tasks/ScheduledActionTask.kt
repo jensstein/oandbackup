@@ -87,12 +87,11 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         val days = context.getDefaultSharedPreferences().getInt(PREFS_OLDBACKUPS, 7)
         val specialPredicate: (Package) -> Boolean = when (specialFilter) {
             SPECIAL_FILTER_LAUNCHABLE -> { appInfo: Package ->
-                launchableAppsList.contains(appInfo.packageName) and
+                launchableAppsList.contains(appInfo.packageName) &&
                         inListed(appInfo.packageName)
             }
             SPECIAL_FILTER_NEW_UPDATED -> { appInfo: Package ->
-                appInfo.isInstalled and
-                        (!appInfo.hasBackups or appInfo.isUpdated) and
+                appInfo.isInstalled && (!appInfo.hasBackups || appInfo.isUpdated) &&
                         inListed(appInfo.packageName)
             }
             SPECIAL_FILTER_OLD -> {
@@ -100,13 +99,13 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
                     if (appInfo.hasBackups) {
                         val lastBackup = appInfo.latestBackup?.backupDate
                         val diff = ChronoUnit.DAYS.between(lastBackup, LocalDateTime.now())
-                        (diff >= days) and inListed(appInfo.packageName)
+                        (diff >= days) && inListed(appInfo.packageName)
                     } else
                         false
                 }
             }
             SPECIAL_FILTER_DISABLED -> { appInfo: Package ->
-                appInfo.isDisabled and inListed(appInfo.packageName)
+                appInfo.isDisabled && inListed(appInfo.packageName)
             }
             else -> { appInfo: Package -> inListed(appInfo.packageName) }
         }
