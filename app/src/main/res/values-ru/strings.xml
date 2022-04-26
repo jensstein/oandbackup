@@ -336,4 +336,5 @@
     <string name="spec_fingerprint">Отпечатки пальцев</string>
     <string name="loading_list">Загрузка списка…</string>
     <string name="delete">Удалить</string>
+    <string name="dialogCancelAll">Отменить все</string>
 </resources>
