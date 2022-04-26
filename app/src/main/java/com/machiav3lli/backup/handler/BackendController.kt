@@ -333,7 +333,7 @@ fun Context.updateBackupTable(backupDao: BackupDao) {
         }
 
     backupDao.emptyTable()
-    backupDao.insert(*backupList.toTypedArray())
+    backupDao.replaceInsert(*backupList.toTypedArray())
 }
 
 @Throws(
