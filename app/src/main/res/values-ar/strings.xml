@@ -337,4 +337,8 @@
     <string name="loading_list">تحميل القائمة …</string>
     <string name="delete">حذف</string>
     <string name="dialogCancelAll">إلغاء الكل</string>
+    <string name="sortDesc">تنازلي</string>
+    <string name="dismiss">رفض</string>
+    <string name="enabled">تمكين</string>
+    <string name="sortAsc">تصاعدي</string>
 </resources>
