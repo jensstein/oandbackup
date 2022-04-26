@@ -26,7 +26,6 @@ import androidx.compose.runtime.setValue
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.OABX.Companion.app
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.SpecialInfo
@@ -211,7 +210,7 @@ class Package {
 
     fun addBackup(backup: Backup) {
         backupList = backupList.toList() + backup
-   }
+    }
 
     fun deleteBackup(backup: Backup) {
         if (backup.packageName != packageName) {
@@ -237,21 +236,21 @@ class Package {
     }
 
     fun deleteAllBackups() {
-        while(backupList.isNotEmpty())
+        while (backupList.isNotEmpty())
             deleteBackup(backupList.first())
     }
 
     fun deleteOldestBackups(keep: Int) {
-        while(keep < backupList.size) {
+        while (keep < backupList.size) {
             oldestBackup?.let { backup ->
-                Timber.i("[${app.packageName}] Deleting backup revision ${backup.backupDate}")
+                Timber.i("[${backup.packageName}] Deleting backup revision ${backup.backupDate}")
                 deleteBackup(backup)
             }
         }
     }
 
-    val backupsNewestFirst: List<Backup> get() =
-        backupList.sortedByDescending { item -> item.backupDate }
+    val backupsNewestFirst: List<Backup>
+        get() = backupList.sortedByDescending { item -> item.backupDate }
 
     val latestBackup: Backup?
         get() = backupList.maxByOrNull { it.backupDate }
@@ -356,7 +355,7 @@ class Package {
 
     val isUpdated: Boolean
         get() = latestBackup?.let { backupList.isNotEmpty() && it.versionCode < versionCode }
-                    ?: false
+            ?: false
 
     val hasApk: Boolean
         get() = backupList.any { it.hasApk }
@@ -420,12 +419,15 @@ class Package {
         fun get(packageName: String, creator: () -> Package): Package {
             return OABX.app.packageCache.get(packageName) ?: creator()
         }
+
         fun invalidateCacheForPackage(packageName: String) {
             StorageFile.invalidateCache { it.contains(packageName) }
         }
+
         fun invalidateBackupCacheForPackage(packageName: String) {
             StorageFile.invalidateCache { it.contains(packageName) }
         }
+
         fun invalidateSystemCacheForPackage(packageName: String) {
             StorageFile.invalidateCache { it.contains(packageName) }
         }

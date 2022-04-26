@@ -157,7 +157,8 @@ fun Context.getPackageList(
                     }
                 }
                 .toMutableList()
-        packageList = (packageList.filterNot { it.packageName in packagesWithBackup.map { it.packageName } } + packagesWithBackup).toMutableList()
+        packageList =
+            (packageList.filterNot { it.packageName in packagesWithBackup.map { it.packageName } } + packagesWithBackup).toMutableList()
     }
 
     val afterAllTime = System.currentTimeMillis()
@@ -180,8 +181,8 @@ fun List<AppInfo>.toPackageList(
 
     var packageList =
         this.filterNot {
-                it.packageName.matches(ignoredPackages) || it.packageName in blockList
-            }
+            it.packageName.matches(ignoredPackages) || it.packageName in blockList
+        }
             .mapNotNull {
                 try {
                     Package(context, it, backupMap[it.packageName].orEmpty())
@@ -232,7 +233,9 @@ fun List<AppInfo>.toPackageList(
                     }
                 }
                 .toList()
-        packageList = (packageList.filterNot { it.packageName in packagesWithBackup.map { it.packageName } } + packagesWithBackup).toMutableList()
+        packageList = packagesWithBackup.plus(packageList.filterNot {
+            it.packageName in packagesWithBackup.map(Package::packageName)
+        }).toMutableList()
     }
 
     val afterAllTime = System.currentTimeMillis()

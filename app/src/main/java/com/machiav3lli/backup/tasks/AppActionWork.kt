@@ -80,14 +80,14 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         }
         Timber.i(message)
 
-        if(OABX.prefInt("fakeBackupMinutes", 0) > 0) {
+        if (OABX.prefInt("fakeBackupMinutes", 0) > 0) {
 
             val step = 1000L * 1
             val startTime = System.currentTimeMillis()
             do {
                 val now = System.currentTimeMillis()
-                val minutes = (now - startTime)/60.0/1000.0
-                setOperation((minutes*10).toInt().toString().padStart(3, '0'))
+                val minutes = (now - startTime) / 60.0 / 1000.0
+                setOperation((minutes * 10).toInt().toString().padStart(3, '0'))
                 delay(step)
             } while (minutes < OABX.prefInt("fakeBackupMinutes", 0))
 
@@ -284,7 +284,11 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             .setContentIntent(contentPendingIntent)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
-            .addAction(R.drawable.ic_close, context.getString(R.string.dialogCancelAll), cancelAllPendingIntent)
+            .addAction(
+                R.drawable.ic_close,
+                context.getString(R.string.dialogCancelAll),
+                cancelAllPendingIntent
+            )
             .build()
 
         return ForegroundInfo(this.notificationId + 1, notification)
