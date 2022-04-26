@@ -206,18 +206,14 @@ class HomeFragment : NavigationFragment(),
         // TODO include tags in search
         val list by viewModel.filteredList.observeAsState()
         val query by viewModel.searchQuery.observeAsState("")
+        val updatedApps by viewModel.updatedApps.observeAsState()
+        var updatedVisible by remember(viewModel.filteredList.value) { mutableStateOf(false) }
 
         val filterPredicate = { item: Package ->
             query.isNullOrEmpty() || listOf(item.packageName, item.packageLabel)
                 .find { it.contains(query, true) } != null
         }
         val queriedList = list?.filter(filterPredicate)
-        val updatedBarVisible by remember(viewModel.filteredList.value) {
-            mutableStateOf(
-                viewModel.updatedApps.value.orEmpty().isNotEmpty()
-            )
-        }
-        var updatedVisible by remember(viewModel.filteredList.value) { mutableStateOf(false) }
 
         AppTheme(
             darkTheme = isSystemInDarkTheme()
@@ -301,7 +297,7 @@ class HomeFragment : NavigationFragment(),
                             )
                         }
                     )
-                    AnimatedVisibility(visible = updatedBarVisible) {
+                    AnimatedVisibility(visible = !updatedApps.isNullOrEmpty()) {
                         Column(
                             modifier = Modifier.wrapContentHeight()
                         ) {
