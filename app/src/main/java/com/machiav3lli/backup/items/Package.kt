@@ -97,7 +97,10 @@ class Package {
         this.packageName = packageName ?: backupDir?.name!!
         updateBackupList(backups)
         try {
-            val pi = context.packageManager.getPackageInfo(this.packageName, 0)
+            val pi = context.packageManager.getPackageInfo(
+                this.packageName,
+                PackageManager.GET_PERMISSIONS
+            )
             this.packageInfo = AppInfo(context, pi)
             refreshStorageStats(context)
         } catch (e: PackageManager.NameNotFoundException) {
@@ -146,7 +149,8 @@ class Package {
     fun refreshFromPackageManager(context: Context): Boolean {
         Timber.d("Trying to refresh package information for $packageName from PackageManager")
         try {
-            val pi = context.packageManager.getPackageInfo(packageName, 0)
+            val pi =
+                context.packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
             packageInfo = AppInfo(context, pi)
             refreshStorageStats(context)
         } catch (e: PackageManager.NameNotFoundException) {

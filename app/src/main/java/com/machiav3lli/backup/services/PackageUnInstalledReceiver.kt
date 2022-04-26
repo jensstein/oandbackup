@@ -20,6 +20,7 @@ package com.machiav3lli.backup.services
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.items.StorageFile
@@ -38,7 +39,10 @@ class PackageUnInstalledReceiver : BroadcastReceiver() {
             StorageFile.invalidateCache { it.contains(packageName) }
             when (intent.action.orEmpty()) {
                 Intent.ACTION_PACKAGE_ADDED -> {
-                    context.packageManager.getPackageInfo(packageName, 0)?.let { packageInfo ->
+                    context.packageManager.getPackageInfo(
+                        packageName,
+                        PackageManager.GET_PERMISSIONS
+                    )?.let { packageInfo ->
                         val appInfo = AppInfo(context, packageInfo)
                         GlobalScope.launch(Dispatchers.IO) {
                             db.appInfoDao.replaceInsert(appInfo)

@@ -130,7 +130,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                     val foundItem =
                         context.packageManager.getPackageInfo(
                             packageName,
-                            PackageManager.GET_META_DATA
+                            PackageManager.GET_PERMISSIONS
                         )
                     Package(context, foundItem)
                 }
