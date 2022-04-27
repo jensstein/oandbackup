@@ -337,4 +337,8 @@
     <string name="loading_list">Загрузка списка…</string>
     <string name="delete">Удалить</string>
     <string name="dialogCancelAll">Отменить все</string>
+    <string name="dismiss">Отклонить</string>
+    <string name="enabled">Включено</string>
+    <string name="sortAsc">По возрастанию</string>
+    <string name="sortDesc">По убыванию</string>
 </resources>
