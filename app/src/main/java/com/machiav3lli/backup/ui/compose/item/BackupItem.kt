@@ -90,7 +90,7 @@ fun BackupItem(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = if(item.backupVersionCode == 0) "old" else "${item.backupVersionCode/1000}.${item.backupVersionCode%1000}",
+                    text = if (item.backupVersionCode == 0) "old" else "${item.backupVersionCode / 1000}.${item.backupVersionCode % 1000}",
                     modifier = Modifier.align(Alignment.CenterVertically),
                     softWrap = true,
                     overflow = TextOverflow.Ellipsis,

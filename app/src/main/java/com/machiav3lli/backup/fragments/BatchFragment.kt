@@ -93,21 +93,6 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // TODO clean up
-        viewModel.refreshNow.observe(requireActivity()) {
-            //binding.refreshLayout.isRefreshing = it
-            if (it) {
-                requireMainActivity().viewModel.refreshList()
-            }
-        }
-        viewModel.filteredList.observe(viewLifecycleOwner) { list ->
-            try {
-                viewModel.refreshNow.value = false
-            } catch (e: Throwable) {
-                LogsHandler.unhandledException(e)
-            }
-        }
-
         packageList.observe(requireActivity()) { refreshView(it) }
     }
 
@@ -178,7 +163,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     fun BatchPage() {
 
         // TODO include tags in search
-        val list by viewModel.filteredList.observeAsState()
+        val list by viewModel.filteredList.observeAsState(null)
         val query by viewModel.searchQuery.observeAsState("")
 
         val filterPredicate = { item: Package ->
@@ -276,13 +261,12 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                             if (b) viewModel.apkCheckedList.add(item.packageName)
                             else viewModel.apkCheckedList.remove(item.packageName)
                             allApkChecked =
-                                viewModel.apkCheckedList.size == viewModel.filteredList.value
-                                    ?.filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }?.size
+                                viewModel.apkCheckedList.size == list?.filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }?.size
                         }, onDataClick = { item: Package, b: Boolean ->
                             if (b) viewModel.dataCheckedList.add(item.packageName)
                             else viewModel.dataCheckedList.remove(item.packageName)
                             allDataChecked =
-                                viewModel.dataCheckedList.size == viewModel.filteredList.value
+                                viewModel.dataCheckedList.size == list
                                     ?.filter { ai -> backupBoolean || ai.hasData }?.size
                         }) { item, checkApk, checkData ->
                         when (checkApk) {
@@ -294,10 +278,10 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                             else -> viewModel.dataCheckedList.remove(item.packageName)
                         }
                         allApkChecked =
-                            viewModel.apkCheckedList.size == viewModel.filteredList.value
+                            viewModel.apkCheckedList.size == list
                                 ?.filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }?.size
                         allDataChecked =
-                            viewModel.dataCheckedList.size == viewModel.filteredList.value
+                            viewModel.dataCheckedList.size == list
                                 ?.filter { ai -> backupBoolean || ai.hasData }?.size
                     }
                     Row(
@@ -317,7 +301,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                             allApkChecked = checkBoolean
                             if (checkBoolean)
                                 viewModel.apkCheckedList.addAll(
-                                    viewModel.filteredList.value
+                                    list
                                         ?.filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }
                                         ?.mapNotNull(Package::packageName).orEmpty()
                                 )
@@ -334,7 +318,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                             allDataChecked = checkBoolean
                             if (checkBoolean)
                                 viewModel.dataCheckedList.addAll(
-                                    viewModel.filteredList.value
+                                    list
                                         ?.filter { ai -> backupBoolean || ai.hasData }
                                         ?.mapNotNull(Package::packageName).orEmpty()
                                 )

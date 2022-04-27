@@ -73,7 +73,7 @@ class MainViewModel(
                     packageList.postValue(
                         it.toPackageList(
                             appContext,
-                            blocklist.value?.mapNotNull(Blocklist::packageName) ?: listOf(),
+                            blocklist.value.orEmpty().mapNotNull(Blocklist::packageName),
                             backupsMap.value.orEmpty()
                         )
                     )

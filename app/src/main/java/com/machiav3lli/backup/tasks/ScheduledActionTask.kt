@@ -19,7 +19,16 @@ package com.machiav3lli.backup.tasks
 
 import android.content.Context
 import android.content.Intent
-import com.machiav3lli.backup.*
+import com.machiav3lli.backup.MAIN_FILTER_SPECIAL
+import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
+import com.machiav3lli.backup.MAIN_FILTER_USER
+import com.machiav3lli.backup.MODE_UNSET
+import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
+import com.machiav3lli.backup.PREFS_OLDBACKUPS
+import com.machiav3lli.backup.SPECIAL_FILTER_DISABLED
+import com.machiav3lli.backup.SPECIAL_FILTER_LAUNCHABLE
+import com.machiav3lli.backup.SPECIAL_FILTER_NEW_UPDATED
+import com.machiav3lli.backup.SPECIAL_FILTER_OLD
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.getPackageList
@@ -43,7 +52,7 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         val schedule = scheduleDao.getSchedule(scheduleId)
             ?: return Triple("DbFailed", listOf(), MODE_UNSET)
 
-        val name = schedule.name.toString()
+        val name = schedule.name
         val filter = schedule.filter
         val specialFilter = schedule.specialFilter
         val customList = schedule.customList
