@@ -167,6 +167,9 @@ fun Context.getPackageList(
     return packageList
 }
 
+fun List<Package>.toAppInfoList(): List<AppInfo> =
+    filterNot { it.isSpecial }.map { it.packageInfo as AppInfo }
+
 fun List<AppInfo>.toPackageList(
     context: Context,
     blockList: List<String> = listOf(),

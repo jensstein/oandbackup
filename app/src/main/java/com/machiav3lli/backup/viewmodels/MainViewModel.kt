@@ -30,6 +30,7 @@ import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Blocklist
+import com.machiav3lli.backup.handler.toAppInfoList
 import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.handler.updateAppInfoTable
 import com.machiav3lli.backup.handler.updateBackupTable
@@ -83,10 +84,11 @@ class MainViewModel(
             viewModelScope.launch {
                 withContext(Dispatchers.IO) {
                     packageList.postValue(
-                        packageList.value?.map {
-                            it.updateBackupList(map[it.packageName].orEmpty())
-                            it
-                        }.orEmpty().toMutableList()
+                        packageList.value.orEmpty().toAppInfoList().toPackageList(
+                            appContext,
+                            blocklist.value.orEmpty().mapNotNull(Blocklist::packageName),
+                            map
+                        )
                     )
                 }
             }
