@@ -55,6 +55,13 @@
         android:key="pathBackupFolder"
         android:title="@string/prefs_pathbackupfolder" />
 
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:icon="@drawable/ic_label"
+        android:key="loadingToasts"
+        android:summary="@string/prefs_loadingtoasts_summary"
+        android:title="@string/prefs_loadingtoasts" />
+
     <androidx.preference.CheckBoxPreference
         android:defaultValue="false"
         android:icon="@drawable/ic_encryption"

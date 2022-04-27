@@ -92,6 +92,8 @@
     <string name="prefs_languages">Language</string>
     <string name="prefs_language_system">System default</string>
     <string name="prefs_pathbackupfolder">Backup folder</string>
+    <string name="prefs_loadingtoasts">Loading toasts</string>
+    <string name="prefs_loadingtoasts_summary">Show toasts while the list is being loaded</string>
     <string name="prefs_devicelock">Device lock</string>
     <string name="prefs_devicelock_summary">Secure the app with device credentials</string>
     <string name="prefs_biometriclock">Biometric lock</string>

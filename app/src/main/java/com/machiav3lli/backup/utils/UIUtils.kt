@@ -124,8 +124,8 @@ fun Activity.showWarning(
         .show()
 }
 
-fun Activity.showToast(message: String?) = runOnUiThread {
-    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+fun Activity.showToast(message: String?, should: Boolean = true) = runOnUiThread {
+    if (should) Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
 
 val Context.colorAccent: Int

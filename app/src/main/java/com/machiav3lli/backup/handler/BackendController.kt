@@ -77,8 +77,9 @@ fun Context.getPackageList(
     includeUninstalled: Boolean = true
 ): MutableList<Package> {
     val startTime = System.currentTimeMillis()
+    val showToasts = OABX.prefFlag(PREFS_LOADINGTOASTS, true)
 
-    OABX.activity?.showToast("getPackageList...")
+    OABX.activity?.showToast("getPackageList...", showToasts)
 
     val includeSpecial = specialBackupsEnabled
     val pm = packageManager
@@ -100,7 +101,10 @@ fun Context.getPackageList(
         .toMutableList()
 
     val afterPackagesTime = System.currentTimeMillis()
-    OABX.activity?.showToast("getPackageList: packages: ${((afterPackagesTime - startTime) / 1000 + 0.5).toInt()} sec")
+    OABX.activity?.showToast(
+        "getPackageList: packages: ${((afterPackagesTime - startTime) / 1000 + 0.5).toInt()} sec",
+        showToasts
+    )
 
     if (!OABX.appsSuspendedChecked) {
         OABX.activity?.whileShowingSnackBar("cleanup any left over suspended apps") {
@@ -162,7 +166,10 @@ fun Context.getPackageList(
     }
 
     val afterAllTime = System.currentTimeMillis()
-    OABX.activity?.showToast("getPackageList: all: ${((afterAllTime - startTime) / 1000 + 0.5).toInt()} sec")
+    OABX.activity?.showToast(
+        "getPackageList: all: ${((afterAllTime - startTime) / 1000 + 0.5).toInt()} sec",
+        showToasts
+    )
 
     return packageList
 }
@@ -177,10 +184,11 @@ fun List<AppInfo>.toPackageList(
     includeUninstalled: Boolean = true
 ): MutableList<Package> {
     val startTime = System.currentTimeMillis()
+    val showToasts = OABX.prefFlag(PREFS_LOADINGTOASTS, true)
 
     val includeSpecial = context.specialBackupsEnabled
 
-    OABX.activity?.showToast("toPackageList...")
+    OABX.activity?.showToast("toPackageList...", showToasts)
 
     var packageList =
         this.filterNot {
@@ -197,7 +205,10 @@ fun List<AppInfo>.toPackageList(
             .toMutableList()
 
     val afterPackagesTime = System.currentTimeMillis()
-    OABX.activity?.showToast("toPackageList: packages: ${((afterPackagesTime - startTime) / 1000 + 0.5).toInt()} sec")
+    OABX.activity?.showToast(
+        "toPackageList: packages: ${((afterPackagesTime - startTime) / 1000 + 0.5).toInt()} sec",
+        showToasts
+    )
 
     // Special Backups must added before the uninstalled packages, because otherwise it would
     // discover the backup directory and run in a special case where no the directory is empty.
@@ -242,14 +253,19 @@ fun List<AppInfo>.toPackageList(
     }
 
     val afterAllTime = System.currentTimeMillis()
-    OABX.activity?.showToast("toPackageList: all: ${((afterAllTime - startTime) / 1000 + 0.5).toInt()} sec")
+    OABX.activity?.showToast(
+        "toPackageList: all: ${((afterAllTime - startTime) / 1000 + 0.5).toInt()} sec",
+        showToasts
+    )
 
     return packageList
 }
 
 fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
     val startTime = System.currentTimeMillis()
-    OABX.activity?.showToast("updateInfoTable...")
+    val showToasts = OABX.prefFlag(PREFS_LOADINGTOASTS, true)
+
+    OABX.activity?.showToast("updateInfoTable...", showToasts)
 
     val pm = packageManager
     val installedAppList = pm.getInstalledPackagesWithPermissions()
@@ -304,7 +320,10 @@ fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
     appInfoDao.updateList(*appInfoList)
 
     val afterTime = System.currentTimeMillis()
-    OABX.activity?.showToast("updateInfoTable: ${((afterTime - startTime) / 1000 + 0.5).toInt()} sec")
+    OABX.activity?.showToast(
+        "updateInfoTable: ${((afterTime - startTime) / 1000 + 0.5).toInt()} sec",
+        showToasts
+    )
 }
 
 fun Context.updateBackupTable(backupDao: BackupDao) {

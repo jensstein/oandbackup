@@ -25,6 +25,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
+import com.machiav3lli.backup.PREFS_LOADINGTOASTS
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dbs.entity.AppInfo
@@ -98,11 +99,15 @@ class MainViewModel(
     // TODO add to interface
     fun refreshList() {
         viewModelScope.launch {
+            val showToasts = OABX.prefFlag(PREFS_LOADINGTOASTS, true)
             val startTime = System.currentTimeMillis()
-            OABX.activity?.showToast("recreateAppInfoList ...")
+            OABX.activity?.showToast("recreateAppInfoList ...", showToasts)
             recreateAppInfoList()
             val after = System.currentTimeMillis()
-            OABX.activity?.showToast("recreateAppInfoList: ${((after - startTime) / 1000 + 0.5).toInt()} sec")
+            OABX.activity?.showToast(
+                "recreateAppInfoList: ${((after - startTime) / 1000 + 0.5).toInt()} sec",
+                showToasts
+            )
         }
     }
 
