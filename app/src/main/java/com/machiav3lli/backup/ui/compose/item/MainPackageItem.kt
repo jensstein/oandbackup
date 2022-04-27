@@ -41,6 +41,7 @@ fun MainPackageItem(
             else "android.resource://${packageItem.packageName}/${packageItem.packageInfo.icon}"
         )
     }
+    packageItem.ensureBackupList()
 
     OutlinedCard(
         modifier = Modifier,

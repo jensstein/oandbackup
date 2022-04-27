@@ -195,7 +195,9 @@ fun List<AppInfo>.toPackageList(
         }
             .mapNotNull {
                 try {
-                    Package(context, it, backupMap[it.packageName].orEmpty())
+                    Package.get(it.packageName) {
+                        Package(context, it, backupMap[it.packageName].orEmpty())
+                    }
                 } catch (e: AssertionError) {
                     Timber.e("Could not create Package for ${it}: $e")
                     null
@@ -239,7 +241,9 @@ fun List<AppInfo>.toPackageList(
                 }
                 .mapNotNull {
                     try {
-                        Package(context, it.name, it, backupMap[it.name].orEmpty())
+                        Package.get(it.name ?: "") {
+                            Package(context, it.name, it, backupMap[it.name].orEmpty())
+                        }
                     } catch (e: AssertionError) {
                         Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
                         null

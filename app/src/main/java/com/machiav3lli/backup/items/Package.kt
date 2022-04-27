@@ -45,6 +45,7 @@ class Package {
     private var packageBackupDir: StorageFile? = null
     var storageStats: StorageStats? = null
 
+    private var backupListDirty = true
     private var backupListState = mutableStateOf(listOf<Backup>())
     private var backupList by backupListState
 
@@ -185,6 +186,12 @@ class Package {
                     LogsHandler.unhandledException(e, message)
                 }
             }
+        backupListDirty = false
+    }
+
+    fun ensureBackupList() {
+        if (backupListDirty)
+            refreshBackupList()
     }
 
     @Throws(

@@ -131,8 +131,9 @@ class MainViewModel(
             val appPackage = packageList.value?.find { it.packageName == packageName }
             try {
                 appPackage?.apply {
-                    val new =
+                    val new = Package.get(packageName) {
                         Package(appContext, packageName, appPackage.getAppBackupRoot())
+                    }
                     new.refreshBackupList() //TODO hg42 such optimizations should be encapsulated (in Package)
                     if (!isSpecial) db.appInfoDao.update(new.packageInfo as AppInfo)
                     db.backupDao.updateList(new)
