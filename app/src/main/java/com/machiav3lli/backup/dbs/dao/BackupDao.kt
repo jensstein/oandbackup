@@ -52,4 +52,10 @@ interface BackupDao : BaseDao<Backup> {
         deleteAllOf(packageItem.packageName)
         insert(*packageItem.backupsNewestFirst.toTypedArray())
     }
+
+    @Transaction
+    fun updateList(vararg backups: Backup) {
+        emptyTable()
+        replaceInsert(*backups)
+    }
 }

@@ -298,8 +298,7 @@ fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
             .map { AppInfo(this, it) }
             .union(packagesWithBackup)
             .toTypedArray()
-    appInfoDao.emptyTable()
-    appInfoDao.replaceInsert(*appInfoList)
+    appInfoDao.updateList(*appInfoList)
 
     val afterTime = System.currentTimeMillis()
     OABX.activity?.showToast("updateInfoTable: ${((afterTime - startTime) / 1000 + 0.5).toInt()} sec")
@@ -335,8 +334,7 @@ fun Context.updateBackupTable(backupDao: BackupDao) {
                 }
         }
 
-    backupDao.emptyTable()
-    backupDao.replaceInsert(*backupList.toTypedArray())
+    backupDao.updateList(*backupList.toTypedArray())
 }
 
 @Throws(

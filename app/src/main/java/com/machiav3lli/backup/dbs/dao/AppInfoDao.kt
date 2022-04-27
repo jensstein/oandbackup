@@ -20,6 +20,7 @@ package com.machiav3lli.backup.dbs.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Transaction
 import com.machiav3lli.backup.dbs.entity.AppInfo
 
 @Dao
@@ -44,4 +45,10 @@ interface AppInfoDao : BaseDao<AppInfo> {
 
     @Query("DELETE FROM appinfo WHERE packageName = :packageName")
     fun deleteAllOf(packageName: String)
+
+    @Transaction
+    fun updateList(vararg appInfos: AppInfo) {
+        emptyTable()
+        replaceInsert(*appInfos)
+    }
 }
