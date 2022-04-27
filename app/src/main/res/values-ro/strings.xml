@@ -242,4 +242,15 @@
     <string name="uninstallSuccess">Dezinstalare completă</string>
     <string name="usage_notes_title">Note privind utilizarea</string>
     <string name="main">Start</string>
+    <string name="sortAsc">Ascendent</string>
+    <string name="sortDesc">Descendent</string>
+    <string name="intro_welcome_message">Neo Backup este un fork al faimosului OAndBackup cu scopul de a-l aduce în 2020 și mai departe. Deocamdată, majoritatea funcționalităților și interfața de utilizare a aplicației sunt rescrise și unele sunt adăugate.
+\n Aplicația este încă în faza beta și se fac adesea multe modificări de bază. Așadar, te rugăm să citești cu atenție jurnalul modificărilor la fiecare nouă versiune.
+\n Toate tipurile de contribuții sunt binevenite, fie că este vorba de traduceri, idei, raportarea de buguri sau lucrul la cod.
+\n
+\n Acum cu privire la funcționalitățile aplicației noastre:
+\n • Necesită root și îți permite să faci backupuri ale aplicațiilor individuale și ale datelor acestora.
+\n • Sunt suportate atât crearea de backupuri și restaurarea aplicațiilor individuale, una câte una, cât și crearea de backupuri și restaurarea în loturi a mai multor aplicații.
+\n • Restaurarea aplicațiilor de sistem ar trebui să fie posibilă fără a necesita o repornire ulterioară, dar totuși nu te sfătuim să o faci.
+\n • Backupurile pot fi planificate fără limită asupra numărului de planificări individuale și există posibilitatea de a crea liste personalizate unice.</string>
 </resources>
