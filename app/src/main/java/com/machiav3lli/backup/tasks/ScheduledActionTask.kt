@@ -31,7 +31,7 @@ import com.machiav3lli.backup.SPECIAL_FILTER_NEW_UPDATED
 import com.machiav3lli.backup.SPECIAL_FILTER_OLD
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.handler.getPackageList
+import com.machiav3lli.backup.handler.getInstalledPackageList
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
@@ -61,7 +61,7 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         val blockList = globalBlocklist.plus(customBlocklist)
 
         val unfilteredList: List<Package> = try {
-            context.getPackageList(blockList, false)
+            context.getInstalledPackageList(blockList)
         } catch (e: FileUtils.BackupLocationInAccessibleException) {
             Timber.e("Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
             LogsHandler.logErrors(
@@ -95,13 +95,13 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         }
         val days = context.getDefaultSharedPreferences().getInt(PREFS_OLDBACKUPS, 7)
         val specialPredicate: (Package) -> Boolean = when (specialFilter) {
-            SPECIAL_FILTER_LAUNCHABLE -> { appInfo: Package ->
-                launchableAppsList.contains(appInfo.packageName) &&
-                        inListed(appInfo.packageName)
+            SPECIAL_FILTER_LAUNCHABLE -> { packageItem: Package ->
+                launchableAppsList.contains(packageItem.packageName) &&
+                        inListed(packageItem.packageName)
             }
-            SPECIAL_FILTER_NEW_UPDATED -> { appInfo: Package ->
-                appInfo.isInstalled && (!appInfo.hasBackups || appInfo.isUpdated) &&
-                        inListed(appInfo.packageName)
+            SPECIAL_FILTER_NEW_UPDATED -> { packageItem: Package ->
+                (!packageItem.hasBackups || packageItem.isUpdated) &&
+                        inListed(packageItem.packageName)
             }
             SPECIAL_FILTER_OLD -> {
                 { appInfo: Package ->

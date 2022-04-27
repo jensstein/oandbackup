@@ -29,6 +29,7 @@ import com.machiav3lli.backup.LOG_FOLDER_NAME
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.PREFS_LOADINGTOASTS
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.ignoredPackages
 import com.machiav3lli.backup.dbs.dao.AppInfoDao
 import com.machiav3lli.backup.dbs.dao.BackupDao
@@ -49,10 +50,6 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.*
 
-/*
-List of packages to be ignored for said reasons
- */
-
 // TODO respect special filter
 fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
     packageManager.getInstalledPackagesWithPermissions()
@@ -72,10 +69,7 @@ fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
     FileUtils.BackupLocationInAccessibleException::class,
     StorageLocationNotConfiguredException::class
 )
-fun Context.getPackageList(
-    blockList: List<String> = listOf(),
-    includeUninstalled: Boolean = true
-): MutableList<Package> {
+fun Context.getInstalledPackageList(blockList: List<String> = listOf()): MutableList<Package> {
     val startTime = System.currentTimeMillis()
     val showToasts = OABX.prefFlag(PREFS_LOADINGTOASTS, true)
 
@@ -136,34 +130,39 @@ fun Context.getPackageList(
         }
     }
 
-    if (includeUninstalled) {
-        val installedPackageNames = packageList
-            .map { it.packageName }
-            .toList()
-        val directoriesInBackupRoot = getDirectoriesInBackupRoot()
-        val packagesWithBackup: MutableList<Package> =
-        // Try to create AppInfo objects
-        // if it fails, null the object for filtering in the next step to avoid crashes
-            // filter out previously failed backups
-            directoriesInBackupRoot
-                .filterNot {
-                    it.name?.let { name ->
-                        /* installedPackageNames.contains(name) || */
-                        blockList.contains(name) || specialList.contains(name)
-                    } ?: true
-                }
-                .mapNotNull {
+    val directoriesInBackupRoot = getDirectoriesInBackupRoot()
+    val backupList = mutableListOf<Backup>()
+    directoriesInBackupRoot
+        .filterNot {
+            it.name?.let { name ->
+                name == EXPORTS_FOLDER_NAME || name == LOG_FOLDER_NAME
+            } ?: true
+        }.map {
+            it.listFiles()
+                .filter(StorageFile::isPropertyFile)
+                .forEach { propFile ->
                     try {
-                        Package(this, it.name, it)
-                    } catch (e: AssertionError) {
-                        Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
-                        null
+                        Backup.createFrom(propFile)?.let(backupList::add)
+                    } catch (e: Backup.BrokenBackupException) {
+                        val message =
+                            "Incomplete backup or wrong structure found in $propFile"
+                        Timber.w(message)
+                    } catch (e: NullPointerException) {
+                        val message =
+                            "(Null) Incomplete backup or wrong structure found in $propFile"
+                        Timber.w(message)
+                    } catch (e: Throwable) {
+                        val message =
+                            "(catchall) Incomplete backup or wrong structure found in $propFile"
+                        LogsHandler.unhandledException(e, message)
                     }
                 }
-                .toMutableList()
-        packageList =
-            (packageList.filterNot { it.packageName in packagesWithBackup.map { it.packageName } } + packagesWithBackup).toMutableList()
-    }
+        }
+    val backupsMap = backupList.groupBy { it.packageName }
+
+    packageList = packageList.map {
+        it.apply { updateBackupList(backupsMap[it.packageName].orEmpty()) }
+    }.toMutableList()
 
     val afterAllTime = System.currentTimeMillis()
     OABX.activity?.showToast(
