@@ -60,20 +60,36 @@ class MainViewModel(
     init {
         blocklist.addSource(db.blocklistDao.liveAll, blocklist::setValue)
         backupsMap.addSource(db.backupDao.allLive) {
-            backupsMap.postValue(it.groupBy(Backup::packageName))
+            viewModelScope.launch {
+                withContext(Dispatchers.IO) {
+                    backupsMap.postValue(it.groupBy(Backup::packageName))
+                }
+            }
         }
         packageList.addSource(db.appInfoDao.allLive) {
-            packageList.value = it.toPackageList(
-                appContext,
-                blocklist.value?.mapNotNull(Blocklist::packageName) ?: listOf(),
-                backupsMap.value.orEmpty()
-            )
+            viewModelScope.launch {
+                withContext(Dispatchers.IO) {
+                    packageList.postValue(
+                        it.toPackageList(
+                            appContext,
+                            blocklist.value?.mapNotNull(Blocklist::packageName) ?: listOf(),
+                            backupsMap.value.orEmpty()
+                        )
+                    )
+                }
+            }
         }
         packageList.addSource(backupsMap) { map ->
-            packageList.value = packageList.value?.map {
-                it.updateBackupList(map[it.packageName].orEmpty())
-                it
-            }.orEmpty().toMutableList()
+            viewModelScope.launch {
+                withContext(Dispatchers.IO) {
+                    packageList.postValue(
+                        packageList.value?.map {
+                            it.updateBackupList(map[it.packageName].orEmpty())
+                            it
+                        }.orEmpty().toMutableList()
+                    )
+                }
+            }
         }
     }
 
