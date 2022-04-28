@@ -18,6 +18,7 @@
 package com.machiav3lli.backup.actions
 
 import android.content.Context
+import com.machiav3lli.backup.PREFS_REFRESHTIMEOUT_DEFAULT
 import com.machiav3lli.backup.MODE_APK
 import com.machiav3lli.backup.MODE_DATA
 import com.machiav3lli.backup.MODE_DATA_DE
@@ -929,7 +930,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
 
         // try multiple times to get valid paths from PackageManager
         // maxWaitMs is cumulated sleep time between tries
-        val maxWaitMs = OABX.prefInt(PREFS_REFRESHTIMEOUT, 30) * 1000L
+        val maxWaitMs = OABX.prefInt(PREFS_REFRESHTIMEOUT, PREFS_REFRESHTIMEOUT_DEFAULT) * 1000L
         timeWaitedMs = 0L
         var attemptNo = 0
         do {

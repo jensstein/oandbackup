@@ -94,6 +94,7 @@ const val PREFS_CACHEROOTFILEATTRIBUTES = "cacheRootFileAttributes"
 const val PREFS_MAXRETRIES = "maxRetriesPerPackage"
 const val PREFS_REFRESHDELAY = "delayBeforeRefreshAppInfo"
 const val PREFS_REFRESHTIMEOUT = "refreshAppInfoTimeout"
+const val PREFS_REFRESHTIMEOUT_DEFAULT = 30
 const val PREFS_BATCH_DELETE = "batchDelete"
 const val PREFS_COPYSELF = "copySelfApk"
 const val PREFS_SCHEDULESEXPORTIMPORT = "schedulesExportImport"
@@ -168,7 +169,6 @@ val schedSpecialFilterChipItems = listOf(
 
 val mainSpecialFilterChipItems = schedSpecialFilterChipItems.plus(ChipItem.NotInstalled)
 
-const val DEFAULT_RETRIEVE_APP_META_MAXWAIT = 30;
 
 const val BUNDLE_USERS = "users"
 
