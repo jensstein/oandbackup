@@ -22,9 +22,19 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.machiav3lli.backup.SCHEDULES_DB_NAME
-import com.machiav3lli.backup.dbs.dao.*
-import com.machiav3lli.backup.dbs.entity.*
+import com.machiav3lli.backup.MAIN_DB_NAME
+import com.machiav3lli.backup.dbs.dao.AppExtrasDao
+import com.machiav3lli.backup.dbs.dao.AppInfoDao
+import com.machiav3lli.backup.dbs.dao.BackupDao
+import com.machiav3lli.backup.dbs.dao.BlocklistDao
+import com.machiav3lli.backup.dbs.dao.ScheduleDao
+import com.machiav3lli.backup.dbs.dao.SpecialInfoDao
+import com.machiav3lli.backup.dbs.entity.AppExtras
+import com.machiav3lli.backup.dbs.entity.AppInfo
+import com.machiav3lli.backup.dbs.entity.Backup
+import com.machiav3lli.backup.dbs.entity.Blocklist
+import com.machiav3lli.backup.dbs.entity.Schedule
+import com.machiav3lli.backup.dbs.entity.SpecialInfo
 
 @Database(
     entities = [
@@ -34,7 +44,7 @@ import com.machiav3lli.backup.dbs.entity.*
         AppInfo::class,
         SpecialInfo::class,
         Backup::class],
-    version = 5,
+    version = 1,
     exportSchema = true,
     autoMigrations = []
 )
@@ -57,7 +67,7 @@ abstract class ODatabase : RoomDatabase() {
                     INSTANCE = Room
                         .databaseBuilder(
                             context.applicationContext, ODatabase::class.java,
-                            SCHEDULES_DB_NAME
+                            MAIN_DB_NAME
                         )
                         .fallbackToDestructiveMigration()
                         .build()

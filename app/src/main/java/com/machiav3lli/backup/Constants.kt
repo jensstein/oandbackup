@@ -31,8 +31,7 @@ const val BACKUP_INSTANCE_PROPERTIES = "%s-user_%s.properties"
 const val BACKUP_INSTANCE_DIR = "%s-user_%s"
 const val EXPORTS_INSTANCE = "%s.scheds"
 
-// TODO FOR RELEASE rename the DB and reset version
-const val SCHEDULES_DB_NAME = "schedules.db"
+const val MAIN_DB_NAME = "main.db"
 const val PACKAGES_LIST_GLOBAL_ID = -1L
 
 const val ACTION_CANCEL = "cancel"
