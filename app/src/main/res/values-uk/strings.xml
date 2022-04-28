@@ -335,4 +335,8 @@
     <string name="enabled">Увімкнено</string>
     <string name="sortAsc">Зростання</string>
     <string name="sortDesc">Спадання</string>
+    <string name="prefs_loadingtoasts_summary">Показувати сповіщення, поки завантажується перелік</string>
+    <string name="prefs_restorepermissions">Відновити дозволи</string>
+    <string name="prefs_restorepermissions_summary">Відновити дозволи, надані програмі станом на мить резервного копіювання. Зауважте, деякі дозволи неможливо надати програмно: це викликає збій цілісного відновлення пакунка, й Neo Backup повторює спробу відновлення пакунка без збереження дозволів.</string>
+    <string name="prefs_loadingtoasts">Прогрес завантаження</string>
 </resources>
