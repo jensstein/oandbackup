@@ -119,6 +119,8 @@
     <string name="prefs_obbdata_summary">Backs up and restores the app\'s obb files that is placed on the external storage (e.g. /storage/emulated/0/Android/obb/)</string>
     <string name="prefs_mediadata">Back up media files</string>
     <string name="prefs_mediadata_summary">Backs up and restores the app\'s media files that is placed on the external storage (e.g. /storage/emulated/0/Android/media/)</string>
+    <string name="prefs_restorepermissions">Restore permissions</string>
+    <string name="prefs_restorepermissions_summary">Restore permissions that were granted to the app at the moment of the backup. Note that some permissions can\'t be granted programmatically and so cause the package restore to fail as a whole, which Neo Backup then covers restoring the package without permissions.</string>
     <string name="prefs_deviceprotecteddata">Back up device-protected data</string>
     <string name="prefs_deviceprotecteddata_summary">Backs up and restores data that is placed in data/user_de</string>
     <string name="prefs_numBackupRevisions">Number of backup revisions</string>

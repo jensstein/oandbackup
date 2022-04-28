@@ -29,6 +29,7 @@ import com.machiav3lli.backup.PREFS_EXCLUDECACHE
 import com.machiav3lli.backup.PREFS_REFRESHDELAY
 import com.machiav3lli.backup.PREFS_REFRESHTIMEOUT
 import com.machiav3lli.backup.PREFS_RESTOREAVOIDTEMPCOPY
+import com.machiav3lli.backup.PREFS_RESTOREPERMISSIONS
 import com.machiav3lli.backup.PREFS_RESTORETARCMD
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.entity.Backup
@@ -306,7 +307,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                     )
                 }
             }
-            if (!context.isRestoreAllPermissions)
+            if (!context.isRestoreAllPermissions && OABX.prefFlag(PREFS_RESTOREPERMISSIONS, true))
                 backup.permissions
                     .filterNot { it.isEmpty() }
                     .forEach {
