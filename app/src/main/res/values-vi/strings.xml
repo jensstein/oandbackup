@@ -321,4 +321,13 @@
     <string name="spec_fingerprint">Vân tay</string>
     <string name="loading_list">Đang tải danh sách…</string>
     <string name="delete">Xóa</string>
+    <string name="enabled">Đã bật</string>
+    <string name="sortDesc">Giảm dần</string>
+    <string name="prefs_loadingtoasts">Hiện Toast khi tải</string>
+    <string name="prefs_loadingtoasts_summary">Hiện Toast khi danh sách đang được tải</string>
+    <string name="prefs_restorepermissions">Khôi phục quyền</string>
+    <string name="dismiss">Bỏ qua</string>
+    <string name="prefs_restorepermissions_summary">Khôi phục các quyền đã được cấp cho ứng dụng tại thời điểm sao lưu. Lưu ý rằng một số quyền không thể được cấp theo chương trình và vậy nên sẽ làm việc khôi phục gói thất bại, lúc đó Neo Backup sẽ thực hiện khôi phục gói mà không có quyền.</string>
+    <string name="dialogCancelAll">Huỷ tất cả</string>
+    <string name="sortAsc">Tăng dần</string>
 </resources>
