@@ -64,7 +64,7 @@ fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
         }
         .toList()
 
-// TODO Fix package constructors (no backups are read in this situation) + remove fully
+// TODO remove fully
 @Throws(
     FileUtils.BackupLocationInAccessibleException::class,
     StorageLocationNotConfiguredException::class
@@ -226,34 +226,6 @@ fun List<AppInfo>.toPackageList(
             }
             specialList.add(it.packageName)
         }
-    }
-
-    if (includeUninstalled) {
-        val directoriesInBackupRoot = context.getDirectoriesInBackupRoot()
-        val packagesWithBackup: List<Package> =
-        // Try to create AppInfo objects
-        // if it fails, null the object for filtering in the next step to avoid crashes
-            // filter out previously failed backups
-            directoriesInBackupRoot
-                .filterNot {
-                    it.name?.let { name ->
-                        blockList.contains(name) || specialList.contains(name)
-                    } ?: true
-                }
-                .mapNotNull {
-                    try {
-                        Package.get(it.name ?: "") {
-                            Package(context, it.name, it, backupMap[it.name].orEmpty())
-                        }
-                    } catch (e: AssertionError) {
-                        Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
-                        null
-                    }
-                }
-                .toList()
-        packageList = packagesWithBackup.plus(packageList.filterNot {
-            it.packageName in packagesWithBackup.map(Package::packageName)
-        }).toMutableList()
     }
 
     val afterAllTime = System.currentTimeMillis()
