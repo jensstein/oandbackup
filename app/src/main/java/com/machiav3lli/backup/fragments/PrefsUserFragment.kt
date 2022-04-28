@@ -129,7 +129,7 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
 
     private fun Context.setDefaultDir(dir: Uri) {
         setBackupDir(dir)
-        isNeedRefresh = true
+        OABX.activity?.needRefresh = true
         findPreference<Preference>(PREFS_PATH_BACKUP_DIRECTORY)?.summary = dir.toString()
     }
 
