@@ -100,21 +100,22 @@ fun Context.getInstalledPackageList(blockList: List<String> = listOf()): Mutable
         showToasts
     )
 
+
     if (!OABX.appsSuspendedChecked) {
-        OABX.activity?.whileShowingSnackBar("cleanup any left over suspended apps") {
-            // cleanup suspended package if lock file found
-            packageList.forEach { appPackage ->
-                if (0 != (OABX.activity?.packageManager
-                        ?.getPackageInfo(appPackage.packageName, 0)
-                        ?.applicationInfo
-                        ?.flags
-                        ?: 0
-                            ) and ApplicationInfo.FLAG_SUSPENDED
-                ) {
+        packageList.filter { appPackage ->
+            0 != (OABX.activity?.packageManager
+                ?.getPackageInfo(appPackage.packageName, 0)
+                ?.applicationInfo
+                ?.flags
+                ?: 0) and ApplicationInfo.FLAG_SUSPENDED
+        }.apply {
+            OABX.activity?.whileShowingSnackBar("cleanup any left over suspended apps") {
+                // cleanup suspended package if lock file found
+                this.forEach { appPackage ->
                     runAsRoot("pm unsuspend ${appPackage.packageName}")
                 }
+                OABX.appsSuspendedChecked = true
             }
-            OABX.appsSuspendedChecked = true
         }
     }
 
@@ -276,20 +277,20 @@ fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
     val specialList = SpecialInfo.getSpecialPackages(this).map { it.packageName }
 
     if (!OABX.appsSuspendedChecked) {
-        OABX.activity?.whileShowingSnackBar("cleanup any left over suspended apps") {
-            // cleanup suspended package if lock file found
-            installedAppNames.forEach { packageName ->
-                if (0 != (OABX.activity?.packageManager
-                        ?.getPackageInfo(packageName, 0)
-                        ?.applicationInfo
-                        ?.flags
-                        ?: 0
-                            ) and ApplicationInfo.FLAG_SUSPENDED
-                ) {
+        installedAppNames.filter { packageName ->
+            0 != (OABX.activity?.packageManager
+                ?.getPackageInfo(packageName, 0)
+                ?.applicationInfo
+                ?.flags
+                ?: 0) and ApplicationInfo.FLAG_SUSPENDED
+        }.apply {
+            OABX.activity?.whileShowingSnackBar("cleanup any left over suspended apps") {
+                // cleanup suspended package if lock file found
+                this.forEach { packageName ->
                     runAsRoot("pm unsuspend $packageName")
                 }
+                OABX.appsSuspendedChecked = true
             }
-            OABX.appsSuspendedChecked = true
         }
     }
 
