@@ -100,7 +100,6 @@ class HomeFragment : NavigationFragment(),
         super.onViewCreated(view, savedInstanceState)
         viewModel.filteredList.observe(viewLifecycleOwner) { list ->
             try {
-                viewModel.updatedApps.value = list?.filter { it.isUpdated }
                 // TODO live update of AppSheet
                 list?.find { it.packageName == appSheet?.appInfo?.packageName }
                     ?.let { sheetApp ->
@@ -196,7 +195,7 @@ class HomeFragment : NavigationFragment(),
         // TODO include tags in search
         val list by viewModel.filteredList.observeAsState(null)
         val query by viewModel.searchQuery.observeAsState("")
-        val updatedApps by viewModel.updatedApps.observeAsState(null)
+        val updatedApps = list?.filter { it.isUpdated }
         var updatedVisible by remember(viewModel.filteredList.value) { mutableStateOf(false) }
 
         val filterPredicate = { item: Package ->
