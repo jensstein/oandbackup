@@ -307,6 +307,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                     )
                 }
             }
+            val commandWithoutPermissions = sb.toString()
             if (!context.isRestoreAllPermissions && OABX.prefFlag(PREFS_RESTOREPERMISSIONS, true))
                 backup.permissions
                     .filterNot { it.isEmpty() }
@@ -315,7 +316,15 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                     }
 
             val command = sb.toString()
-            runAsRoot(command)
+            try {
+                runAsRoot(command)
+            } catch (e: ShellCommandFailedException) {
+                val error = extractErrorMessage(e.shellResult)
+                Timber.e("Restore APKs with permissions failed: $error")
+                if (command != commandWithoutPermissions) runAsRoot(commandWithoutPermissions)
+                else throw e
+            }
+
             success = true
 
             // re-enable verify apps over usb
