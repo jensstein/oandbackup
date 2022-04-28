@@ -116,16 +116,6 @@ const val MODE_DATA_MEDIA = 0b1000000
 const val BACKUP_FILTER_DEFAULT = 0b1111111
 val possibleSchedModes =
     listOf(MODE_APK, MODE_DATA, MODE_DATA_DE, MODE_DATA_EXT, MODE_DATA_OBB, MODE_DATA_MEDIA)
-val possibleBackupFilters =
-    listOf(
-        MODE_NONE,
-        MODE_APK,
-        MODE_DATA,
-        MODE_DATA_DE,
-        MODE_DATA_EXT,
-        MODE_DATA_OBB,
-        MODE_DATA_MEDIA
-    )
 
 val scheduleBackupModeChipItems = listOf(
     ChipItem.Apk,
@@ -181,7 +171,6 @@ val mainSpecialFilterChipItems = schedSpecialFilterChipItems.plus(ChipItem.NotIn
 const val DEFAULT_RETRIEVE_APP_META_MAXWAIT = 30;
 
 const val BUNDLE_USERS = "users"
-const val NEED_REFRESH = "needRefresh"
 
 const val HELP_CHANGELOG = "https://github.com/NeoApplications/Neo-Backup/blob/master/CHANGELOG.md"
 const val HELP_TELEGRAM = "https://t.me/neo_backup"

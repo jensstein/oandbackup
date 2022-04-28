@@ -311,8 +311,8 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             if (!context.isRestoreAllPermissions && OABX.prefFlag(PREFS_RESTOREPERMISSIONS, true))
                 backup.permissions
                     .filterNot { it.isEmpty() }
-                    .forEach {
-                            p -> sb.append(" ; pm grant ${backup.packageName} $p")
+                    .forEach { p ->
+                        sb.append(" ; pm grant ${backup.packageName} $p")
                     }
 
             val command = sb.toString()
@@ -906,13 +906,13 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             "cat", quote(apkPath.absolutePath),
             "|",
             "pm", "install",
-                basePackageName?.let {"-p $basePackageName"},
-                if (context.isRestoreAllPermissions) "-g" else null,
-                if (context.isAllowDowngrade) "-d" else null,
-                "-t",
-                "-r",
-                "-S", apkPath.length().toString(),
-                "--user", profileId,
+            basePackageName?.let { "-p $basePackageName" },
+            if (context.isRestoreAllPermissions) "-g" else null,
+            if (context.isAllowDowngrade) "-d" else null,
+            "-t",
+            "-r",
+            "-S", apkPath.length().toString(),
+            "--user", profileId,
         ).filterNotNull().joinToString(" ")
 
     @Throws(PackageManagerDataIncompleteException::class)
