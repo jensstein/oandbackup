@@ -457,16 +457,16 @@ fun HorizontalExpandingVisibility(
     collapsedView: @Composable (AnimatedVisibilityScope.() -> Unit)
 ) {
     AnimatedVisibility(
-        visible = expanded,
+        visible = !expanded,
         enter = expandHorizontally(expandFrom = Alignment.Start),
         exit = shrinkHorizontally(shrinkTowards = Alignment.Start),
-        content = expandedView
+        content = collapsedView
     )
     AnimatedVisibility(
-        visible = !expanded,
+        visible = expanded,
         enter = expandHorizontally(expandFrom = Alignment.End),
         exit = shrinkHorizontally(shrinkTowards = Alignment.End),
-        content = collapsedView
+        content = expandedView
     )
 }
 
