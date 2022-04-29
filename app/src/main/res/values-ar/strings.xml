@@ -341,4 +341,8 @@
     <string name="dismiss">رفض</string>
     <string name="enabled">تمكين</string>
     <string name="sortAsc">تصاعدي</string>
+    <string name="prefs_loadingtoasts">تنبيه التحميل</string>
+    <string name="prefs_loadingtoasts_summary">إظهار تنبيه منبثق أثناء تحميل القائمة</string>
+    <string name="prefs_restorepermissions">استعادة الأذونات</string>
+    <string name="prefs_restorepermissions_summary">استعادة الأذونات التي تم منحها للتطبيق اثناء النسخ الاحتياطي. لاحظ أنه لا يمكن منح بعض الأذونات برمجيا ، وبالتالي تتسبب في فشل استعادة الحزمة ككل ، والتي يقوم Neo Backup بعد ذلك بتغطية استعادة الحزمة بدون أذونات.</string>
 </resources>
