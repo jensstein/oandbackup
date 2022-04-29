@@ -204,6 +204,7 @@ fun CardButton(
     icon: Painter,
     tint: Color,
     description: String,
+    enabled: Boolean = true,
     onClick: () -> Unit
 ) {
     ElevatedButton(
@@ -214,6 +215,7 @@ fun CardButton(
         ),
         contentPadding = PaddingValues(12.dp),
         shape = MaterialTheme.shapes.medium,
+        enabled = enabled,
         onClick = { onClick() }
     ) {
         Icon(painter = icon, contentDescription = description)
