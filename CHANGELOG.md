@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+8.0.2 (29.04.2021) 2 Commits
+------------------
+- Fix: Auto-updating AppSheet package
+
 8.0.1 (29.04.2021) 2 Commits
 ------------------
 - Fix: Showing uninstalled apps
