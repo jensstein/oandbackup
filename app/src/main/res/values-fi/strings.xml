@@ -202,7 +202,7 @@
     <string name="prefs_accent_4">Tuhti vihreä</string>
     <string name="prefs_accent_5">Raikas lime</string>
     <string name="prefs_accent_6">Myrskynkeltainen</string>
-    <string name="backup">Varmuuskopio</string>
+    <string name="backup">Varmuuskopioi</string>
     <string name="showDisabled">Käytöstä poistetut sovellukset</string>
     <string name="prefs_accent_7">Aprikoosin oranssi</string>
     <string name="prefs_secondary_0">Arktinen syaani</string>
@@ -313,4 +313,13 @@
     <string name="delete">Poista</string>
     <string name="prefs_unset">Ei asetettu</string>
     <string name="batch">Erä</string>
+    <string name="dismiss">Ohita</string>
+    <string name="enabled">Käytössä</string>
+    <string name="sortAsc">Nouseva</string>
+    <string name="sortDesc">Laskeva</string>
+    <string name="prefs_loadingtoasts_summary">Näytä ilmoitukset, kun listaa ladataan</string>
+    <string name="prefs_loadingtoasts">Latausilmoitukset</string>
+    <string name="prefs_restorepermissions">Palauta käyttöoikeudet</string>
+    <string name="prefs_restorepermissions_summary">Palauta sovellukselle varmuuskopiointiaikana myönnettynä olleet käyttöoikeudet. Huomioi, että joitain käyttöoikeuksia ei voida palauttaa ohjelmallisesti ja se aiheuttaa koko paketin palautuksen epäonnistumisen. Tässä tapauksessa Neo Backup palauttaa paketin ilman käyttöoikeuksia.</string>
+    <string name="dialogCancelAll">Peruuta kaikki</string>
 </resources>
