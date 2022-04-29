@@ -191,7 +191,7 @@ class Package {
         backupListDirty = false
     }
 
-    private fun ensureBackupList(): List<Backup> {
+    fun ensureBackupList(): List<Backup> {
         if (backupListDirty)
             refreshBackupList()
         return backupList
