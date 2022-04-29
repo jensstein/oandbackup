@@ -30,6 +30,7 @@ import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_LOADINGTOASTS
+import com.machiav3lli.backup.R
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.ignoredPackages
 import com.machiav3lli.backup.dbs.dao.AppInfoDao
 import com.machiav3lli.backup.dbs.dao.BackupDao
@@ -109,7 +110,7 @@ fun Context.getInstalledPackageList(blockList: List<String> = listOf()): Mutable
                 ?.flags
                 ?: 0) and ApplicationInfo.FLAG_SUSPENDED
         }.apply {
-            OABX.activity?.whileShowingSnackBar("cleanup any left over suspended apps") {
+            OABX.activity?.whileShowingSnackBar(getString(R.string.supended_apps_cleanup)) {
                 // cleanup suspended package if lock file found
                 this.forEach { appPackage ->
                     runAsRoot("pm unsuspend ${appPackage.packageName}")
@@ -256,7 +257,7 @@ fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
                 ?.flags
                 ?: 0) and ApplicationInfo.FLAG_SUSPENDED
         }.apply {
-            OABX.activity?.whileShowingSnackBar("cleanup any left over suspended apps") {
+            OABX.activity?.whileShowingSnackBar(getString(R.string.supended_apps_cleanup)) {
                 // cleanup suspended package if lock file found
                 this.forEach { packageName ->
                     runAsRoot("pm unsuspend $packageName")
