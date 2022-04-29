@@ -95,7 +95,7 @@ class Package {
     ) {
         this.packageBackupDir = backupDir
         this.packageName = packageName ?: backupDir?.name!!
-        updateBackupList(backups)
+        if (backups.isNotEmpty()) updateBackupList(backups) else refreshBackupList()
         try {
             val pi = context.packageManager.getPackageInfo(
                 this.packageName,
