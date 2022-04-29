@@ -164,13 +164,15 @@ class Package {
     }
 
     fun refreshBackupList() {
+        Timber.w("refreshbackupList: $packageName")
         invalidateBackupCacheForPackage(packageName)
-        backupList = listOf()
-        getAppBackupRoot()?.listFiles()
+        val backups = mutableListOf<Backup>()
+        getAppBackupRoot()?.listFiles()  //TODO hg42 create a coroutine version of  listFiles?
             ?.filter(StorageFile::isPropertyFile)
             ?.forEach { propFile ->
                 try {
-                    Backup.createFrom(propFile)?.let { addBackup(it) }
+                    //Backup.createFrom(propFile)?.let { addBackup(it) }
+                    Backup.createFrom(propFile)?.let { backups.add(it) }
                 } catch (e: Backup.BrokenBackupException) {
                     val message =
                         "Incomplete backup or wrong structure found in $propFile"
@@ -185,12 +187,14 @@ class Package {
                     LogsHandler.unhandledException(e, message)
                 }
             }
+        updateBackupList(backups)
         backupListDirty = false
     }
 
-    fun ensureBackupList() {
+    private fun ensureBackupList(): List<Backup> {
         if (backupListDirty)
             refreshBackupList()
+        return backupList
     }
 
     @Throws(
