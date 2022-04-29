@@ -18,9 +18,10 @@
 package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -30,7 +31,6 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.Package
-import com.machiav3lli.backup.items.Package.Companion.invalidateCacheForPackage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -42,44 +42,43 @@ class AppSheetViewModel(
     private val appContext: Application
 ) : AndroidViewModel(appContext) {
 
-    var appInfo = MediatorLiveData<Package>()
+    var appInfo by mutableStateOf(app) //MediatorLiveData<Package>()
 
     private var notificationId: Int
 
-    val refreshNow = MutableLiveData<Boolean>()
-    val snackbarText = MutableLiveData<String>()
+    var refreshNow by mutableStateOf(false)
+    var snackbarText by mutableStateOf("")
 
     init {
-        appInfo.value = app
         notificationId = System.currentTimeMillis().toInt()
-        refreshNow.observeForever {
-            appInfo.value?.let {
-                invalidateCacheForPackage(it.packageName)
-            }
-        }
+        //refreshNow.observeForever {
+        //    appInfo.value?.let {
+        //        invalidateCacheForPackage(it.packageName)
+        //    }
+        //}
     }
 
     fun uninstallApp() {
         viewModelScope.launch {
             uninstall()
-            refreshNow.value = true
+            refreshNow = true
         }
     }
 
     private suspend fun uninstall() {
         withContext(Dispatchers.IO) {
-            appInfo.value?.let {
-                Timber.i("uninstalling: ${appInfo.value?.packageLabel}")
+            appInfo.let {
+                Timber.i("uninstalling: ${appInfo.packageLabel}")
                 try {
                     shellCommands.uninstall(
-                        appInfo.value?.packageName, appInfo.value?.apkPath,
-                        appInfo.value?.dataPath, appInfo.value?.isSystem == true
+                        appInfo.packageName, appInfo.apkPath,
+                        appInfo.dataPath, appInfo.isSystem == true
                     )
                     showNotification(
                         appContext,
                         MainActivityX::class.java,
                         notificationId++,
-                        appInfo.value?.packageLabel,
+                        appInfo.packageLabel,
                         appContext.getString(com.machiav3lli.backup.R.string.uninstallSuccess),
                         true
                     )
@@ -88,7 +87,7 @@ class AppSheetViewModel(
                         appContext,
                         MainActivityX::class.java,
                         notificationId++,
-                        appInfo.value?.packageLabel,
+                        appInfo.packageLabel,
                         appContext.getString(com.machiav3lli.backup.R.string.uninstallFailure),
                         true
                     )
@@ -101,14 +100,14 @@ class AppSheetViewModel(
     fun enableDisableApp(users: MutableList<String>, enable: Boolean) {
         viewModelScope.launch {
             enableDisable(users, enable)
-            refreshNow.value = true
+            refreshNow = true
         }
     }
 
     @Throws(ShellCommands.ShellActionFailedException::class)
     private suspend fun enableDisable(users: MutableList<String>, enable: Boolean) {
         withContext(Dispatchers.IO) {
-            shellCommands.enableDisablePackage(appInfo.value?.packageName, users, enable)
+            shellCommands.enableDisablePackage(appInfo.packageName, users, enable)
         }
     }
 
@@ -119,26 +118,26 @@ class AppSheetViewModel(
     fun deleteBackup(backup: Backup) {
         viewModelScope.launch {
             delete(backup)
-            refreshNow.value = true
+            refreshNow = true
         }
     }
 
     private suspend fun delete(backup: Backup) {
         withContext(Dispatchers.IO) {
-            appInfo.value?.deleteBackup(backup)
+            appInfo.deleteBackup(backup)
         }
     }
 
     fun deleteAllBackups() {
         viewModelScope.launch {
             deleteAll()
-            refreshNow.value = true
+            refreshNow = true
         }
     }
 
     private suspend fun deleteAll() {
         withContext(Dispatchers.IO) {
-            appInfo.value?.deleteAllBackups()
+            appInfo.deleteAllBackups()
         }
     }
 
