@@ -26,6 +26,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.OABX.Companion.context
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
 import com.machiav3lli.backup.PREFS_LOADINGTOASTS
 import com.machiav3lli.backup.dbs.ODatabase
@@ -134,8 +135,11 @@ class MainViewModel(
             val appPackage = packageList.value?.find { it.packageName == packageName }
             try {
                 appPackage?.apply {
-                    val new = Package(appContext, packageName, appPackage.getAppBackupRoot())
-                    new.refreshBackupList() //TODO hg42 such optimizations should be encapsulated (in Package)
+                    val new = Package.get(packageName) {
+                        Package(appContext, packageName, getAppBackupRoot())
+                    }
+                    //new.ensureBackupList()
+                    new.refreshFromPackageManager(context)
                     if (!isSpecial) db.appInfoDao.update(new.packageInfo as AppInfo)
                     db.backupDao.updateList(new)
                 }
