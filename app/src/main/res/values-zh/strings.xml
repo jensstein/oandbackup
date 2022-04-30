@@ -82,7 +82,7 @@
     <string name="prefs_acquirewakelock">阻止睡眠</string>
     <string name="prefs_batchdelete">删除不需要的备份</string>
     <string name="prefs_pathbackupfolder">备份文件夹</string>
-    <string name="prefs_oldbackups">时间筛选备份天数</string>
+    <string name="prefs_oldbackups">筛选过时备份的天数</string>
     <string name="prefs_copyselfapk">复制本应用自身 APK</string>
     <string name="prefs_languages">语言</string>
     <string name="prefs_language_system">系统默认</string>
@@ -95,7 +95,7 @@
     <string name="prefs_deviceprotecteddata">备份受设备保护的数据</string>
     <string name="prefs_deviceprotecteddata_summary">备份/还原 /data/user_de 中的数据</string>
     <string name="prefs_externaldata_summary">备份/还原放置在外部存储（例如 /storage/emulated/0/Android/data/）上的数据</string>
-    <string name="prefs_password_summary">设为空表示不加密</string>
+    <string name="prefs_password_summary">密码为空则不会加密</string>
     <string name="prefs_encryption_summary">启用以加密备份数据</string>
     <string name="prefs_excludecache_summary">数据备份时排除应用程序的缓存</string>
     <string name="prefs_acquirewakelock_summary">在批处理操作期间获取一个唤醒锁以防止睡眠。这将大大加快备份和还原的速度，但会消耗更多电量。</string>
@@ -147,7 +147,7 @@
     <string name="deleted_backup">删除备份</string>
     <string name="prefs_theme_light">亮色</string>
     <string name="prefs_theme_dark">暗色</string>
-    <string name="prefs_theme_system">系统主题</string>
+    <string name="prefs_theme_system">跟随系统</string>
     <string name="empty_filtered_list">列表为空。</string>
     <string name="dialog_refuse">忽略</string>
     <string name="dialog_approve">让我们开始吧！</string>
@@ -187,7 +187,7 @@
     <string name="dialogSave">保存</string>
     <string name="sched_add">添加计划任务</string>
     <string name="prefs_password_match_false">密码不匹配</string>
-    <string name="prefs_password_match_true">密码需要相同</string>
+    <string name="prefs_password_match_true">密码需要与上面相同</string>
     <string name="prefs_passwordconfirmation">确认加密密码</string>
     <string name="prefs_biometriclock_summary">使用设备的生物识别锁(如指纹、面部解锁)来保护此应用</string>
     <string name="prefs_biometriclock">生物识别锁</string>
@@ -335,4 +335,5 @@
     <string name="prefs_loadingtoasts">显示加载时的toasts消息</string>
     <string name="prefs_restorepermissions_summary">恢复备份时恢复应用程序已授予的权限。请注意，有些特殊权限无法以通常方式授予，它会导致应用还原失败。这时，Neo Backup就会在不授予权限的情况下还原此应用。</string>
     <string name="prefs_loadingtoasts_summary">在加载应用列表时显示toasts消息</string>
+    <string name="supended_apps_cleanup">清理剩余的已挂起应用</string>
 </resources>
