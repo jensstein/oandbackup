@@ -24,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
+import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER_OLD
 import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.dbs.entity.AppInfo
@@ -232,9 +233,15 @@ class Package {
             BACKUP_DATE_TIME_FORMATTER.format(backup.backupDate),
             backup.profileId
         )
+        val propertiesFileNameOld = String.format(
+            BACKUP_INSTANCE_PROPERTIES,
+            BACKUP_DATE_TIME_FORMATTER_OLD.format(backup.backupDate),
+            backup.profileId
+        )
         try {
             backup.getBackupInstanceFolder(packageBackupDir)?.deleteRecursive()
-            packageBackupDir?.findFile(propertiesFileName)?.delete()
+            packageBackupDir?.findFile(propertiesFileName)?.delete() ?:
+                packageBackupDir?.findFile(propertiesFileNameOld)?.delete()
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, backup.packageName)
         }
