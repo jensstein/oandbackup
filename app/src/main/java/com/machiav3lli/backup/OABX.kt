@@ -17,6 +17,7 @@
  */
 package com.machiav3lli.backup
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -109,14 +110,15 @@ class OABX : Application() {
             }
 
         // activity might be null
-        var activityRef: WeakReference<MainActivityX> = WeakReference(null)
-        var activity: MainActivityX?
+        var activityRef: WeakReference<Activity> = WeakReference(null)
+        var activity: Activity?
             get() {
                 return activityRef.get()
             }
             set(activity) {
                 activityRef = WeakReference(activity)
             }
+        val main get() = activity as? MainActivityX
 
         var appsSuspendedChecked = false
 

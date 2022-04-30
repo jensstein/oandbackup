@@ -108,8 +108,8 @@ class WorkHandler {
 
             Thread.sleep(delay)
 
-            OABX.activity?.runOnUiThread {
-                OABX.activity?.hideProgress()
+            OABX.main?.runOnUiThread {
+                OABX.main?.hideProgress()
             }
 
             Timber.d("%%%%% ALL DONE")
@@ -527,15 +527,15 @@ class WorkHandler {
 
             if (allRemaining > 0) {
                 Timber.d("%%%%% ALL finished=$allProcessed <-- remain=$allRemaining <-- total=$allCount")
-                OABX.activity?.runOnUiThread {
-                    OABX.activity?.updateProgress(
+                OABX.main?.runOnUiThread {
+                    OABX.main?.updateProgress(
                         allProcessed,
                         allCount
                     )
                 }
             } else {
-                OABX.activity?.runOnUiThread {
-                    OABX.activity?.hideProgress()
+                OABX.main?.runOnUiThread {
+                    OABX.main?.hideProgress()
                 }
                 if (OABX.work.justFinishedAll()) {
                     Timber.d("%%%%% ALL $batchesStarted batches, thread ${Thread.currentThread().id}")

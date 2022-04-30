@@ -17,6 +17,7 @@
  */
 package com.machiav3lli.backup.activities
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.PowerManager
@@ -31,6 +32,7 @@ class SplashActivity : BaseActivity() {
     private lateinit var binding: ActivitySplashBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        OABX.activity = this
         setCustomTheme()
         super.onCreate(savedInstanceState)
         Shell.getShell {
@@ -59,5 +61,9 @@ class SplashActivity : BaseActivity() {
             overridePendingTransition(0, 0)
             finish()
         }
+
+    override fun onResume() {
+        super.onResume()
+        OABX.activity = this
     }
 }

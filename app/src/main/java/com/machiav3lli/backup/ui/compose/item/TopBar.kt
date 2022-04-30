@@ -81,7 +81,7 @@ fun ExpandableSearchAction(
         collapsedView = {
             Row {
                 RoundButton(icon = painterResource(id = R.drawable.ic_refresh)) {
-                    OABX.activity?.needRefresh = true
+                    OABX.main?.needRefresh = true
                 }
                 CollapsedSearchView(
                     modifier = modifier,

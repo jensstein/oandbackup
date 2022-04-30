@@ -110,7 +110,7 @@ fun Context.getInstalledPackageList(blockList: List<String> = listOf()): Mutable
                 ?.flags
                 ?: 0) and ApplicationInfo.FLAG_SUSPENDED
         }.apply {
-            OABX.activity?.whileShowingSnackBar(getString(R.string.supended_apps_cleanup)) {
+            OABX.main?.whileShowingSnackBar(getString(R.string.supended_apps_cleanup)) {
                 // cleanup suspended package if lock file found
                 this.forEach { appPackage ->
                     runAsRoot("pm unsuspend ${appPackage.packageName}")
@@ -257,7 +257,7 @@ fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
                 ?.flags
                 ?: 0) and ApplicationInfo.FLAG_SUSPENDED
         }.apply {
-            OABX.activity?.whileShowingSnackBar(getString(R.string.supended_apps_cleanup)) {
+            OABX.main?.whileShowingSnackBar(getString(R.string.supended_apps_cleanup)) {
                 // cleanup suspended package if lock file found
                 this.forEach { packageName ->
                     runAsRoot("pm unsuspend $packageName")

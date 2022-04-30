@@ -39,9 +39,10 @@ class PrefsActivity : BaseActivity() {
     private var sheetHelp: HelpSheet? = null
     //var packageList: List<Package> = mutableListOf()
     val packageList: MutableList<Package>
-            get() = OABX.activity?.viewModel?.packageList?.value ?: mutableListOf()
+            get() = OABX.main?.viewModel?.packageList?.value ?: mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        OABX.activity = this
         setCustomTheme()
         super.onCreate(savedInstanceState)
         binding = ActivityPrefsBinding.inflate(layoutInflater)
@@ -49,6 +50,11 @@ class PrefsActivity : BaseActivity() {
         setContentView(binding.root)
         //packageList = OABX.app.cache.get("appInfoList") ?: mutableListOf()
         //if (packageList.isNullOrEmpty()) refreshPackageList()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        OABX.activity = this
     }
 
     override fun onStart() {
