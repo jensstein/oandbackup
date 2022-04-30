@@ -185,11 +185,8 @@ fun List<AppInfo>.toPackageList(
     includeUninstalled: Boolean = true
 ): MutableList<Package> {
     val startTime = System.currentTimeMillis()
-    val showToasts = OABX.prefFlag(PREFS_LOADINGTOASTS, true)
 
     val includeSpecial = context.specialBackupsEnabled
-
-    OABX.activity?.showToast("toPackageList...", showToasts)
 
     var packageList =
         this.filterNot {
@@ -207,12 +204,6 @@ fun List<AppInfo>.toPackageList(
             }
             .toMutableList()
 
-    val afterPackagesTime = System.currentTimeMillis()
-    OABX.activity?.showToast(
-        "toPackageList: packages: ${((afterPackagesTime - startTime) / 1000 + 0.5).toInt()} sec",
-        showToasts
-    )
-
     // Special Backups must added before the uninstalled packages, because otherwise it would
     // discover the backup directory and run in a special case where no the directory is empty.
     // This would mean, that no package info is available – neither from backup.properties
@@ -228,12 +219,6 @@ fun List<AppInfo>.toPackageList(
             specialList.add(it.packageName)
         }
     }
-
-    val afterAllTime = System.currentTimeMillis()
-    OABX.activity?.showToast(
-        "toPackageList: all: ${((afterAllTime - startTime) / 1000 + 0.5).toInt()} sec",
-        showToasts
-    )
 
     return packageList
 }
