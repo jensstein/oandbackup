@@ -342,4 +342,7 @@
     <string name="sortAsc">Ascending</string>
     <string name="sortDesc">Descending</string>
     <string name="supended_apps_cleanup">cleanup any left over suspended apps</string>
+    <string name="root_missing">ROOT missing!</string>
+    <string name="root_is_mandatory">Because applications are isolated from each other, superuser access is mandatory to be able to backup and restore their data.</string>
+    <string name="see_faq">See FAQ!</string>
 </resources>

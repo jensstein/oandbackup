@@ -24,6 +24,7 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
 import com.machiav3lli.backup.utils.BUFFER_SIZE
 import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
+import com.machiav3lli.backup.utils.showToast
 import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.io.SuRandomAccessFile
 import timber.log.Timber
@@ -60,10 +61,16 @@ class ShellHandler {
         }
         if (utilBoxQ.isEmpty()) {
             Timber.d("No more options for utilbox. Bailing out.")
-            throw UtilboxNotAvailableException(
-                    reasons.map { reason -> "${reason.key}: ${reason.value}" }
-                        .joinToString("\n")
-            )
+            val message =
+                reasons.map { reason -> "${reason.key}: ${reason.value}" }
+                    .joinToString("\n")
+            OABX.activity?.showToast(
+                "No utilbox found, tried these:\n${
+                    names.joinToString("\n")
+                }${
+                    if(message.isEmpty()) "" else "\n$message"}"
+                )
+            //throw UtilboxNotAvailableException(message)
         }
 
         assets = AssetHandler(OABX.context)
@@ -171,7 +178,7 @@ class ShellHandler {
                 }
             } else {
                 utilBoxQ = ""
-                throw Exception()
+                throw Exception() // goto catch
             }
         } catch(e: Throwable) {
             try {
@@ -189,7 +196,7 @@ class ShellHandler {
                     }
                 } else {
                     utilBoxQ = ""
-                    throw Exception()
+                    throw Exception() // goto catch
                 }
             } catch (e: Throwable) {
                 utilBoxQ = ""

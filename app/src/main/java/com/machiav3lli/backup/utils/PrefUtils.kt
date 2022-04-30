@@ -221,10 +221,11 @@ fun Activity.getStoragePermission() {
     }
 }
 
-fun Activity.checkRootAccess(): Boolean {
+fun Activity.checkRootAccess(showDialogOnError: Boolean = false): Boolean {
     val isRooted = Shell.getShell().isRoot
     if (!isRooted) {
-        showFatalUiWarning(getString(R.string.noSu))
+        if (showDialogOnError)
+            showFatalUiWarning(getString(R.string.noSu))
         return false
     }
     try {
