@@ -44,10 +44,8 @@ import com.machiav3lli.backup.fragments.RefreshViewController
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.SortFilterModel
-import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.getPrivateSharedPrefs
 import com.machiav3lli.backup.utils.isEncryptionEnabled
-import com.machiav3lli.backup.utils.isNeedRefresh
 import com.machiav3lli.backup.utils.isRememberFiltering
 import com.machiav3lli.backup.utils.itemIdToOrder
 import com.machiav3lli.backup.utils.navigateLeft
@@ -70,6 +68,9 @@ class MainActivityX : BaseActivity() {
     lateinit var binding: ActivityMainXBinding
     lateinit var viewModel: MainViewModel
 
+    var needRefresh: Boolean
+        get() = viewModel.isNeedRefresh.value ?: false
+        set(value) = viewModel.isNeedRefresh.postValue(value)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val context = this
@@ -131,10 +132,16 @@ class MainActivityX : BaseActivity() {
             this.sortFilterModel = SortFilterModel()
         }
         viewModel.blocklist.observe(this) {
-            viewModel.refreshList()
+            needRefresh = true
         }
         viewModel.packageList.observe(this) { }
         viewModel.backupsMap.observe(this) { }
+        viewModel.isNeedRefresh.observe(this) {
+            if (it) {
+                viewModel.refreshList()
+                needRefresh = false
+            }
+        }
 
         runOnUiThread { showEncryptionDialog() }
 
@@ -153,10 +160,6 @@ class MainActivityX : BaseActivity() {
     override fun onResume() {
         OABX.activity = this    // just in case 'this' object is recreated
         super.onResume()
-        if (isNeedRefresh) {
-            viewModel.refreshList()
-            isNeedRefresh = false
-        }
     }
 
     override fun onBackPressed() {
@@ -234,7 +237,6 @@ class MainActivityX : BaseActivity() {
     }
 
     fun updatePackage(packageName: String) {
-        StorageFile.invalidateCache { it.contains(packageName) }
         viewModel.updatePackage(packageName)
     }
 

@@ -24,10 +24,30 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.preference.*
-import com.machiav3lli.backup.*
+import androidx.preference.CheckBoxPreference
+import androidx.preference.ListPreference
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
+import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.PREFS_ACCENT_COLOR
+import com.machiav3lli.backup.PREFS_BIOMETRICLOCK
+import com.machiav3lli.backup.PREFS_DEVICELOCK
+import com.machiav3lli.backup.PREFS_LANGUAGES
+import com.machiav3lli.backup.PREFS_PATH_BACKUP_DIRECTORY
+import com.machiav3lli.backup.PREFS_SECONDARY_COLOR
+import com.machiav3lli.backup.PREFS_THEME
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.utils.*
+import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
+import com.machiav3lli.backup.utils.accentStyle
+import com.machiav3lli.backup.utils.backupDirConfigured
+import com.machiav3lli.backup.utils.isBiometricLockAvailable
+import com.machiav3lli.backup.utils.isDeviceLockAvailable
+import com.machiav3lli.backup.utils.requireStorageLocation
+import com.machiav3lli.backup.utils.restartApp
+import com.machiav3lli.backup.utils.secondaryStyle
+import com.machiav3lli.backup.utils.setBackupDir
+import com.machiav3lli.backup.utils.setCustomTheme
+import com.machiav3lli.backup.utils.themeStyle
 import timber.log.Timber
 
 class PrefsUserFragment : PreferenceFragmentCompat() {
@@ -129,7 +149,7 @@ class PrefsUserFragment : PreferenceFragmentCompat() {
 
     private fun Context.setDefaultDir(dir: Uri) {
         setBackupDir(dir)
-        isNeedRefresh = true
+        OABX.activity?.needRefresh = true
         findPreference<Preference>(PREFS_PATH_BACKUP_DIRECTORY)?.summary = dir.toString()
     }
 

@@ -18,6 +18,7 @@
 package com.machiav3lli.backup.actions
 
 import android.content.Context
+import com.machiav3lli.backup.PREFS_REFRESHTIMEOUT_DEFAULT
 import com.machiav3lli.backup.MODE_APK
 import com.machiav3lli.backup.MODE_DATA
 import com.machiav3lli.backup.MODE_DATA_DE
@@ -29,6 +30,7 @@ import com.machiav3lli.backup.PREFS_EXCLUDECACHE
 import com.machiav3lli.backup.PREFS_REFRESHDELAY
 import com.machiav3lli.backup.PREFS_REFRESHTIMEOUT
 import com.machiav3lli.backup.PREFS_RESTOREAVOIDTEMPCOPY
+import com.machiav3lli.backup.PREFS_RESTOREPERMISSIONS
 import com.machiav3lli.backup.PREFS_RESTORETARCMD
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.entity.Backup
@@ -306,15 +308,24 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                     )
                 }
             }
-            if (!context.isRestoreAllPermissions)
+            val commandWithoutPermissions = sb.toString()
+            if (!context.isRestoreAllPermissions && OABX.prefFlag(PREFS_RESTOREPERMISSIONS, true))
                 backup.permissions
                     .filterNot { it.isEmpty() }
-                    .forEach {
-                            p -> sb.append(" ; pm grant ${backup.packageName} $p")
+                    .forEach { p ->
+                        sb.append(" ; pm grant ${backup.packageName} $p")
                     }
 
             val command = sb.toString()
-            runAsRoot(command)
+            try {
+                runAsRoot(command)
+            } catch (e: ShellCommandFailedException) {
+                val error = extractErrorMessage(e.shellResult)
+                Timber.e("Restore APKs with permissions failed: $error")
+                if (command != commandWithoutPermissions) runAsRoot(commandWithoutPermissions)
+                else throw e
+            }
+
             success = true
 
             // re-enable verify apps over usb
@@ -887,25 +898,23 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         }
     }
 
-    /**
-     * Returns an installation command for adb/shell installation.
-     * Supports base packages and additional packages (split apk addons)
-     *
-     * @param apkPath         path to the apk to be installed (should be in the staging dir)
-     * @param basePackageName null, if it's a base package otherwise the name of the base package
-     * @return a complete shell command
-     */
     private fun getPackageInstallCommand(
         apkPath: RootFile,
-        profilId: Int,
+        profileId: Int,
         basePackageName: String? = null
     ): String =
-        String.format(
-            "cat \"${apkPath.absolutePath}\" | pm install%s -t -r%s%s -S ${apkPath.length()} --user $profilId",
-            if (basePackageName != null) " -p $basePackageName" else "",
-            if (context.isRestoreAllPermissions) " -g" else "",
-            if (context.isAllowDowngrade) " -d" else ""
-        )
+        listOf(
+            "cat", quote(apkPath.absolutePath),
+            "|",
+            "pm", "install",
+            basePackageName?.let { "-p $basePackageName" },
+            if (context.isRestoreAllPermissions) "-g" else null,
+            if (context.isAllowDowngrade) "-d" else null,
+            "-t",
+            "-r",
+            "-S", apkPath.length().toString(),
+            "--user", profileId,
+        ).filterNotNull().joinToString(" ")
 
     @Throws(PackageManagerDataIncompleteException::class)
     private fun refreshAppInfo(context: Context, app: Package) {
@@ -921,7 +930,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
 
         // try multiple times to get valid paths from PackageManager
         // maxWaitMs is cumulated sleep time between tries
-        val maxWaitMs = OABX.prefInt(PREFS_REFRESHTIMEOUT, 30) * 1000L
+        val maxWaitMs = OABX.prefInt(PREFS_REFRESHTIMEOUT, PREFS_REFRESHTIMEOUT_DEFAULT) * 1000L
         timeWaitedMs = 0L
         var attemptNo = 0
         do {
@@ -929,7 +938,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                 throw PackageManagerDataIncompleteException(maxWaitMs / 1000L)
             }
             if (timeWaitedMs > 0) {
-                Timber.d("[${app.packageName}] paths were missing after data fetching data from PackageManager; attempt $attemptNo, waited ${timeWaitedMs / 1000L} of $maxWaitMs seconds")
+                Timber.d("[${app.packageName}] PackageManager returned invalid data paths, attempt $attemptNo, waited ${timeWaitedMs / 1000L} of $maxWaitMs seconds")
                 Thread.sleep(sleepTimeMs)
             }
             app.refreshFromPackageManager(context)

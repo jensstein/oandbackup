@@ -31,8 +31,7 @@ const val BACKUP_INSTANCE_PROPERTIES = "%s-user_%s.properties"
 const val BACKUP_INSTANCE_DIR = "%s-user_%s"
 const val EXPORTS_INSTANCE = "%s.scheds"
 
-// TODO FOR RELEASE rename the DB and reset version
-const val SCHEDULES_DB_NAME = "schedules.db"
+const val MAIN_DB_NAME = "main.db"
 const val PACKAGES_LIST_GLOBAL_ID = -1L
 
 const val ACTION_CANCEL = "cancel"
@@ -54,6 +53,7 @@ const val PREFS_ACCENT_COLOR = "themeAccentColor"
 const val PREFS_SECONDARY_COLOR = "themeSecondaryColor"
 const val PREFS_LANGUAGES_DEFAULT = "system"
 const val PREFS_PATH_BACKUP_DIRECTORY = "pathBackupFolder"
+const val PREFS_LOADINGTOASTS = "loadingToasts"
 const val PREFS_DEVICELOCK = "deviceLock"
 const val PREFS_BIOMETRICLOCK = "biometricLock"
 const val PREFS_OLDBACKUPS = "oldBackups"
@@ -68,6 +68,7 @@ const val PREFS_EXCLUDECACHE = "excludeCache"
 const val PREFS_EXTERNALDATA = "backupExternalData"
 const val PREFS_OBBDATA = "backupObbData"
 const val PREFS_MEDIADATA = "backupMediaData"
+const val PREFS_RESTOREPERMISSIONS = "restorePermissions"
 const val PREFS_DEVICEPROTECTEDDATA = "backupDeviceProtectedData"
 const val PREFS_NUM_BACKUP_REVISIONS = "numBackupRevisions"
 const val PREFS_HOUSEKEEPING_MOMENT = "housekeepingMoment"
@@ -92,6 +93,7 @@ const val PREFS_CACHEROOTFILEATTRIBUTES = "cacheRootFileAttributes"
 const val PREFS_MAXRETRIES = "maxRetriesPerPackage"
 const val PREFS_REFRESHDELAY = "delayBeforeRefreshAppInfo"
 const val PREFS_REFRESHTIMEOUT = "refreshAppInfoTimeout"
+const val PREFS_REFRESHTIMEOUT_DEFAULT = 30
 const val PREFS_BATCH_DELETE = "batchDelete"
 const val PREFS_COPYSELF = "copySelfApk"
 const val PREFS_SCHEDULESEXPORTIMPORT = "schedulesExportImport"
@@ -114,16 +116,6 @@ const val MODE_DATA_MEDIA = 0b1000000
 const val BACKUP_FILTER_DEFAULT = 0b1111111
 val possibleSchedModes =
     listOf(MODE_APK, MODE_DATA, MODE_DATA_DE, MODE_DATA_EXT, MODE_DATA_OBB, MODE_DATA_MEDIA)
-val possibleBackupFilters =
-    listOf(
-        MODE_NONE,
-        MODE_APK,
-        MODE_DATA,
-        MODE_DATA_DE,
-        MODE_DATA_EXT,
-        MODE_DATA_OBB,
-        MODE_DATA_MEDIA
-    )
 
 val scheduleBackupModeChipItems = listOf(
     ChipItem.Apk,
@@ -176,10 +168,8 @@ val schedSpecialFilterChipItems = listOf(
 
 val mainSpecialFilterChipItems = schedSpecialFilterChipItems.plus(ChipItem.NotInstalled)
 
-const val DEFAULT_RETRIEVE_APP_META_MAXWAIT = 30;
 
 const val BUNDLE_USERS = "users"
-const val NEED_REFRESH = "needRefresh"
 
 const val HELP_CHANGELOG = "https://github.com/NeoApplications/Neo-Backup/blob/master/CHANGELOG.md"
 const val HELP_TELEGRAM = "https://t.me/neo_backup"

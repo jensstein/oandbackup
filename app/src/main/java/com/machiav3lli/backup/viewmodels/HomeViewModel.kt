@@ -25,16 +25,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.machiav3lli.backup.items.Package
 
 class HomeViewModel(appContext: Application) : AndroidViewModel(appContext) {
-    val filteredList: MutableLiveData<List<Package>?> = MutableLiveData()
-    var nUpdatedApps: Int = 0
-    val updatedApps: MutableLiveData<List<Package>> = MutableLiveData()
-    val refreshNow = MutableLiveData<Boolean>()
+    val filteredList: MutableLiveData<List<Package>?> = MutableLiveData(null)
     val searchQuery = MutableLiveData<String>()
-
-    init {
-        filteredList.value = null
-        updatedApps.value = listOf()
-    }
 
     class Factory(private val application: Application) :
         ViewModelProvider.Factory {

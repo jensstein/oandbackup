@@ -154,35 +154,18 @@ object BackupRestoreHelper {
     private fun housekeepingPackageBackups(context: Context, app: Package, before: Boolean) {
         var numBackupRevisions =
             context.getDefaultSharedPreferences().getInt(PREFS_NUM_BACKUP_REVISIONS, 2)
-        var backups = app.backupList
         if (numBackupRevisions == 0) {
-            Timber.i("[${app.packageName}] Infinite backup revisions configured. Not deleting any backup. ${backups.size} (valid) backups available")
+            Timber.i("[${app.packageName}] Infinite backup revisions configured. Not deleting any backup.")
             return
         }
+
         // If the backup is going to be created, reduce the number of backup revisions by one.
         // It's expected that the additional deleted backup will be created in the next moments.
         // HousekeepingMoment.AFTER does not need to change anything. If 2 backups are the limit,
         // 3 should exist and housekeeping will work fine without adjustments
         if (before) numBackupRevisions--
 
-        when {
-            numBackupRevisions >= backups.size ->
-                Timber.i("[${app.packageName}] Less backup revisions (${backups.size}) than configured maximum ($numBackupRevisions). Not deleting anything.")
-            else -> {
-                val revisionsToDelete = backups.size - numBackupRevisions
-                Timber.i("[${app.packageName}] More backup revisions than configured maximum (${backups.size} > ${numBackupRevisions + if (before) 1 else 0}). Deleting $revisionsToDelete backup(s).")
-                backups = backups
-                    .sortedWith { bi1: Backup, bi2: Backup ->
-                        bi1.backupDate.compareTo(bi2.backupDate)
-                    }
-                    .toMutableList()
-                (0 until revisionsToDelete).forEach {
-                    val deleteInfo = backups[it]
-                    Timber.i("[${app.packageName}] Deleting backup revision $deleteInfo")
-                    app.delete(deleteInfo)
-                }
-            }
-        }
+        app.deleteOldestBackups(numBackupRevisions)
     }
 
     enum class ActionType {

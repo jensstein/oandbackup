@@ -35,6 +35,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 
 @Composable
@@ -78,10 +79,15 @@ fun ExpandableSearchAction(
             )
         },
         collapsedView = {
-            CollapsedSearchView(
-                modifier = modifier,
-                onExpanded = onExpanded
-            )
+            Row {
+                RoundButton(icon = painterResource(id = R.drawable.ic_refresh)) {
+                    OABX.activity?.needRefresh = true
+                }
+                CollapsedSearchView(
+                    modifier = modifier,
+                    onExpanded = onExpanded
+                )
+            }
         }
     )
 }

@@ -31,8 +31,8 @@ android {
         applicationId = "com.machiav3lli.backup"
         minSdk = 26
         targetSdk = 32
-        versionCode = 8000
-        versionName = "8.0.0"
+        versionCode = 8016
+        versionName = "8.0.2"
         buildConfigField("int", "MAJOR", "8")
         buildConfigField("int", "MINOR", "0")
 
@@ -70,7 +70,7 @@ android {
         }
         create("neo") {
             applicationIdSuffix = ".neo"
-            versionNameSuffix = "-neo"
+            versionNameSuffix = "-alpha14"
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -132,14 +132,11 @@ dependencies {
     //implementation("com.github.tony19:named-regexp:0.2.6") // regex named groups
 
     // UI
-    implementation("androidx.appcompat:appcompat:1.6.0-alpha01")
-    implementation("androidx.fragment:fragment-ktx:1.5.0-alpha05")
+    implementation("androidx.fragment:fragment-ktx:1.5.0-beta01")
     implementation("com.google.android.material:material:1.7.0-alpha01")
     implementation("androidx.preference:preference-ktx:1.2.0")
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.5.0-alpha04")
-    implementation("androidx.navigation:navigation-ui-ktx:2.5.0-alpha04")
-    implementation("io.coil-kt:coil:2.0.0-rc03")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.5.0-beta01")
+    implementation("androidx.navigation:navigation-ui-ktx:2.5.0-beta01")
     implementation("io.coil-kt:coil-compose:2.0.0-rc03")
 
     // Compose

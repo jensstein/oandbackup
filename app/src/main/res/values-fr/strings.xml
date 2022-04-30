@@ -99,8 +99,8 @@
     <string name="apptype_special">Sauvegarde spéciale</string>
     <string name="sched_add">Ajouter une sauvegarde planifiée</string>
     <string name="sort_and_filter">Trier et filtrer</string>
-    <string name="enable_encryption_message">Ce n\'est pas sûr de garder vos données sur votre appareil non crypées. Pour la sécurité de vos données, activez le cryptage et définissez un mot de passe.</string>
-    <string name="enable_encryption_title">Cryptage des données</string>
+    <string name="enable_encryption_message">Ce n\'est pas sûr de garder vos données sur votre appareil non chiffrées. Pour la sécurité de vos données, activez le chiffrement et définissez un mot de passe.</string>
+    <string name="enable_encryption_title">Chiffrement des données</string>
     <string name="help_license">Licence</string>
     <string name="cache_size">Taille du cache :</string>
     <string name="data_size">Taille des données :</string>
@@ -157,10 +157,10 @@
     <string name="prefs_externaldata">Sauvegarder les données externes</string>
     <string name="prefs_excludecache_summary">Exclure le cache de l\'application de la sauvegarde des données</string>
     <string name="prefs_excludecache">Exclure le cache de l’application</string>
-    <string name="prefs_password_summary">Laisser vide pour désactiver le cryptage</string>
-    <string name="prefs_password">Mot de passe de cryptage</string>
-    <string name="prefs_encryption_summary">Activer le cryptage des sauvegardes de données</string>
-    <string name="prefs_encryption">Cryptage</string>
+    <string name="prefs_password_summary">Laisser vide pour désactiver le chiffrement</string>
+    <string name="prefs_password">Mot de passe de chiffrement</string>
+    <string name="prefs_encryption_summary">Activer le chiffrement des sauvegardes de données</string>
+    <string name="prefs_encryption">Chiffrement</string>
     <string name="prefs_service">Préférences de service</string>
     <string name="prefs_biometriclock_summary">Sécuriser l’application avec le verrouillage biométrique de l’appareil (p. ex. empreintes digitales, reconnaissance faciale)</string>
     <string name="prefs_biometriclock">Verrouillage biométrique</string>
@@ -196,7 +196,7 @@
     <string name="prefs_housekeepingmoment_after">Après la sauvegarde</string>
     <string name="prefs_password_match_false">Les mots de passe ne correspondent pas</string>
     <string name="prefs_password_match_true">Les mots de passe correspondent</string>
-    <string name="prefs_passwordconfirmation">Confirmation du mot de passe du cryptage</string>
+    <string name="prefs_passwordconfirmation">Confirmation du mot de passe du chiffrement</string>
     <string name="welcome_to_oabx">Bienvenue sur Neo Backup !</string>
     <string name="storage_access">Accès au stockage</string>
     <string name="dialog_unlock">Déverouiller</string>

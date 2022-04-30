@@ -124,8 +124,8 @@ fun Activity.showWarning(
         .show()
 }
 
-fun Activity.showToast(message: String?) = runOnUiThread {
-    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+fun Activity.showToast(message: String?, should: Boolean = true) = runOnUiThread {
+    if (should) Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
 
 val Context.colorAccent: Int
@@ -285,7 +285,7 @@ fun <T> LazyListScope.gridItems(
 fun Color.brighter(rate: Float): Color {
     val hslVal = FloatArray(3)
     ColorUtils.colorToHSL(this.toArgb(), hslVal)
-    hslVal[2] += rate * hslVal[2]
+    hslVal[2] += rate * (1 - hslVal[2])
     hslVal[2] = hslVal[2].coerceIn(0f..1f)
     return Color(ColorUtils.HSLToColor(hslVal))
 }

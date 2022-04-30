@@ -40,7 +40,6 @@ import androidx.core.app.ActivityCompat
 import androidx.preference.PreferenceManager
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.machiav3lli.backup.NEED_REFRESH
 import com.machiav3lli.backup.PREFS_ACCENT_COLOR
 import com.machiav3lli.backup.PREFS_ALLOWDOWNGRADE
 import com.machiav3lli.backup.PREFS_BIOMETRICLOCK
@@ -459,12 +458,6 @@ val Context.isRestoreAllPermissions: Boolean
 
 val Context.isAllowDowngrade: Boolean
     get() = getDefaultSharedPreferences().getBoolean(PREFS_ALLOWDOWNGRADE, false)
-
-var Context.isNeedRefresh: Boolean
-    get() = getDefaultSharedPreferences().getBoolean(NEED_REFRESH, false)
-    set(value) {
-        getDefaultSharedPreferences().edit().putBoolean(NEED_REFRESH, value).apply()
-    }
 
 var Context.sortFilterModel: SortFilterModel
     get() {

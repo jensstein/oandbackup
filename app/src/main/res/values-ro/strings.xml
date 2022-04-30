@@ -84,9 +84,9 @@
     <string name="backup">Fă backup</string>
     <string name="handleApk">APK</string>
     <string name="handleBoth">Ambele</string>
-    <string name="radio_user">Aplicațiile utilizatorului</string>
+    <string name="radio_user">Aplicații de utilizator</string>
     <string name="radio_system">Aplicații de sistem</string>
-    <string name="radio_updated">Actualizat</string>
+    <string name="radio_updated">Actualizate</string>
     <string name="radio_externaldata">Date externe</string>
     <string name="radio_deviceprotecteddata">Date protejate ale dispozitivului</string>
     <string name="radio_obbdata">Date OBB</string>
@@ -107,7 +107,7 @@
     <string name="handleData">Date</string>
     <string name="refresh">Reîmprospătează</string>
     <string name="searchHint">Caută aplicații</string>
-    <string name="showOnlyUser">Numai aplicațiile utilizatorului</string>
+    <string name="showOnlyUser">Numai aplicațiile de utilizator</string>
     <string name="resetFilter">Resetează</string>
     <string name="applyFilter">Aplică</string>
     <string name="showOnlyApkBackedUp">Aplicații la care s-a făcut backup numai pentru APK</string>
@@ -212,6 +212,45 @@
     <string name="prefs_housekeepingmoment_before">Înainte de backup</string>
     <string name="prefs_allowdowngrade">Permite revenirea la versiuni anterioare</string>
     <string name="prefs_enablespecial_summary">Necesită încă testare intensivă, încearcă cunoscând pericolul că poate provoca bootloopuri. Feedbackul este mereu binevenit.</string>
-    <string name="prefs_allowdowngrade_summary">Permite restaurarea unei versiuni mai vechi a aplicațiilor instalate.</string>
+    <string name="prefs_allowdowngrade_summary">Permite restaurarea unor versiuni mai vechi a aplicațiilor instalate.</string>
     <string name="disablePackageTitle">Dezactivează aplicația pentru utilizatori</string>
+    <string name="prefs_schedulesexportimport_summary">Exportă sau importă lista de planificări pe care le-ai creat.</string>
+    <string name="copyOwnApkSuccess">APK-ul aplicației a fost copiat în directorul pentru backupuri</string>
+    <string name="copyOwnApkFailed">Nu s-a reușit copierea APK-ului aplicației în directorul pentru backupuri</string>
+    <string name="filtered_list">Listă filtrată</string>
+    <string name="dialog_export">Exportă</string>
+    <string name="dialog_import">Importă</string>
+    <string name="uninstallDialogMessage">Dezinstalezi această aplicație\?</string>
+    <string name="enablePackage">Activează aplicația</string>
+    <string name="enablePackageTitle">Activează aplicația pentru utilizatori</string>
+    <string name="prefs_copyselfapk">Copiază propriul APK</string>
+    <string name="sched_checkbox">Activează</string>
+    <string name="sched_activateButton">Începe acum</string>
+    <string name="filter_options">Filtre:</string>
+    <string name="clear_cache">Golește cache-ul</string>
+    <string name="intro_permission_storage_location">Aplicația necesită o locație de backup pentru a stoca backupurile. Este posibil ca aplicația să necesite câțiva gigabyți de spațiu de stocare pentru un backup complet și să interogheze frecvent sistemul de fișiere. Te rugăm să ții cont de acest aspect atunci când alegi locații de stocare bazate pe rețea.</string>
+    <string name="apptype_system">Aplicație de sistem</string>
+    <string name="apptype_user">Aplicație de utilizator</string>
+    <string name="split_apks">Split-APK:</string>
+    <string name="exodus_report">Raport Exodus</string>
+    <string name="launch_app">Lansează aplicația</string>
+    <string name="forceKillMessage">Sigur vrei să forțezi oprirea aplicației\?</string>
+    <string name="backupSuccess">Backup complet</string>
+    <string name="batchSuccess">Operațiune completă</string>
+    <string name="batchFailure">Completată cu erori</string>
+    <string name="backupProgress">Se face backup…</string>
+    <string name="uninstallSuccess">Dezinstalare completă</string>
+    <string name="usage_notes_title">Note privind utilizarea</string>
+    <string name="main">Start</string>
+    <string name="sortAsc">Ascendent</string>
+    <string name="sortDesc">Descendent</string>
+    <string name="intro_welcome_message">Neo Backup este un fork al faimosului OAndBackup cu scopul de a-l aduce în 2020 și mai departe. Deocamdată, majoritatea funcționalităților și interfața de utilizare a aplicației sunt rescrise și unele sunt adăugate.
+\n Aplicația este încă în faza beta și se fac adesea multe modificări de bază. Așadar, te rugăm să citești cu atenție jurnalul modificărilor la fiecare nouă versiune.
+\n Toate tipurile de contribuții sunt binevenite, fie că este vorba de traduceri, idei, raportarea de buguri sau lucrul la cod.
+\n
+\n Acum cu privire la funcționalitățile aplicației noastre:
+\n • Necesită root și îți permite să faci backupuri ale aplicațiilor individuale și ale datelor acestora.
+\n • Sunt suportate atât crearea de backupuri și restaurarea aplicațiilor individuale, una câte una, cât și crearea de backupuri și restaurarea în loturi a mai multor aplicații.
+\n • Restaurarea aplicațiilor de sistem ar trebui să fie posibilă fără a necesita o repornire ulterioară, dar totuși nu te sfătuim să o faci.
+\n • Backupurile pot fi planificate fără limită asupra numărului de planificări individuale și există posibilitatea de a crea liste personalizate unice.</string>
 </resources>

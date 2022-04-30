@@ -9,6 +9,7 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_ALLOWSHADOWINGDEFAULT
 import com.machiav3lli.backup.PREFS_SHADOWROOTFILE
 import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.utils.exists
@@ -193,7 +194,7 @@ open class StorageFile {
                             DocumentsContract.Document.MIME_TYPE_DIR, displayName)
                     )
                 }
-        path?.let { cacheAdd(it, newFile) }
+        path?.let { cacheFilesAdd(it, newFile) }
         return newFile
     }
 
@@ -214,12 +215,12 @@ open class StorageFile {
                         createFile(context!!, _uri!!, mimeType, displayName)
                     )
                 }
-        path?.let { cacheAdd(it, newFile) }
+        path?.let { cacheFilesAdd(it, newFile) }
         return newFile
     }
 
     fun delete(): Boolean {
-        path?.let { cacheRemove(it, this) }
+        path?.let { cacheFilesRemove(it, this) }
         return try {
             file?.deleteRecursive()
                 ?: DocumentsContract.deleteDocument(context!!.contentResolver, _uri!!)
@@ -232,7 +233,7 @@ open class StorageFile {
     }
 
     fun renameTo(displayName: String): Boolean {
-        path?.let { cacheRemove(it, this) }
+        path?.let { cacheFilesRemove(it, this) }
         var ok = false
         file?.let { oldFile ->
             val newFile = RootFile(oldFile.parent, displayName)
@@ -255,7 +256,7 @@ open class StorageFile {
             LogsHandler.unhandledException(e, _uri)
             ok = false
         }
-        path?.let { cacheAdd(it, this) }
+        path?.let { cacheFilesAdd(it, this) }
         return ok
     }
 
@@ -275,7 +276,6 @@ open class StorageFile {
 
     fun findFile(displayName: String): StorageFile? {
         try {
-            //TODO hg42 use fileListCache ? but beware of invalidating entries that we change
             file?.let {
                 val found = StorageFile(this, displayName)
                 return if (found.exists()) found else null
@@ -298,58 +298,63 @@ open class StorageFile {
 
     @Throws(FileNotFoundException::class)
     fun listFiles(): List<StorageFile> {
+
         try {
             exists()
         } catch (e: Throwable) {
             throw FileNotFoundException("File $_uri does not exist")
         }
-        checkCache()
-        val id = path
-        id ?: return listOf()
 
-        fileListCache[id] ?: run {
-            file?.let { dir ->
-                fileListCache[id] = dir.listFiles()?.map { child ->
-                    StorageFile(this, child)
-                }?.toMutableList() ?: mutableListOf()
-            } ?: run {
-                context?.contentResolver?.let { resolver ->
-                    val childrenUri = try {
-                        DocumentsContract.buildChildDocumentsUriUsingTree(
-                            this._uri,
-                            DocumentsContract.getDocumentId(this._uri)
-                        )
-                    } catch (e: IllegalArgumentException) {
-                        return listOf()
-                    }
-                    val results = mutableListOf<Uri>()
-                    var cursor: Cursor? = null
-                    try {
-                        cursor = resolver.query(
-                            childrenUri, arrayOf(DocumentsContract.Document.COLUMN_DOCUMENT_ID),
-                            null, null, null
-                        )
-                        var documentUri: Uri
-                        while (cursor?.moveToNext() == true) {
-                            documentUri =
-                                DocumentsContract.buildDocumentUriUsingTree(
-                                    this._uri,
-                                    cursor.getString(0)
-                                )
-                            results.add(documentUri)
+        path?.let { path ->
+
+            cacheGetFiles(path) ?: run {
+                file?.let { dir ->
+                    cacheSetFiles(path,
+                        dir.listFiles()?.map { child ->
+                                StorageFile(this, child)
+                            }?.toMutableList() ?: mutableListOf()
+                    )
+                } ?: run {
+                    context?.contentResolver?.let { resolver ->
+                        val childrenUri = try {
+                            DocumentsContract.buildChildDocumentsUriUsingTree(
+                                this._uri,
+                                DocumentsContract.getDocumentId(this._uri)
+                            )
+                        } catch (e: IllegalArgumentException) {
+                            return listOf()
                         }
-                    } catch (e: Throwable) {
-                        LogsHandler.unhandledException(e, _uri)
-                    } finally {
-                        closeQuietly(cursor)
+                        val results = mutableListOf<Uri>()
+                        var cursor: Cursor? = null
+                        try {
+                            cursor = resolver.query(
+                                childrenUri, arrayOf(DocumentsContract.Document.COLUMN_DOCUMENT_ID),
+                                null, null, null
+                            )
+                            var documentUri: Uri
+                            while (cursor?.moveToNext() == true) {
+                                documentUri =
+                                    DocumentsContract.buildDocumentUriUsingTree(
+                                        this._uri,
+                                        cursor.getString(0)
+                                    )
+                                results.add(documentUri)
+                            }
+                        } catch (e: Throwable) {
+                            LogsHandler.unhandledException(e, _uri)
+                        } finally {
+                            closeQuietly(cursor)
+                        }
+                        cacheSetFiles(path,
+                            results.map { uri ->
+                                StorageFile(this, context, uri)
+                            }.toMutableList()
+                        )
                     }
-                    fileListCache[id] = results.map { uri ->
-                        StorageFile(this, context, uri)
-                    }.toMutableList()
                 }
             }
-        }
-        return fileListCache[id] ?: listOf()
+            return cacheGetFiles(path) ?: listOf()
+        } ?: return listOf()
     }
 
     fun ensureDirectory(dirName: String): StorageFile {
@@ -381,27 +386,28 @@ open class StorageFile {
 
     companion object {
         //TODO hg42 manage file trees instead of single files and let StorageFile and caches use them
-        var fileListCache = mutableMapOf<String, MutableList<StorageFile>>() //TODO hg42 access should automatically checkCache
-        var uriStorageFileCache = mutableMapOf<String, StorageFile>()
-        var invalidateFilters = mutableListOf<(String) -> Boolean>()
+        private var fileListCache = mutableMapOf<String, MutableList<StorageFile>>() //TODO hg42 access should automatically checkCache
+        private var uriStorageFileCache = mutableMapOf<String, StorageFile>()
+        private var invalidateFilters = mutableListOf<(String) -> Boolean>()
 
         fun fromUri(context: Context, uri: Uri): StorageFile {
             // Todo: Figure out what's wrong with the Uris coming from the intent and why they need to be processed
             //  with DocumentsContract.buildDocumentUriUsingTree(value, DocumentsContract.getTreeDocumentId(value)) first
-            if(true) {
+            if(OABX.prefFlag("cacheUris", false)) {
                 return StorageFile(
                     null,
                     context,
                     uri
                 )
             } else {
-                checkCache()
+                cacheCheck()
                 val id = uri.toString()
-                return uriStorageFileCache[id] ?: StorageFile(
-                    null,
-                    context,
-                    uri
-                ).also { uriStorageFileCache[id] = it }
+                return cacheGetUri(id)
+                            ?:  StorageFile(
+                                    null,
+                                    context,
+                                    uri
+                                ).also { cacheSetUri(id, it) }
             }
         }
 
@@ -422,14 +428,38 @@ open class StorageFile {
         }
 
         fun invalidateCache(filter: (String) -> Boolean) {
-            invalidateFilters.add(filter)
+            if(OABX.prefFlag("invalidateSelective", true)) {
+                invalidateFilters.add(filter)
+                cacheCheck() //TODO
+            } else {
+                invalidateCache()
+            }
         }
 
         fun invalidateCache() {
             invalidateFilters = mutableListOf({true})
+            cacheCheck() //TODO
         }
 
-        fun cacheAdd(path: String, file: StorageFile) {
+        fun cacheGetFiles(id: String): List<StorageFile>? {
+            cacheCheck()
+            return fileListCache[id]
+        }
+
+        fun cacheSetFiles(id: String, files: List<StorageFile>) {
+            fileListCache[id] = files.toMutableList()
+        }
+
+        private fun cacheGetUri(id: String): StorageFile? {
+            cacheCheck()
+            return uriStorageFileCache[id]
+        }
+
+        fun cacheSetUri(id: String, file: StorageFile) {
+            uriStorageFileCache[id] = file
+        }
+
+        fun cacheFilesAdd(path: String, file: StorageFile) {
             fileListCache[path]?.run {
                 add(file)
             } ?: run {
@@ -437,7 +467,7 @@ open class StorageFile {
             }
         }
 
-        fun cacheRemove(path: String, file: StorageFile?) {
+        fun cacheFilesRemove(path: String, file: StorageFile?) {
             file?.let {
                 fileListCache[path]?.run {
                     remove(file)
@@ -447,12 +477,16 @@ open class StorageFile {
             } ?: fileListCache.remove(path)
         }
 
-        fun checkCache() {
-            while (invalidateFilters.size > 0) {
-                invalidateFilters.removeFirst().let { isInvalid ->
-                    fileListCache       =       fileListCache.filterNot { isInvalid(it.key) }.toMutableMap()
-                    uriStorageFileCache = uriStorageFileCache.filterNot { isInvalid(it.key) }.toMutableMap()
+        private fun cacheCheck() {
+            try {
+                while (invalidateFilters.size > 0) {
+                    invalidateFilters.removeFirst().let { isInvalid ->
+                        fileListCache       =       fileListCache.toMap().filterNot { isInvalid(it.key) }.toMutableMap()
+                        uriStorageFileCache = uriStorageFileCache.toMap().filterNot { isInvalid(it.key) }.toMutableMap()
+                    }
                 }
+            } catch(e: Throwable) {
+                logException(e)
             }
         }
 

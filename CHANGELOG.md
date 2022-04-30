@@ -1,5 +1,51 @@
 CHANGELOG
 =========
+8.0.2 (29.04.2021) 2 Commits
+------------------
+- Fix: Auto-updating AppSheet package
+
+8.0.1 (29.04.2021) 2 Commits
+------------------
+- Fix: Showing uninstalled apps
+
+8.0.0 (29.04.2021, a hot-fix for the unintended release of an alpha on F-Droid) +700 Commits
+------------------
+NEW BACKUP STRUCTURE: Older backups (v6-v7) are experimentally supported. It's nevertheless preferred to use a new backup directory for a cleaner experience.
+NEW FILTER FORMAT: Requires resetting sort/filter manually.
+#### UI
+- Update: Migrate fragments & sheets to Compose and update UI
+- Add: Auto update list on external install/uninstall
+- Removed: Tags & Notes disabled for now
+- Update: Improve the app restart on theme/language change
+- Fix: Welcome fragment scrolling view
+- Update: Place state text under actions in AppSheet
+#### Function
+- Add: Backup & restore permissions
+- Update: Refactor batch actions (@hgx42)
+- Add: Made the compression level configurable (@pizze)
+- Add: Fake developer settings (@hg42, mostly for debugging/testing reasons)
+- Add: Call log special backup (@dl200010)
+- Fix: SMS/MMS special backup (@dl200010)
+- Add: Generic support for older backups(v6-v7) (@hg42)
+- Update: Complete rework of the running notification. (@hgx42)
+- Fix: Freezing more essential packages (@hg42)
+- Fix: (Not) restoring package to both/all profiles
+- Fix: Handling backups with dot-dot-dirs (@hg42)
+- Add: Option to disable compression (@hg42)
+- Add: Special backups to schedules
+- Fix: Using toybox on SDK26 (@hg42)
+- Fix: More strict hard links (@hg42)
+- Fix: Messed up scheduling after rebooting device
+- Add: Simple switch where to place the Wifi config file (@pizze)
+- Add: Retry mechanism to detect when PackageManager is not ready after installing an APK (@pizze)
+#### Usability/UX
+- Add: Backend's lazy loading (half-baked)
+- Add: Loading toasts for refresh.
+- Update: Improve UX for search, scrolling & AppSheet
+- Fix: Reseting search box on work finished
+- Update: Improve error reporting (@hg42)
+- Update Translations
+
 7.0.0 (09.10.2021) +300 Commits
 ------------------
 BACKUPS HAS NEW VARIABLE: making new backups incompatible with old versions of OABX

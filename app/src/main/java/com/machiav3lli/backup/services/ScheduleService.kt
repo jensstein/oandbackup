@@ -42,7 +42,6 @@ import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.tasks.ScheduledActionTask
-import com.machiav3lli.backup.utils.isNeedRefresh
 import com.machiav3lli.backup.utils.scheduleAlarm
 import timber.log.Timber
 
@@ -215,7 +214,7 @@ open class ScheduleService : Service() {
                                     t?.state == WorkInfo.State.CANCELLED
                                 ) {
                                     scheduleAlarm(context, scheduleId, true)
-                                    isNeedRefresh = true
+                                    OABX.activity?.needRefresh = true
                                     finishWorkLiveData.removeObserver(this)
                                     //stopService(intent)
                                     stoppedSchedule(intent)

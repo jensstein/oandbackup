@@ -81,7 +81,7 @@ class WorkHandler {
     }
 
     fun endBatches() {
-        val delay = 3000L
+        val delay = 10000L
         Thread {
             Timber.d("%%%%% ALL thread start")
 

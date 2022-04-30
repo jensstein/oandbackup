@@ -98,28 +98,17 @@ class HomeFragment : NavigationFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // TODO clean up
-        viewModel.refreshNow.observe(requireActivity()) {
-            //binding.refreshLayout.isRefreshing = it
-            if (it) {
-                requireMainActivity().viewModel.refreshList()
-            }
-        }
         viewModel.filteredList.observe(viewLifecycleOwner) { list ->
             try {
-                viewModel.updatedApps.value = list?.filter { it.isUpdated }
+                // TODO live update of AppSheet
                 list?.find { it.packageName == appSheet?.appInfo?.packageName }
                     ?.let { sheetApp ->
                         if (appSheet != null && sheetApp != appSheet?.appInfo)
                             refreshAppSheet(sheetApp)
                     }
-                viewModel.refreshNow.value = false
             } catch (e: Throwable) {
                 LogsHandler.unhandledException(e)
             }
-        }
-        viewModel.updatedApps.observe(viewLifecycleOwner) {
-            viewModel.nUpdatedApps = it?.size ?: 0
         }
 
         packageList.observe(requireActivity()) { refreshView(it) }
@@ -130,12 +119,12 @@ class HomeFragment : NavigationFragment(),
         requireMainActivity().setRefreshViewController(this)
     }
 
-    private fun onClickUpdateAllAction() {
-        val selectedList = viewModel.updatedApps.value
-            ?.map { it.packageInfo }
-            ?.toCollection(ArrayList()) ?: arrayListOf()
-        val selectedListModes = viewModel.updatedApps.value
-            ?.mapNotNull {
+    private fun onClickUpdateAllAction(updatedApps: List<Package>) {
+        val selectedList = updatedApps
+            .map { it.packageInfo }
+            .toCollection(ArrayList())
+        val selectedListModes = updatedApps
+            .mapNotNull {
                 it.latestBackup?.let { bp ->
                     when {
                         bp.hasApk && bp.hasAppData -> ALT_MODE_BOTH
@@ -145,7 +134,7 @@ class HomeFragment : NavigationFragment(),
                     }
                 }
             }
-            ?.toCollection(ArrayList()) ?: arrayListOf()
+            .toCollection(ArrayList())
         if (selectedList.isNotEmpty()) {
             BatchDialogFragment(true, selectedList, selectedListModes, this)
                 .show(requireActivity().supportFragmentManager, "DialogFragment")
@@ -204,20 +193,16 @@ class HomeFragment : NavigationFragment(),
     @Composable
     fun HomePage() {
         // TODO include tags in search
-        val list by viewModel.filteredList.observeAsState()
+        val list by viewModel.filteredList.observeAsState(null)
         val query by viewModel.searchQuery.observeAsState("")
+        val updatedApps = list?.filter { it.isUpdated }
+        var updatedVisible by remember(viewModel.filteredList.value) { mutableStateOf(false) }
 
         val filterPredicate = { item: Package ->
             query.isNullOrEmpty() || listOf(item.packageName, item.packageLabel)
                 .find { it.contains(query, true) } != null
         }
         val queriedList = list?.filter(filterPredicate)
-        val updatedBarVisible by remember(viewModel.filteredList.value) {
-            mutableStateOf(
-                viewModel.updatedApps.value.orEmpty().isNotEmpty()
-            )
-        }
-        var updatedVisible by remember(viewModel.filteredList.value) { mutableStateOf(false) }
 
         AppTheme(
             darkTheme = isSystemInDarkTheme()
@@ -301,7 +286,7 @@ class HomeFragment : NavigationFragment(),
                             )
                         }
                     )
-                    AnimatedVisibility(visible = updatedBarVisible) {
+                    AnimatedVisibility(visible = !updatedApps.isNullOrEmpty()) {
                         Column(
                             modifier = Modifier.wrapContentHeight()
                         ) {
@@ -315,8 +300,8 @@ class HomeFragment : NavigationFragment(),
                                     text = LocalContext.current.resources
                                         .getQuantityString(
                                             R.plurals.updated_apps,
-                                            viewModel.nUpdatedApps,
-                                            viewModel.nUpdatedApps
+                                            updatedApps.orEmpty().size,
+                                            updatedApps.orEmpty().size
                                         ),
                                     icon = painterResource(id = if (updatedVisible) R.drawable.ic_arrow_down else R.drawable.ic_arrow_up)
                                 ) {
@@ -327,11 +312,11 @@ class HomeFragment : NavigationFragment(),
                                     text = stringResource(id = R.string.backup_all_updated),
                                     icon = painterResource(id = R.drawable.ic_update)
                                 ) {
-                                    onClickUpdateAllAction()
+                                    onClickUpdateAllAction(updatedApps.orEmpty())
                                 }
                             }
                             AnimatedVisibility(visible = updatedVisible) {
-                                UpdatedPackageRecycler(productsList = viewModel.updatedApps.value,
+                                UpdatedPackageRecycler(productsList = updatedApps,
                                     onClick = { item ->
                                         if (appSheet != null) appSheet?.dismissAllowingStateLoss()
                                         appSheet = AppSheet(item, AppExtras(item.packageName))

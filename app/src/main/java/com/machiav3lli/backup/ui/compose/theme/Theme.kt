@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
 import com.machiav3lli.backup.utils.accentStyle
+import com.machiav3lli.backup.utils.brighter
 import com.machiav3lli.backup.utils.getPrimaryColor
 import com.machiav3lli.backup.utils.getSecondaryColor
 import com.machiav3lli.backup.utils.secondaryStyle
@@ -26,11 +27,11 @@ fun AppTheme(
             }.copy(
                 primary = getPrimaryColor(LocalContext.current.accentStyle),
                 primaryContainer = getPrimaryColor(LocalContext.current.accentStyle)
-                    .copy(alpha = 0.5f),
+                    .brighter(0.6f),
                 inverseOnSurface = getPrimaryColor(LocalContext.current.accentStyle),
                 secondary = getSecondaryColor(LocalContext.current.secondaryStyle),
                 secondaryContainer = getSecondaryColor(LocalContext.current.secondaryStyle)
-                    .copy(alpha = 0.5f),
+                    .brighter(0.6f),
             ),
             content = content
         )

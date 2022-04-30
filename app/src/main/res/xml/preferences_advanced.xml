@@ -139,6 +139,24 @@
             app:showSeekBarValue="true" />
 
         <androidx.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="invalidateSelective"
+            android:summary=""
+            android:title="invalidateSelective" />
+
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="cacheUris"
+            android:summary=""
+            android:title="cacheUris" />
+
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="cacheFileLists"
+            android:summary=""
+            android:title="cacheFileLists" />
+
+        <androidx.preference.CheckBoxPreference
             android:defaultValue="false"
             android:key="cacheRootFileAttributes"
             android:summary="cache some attributes like exists, isDirectory, isFile, saves many shell commands but may fail if external changes happen"
@@ -185,6 +203,16 @@
             android:key="useExpedited"
             android:summary="use work manager forground to overcome 10 minute job timeouts"
             android:title="useExpedited" />
+
+        <androidx.preference.SeekBarPreference
+            android:defaultValue="0"
+            android:inputType="number"
+            android:key="fakeBackupMinutes"
+            android:max="60"
+            android:summary="[minutes] time for faked backups, 0 = do not fake"
+            android:title="fakeBackupMinutes"
+            app:min="0"
+            app:showSeekBarValue="true" />
 
     </androidx.preference.PreferenceCategory>
 

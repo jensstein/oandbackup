@@ -1,0 +1,9 @@
+This is a hot-fix-release based on 8.0.0-alpha14 as an unintended release was put couple of weeks ago.
+It fixes the unintended release's issues and function reliably but still comparably laggy as Compose still doesn't provide the best performance and a true release would take much. Till then, here's some highlights:
+* Update: New update format (The app still support older ones)
+* Fix: All A12 issues on v7
+* Add: Backup/restore given permissions
+* Update: Less manual refresh is needed
+* Fixed: Most of the special backups (still need testing)
+* Tags & Notes are disabled for now
+for more details, read the full changelog

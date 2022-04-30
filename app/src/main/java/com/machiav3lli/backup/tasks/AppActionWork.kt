@@ -50,6 +50,7 @@ import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.services.CommandReceiver
+import kotlinx.coroutines.delay
 import timber.log.Timber
 
 class AppActionWork(val context: Context, workerParams: WorkerParameters) :
@@ -79,6 +80,43 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         }
         Timber.i(message)
 
+        if (OABX.prefInt("fakeBackupMinutes", 0) > 0) {
+
+            val step = 1000L * 1
+            val startTime = System.currentTimeMillis()
+            do {
+                val now = System.currentTimeMillis()
+                val minutes = (now - startTime) / 60.0 / 1000.0
+                setOperation((minutes * 10).toInt().toString().padStart(3, '0'))
+                delay(step)
+            } while (minutes < OABX.prefInt("fakeBackupMinutes", 0))
+
+            val succeeded = true // random() < 0.75
+
+            return if (succeeded) {
+                setOperation("OK.")
+                Timber.w("package: $packageName OK")
+                Result.success(getWorkData("OK", result))
+            } else {
+                failures++
+                setVar(batchName, packageName, "failures", failures.toString())
+                if (failures <= OABX.prefInt(PREFS_MAXRETRIES, 1)) {
+                    setOperation("err")
+                    Timber.w("package: $packageName failures: $failures -> retry")
+                    Result.retry()
+                } else {
+                    val message = "$packageName\n${result?.message}"
+                    showNotification(
+                        context, MainActivityX::class.java,
+                        result.hashCode(), packageLabel, result?.message, message, false
+                    )
+                    setOperation("ERR")
+                    Timber.w("package: $packageName FAILED")
+                    Result.failure(getWorkData("ERR", result))
+                }
+            }
+        }
+
         val selectedMode = inputData.getInt("selectedMode", MODE_UNSET)
 
         if (OABX.prefFlag(PREFS_USEFOREGROUND, true))
@@ -87,13 +125,15 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         var packageItem: Package? = null
 
         try {
-            val specialAppInfo = context.getSpecial(packageName)
-            packageItem = if (specialAppInfo != null) {
-                specialAppInfo
-            } else {
-                val foundItem =
-                    context.packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA)
-                Package(context, foundItem)
+            packageItem = Package.get(packageName) {
+                context.getSpecial(packageName) ?: run {
+                    val foundItem =
+                        context.packageManager.getPackageInfo(
+                            packageName,
+                            PackageManager.GET_PERMISSIONS
+                        )
+                    Package(context, foundItem)
+                }
             }
         } catch (e: PackageManager.NameNotFoundException) {
             if (packageLabel.isEmpty())
@@ -120,6 +160,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
 
                 packageItem?.let { pi ->
                     try {
+                        pi.refreshBackupList()  // optional, be up to date when the job is finally executed
                         OABX.shellHandlerInstance?.let { shellHandler ->
                             result = when {
                                 backupBoolean -> {
@@ -140,6 +181,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                                 }
                             }
                         }
+                        pi.refreshBackupList()  // who knows what happened in external space?
                     } catch (e: Throwable) {
                         result = ActionResult(
                             pi, null,
@@ -242,7 +284,11 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             .setContentIntent(contentPendingIntent)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
-            .addAction(R.drawable.ic_close, context.getString(R.string.dialogCancelAll), cancelAllPendingIntent)
+            .addAction(
+                R.drawable.ic_close,
+                context.getString(R.string.dialogCancelAll),
+                cancelAllPendingIntent
+            )
             .build()
 
         return ForegroundInfo(this.notificationId + 1, notification)

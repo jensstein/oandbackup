@@ -25,7 +25,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import com.machiav3lli.backup.*
+import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
+import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.PREFS_BATCH_DELETE
+import com.machiav3lli.backup.PREFS_COPYSELF
+import com.machiav3lli.backup.PREFS_LOGVIEWER
+import com.machiav3lli.backup.PREFS_SAVEAPPSLIST
+import com.machiav3lli.backup.PREFS_SCHEDULESEXPORTIMPORT
+import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.PrefsActivity
 import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.ExportsHandler
@@ -189,7 +196,7 @@ class PrefsToolsFragment : PreferenceFragmentCompat() {
                 .setPositiveButton(R.string.radio_all) { _: DialogInterface, _: Int ->
                     writeAppsListFile(requirePrefsActivity().packageList
                         .filter { it.isSystem }
-                        .map { "${it.packageLabel}: ${it.packageName}" }, false
+                        .map { "${it.packageLabel}: ${it.packageName}" }, false  //TODO hg42 name first because of ":", better for scripts
                     )
                     requirePrefsActivity().refreshPackageList()
                 }

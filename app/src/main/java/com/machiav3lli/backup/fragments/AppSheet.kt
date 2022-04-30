@@ -491,7 +491,7 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
                                         onClick = { showForceKillDialog(it) }
                                     )
                                 }
-                                AnimatedVisibility(visible = it.isInstalled && !it.isSpecial && it.storageStats?.dataBytes ?: 0 >= 0L) {
+                                AnimatedVisibility(visible = it.isInstalled && !it.isSpecial && ((it.storageStats?.dataBytes ?: 0L) >= 0L)) {
                                     ActionChip(
                                         icon = painterResource(id = R.drawable.ic_delete),
                                         text = stringResource(id = R.string.clear_cache),
@@ -502,7 +502,7 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
                                 }
                             }
                             if (it.hasBackups) {
-                                BackupRecycler(productsList = it.backupList.sortedByDescending { item -> item.backupDate },
+                                BackupRecycler(productsList = it.backupsNewestFirst,
                                     onRestore = { item ->
                                         viewModel.appInfo.value?.let { app ->
                                             if (!app.isSpecial && !app.isInstalled

@@ -36,7 +36,10 @@ import java.lang.ref.WeakReference
 
 class OABX : Application() {
 
-    var cache: LruCache<String, MutableList<Package>> = LruCache(4000)
+    // packages are an external resource, so handle them as a singleton
+    val maxNumberOfPackagesInCache = 4000   //TODO hg42 add a setting!?
+    var packageCache: LruCache<String, Package> = LruCache(maxNumberOfPackagesInCache)
+    var cache: LruCache<String, MutableList<Package>> = LruCache(10)    //TODO hg42 not caching 4000 lists? right?
 
     var work: WorkHandler? = null
 

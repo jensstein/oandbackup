@@ -19,20 +19,27 @@ package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
+import com.machiav3lli.backup.PREFS_LOADINGTOASTS
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Blocklist
+import com.machiav3lli.backup.handler.toAppInfoList
 import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.handler.updateAppInfoTable
 import com.machiav3lli.backup.handler.updateBackupTable
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.items.Package.Companion.invalidateCacheForPackage
+import com.machiav3lli.backup.utils.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -47,6 +54,7 @@ class MainViewModel(
     var packageList = MediatorLiveData<MutableList<Package>>()
     var backupsMap = MediatorLiveData<Map<String, List<Backup>>>()
     var blocklist = MediatorLiveData<List<Blocklist>>()
+    val isNeedRefresh = MutableLiveData(false)
     var appExtrasList: MutableList<AppExtras>
         get() = db.appExtrasDao.all
         set(value) {
@@ -57,27 +65,52 @@ class MainViewModel(
     init {
         blocklist.addSource(db.blocklistDao.liveAll, blocklist::setValue)
         backupsMap.addSource(db.backupDao.allLive) {
-            backupsMap.postValue(it.groupBy(Backup::packageName))
+            viewModelScope.launch {
+                withContext(Dispatchers.IO) {
+                    backupsMap.postValue(it.groupBy(Backup::packageName))
+                }
+            }
         }
         packageList.addSource(db.appInfoDao.allLive) {
-            packageList.value = it.toPackageList(
-                appContext,
-                blocklist.value?.mapNotNull(Blocklist::packageName) ?: listOf(),
-                backupsMap.value.orEmpty()
-            )
+            viewModelScope.launch {
+                withContext(Dispatchers.IO) {
+                    packageList.postValue(
+                        it.toPackageList(
+                            appContext,
+                            blocklist.value.orEmpty().mapNotNull(Blocklist::packageName),
+                            backupsMap.value.orEmpty()
+                        )
+                    )
+                }
+            }
         }
         packageList.addSource(backupsMap) { map ->
-            packageList.value = packageList.value?.map {
-                it.updateBackupList(map[it.packageName].orEmpty())
-                it
-            }.orEmpty().toMutableList()
+            viewModelScope.launch {
+                withContext(Dispatchers.IO) {
+                    packageList.postValue(
+                        packageList.value.orEmpty().toAppInfoList().toPackageList(
+                            appContext,
+                            blocklist.value.orEmpty().mapNotNull(Blocklist::packageName),
+                            map
+                        )
+                    )
+                }
+            }
         }
     }
 
     // TODO add to interface
     fun refreshList() {
         viewModelScope.launch {
+            val showToasts = OABX.prefFlag(PREFS_LOADINGTOASTS, true)
+            val startTime = System.currentTimeMillis()
+            OABX.activity?.showToast("recreateAppInfoList ...", showToasts)
             recreateAppInfoList()
+            val after = System.currentTimeMillis()
+            OABX.activity?.showToast(
+                "recreateAppInfoList: ${((after - startTime) / 1000 + 0.5).toInt()} sec",
+                showToasts
+            )
         }
     }
 
@@ -97,12 +130,12 @@ class MainViewModel(
 
     private suspend fun updateDataOf(packageName: String) =
         withContext(Dispatchers.IO) {
+            invalidateCacheForPackage(packageName)
             val appPackage = packageList.value?.find { it.packageName == packageName }
             try {
                 appPackage?.apply {
-                    val new =
-                        Package(appContext, packageName, appPackage.getAppBackupRoot())
-                    new.refreshBackupList(appContext)
+                    val new = Package(appContext, packageName, appPackage.getAppBackupRoot())
+                    new.refreshBackupList() //TODO hg42 such optimizations should be encapsulated (in Package)
                     if (!isSpecial) db.appInfoDao.update(new.packageInfo as AppInfo)
                     db.backupDao.updateList(new)
                 }

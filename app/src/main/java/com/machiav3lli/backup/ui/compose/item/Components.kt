@@ -48,10 +48,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
-import coil.compose.SubcomposeAsyncImage
-import coil.compose.SubcomposeAsyncImageContent
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.AsyncImage
 import com.machiav3lli.backup.MAIN_FILTER_SPECIAL
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
@@ -61,7 +58,6 @@ import com.machiav3lli.backup.MODE_DATA_DE
 import com.machiav3lli.backup.MODE_DATA_EXT
 import com.machiav3lli.backup.MODE_DATA_MEDIA
 import com.machiav3lli.backup.MODE_DATA_OBB
-import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.SPECIAL_FILTER_ALL
 import com.machiav3lli.backup.SPECIAL_FILTER_DISABLED
@@ -88,29 +84,26 @@ fun PackageIcon(
     item: Package,
     imageData: Any
 ) {
-    SubcomposeAsyncImage(
+    AsyncImage(
         modifier = Modifier
             .size(48.dp)
             .clip(RoundedCornerShape(LocalShapes.current.medium)),
         model = imageData,
         contentDescription = null,
         contentScale = ContentScale.Crop,
-        error = {
-            SubcomposeAsyncImageContent(
-                painter = rememberAsyncImagePainter(
-                    ContextCompat.getDrawable(
-                        OABX.context,
-                        when {
-                            item.isSpecial -> R.drawable.ic_placeholder_special
-                            item.isSystem -> R.drawable.ic_placeholder_system
-                            else -> R.drawable.ic_placeholder_user
-                        }
-                    )
-                )
-            )
-        }
+        error = placeholderIconPainter(item),
+        placeholder = placeholderIconPainter(item)
     )
 }
+
+@Composable
+fun placeholderIconPainter(item: Package) = painterResource(
+    when {
+        item.isSpecial -> R.drawable.ic_placeholder_special
+        item.isSystem -> R.drawable.ic_placeholder_system
+        else -> R.drawable.ic_placeholder_user
+    }
+)
 
 @Composable
 fun ActionButton(
@@ -457,16 +450,16 @@ fun HorizontalExpandingVisibility(
     collapsedView: @Composable (AnimatedVisibilityScope.() -> Unit)
 ) {
     AnimatedVisibility(
-        visible = expanded,
+        visible = !expanded,
         enter = expandHorizontally(expandFrom = Alignment.Start),
         exit = shrinkHorizontally(shrinkTowards = Alignment.Start),
-        content = expandedView
+        content = collapsedView
     )
     AnimatedVisibility(
-        visible = !expanded,
+        visible = expanded,
         enter = expandHorizontally(expandFrom = Alignment.End),
         exit = shrinkHorizontally(shrinkTowards = Alignment.End),
-        content = collapsedView
+        content = expandedView
     )
 }
 
