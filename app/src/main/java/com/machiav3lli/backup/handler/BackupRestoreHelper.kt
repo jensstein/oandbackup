@@ -24,6 +24,7 @@ import com.machiav3lli.backup.HousekeepingMoment
 import com.machiav3lli.backup.HousekeepingMoment.Companion.fromString
 import com.machiav3lli.backup.MODE_APK
 import com.machiav3lli.backup.MODE_DATA
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_HOUSEKEEPING_MOMENT
 import com.machiav3lli.backup.PREFS_NUM_BACKUP_REVISIONS
 import com.machiav3lli.backup.actions.BackupAppAction
@@ -63,7 +64,7 @@ object BackupRestoreHelper {
                 ?: HousekeepingMoment.AFTER.value
         )
         if (housekeepingWhen == HousekeepingMoment.BEFORE) {
-            housekeepingPackageBackups(context, packageItem, true)
+            housekeepingPackageBackups(packageItem, true)
         }
         // Select and prepare the action to use
         val action: BackupAppAction = when {
@@ -91,7 +92,7 @@ object BackupRestoreHelper {
         }
 
         if (housekeepingWhen == HousekeepingMoment.AFTER) {
-            housekeepingPackageBackups(context, packageItem, false)
+            housekeepingPackageBackups(packageItem, false)
         }
         return result
     }
@@ -151,9 +152,9 @@ object BackupRestoreHelper {
         return true
     }
 
-    private fun housekeepingPackageBackups(context: Context, app: Package, before: Boolean) {
+    private fun housekeepingPackageBackups(app: Package, before: Boolean) {
         var numBackupRevisions =
-            context.getDefaultSharedPreferences().getInt(PREFS_NUM_BACKUP_REVISIONS, 2)
+            OABX.prefInt(PREFS_NUM_BACKUP_REVISIONS, 2)
         if (numBackupRevisions == 0) {
             Timber.i("[${app.packageName}] Infinite backup revisions configured. Not deleting any backup.")
             return
