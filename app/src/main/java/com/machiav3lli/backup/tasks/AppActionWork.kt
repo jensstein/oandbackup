@@ -44,7 +44,7 @@ import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler.Companion.getVar
 import com.machiav3lli.backup.handler.WorkHandler.Companion.setVar
-import com.machiav3lli.backup.handler.getDirectoriesInBackupRoot
+import com.machiav3lli.backup.handler.getBackupPackageDirectories
 import com.machiav3lli.backup.handler.getSpecial
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
@@ -138,7 +138,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         } catch (e: PackageManager.NameNotFoundException) {
             if (packageLabel.isEmpty())
                 packageLabel = packageItem?.packageLabel ?: "NONAME"
-            val backupDir = context.getDirectoriesInBackupRoot()
+            val backupDir = context.getBackupPackageDirectories()
                 .find { it.name == packageName }
             backupDir?.let {
                 try {

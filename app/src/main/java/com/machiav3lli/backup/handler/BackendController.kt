@@ -133,14 +133,10 @@ fun Context.getInstalledPackageList(blockList: List<String> = listOf()): Mutable
         }
     }
 
-    val directoriesInBackupRoot = getDirectoriesInBackupRoot()
+    val directoriesInBackupRoot = getBackupPackageDirectories()
     val backupList = mutableListOf<Backup>()
     directoriesInBackupRoot
-        .filterNot {
-            it.name?.let { name ->
-                name == EXPORTS_FOLDER_NAME || name == LOG_FOLDER_NAME
-            } ?: true
-        }.map {
+        .map {
             it.listFiles()
                 .filter(StorageFile::isPropertyFile)
                 .forEach { propFile ->
@@ -253,7 +249,7 @@ fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
         }
     }
 
-    val directoriesInBackupRoot = getDirectoriesInBackupRoot()
+    val directoriesInBackupRoot = getBackupPackageDirectories()
     val packagesWithBackup: List<AppInfo> =
     // Try to create AppInfo objects
     // if it fails, null the object for filtering in the next step to avoid crashes
@@ -290,14 +286,10 @@ fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
 }
 
 fun Context.updateBackupTable(backupDao: BackupDao) {
-    val directoriesInBackupRoot = getDirectoriesInBackupRoot()
+    val directoriesInBackupRoot = getBackupPackageDirectories()
     val backupList = mutableListOf<Backup>()
     directoriesInBackupRoot
-        .filterNot {
-            it.name?.let { name ->
-                name == EXPORTS_FOLDER_NAME || name == LOG_FOLDER_NAME
-            } ?: true
-        }.map {
+        .map {
             it.listFiles()
                 .filter(StorageFile::isPropertyFile)
                 .forEach { propFile ->
@@ -326,7 +318,7 @@ fun Context.updateBackupTable(backupDao: BackupDao) {
     FileUtils.BackupLocationInAccessibleException::class,
     StorageLocationNotConfiguredException::class
 )
-fun Context.getDirectoriesInBackupRoot(): List<StorageFile> {
+fun Context.getBackupPackageDirectories(): List<StorageFile> {
     StorageFile.invalidateCache()
     val backupRoot = getBackupDir()
     try {
