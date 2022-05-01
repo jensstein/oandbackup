@@ -139,7 +139,7 @@
             android:title="catchUncaughtException" />
 
         <androidx.preference.SeekBarPreference
-            android:defaultValue="100"
+            android:defaultValue="50"
             android:inputType="number"
             android:key="maxCrashLines"
             android:max="1000"
@@ -203,7 +203,7 @@
             app:showSeekBarValue="true" />
 
         <androidx.preference.CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="useForeground"
             android:summary="use forground notifications to ensure app keeps running (if wakelock isn't enough)"
             android:title="useForeground" />
