@@ -49,6 +49,7 @@ open class StorageFile {
         parent: StorageFile?,
         context: Context?,
         uri: Uri?,
+        name: String? = null,
         allowShadowing: Boolean = OABX.prefFlag(
             PREFS_ALLOWSHADOWINGDEFAULT,
             false
@@ -57,6 +58,7 @@ open class StorageFile {
         this.parent = parent
         this.context = context
         this._uri = uri
+        name?.let { this.name = it }
         if (OABX.prefFlag(PREFS_SHADOWROOTFILE, false) && allowShadowing) {
             fun isValidPath(file: RootFile?): Boolean =
                 file?.let { file.exists() && file.canRead() && file.canWrite() } ?: false
@@ -149,6 +151,9 @@ open class StorageFile {
                 }
             }
             return field
+        }
+        private set(name) {
+            field = name
         }
 
     val path: String?
@@ -324,11 +329,16 @@ open class StorageFile {
                         } catch (e: IllegalArgumentException) {
                             return listOf()
                         }
-                        val results = mutableListOf<Uri>()
+                        val results = mutableListOf<StorageFile>()
                         var cursor: Cursor? = null
                         try {
                             cursor = resolver.query(
-                                childrenUri, arrayOf(DocumentsContract.Document.COLUMN_DOCUMENT_ID),
+                                // "For type TreeDocumentFile, getName() is implemented as
+                                // a query to DocumentsProvider which is.... slow."
+                                // so avoid getName by using COLUMN_DISPLAY_NAME
+                                // (also add name to constructor and allow setting the name field)
+                                childrenUri, arrayOf(DocumentsContract.Document.COLUMN_DOCUMENT_ID,
+                                                     DocumentsContract.Document.COLUMN_DISPLAY_NAME),
                                 null, null, null
                             )
                             var documentUri: Uri
@@ -338,18 +348,19 @@ open class StorageFile {
                                         this._uri,
                                         cursor.getString(0)
                                     )
-                                results.add(documentUri)
+                                results.add(
+                                    if (OABX.prefFlag("useColumnNameSAF", true))
+                                        StorageFile(this, context, documentUri, cursor.getString(1))
+                                    else
+                                        StorageFile(this, context, documentUri)
+                                )
                             }
                         } catch (e: Throwable) {
                             LogsHandler.unhandledException(e, _uri)
                         } finally {
                             closeQuietly(cursor)
                         }
-                        cacheSetFiles(path,
-                            results.map { uri ->
-                                StorageFile(this, context, uri)
-                            }.toMutableList()
-                        )
+                        cacheSetFiles(path, results)
                     }
                 }
             }

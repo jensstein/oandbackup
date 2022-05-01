@@ -47,6 +47,10 @@
         android:summary="@string/prefs_allowdowngrade_summary"
         android:title="@string/prefs_allowdowngrade" />
 
+
+
+
+
     <!-- developer settings -->
 
     <androidx.preference.PreferenceCategory
@@ -55,6 +59,12 @@
         android:summary="don't change unless a developer tells you"
         android:title="developer settings"
         app:initialExpandedChildrenCount="0">
+
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="useColumnNameSAF"
+            android:summary=""
+            android:title="useColumnNameSAF" />
 
         <androidx.preference.CheckBoxPreference
             android:defaultValue="false"
