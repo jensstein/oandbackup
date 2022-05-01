@@ -30,6 +30,7 @@ import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_LOADINGTOASTS
+import com.machiav3lli.backup.PREFS_PMSUSPEND
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.ignoredPackages
 import com.machiav3lli.backup.dbs.dao.AppInfoDao
@@ -234,7 +235,7 @@ fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
     val installedAppNames = installedAppList.map { it.packageName }.toList()
     val specialList = SpecialInfo.getSpecialPackages(this).map { it.packageName }
 
-    if (!OABX.appsSuspendedChecked) {
+    if (!OABX.appsSuspendedChecked && OABX.prefFlag(PREFS_PMSUSPEND, false)) {
         installedAppNames.filter { packageName ->
             0 != (OABX.activity?.packageManager
                 ?.getPackageInfo(packageName, 0)
