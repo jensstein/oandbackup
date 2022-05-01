@@ -142,7 +142,7 @@
     <string name="prefs_batchdelete">Delete backups\?</string>
     <string name="prefs_batchdelete_summary">Delete backups of all apps not currently installed.</string>
     <string name="prefs_copyselfapk">Copy own APK</string>
-    <string name="prefs_copyselfapk_summary">Place a copy of OAndBackupX in the top level of the backup folder</string>
+    <string name="prefs_copyselfapk_summary">Place a copy of Neo Backup in the top level of the backup folder</string>
     <string name="prefs_saveappslist">Save apps list</string>
     <string name="prefs_saveappslist_summary">Writes apps list to a txt file in the user\'s backup directory</string>
     <string name="prefs_logviewer">View the log</string>
@@ -234,15 +234,14 @@
     <string name="sort_and_filter"><![CDATA[Sort & Filter]]></string>
     <string name="storage_access">Storage Access</string>
     <string name="welcome_to_oabx">Welcome to Neo Backup!</string>
-    <string name="intro_welcome_message"> OAndBackupX is a fork of the infamous OAndBackup with the aim to bring it to 2020 and further. For now most of the functionality and UI of the app are rewritten and some are added.
-        \n The app is still in beta stages and a lot of rebasing is done often. So please read the changelog carefully with each new release.
-        \n All types of contribution are welcome was it translation, ideas, reporting bugs or code work.
+    <string name="intro_welcome_message"> Neo Backup (formerly OAndBackupX) is a fork of the famous OAndBackup with the aim to bring OAndBackup to 202X and part of Neo Applications suite. For now the app is already fully rewritten, coming up would be making it robust and adding some lengthily planned features which could ease the backup/restore workflow with any device.
+        \n Therefore all types of contribution are always welcome.
         \n
         \n Now on functionality of our App:
-        \n • It requires root and allows you to back up individual apps and their data.
-        \n • Both backing up and restoring individual programs one-at-a-time and batch backup and restoration of multiple programs are supported.
-        \n • Restoring system apps should be possible without requiring a reboot afterwards, but still we don\'t advise to do it.
-        \n • Backups can be scheduled with no limit on the number of individual schedules and there is the possibility of creating unique custom lists.</string>
+        \n • It requires root and allows you to backup individual apps and their data.
+        \n • Both backup and restore of individual programs one at a time and batch backup and restore of multiple programs are supported.
+        \n • Restoring system apps should be possible without requiring a reboot afterwards.
+        \n • Backups can be scheduled with no limit on the number of individual schedules and there is the possibility of creating custom lists from the list of installed apps.</string>
     <string name="intro_permission_storage">The app uses read/write permission of storage to be able to access the external storage and provide the possibility for the backup of external data/obb of other apps.</string>
     <string name="intro_permission_storage_location">The app needs a backup location to store the backups. The app may need a few gigabytes of storage for a full backup and is querying the filesystem a lot. Please keep that in mind when choosing network based storage locations.</string>
     <string name="intro_permission_smsmms">The app needs this permission to be able to backup/restore your SMS/MMS.</string>

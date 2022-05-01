@@ -38,7 +38,7 @@ Only if there's no clear logs, add screenshots to help explain your problem.
 
 * If you're on the latest github version:
   
-  * Please read the [FAQ](https://github.com/machiav3lli/oandbackupx/blob/master/FAQ.md) first.
+  * Please read the [FAQ](https://github.com/NeoApplications/Neo-Backup/blob/master/FAQ.md) first.
   * Please read all the open Issues. If one does match yours, leave a comment there if there's some extra information you can provide.
 
 * If you're not on the latest github version. Update, then make sure that the bug is still there. If it's go further with reporting.

@@ -1,6 +1,6 @@
 # Neo Backup  <img title="" src="./fastlane/metadata/android/en-US/images/icon.png" align="left" width="64">
 
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](COC.md) [![Main CI Workflow](https://github.com/machiav3lli/oandbackupx/workflows/Main%20CI%20Workflow/badge.svg?branch=master)](https://github.com/machiav3lli/oandbackupx/actions?query=workflow%3A%22Main+CI+Workflow%22)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](COC.md) [![Main CI Workflow](https://github.com/NeoApplications/Neo-Backup/workflows/Main%20CI%20Workflow/badge.svg?branch=master)](https://github.com/machiav3lli/oandbackupx/actions?query=workflow%3A%22Main+CI+Workflow%22)
 
 Neo Backup (formerly OAndBackupX) is a fork of the famous OAndBackup with the aim to bring OAndBackup to 202X and part of Neo Applications suite. For now the app is already fully rewritten, coming up would be making it robust and adding some lengthily planned features which could ease the backup/restore workflow with any device. Therefore all types of contribution are always welcome.
 

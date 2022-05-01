@@ -34,7 +34,7 @@ If you're willing to add demonstrative screenshots, you're welcome to do so.
 
 * If you're on the latest GitHub version:
   
-  * Please read the [FAQ](https://github.com/machiav3lli/oandbackupx/blob/master/FAQ.md) first.
+  * Please read the [FAQ](https://github.com/NeoApplications/Neo-Backup/blob/master/FAQ.md) first.
   
   * Please read all the open Issues. If you find one that matches yours, leave a comment there if there's some extra information you can provide.
 

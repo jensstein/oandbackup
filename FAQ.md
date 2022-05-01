@@ -1,6 +1,6 @@
 # Frequently Asked Questions:
 
-* [What is Neo-Backup?](#what-is-neo-backup)
+* [What is Neo Backup?](#what-is-neo-backup)
 * [What is OAndBackupX?](#what-is-oandbackupx)
 * [Which Android Versions are supported?](#which-android-versions-are-supported)
 * [How do I use NB?](#how-do-i-use-nb)
@@ -24,9 +24,9 @@
 * [What does the notification of schedules and batch jobs tell me?](#what-does-the-notification-of-schedules-and-batch-jobs-tell-me)
 * [Does NB support multi-user setups / work-profile?](#does-nb-support-multi-user-setups--work-profile) 
 
-#### What is Neo-Backup?
+#### What is Neo Backup?
 
-Neo-Backup (short NB) is a fork of [OAndBackup](https://gitlab.com/jensstein/oandbackup) (which is inactive) with the aim to keep such a great and useful FOSS backup and recovery tool alive beyond 202x. 
+Neo Backup (short NB) is a fork of [OAndBackup](https://gitlab.com/jensstein/oandbackup) (which is inactive) with the aim to keep such a great and useful FOSS backup and recovery tool alive beyond 202x. 
 
 Most of the functionality and UI of the app was rewritten und now it shoud get more stable. It is also a goal to add features which could ease the backup/restore workflow with any device.
 
