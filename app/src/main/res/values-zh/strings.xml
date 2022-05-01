@@ -36,7 +36,7 @@
     <string name="sortByPackageName">按包名排序</string>
     <string name="sort">排序和筛选</string>
     <string name="uninstallDialogMessage">卸载此应用？</string>
-    <string name="deleteBackupDialogMessage">删除备份文件？</string>
+    <string name="deleteBackupDialogMessage">确认删除备份文件？</string>
     <string name="dialogOK">确定</string>
     <string name="dialogCancel">取消</string>
     <string name="dialogYes">是</string>
@@ -93,14 +93,14 @@
     <string name="prefs_password">加密密码</string>
     <string name="prefs_externaldata">备份外部数据</string>
     <string name="prefs_deviceprotecteddata">备份受设备保护的数据</string>
-    <string name="prefs_deviceprotecteddata_summary">备份/还原 /data/user_de 中的数据</string>
-    <string name="prefs_externaldata_summary">备份/还原放置在外部存储（例如 /storage/emulated/0/Android/data/）上的数据</string>
+    <string name="prefs_deviceprotecteddata_summary">备份或还原 /data/user_de 中的数据</string>
+    <string name="prefs_externaldata_summary">备份或还原应用程序在外部存储（例如 /storage/emulated/0/Android/data/）上的数据</string>
     <string name="prefs_password_summary">密码为空则不会加密</string>
     <string name="prefs_encryption_summary">启用以加密备份数据</string>
     <string name="prefs_excludecache_summary">数据备份时排除应用程序的缓存</string>
     <string name="prefs_acquirewakelock_summary">在批处理操作期间获取一个唤醒锁以防止睡眠。这将大大加快备份和还原的速度，但会消耗更多电量。</string>
     <string name="prefs_oldbackups_summary">指定多少天后已备份的数据属于“旧备份”筛选的天数。</string>
-    <string name="prefs_copyselfapk_summary">将 OAndBackupX 的一份副本放在备份文件夹内</string>
+    <string name="prefs_copyselfapk_summary">将 Neo Backup 的一份副本放在备份文件夹内</string>
     <string name="prefs_rememberfiltering_summary">记住所选择的排序和过滤方法。只有那些在菜单中用复选框标记的才会被记住。</string>
     <string name="prefs_batchdelete_summary">删除已有的未安装应用的备份。</string>
     <string name="sched_title">定时</string>
@@ -149,8 +149,8 @@
     <string name="prefs_theme_dark">暗色</string>
     <string name="prefs_theme_system">跟随系统</string>
     <string name="empty_filtered_list">列表为空。</string>
-    <string name="dialog_refuse">忽略</string>
-    <string name="dialog_approve">让我们开始吧！</string>
+    <string name="dialog_refuse">拒绝</string>
+    <string name="dialog_approve">好的</string>
     <string name="ignore_battery_optimization_title">电池优化</string>
     <string name="ignore_battery_optimization_message">备份有时会意外停止。为避免这种情况，请关闭电池优化</string>
     <string name="ignore_battery_optimization_not_supported">此设备不支持忽略电池优化！</string>
@@ -166,15 +166,14 @@
     <string name="intro_permission_batteryoptimization">定时备份任务可能会遇到一些问题，它是由一些采用激进电池优化的 ROM(例如 MIUI) 导致的。当然即使在 vanilla AOSP 上也有可能出现这种问题。</string>
     <string name="intro_permission_usageaccess">该应用需要此权限才能获得统计信息，从而获得应用的缓存及数据大小。</string>
     <string name="intro_permission_storage">本应用程序使用存储的读/写权限来访问外部存储，从而获得备份其他应用的外部数据的权限。</string>
-    <string name="intro_welcome_message">OAndBackupX 是 OAndBackup 的分支，旨在让其重返2020年+。目前该应用的大部分功能和用户界面都被重写，同时我们也加入了一些新的功能。
-\n该应用仍处于测试阶段，并且经常需要进行很多基础调整。因此请在每次发布新版本时仔细阅读更新日志。
-\n欢迎任何形式的贡献：翻译、想法、报告错误或是代码工作。
+    <string name="intro_welcome_message">"Neo Backup（原名OAndBackupX）是著名的备份程序OAndBackup的fork分叉，其目的是使OAndBackup能在202X年使用，并成为Neo应用套件的一部分。目前，该应用程序已经完全重写，接下来将会使它变得更强大，并添加一些已长期计划的功能。它可以适用于任何设备的备份/还原数据。
+\n因此，我们随时欢迎所有类型的对本项目的贡献。
 \n
-\nOAndBackupX 功能一览：
-\n•对已root的设备，允许您备份单个应用及其用户数据。
-\n•支持单独备份和还原单个应用，也支持批量备份和还原。
-\n•可以无需重启来还原系统应用，但是我们仍然建议重启。
-\n•支持计划任务，可同时添加多个计划任务，并且可以创建自定义列表。</string>
+\n现在谈谈我们的应用程序的功能：
+\n  • 它需要root权限，用于备份应用程序本体和它们的数据。
+\n  • 支持单个程序的备份和还原，也支持批量备份和还原。
+\n  • 可以实时还原系统程序，而不需要重新启动系统。
+\n  • 备份可以定时执行，对计划任务的数量没有限制，并且可以从已安装应用程序列表中选定并创建所需的自定义备份列表。"</string>
     <string name="welcome_to_oabx">欢迎使用 Neo Backup！</string>
     <string name="storage_access">访问存储空间</string>
     <string name="sort_and_filter">排序&amp;筛选</string>
@@ -183,7 +182,7 @@
     <string name="apptype_special">特殊备份</string>
     <string name="sortDataSize">数据大小</string>
     <string name="dialog_unlock">解锁</string>
-    <string name="dialog_start">让我们开始吧！</string>
+    <string name="dialog_start">开始使用</string>
     <string name="dialogSave">保存</string>
     <string name="sched_add">添加计划任务</string>
     <string name="prefs_password_match_false">密码不匹配</string>
@@ -200,7 +199,7 @@
     <string name="prefs_numBackupRevisions_summary">创建新备份时，如果已有的备份数量超过了允许的最大值，则将自动删除最老的备份。将其设置为0以保留所有备份。</string>
     <string name="prefs_numBackupRevisions">单应用最大备份数量</string>
     <string name="prefs_stopcont_summary">仅供专家使用: 如果应用程序在备份过程中更改文件，且备份失败，这可能会有所帮助。</string>
-    <string name="prefs_stopcont">备份/恢复之前强制停止应用程序进程</string>
+    <string name="prefs_stopcont">在备份或还原之前强制停止应用程序进程</string>
     <string name="prefs_advanced">高级设置</string>
     <string name="prefs_housekeepingmoment_summary">在创建新备份之前或之后删除最早的备份以释放所使用的磁盘空间。</string>
     <string name="prefs_housekeepingmoment">自动清理备份的时间</string>
@@ -218,16 +217,16 @@
         <item quantity="other">%d 天,</item>
     </plurals>
     <string name="help_issues">已知问题</string>
-    <string name="prefs_obbdata_summary">备份和恢复放置在外部存储中的应用程序的obb文件（例如 /storage/emulated/0/Android/obb/）</string>
+    <string name="prefs_obbdata_summary">备份或还原应用程序在外部存储中的obb数据文件（例如 /storage/emulated/0/Android/obb/）</string>
     <string name="prefs_obbdata">备份 obb 文件</string>
     <string name="stats_apps">应用程序</string>
     <string name="stats_backups">备份</string>
     <string name="stats_updated">已更新</string>
     <string name="radio_launchable">可启动的应用</string>
-    <string name="prefs_allowdowngrade">允许降级恢复</string>
-    <string name="prefs_allowdowngrade_summary">允许恢复的应用程序版本比已安装应用程序的版本更旧。</string>
+    <string name="prefs_allowdowngrade">允许降级还原</string>
+    <string name="prefs_allowdowngrade_summary">允许还原的应用程序版本比已安装应用程序的版本更旧。</string>
     <string name="prefs_restoreallpermissions">全权限还原</string>
-    <string name="prefs_restoreallpermissions_summary">恢复应用程序时授予应用所要求的全部权限。</string>
+    <string name="prefs_restoreallpermissions_summary">还原应用程序时授予应用所需的全部权限。</string>
     <string name="help_faq">常见问题</string>
     <string name="app_info">应用信息</string>
     <string name="launch_app">启动应用</string>
@@ -296,7 +295,7 @@
     <string name="title_tags">标签：</string>
     <string name="title_note">备注：</string>
     <string name="sortBackupDate">备份日期</string>
-    <string name="prefs_mediadata_summary">备份和恢复放置在外部存储设备上的应用程序媒体文件（例如 /storage/emulated/0/Android/media/)</string>
+    <string name="prefs_mediadata_summary">备份或还原应用程序在外部存储设备上的媒体文件（例如 /storage/emulated/0/Android/media/)</string>
     <string name="prefs_mediadata">备份媒体文件</string>
     <string name="radio_mediadata">媒体数据</string>
     <string name="help_changelog">更新日志</string>
@@ -308,21 +307,21 @@
     <string name="showDisabled">已停用应用</string>
     <string name="prefs_compression_level">压缩级别</string>
     <string name="prefs_compression_level_summary">压缩级别越低，压缩速度越快，但文件越大。级别越高，压缩效果越好，但是会花费更多的时间来压缩。</string>
-    <string name="error_pmDataIncompleteException_dataRestoreFailed">尚未恢复应用数据。</string>
+    <string name="error_pmDataIncompleteException_dataRestoreFailed">应用数据没有成功还原。</string>
     <string name="spec_calllogsjson">通话记录的JSON数据</string>
     <string name="calllogs_permission_title">通话记录权限</string>
-    <string name="grant_calllogs_message">要能备份/还原你的通话记录，这是必要的权限。</string>
+    <string name="grant_calllogs_message">要能备份或还原你的通话记录，这是必要的权限。</string>
     <string name="contacts_permission_title">联系人权限</string>
     <string name="intro_permission_contacts">本应用需要这个权限才能将联系人与短信/彩信相匹配。</string>
     <string name="schedule">计划</string>
     <string name="finished">已完成</string>
     <string name="batch">批量</string>
     <string name="smsmms_permission_title">短信/彩信权限</string>
-    <string name="grant_smsmms_message">要能备份/还原你的短信/彩信，这是必要的权限。</string>
+    <string name="grant_smsmms_message">要能备份或还原你的短信/彩信，这是必要的权限。</string>
     <string name="spec_smsmmsjson">短信/彩信的JSON数据</string>
     <string name="grant_contacts_message">要能将联系人匹配到短信/彩信，这是必要的权限。</string>
-    <string name="intro_permission_smsmms">本应用需要这个权限才能备份/恢复你的短信/彩信。</string>
-    <string name="intro_permission_calllogs">本应用需要此权限才能备份/还原你的通话记录。</string>
+    <string name="intro_permission_smsmms">本应用需要这个权限才能备份或还原你的短信/彩信。</string>
+    <string name="intro_permission_calllogs">本应用需要此权限才能备份或还原你的通话记录。</string>
     <string name="spec_fingerprint">指纹数据</string>
     <string name="loading_list">正在加载列表…</string>
     <string name="delete">删除</string>
@@ -333,7 +332,10 @@
     <string name="sortDesc">降序</string>
     <string name="prefs_restorepermissions">恢复应用权限</string>
     <string name="prefs_loadingtoasts">显示加载时的toasts消息</string>
-    <string name="prefs_restorepermissions_summary">恢复备份时恢复应用程序已授予的权限。请注意，有些特殊权限无法以通常方式授予，它会导致应用还原失败。这时，Neo Backup就会在不授予权限的情况下还原此应用。</string>
+    <string name="prefs_restorepermissions_summary">还原备份时恢复应用程序已授予的权限。请注意，有些特殊权限无法以通常方式授予，它会导致应用还原失败。这时，Neo Backup就会在不授予权限的情况下还原此应用。</string>
     <string name="prefs_loadingtoasts_summary">在加载应用列表时显示toasts消息</string>
-    <string name="supended_apps_cleanup">清理剩余的已挂起应用</string>
+    <string name="supended_apps_cleanup">清理已挂起的应用</string>
+    <string name="root_missing">未获得root权限！</string>
+    <string name="see_faq">请看使用说明！</string>
+    <string name="root_is_mandatory">由于应用程序数据是受系统隔离的，需要超级用户权限来备份和恢复它们的数据。</string>
 </resources>
