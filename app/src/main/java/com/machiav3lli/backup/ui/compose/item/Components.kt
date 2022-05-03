@@ -680,7 +680,7 @@ fun ScheduleFilters(
             tint = Special
         )
     }
-    AnimatedVisibility(visible = item.specialFilter and SPECIAL_FILTER_ALL != SPECIAL_FILTER_ALL) {
+    AnimatedVisibility(visible = item.specialFilter != SPECIAL_FILTER_ALL) {
         Icon(
             modifier = Modifier.size(24.dp),
             painter = painterResource(
