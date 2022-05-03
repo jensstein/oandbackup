@@ -72,7 +72,7 @@ class AppSheetViewModel(
                 try {
                     shellCommands.uninstall(
                         appInfo.packageName, appInfo.apkPath,
-                        appInfo.dataPath, appInfo.isSystem == true
+                        appInfo.dataPath, appInfo.isSystem
                     )
                     showNotification(
                         appContext,
