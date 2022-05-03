@@ -78,6 +78,7 @@ import com.machiav3lli.backup.ui.compose.theme.Special
 import com.machiav3lli.backup.ui.compose.theme.System
 import com.machiav3lli.backup.ui.compose.theme.Updated
 import com.machiav3lli.backup.ui.compose.theme.User
+import com.machiav3lli.backup.utils.brighter
 
 @Composable
 fun PackageIcon(
@@ -149,7 +150,7 @@ fun ElevatedActionButton(
     ElevatedButton(
         modifier = modifier,
         colors = ButtonDefaults.elevatedButtonColors(
-            contentColor = if (positive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary,
+            contentColor = if (positive) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer,
             containerColor = if (positive) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer
         ),
         onClick = onClick
@@ -210,8 +211,8 @@ fun CardButton(
     ElevatedButton(
         modifier = modifier.padding(4.dp),
         colors = ButtonDefaults.elevatedButtonColors(
-            containerColor = tint,
-            contentColor = MaterialTheme.colorScheme.onSurface
+            containerColor = tint.brighter(0.2f),
+            contentColor = MaterialTheme.colorScheme.background
         ),
         contentPadding = PaddingValues(12.dp),
         shape = MaterialTheme.shapes.medium,
