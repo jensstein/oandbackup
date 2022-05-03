@@ -214,7 +214,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                         ActionChip(
                             icon = painterResource(id = R.drawable.ic_blocklist),
                             text = stringResource(id = R.string.sched_blocklist),
-                            positive = true
+                            positive = false
                         ) {
                             GlobalScope.launch(Dispatchers.IO) {
                                 val blocklistedPackages =
