@@ -52,15 +52,14 @@
     <string name="intro_permission_usageaccess">Ứng dụng cần quyền này để có thể kiểm tra thống kê và kích cỡ của dữ liệu và bộ nhớ đệm của các ứng dụng.</string>
     <string name="intro_permission_storage_location">Ứng dụng này cần một vị trí sao lưu để lưu trữ các bản sao lưu. Ứng dụng có thể sẽ cần một vài gigabyte bộ nhớ cho một bản sao lưu đầy đủ và đang truy vấn hệ thống tệp rất nhiều. Vui lòng chú ý đến điều đó khi chọn các vị trí bộ nhớ dựa trên mạng.</string>
     <string name="intro_permission_storage">Ứng dụng này sử dụng quyền đọc/ghi bộ nhớ để có thể truy cập bộ nhớ ngoài và cung cấp khả năng sao lưu dữ liệu/obb ngoài của các ứng dụng khác.</string>
-    <string name="intro_welcome_message">OAndBackupX là một fork của OAndBackup tai tiếng với mục tiêu là đưa nó đến năm 2020 và xa hơn. Vào lúc này, đa số chức năng và giao diện của ứng dụng đã được viết lại và một số đã được thêm vào.
-\nỨng dụng này vẫn đang trong giai đoạn beta và rất nhiều việc đặt lại cơ sở được làm thường xuyên. Vậy nên hãy vui lòng đọc cẩn thận nhật ký thay đổi ở mỗi phiên bản mới.
-\nTất cả sự đóng góp đều được chào đón cho dù là phiên dịch, ý tưởng, báo cáo lỗi hoặc làm việc với mã.
+    <string name="intro_welcome_message">Neo Backup (trước kia là OAndBackupX) là một fork của OAndBackup nổi tiếng với mục tiêu là đưa nó đến năm 202X và là một phần của bộ ứng dụng Neo Applications. Vào lúc này, ứng dụng đã được viết lại đầy đủ, trong tương lai sẽ làm ứng dụng mạnh mẽ hơn và thêm một vài tính năng làm việc sao lưu/khôi phục dễ dàng hơn trên bất kỳ thiết bị nào.
+\nDo đó, tất cả sự đóng góp đều được chào đón.
 \n
-\nBây giờ, về chức năng của ứng dụng của chúng tôi:
+\nBây giờ, về chức năng ứng dụng của chúng tôi:
 \n• Ứng dụng yêu cầu root và cho phép bạn sao lưu từng ứng dụng riêng lẻ và dữ liệu của chúng.
 \n• Cả hai việc sao lưu và khôi phục từng chương trình một cái một lúc và sao lưu và khôi phục hàng loạt nhiều chương trình đều được hỗ trợ.
-\n• Việc khôi phục ứng dụng hệ thống có thể sẽ làm được mà không yêu cầu khởi động lại sau đó, nhưng chúng tôi vẫn không khuyên bạn làm vậy.
-\n• Các bản sao lưu có thể được lên lịch không giới hạn số lượng lịch trình riêng lẻ và có khả năng tạo các danh sách tuỳ chỉnh độc nhất.</string>
+\n• Việc khôi phục ứng dụng hệ thống có thể sẽ làm được mà không yêu cầu khởi động lại sau đó.
+\n• Các bản sao lưu có thể được lên lịch không giới hạn số lượng lịch trình riêng lẻ và có khả năng tạo các danh sách tuỳ chỉnh từ danh sách ứng dụng đã cài đặt.</string>
     <string name="welcome_to_oabx">Chào mừng đến Neo Backup!</string>
     <string name="storage_access">Quyền truy cập bộ nhớ</string>
     <string name="sort_and_filter">Sắp xếp &amp; Lọc</string>
@@ -140,7 +139,7 @@
     <string name="prefs_logviewer">Xem nhật ký</string>
     <string name="prefs_saveappslist_summary">Ghi danh sách ứng dụng ra một tệp txt trong thư mục sao lưu của người dùng</string>
     <string name="prefs_saveappslist">Lưu danh sách ứng dụng</string>
-    <string name="prefs_copyselfapk_summary">Đặt một bản sao của OAndBackupX trong cấp trên cùng của thư mục sao lưu</string>
+    <string name="prefs_copyselfapk_summary">Đặt một bản sao của Neo Backup trong cấp trên cùng của thư mục sao lưu</string>
     <string name="prefs_copyselfapk">Sao chép APK của ứng dụng này</string>
     <string name="prefs_batchdelete_summary">Xoá các bản sao lưu của tất cả ứng dụng hiện không được cài đặt.</string>
     <string name="prefs_batchdelete">Xoá các bản sao lưu\?</string>
@@ -330,4 +329,8 @@
     <string name="prefs_restorepermissions_summary">Khôi phục các quyền đã được cấp cho ứng dụng tại thời điểm sao lưu. Lưu ý rằng một số quyền không thể được cấp theo chương trình và vậy nên sẽ làm việc khôi phục gói thất bại, lúc đó Neo Backup sẽ thực hiện khôi phục gói mà không có quyền.</string>
     <string name="dialogCancelAll">Huỷ tất cả</string>
     <string name="sortAsc">Tăng dần</string>
+    <string name="supended_apps_cleanup">dọn dẹp các ứng dụng không hoạt động còn sót lại</string>
+    <string name="root_missing">Không có ROOT!</string>
+    <string name="root_is_mandatory">Bởi vì các ứng dụng bị cô lập với nhau, quyền superuser là bắt buộc để có thể sao lưu và khôi phục dữ liệu của chúng.</string>
+    <string name="see_faq">Hãy xem Câu hỏi thường gặp!</string>
 </resources>
