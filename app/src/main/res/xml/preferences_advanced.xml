@@ -79,7 +79,7 @@
             android:title="useEnsureBackupListPrivate" />
 
         <androidx.preference.CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="useEnsureBackupListInComposable"
             android:summary="use ensureBackupList in Composables (only when useEnsureBackupListPrivate disabled)"
             android:title="useEnsureBackupListInComposable" />

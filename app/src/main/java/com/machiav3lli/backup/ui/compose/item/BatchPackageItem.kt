@@ -64,7 +64,7 @@ fun BatchPackageItem(
     }
     Timber.i("recompose BatchPackageItem ${packageItem.packageName}")
 
-    if(OABX.prefFlag("useEnsureBackupListInComposable", false))
+    if(OABX.prefFlag("useEnsureBackupListInComposable", true))
         packageItem.ensureBackupList()
 
     OutlinedCard(

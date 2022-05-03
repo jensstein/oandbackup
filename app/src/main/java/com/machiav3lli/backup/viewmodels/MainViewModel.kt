@@ -138,7 +138,7 @@ class MainViewModel(
                         val new = Package.get(packageName) {
                             Package(appContext, packageName, getAppBackupRoot())
                         }
-                        if( ! OABX.prefFlag("useEnsureBackupListPrivate", true) )
+                        if( ! OABX.prefFlag("useEnsureBackupListPrivate", false) )
                             new.ensureBackupList()
                         new.refreshFromPackageManager(context)
                         new.refreshStorageStats(context)

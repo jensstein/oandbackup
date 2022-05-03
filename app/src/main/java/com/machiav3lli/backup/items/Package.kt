@@ -200,12 +200,12 @@ class Package {
     }
 
     fun ensureBackupList() {
-        if( ! OABX.prefFlag("useEnsureBackupListPrivate", true) )
+        if( ! OABX.prefFlag("useEnsureBackupListPrivate", false) )
             ensureBackupsLoaded()
     }
 
     private fun needBackupList(): List<Backup> {
-        if(OABX.prefFlag("useEnsureBackupListPrivate", true))
+        if(OABX.prefFlag("useEnsureBackupListPrivate", false))
             return ensureBackupsLoaded()
         return backupList
     }

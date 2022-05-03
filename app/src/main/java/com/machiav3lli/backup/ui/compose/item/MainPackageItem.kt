@@ -45,7 +45,7 @@ fun MainPackageItem(
     }
     Timber.i("recompose MainPackageItem ${packageItem.packageName}")
 
-    if(OABX.prefFlag("useEnsureBackupListInComposable", false))
+    if(OABX.prefFlag("useEnsureBackupListInComposable", true))
         packageItem.ensureBackupList()
 
     OutlinedCard(
