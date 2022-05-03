@@ -229,6 +229,7 @@
     <string name="help_faq">Perguntas frequentes</string>
     <plurals name="updated_apps">
         <item quantity="one">%d aplicação atualizado</item>
+        <item quantity="many"></item>
         <item quantity="other">%d aplicações atualizados</item>
     </plurals>
     <plurals name="sched_interval_formal">
