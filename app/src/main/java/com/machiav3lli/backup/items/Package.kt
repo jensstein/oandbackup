@@ -90,7 +90,7 @@ class Package {
 
     constructor(
         context: Context,
-        packageName: String?,
+        packageName: String,
         backupDir: StorageFile?,
     ) {
         this.packageBackupDir = backupDir
@@ -119,7 +119,7 @@ class Package {
                 this.packageInfo = latestBackup!!.toAppInfo()
             }
         }
-        OABX.app.packageCache.put(packageName, this)
+        packageName?.let { OABX.app.packageCache.put(it, this) }
     }
 
     constructor(
@@ -435,6 +435,11 @@ class Package {
     companion object {
         fun get(packageName: String, creator: () -> Package): Package {
             return OABX.app.packageCache.get(packageName) ?: creator()
+        }
+
+        fun invalidateAllPackages() {
+            StorageFile.invalidateCache()
+            OABX.app.packageCache.clear()
         }
 
         fun invalidateCacheForPackage(packageName: String) {

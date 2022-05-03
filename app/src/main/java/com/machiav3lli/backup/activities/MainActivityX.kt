@@ -75,6 +75,7 @@ class MainActivityX : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val context = this
         OABX.activity = this
+        OABX.main = this
 
         setCustomTheme()
         super.onCreate(savedInstanceState)
@@ -159,7 +160,13 @@ class MainActivityX : BaseActivity() {
 
     override fun onResume() {
         OABX.activity = this    // just in case 'this' object is recreated
+        OABX.main = this
         super.onResume()
+    }
+
+    override fun onDestroy() {
+        OABX.main = null
+        super.onDestroy()
     }
 
     override fun onBackPressed() {

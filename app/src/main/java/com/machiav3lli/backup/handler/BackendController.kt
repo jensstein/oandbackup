@@ -209,14 +209,14 @@ fun List<AppInfo>.toPackageList(
     // This would mean, that no package info is available – neither from backup.properties
     // nor from PackageManager.
     // TODO show special packages directly wihtout restarting NB
-    val specialList = mutableListOf<String>()
+    //val specialList = mutableListOf<String>()
     if (includeSpecial) {
         SpecialInfo.getSpecialPackages(context).forEach {
             if (!blockList.contains(it.packageName)) {
                 it.updateBackupList(backupMap[it.packageName].orEmpty())
                 packageList.add(it)
             }
-            specialList.add(it.packageName)
+            //specialList.add(it.packageName)
         }
     }
 
@@ -266,7 +266,7 @@ fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
             .mapNotNull {
                 try {
                     // TODO Add a direct constructor
-                    Package(this, it.name, it).packageInfo as AppInfo
+                    Package(this, it.name!!, it).packageInfo as AppInfo
                 } catch (e: AssertionError) {
                     Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
                     null
