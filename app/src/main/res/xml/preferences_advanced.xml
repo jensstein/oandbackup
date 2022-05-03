@@ -62,6 +62,18 @@
 
         <androidx.preference.CheckBoxPreference
             android:defaultValue="true"
+            android:key="usePackageCache"
+            android:summary="cache Packages"
+            android:title="usePackageCache" />
+
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="usePackageCacheOnUpdate"
+            android:summary="use cached Package in updateDataOf"
+            android:title="usePackageCacheOnUpdate" />
+
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="true"
             android:key="useColumnNameSAF"
             android:summary=""
             android:title="useColumnNameSAF" />
