@@ -193,9 +193,20 @@ class Package {
         backupListDirty = false
     }
 
-    fun ensureBackupList(): List<Backup> {
+    private fun ensureBackupsLoaded(): List<Backup> {
         if (backupListDirty)
             refreshBackupList()
+        return backupList
+    }
+
+    fun ensureBackupList() {
+        if( ! OABX.prefFlag("useEnsureBackupListPrivate", true) )
+            ensureBackupsLoaded()
+    }
+
+    private fun needBackupList(): List<Backup> {
+        if(OABX.prefFlag("useEnsureBackupListPrivate", true))
+            return ensureBackupsLoaded()
         return backupList
     }
 
@@ -268,15 +279,15 @@ class Package {
     }
 
     val backupsNewestFirst: List<Backup>
-        get() = backupList.sortedByDescending { item -> item.backupDate }
+        get() = needBackupList().sortedByDescending { item -> item.backupDate }
 
     val latestBackup: Backup?
-        get() = backupList.maxByOrNull { it.backupDate }
+        get() = needBackupList().maxByOrNull { it.backupDate }
 
     val oldestBackup: Backup?
-        get() = backupList.minByOrNull { it.backupDate }
+        get() = needBackupList().minByOrNull { it.backupDate }
 
-    val numberOfBackups: Int get() = backupList.size
+    val numberOfBackups: Int get() = needBackupList().size
 
     private val isApp: Boolean
         get() = packageInfo is AppInfo && !packageInfo.isSpecial
