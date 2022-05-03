@@ -38,7 +38,8 @@ class PackageUnInstalledReceiver : BroadcastReceiver() {
         if (packageName != null) {
             StorageFile.invalidateCache { it.contains(packageName) }
             when (intent.action.orEmpty()) {
-                Intent.ACTION_PACKAGE_ADDED -> {
+                Intent.ACTION_PACKAGE_ADDED,
+                Intent.ACTION_PACKAGE_REPLACED -> {
                     context.packageManager.getPackageInfo(
                         packageName,
                         PackageManager.GET_PERMISSIONS
