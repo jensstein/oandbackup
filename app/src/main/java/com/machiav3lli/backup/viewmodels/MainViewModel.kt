@@ -112,6 +112,7 @@ class MainViewModel(
                 "recreateAppInfoList: ${((after - startTime) / 1000 + 0.5).toInt()} sec",
                 showToasts
             )
+            isNeedRefresh.postValue(false)
         }
     }
 
