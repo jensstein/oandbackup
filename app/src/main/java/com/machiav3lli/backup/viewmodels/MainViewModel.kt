@@ -45,7 +45,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-// TODO Add loading indicator
 class MainViewModel(
     private val db: ODatabase,
     private val appContext: Application
@@ -54,6 +53,8 @@ class MainViewModel(
     var packageList = MediatorLiveData<MutableList<Package>>()
     var backupsMap = MediatorLiveData<Map<String, List<Backup>>>()
     var blocklist = MediatorLiveData<List<Blocklist>>()
+
+    // TODO fix force refresh on changing backup directory or change method
     val isNeedRefresh = MutableLiveData(false)
     var appExtrasList: MutableList<AppExtras>
         get() = db.appExtrasDao.all
@@ -111,6 +112,7 @@ class MainViewModel(
                 "recreateAppInfoList: ${((after - startTime) / 1000 + 0.5).toInt()} sec",
                 showToasts
             )
+            isNeedRefresh.postValue(false)
         }
     }
 

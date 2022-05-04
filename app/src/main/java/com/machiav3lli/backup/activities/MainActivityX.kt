@@ -140,7 +140,6 @@ class MainActivityX : BaseActivity() {
         viewModel.isNeedRefresh.observe(this) {
             if (it) {
                 viewModel.refreshList()
-                needRefresh = false
             }
         }
 

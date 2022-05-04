@@ -21,6 +21,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
@@ -28,8 +29,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -79,18 +83,19 @@ class SchedulerFragment : NavigationFragment() {
     }
 
     override fun updateProgress(progress: Int, max: Int) {
-        //binding.progressBar.visibility = View.VISIBLE
-        //binding.progressBar.max = max
-        //binding.progressBar.progress = progress
+        viewModel.progress.postValue(Pair(true, progress.toFloat() / max.toFloat()))
     }
 
     override fun hideProgress() {
-        //binding.progressBar.visibility = View.GONE
+        viewModel.progress.postValue(Pair(false, 0f))
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     fun redrawPage(list: List<Schedule>) {
         binding.composeView.setContent {
+
+            val progress by viewModel.progress.observeAsState(Pair(false, 0f))
+
             AppTheme(
                 darkTheme = isSystemInDarkTheme()
             ) {
@@ -125,6 +130,12 @@ class SchedulerFragment : NavigationFragment() {
                     }
                 ) { paddingValues ->
                     Column {
+                        AnimatedVisibility(visible = progress?.first == true) {
+                            LinearProgressIndicator(
+                                modifier = Modifier.fillMaxWidth(),
+                                progress = progress.second
+                            )
+                        }
                         ScheduleRecycler(
                             modifier = Modifier
                                 .padding(paddingValues)

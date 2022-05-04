@@ -45,8 +45,10 @@ fun MainPackageItem(
     }
     Timber.i("recompose MainPackageItem ${packageItem.packageName}")
 
+    // TODO investigate if needed
     if(OABX.prefFlag("useEnsureBackupListInComposable", true))
         packageItem.ensureBackupList()
+
 
     OutlinedCard(
         modifier = Modifier,
