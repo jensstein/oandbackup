@@ -136,10 +136,22 @@ class MainViewModel(
             val appPackage = packageList.value?.find { it.packageName == packageName }
             try {
                 appPackage?.apply {
-                    val new = Package(appContext, packageName, getAppBackupRoot())
-                    new.refreshFromPackageManager(context)
-                    if (!isSpecial) db.appInfoDao.update(new.packageInfo as AppInfo)
-                    db.backupDao.updateList(new)
+                    if(OABX.prefFlag("usePackageCacheOnUpdate", true)) {
+                        val new = Package.get(packageName) {
+                            Package(appContext, packageName, getAppBackupRoot())
+                        }
+                        if( ! OABX.prefFlag("useEnsureBackupListPrivate", false) )
+                            new.ensureBackupList()
+                        new.refreshFromPackageManager(context)
+                        new.refreshStorageStats(context)
+                        if (!isSpecial) db.appInfoDao.update(new.packageInfo as AppInfo)
+                        db.backupDao.updateList(new)
+                    } else {
+                        val new = Package(appContext, packageName, getAppBackupRoot())
+                        new.refreshFromPackageManager(context)
+                        if (!isSpecial) db.appInfoDao.update(new.packageInfo as AppInfo)
+                        db.backupDao.updateList(new)
+                    }
                 }
             } catch (e: AssertionError) {
                 Timber.w(e.message ?: "")

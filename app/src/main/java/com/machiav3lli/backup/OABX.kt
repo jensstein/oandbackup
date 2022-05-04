@@ -38,8 +38,7 @@ import java.lang.ref.WeakReference
 class OABX : Application() {
 
     // packages are an external resource, so handle them as a singleton
-    val maxNumberOfPackagesInCache = 4000   //TODO hg42 add a setting!?
-    var packageCache: LruCache<String, Package> = LruCache(maxNumberOfPackagesInCache)
+    var packageCache = mutableMapOf<String, Package>()
     var cache: LruCache<String, MutableList<Package>> = LruCache(10)    //TODO hg42 not caching 4000 lists? right?
 
     var work: WorkHandler? = null
@@ -118,7 +117,15 @@ class OABX : Application() {
             set(activity) {
                 activityRef = WeakReference(activity)
             }
-        val main get() = activity as? MainActivityX
+        // main might be null
+        var mainRef: WeakReference<MainActivityX> = WeakReference(null)
+        var main: MainActivityX?
+            get() {
+                return mainRef.get()
+            }
+            set(mainActivity) {
+                mainRef = WeakReference(mainActivity)
+            }
 
         var appsSuspendedChecked = false
 

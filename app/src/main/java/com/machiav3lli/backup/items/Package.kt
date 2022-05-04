@@ -90,12 +90,13 @@ class Package {
 
     constructor(
         context: Context,
-        packageName: String?,
+        packageName: String,
         backupDir: StorageFile?,
     ) {
         this.packageBackupDir = backupDir
         this.packageName = packageName ?: backupDir?.name!!
-        refreshBackupList()
+        if(OABX.prefFlag("usePackageCreateWithBackups", false))
+            refreshBackupList()
         try {
             val pi = context.packageManager.getPackageInfo(
                 this.packageName,
@@ -119,7 +120,7 @@ class Package {
                 this.packageInfo = latestBackup!!.toAppInfo()
             }
         }
-        OABX.app.packageCache.put(packageName, this)
+        packageName?.let { OABX.app.packageCache.put(it, this) }
     }
 
     constructor(
@@ -136,7 +137,7 @@ class Package {
         OABX.app.packageCache.put(packageName, this)
     }
 
-    private fun refreshStorageStats(context: Context): Boolean {
+    fun refreshStorageStats(context: Context): Boolean {
         return try {
             storageStats = context.getPackageStorageStats(packageName)
             true
@@ -192,9 +193,20 @@ class Package {
         backupListDirty = false
     }
 
-    fun ensureBackupList(): List<Backup> {
+    private fun ensureBackupsLoaded(): List<Backup> {
         if (backupListDirty)
             refreshBackupList()
+        return backupList
+    }
+
+    fun ensureBackupList() {
+        if( ! OABX.prefFlag("useEnsureBackupListPrivate", false) )
+            ensureBackupsLoaded()
+    }
+
+    private fun needBackupList(): List<Backup> {
+        if(OABX.prefFlag("useEnsureBackupListPrivate", false))
+            return ensureBackupsLoaded()
         return backupList
     }
 
@@ -267,15 +279,15 @@ class Package {
     }
 
     val backupsNewestFirst: List<Backup>
-        get() = backupList.sortedByDescending { item -> item.backupDate }
+        get() = needBackupList().sortedByDescending { item -> item.backupDate }
 
     val latestBackup: Backup?
-        get() = backupList.maxByOrNull { it.backupDate }
+        get() = needBackupList().maxByOrNull { it.backupDate }
 
     val oldestBackup: Backup?
-        get() = backupList.minByOrNull { it.backupDate }
+        get() = needBackupList().minByOrNull { it.backupDate }
 
-    val numberOfBackups: Int get() = backupList.size
+    val numberOfBackups: Int get() = needBackupList().size
 
     private val isApp: Boolean
         get() = packageInfo is AppInfo && !packageInfo.isSpecial
@@ -434,7 +446,14 @@ class Package {
 
     companion object {
         fun get(packageName: String, creator: () -> Package): Package {
-            return OABX.app.packageCache.get(packageName) ?: creator()
+            if (OABX.prefFlag("usePackageCache", true))
+                return OABX.app.packageCache.get(packageName) ?: creator()
+            return creator()
+        }
+
+        fun invalidateAllPackages() {
+            StorageFile.invalidateCache()
+            OABX.app.packageCache.clear()
         }
 
         fun invalidateCacheForPackage(packageName: String) {

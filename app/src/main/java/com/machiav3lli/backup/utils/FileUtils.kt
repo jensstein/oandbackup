@@ -20,7 +20,8 @@ package com.machiav3lli.backup.utils
 import android.content.Context
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
-import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.items.Package
 import java.io.File
 import java.nio.file.attribute.PosixFilePermission
 import java.nio.file.attribute.PosixFilePermissions
@@ -41,7 +42,6 @@ object FileUtils {
     @Throws(StorageLocationNotConfiguredException::class, BackupLocationInAccessibleException::class)
     fun getBackupDirUri(context: Context): Uri {
         if (backupLocation == null) {
-            StorageFile.invalidateCache()
             val storageRoot = context.backupDirConfigured
             if (storageRoot.isEmpty()) {
                 throw StorageLocationNotConfiguredException()
@@ -61,6 +61,9 @@ object FileUtils {
      */
     fun invalidateBackupLocation() {
         backupLocation = null
+        Package.invalidateAllPackages()
+        OABX.main?.viewModel?.refreshList()     // immediately start refreshing packages
+        OABX.main?.needRefresh = true           // post refreshing view
     }
 
     fun getName(fullPath: String): String {
