@@ -61,6 +61,7 @@ fun BatchPackageItem(
         )
     }
     packageItem.ensureBackupList()
+    // TODO investigate if needed
 
     OutlinedCard(
         modifier = Modifier,

@@ -181,14 +181,12 @@ fun List<Package>.toAppInfoList(): List<AppInfo> =
 fun List<AppInfo>.toPackageList(
     context: Context,
     blockList: List<String> = listOf(),
-    backupMap: Map<String, List<Backup>> = mapOf(),
-    includeUninstalled: Boolean = true
+    backupMap: Map<String, List<Backup>> = mapOf()
 ): MutableList<Package> {
-    val startTime = System.currentTimeMillis()
 
     val includeSpecial = context.specialBackupsEnabled
 
-    var packageList =
+    val packageList =
         this.filterNot {
             it.packageName.matches(ignoredPackages) || it.packageName in blockList
         }
@@ -275,7 +273,7 @@ fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
             .toList()
     val appInfoList =
         installedAppList
-            .filterNot { it.packageName in packagesWithBackup.map { it.packageName } }
+            .filterNot { it.packageName in packagesWithBackup.map(AppInfo::packageName) }
             .map { AppInfo(this, it) }
             .union(packagesWithBackup)
             .toTypedArray()
