@@ -180,13 +180,12 @@ class MainActivityX : BaseActivity() {
     fun doIntent(intent: Intent?): Boolean {
         if (intent == null) return false
         val command = intent.action
-        Timber.i("Command: command $command")
+        Timber.i("Main: command $command")
         when (command) {
-            null -> {
-                // ignore?
-            }
+            null -> {}
+            "android.intent.action.MAIN" -> {}
             else -> {
-                showToast("Main: unknown command '$command'")
+                showToast("Main: command '$command'")
             }
         }
         return false
