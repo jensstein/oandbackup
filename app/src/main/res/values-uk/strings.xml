@@ -6,7 +6,7 @@
     <string name="prefs_housekeepingmoment_summary">Налаштування, для видалення найстарішої редакції до або після створення нової резервної копії, щоб звільнити місце на диску, що використовується резервною копією.</string>
     <string name="showSplitAPKs">Спліт-APK</string>
     <string name="no_file_manager_message">Немає файлового менеджера для управління SAF. Можливо, ви відключили вбудований менеджер файлів. Будь ласка, відновіть його або ввімкніть знову.</string>
-    <string name="intro_welcome_message">OAndBackupX - це розгалуження сумнозвісного OAndBackup з метою довести його до 2020 року і далі. Наразі більшість функціональних можливостей та інтерфейсу користувача переписано, а деякі додано.
+    <string name="intro_welcome_message">Neo Backup (раніше OAndBackupX) - це розгалуження сумнозвісного OAndBackup з метою довести його до 2020 року і далі. Наразі більшість функціональних можливостей та інтерфейсу користувача переписано, а деякі додано.
 \nДодаток все ще перебуває на стадії бета-версії, і багато перебазування робиться часто.
 \nТож будь ласка, уважно читайте журнал змін із кожним новим випуском. Вітаються всі види внесків, будь то переклад, ідеї, повідомлення про помилки чи робота з кодом.
 \n
@@ -129,7 +129,7 @@
     <string name="prefs_logviewer">Переглянути журнал</string>
     <string name="prefs_saveappslist_summary">Записує список програм у файл .txt у каталозі резервної копії користувача</string>
     <string name="prefs_saveappslist">Зберегти список додатків</string>
-    <string name="prefs_copyselfapk_summary">Помістити копію OAndBackupX на верхній рівень теки резервної копії</string>
+    <string name="prefs_copyselfapk_summary">Помістити копію Neo Backup на верхній рівень теки резервної копії</string>
     <string name="prefs_copyselfapk">Копіювати власний APK</string>
     <string name="prefs_batchdelete_summary">Видалити резервні копії всіх програм, які зараз не встановлені.</string>
     <string name="prefs_batchdelete">Видалити резервні копії\?</string>
@@ -340,4 +340,5 @@
     <string name="prefs_restorepermissions_summary">Відновити дозволи, надані програмі станом на мить резервного копіювання. Зауважте, деякі дозволи неможливо надати програмно: це викликає збій цілісного відновлення пакунка, й Neo Backup повторює спробу відновлення пакунка без збереження дозволів.</string>
     <string name="prefs_loadingtoasts">Прогрес завантаження</string>
     <string name="supended_apps_cleanup">вилучити залишені призупинені застосунки</string>
+    <string name="root_missing">ROOT відсутній!</string>
 </resources>
