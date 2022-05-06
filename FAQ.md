@@ -10,6 +10,7 @@
 * [What is root access used for?](#what-is-root-access-used-for)
 * [Why is NB so slow?](#why-is-nb-so-slow)
 * [So why use SAF then?](#so-why-use-saf-then)
+* [How does NB stop / pause / (un)suspend apps during backup?](#how-does-nb-stop--pause--unsuspend-apps-during-backup)
 * [I do not see any apps in the list. What can be the reason?](#i-do-not-see-any-apps-in-the-list-what-can-be-the-reason)
 * [I do not see the app which is currently backed up in the notification during batch or scheduled backups.](#i-do-not-see-the-app-which-is-currently-backed-up-in-the-notification-during-batch-or-scheduled-backups)
 * [At restore the data directory of the app does not exist.](#at-restore-the-data-directory-of-the-app-does-not-exist)
@@ -24,7 +25,7 @@
 * [What does the notification of schedules and batch jobs tell me?](#what-does-the-notification-of-schedules-and-batch-jobs-tell-me)
 * [Does NB support multi-user setups / work-profile?](#does-nb-support-multi-user-setups--work-profile) 
 
-#### What is Neo Backup?
+### What is Neo Backup?
 
 Neo Backup (short NB) is a fork of [OAndBackup](https://gitlab.com/jensstein/oandbackup) (which is inactive) with the aim to keep such a great and useful FOSS backup and recovery tool alive beyond 202x. 
 
@@ -34,18 +35,18 @@ NB requires root and allows you to backup individual apps and their data. Both b
 
 Neo-Backup is part of the NeoApplications: https://github.com/NeoApplications
 
-#### What is OAndBackupX?
+### What is OAndBackupX?
 
 OAndBackupX (short OABX) was the former name of the project. You may find some reference in here or in the in-app usage notes, we missed to change yet. The initial OABX release was in March 2020. The rename to NB took place more or less exactly at the second birthday of the project (between version 7 and 8), so stable version 7.0.0 still has the name OAndBackupX.
 
-#### Which Android Versions are supported?
+### Which Android Versions are supported?
 
 Oldest supported version: Android  8 - "Oreo" </br>
 Newest supported version: Android 12 - "Snow Cone"
 
 See also - [Are you going to support older Android versions?](#are-you-going-to-support-older-android-versions)
 
-#### How do I use NB?
+### How do I use NB?
 
 The first start will guide you through the most important preferences. It still make sense to shortly check the prefs, to see what else can bet set. E.g. you can define the amount of kept backup revisions or decide which [app parts](#what-are-all-these-backup-parts-icons--which-parts-does-a-backup-of-an-app-consist-of) should be included.
 
@@ -104,9 +105,14 @@ Each backup basically consists of the two different parts:
       <details><summary>Show details ...</summary>
 
         - Stored usually in /data/user_de/
+        - introduced with Android version 7
         - It's usual data, but can be accessed before even unlocking your phone (authentication).
           It's usually data that is needed for the pre-start phase of your device.
           E.g. a preference which decides if your app should start on device boot or not.
+        - It is also called Device Encrypted (user_*DE*) Data because it is encrypted by a key which is tied to the physical device
+        - there are a lot of articles our there which explains it more in detail and the difference to credential encrypted storage (CES)
+          e.g. this one: https://lampham.medium.com/device-encrypted-storage-and-direct-boot-mode-in-android-6e5e25d173f3
+        - if apps store importend data in this area depends on how the developer in charge has implemented it 
         - Default is set to include it in the backup
 
       </details>     
@@ -141,18 +147,23 @@ Each backup basically consists of the two different parts:
    
 You can individually choose which parts you want to include in the backup --> as global setting in preferences, (beginning with version NB [OABX] 6.x) per schedule or even per App.
 
-#### What are Special Backups?
+### What are Special Backups?
 
 Special backups describes system data that's bound to the user and not to certain apps. </br>***Enable special backups in advanced prefs to see them.***</br>
-For the moment we don't provide them with full support, try with your own responsibility.
 
-Beginning with version 8 some of them are supported. See also [How can I backup SMS &amp; Call log?](#how-can-i-backup-sms--call-log)
+Beginning with version 8 some of them are supported. 
+* SMS/MMS
+* Call-logs
+* Wifi Access Points
 
-#### Do I need a rooted phone?
+See also [How can I backup SMS &amp; Call log?](#how-can-i-backup-sms--call-log)
+For all the others NB does not provide full support right now, try with your own responsibility.
+
+### Do I need a rooted phone?
 
 Yes, Oui, Si, Si, Ja, Ja, Da, Ay...
 
-#### What is root access used for?
+### What is root access used for?
 
 In short words:
 Accessing the APK+data of all apps (including system apps and special backups), so to access [all the necessary paths in the filesystem](#what-are-all-these-backup-parts-icons--which-parts-does-a-backup-of-an-app-consist-of).
@@ -178,12 +189,31 @@ ls -l /data/app/<app_package_name>-VP8zj7n2sqzHID5Oqfh88w== but I have no chance
 
 You cannot access /data/data/* at all, so app data is protected between apps.
 
-#### Why is NB so slow?
+### Why is NB so slow?
 
 Since rebasing the app on SAF(Storage Access Framework) the performance is bound to what Android's (or Google's) framework can provide.
 Needless to say: This is how much love this framework receives from the developers... [Fuck-Storage-Access-Framework](https://github.com/K1rakishou/Fuck-Storage-Access-Framework/)
 
-#### So why use SAF then?
+<details><summary>Click here to show some more SAF details ...</summary>
+
+The "slow" up to v7 came from the way the data was read from the system.
+With using root via su commands you need to call multiple shell commands for every file to get their attributes for adding them to the tar file.
+v8 uses the tar command, so this is solved.
+
+Streaming the tar file to or from the SAF file system, never was a speed problem.
+
+The other kind of "slow", that is still existent, comes from scanning the backup directory for the properties files and reading all these to build the package list.
+
+This is suboptimal with SAF, but isn't much faster with RootFile, because a command is invoked for each directory instead of one command for the whole tree. At some point this will probably be changed to scanning in one go (also with SAF if this is possible).
+
+Users tend to ask for use RootFile access instead. It is about toybox capabilities and the internal data structures.
+
+If you want to try what's there, you need to enable allowShadowingDefault at first and then you can switch RootFile on with shadowRootFileForSAF.
+This works by searching for parts of the shitty uri scheme (you see it in the setting for the backup directory) in certain places. If it is found, then it's used, otherwise it falls back to SAF.
+
+</details> 
+
+### So why use SAF then?
 
 [Access documents and other files from shared storage](https://developer.android.com/training/data-storage/shared/documents-files)
 In the next Android versions Google will (most probably) force apps more and more to access the storage via SAF.
@@ -200,13 +230,13 @@ In the next Android versions Google will (most probably) force apps more and mor
 - Performance, more of Performance and tons of Performance
 - obfuscation of the classical path structure
 
-##### Below some "performance" or time measuring infos from an older phone
+#### Below some "performance" or time measuring infos from an older phone
 
 *related to a lot of SAF comments in the chat*
 
 <details><summary>Click here to show the test-details ...</summary>
 
-###### General facts:
+##### General facts:
 - Device: Fairphone 2 (SoC: Qualcomm MSM8974AB-AB)
 - SoC's CPU: Snapdragon 801 (quad-core) 2.26 GHz
 - OS: A10 / LOS17.1
@@ -232,7 +262,7 @@ Advanced-Prefs:
 - Allow downgrading - enabled
 - STOP/CONT - enabled <- default now as well
 
-###### Test description:
+##### Test description:
 ***Test 1***
 
 Initial refresh (load the app list after the first Start - no backup exists at that point in time)
@@ -251,7 +281,7 @@ If the default revision count (2) is used, of course, the first run, which takes
 
 Refresh after starting NB with all those apps and their bkps created under Test 2
 
-###### Measured times:
+##### Measured times:
 
 (they generally vary a lot - depending on what the device is doing in parallel)
 
@@ -292,7 +322,7 @@ The time difference (for most of the test-tasks shown here) is due to:
 
 </details>   
    
-#### I do not see any apps in the list. What can be the reason?
+### I do not see any apps in the list. What can be the reason?
 
 In most cases the you choose a special Android folder for your backups. (e.g. common mistake is root '/storage/emulated/0' or the "Downloads" folder)
 This is not supported by [SAF](#why-is-nb-so-slow). You find a full list which folders are not allowed [here](https://developer.android.com/training/data-storage/shared/documents-files/#document-tree-access-restrictions).
@@ -302,14 +332,14 @@ Create a separate/dedicated sub-folder and choose it in NB preferences (User pre
 
 Another mistake, which might happen is, that you set a filters, which lead to an empty result.
 
-#### I do not see the app which is currently backed up in the notification during batch or scheduled backups.
+### I do not see the app which is currently backed up in the notification during batch or scheduled backups.
 
 *obsolate beginning with version 8* - see also [What does the notification of schedules and batch jobs tell me?](#what-does-the-notification-of-schedules-and-batch-jobs-tell-me)
    
 To optimize the performance of scheduled and batch backups, these tasks are executed in parallel, based on the amount of cores, your SOC's CPU contains.
 So notification always shows the last app backup, which was started on whatever free core of your SOC's CPU.
 
-#### At restore the data directory of the app does not exist.
+### At restore the data directory of the app does not exist.
 
 You got an error like "...failed root command...directory `/data/user/0/`*the.package.name* does not exist...".
 
@@ -325,26 +355,45 @@ Background:
 If mounts of root applications are isolated, each cannot see the mounts of others.
 In newer Android versions every app directory is mounted and usually only visible to it's own user id.
 
-#### How can I backup SMS & Call log?
+### How does NB stop / pause / (un)suspend apps during backup?
 
-Generally see * [What are Special Backups?](#what-are-special-backups) first.
+NB is using
+
+`kill -STOP PID` </br>
+`kill -CONT PID`
+
+and
+
+`pm suspend the.package.name` </br>
+`pm unsuspend the.package.name`
+
+`kill -STOP` </br>
+is used per default
+
+when pauseApps is enabled in developer settings
+pmSuspend is additional (only active if pauseApps is also enabled)
+   
+### How can I backup SMS & Call log?
+
+Generally please see [What are Special Backups?](#what-are-special-backups) first.
 
 **SMS/MMS and Call-logs** </br>
-Those are saved in data providers like some other special data. The one you should go for is com.android.providers.telephony. Sometimes you would need to restart after restoring its data. Same goes for contacts too, with the only difference that they're kept in the data of com.android.providers.contacts.
+NB starts supporting backup SMS/MMS and Call logs beginning with version 8. The current implementation (of [DL](https://github.com/dl200010)) writes all the details into a JSON format.
 
-NB starts supporting backup SMS/MMS and Call logs beginning with version 8. 
+The Call-Logs are saved in data providers like some other special data (com.android.providers.telephony). Sometimes you would need to restart after restoring its data. 
    
 For **contacts, calendar** and todo-lists. 
+Contacts data somehow connected to system package com.android.providers.contacts.
 We advice to use [DecSync](https://github.com/39aldo39/DecSync) with its diverse apps.
 Alternatively use a CalDAV/CardDAV management app (like DavX5) and sync them with a trustworthy mail provider account.
 
-#### Are you going to support older Android versions?
+### Are you going to support older Android versions?
 
 No, Non, No, No, Nein, Nej, Niet, La... in seeable future, maybe this would change in the far future... 
 Android 7 "Nougat" and older Android version support dropped in NB (OABX) v3.1.0.
 See also - [Which Android Versions are supported?](#which-android-versions-are-supported)
 
-#### Why do I have to login/register to app x y z again after restore?
+### Why do I have to login/register to app x y z again after restore?
 
 All apps which use the Android keystore can basically not be backup up, as the keystore is encrypted. Data restore might work but login have to be performed again (same for phone number registration for messengers)
 Here are several examples - e.g.:
@@ -356,20 +405,20 @@ Here are several examples - e.g.:
 - Facebook
 - you name it
 
-#### Why is it not recommended to backup system apps?
+### Why is it not recommended to backup system apps?
 
 - ... as they change over the android version and restore might un-stabilize the system
 - You've done your backup on 4.0.0, then you should place the data you want to restore at the same directory as when they got backed up.
   - --> In 5.0.0 this is already fixed. 
 
-#### Is there a roadmap / an overview of features planned to be implemented?
+### Is there a roadmap / an overview of features planned to be implemented?
 
 A rough backlog (without any guarantee that the devs will 100% stick to it) can be found here as Kanban board: </br>
 https://tree.taiga.io/project/machiav3lli-neo-backup/kanban
 
 Not all features will be listed there, but maybe the bigger / frequently asked ones.
 
-#### What is the difference to implementations like Seedvault?
+### What is the difference to implementations like Seedvault?
 
 The main difference is that NB uses root to create a copy of the apps [APK and it's data](#what-are-all-these-backup-parts-icons--which-parts-does-a-backup-of-an-app-consist-of) while Seedvault relies on Google's api to backup (without forcing the user to backup to the Google-Cloud).
 Seedvault repo can be found here: https://github.com/seedvault-app/seedvault - check it for latest information as the infos/comparison in the table below might be outdated.
@@ -384,7 +433,7 @@ Seedvault repo can be found here: https://github.com/seedvault-app/seedvault - c
 | OS-/Rom integrated | no (dedicated app) | yes |
 | Choose backup location possibility? | yes | yes |
 
-#### What is the difference to the famous Titanium Backup?
+### What is the difference to the famous Titanium Backup?
 
 Users tend to compare NB and Titanium Backup (TB). There are a lot of comments in the chat.
 
@@ -452,11 +501,15 @@ Here is a quick status overview, what NB is capable of - to be edited.
 
 </details>
 
-#### How can I open encrypted backups on my computer?
+### How can I open encrypted backups on my computer?
 
 You can find the encryption algorithm and setup in this class: [Neo-Backup - Crypto.kt · GitHub](https://github.com/NeoApplications/Neo-Backup/blob/main/app/src/main/java/com/machiav3lli/backup/utils/CryptoUtils.kt) . The rest depends on the version you used.
 
-#### What does the notification of schedules and batch jobs tell me?
+One of the contriburs ([Pizze](https://github.com/Tiefkuehlpizze)) took the last Java version this Crypto class and built a wrapper around it. <br/> 
+--> https://github.com/Tiefkuehlpizze/OABXDecrypt <br/>
+So for those who really want to decryp the backups on their PCs, this might be a good start and a helpful tool.
+
+### What does the notification of schedules and batch jobs tell me?
 
 *this decribes the notification beginning with version 8*
 
@@ -482,7 +535,7 @@ You can find the encryption algorithm and setup in this class: [Neo-Backup - Cr
   - "OK" (in case no errors)
 - below that the overall time it took
 
-#### Does NB support multi-user setups / work-profile?
+### Does NB support multi-user setups / work-profile?
 
 Disabled / not support for now as it led to strange behavior that apk and/or data was overwritten in both profiles.
 For now NB will only handle the main profile / user and ignore the others. 
