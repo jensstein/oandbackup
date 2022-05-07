@@ -24,17 +24,15 @@ import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
-class WorkHandler {
+class WorkHandler(appContext: Context) {
 
     var manager: WorkManager
     var actionReceiver: CommandReceiver
-    var context: Context
+    var context: Context = appContext
     val notificationManager: NotificationManagerCompat
     val notificationChannel: NotificationChannel
 
-    constructor(appContext: Context) {
-
-        context = appContext
+    init {
         manager = WorkManager.getInstance(context)
         actionReceiver = CommandReceiver()
 
@@ -219,14 +217,15 @@ class WorkHandler {
             tags.add("$name:$value")
         }
 
-        var batchPackageVars: MutableMap<String, MutableMap<String, MutableMap<String, String>>> = mutableMapOf()
+        var batchPackageVars: MutableMap<String, MutableMap<String, MutableMap<String, String>>> =
+            mutableMapOf()
 
         fun getVar(batchName: String, packageName: String, name: String): String? {
             return batchPackageVars.get(batchName)?.get(packageName)?.get(name)
         }
 
         fun setVar(batchName: String, packageName: String, name: String, value: String) {
-            batchPackageVars.getOrPut(batchName)   { mutableMapOf() }
+            batchPackageVars.getOrPut(batchName) { mutableMapOf() }
                 .getOrPut(packageName) { mutableMapOf() }
                 .put(name, value)
         }
@@ -332,7 +331,7 @@ class WorkHandler {
                             succeeded++
                             workFinished++
                         }
-                        WorkInfo.State.FAILED    -> {
+                        WorkInfo.State.FAILED -> {
                             failed++
                             workFinished++
                         }
@@ -340,19 +339,19 @@ class WorkHandler {
                             canceled++
                             workFinished++
                         }
-                        WorkInfo.State.ENQUEUED  -> {
+                        WorkInfo.State.ENQUEUED -> {
                             queued++
                             workEnqueued++
                         }
-                        WorkInfo.State.BLOCKED   -> {
+                        WorkInfo.State.BLOCKED -> {
                             queued++
                             workBlocked++
                         }
-                        WorkInfo.State.RUNNING   -> {
+                        WorkInfo.State.RUNNING -> {
                             workRunning++
                             when (operation) {
                                 "..." -> queued++
-                                else  -> {
+                                else -> {
                                     running++
                                     val shortPackageName =
                                         packageName
@@ -547,6 +546,9 @@ class WorkHandler {
 
     fun onFinish(handler: WorkHandler, work: MutableList<WorkInfo>? = null) {
         // may be the state changed in between
-        onProgress(handler, null) // don't forward "work", because it's FinishWork not AppActionWork!
+        onProgress(
+            handler,
+            null
+        ) // don't forward "work", because it's FinishWork not AppActionWork!
     }
 }

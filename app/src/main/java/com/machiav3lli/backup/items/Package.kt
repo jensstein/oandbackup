@@ -253,8 +253,9 @@ class Package {
         )
         try {
             backup.getBackupInstanceFolder(packageBackupDir)?.deleteRecursive()
-            packageBackupDir?.findFile(propertiesFileName)?.delete() ?:
-                packageBackupDir?.findFile(propertiesFileNameOld)?.delete()
+            packageBackupDir?.findFile(propertiesFileName)?.delete() ?: packageBackupDir?.findFile(
+                propertiesFileNameOld
+            )?.delete()
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, backup.packageName)
         }

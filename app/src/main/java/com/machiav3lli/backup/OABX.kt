@@ -39,7 +39,8 @@ class OABX : Application() {
 
     // packages are an external resource, so handle them as a singleton
     var packageCache = mutableMapOf<String, Package>()
-    var cache: LruCache<String, MutableList<Package>> = LruCache(10)    //TODO hg42 not caching 4000 lists? right?
+    var cache: LruCache<String, MutableList<Package>> =
+        LruCache(10)    //TODO hg42 not caching 4000 lists? right?
 
     var work: WorkHandler? = null
 
@@ -117,6 +118,7 @@ class OABX : Application() {
             set(activity) {
                 activityRef = WeakReference(activity)
             }
+
         // main might be null
         var mainRef: WeakReference<MainActivityX> = WeakReference(null)
         var main: MainActivityX?

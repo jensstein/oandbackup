@@ -48,9 +48,6 @@
         android:title="@string/prefs_allowdowngrade" />
 
 
-
-
-
     <!-- developer settings -->
 
     <androidx.preference.PreferenceCategory

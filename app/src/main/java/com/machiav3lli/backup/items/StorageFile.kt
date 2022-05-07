@@ -7,6 +7,9 @@ import android.provider.DocumentsContract
 import androidx.core.content.FileProvider
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_ALLOWSHADOWINGDEFAULT
+import com.machiav3lli.backup.PREFS_CACHEURIS
+import com.machiav3lli.backup.PREFS_COLUMNNAMESAF
+import com.machiav3lli.backup.PREFS_INVALIDATESELECTIVE
 import com.machiav3lli.backup.PREFS_SHADOWROOTFILE
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
@@ -189,37 +192,41 @@ open class StorageFile {
 
     fun createDirectory(displayName: String): StorageFile {
         val newFile =
-                file?.let {
-                    val newDir = RootFile(it, displayName)
-                    newDir.mkdirs()
-                    StorageFile(this, newDir)
-                } ?: run {
-                    StorageFile(this, context!!,
-                        createFile(context!!, _uri!!,
-                            DocumentsContract.Document.MIME_TYPE_DIR, displayName)
+            file?.let {
+                val newDir = RootFile(it, displayName)
+                newDir.mkdirs()
+                StorageFile(this, newDir)
+            } ?: run {
+                StorageFile(
+                    this, context!!,
+                    createFile(
+                        context!!, _uri!!,
+                        DocumentsContract.Document.MIME_TYPE_DIR, displayName
                     )
-                }
+                )
+            }
         path?.let { cacheFilesAdd(it, newFile) }
         return newFile
     }
 
     fun createFile(mimeType: String, displayName: String): StorageFile {
         val newFile =
-                file?.let {
-                    if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
-                        val newDir = RootFile(it, displayName)
-                        newDir.mkdirs()
-                        StorageFile(this, newDir)
-                    } else {
-                        val newFile = RootFile(it, displayName)
-                        newFile.createNewFile()
-                        StorageFile(this, newFile)
-                    }
-                } ?: run {
-                    StorageFile(this, context,
-                        createFile(context!!, _uri!!, mimeType, displayName)
-                    )
+            file?.let {
+                if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
+                    val newDir = RootFile(it, displayName)
+                    newDir.mkdirs()
+                    StorageFile(this, newDir)
+                } else {
+                    val newFile = RootFile(it, displayName)
+                    newFile.createNewFile()
+                    StorageFile(this, newFile)
                 }
+            } ?: run {
+                StorageFile(
+                    this, context,
+                    createFile(context!!, _uri!!, mimeType, displayName)
+                )
+            }
         path?.let { cacheFilesAdd(it, newFile) }
         return newFile
     }
@@ -314,10 +321,11 @@ open class StorageFile {
 
             cacheGetFiles(path) ?: run {
                 file?.let { dir ->
-                    cacheSetFiles(path,
+                    cacheSetFiles(
+                        path,
                         dir.listFiles()?.map { child ->
-                                StorageFile(this, child)
-                            }?.toMutableList() ?: mutableListOf()
+                            StorageFile(this, child)
+                        }?.toMutableList() ?: mutableListOf()
                     )
                 } ?: run {
                     context?.contentResolver?.let { resolver ->
@@ -337,8 +345,10 @@ open class StorageFile {
                                 // a query to DocumentsProvider which is.... slow."
                                 // so avoid getName by using COLUMN_DISPLAY_NAME
                                 // (also add name to constructor and allow setting the name field)
-                                childrenUri, arrayOf(DocumentsContract.Document.COLUMN_DOCUMENT_ID,
-                                                     DocumentsContract.Document.COLUMN_DISPLAY_NAME),
+                                childrenUri, arrayOf(
+                                    DocumentsContract.Document.COLUMN_DOCUMENT_ID,
+                                    DocumentsContract.Document.COLUMN_DISPLAY_NAME
+                                ),
                                 null, null, null
                             )
                             var documentUri: Uri
@@ -397,7 +407,8 @@ open class StorageFile {
 
     companion object {
         //TODO hg42 manage file trees instead of single files and let StorageFile and caches use them
-        private var fileListCache = mutableMapOf<String, MutableList<StorageFile>>() //TODO hg42 access should automatically checkCache
+        private var fileListCache =
+            mutableMapOf<String, MutableList<StorageFile>>() //TODO hg42 access should automatically checkCache
         private var uriStorageFileCache = mutableMapOf<String, StorageFile>()
         private var invalidateFilters = mutableListOf<(String) -> Boolean>()
 
@@ -414,11 +425,11 @@ open class StorageFile {
                 cacheCheck()
                 val id = uri.toString()
                 return cacheGetUri(id)
-                            ?:  StorageFile(
-                                    null,
-                                    context,
-                                    uri
-                                ).also { cacheSetUri(id, it) }
+                    ?: StorageFile(
+                        null,
+                        context,
+                        uri
+                    ).also { cacheSetUri(id, it) }
             }
         }
 
@@ -448,7 +459,7 @@ open class StorageFile {
         }
 
         fun invalidateCache() {
-            invalidateFilters = mutableListOf({true})
+            invalidateFilters = mutableListOf({ true })
             cacheCheck() //TODO
         }
 
@@ -492,11 +503,14 @@ open class StorageFile {
             try {
                 while (invalidateFilters.size > 0) {
                     invalidateFilters.removeFirst().let { isInvalid ->
-                        fileListCache       =       fileListCache.toMap().filterNot { isInvalid(it.key) }.toMutableMap()
-                        uriStorageFileCache = uriStorageFileCache.toMap().filterNot { isInvalid(it.key) }.toMutableMap()
+                        fileListCache =
+                            fileListCache.toMap().filterNot { isInvalid(it.key) }.toMutableMap()
+                        uriStorageFileCache =
+                            uriStorageFileCache.toMap().filterNot { isInvalid(it.key) }
+                                .toMutableMap()
                     }
                 }
-            } catch(e: Throwable) {
+            } catch (e: Throwable) {
                 logException(e)
             }
         }

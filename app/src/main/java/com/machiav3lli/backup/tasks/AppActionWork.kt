@@ -256,8 +256,6 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        //val cancelPendingIntent = WorkManager.getInstance(applicationContext)
-        //    .createCancelPendingIntent(id) // TODO [hg42: is the comment still valid?] causing crash on targetSDK 31 on A12, go back to targetSDK 30 for now and wait update on WorkManager's side
         val cancelAllIntent =
             Intent(OABX.context, CommandReceiver::class.java).apply {
                 action = "cancel"
@@ -279,7 +277,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                     else -> context.getString(com.machiav3lli.backup.R.string.batchrestore)
                 }
             )
-            .setSmallIcon(com.machiav3lli.backup.R.drawable.ic_app)
+            .setSmallIcon(R.drawable.ic_app)
             .setOngoing(true)
             .setSilent(true)
             .setContentIntent(contentPendingIntent)
