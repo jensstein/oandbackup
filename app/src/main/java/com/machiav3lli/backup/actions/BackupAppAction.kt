@@ -321,12 +321,12 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     }
 
     @Throws(BackupFailedException::class)
-    private fun assembleFileList(sourcePath: String): List<ShellHandler.FileInfo> {
+    private fun assembleFileListTwoStep(sourcePath: String): List<ShellHandler.FileInfo> {
         // Check what are the contents to backup. No need to start working, if the directory does not exist
         return try {
             // Get a list of directories in the directory to backup
             var dirsInSource = shell.suGetDetailedDirectoryContents(sourcePath, false, null)
-            // a try to exclude google's push notifications id (hg42it's not a directory???)
+            // a try to exclude google's push notifications id (hg42 it's not a directory???)
             //.filter { dir: ShellHandler.FileInfo -> !dir.filename.contains(".gms.") }
 
             // Excludes cache and libs, when we don't want to backup'em
@@ -342,9 +342,8 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
 
             // if the list is empty, there is nothing to do
             val allFilesToBackup = mutableListOf<ShellHandler.FileInfo>()
-            if (dirsInSource.isEmpty()) {
-                return allFilesToBackup
-            }
+            //if (dirsInSource.isEmpty())       forEach already does the same
+            //    return allFilesToBackup
             dirsInSource.forEach { dir ->
                 allFilesToBackup.add(dir)
                 // Do not process files in the "root" directory of the app's data
@@ -370,6 +369,33 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             LogsHandler.unhandledException(e, sourcePath)
             throw BackupFailedException("Could not list contents of $sourcePath", e)
         }
+    }
+
+    @Throws(BackupFailedException::class)
+    private fun assembleFileListOneStep(sourcePath: String): List<ShellHandler.FileInfo> {
+        // get and filter the whole tree at once //TODO use iterator instead of list
+        return try {
+            val excludeCache = OABX.prefFlag(PREFS_EXCLUDECACHE, true)
+            var allFilesToBackup =
+                shell.suGetDetailedDirectoryContents(sourcePath, true, sourcePath)
+                .filterNot { f: ShellHandler.FileInfo -> f.filename in DATA_EXCLUDED_BASENAMES } //TODO basenames! not all levels
+                .filterNot { f: ShellHandler.FileInfo -> f.filename in DATA_EXCLUDED_NAMES }
+                .filterNot { f: ShellHandler.FileInfo -> excludeCache && f.filename in DATA_EXCLUDED_CACHE_DIRS }
+            allFilesToBackup
+        } catch (e: ShellCommandFailedException) {
+            throw BackupFailedException("Could not list contents of $sourcePath", e)
+        } catch (e: Throwable) {
+            LogsHandler.unhandledException(e, sourcePath)
+            throw BackupFailedException("Could not list contents of $sourcePath", e)
+        }
+    }
+
+    @Throws(BackupFailedException::class)
+    private fun assembleFileList(sourcePath: String): List<ShellHandler.FileInfo> {
+        return if (OABX.prefFlag("useAssembleFileListOneStep", true))
+            assembleFileListOneStep(sourcePath)
+        else
+            assembleFileListTwoStep(sourcePath)
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
@@ -588,10 +614,12 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 iv
             )
         } catch (ex: BackupFailedException) {
-            if (ex.cause is ShellCommandFailedException && isFileNotFoundException(ex.cause)) {
-                // no such data found
-                Timber.i(LOG_NO_THING_TO_BACKUP, dataType, app.packageName)
-                return false
+            (ex.cause as ShellCommandFailedException).let {
+                if (isFileNotFoundException(it)) {
+                    // no such data found
+                    Timber.i(LOG_NO_THING_TO_BACKUP, dataType, app.packageName)
+                    return false
+                }
             }
             throw ex
         }
@@ -614,10 +642,12 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 iv
             )
         } catch (ex: BackupFailedException) {
-            if (ex.cause is ShellCommandFailedException && isFileNotFoundException(ex.cause)) {
-                // no such data found
-                Timber.i(LOG_NO_THING_TO_BACKUP, dataType, app.packageName)
-                return false
+            (ex.cause as ShellCommandFailedException).let {
+                if (isFileNotFoundException(it)) {
+                    // no such data found
+                    Timber.i(LOG_NO_THING_TO_BACKUP, dataType, app.packageName)
+                    return false
+                }
             }
             throw ex
         }
@@ -640,10 +670,12 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 iv
             )
         } catch (ex: BackupFailedException) {
-            if (ex.cause is ShellCommandFailedException && isFileNotFoundException(ex.cause)) {
-                // no such data found
-                Timber.i(LOG_NO_THING_TO_BACKUP, dataType, app.packageName)
-                return false
+            (ex.cause as ShellCommandFailedException).let {
+                if (isFileNotFoundException(it)) {
+                    // no such data found
+                    Timber.i(LOG_NO_THING_TO_BACKUP, dataType, app.packageName)
+                    return false
+                }
             }
             throw ex
         }
@@ -666,10 +698,12 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 iv
             )
         } catch (ex: BackupFailedException) {
-            if (ex.cause is ShellCommandFailedException && isFileNotFoundException(ex.cause)) {
-                // no such data found
-                Timber.i(LOG_NO_THING_TO_BACKUP, dataType, app.packageName)
-                return false
+            (ex.cause as ShellCommandFailedException).let {
+                if (isFileNotFoundException(it)) {
+                    // no such data found
+                    Timber.i(LOG_NO_THING_TO_BACKUP, dataType, app.packageName)
+                    return false
+                }
             }
             throw ex
         }

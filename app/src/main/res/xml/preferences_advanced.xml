@@ -160,6 +160,12 @@
             android:title="useFindLs" />
 
         <androidx.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="useAssembleFileListOneStep"
+            android:summary="(tarapi) collect whole tree in one step"
+            android:title="useAssembleFileListOneStep" />
+
+        <androidx.preference.CheckBoxPreference
             android:defaultValue="false"
             android:key="catchUncaughtException"
             android:summary="unexpected exceptions are caught and output to logcat and app is restarted [needs reboot]"
