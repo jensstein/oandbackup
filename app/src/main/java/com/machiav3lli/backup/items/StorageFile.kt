@@ -349,7 +349,7 @@ open class StorageFile {
                                         cursor.getString(0)
                                     )
                                 results.add(
-                                    if (OABX.prefFlag("useColumnNameSAF", true))
+                                    if (OABX.prefFlag(PREFS_COLUMNNAMESAF, true))
                                         StorageFile(this, context, documentUri, cursor.getString(1))
                                     else
                                         StorageFile(this, context, documentUri)
@@ -404,7 +404,7 @@ open class StorageFile {
         fun fromUri(context: Context, uri: Uri): StorageFile {
             // Todo: Figure out what's wrong with the Uris coming from the intent and why they need to be processed
             //  with DocumentsContract.buildDocumentUriUsingTree(value, DocumentsContract.getTreeDocumentId(value)) first
-            if(OABX.prefFlag("cacheUris", false)) {
+            if (OABX.prefFlag(PREFS_CACHEURIS, false)) {
                 return StorageFile(
                     null,
                     context,
@@ -439,7 +439,7 @@ open class StorageFile {
         }
 
         fun invalidateCache(filter: (String) -> Boolean) {
-            if(OABX.prefFlag("invalidateSelective", true)) {
+            if (OABX.prefFlag(PREFS_INVALIDATESELECTIVE, true)) {
                 invalidateFilters.add(filter)
                 cacheCheck() //TODO
             } else {

@@ -37,6 +37,7 @@ import androidx.work.workDataOf
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_MAXRETRIES
+import com.machiav3lli.backup.PREFS_USEEXPEDITED
 import com.machiav3lli.backup.PREFS_USEFOREGROUND
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
@@ -329,7 +330,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                     )
                 )
 
-            if (OABX.prefFlag("useExpedited", true))
+            if (OABX.prefFlag(PREFS_USEEXPEDITED, true))
                 builder.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
 
             return builder.build()

@@ -27,6 +27,8 @@ import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER_OLD
 import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.PREFS_CACHEPACKAGES
+import com.machiav3lli.backup.PREFS_ENSUREBACKUPSPRIVATE
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.SpecialInfo
@@ -199,12 +201,12 @@ class Package {
     }
 
     fun ensureBackupList() {
-        if( ! OABX.prefFlag("useEnsureBackupListPrivate", false) )
+        if (!OABX.prefFlag(PREFS_ENSUREBACKUPSPRIVATE, false))
             ensureBackupsLoaded()
     }
 
     private fun needBackupList(): List<Backup> {
-        if(OABX.prefFlag("useEnsureBackupListPrivate", false))
+        if (OABX.prefFlag(PREFS_ENSUREBACKUPSPRIVATE, false))
             return ensureBackupsLoaded()
         return backupList
     }
@@ -445,8 +447,8 @@ class Package {
 
     companion object {
         fun get(packageName: String, creator: () -> Package): Package {
-            if (OABX.prefFlag("usePackageCache", true))
-                return OABX.app.packageCache.get(packageName) ?: creator()
+            if (OABX.prefFlag(PREFS_CACHEPACKAGES, true))
+                return OABX.app.packageCache[packageName] ?: creator()
             return creator()
         }
 

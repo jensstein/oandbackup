@@ -62,7 +62,7 @@
 
         <androidx.preference.CheckBoxPreference
             android:defaultValue="true"
-            android:key="usePackageCache"
+            android:key="cachePackages"
             android:summary="cache Packages"
             android:title="usePackageCache" />
 
