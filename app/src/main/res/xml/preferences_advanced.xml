@@ -67,7 +67,7 @@
             android:title="usePackageCache" />
 
         <androidx.preference.CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="usePackageCacheOnUpdate"
             android:summary="use cached Package in updateDataOf"
             android:title="usePackageCacheOnUpdate" />
@@ -79,7 +79,7 @@
             android:title="useEnsureBackupListPrivate" />
 
         <androidx.preference.CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="useEnsureBackupListInComposable"
             android:summary="use ensureBackupList in Composables (only when useEnsureBackupListPrivate disabled)"
             android:title="useEnsureBackupListInComposable" />
