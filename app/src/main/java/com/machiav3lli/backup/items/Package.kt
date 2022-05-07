@@ -253,16 +253,24 @@ class Package {
         )
         try {
             backup.getBackupInstanceFolder(packageBackupDir)?.deleteRecursive()
+        } catch (e: Throwable) {
+            LogsHandler.unhandledException(e, backup.packageName)
+        }
+        try {
             packageBackupDir?.findFile(propertiesFileName)?.delete() ?: packageBackupDir?.findFile(
                 propertiesFileNameOld
             )?.delete()
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, backup.packageName)
         }
-        backupList = backupList.toList() - backup
-        if (backupList.size == 0) {
-            packageBackupDir?.deleteRecursive()
-            packageBackupDir = null
+        try {
+            backupList = backupList.toList() - backup
+            if (backupList.size == 0) {
+                packageBackupDir?.deleteRecursive()
+                packageBackupDir = null
+            }
+        } catch (e: Throwable) {
+            LogsHandler.unhandledException(e, backup.packageName)
         }
     }
 
