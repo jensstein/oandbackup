@@ -92,12 +92,6 @@
 
         <androidx.preference.CheckBoxPreference
             android:defaultValue="false"
-            android:key="usePackageCreateWithBackups"
-            android:summary="gather backups when creating package objects (otherwise it's done lazy) [may solve consistency problems with backups]"
-            android:title="usePackageCreateWithBackups" />
-
-        <androidx.preference.CheckBoxPreference
-            android:defaultValue="false"
             android:key="cancelOnStart"
             android:summary="cancel all remaining jobs on OAndBackupX start [needs reboot]"
             android:title="cancelOnStart" />

@@ -95,8 +95,7 @@ class Package {
     ) {
         this.packageBackupDir = backupDir
         this.packageName = packageName ?: backupDir?.name!!
-        if(OABX.prefFlag("usePackageCreateWithBackups", false))
-            refreshBackupList()
+        refreshBackupList()
         try {
             val pi = context.packageManager.getPackageInfo(
                 this.packageName,
