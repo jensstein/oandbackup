@@ -17,6 +17,7 @@
  */
 package com.machiav3lli.backup
 
+import android.Manifest
 import com.machiav3lli.backup.ui.item.ChipItem
 import com.machiav3lli.backup.ui.item.Legend
 import com.machiav3lli.backup.ui.item.Link
@@ -179,6 +180,22 @@ val schedSpecialFilterChipItems = listOf(
 
 val mainSpecialFilterChipItems = schedSpecialFilterChipItems.plus(ChipItem.NotInstalled)
 
+val IGNORED_PERMISSIONS = listOfNotNull(
+    Manifest.permission.ACCESS_WIFI_STATE,
+    Manifest.permission.ACCESS_NETWORK_STATE,
+    Manifest.permission.ACCESS_NETWORK_STATE,
+    Manifest.permission.CHANGE_WIFI_MULTICAST_STATE,
+    if (OABX.minSDK(28)) Manifest.permission.FOREGROUND_SERVICE else null,
+    Manifest.permission.INSTALL_SHORTCUT,
+    Manifest.permission.INTERNET,
+    if (OABX.minSDK(30)) Manifest.permission.QUERY_ALL_PACKAGES else null,
+    Manifest.permission.REQUEST_DELETE_PACKAGES,
+    Manifest.permission.RECEIVE_BOOT_COMPLETED,
+    Manifest.permission.READ_SYNC_SETTINGS,
+    Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+    Manifest.permission.USE_FINGERPRINT,
+    Manifest.permission.WAKE_LOCK,
+)
 
 const val BUNDLE_USERS = "users"
 

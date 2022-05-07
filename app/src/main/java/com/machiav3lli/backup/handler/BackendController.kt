@@ -25,6 +25,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Process
 import com.machiav3lli.backup.EXPORTS_FOLDER_NAME
+import com.machiav3lli.backup.IGNORED_PERMISSIONS
 import com.machiav3lli.backup.LOG_FOLDER_NAME
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
@@ -368,6 +369,7 @@ fun Context.getSpecial(packageName: String) = SpecialInfo.getSpecialPackages(thi
     .find { it.packageName == packageName }
 
 val PackageInfo.grantedPermissions: List<String>
-    get() = requestedPermissions?.filterIndexed { index, _ ->
-        requestedPermissionsFlags[index] and PackageInfo.REQUESTED_PERMISSION_GRANTED == PackageInfo.REQUESTED_PERMISSION_GRANTED
+    get() = requestedPermissions?.filterIndexed { index, perm ->
+        requestedPermissionsFlags[index] and PackageInfo.REQUESTED_PERMISSION_GRANTED == PackageInfo.REQUESTED_PERMISSION_GRANTED &&
+                perm !in IGNORED_PERMISSIONS
     }.orEmpty()
