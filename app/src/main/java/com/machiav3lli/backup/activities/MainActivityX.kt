@@ -85,7 +85,7 @@ class MainActivityX : BaseActivity() {
         if (OABX.prefFlag(PREFS_CATCHUNCAUGHT, false)) {
             Thread.setDefaultUncaughtExceptionHandler { _, e ->
                 try {
-                    val maxCrashLines = OABX.prefInt(PREFS_MAXCRASHLINES, 100)
+                    val maxCrashLines = OABX.prefInt(PREFS_MAXCRASHLINES, 50)
                     LogsHandler.unhandledException(e)
                     LogsHandler(context).writeToLogFile(
                         "uncaught exception happened:\n\n" +
@@ -95,19 +95,24 @@ class MainActivityX : BaseActivity() {
                                     "logcat -d -t $maxCrashLines --pid=${Process.myPid()}"  // -d = dump and exit
                                 ).out.joinToString("\n")
                     )
-                    val longToastTime = 3500
-                    val showTime = 21 * 1000
+                    val longToastTime = 3000
+                    val showTime = 12000
                     object : Thread() {
                         override fun run() {
                             Looper.prepare()
                             repeat(showTime / longToastTime) {
                                 Toast.makeText(
                                     context,
-                                    "Uncaught Exception\n${e.message}\n${e.cause}\nrestarting application...",
+                                    "Uncaught Exception\n${e.message ?: ""}\n${e.cause ?: ""}",
                                     Toast.LENGTH_LONG
                                 ).show()
                                 sleep(longToastTime.toLong())
                             }
+                            Toast.makeText(
+                                context,
+                                "restarting application...",
+                                Toast.LENGTH_LONG
+                            ).show()
                             Looper.loop()
                         }
                     }.start()
