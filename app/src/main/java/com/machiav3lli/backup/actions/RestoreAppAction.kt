@@ -291,77 +291,76 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             if (disableVerification)
                 runAsRoot("settings put global verifier_verify_adb_installs 0")
 
-            if (OABX.prefFlag(PREFS_ENABLESESSIONINSTALLER, false)) {
-                val packageFiles = listOf(baseApkFile).plus(splitApksInBackup).map {
-                    RootFile(stagingApkPath, "$packageName.${it.name}")
-                }
+            when {
+                OABX.prefFlag(PREFS_ENABLESESSIONINSTALLER, false) -> {
+                    val packageFiles = listOf(baseApkFile).plus(splitApksInBackup).map {
+                        RootFile(stagingApkPath, "$packageName.${it.name}")
+                    }
 
-                // create session
-                runAsRoot(
-                    getSessionCreateCommand(
-                        backup.profileId,
-                        packageFiles.sumOf { it.length() })
-                ).let {
-                    val sessionIdPattern = Pattern.compile("(\\d+)")
-                    val sessionIdMatcher = sessionIdPattern.matcher(it.out[0])
-                    val found = sessionIdMatcher.find()
-                    val sessionId = sessionIdMatcher.group(1)?.toInt()
+                    // create session
+                    runAsRoot(
+                        getSessionCreateCommand(
+                            backup.profileId,
+                            packageFiles.sumOf { it.length() })
+                    ).let {
+                        val sessionIdPattern = Pattern.compile("(\\d+)")
+                        val sessionIdMatcher = sessionIdPattern.matcher(it.out[0])
+                        val found = sessionIdMatcher.find()
+                        val sessionId = sessionIdMatcher.group(1)?.toInt()
 
-                    if (found && sessionId != null) {
-                        // write each of the bundle files
-                        packageFiles.forEach { rFile ->
-                            sb.append(getSessionWriteCommand(rFile, sessionId)).append(" ; ")
+                        if (found && sessionId != null) {
+                            // write each of the bundle files
+                            packageFiles.forEach { rFile ->
+                                sb.append(getSessionWriteCommand(rFile, sessionId)).append(" ; ")
+                            }
+                            // commit session
+                            sb.append(getSessionCommitCommand(sessionId))
                         }
-                        // commit session
-                        sb.append(getSessionCommitCommand(sessionId))
-                        runAsRoot(sb.toString())
                     }
                 }
-            } else {
-                // Install main package
-                sb.append(
-                    getPackageInstallCommand(
-                        RootFile(stagingApkPath, "$packageName.${baseApkFile.name}"),
-                        backup.profileId
-                    )
-                )
-                // If split apk resources exist, install them afterwards (order does not matter)
-                //TODO hg42 gather results, eventually ignore grant errors, use script?
-                if (splitApksInBackup.isNotEmpty()) {
-                    splitApksInBackup.forEach {
-                        sb.append(" ; ").append(
-                            getPackageInstallCommand(
-                                RootFile(stagingApkPath, "$packageName.${it.name}"),
-                                backup.profileId,
-                                backup.packageName
-                            )
+                else -> {
+                    // Install main package
+                    sb.append(
+                        getPackageInstallCommand(
+                            RootFile(stagingApkPath, "$packageName.${baseApkFile.name}"),
+                            backup.profileId
                         )
+                    )
+                    // If split apk resources exist, install them afterwards (order does not matter)
+                    //TODO hg42 gather results, eventually ignore grant errors, use script?
+                    if (splitApksInBackup.isNotEmpty()) {
+                        splitApksInBackup.forEach {
+                            sb.append(" ; ").append(
+                                getPackageInstallCommand(
+                                    RootFile(stagingApkPath, "$packageName.${it.name}"),
+                                    backup.profileId,
+                                    backup.packageName
+                                )
+                            )
+                        }
                     }
                 }
-                val commandWithoutPermissions = sb.toString()
-                if (!context.isRestoreAllPermissions && OABX.prefFlag(
-                        PREFS_RESTOREPERMISSIONS,
-                        true
-                    )
-                )
-                    backup.permissions
-                        .filterNot { it.isEmpty() }
-                        .forEach { p ->
-                            sb.append(" ; pm grant ${backup.packageName} $p")
-                        }
+            }
+            success = runAsRoot(sb.toString()).isSuccess // TODO integrate permissionsResult too
 
-                val command = sb.toString()
+            val permissionsCmd = mutableListOf<String>()
+            if (!context.isRestoreAllPermissions &&
+                OABX.prefFlag(PREFS_RESTOREPERMISSIONS, true)
+            ) {
+                backup.permissions
+                    .filterNot { it.isEmpty() }
+                    .forEach { p ->
+                        permissionsCmd.addAll(listOf("pm", "grant", backup.packageName, p, ";"))
+                    }
                 try {
-                    runAsRoot(command)
+                    runAsRoot(permissionsCmd.joinToString(" "))
                 } catch (e: ShellCommandFailedException) {
-                    val error = extractErrorMessage(e.shellResult)
-                    Timber.e("Restore APKs with permissions failed: $error")
-                    if (command != commandWithoutPermissions) runAsRoot(commandWithoutPermissions)
-                    else throw e
+                    val error = e.shellResult.err.joinToString { "\n" }
+                    Timber.e("Restoring permissions failed: $error")
+                    // TODO integrate this exception in the result
                 }
             }
 
-            success = true
 
             // re-enable verify apps over usb
             if (disableVerification)
