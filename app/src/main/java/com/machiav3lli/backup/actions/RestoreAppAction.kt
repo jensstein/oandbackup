@@ -27,6 +27,7 @@ import com.machiav3lli.backup.MODE_DATA_MEDIA
 import com.machiav3lli.backup.MODE_DATA_OBB
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_EXCLUDECACHE
+import com.machiav3lli.backup.PREFS_INSTALLER_PACKAGENAME
 import com.machiav3lli.backup.PREFS_REFRESHDELAY
 import com.machiav3lli.backup.PREFS_REFRESHTIMEOUT
 import com.machiav3lli.backup.PREFS_RESTOREAVOIDTEMPCOPY
@@ -903,18 +904,19 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         profileId: Int,
         basePackageName: String? = null
     ): String =
-        listOf(
+        listOfNotNull(
             "cat", quote(apkPath.absolutePath),
             "|",
             "pm", "install",
             basePackageName?.let { "-p $basePackageName" },
             if (context.isRestoreAllPermissions) "-g" else null,
             if (context.isAllowDowngrade) "-d" else null,
+            "-i ${OABX.prefString(PREFS_INSTALLER_PACKAGENAME, OABX.app.packageName)}",
             "-t",
             "-r",
             "-S", apkPath.length().toString(),
             "--user", profileId,
-        ).filterNotNull().joinToString(" ")
+        ).joinToString(" ")
 
     @Throws(PackageManagerDataIncompleteException::class)
     private fun refreshAppInfo(context: Context, app: Package) {

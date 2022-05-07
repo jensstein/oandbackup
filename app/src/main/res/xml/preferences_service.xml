@@ -77,6 +77,14 @@
         android:title="@string/prefs_mediadata" />
 
     <androidx.preference.CheckBoxPreference
+    <EditTextPreference
+        android:defaultValue="com.machiav3lli.backup"
+        android:icon="@drawable/ic_launchable"
+        android:key="installationPackage"
+        android:title="@string/prefs_installerpackagename"
+        app:useSimpleSummaryProvider="true" />
+
+    <androidx.preference.CheckBoxPreference
         android:defaultValue="true"
         android:icon="@drawable/ic_sizes"
         android:key="restorePermissions"

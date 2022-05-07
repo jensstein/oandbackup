@@ -147,6 +147,9 @@ class OABX : Application() {
         fun prefFlag(name: String, default: Boolean) = context.getDefaultSharedPreferences()
             .getBoolean(name, default)
 
+        fun prefString(name: String, default: String) = context.getDefaultSharedPreferences()
+            .getString(name, default)
+
         fun prefInt(name: String, default: Int) = context.getDefaultSharedPreferences()
             .getInt(name, default)
 
