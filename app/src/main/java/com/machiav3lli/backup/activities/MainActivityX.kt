@@ -225,7 +225,7 @@ class MainActivityX : BaseActivity() {
         if (dontShowAgain) return
         val dontShowCounter = prefs.getInt(PREFS_SKIPPEDENCRYPTION, 0)
         prefs.edit().putInt(PREFS_SKIPPEDENCRYPTION, dontShowCounter + 1).apply()
-        if (dontShowCounter % 10 == 0) {
+        if (dontShowCounter % 10 == 0 && dontShowCounter <= 30) {
             AlertDialog.Builder(this)
                 .setTitle(R.string.enable_encryption_title)
                 .setMessage(R.string.enable_encryption_message)
