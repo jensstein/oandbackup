@@ -729,14 +729,14 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
         } catch (e: ShellCommands.ShellActionFailedException) {
             // Not a critical issue
             val errorMessage: String =
-                when (e.cause) {
+                when (val cause = e.cause) {
                     is ShellHandler.ShellCommandFailedException -> {
-                        e.cause.shellResult.err.joinToString(
+                        cause.shellResult.err.joinToString(
                             " "
                         )
                     }
                     else -> {
-                        e.cause?.message ?: "unknown error"
+                        cause?.message ?: "unknown error"
                     }
                 }
             Timber.w("Cache couldn't be deleted: $errorMessage")

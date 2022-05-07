@@ -115,14 +115,17 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                 )
             } catch (e: RestoreFailedException) {
                 // Unwrap issues with shell commands so users know what command ran and what was the issue
-                val message: String =
-                    if (e.cause != null && e.cause is ShellCommandFailedException) {
-                        val commandList = e.cause.commands.joinToString("; ")
-                        "Shell command failed: ${commandList}\n${
-                            extractErrorMessage(e.cause.shellResult)
-                        }"
-                    } else {
-                        "${e.javaClass.simpleName}: ${e.message}"
+                val message =
+                    when (val cause = e.cause) {
+                        is ShellCommandFailedException -> {
+                            val commandList = cause.commands.joinToString("; ")
+                            "Shell command failed: ${commandList}\n${
+                                extractErrorMessage(cause.shellResult)
+                            }"
+                        }
+                        else -> {
+                            "${e.javaClass.simpleName}: ${e.message}"
+                        }
                     }
                 return ActionResult(app, null, message, false)
             } catch (e: CryptoSetupException) {
