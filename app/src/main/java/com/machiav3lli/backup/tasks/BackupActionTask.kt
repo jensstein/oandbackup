@@ -17,12 +17,14 @@
  */
 package com.machiav3lli.backup.tasks
 
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.utils.showToast
 
 class BackupActionTask(
     appInfo: Package, oAndBackupX: MainActivityX, shellHandler: ShellHandler, backupMode: Int,
@@ -37,9 +39,17 @@ class BackupActionTask(
         if (mainActivityX == null || mainActivityX.isFinishing) {
             return ActionResult(app, null, "", false)
         }
+        val startTime = System.currentTimeMillis()
+
         notificationId = System.currentTimeMillis().toInt()
         publishProgress()
+
         result = BackupRestoreHelper.backup(mainActivityX, null, shellHandler, app, mode)
+
+        val afterTime = System.currentTimeMillis()
+        OABX.activity?.showToast(
+            "backup: ${app.packageName}: ${((afterTime - startTime) / 1000 + 0.5).toInt()} sec"
+        )
         return result
     }
 }
