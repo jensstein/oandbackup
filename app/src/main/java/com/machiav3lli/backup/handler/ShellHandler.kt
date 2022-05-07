@@ -21,7 +21,6 @@ package com.machiav3lli.backup.handler
 import android.os.Environment.DIRECTORY_DOCUMENTS
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
 import com.machiav3lli.backup.utils.BUFFER_SIZE
 import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
 import com.machiav3lli.backup.utils.showToast
@@ -115,16 +114,21 @@ class ShellHandler {
         recursive: Boolean,
         parent: String? = null
     ): List<FileInfo> {
-        val shellResult = runAsRoot("$utilBoxQ ls -bAll ${quote(path)}")
+        val useFindLs = OABX.prefFlag("useFindLs", true)
+        val shellResult =
+                if (recursive && useFindLs)
+                    runAsRoot("$utilBoxQ find ${quote(path)} -print0 | $utilBoxQ xargs -0 ls -bdAll")
+                else
+                    runAsRoot("$utilBoxQ ls -bAll ${quote(path)}")
         val relativeParent = parent ?: ""
-        val result = shellResult.out.asSequence()
+        val result = shellResult.out
             .filter { it.isNotEmpty() }
             .filter { ! it.startsWith("total") }
-            .mapNotNull { FileInfo.fromLsOutput(it, relativeParent, path) }
+            .mapNotNull { FileInfo.fromLsOutput(it, null, path) }
             .toMutableList()
-        if (recursive) {
+        if (recursive && !useFindLs) {
             val directories = result
-                .filter { it.fileType == FileType.DIRECTORY }
+                .filter { it.fileType == FileInfo.FileType.DIRECTORY }
                 .toTypedArray()
             directories.forEach { dir ->
                 result.addAll(
@@ -230,7 +234,7 @@ class ShellHandler {
          */
         val filePath: String,
         val fileType: FileType,
-        absoluteParent: String,
+        val absoluteParent: String,
         val owner: String,
         val group: String,
         var fileMode: Int,
@@ -241,7 +245,7 @@ class ShellHandler {
             REGULAR_FILE, BLOCK_DEVICE, CHAR_DEVICE, DIRECTORY, SYMBOLIC_LINK, NAMED_PIPE, SOCKET
         }
 
-        val absolutePath: String = absoluteParent + '/' + File(filePath).name
+        val absolutePath: String = absoluteParent + '/' + filePath
 
         //val fileMode = fileMode
         //val fileSize = fileSize
@@ -253,16 +257,16 @@ class ShellHandler {
 
         override fun toString(): String {
             return "FileInfo{" +
-                    "filePath='" + filePath + '\'' +
+                    "filePath='" + filePath + "'" +
                     ", fileType=" + fileType +
                     ", owner=" + owner +
                     ", group=" + group +
                     ", fileMode=" + fileMode.toString(8) +
                     ", fileSize=" + fileSize +
                     ", fileModTime=" + fileModTime +
-                    ", absolutePath='" + absolutePath + '\'' +
-                    ", linkName='" + linkName + '\'' +
-                    '}'
+                    ", absolutePath='" + absolutePath + "'" +
+                    ", linkName='" + linkName + "'" +
+                    "}"
         }
 
         companion object {
@@ -466,6 +470,10 @@ class ShellHandler {
                     'l' -> {
                         type = FileType.SYMBOLIC_LINK
                         val nameAndLink = PATTERN_LINKSPLIT.split(filePath as CharSequence)
+                        //TODO hg42 what if PATTERN_LINK_SPLIT is part of a file or link path? (should be pretty rare)
+                        //TODO hg42 in this case we get more parts and we could check which part combinations exist
+                        if(nameAndLink.size > 2)
+                            Timber.e("we got more than one 'link arrow' in '$filePath'")
                         filePath = nameAndLink[0]
                         linkName = nameAndLink[1]
                     }

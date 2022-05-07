@@ -154,6 +154,12 @@
             android:title="allowShadowingDefault" />
 
         <androidx.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="useFindLs"
+            android:summary="use 'find ... | xargs ... ls ...' for recursive FileInfo collection"
+            android:title="useFindLs" />
+
+        <androidx.preference.CheckBoxPreference
             android:defaultValue="false"
             android:key="catchUncaughtException"
             android:summary="unexpected exceptions are caught and output to logcat and app is restarted [needs reboot]"
