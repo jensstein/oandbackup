@@ -149,7 +149,7 @@
     <string name="prefs_theme_dark">暗色</string>
     <string name="prefs_theme_system">跟随系统</string>
     <string name="empty_filtered_list">列表为空。</string>
-    <string name="dialog_refuse">拒绝</string>
+    <string name="dialog_refuse">放弃</string>
     <string name="dialog_approve">好的</string>
     <string name="ignore_battery_optimization_title">电池优化</string>
     <string name="ignore_battery_optimization_message">备份有时会意外停止。为避免这种情况，请关闭电池优化</string>
