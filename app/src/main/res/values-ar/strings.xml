@@ -348,4 +348,7 @@
     <string name="root_missing">صلاحية الجذر مفقودة!</string>
     <string name="root_is_mandatory">نظرًا لأن التطبيقات معزولة عن بعضها البعض ، فإن وصول المستخدم المتميز إلزامي حتى يتمكن من النسخ الاحتياطي واستعادة بياناته.</string>
     <string name="see_faq">اطلع على الأسئلة الشائعة!</string>
+    <string name="prefs_sessionIinstaller">استخدم مثبت الجلسة</string>
+    <string name="prefs_installerpackagename">اسم حزمة المثبت:</string>
+    <string name="prefs_sessionIinstaller_summary">استخدم مثبت الجلسة بدلا من المثبت الأساسي. أبطأ ولكن يتجنب المشكلات المتعلقة بنظام Android 13+</string>
 </resources>
