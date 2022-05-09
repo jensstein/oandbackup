@@ -80,7 +80,7 @@
     <string name="prefs_pathbackupfolder">Sicherungsverzeichnis</string>
     <string name="prefs_oldbackups">Sicherungen nach Alter filtern</string>
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
-    <string name="prefs_oldbackups_summary">Sicherungen nach Anzahl von festgelegten Tagen filtern. Verwendet für \"Alte Sicherungen anzeigen\".</string>
+    <string name="prefs_oldbackups_summary">Sicherungen nach Anzahl von festgelegten Tagen filtern. Verwendet für „Alte Sicherungen anzeigen“.</string>
     <string name="prefs_copyselfapk">Eigene APK-Datei kopieren</string>
     <string name="prefs_copyselfapk_summary">Erstelle eine Kopie von OAndBackupX auf höchster Ebene im Sicherungsverzeichnis</string>
     <string name="prefs_languages">Sprache</string>
@@ -332,4 +332,10 @@
     <string name="grant_smsmms_message">Dies ist notwendig, um SMS/MMS zu sichern und wiederherstellen zu können.</string>
     <string name="delete">Löschen</string>
     <string name="dialogCancelAll">Alles abbrechen</string>
+    <string name="prefs_restorepermissions">Berechtigungen wiederherstellen</string>
+    <string name="dismiss">Ablehnen</string>
+    <string name="root_is_mandatory">Da die Anwendungen voneinander isoliert sind, ist ein Superbenutzer-Zugang erforderlich, um ihre Daten sichern und wiederherstellen zu können.</string>
+    <string name="enabled">Aktiviert</string>
+    <string name="sortAsc">Aufsteigend</string>
+    <string name="sortDesc">Absteigend</string>
 </resources>
