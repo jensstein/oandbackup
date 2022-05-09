@@ -82,7 +82,7 @@
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
     <string name="prefs_oldbackups_summary">Sicherungen nach Anzahl von festgelegten Tagen filtern. Verwendet für „Alte Sicherungen anzeigen“.</string>
     <string name="prefs_copyselfapk">Eigene APK-Datei kopieren</string>
-    <string name="prefs_copyselfapk_summary">Erstelle eine Kopie von OAndBackupX auf höchster Ebene im Sicherungsverzeichnis</string>
+    <string name="prefs_copyselfapk_summary">Erstelle eine Kopie von Neo Backup auf der höchsten Ebene im Sicherungsverzeichnis</string>
     <string name="prefs_languages">Sprache</string>
     <string name="prefs_language_system">Systemsprache</string>
     <string name="prefs_rememberfiltering">Sortierung und Filter beibehalten</string>
@@ -338,4 +338,6 @@
     <string name="enabled">Aktiviert</string>
     <string name="sortAsc">Aufsteigend</string>
     <string name="sortDesc">Absteigend</string>
+    <string name="see_faq">Siehe FAQ!</string>
+    <string name="root_missing">ROOT fehlt!</string>
 </resources>
