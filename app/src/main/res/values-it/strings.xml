@@ -80,9 +80,9 @@
     <string name="prefs_pathbackupfolder">Cartella di backup</string>
     <string name="prefs_oldbackups">Filtra i backup per obsolescenza</string>
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
-    <string name="prefs_oldbackups_summary">Filtra i backup più vecchi di un valore espresso in giorni. utilizzato con il filtro \'mostra backup obsoleti\'.</string>
+    <string name="prefs_oldbackups_summary">Filtra i backup più vecchi di un valore espresso in giorni. utilizzato con il filtro «Mostra backup obsoleti».</string>
     <string name="prefs_copyselfapk">Copia l\'APK del programma</string>
-    <string name="prefs_copyselfapk_summary">Crea una copia di OAndBackupX nel livello superiore della cartella di backup</string>
+    <string name="prefs_copyselfapk_summary">Metti una copia di Neo Backup nel livello superiore della cartella di backup</string>
     <string name="prefs_languages">Lingua</string>
     <string name="prefs_language_system">Predefinita di sistema</string>
     <string name="prefs_rememberfiltering">Ricorda l\'ordinamento e i filtri</string>
@@ -188,7 +188,7 @@
 \n• Sia il salvataggio che il ripristino di app singole una alla volta o contemporaneamente che il ripristino di app molteplici è supportato.
 \n• Il ripristino di app di sistema dovrebbe essere possibile senza richiedere un riavvio successivamente, anche se non consigliamo comunque di farlo.
 \n• I salvataggi possono essere programmati senza limiti di numero ed è presente la possibilità di creare liste personalizzate di app.</string>
-    <string name="welcome_to_oabx">Benvenuto/a su OABX!</string>
+    <string name="welcome_to_oabx">Benvenuto/a a Neo Backup!</string>
     <string name="storage_access">Accesso archiviazione</string>
     <string name="help_appTypeHint">* L\'icona del tipo di app sarebbe grigia se l\'app è disinstallata e grigia scura se l\'app è disabilitata.</string>
     <string name="help_legend">Legenda:</string>
@@ -299,7 +299,7 @@
     <string name="prefs_accent_0">Cometa rossa</string>
     <string name="backup_all_updated">Aggiorna tutti</string>
     <string name="prefs_mediadata_summary">Effettua backup e recupero dei file multimediali dell\'app, situati su supporti esterni (es.: /storage/emulated/0/Android/media/)</string>
-    <string name="radio_mediadata">Dati Multimediali</string>
+    <string name="radio_mediadata">Dati multimediali</string>
     <string name="error_pmDataIncompleteException_dataRestoreFailed">I dati dell\'app non sono stati ripristinati.</string>
     <string name="prefs_mediadata">Back up dati multimediali</string>
     <string name="prefs_compression_level">Livello di compressione</string>
@@ -328,4 +328,8 @@
     <string name="schedule">Programma</string>
     <string name="finished">finito</string>
     <string name="batch">Non interattiva</string>
+    <string name="prefs_restorepermissions">Ripristina i permessi</string>
+    <string name="dialogCancelAll">Annulla tutto</string>
+    <string name="spec_fingerprint">Impronte digitali</string>
+    <string name="prefs_restorepermissions_summary">Ripristina i permessi che sono stati concessi all\'app al momento del backup. Si noti che alcuni permessi non possono essere concessi programmaticamente e quindi causano il fallimento del ripristino del pacchetto nel suo complesso, che Neo Backup copre poi il ripristino del pacchetto senza permessi.</string>
 </resources>
