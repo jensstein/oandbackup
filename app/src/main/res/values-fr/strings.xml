@@ -233,6 +233,7 @@
     <string name="forceKillMessage">Êtes-vous sûr·e de vouloir forcer l\'arrêt de l\'application \?</string>
     <plurals name="updated_apps">
         <item quantity="one">%d application mise à jour</item>
+        <item quantity="many"></item>
         <item quantity="other">%d applications mises à jour</item>
     </plurals>
     <string name="app_info">Infos sur l\'appli</string>
@@ -251,6 +252,7 @@
     <string name="prefs_devicelock">Verrouillage de l\'appareil</string>
     <plurals name="sched_interval_formal">
         <item quantity="one">chaque jour</item>
+        <item quantity="many"></item>
         <item quantity="other">tous les %d jours</item>
     </plurals>
     <string name="global_blocklist_add">Ajouter à la liste de blocage globale</string>
