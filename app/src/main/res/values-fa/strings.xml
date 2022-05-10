@@ -1,2 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="backup">پشتیبان‌گیری</string>
+    <string name="restore">بازگردانی</string>
+    <string name="backupConfirmation">پشتیبان‌گیری شود؟</string>
+    <string name="restoreConfirmation">بازگردانی شود؟</string>
+    <string name="handleData">داده</string>
+    <string name="handleBoth">هر دو</string>
+    <string name="radio_all">همه برنامه‌ها</string>
+    <string name="radio_user">برنامه‌های کاربر</string>
+    <string name="radio_system">برنامه‌های سیستم</string>
+    <string name="radio_both">فایل برنامه و داده</string>
+    <string name="radio_data">داده</string>
+    <string name="radio_special">پشتیبان‌گیری های ویژه</string>
+    <string name="radio_updated">بروزشده</string>
+    <string name="radio_externaldata">داده‌ی خارجی</string>
+    <string name="radio_deviceprotecteddata">داده محافظت شده دستگاه</string>
+    <string name="radio_obbdata">داده OBB</string>
+    <string name="radio_mediadata">داده رسانه‌ها</string>
+    <string name="de_selectAll">عدم/گزینش همه</string>
+    <string name="refresh">تازه‌سازی</string>
+    <string name="batchbackup">پشتیبان‌گیری چندتایی</string>
+    <string name="batchrestore">بازگردانی چندتایی</string>
+    <string name="search">جستجو</string>
+    <string name="searchHint">جستجوی برنامه‌ها</string>
+    <string name="uninstall">حذف نصب برنامه</string>
+    <string name="uninstallProgress">در حال حذف نصب کردن…</string>
+    <string name="showOnlySystem">فقط برنامه‌های سیستم</string>
+    <string name="showNotBackedup">برنامه های فاقد نسخه پشتیبان</string>
+    <string name="showNotInstalled">برنامه‌های نصب نشده</string>
+    <string name="showNewAndUpdated">برنامه های جدید و بروزشده</string>
+    <string name="showOldBackups">نسخههای پشتیبان قدیمی</string>
+    <string name="showSplitAPKs">برنامه‌های چندپار</string>
+    <string name="sortByLabel">مرتب سازی بر اساس برچسب</string>
+    <string name="sortByPackageName">مرتب سازی بر اساس نام پکیج</string>
+    <string name="sort">مرتب سازی و غربالگری</string>
+    <string name="deleteBackup">حذف نسخه پشتیبان</string>
+    <string name="showOnlyUser">فقط برنامه‌های کاربر</string>
+    <string name="uninstallDialogMessage">این برنامه حذف نصب شود؟</string>
+</resources>
