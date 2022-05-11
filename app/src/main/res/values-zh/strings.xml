@@ -338,4 +338,7 @@
     <string name="root_missing">未获得root权限！</string>
     <string name="see_faq">请看使用说明！</string>
     <string name="root_is_mandatory">由于应用程序数据是受系统隔离的，需要超级用户权限来备份和恢复它们的数据。</string>
+    <string name="prefs_installerpackagename">安装器的包名：</string>
+    <string name="prefs_sessionIinstaller">使用会话安装器</string>
+    <string name="prefs_sessionIinstaller_summary">使用会话安装器而不是基本安装器。安装速度更慢，但解决了 Android 13 的问题</string>
 </resources>
