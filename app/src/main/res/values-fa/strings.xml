@@ -37,4 +37,22 @@
     <string name="deleteBackup">حذف نسخه پشتیبان</string>
     <string name="showOnlyUser">فقط برنامه‌های کاربر</string>
     <string name="uninstallDialogMessage">این برنامه حذف نصب شود؟</string>
+    <string name="deleteBackupDialogMessage">فایل های نسخه پشتیبان حذف شود؟</string>
+    <string name="restoreDataWithoutApkError">نمی‌توان بدون فایل APK برنامه داده ها را بازیابی کرد، پکیج نصب نشده.</string>
+    <string name="noSu">نمی توان مجوزهای ابرکاربر را دریافت کرد</string>
+    <string name="backupProgress">در حال تهیه نسخه پشتیبان.…</string>
+    <string name="backupSuccess">پشتیبان‌گیری تکمیل شد</string>
+    <string name="backupFailure">خطا در پشتیبان گیری</string>
+    <string name="restoreProgress">در حال بازیابی…</string>
+    <string name="restoreSuccess">بازیابی کامل شد</string>
+    <string name="restoreFailure">خطا در بازیابی</string>
+    <string name="batchSuccess">فرایند تکمیل شد</string>
+    <string name="batchFailure">تکمیل شد با چند خطا</string>
+    <string name="uninstallSuccess">حذف نصب تکمیل شد</string>
+    <string name="customListTitle">لیست سفارشی</string>
+    <string name="notInstalledModeDataWarning">نرم‌افزار نمی‌تواند از نسخه‌ی پشتیبان فاقد APK بازیابی شود</string>
+    <string name="shareTitle">هم‌رسانی</string>
+    <string name="mkfileError">نمیتوان ساخت</string>
+    <string name="uninstallFailure">خطا در حذف نصب</string>
+    <string name="batchDeleteMessage">در حال حذف نسخه‌های پشتیبان</string>
 </resources>
