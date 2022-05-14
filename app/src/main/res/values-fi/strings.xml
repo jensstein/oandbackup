@@ -322,4 +322,10 @@
     <string name="prefs_restorepermissions">Palauta käyttöoikeudet</string>
     <string name="prefs_restorepermissions_summary">Palauta sovellukselle varmuuskopiointiaikana myönnettynä olleet käyttöoikeudet. Huomioi, että joitain käyttöoikeuksia ei voida palauttaa ohjelmallisesti ja se aiheuttaa koko paketin palautuksen epäonnistumisen. Tässä tapauksessa Neo Backup palauttaa paketin ilman käyttöoikeuksia.</string>
     <string name="dialogCancelAll">Peruuta kaikki</string>
+    <string name="prefs_sessionIinstaller_summary">Käytä sessioasentajaa Android 13+ kanssa. Vaikka se on hitaampi, vältät ongelmia.</string>
+    <string name="root_missing">Root-oikeudet puuttuvat!</string>
+    <string name="root_is_mandatory">Koska sovellukset ovat toisistaan eristettyinä, vaaditaan pääkäyttäjän oikeudet varmuuskopiointiin ja palautukseen.</string>
+    <string name="see_faq">Katso FAQ!</string>
+    <string name="prefs_sessionIinstaller">Käytä sessioasentajaa</string>
+    <string name="prefs_installerpackagename">Asennuspakkauksen nimi:</string>
 </resources>
