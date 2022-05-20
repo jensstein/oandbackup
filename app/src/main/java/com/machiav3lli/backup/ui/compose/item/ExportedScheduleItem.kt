@@ -42,7 +42,9 @@ fun ExportedScheduleItem(
         modifier = Modifier,
         shape = RoundedCornerShape(LocalShapes.current.medium),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface),
-        containerColor = MaterialTheme.colorScheme.background,
+        colors = CardDefaults.outlinedCardColors(
+            containerColor = MaterialTheme.colorScheme.background
+        ),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(

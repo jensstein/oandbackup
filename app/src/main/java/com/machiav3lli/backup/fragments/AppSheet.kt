@@ -46,6 +46,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
@@ -169,9 +170,9 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
                         modifier = Modifier.padding(top = 8.dp),
                         shape = RoundedCornerShape(LocalShapes.current.medium),
                         border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface),
-                        //colors = CardDefaults.outlinedCardColors(
-                        containerColor = MaterialTheme.colorScheme.background
-                        //)
+                        colors = CardDefaults.outlinedCardColors(
+                            containerColor = MaterialTheme.colorScheme.background
+                        )
                     ) {
                         Row(
                             modifier = Modifier

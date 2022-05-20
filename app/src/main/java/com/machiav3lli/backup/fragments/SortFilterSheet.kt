@@ -35,7 +35,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -86,7 +86,7 @@ class SortFilterSheet(
 
     // TODO Omit using layout fully in next iteration
     @OptIn(
-        ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class,
+        ExperimentalMaterial3Api::class,
         ExperimentalLayoutApi::class
     )
     @Composable
@@ -110,9 +110,9 @@ class SortFilterSheet(
                         ) {
                             OutlinedCard(
                                 modifier = Modifier.padding(top = 4.dp),
-                                //colors = CardDefaults.outlinedCardColors(
+                                colors = CardDefaults.outlinedCardColors(
                                     containerColor = MaterialTheme.colorScheme.background,
-                                //),
+                                ),
                                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface)
                             ) {
                                 Row(
