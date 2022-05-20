@@ -21,7 +21,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
-    kotlin("plugin.serialization").version("1.6.10")
+    kotlin("plugin.serialization").version("1.6.21")
 }
 
 android {
@@ -111,7 +111,7 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.10")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.21")
 
     // Libs
     implementation("androidx.room:room-runtime:2.5.0-alpha01")
