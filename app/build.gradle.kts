@@ -25,6 +25,7 @@ plugins {
 }
 
 android {
+    namespace = "com.machiav3lli.backup"
     compileSdk = 32
 
     defaultConfig {
