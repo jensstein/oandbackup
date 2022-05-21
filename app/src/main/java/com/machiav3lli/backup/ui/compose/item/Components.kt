@@ -15,20 +15,16 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Chip
-import androidx.compose.material.ChipDefaults
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.FilterChip
-import androidx.compose.material.SelectableChipColors
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ChipDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -52,7 +48,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.google.android.material.chip.Chip
 import com.machiav3lli.backup.MAIN_FILTER_SPECIAL
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
@@ -251,7 +246,7 @@ fun RoundButton(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ActionChip(
     modifier: Modifier = Modifier,
@@ -264,47 +259,61 @@ fun ActionChip(
     fullWidth: Boolean = false,
     onClick: () -> Unit
 ) {
-    Chip(
-        modifier = modifier,
-        colors = ChipDefaults.chipColors(
-            backgroundColor = when {
+    AssistChip(
+        modifier = modifier.padding(vertical = 8.dp, horizontal = 4.dp),
+        border = AssistChipDefaults.assistChipBorder(
+            borderColor = Color.Transparent,
+            borderWidth = 0.dp
+        ),
+        shape = MaterialTheme.shapes.large,
+        colors = AssistChipDefaults.assistChipColors(
+            containerColor = when {
                 positive && colored -> MaterialTheme.colorScheme.primaryContainer
                 colored -> MaterialTheme.colorScheme.secondaryContainer
                 else -> MaterialTheme.colorScheme.surface
             },
-            contentColor = when {
+            disabledContainerColor = MaterialTheme.colorScheme.background,
+            labelColor = when {
                 positive && colored -> MaterialTheme.colorScheme.onPrimaryContainer
                 colored -> MaterialTheme.colorScheme.onSecondaryContainer
                 else -> MaterialTheme.colorScheme.onSurface
             },
-            disabledBackgroundColor = MaterialTheme.colorScheme.background,
-            disabledContentColor = MaterialTheme.colorScheme.surface
+            disabledLabelColor = MaterialTheme.colorScheme.surface,
+            leadingIconContentColor = when {
+                positive && colored -> MaterialTheme.colorScheme.onPrimaryContainer
+                colored -> MaterialTheme.colorScheme.onSecondaryContainer
+                else -> MaterialTheme.colorScheme.onSurface
+            },
+            disabledLeadingIconContentColor = MaterialTheme.colorScheme.surface
         ),
         enabled = enabled,
         onClick = onClick,
-    ) {
-        Row(
-            Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        leadingIcon = {
             Icon(
                 modifier = Modifier.size(20.dp),
                 painter = icon,
                 contentDescription = text
             )
-            if (withText) Text(
-                modifier = when {
-                    fullWidth -> Modifier.weight(1f)
-                    else -> Modifier.padding(start = 8.dp)
-                },
-                text = text,
-                textAlign = TextAlign.Center,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.titleSmall
-            )
-        }
-    }
+        },
+        label = {
+            Row(
+                Modifier,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (withText) Text(
+                    modifier = when {
+                        fullWidth -> Modifier.weight(1f)
+                        else -> Modifier.padding(start = 8.dp)
+                    },
+                    text = text,
+                    textAlign = TextAlign.Center,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.titleSmall
+                )
+            }
+        },
+    )
 }
 
 @Composable
@@ -335,7 +344,6 @@ fun StateChip(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CheckChip(
@@ -346,13 +354,15 @@ fun CheckChip(
     onCheckedChange: (Boolean) -> Unit
 ) {
     FilterChip(
-        modifier = modifier,
+        modifier = modifier.padding(vertical = 8.dp, horizontal = 4.dp),
         selected = checked,
-        colors = ChipDefaults.filterChipColors(
-            contentColor = MaterialTheme.colorScheme.onBackground,
-            selectedContentColor = MaterialTheme.colorScheme.primary,
-            backgroundColor = MaterialTheme.colorScheme.background,
-            selectedBackgroundColor = MaterialTheme.colorScheme.primaryContainer
+        colors = FilterChipDefaults.filterChipColors(
+            labelColor = MaterialTheme.colorScheme.onBackground,
+            selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            iconColor = MaterialTheme.colorScheme.onBackground,
+            selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            containerColor = MaterialTheme.colorScheme.background,
+            selectedContainerColor = MaterialTheme.colorScheme.primaryContainer
         ),
         selectedIcon = {
             Icon(
@@ -361,16 +371,16 @@ fun CheckChip(
                 modifier = Modifier.size(24.dp)
             )
         },
-        onClick = { onCheckedChange(!checked) }) {
-        Row(
-            Modifier.padding(vertical = 8.dp, horizontal = 4.dp)
-        ) {
-            Text(text = if (checked) stringResource(id = checkedTextId) else stringResource(id = textId))
+        onClick = { onCheckedChange(!checked) },
+        label = {
+            Row {
+                Text(text = if (checked) stringResource(id = checkedTextId) else stringResource(id = textId))
+            }
         }
-    }
+    )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SwitchChip(
     firstTextId: Int,
@@ -378,11 +388,13 @@ fun SwitchChip(
     secondTextId: Int,
     secondIconId: Int,
     firstSelected: Boolean = true,
-    colors: SelectableChipColors = ChipDefaults.filterChipColors(
-        contentColor = MaterialTheme.colorScheme.onSurface,
-        selectedContentColor = MaterialTheme.colorScheme.primary,
-        backgroundColor = MaterialTheme.colorScheme.surface,
-        selectedBackgroundColor = MaterialTheme.colorScheme.primaryContainer
+    colors: SelectableChipColors = FilterChipDefaults.filterChipColors(
+        labelColor = MaterialTheme.colorScheme.onSurface,
+        selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        iconColor = MaterialTheme.colorScheme.onSurface,
+        selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        containerColor = MaterialTheme.colorScheme.surface,
+        selectedContainerColor = MaterialTheme.colorScheme.primaryContainer
     ),
     onCheckedChange: (Boolean) -> Unit
 ) {
@@ -390,7 +402,7 @@ fun SwitchChip(
         modifier = Modifier
             .background(
                 MaterialTheme.colorScheme.surface,
-                MaterialTheme.shapes.small.copy(CornerSize(percent = 50))
+                MaterialTheme.shapes.small
             )
             .padding(horizontal = 6.dp)
             .fillMaxWidth(),
@@ -400,54 +412,77 @@ fun SwitchChip(
 
         FilterChip(
             modifier = Modifier.weight(1f),
+            border = FilterChipDefaults.filterChipBorder(
+                borderColor = Color.Transparent,
+                borderWidth = 0.dp
+            ),
             selected = firstSelected,
             colors = colors,
             onClick = {
                 onCheckedChange(true)
                 selectFirst(true)
-            }) {
-            Icon(
-                painterResource(id = firstIconId),
-                contentDescription = stringResource(id = firstTextId),
-                modifier = Modifier.size(24.dp)
-            )
-            Row(
-                Modifier
-                    .padding(vertical = 8.dp, horizontal = 4.dp)
-                    .weight(1f)
-            ) {
-                Text(
-                    text = stringResource(id = firstTextId),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.weight(1f)
+            },
+            leadingIcon = {
+                Icon(
+                    painterResource(id = firstIconId),
+                    contentDescription = stringResource(id = firstTextId),
+                    modifier = Modifier.size(24.dp)
                 )
+            },
+            selectedIcon = {
+                Icon(
+                    painterResource(id = firstIconId),
+                    contentDescription = stringResource(id = firstTextId),
+                    modifier = Modifier.size(24.dp)
+                )
+            },
+            label = {
+                Row(
+                    Modifier
+                        .padding(vertical = 8.dp, horizontal = 4.dp)
+                        .weight(1f)
+                ) {
+                    Text(
+                        text = stringResource(id = firstTextId),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
             }
-        }
+        )
         FilterChip(
             modifier = Modifier.weight(1f),
+            border = FilterChipDefaults.filterChipBorder(
+                borderColor = Color.Transparent,
+                borderWidth = 0.dp
+            ),
             selected = !firstSelected,
             colors = colors,
             onClick = {
                 onCheckedChange(false)
                 selectFirst(false)
-            }) {
-            Row(
-                Modifier
-                    .padding(vertical = 8.dp, horizontal = 4.dp)
-                    .weight(1f)
-            ) {
-                Text(
-                    text = stringResource(id = secondTextId),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.weight(1f)
+            },
+            label = {
+                Row(
+                    Modifier
+                        .padding(vertical = 8.dp, horizontal = 4.dp)
+                        .weight(1f)
+                ) {
+                    Text(
+                        text = stringResource(id = secondTextId),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            },
+            trailingIcon = {
+                Icon(
+                    painterResource(id = secondIconId),
+                    contentDescription = stringResource(id = secondTextId),
+                    modifier = Modifier.size(24.dp)
                 )
             }
-            Icon(
-                painterResource(id = secondIconId),
-                contentDescription = stringResource(id = secondTextId),
-                modifier = Modifier.size(24.dp)
-            )
-        }
+        )
     }
 }
 

@@ -1,11 +1,10 @@
 package com.machiav3lli.backup.ui.compose.navigation
 
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,7 +18,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.machiav3lli.backup.NAV_MAIN
 import com.machiav3lli.backup.NAV_PREFS
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
     val items = when (page) {
@@ -38,9 +36,9 @@ fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
         )
     }
 
-    BottomNavigation(
+    NavigationBar(
         modifier = Modifier.height(72.dp),
-        backgroundColor = MaterialTheme.colorScheme.surface,
+        containerColor = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.onSurface
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -48,7 +46,7 @@ fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
         items.forEach { item ->
             val selected = currentDestination == item.destination
 
-            BottomNavigationItem(
+            NavigationBarItem(
                 icon = {
                     Icon(
                         painterResource(id = item.icon),

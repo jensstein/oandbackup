@@ -1,6 +1,5 @@
 package com.machiav3lli.backup.ui.compose.recycler
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,9 +12,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.ChipDefaults
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.FilterChip
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -138,7 +137,7 @@ fun <T> HorizontalItemList(
 }
 
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectableChipGroup(
     modifier: Modifier = Modifier,
@@ -154,52 +153,58 @@ fun SelectableChipGroup(
         mainAxisSpacing = 8.dp
     ) {
         list.forEach {
-            val colors = ChipDefaults.outlinedFilterChipColors(
-                backgroundColor = Color.Transparent,
-                contentColor = MaterialTheme.colorScheme.onSurface,
-                selectedBackgroundColor = Color.Transparent,
-                selectedContentColor = MaterialTheme.colorScheme.primary,
-                leadingIconColor = MaterialTheme.colorScheme.onSurface,
+            val colors = FilterChipDefaults.filterChipColors(
+                containerColor = Color.Transparent,
+                labelColor = MaterialTheme.colorScheme.onSurface,
+                selectedContainerColor = Color.Transparent,
+                selectedLabelColor = MaterialTheme.colorScheme.primary,
+                iconColor = MaterialTheme.colorScheme.onSurface,
                 selectedLeadingIconColor = colorResource(id = it.colorId)
             )
 
             FilterChip(
                 colors = colors,
-                border = BorderStroke(
-                    1.dp,
-                    if (it.flag == selectedFlag) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                border = FilterChipDefaults.filterChipBorder(
+                    borderColor = MaterialTheme.colorScheme.onSurface,
+                    selectedBorderColor = MaterialTheme.colorScheme.primary,
+                    borderWidth = 1.dp,
+                    selectedBorderWidth = 1.dp
                 ),
                 selected = it.flag == selectedFlag,
                 leadingIcon = {
                     Icon(
                         painter = painterResource(id = it.iconId),
                         contentDescription = stringResource(id = it.textId),
-                        tint = colors.leadingIconColor(
-                            enabled = true,
-                            selected = it.flag == selectedFlag
-                        ).value,
+                        modifier = Modifier.size(24.dp)
+                    )
+                },
+                selectedIcon = {
+                    Icon(
+                        painter = painterResource(id = it.iconId),
+                        contentDescription = stringResource(id = it.textId),
                         modifier = Modifier.size(24.dp)
                     )
                 },
                 onClick = {
                     setFlag(it.flag)
                     onClick(it.flag)
+                },
+                label = {
+                    Text(
+                        text = stringResource(id = it.textId),
+                        color = colors.labelColor(
+                            enabled = true,
+                            selected = it.flag == selectedFlag
+                        ).value,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
-            ) {
-                Text(
-                    text = stringResource(id = it.textId),
-                    color = colors.contentColor(
-                        enabled = true,
-                        selected = it.flag == selectedFlag
-                    ).value,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
+            )
         }
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MultiSelectableChipGroup(
     modifier: Modifier = Modifier,
@@ -215,47 +220,53 @@ fun MultiSelectableChipGroup(
         mainAxisSpacing = 8.dp
     ) {
         list.forEach {
-            val colors = ChipDefaults.outlinedFilterChipColors(
-                backgroundColor = Color.Transparent,
-                contentColor = MaterialTheme.colorScheme.onSurface,
-                selectedBackgroundColor = Color.Transparent,
-                selectedContentColor = MaterialTheme.colorScheme.primary,
-                leadingIconColor = MaterialTheme.colorScheme.onSurface,
+            val colors = FilterChipDefaults.filterChipColors(
+                containerColor = Color.Transparent,
+                labelColor = MaterialTheme.colorScheme.onSurface,
+                selectedContainerColor = Color.Transparent,
+                selectedLabelColor = MaterialTheme.colorScheme.primary,
+                iconColor = MaterialTheme.colorScheme.onSurface,
                 selectedLeadingIconColor = colorResource(id = it.colorId)
             )
 
             FilterChip(
                 colors = colors,
-                border = BorderStroke(
-                    1.dp,
-                    if (it.flag and selectedFlags != 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                border = FilterChipDefaults.filterChipBorder(
+                    borderColor = MaterialTheme.colorScheme.onSurface,
+                    selectedBorderColor = MaterialTheme.colorScheme.primary,
+                    borderWidth = 1.dp,
+                    selectedBorderWidth = 1.dp
                 ),
                 selected = it.flag and selectedFlags != 0,
                 leadingIcon = {
                     Icon(
                         painter = painterResource(id = it.iconId),
                         contentDescription = stringResource(id = it.textId),
-                        tint = colors.leadingIconColor(
-                            enabled = true,
-                            selected = it.flag and selectedFlags != 0
-                        ).value,
+                        modifier = Modifier.size(24.dp)
+                    )
+                },
+                selectedIcon = {
+                    Icon(
+                        painter = painterResource(id = it.iconId),
+                        contentDescription = stringResource(id = it.textId),
                         modifier = Modifier.size(24.dp)
                     )
                 },
                 onClick = {
                     setFlag(selectedFlags xor it.flag)
                     onClick(it.flag)
+                },
+                label = {
+                    Text(
+                        text = stringResource(id = it.textId),
+                        color = colors.labelColor(
+                            enabled = true,
+                            selected = it.flag and selectedFlags != 0
+                        ).value,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
-            ) {
-                Text(
-                    text = stringResource(id = it.textId),
-                    color = colors.contentColor(
-                        enabled = true,
-                        selected = it.flag and selectedFlags != 0
-                    ).value,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
+            )
         }
     }
 }
