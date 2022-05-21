@@ -328,4 +328,12 @@
     <string name="see_faq">Katso FAQ!</string>
     <string name="prefs_sessionIinstaller">Käytä sessioasentajaa</string>
     <string name="prefs_installerpackagename">Asennuspakkauksen nimi:</string>
+    <string name="intro_welcome_message">Neo Backup (aikaisemmin OAndBackupX) perustuu nimekkääseen OAndBackupiin tavoitteena tuoda OAndBackup vuoteen 202X ja osaksi Neo Applications-kokoelmaa. Sovellus on täysin kokonaan ohjelmoitu, tavoitteena on tehdä siitä vankka kaikkien laitteiden varmuuskopiointityökalu pitkään suunnitteilla olleilla, käyttöä helpottavilla ominaisuuksilla.
+\nYhteistyö ja kontribuutiot on aina tervetullutta.
+\n
+\n Tämänhetkinen toiminnallisuus:
+\n • Vaatii root-oikeudet, mahdollistaa yksittäisten sovellusten ja niiden datan varmuuskopioinnin.
+\n • Tukee myös useamman sovelluksen massavarmuuskopiointia ja -palautusta.
+\n • Järjestelmäsovellusten palauttaminen pitäisi olla mahdollista ilman uudelleenkäynnistystä.
+\n • Varmuuskopiot voidaan ajastaa rajoittamattomin ajastuksin ja mukautettavien varmuuskopiointilistoin.</string>
 </resources>
