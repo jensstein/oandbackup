@@ -444,11 +444,11 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                                         }
                                     )
                                     Spacer(modifier = Modifier.weight(1f))
-                                    ActionChip(
+                                    ElevatedActionButton(
                                         text = stringResource(id = R.string.delete),
                                         icon = painterResource(id = R.drawable.ic_delete),
                                         positive = false,
-                                        withText = false
+                                        fullWidth = false
                                     ) {
                                         viewModel.deleteSchedule()
                                         cancelAlarm(requireContext(), scheduleId)
