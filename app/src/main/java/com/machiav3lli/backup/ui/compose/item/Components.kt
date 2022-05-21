@@ -1,5 +1,7 @@
 package com.machiav3lli.backup.ui.compose.item
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.expandHorizontally
@@ -27,6 +29,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SelectableChipColors
@@ -80,6 +83,20 @@ import com.machiav3lli.backup.ui.compose.theme.User
 import com.machiav3lli.backup.utils.brighter
 
 @Composable
+fun ButtonIcon(
+    @DrawableRes iconId: Int,
+    @StringRes textId: Int,
+    tint: Color? = null
+) {
+    Icon(
+        painter = painterResource(id = iconId),
+        contentDescription = stringResource(id = textId),
+        modifier = Modifier.size(24.dp),
+        tint = tint ?: LocalContentColor.current
+    )
+}
+
+@Composable
 fun PackageIcon(
     item: Package,
     imageData: Any
@@ -95,6 +112,7 @@ fun PackageIcon(
         placeholder = placeholderIconPainter(item)
     )
 }
+
 
 @Composable
 fun placeholderIconPainter(item: Package) = painterResource(
@@ -129,7 +147,7 @@ fun ActionButton(
         if (icon != null) {
             Spacer(modifier = Modifier.weight(1f))
             Icon(
-                modifier = Modifier.size(20.dp),
+                modifier = Modifier.size(24.dp),
                 painter = icon,
                 contentDescription = text
             )
@@ -156,7 +174,7 @@ fun ElevatedActionButton(
     ) {
         if (icon != null) {
             Icon(
-                modifier = Modifier.size(20.dp),
+                modifier = Modifier.size(24.dp),
                 painter = icon,
                 contentDescription = text
             )
@@ -290,7 +308,7 @@ fun ActionChip(
         onClick = onClick,
         leadingIcon = {
             Icon(
-                modifier = Modifier.size(20.dp),
+                modifier = Modifier.size(24.dp),
                 painter = icon,
                 contentDescription = text
             )
@@ -337,7 +355,7 @@ fun StateChip(
         onClick = onClick,
     ) {
         Icon(
-            modifier = Modifier.size(20.dp),
+            modifier = Modifier.size(24.dp),
             painter = icon,
             contentDescription = text
         )
@@ -365,11 +383,7 @@ fun CheckChip(
             selectedContainerColor = MaterialTheme.colorScheme.primaryContainer
         ),
         selectedIcon = {
-            Icon(
-                painterResource(id = R.drawable.ic_all),
-                contentDescription = "",
-                modifier = Modifier.size(24.dp)
-            )
+            ButtonIcon(R.drawable.ic_all, R.string.enabled)
         },
         onClick = { onCheckedChange(!checked) },
         label = {
@@ -423,18 +437,10 @@ fun SwitchChip(
                 selectFirst(true)
             },
             leadingIcon = {
-                Icon(
-                    painterResource(id = firstIconId),
-                    contentDescription = stringResource(id = firstTextId),
-                    modifier = Modifier.size(24.dp)
-                )
+                ButtonIcon(firstIconId, firstTextId)
             },
             selectedIcon = {
-                Icon(
-                    painterResource(id = firstIconId),
-                    contentDescription = stringResource(id = firstTextId),
-                    modifier = Modifier.size(24.dp)
-                )
+                ButtonIcon(firstIconId, firstTextId)
             },
             label = {
                 Row(
@@ -476,11 +482,7 @@ fun SwitchChip(
                 }
             },
             trailingIcon = {
-                Icon(
-                    painterResource(id = secondIconId),
-                    contentDescription = stringResource(id = secondTextId),
-                    modifier = Modifier.size(24.dp)
-                )
+                ButtonIcon(secondIconId, secondTextId)
             }
         )
     }
@@ -511,71 +513,54 @@ fun PackageLabels(
     item: Package
 ) {
     AnimatedVisibility(visible = item.isUpdated) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = R.drawable.ic_updated),
-            contentDescription = stringResource(id = R.string.radio_updated),
+        ButtonIcon(
+            R.drawable.ic_updated, R.string.radio_updated,
             tint = Updated
         )
     }
     AnimatedVisibility(visible = item.hasMediaData) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = R.drawable.ic_media_data),
-            contentDescription = stringResource(id = R.string.radio_mediadata),
+        ButtonIcon(
+            R.drawable.ic_media_data, R.string.radio_mediadata,
             tint = Media
         )
     }
     AnimatedVisibility(visible = item.hasObbData) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = R.drawable.ic_obb_data),
-            contentDescription = stringResource(id = R.string.radio_obbdata),
+        ButtonIcon(
+            R.drawable.ic_obb_data, R.string.radio_obbdata,
             tint = OBB
         )
     }
     AnimatedVisibility(visible = item.hasExternalData) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = R.drawable.ic_external_data),
-            contentDescription = stringResource(id = R.string.radio_externaldata),
+        ButtonIcon(
+            R.drawable.ic_external_data, R.string.radio_externaldata,
             tint = ExtDATA
         )
     }
     AnimatedVisibility(visible = item.hasDevicesProtectedData) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = R.drawable.ic_de_data),
-            contentDescription = stringResource(id = R.string.radio_deviceprotecteddata),
+        ButtonIcon(
+            R.drawable.ic_de_data, R.string.radio_deviceprotecteddata,
             tint = DeData
         )
     }
     AnimatedVisibility(visible = item.hasAppData) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = R.drawable.ic_data),
-            contentDescription = stringResource(id = R.string.radio_data),
+        ButtonIcon(
+            R.drawable.ic_data, R.string.radio_data,
             tint = Data
         )
     }
     AnimatedVisibility(visible = item.hasApk) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = R.drawable.ic_apk),
-            contentDescription = stringResource(id = R.string.radio_apk),
+        ButtonIcon(
+            R.drawable.ic_apk, R.string.radio_apk,
             tint = APK
         )
     }
-    Icon(
-        modifier = Modifier.size(24.dp),
-        painter = painterResource(
-            id = when {
-                item.isSpecial -> R.drawable.ic_special
-                item.isSystem -> R.drawable.ic_system
-                else -> R.drawable.ic_user
-            }
-        ),
-        contentDescription = stringResource(id = R.string.app_s_type_title),
+    ButtonIcon(
+        when {
+            item.isSpecial -> R.drawable.ic_special
+            item.isSystem -> R.drawable.ic_system
+            else -> R.drawable.ic_user
+        },
+        R.string.app_s_type_title,
         tint = when {
             item.isSpecial -> Special
             item.isSystem -> System
@@ -589,50 +574,38 @@ fun BackupLabels(
     item: Backup
 ) {
     AnimatedVisibility(visible = item.hasMediaData) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = R.drawable.ic_media_data),
-            contentDescription = stringResource(id = R.string.radio_mediadata),
+        ButtonIcon(
+            R.drawable.ic_media_data, R.string.radio_mediadata,
             tint = Media
         )
     }
     AnimatedVisibility(visible = item.hasObbData) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = R.drawable.ic_obb_data),
-            contentDescription = stringResource(id = R.string.radio_obbdata),
+        ButtonIcon(
+            R.drawable.ic_obb_data, R.string.radio_obbdata,
             tint = OBB
         )
     }
     AnimatedVisibility(visible = item.hasExternalData) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = R.drawable.ic_external_data),
-            contentDescription = stringResource(id = R.string.radio_externaldata),
+        ButtonIcon(
+            R.drawable.ic_external_data, R.string.radio_externaldata,
             tint = ExtDATA
         )
     }
     AnimatedVisibility(visible = item.hasDevicesProtectedData) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = R.drawable.ic_de_data),
-            contentDescription = stringResource(id = R.string.radio_deviceprotecteddata),
+        ButtonIcon(
+            R.drawable.ic_de_data, R.string.radio_deviceprotecteddata,
             tint = DeData
         )
     }
     AnimatedVisibility(visible = item.hasAppData) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = R.drawable.ic_data),
-            contentDescription = stringResource(id = R.string.radio_data),
+        ButtonIcon(
+            R.drawable.ic_data, R.string.radio_data,
             tint = Data
         )
     }
     AnimatedVisibility(visible = item.hasApk) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = R.drawable.ic_apk),
-            contentDescription = stringResource(id = R.string.radio_apk),
+        ButtonIcon(
+            R.drawable.ic_apk, R.string.radio_apk,
             tint = APK
         )
     }
@@ -642,50 +615,38 @@ fun BackupLabels(
 @Composable
 fun ScheduleTypes(item: Schedule) {
     AnimatedVisibility(visible = item.mode and MODE_DATA_MEDIA == MODE_DATA_MEDIA) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = R.drawable.ic_media_data),
-            contentDescription = stringResource(id = R.string.radio_mediadata),
+        ButtonIcon(
+            R.drawable.ic_media_data, R.string.radio_mediadata,
             tint = Media
         )
     }
     AnimatedVisibility(visible = item.mode and MODE_DATA_OBB == MODE_DATA_OBB) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = R.drawable.ic_obb_data),
-            contentDescription = stringResource(id = R.string.radio_obbdata),
+        ButtonIcon(
+            R.drawable.ic_obb_data, R.string.radio_obbdata,
             tint = OBB
         )
     }
     AnimatedVisibility(visible = item.mode and MODE_DATA_EXT == MODE_DATA_EXT) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = R.drawable.ic_external_data),
-            contentDescription = stringResource(id = R.string.radio_externaldata),
+        ButtonIcon(
+            R.drawable.ic_external_data, R.string.radio_externaldata,
             tint = ExtDATA
         )
     }
     AnimatedVisibility(visible = item.mode and MODE_DATA_DE == MODE_DATA_DE) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = R.drawable.ic_de_data),
-            contentDescription = stringResource(id = R.string.radio_deviceprotecteddata),
+        ButtonIcon(
+            R.drawable.ic_de_data, R.string.radio_deviceprotecteddata,
             tint = DeData
         )
     }
     AnimatedVisibility(visible = item.mode and MODE_DATA == MODE_DATA) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = R.drawable.ic_data),
-            contentDescription = stringResource(id = R.string.radio_data),
+        ButtonIcon(
+            R.drawable.ic_data, R.string.radio_data,
             tint = Data
         )
     }
     AnimatedVisibility(visible = item.mode and MODE_APK == MODE_APK) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = R.drawable.ic_apk),
-            contentDescription = stringResource(id = R.string.radio_apk),
+        ButtonIcon(
+            R.drawable.ic_apk, R.string.radio_apk,
             tint = APK
         )
     }
@@ -697,41 +658,32 @@ fun ScheduleFilters(
     item: Schedule
 ) {
     AnimatedVisibility(visible = item.filter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = R.drawable.ic_system),
-            contentDescription = stringResource(id = R.string.radio_system),
+        ButtonIcon(
+            R.drawable.ic_system, R.string.radio_system,
             tint = System
         )
     }
     AnimatedVisibility(visible = item.filter and MAIN_FILTER_USER == MAIN_FILTER_USER) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = R.drawable.ic_user),
-            contentDescription = stringResource(id = R.string.radio_user),
+        ButtonIcon(
+            R.drawable.ic_user, R.string.radio_user,
             tint = User
         )
     }
     AnimatedVisibility(visible = item.filter and MAIN_FILTER_SPECIAL == MAIN_FILTER_SPECIAL) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = R.drawable.ic_special),
-            contentDescription = stringResource(id = R.string.radio_special),
+        ButtonIcon(
+            R.drawable.ic_special, R.string.radio_special,
             tint = Special
         )
     }
     AnimatedVisibility(visible = item.specialFilter != SPECIAL_FILTER_ALL) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(
-                id = when (item.specialFilter) {
-                    SPECIAL_FILTER_DISABLED -> R.drawable.ic_exclude
-                    SPECIAL_FILTER_LAUNCHABLE -> R.drawable.ic_launchable
-                    SPECIAL_FILTER_OLD -> R.drawable.ic_old
-                    else -> R.drawable.ic_updated
-                }
-            ),
-            contentDescription = stringResource(id = R.string.app_s_type_title),
+        ButtonIcon(
+            when (item.specialFilter) {
+                SPECIAL_FILTER_DISABLED -> R.drawable.ic_exclude
+                SPECIAL_FILTER_LAUNCHABLE -> R.drawable.ic_launchable
+                SPECIAL_FILTER_OLD -> R.drawable.ic_old
+                else -> R.drawable.ic_updated
+            },
+            R.string.app_s_type_title,
             tint = when (item.specialFilter) {
                 SPECIAL_FILTER_DISABLED -> DeData
                 SPECIAL_FILTER_LAUNCHABLE -> OBB
