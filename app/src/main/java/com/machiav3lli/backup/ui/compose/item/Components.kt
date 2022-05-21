@@ -139,7 +139,7 @@ fun ActionButton(
 
 @Composable
 fun ElevatedActionButton(
-    modifier: Modifier = Modifier.fillMaxWidth(),
+    modifier: Modifier = Modifier,
     text: String,
     positive: Boolean = true,
     icon: Painter? = null,
