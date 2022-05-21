@@ -29,6 +29,7 @@ import com.machiav3lli.backup.MODE_DATA_MEDIA
 import com.machiav3lli.backup.MODE_DATA_OBB
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.app
+import com.machiav3lli.backup.PREFS_ASSEMBLE_FILE_ONE_STEP
 import com.machiav3lli.backup.PREFS_BACKUPTARCMD
 import com.machiav3lli.backup.PREFS_EXCLUDECACHE
 import com.machiav3lli.backup.dbs.entity.Backup
@@ -392,7 +393,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
 
     @Throws(BackupFailedException::class)
     private fun assembleFileList(sourcePath: String): List<ShellHandler.FileInfo> {
-        return if (OABX.prefFlag("useAssembleFileListOneStep", true))
+        return if (OABX.prefFlag(PREFS_ASSEMBLE_FILE_ONE_STEP, true))
             assembleFileListOneStep(sourcePath)
         else
             assembleFileListTwoStep(sourcePath)
