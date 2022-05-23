@@ -55,4 +55,18 @@
     <string name="mkfileError">نمیتوان ساخت</string>
     <string name="uninstallFailure">خطا در حذف نصب</string>
     <string name="batchDeleteMessage">در حال حذف نسخه‌های پشتیبان</string>
+    <string name="prefs_devicelock">قفل دستگاه</string>
+    <string name="prefs_biometriclock">قفل بیومتریک</string>
+    <string name="prefs_pathbackupfolder">پوشه پشتیبان‌گیری</string>
+    <string name="disablePackage">غیرفعال‌سازی برنامه</string>
+    <string name="error_pmDataIncompleteException_dataRestoreFailed">داده‌ی برنامه بازیابی نشد.</string>
+    <string name="prefs_tools">ابزارها</string>
+    <string name="prefs_theme">پوسته</string>
+    <string name="prefs_theme_light">روشن</string>
+    <string name="prefs_theme_dark">تیره</string>
+    <string name="prefs_housekeepingmoment_after">پس از پشتیبان‌گیری</string>
+    <string name="prefs_housekeepingmoment_before">پیش از پشتیبان‌گیری</string>
+    <string name="prefs_theme_system">پوسته سیستم</string>
+    <string name="prefs_languages">زبان</string>
+    <string name="prefs_language_system">پیشفرض سیستم</string>
 </resources>
