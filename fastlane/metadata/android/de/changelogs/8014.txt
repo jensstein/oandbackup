@@ -1,0 +1,5 @@
+Hot-Fix-Release, basiert auf 8.0.0-alpha14, da vor ein paar Wochen ein unbeabsichtigtes Release veröffentlicht wurde.
+behebt Probleme dieses Releases; funktioniert zuverlässig; immer noch vergleichsweise stockend, da Compose noch nicht die beste Performance bietet und ein echtes Release noch länger dauern würde. Highlights:
+* Update: Neues Update-Format (Die App unterstützt weiterhin ältere Formate)
+* Behebung: Aller A12-Probleme auf v7
+für weitere Details, lesen Sie das vollständige Changelog
