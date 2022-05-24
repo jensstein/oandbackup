@@ -12,6 +12,7 @@
 * [So why use SAF then?](#so-why-use-saf-then)
 * [How does NB stop / pause / (un)suspend apps during backup?](#how-does-nb-stop--pause--unsuspend-apps-during-backup)
 * [I do not see any apps in the list. What can be the reason?](#i-do-not-see-any-apps-in-the-list-what-can-be-the-reason)
+* [What should I do, when I get the "No SAF manager" message?](#what-should-i-do-when-i-get-the-no-saf-manager-message)
 * [I do not see the app which is currently backed up in the notification during batch or scheduled backups.](#i-do-not-see-the-app-which-is-currently-backed-up-in-the-notification-during-batch-or-scheduled-backups)
 * [At restore the data directory of the app does not exist.](#at-restore-the-data-directory-of-the-app-does-not-exist)
 * [How can I backup SMS &amp; Call log?](#how-can-i-backup-sms--call-log)
@@ -332,6 +333,24 @@ Create a separate/dedicated sub-folder and choose it in NB preferences (User pre
 
 Another mistake, which might happen is, that you set a filters, which lead to an empty result.
 
+### What should I do, when I get the "No SAF manager" message?
+
+> "There's no file manager to manage SAF. Maybe you've disabled the built-in file manager. Please restore it or re-enable it."
+
+You may wanna read about [SAF](#why-is-nb-so-slow) first. 
+
+   This message and the details already tell you what's wrong. You have to have the default file manager app (normally called "Files") installed, which is an integral part of the system and is not supposed to be removed nor disabled. It's not just an app to read, copy, move files. SAF framework uses it as a provider e.g. for the file selection dialog (which is also needed by other apps, not only for NB). Afawk other file managers can't do that. 
+
+   It is not yet known if other SAF supporting file manager can take over that job, e.g. if they are installed as system app, or if there's more to it (feel free to report if you find a way to replace the default file manager). 
+A lot of users (including some contributors to NB) use e.g. MiXplorer for file management too, as it is much more advanced than the stock one, but still the default one stays. It doesn't hurt anyway.
+
+   The "Files" app doesn't take any resources that would be freed by disabling it. So it's not worth to even think about it.
+When weighing the risk of damaging something vs. the expected gain (~zero) it should be very clear.
+
+   Some allegories which may help to better understand it:
+* It might help to think of if it as of the Windows Explorer. Did you ever uninstall it?
+* "I never used the roof of my car, I don't need it and it's bloat... so I removed it. Now why is it wet in my car, when it rains? What a shitty car ..."
+
 ### I do not see the app which is currently backed up in the notification during batch or scheduled backups.
 
 *obsolate beginning with version 8* - see also [What does the notification of schedules and batch jobs tell me?](#what-does-the-notification-of-schedules-and-batch-jobs-tell-me)
@@ -381,11 +400,13 @@ Generally please see [What are Special Backups?](#what-are-special-backups) firs
 NB starts supporting backup SMS/MMS and Call logs beginning with version 8. The current implementation (of [DL](https://github.com/dl200010)) writes all the details into a JSON format.
 
 The Call-Logs are saved in data providers like some other special data (com.android.providers.telephony). Sometimes you would need to restart after restoring its data. 
-   
-For **contacts, calendar** and todo-lists. 
-Contacts data somehow connected to system package com.android.providers.contacts.
+
+Next to this users asked quite often about **contacts, calendar** and todo-lists: 
 We advice to use [DecSync](https://github.com/39aldo39/DecSync) with its diverse apps.
-Alternatively use a CalDAV/CardDAV management app (like DavX5) and sync them with a trustworthy mail provider account.
+Alternatively use a CalDAV/CardDAV management app (like DavX5) and sync them with a trustworthy mail provider account (or your private Mailserver, a Nextcloud, etc. etc.).
+
+For contacts it should also work to back up the data of "Contacts Storage" (package com.android.providers.contacts) system app. 
+Restoring it later on should restore contacts fine, but it's not guaranteed. Up to now it's not implemented as a [special backup](#what-are-special-backups) by NB.
 
 ### Are you going to support older Android versions?
 
