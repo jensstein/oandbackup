@@ -340,4 +340,9 @@
     <string name="sortDesc">Absteigend</string>
     <string name="see_faq">Siehe FAQ!</string>
     <string name="root_missing">ROOT fehlt!</string>
+    <string name="prefs_loadingtoasts">Lade Popup</string>
+    <string name="prefs_loadingtoasts_summary">Zeige Popups während die App-Liste geladen wird</string>
+    <string name="prefs_sessionIinstaller">das Session Installationsprogramm verwenden</string>
+    <string name="prefs_sessionIinstaller_summary">das Session Installationsprogramm anstelle des Basis Installationsprogramm verwenden. Langsamer, aber vermeidet Probleme mit Android 13+</string>
+    <string name="prefs_installerpackagename">Packetname des Installationsprogramms:</string>
 </resources>
