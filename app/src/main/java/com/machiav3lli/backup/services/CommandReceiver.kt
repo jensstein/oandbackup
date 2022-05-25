@@ -70,11 +70,9 @@ class CommandReceiver : //TODO hg42 how to maintain security?
             ACTION_CRASH -> {
                 throw Exception("this is a crash via command intent")
             }
-            null -> {
-                // ignore?
-            }
+            null -> {}
             else -> {
-                OABX.activity?.showToast("Command: unknown command '$command'")
+                OABX.activity?.showToast("Command: command '$command'")
             }
         }
     }

@@ -22,5 +22,5 @@
     <fragment
         android:id="@+id/schedulerFragment"
         android:name="com.machiav3lli.backup.fragments.SchedulerFragment"
-        tools:layout="@layout/fragment_scheduler" />
+        tools:layout="@layout/fragment_compose" />
 </navigation>

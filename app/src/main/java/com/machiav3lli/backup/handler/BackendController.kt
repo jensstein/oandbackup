@@ -25,11 +25,13 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Process
 import com.machiav3lli.backup.EXPORTS_FOLDER_NAME
+import com.machiav3lli.backup.IGNORED_PERMISSIONS
 import com.machiav3lli.backup.LOG_FOLDER_NAME
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_LOADINGTOASTS
+import com.machiav3lli.backup.PREFS_PMSUSPEND
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.ignoredPackages
 import com.machiav3lli.backup.dbs.dao.AppInfoDao
@@ -110,7 +112,7 @@ fun Context.getInstalledPackageList(blockList: List<String> = listOf()): Mutable
                 ?.flags
                 ?: 0) and ApplicationInfo.FLAG_SUSPENDED
         }.apply {
-            OABX.activity?.whileShowingSnackBar(getString(R.string.supended_apps_cleanup)) {
+            OABX.main?.whileShowingSnackBar(getString(R.string.supended_apps_cleanup)) {
                 // cleanup suspended package if lock file found
                 this.forEach { appPackage ->
                     runAsRoot("pm unsuspend ${appPackage.packageName}")
@@ -132,14 +134,10 @@ fun Context.getInstalledPackageList(blockList: List<String> = listOf()): Mutable
         }
     }
 
-    val directoriesInBackupRoot = getDirectoriesInBackupRoot()
+    val directoriesInBackupRoot = getBackupPackageDirectories()
     val backupList = mutableListOf<Backup>()
     directoriesInBackupRoot
-        .filterNot {
-            it.name?.let { name ->
-                name == EXPORTS_FOLDER_NAME || name == LOG_FOLDER_NAME
-            } ?: true
-        }.map {
+        .map {
             it.listFiles()
                 .filter(StorageFile::isPropertyFile)
                 .forEach { propFile ->
@@ -181,17 +179,12 @@ fun List<Package>.toAppInfoList(): List<AppInfo> =
 fun List<AppInfo>.toPackageList(
     context: Context,
     blockList: List<String> = listOf(),
-    backupMap: Map<String, List<Backup>> = mapOf(),
-    includeUninstalled: Boolean = true
+    backupMap: Map<String, List<Backup>> = mapOf()
 ): MutableList<Package> {
-    val startTime = System.currentTimeMillis()
-    val showToasts = OABX.prefFlag(PREFS_LOADINGTOASTS, true)
 
     val includeSpecial = context.specialBackupsEnabled
 
-    OABX.activity?.showToast("toPackageList...", showToasts)
-
-    var packageList =
+    val packageList =
         this.filterNot {
             it.packageName.matches(ignoredPackages) || it.packageName in blockList
         }
@@ -207,33 +200,21 @@ fun List<AppInfo>.toPackageList(
             }
             .toMutableList()
 
-    val afterPackagesTime = System.currentTimeMillis()
-    OABX.activity?.showToast(
-        "toPackageList: packages: ${((afterPackagesTime - startTime) / 1000 + 0.5).toInt()} sec",
-        showToasts
-    )
-
     // Special Backups must added before the uninstalled packages, because otherwise it would
     // discover the backup directory and run in a special case where no the directory is empty.
     // This would mean, that no package info is available – neither from backup.properties
     // nor from PackageManager.
     // TODO show special packages directly wihtout restarting NB
-    val specialList = mutableListOf<String>()
+    //val specialList = mutableListOf<String>()
     if (includeSpecial) {
         SpecialInfo.getSpecialPackages(context).forEach {
             if (!blockList.contains(it.packageName)) {
                 it.updateBackupList(backupMap[it.packageName].orEmpty())
                 packageList.add(it)
             }
-            specialList.add(it.packageName)
+            //specialList.add(it.packageName)
         }
     }
-
-    val afterAllTime = System.currentTimeMillis()
-    OABX.activity?.showToast(
-        "toPackageList: all: ${((afterAllTime - startTime) / 1000 + 0.5).toInt()} sec",
-        showToasts
-    )
 
     return packageList
 }
@@ -242,14 +223,14 @@ fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
     val startTime = System.currentTimeMillis()
     val showToasts = OABX.prefFlag(PREFS_LOADINGTOASTS, true)
 
-    OABX.activity?.showToast("updateInfoTable...", showToasts)
+    OABX.activity?.showToast("updateAppInfoTable...", showToasts)
 
     val pm = packageManager
     val installedAppList = pm.getInstalledPackagesWithPermissions()
     val installedAppNames = installedAppList.map { it.packageName }.toList()
     val specialList = SpecialInfo.getSpecialPackages(this).map { it.packageName }
 
-    if (!OABX.appsSuspendedChecked) {
+    if (!OABX.appsSuspendedChecked && OABX.prefFlag(PREFS_PMSUSPEND, false)) {
         installedAppNames.filter { packageName ->
             0 != (OABX.activity?.packageManager
                 ?.getPackageInfo(packageName, 0)
@@ -257,7 +238,7 @@ fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
                 ?.flags
                 ?: 0) and ApplicationInfo.FLAG_SUSPENDED
         }.apply {
-            OABX.activity?.whileShowingSnackBar(getString(R.string.supended_apps_cleanup)) {
+            OABX.main?.whileShowingSnackBar(getString(R.string.supended_apps_cleanup)) {
                 // cleanup suspended package if lock file found
                 this.forEach { packageName ->
                     runAsRoot("pm unsuspend $packageName")
@@ -267,7 +248,7 @@ fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
         }
     }
 
-    val directoriesInBackupRoot = getDirectoriesInBackupRoot()
+    val directoriesInBackupRoot = getBackupPackageDirectories()
     val packagesWithBackup: List<AppInfo> =
     // Try to create AppInfo objects
     // if it fails, null the object for filtering in the next step to avoid crashes
@@ -281,7 +262,7 @@ fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
             .mapNotNull {
                 try {
                     // TODO Add a direct constructor
-                    Package(this, it.name, it).packageInfo as AppInfo
+                    Package(this, it.name!!, it).packageInfo as AppInfo
                 } catch (e: AssertionError) {
                     Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
                     null
@@ -290,7 +271,7 @@ fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
             .toList()
     val appInfoList =
         installedAppList
-            .filterNot { it.packageName in packagesWithBackup.map { it.packageName } }
+            .filterNot { it.packageName in packagesWithBackup.map(AppInfo::packageName) }
             .map { AppInfo(this, it) }
             .union(packagesWithBackup)
             .toTypedArray()
@@ -298,20 +279,21 @@ fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
 
     val afterTime = System.currentTimeMillis()
     OABX.activity?.showToast(
-        "updateInfoTable: ${((afterTime - startTime) / 1000 + 0.5).toInt()} sec",
+        "updateAppInfoTable: ${((afterTime - startTime) / 1000 + 0.5).toInt()} sec",
         showToasts
     )
 }
 
 fun Context.updateBackupTable(backupDao: BackupDao) {
-    val directoriesInBackupRoot = getDirectoriesInBackupRoot()
+    val startTime = System.currentTimeMillis()
+    val showToasts = OABX.prefFlag(PREFS_LOADINGTOASTS, true)
+
+    OABX.activity?.showToast("updateBackupTable...", showToasts)
+
+    val directoriesInBackupRoot = getBackupPackageDirectories()
     val backupList = mutableListOf<Backup>()
     directoriesInBackupRoot
-        .filterNot {
-            it.name?.let { name ->
-                name == EXPORTS_FOLDER_NAME || name == LOG_FOLDER_NAME
-            } ?: true
-        }.map {
+        .map {
             it.listFiles()
                 .filter(StorageFile::isPropertyFile)
                 .forEach { propFile ->
@@ -334,13 +316,19 @@ fun Context.updateBackupTable(backupDao: BackupDao) {
         }
 
     backupDao.updateList(*backupList.toTypedArray())
+
+    val afterTime = System.currentTimeMillis()
+    OABX.activity?.showToast(
+        "updateBackupTable: ${((afterTime - startTime) / 1000 + 0.5).toInt()} sec",
+        showToasts
+    )
 }
 
 @Throws(
     FileUtils.BackupLocationInAccessibleException::class,
     StorageLocationNotConfiguredException::class
 )
-fun Context.getDirectoriesInBackupRoot(): List<StorageFile> {
+fun Context.getBackupPackageDirectories(): List<StorageFile> {
     StorageFile.invalidateCache()
     val backupRoot = getBackupDir()
     try {
@@ -381,6 +369,7 @@ fun Context.getSpecial(packageName: String) = SpecialInfo.getSpecialPackages(thi
     .find { it.packageName == packageName }
 
 val PackageInfo.grantedPermissions: List<String>
-    get() = requestedPermissions?.filterIndexed { index, _ ->
-        requestedPermissionsFlags[index] and PackageInfo.REQUESTED_PERMISSION_GRANTED == PackageInfo.REQUESTED_PERMISSION_GRANTED
+    get() = requestedPermissions?.filterIndexed { index, perm ->
+        requestedPermissionsFlags[index] and PackageInfo.REQUESTED_PERMISSION_GRANTED == PackageInfo.REQUESTED_PERMISSION_GRANTED &&
+                perm !in IGNORED_PERMISSIONS
     }.orEmpty()

@@ -21,6 +21,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +32,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -49,6 +51,7 @@ import com.machiav3lli.backup.ALT_MODE_APK
 import com.machiav3lli.backup.ALT_MODE_BOTH
 import com.machiav3lli.backup.ALT_MODE_DATA
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
@@ -93,6 +96,9 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        OABX.main?.viewModel?.isNeedRefresh?.observe(viewLifecycleOwner) {
+            viewModel.refreshing.postValue(it)
+        }
         packageList.observe(requireActivity()) { refreshView(it) }
     }
 
@@ -149,13 +155,11 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
     }
 
     override fun updateProgress(progress: Int, max: Int) {
-        //binding.progressBar.visibility = View.VISIBLE
-        //binding.progressBar.max = max
-        //binding.progressBar.progress = progress
+        viewModel.progress.postValue(Pair(true, progress.toFloat() / max.toFloat()))
     }
 
     override fun hideProgress() {
-        //binding.progressBar.visibility = View.GONE
+        viewModel.progress.postValue(Pair(false, 0f))
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -179,6 +183,8 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         var allDataChecked by remember {
             mutableStateOf(viewModel.dataCheckedList.size == list?.size)
         }
+        val refreshing by viewModel.refreshing.observeAsState()
+        val progress by viewModel.progress.observeAsState(Pair(false, 0f))
 
         AppTheme(
             darkTheme = isSystemInDarkTheme()
@@ -214,7 +220,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                         ActionChip(
                             icon = painterResource(id = R.drawable.ic_blocklist),
                             text = stringResource(id = R.string.sched_blocklist),
-                            positive = true
+                            positive = false
                         ) {
                             GlobalScope.launch(Dispatchers.IO) {
                                 val blocklistedPackages =
@@ -248,6 +254,15 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                                 "SORTFILTER_SHEET"
                             )
                         }
+                    }
+                    AnimatedVisibility(visible = refreshing ?: false) {
+                        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                    }
+                    AnimatedVisibility(visible = progress?.first == true) {
+                        LinearProgressIndicator(
+                            modifier = Modifier.fillMaxWidth(),
+                            progress = progress.second
+                        )
                     }
                     BatchPackageRecycler(
                         modifier = Modifier

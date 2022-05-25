@@ -10,13 +10,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.TopAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
@@ -43,14 +44,18 @@ fun TopBar(
     title: String,
     actions: @Composable (RowScope.() -> Unit)
 ) {
-    TopAppBar(
+    SmallTopAppBar(
         modifier = Modifier.wrapContentHeight(),
         title = {
             Text(text = title, style = MaterialTheme.typography.headlineMedium)
         },
-        backgroundColor = MaterialTheme.colorScheme.surface,
-        contentColor = MaterialTheme.colorScheme.onSurface,
-        elevation = 0.dp,
+        colors = TopAppBarDefaults.smallTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+            actionIconContentColor = MaterialTheme.colorScheme.onSurface,
+            navigationIconContentColor = MaterialTheme.colorScheme.onSurface
+        ),
+        //elevation = 0.dp,
         actions = actions
     )
 }
@@ -81,7 +86,7 @@ fun ExpandableSearchAction(
         collapsedView = {
             Row {
                 RoundButton(icon = painterResource(id = R.drawable.ic_refresh)) {
-                    OABX.activity?.needRefresh = true
+                    OABX.main?.needRefresh = true
                 }
                 CollapsedSearchView(
                     modifier = modifier,

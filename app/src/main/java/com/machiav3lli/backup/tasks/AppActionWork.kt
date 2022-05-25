@@ -37,6 +37,7 @@ import androidx.work.workDataOf
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_MAXRETRIES
+import com.machiav3lli.backup.PREFS_USEEXPEDITED
 import com.machiav3lli.backup.PREFS_USEFOREGROUND
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
@@ -44,7 +45,7 @@ import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler.Companion.getVar
 import com.machiav3lli.backup.handler.WorkHandler.Companion.setVar
-import com.machiav3lli.backup.handler.getDirectoriesInBackupRoot
+import com.machiav3lli.backup.handler.getBackupPackageDirectories
 import com.machiav3lli.backup.handler.getSpecial
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
@@ -138,11 +139,11 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         } catch (e: PackageManager.NameNotFoundException) {
             if (packageLabel.isEmpty())
                 packageLabel = packageItem?.packageLabel ?: "NONAME"
-            val backupDir = context.getDirectoriesInBackupRoot()
+            val backupDir = context.getBackupPackageDirectories()
                 .find { it.name == packageName }
             backupDir?.let {
                 try {
-                    packageItem = Package(context, it.name, it)
+                    packageItem = Package(context, it.name!!, it)
                 } catch (e: AssertionError) {
                     Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
                     result = ActionResult(
@@ -255,8 +256,6 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        //val cancelPendingIntent = WorkManager.getInstance(applicationContext)
-        //    .createCancelPendingIntent(id) // TODO [hg42: is the comment still valid?] causing crash on targetSDK 31 on A12, go back to targetSDK 30 for now and wait update on WorkManager's side
         val cancelAllIntent =
             Intent(OABX.context, CommandReceiver::class.java).apply {
                 action = "cancel"
@@ -278,7 +277,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                     else -> context.getString(com.machiav3lli.backup.R.string.batchrestore)
                 }
             )
-            .setSmallIcon(com.machiav3lli.backup.R.drawable.ic_app)
+            .setSmallIcon(R.drawable.ic_app)
             .setOngoing(true)
             .setSilent(true)
             .setContentIntent(contentPendingIntent)
@@ -329,7 +328,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                     )
                 )
 
-            if (OABX.prefFlag("useExpedited", true))
+            if (OABX.prefFlag(PREFS_USEEXPEDITED, true))
                 builder.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
 
             return builder.build()

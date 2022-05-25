@@ -19,14 +19,16 @@ package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.OABX.Companion.context
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
+import com.machiav3lli.backup.PREFS_CACHEONUPDATE
+import com.machiav3lli.backup.PREFS_ENSUREBACKUPSPRIVATE
 import com.machiav3lli.backup.PREFS_LOADINGTOASTS
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.AppExtras
@@ -45,7 +47,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-// TODO Add loading indicator
 class MainViewModel(
     private val db: ODatabase,
     private val appContext: Application
@@ -54,6 +55,8 @@ class MainViewModel(
     var packageList = MediatorLiveData<MutableList<Package>>()
     var backupsMap = MediatorLiveData<Map<String, List<Backup>>>()
     var blocklist = MediatorLiveData<List<Blocklist>>()
+
+    // TODO fix force refresh on changing backup directory or change method
     val isNeedRefresh = MutableLiveData(false)
     var appExtrasList: MutableList<AppExtras>
         get() = db.appExtrasDao.all
@@ -111,6 +114,7 @@ class MainViewModel(
                 "recreateAppInfoList: ${((after - startTime) / 1000 + 0.5).toInt()} sec",
                 showToasts
             )
+            isNeedRefresh.postValue(false)
         }
     }
 
@@ -134,10 +138,22 @@ class MainViewModel(
             val appPackage = packageList.value?.find { it.packageName == packageName }
             try {
                 appPackage?.apply {
-                    val new = Package(appContext, packageName, appPackage.getAppBackupRoot())
-                    new.refreshBackupList() //TODO hg42 such optimizations should be encapsulated (in Package)
-                    if (!isSpecial) db.appInfoDao.update(new.packageInfo as AppInfo)
-                    db.backupDao.updateList(new)
+                    if (OABX.prefFlag(PREFS_CACHEONUPDATE, false)) {
+                        val new = Package.get(packageName) {
+                            Package(appContext, packageName, getAppBackupRoot())
+                        }
+                        if (!OABX.prefFlag(PREFS_ENSUREBACKUPSPRIVATE, false))
+                            new.ensureBackupList()
+                        new.refreshFromPackageManager(context)
+                        new.refreshStorageStats(context)
+                        if (!isSpecial) db.appInfoDao.update(new.packageInfo as AppInfo)
+                        db.backupDao.updateList(new)
+                    } else {
+                        val new = Package(appContext, packageName, getAppBackupRoot())
+                        new.refreshFromPackageManager(context)
+                        if (!isSpecial) db.appInfoDao.update(new.packageInfo as AppInfo)
+                        db.backupDao.updateList(new)
+                    }
                 }
             } catch (e: AssertionError) {
                 Timber.w(e.message ?: "")

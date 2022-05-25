@@ -214,7 +214,7 @@ open class ScheduleService : Service() {
                                     t?.state == WorkInfo.State.CANCELLED
                                 ) {
                                     scheduleAlarm(context, scheduleId, true)
-                                    OABX.activity?.needRefresh = true
+                                    OABX.main?.needRefresh = true
                                     finishWorkLiveData.removeObserver(this)
                                     //stopService(intent)
                                     stoppedSchedule(intent)

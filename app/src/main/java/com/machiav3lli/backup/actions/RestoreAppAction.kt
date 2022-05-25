@@ -18,7 +18,6 @@
 package com.machiav3lli.backup.actions
 
 import android.content.Context
-import com.machiav3lli.backup.PREFS_REFRESHTIMEOUT_DEFAULT
 import com.machiav3lli.backup.MODE_APK
 import com.machiav3lli.backup.MODE_DATA
 import com.machiav3lli.backup.MODE_DATA_DE
@@ -26,9 +25,12 @@ import com.machiav3lli.backup.MODE_DATA_EXT
 import com.machiav3lli.backup.MODE_DATA_MEDIA
 import com.machiav3lli.backup.MODE_DATA_OBB
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.PREFS_ENABLESESSIONINSTALLER
 import com.machiav3lli.backup.PREFS_EXCLUDECACHE
+import com.machiav3lli.backup.PREFS_INSTALLER_PACKAGENAME
 import com.machiav3lli.backup.PREFS_REFRESHDELAY
 import com.machiav3lli.backup.PREFS_REFRESHTIMEOUT
+import com.machiav3lli.backup.PREFS_REFRESHTIMEOUT_DEFAULT
 import com.machiav3lli.backup.PREFS_RESTOREAVOIDTEMPCOPY
 import com.machiav3lli.backup.PREFS_RESTOREPERMISSIONS
 import com.machiav3lli.backup.PREFS_RESTORETARCMD
@@ -70,6 +72,7 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
 import java.nio.file.Files
+import java.util.regex.Pattern
 
 open class RestoreAppAction(context: Context, work: AppActionWork?, shell: ShellHandler) :
     BaseAppAction(context, work, shell) {
@@ -112,14 +115,17 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                 )
             } catch (e: RestoreFailedException) {
                 // Unwrap issues with shell commands so users know what command ran and what was the issue
-                val message: String =
-                    if (e.cause != null && e.cause is ShellCommandFailedException) {
-                        val commandList = e.cause.commands.joinToString("; ")
-                        "Shell command failed: ${commandList}\n${
-                            extractErrorMessage(e.cause.shellResult)
-                        }"
-                    } else {
-                        "${e.javaClass.simpleName}: ${e.message}"
+                val message =
+                    when (val cause = e.cause) {
+                        is ShellCommandFailedException -> {
+                            val commandList = cause.commands.joinToString("; ")
+                            "Shell command failed: ${commandList}\n${
+                                extractErrorMessage(cause.shellResult)
+                            }"
+                        }
+                        else -> {
+                            "${e.javaClass.simpleName}: ${e.message}"
+                        }
                     }
                 return ActionResult(app, null, message, false)
             } catch (e: CryptoSetupException) {
@@ -288,45 +294,76 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             if (disableVerification)
                 runAsRoot("settings put global verifier_verify_adb_installs 0")
 
-            // Install main package
-            sb.append(
-                getPackageInstallCommand(
-                    RootFile(stagingApkPath, "$packageName.${baseApkFile.name}"),
-                    backup.profileId
-                )
-            )
-            // If split apk resources exist, install them afterwards (order does not matter)
-            //TODO hg42 gather results, eventually ignore grant errors, use script?
-            if (splitApksInBackup.isNotEmpty()) {
-                splitApksInBackup.forEach {
-                    sb.append(" ; ").append(
-                        getPackageInstallCommand(
-                            RootFile(stagingApkPath, "$packageName.${it.name}"),
+            when {
+                OABX.prefFlag(PREFS_ENABLESESSIONINSTALLER, false) -> {
+                    val packageFiles = listOf(baseApkFile).plus(splitApksInBackup).map {
+                        RootFile(stagingApkPath, "$packageName.${it.name}")
+                    }
+
+                    // create session
+                    runAsRoot(
+                        getSessionCreateCommand(
                             backup.profileId,
-                            backup.packageName
+                            packageFiles.sumOf { it.length() })
+                    ).let {
+                        val sessionIdPattern = Pattern.compile("(\\d+)")
+                        val sessionIdMatcher = sessionIdPattern.matcher(it.out[0])
+                        val found = sessionIdMatcher.find()
+                        val sessionId = sessionIdMatcher.group(1)?.toInt()
+
+                        if (found && sessionId != null) {
+                            // write each of the bundle files
+                            packageFiles.forEach { rFile ->
+                                sb.append(getSessionWriteCommand(rFile, sessionId)).append(" ; ")
+                            }
+                            // commit session
+                            sb.append(getSessionCommitCommand(sessionId))
+                        }
+                    }
+                }
+                else -> {
+                    // Install main package
+                    sb.append(
+                        getPackageInstallCommand(
+                            RootFile(stagingApkPath, "$packageName.${baseApkFile.name}"),
+                            backup.profileId
                         )
                     )
+                    // If split apk resources exist, install them afterwards (order does not matter)
+                    //TODO hg42 gather results, eventually ignore grant errors, use script?
+                    if (splitApksInBackup.isNotEmpty()) {
+                        splitApksInBackup.forEach {
+                            sb.append(" ; ").append(
+                                getPackageInstallCommand(
+                                    RootFile(stagingApkPath, "$packageName.${it.name}"),
+                                    backup.profileId,
+                                    backup.packageName
+                                )
+                            )
+                        }
+                    }
                 }
             }
-            val commandWithoutPermissions = sb.toString()
-            if (!context.isRestoreAllPermissions && OABX.prefFlag(PREFS_RESTOREPERMISSIONS, true))
+            success = runAsRoot(sb.toString()).isSuccess // TODO integrate permissionsResult too
+
+            val permissionsCmd = mutableListOf<String>()
+            if (!context.isRestoreAllPermissions &&
+                OABX.prefFlag(PREFS_RESTOREPERMISSIONS, true)
+            ) {
                 backup.permissions
                     .filterNot { it.isEmpty() }
                     .forEach { p ->
-                        sb.append(" ; pm grant ${backup.packageName} $p")
+                        permissionsCmd.addAll(listOf("pm", "grant", backup.packageName, p, ";"))
                     }
-
-            val command = sb.toString()
-            try {
-                runAsRoot(command)
-            } catch (e: ShellCommandFailedException) {
-                val error = extractErrorMessage(e.shellResult)
-                Timber.e("Restore APKs with permissions failed: $error")
-                if (command != commandWithoutPermissions) runAsRoot(commandWithoutPermissions)
-                else throw e
+                try {
+                    runAsRoot(permissionsCmd.joinToString(" "))
+                } catch (e: ShellCommandFailedException) {
+                    val error = e.shellResult.err.joinToString { "\n" }
+                    Timber.e("Restoring permissions failed: $error")
+                    // TODO integrate this exception in the result
+                }
             }
 
-            success = true
 
             // re-enable verify apps over usb
             if (disableVerification)
@@ -554,7 +591,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                     if (errLines.isNotEmpty()) {
                         val errFiltered = errLines.joinToString("\n")
                         Timber.i(errFiltered)
-                        throw ScriptException(errFiltered)
+                        throw BaseAppAction.ScriptException(errFiltered)
                     }
                 }
             } catch (e: FileNotFoundException) {
@@ -903,18 +940,56 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         profileId: Int,
         basePackageName: String? = null
     ): String =
-        listOf(
+        listOfNotNull(
             "cat", quote(apkPath.absolutePath),
             "|",
             "pm", "install",
             basePackageName?.let { "-p $basePackageName" },
             if (context.isRestoreAllPermissions) "-g" else null,
             if (context.isAllowDowngrade) "-d" else null,
+            "-i ${OABX.prefString(PREFS_INSTALLER_PACKAGENAME, OABX.app.packageName)}",
             "-t",
             "-r",
             "-S", apkPath.length().toString(),
             "--user", profileId,
-        ).filterNotNull().joinToString(" ")
+        ).joinToString(" ")
+
+
+    private fun getSessionCreateCommand(
+        profileId: Int,
+        sumSize: Long
+    ): String =
+        listOfNotNull(
+            "pm", "install-create",
+            "-i", OABX.prefString(PREFS_INSTALLER_PACKAGENAME, OABX.app.packageName),
+            "--user", profileId,
+            "-r",
+            "-t",
+            if (context.isRestoreAllPermissions) "-g" else null,
+            if (context.isAllowDowngrade) "-d" else null,
+            "-S", sumSize
+        ).joinToString(" ")
+
+    private fun getSessionWriteCommand(
+        apkPath: RootFile,
+        sessionId: Int
+    ): String =
+        listOfNotNull(
+            "cat", quote(apkPath.absolutePath),
+            "|",
+            "pm", "install-write",
+            "-S", apkPath.length(),
+            sessionId,
+            apkPath.name,
+        ).joinToString(" ")
+
+
+    private fun getSessionCommitCommand(
+        sessionId: Int
+    ): String =
+        listOfNotNull(
+            "pm", "install-commit", sessionId
+        ).joinToString(" ")
 
     @Throws(PackageManagerDataIncompleteException::class)
     private fun refreshAppInfo(context: Context, app: Package) {

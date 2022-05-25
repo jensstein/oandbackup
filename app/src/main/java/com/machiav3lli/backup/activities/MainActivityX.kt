@@ -75,6 +75,7 @@ class MainActivityX : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val context = this
         OABX.activity = this
+        OABX.main = this
 
         setCustomTheme()
         super.onCreate(savedInstanceState)
@@ -84,7 +85,7 @@ class MainActivityX : BaseActivity() {
         if (OABX.prefFlag(PREFS_CATCHUNCAUGHT, false)) {
             Thread.setDefaultUncaughtExceptionHandler { _, e ->
                 try {
-                    val maxCrashLines = OABX.prefInt(PREFS_MAXCRASHLINES, 100)
+                    val maxCrashLines = OABX.prefInt(PREFS_MAXCRASHLINES, 50)
                     LogsHandler.unhandledException(e)
                     LogsHandler(context).writeToLogFile(
                         "uncaught exception happened:\n\n" +
@@ -94,19 +95,24 @@ class MainActivityX : BaseActivity() {
                                     "logcat -d -t $maxCrashLines --pid=${Process.myPid()}"  // -d = dump and exit
                                 ).out.joinToString("\n")
                     )
-                    val longToastTime = 3500
-                    val showTime = 21 * 1000
+                    val longToastTime = 3000
+                    val showTime = 12000
                     object : Thread() {
                         override fun run() {
                             Looper.prepare()
                             repeat(showTime / longToastTime) {
                                 Toast.makeText(
                                     context,
-                                    "Uncaught Exception\n${e.message}\n${e.cause}\nrestarting application...",
+                                    "Uncaught Exception\n${e.message ?: ""}\n${e.cause ?: ""}",
                                     Toast.LENGTH_LONG
                                 ).show()
                                 sleep(longToastTime.toLong())
                             }
+                            Toast.makeText(
+                                context,
+                                "restarting application...",
+                                Toast.LENGTH_LONG
+                            ).show()
                             Looper.loop()
                         }
                     }.start()
@@ -139,7 +145,6 @@ class MainActivityX : BaseActivity() {
         viewModel.isNeedRefresh.observe(this) {
             if (it) {
                 viewModel.refreshList()
-                needRefresh = false
             }
         }
 
@@ -159,7 +164,13 @@ class MainActivityX : BaseActivity() {
 
     override fun onResume() {
         OABX.activity = this    // just in case 'this' object is recreated
+        OABX.main = this
         super.onResume()
+    }
+
+    override fun onDestroy() {
+        OABX.main = null
+        super.onDestroy()
     }
 
     override fun onBackPressed() {
@@ -174,13 +185,12 @@ class MainActivityX : BaseActivity() {
     fun doIntent(intent: Intent?): Boolean {
         if (intent == null) return false
         val command = intent.action
-        Timber.i("Command: command $command")
+        Timber.i("Main: command $command")
         when (command) {
-            null -> {
-                // ignore?
-            }
+            null -> {}
+            "android.intent.action.MAIN" -> {}
             else -> {
-                showToast("Main: unknown command '$command'")
+                showToast("Main: command '$command'")
             }
         }
         return false
@@ -220,7 +230,7 @@ class MainActivityX : BaseActivity() {
         if (dontShowAgain) return
         val dontShowCounter = prefs.getInt(PREFS_SKIPPEDENCRYPTION, 0)
         prefs.edit().putInt(PREFS_SKIPPEDENCRYPTION, dontShowCounter + 1).apply()
-        if (dontShowCounter % 10 == 0) {
+        if (dontShowCounter % 10 == 0 && dontShowCounter <= 30) {
             AlertDialog.Builder(this)
                 .setTitle(R.string.enable_encryption_title)
                 .setMessage(R.string.enable_encryption_message)

@@ -47,6 +47,7 @@
         android:summary="@string/prefs_allowdowngrade_summary"
         android:title="@string/prefs_allowdowngrade" />
 
+
     <!-- developer settings -->
 
     <androidx.preference.PreferenceCategory
@@ -55,6 +56,36 @@
         android:summary="don't change unless a developer tells you"
         android:title="developer settings"
         app:initialExpandedChildrenCount="0">
+
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="cachePackages"
+            android:summary="cache Packages"
+            android:title="usePackageCache" />
+
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="false"
+            android:key="usePackageCacheOnUpdate"
+            android:summary="use cached Package in updateDataOf"
+            android:title="usePackageCacheOnUpdate" />
+
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="false"
+            android:key="useEnsureBackupListPrivate"
+            android:summary="use ensureBackupList only in package properties"
+            android:title="useEnsureBackupListPrivate" />
+
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="false"
+            android:key="useEnsureBackupListInComposable"
+            android:summary="use ensureBackupList in Composables (only when useEnsureBackupListPrivate disabled)"
+            android:title="useEnsureBackupListInComposable" />
+
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="useColumnNameSAF"
+            android:summary="eventually disable this, if you have problems with SAF storage"
+            android:title="useColumnNameSAF" />
 
         <androidx.preference.CheckBoxPreference
             android:defaultValue="false"
@@ -123,13 +154,25 @@
             android:title="allowShadowingDefault" />
 
         <androidx.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="useFindLs"
+            android:summary="use 'find ... | xargs ... ls ...' for recursive FileInfo collection"
+            android:title="useFindLs" />
+
+        <androidx.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="useAssembleFileListOneStep"
+            android:summary="(tarapi) collect whole tree in one step"
+            android:title="useAssembleFileListOneStep" />
+
+        <androidx.preference.CheckBoxPreference
             android:defaultValue="false"
             android:key="catchUncaughtException"
             android:summary="unexpected exceptions are caught and output to logcat and app is restarted [needs reboot]"
             android:title="catchUncaughtException" />
 
         <androidx.preference.SeekBarPreference
-            android:defaultValue="100"
+            android:defaultValue="50"
             android:inputType="number"
             android:key="maxCrashLines"
             android:max="1000"
@@ -193,7 +236,7 @@
             app:showSeekBarValue="true" />
 
         <androidx.preference.CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="useForeground"
             android:summary="use forground notifications to ensure app keeps running (if wakelock isn't enough)"
             android:title="useForeground" />

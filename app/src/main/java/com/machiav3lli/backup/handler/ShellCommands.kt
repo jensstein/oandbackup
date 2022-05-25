@@ -37,12 +37,13 @@ class ShellCommands(private var users: List<String>?) {
             users = getUsers()
         } catch (e: ShellActionFailedException) {
             users = null
-            var error: String? = null
-            // instanceOf returns false for nulls, so need to check if null
-            if (e.cause is ShellCommandFailedException) {
-                error = e.cause.shellResult.err.joinToString(" ")
-            }
-            Timber.e("Could not load list of users: ${e}${if (error != null) " : $error" else ""}")
+            var error =
+                when (val cause = e.cause) {
+                    is ShellCommandFailedException ->
+                        " : ${cause.shellResult.err.joinToString(" ")}"
+                    else -> ""
+                }
+            Timber.e("Could not load list of users: ${e}$error")
         }
         multiuserEnabled = !users.isNullOrEmpty() && users?.size ?: 1 > 1
     }

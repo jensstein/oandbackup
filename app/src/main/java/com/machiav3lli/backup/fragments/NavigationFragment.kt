@@ -123,6 +123,7 @@ abstract class NavigationFragment : Fragment(), ProgressViewController {
     fun requireMainActivity(): MainActivityX = super.requireActivity() as MainActivityX
 }
 
+// TODO ease relation to refreshing field in the VMs
 interface RefreshViewController {
     fun refreshView(list: MutableList<Package>?)
 }

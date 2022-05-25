@@ -30,11 +30,17 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.Navigation
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_FIRST_LAUNCH
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.classAddress
 import com.machiav3lli.backup.databinding.ActivityIntroXBinding
-import com.machiav3lli.backup.utils.*
+import com.machiav3lli.backup.utils.getPrivateSharedPrefs
+import com.machiav3lli.backup.utils.isBiometricLockAvailable
+import com.machiav3lli.backup.utils.isBiometricLockEnabled
+import com.machiav3lli.backup.utils.isDeviceLockAvailable
+import com.machiav3lli.backup.utils.isDeviceLockEnabled
+import com.machiav3lli.backup.utils.setCustomTheme
 
 class IntroActivityX : BaseActivity() {
     private lateinit var binding: ActivityIntroXBinding
@@ -42,6 +48,7 @@ class IntroActivityX : BaseActivity() {
     private var navController: NavController? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        OABX.activity = this
         setCustomTheme()
         super.onCreate(savedInstanceState)
         binding = ActivityIntroXBinding.inflate(layoutInflater)
@@ -56,7 +63,7 @@ class IntroActivityX : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        checkRootAccess()
+        OABX.activity = this
     }
 
     private fun setupNavigation() {

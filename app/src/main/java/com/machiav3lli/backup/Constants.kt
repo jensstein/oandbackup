@@ -17,6 +17,7 @@
  */
 package com.machiav3lli.backup
 
+import android.Manifest
 import com.machiav3lli.backup.ui.item.ChipItem
 import com.machiav3lli.backup.ui.item.Legend
 import com.machiav3lli.backup.ui.item.Link
@@ -68,17 +69,25 @@ const val PREFS_EXCLUDECACHE = "excludeCache"
 const val PREFS_EXTERNALDATA = "backupExternalData"
 const val PREFS_OBBDATA = "backupObbData"
 const val PREFS_MEDIADATA = "backupMediaData"
-const val PREFS_RESTOREPERMISSIONS = "restorePermissions"
 const val PREFS_DEVICEPROTECTEDDATA = "backupDeviceProtectedData"
+const val PREFS_ENABLESESSIONINSTALLER = "enableSessionInstaller"
+const val PREFS_INSTALLER_PACKAGENAME = "installationPackage"
+const val PREFS_RESTOREPERMISSIONS = "restorePermissions"
 const val PREFS_NUM_BACKUP_REVISIONS = "numBackupRevisions"
 const val PREFS_HOUSEKEEPING_MOMENT = "housekeepingMoment"
 const val PREFS_DISABLEVERIFICATION = "disableVerification"
 const val PREFS_RESTOREWITHALLPERMISSIONS = "giveAllPermissions"
 const val PREFS_ALLOWDOWNGRADE = "allowDowngrade"
 const val PREFS_CANCELONSTART = "cancelOnStart"
+const val PREFS_CACHEPACKAGES = "cachePackages"
+const val PREFS_CACHEONUPDATE = "usePackageCacheOnUpdate"
+const val PREFS_ENSUREBACKUPSPRIVATE = "useEnsureBackupListPrivate"
+const val PREFS_ENSUREBACKUPSINCOMPOSE = "useEnsureBackupListInComposable"
+const val PREFS_COLUMNNAMESAF = "useColumnNameSAF"
 const val PREFS_USEALARMCLOCK = "useAlarmClock"
 const val PREFS_USEEXACTRALARM = "useExactAlarm"
 const val PREFS_USEFOREGROUND = "useForeground"
+const val PREFS_USEEXPEDITED = "useExpedited"
 const val PREFS_PAUSEAPPS = "pauseApps"
 const val PREFS_PMSUSPEND = "pmSuspend"
 const val PREFS_BACKUPTARCMD = "backupTarCmd"
@@ -87,8 +96,13 @@ const val PREFS_STRICTHARDLINKS = "strictHardLinks"
 const val PREFS_RESTOREAVOIDTEMPCOPY = "restoreAvoidTemporaryCopy"
 const val PREFS_SHADOWROOTFILE = "shadowRootFileForSAF"
 const val PREFS_ALLOWSHADOWINGDEFAULT = "allowShadowingDefault"
+const val PREFS_FINDLS = "useFindLs"
+const val PREFS_ASSEMBLE_FILE_ONE_STEP = "useAssembleFileListOneStep"
 const val PREFS_CATCHUNCAUGHT = "catchUncaughtException"
 const val PREFS_MAXCRASHLINES = "maxCrashLines"
+const val PREFS_INVALIDATESELECTIVE = "invalidateSelective"
+const val PREFS_CACHEURIS = "cacheUris"
+const val PREFS_CACHEFILELISTS = "cacheRootFileAttributes"
 const val PREFS_CACHEROOTFILEATTRIBUTES = "cacheRootFileAttributes"
 const val PREFS_MAXRETRIES = "maxRetriesPerPackage"
 const val PREFS_REFRESHDELAY = "delayBeforeRefreshAppInfo"
@@ -168,6 +182,22 @@ val schedSpecialFilterChipItems = listOf(
 
 val mainSpecialFilterChipItems = schedSpecialFilterChipItems.plus(ChipItem.NotInstalled)
 
+val IGNORED_PERMISSIONS = listOfNotNull(
+    Manifest.permission.ACCESS_WIFI_STATE,
+    Manifest.permission.ACCESS_NETWORK_STATE,
+    Manifest.permission.ACCESS_NETWORK_STATE,
+    Manifest.permission.CHANGE_WIFI_MULTICAST_STATE,
+    if (OABX.minSDK(28)) Manifest.permission.FOREGROUND_SERVICE else null,
+    Manifest.permission.INSTALL_SHORTCUT,
+    Manifest.permission.INTERNET,
+    if (OABX.minSDK(30)) Manifest.permission.QUERY_ALL_PACKAGES else null,
+    Manifest.permission.REQUEST_DELETE_PACKAGES,
+    Manifest.permission.RECEIVE_BOOT_COMPLETED,
+    Manifest.permission.READ_SYNC_SETTINGS,
+    Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+    Manifest.permission.USE_FINGERPRINT,
+    Manifest.permission.WAKE_LOCK,
+)
 
 const val BUNDLE_USERS = "users"
 

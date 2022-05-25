@@ -107,7 +107,7 @@ fun Activity.showError(message: String?) = runOnUiThread {
 }
 
 fun Activity.showFatalUiWarning(message: String) = showWarning(
-    this.javaClass.simpleName,
+    getString(R.string.app_name),
     message
 ) { _: DialogInterface?, _: Int -> finishAffinity() }
 

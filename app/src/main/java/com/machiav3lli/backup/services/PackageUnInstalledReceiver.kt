@@ -23,7 +23,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.AppInfo
-import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.items.Package
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -36,9 +36,10 @@ class PackageUnInstalledReceiver : BroadcastReceiver() {
         val packageName =
             intent.data?.let { if (it.scheme == "package") it.schemeSpecificPart else null }
         if (packageName != null) {
-            StorageFile.invalidateCache { it.contains(packageName) }
+            Package.invalidateSystemCacheForPackage(packageName)
             when (intent.action.orEmpty()) {
-                Intent.ACTION_PACKAGE_ADDED -> {
+                Intent.ACTION_PACKAGE_ADDED,
+                Intent.ACTION_PACKAGE_REPLACED -> {
                     context.packageManager.getPackageInfo(
                         packageName,
                         PackageManager.GET_PERMISSIONS
@@ -51,7 +52,8 @@ class PackageUnInstalledReceiver : BroadcastReceiver() {
                 }
                 Intent.ACTION_PACKAGE_REMOVED -> {
                     GlobalScope.launch(Dispatchers.IO) {
-                        db.appInfoDao.deleteAllOf(packageName)
+                        if (db.backupDao.get(packageName).isEmpty())
+                            db.appInfoDao.deleteAllOf(packageName)
                     }
                 }
             }

@@ -17,6 +17,7 @@
  */
 package com.machiav3lli.backup
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -37,9 +38,9 @@ import java.lang.ref.WeakReference
 class OABX : Application() {
 
     // packages are an external resource, so handle them as a singleton
-    val maxNumberOfPackagesInCache = 4000   //TODO hg42 add a setting!?
-    var packageCache: LruCache<String, Package> = LruCache(maxNumberOfPackagesInCache)
-    var cache: LruCache<String, MutableList<Package>> = LruCache(10)    //TODO hg42 not caching 4000 lists? right?
+    var packageCache = mutableMapOf<String, Package>()
+    var cache: LruCache<String, MutableList<Package>> =
+        LruCache(10)    //TODO hg42 not caching 4000 lists? right?
 
     var work: WorkHandler? = null
 
@@ -109,13 +110,23 @@ class OABX : Application() {
             }
 
         // activity might be null
-        var activityRef: WeakReference<MainActivityX> = WeakReference(null)
-        var activity: MainActivityX?
+        var activityRef: WeakReference<Activity> = WeakReference(null)
+        var activity: Activity?
             get() {
                 return activityRef.get()
             }
             set(activity) {
                 activityRef = WeakReference(activity)
+            }
+
+        // main might be null
+        var mainRef: WeakReference<MainActivityX> = WeakReference(null)
+        var main: MainActivityX?
+            get() {
+                return mainRef.get()
+            }
+            set(mainActivity) {
+                mainRef = WeakReference(mainActivity)
             }
 
         var appsSuspendedChecked = false
@@ -137,6 +148,9 @@ class OABX : Application() {
 
         fun prefFlag(name: String, default: Boolean) = context.getDefaultSharedPreferences()
             .getBoolean(name, default)
+
+        fun prefString(name: String, default: String) = context.getDefaultSharedPreferences()
+            .getString(name, default)
 
         fun prefInt(name: String, default: Int) = context.getDefaultSharedPreferences()
             .getInt(name, default)
