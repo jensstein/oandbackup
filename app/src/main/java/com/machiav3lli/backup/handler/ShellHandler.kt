@@ -27,6 +27,7 @@ import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
 import com.machiav3lli.backup.utils.showToast
 import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.io.SuRandomAccessFile
+import com.vdurmont.semver4j.Semver
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
@@ -35,9 +36,55 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
+val testedVersions = "0.8.0 - 0.8.7"
+val bugDotDotDir   = "0.8.3 - 0.8.6"
+
 class ShellHandler {
 
     var assets: AssetHandler
+
+    class UtilBox(var name: String = "", var version: String = "0.0.0", var reason: String = "", var score: Double = 0.0) {
+
+        var isTestedVersion = false
+        var hasBugDotDotDir = false
+        val semver: Semver
+
+        init {
+            version = version.replace(Regex("""^[vV]"""), "")
+            version = version.replace(Regex("""-android$"""), "")
+            semver = Semver(version, Semver.SemverType.NPM)
+            if(semver.satisfies("=0.0.0")) {
+                score = 0.0
+            } else {
+                if ( ! name.contains("vendor") ) {
+                    score += 0.000_000_000_1
+                }
+                if ( name.contains("ext") ) {
+                    score += 0.000_000_000_1
+                }
+                if ( name.contains("local") ) {
+                    score += 0.000_000_000_1
+                }
+                if (semver.satisfies(testedVersions)) {
+                    score += 10.0
+                    isTestedVersion = true
+                }
+                if (detectBugDotDotDir()) {
+                    hasBugDotDotDir = true
+                } else {
+                    score += 1000.0
+                }
+                score += ((semver.major * 1000.0 + semver.minor) * 1000.0 + semver.patch) / 1_000_000_000.0
+            }
+        }
+
+        fun detectBugDotDotDir(): Boolean {
+            //TODO hg42 may use a real "feature" test instead of version
+            return semver.satisfies(bugDotDotDir)
+        }
+
+        fun quote() = quote(name)
+    }
 
     init {
         Shell.enableVerboseLogging = BuildConfig.DEBUG
@@ -47,26 +94,75 @@ class ShellHandler {
                           //.setInitializers(BusyBoxInstaller::class.java)
         Shell.setDefaultBuilder(builder)
 
-        var reasons = mutableMapOf<String, String>()
-        val names = UTILBOX_NAMES
-        names.any {
-            try {
-                setUtilBoxPath(it)
-            } catch (e: Throwable) {
-                val reason = LogsHandler.message(e)
-                reasons[it] = reason
-                Timber.d("Tried utilbox name '$it': $reason")
-                false
+        val boxes = mutableListOf<UtilBox>()
+        try {
+            UTILBOX_NAMES.forEach { box ->
+                var boxVersion = ""
+                val reWhiteSpace = Regex("""\s+""")
+                try {
+                    val shellResult = runAsRoot("$box --version")
+                    if (shellResult.isSuccess) {
+                        if (shellResult.out.isNotEmpty()) {
+                            val fields = shellResult.out[0].split(reWhiteSpace, 3)
+                            boxVersion = fields[1]
+                        } else {
+                            boxVersion = ""
+                        }
+                        boxes.add(UtilBox(name = box, version = boxVersion))
+                    } else {
+                        throw Exception() // goto catch
+                    }
+                } catch(e: Throwable) {
+                    LogsHandler.unhandledException(e, "utilBox $box --version failed")
+                    try {
+                        val shellResult = runAsRoot(box)
+                        if (shellResult.isSuccess) {
+                            if (shellResult.out.isNotEmpty()) {
+                                val fields = shellResult.out[0].split(reWhiteSpace, 3)
+                                boxVersion = fields[1]
+                            } else {
+                                boxVersion = ""
+                            }
+                            boxes.add(UtilBox(name = box, version = boxVersion))
+                        } else {
+                            throw Exception("failed") // goto catch
+                        }
+                    } catch (e: Throwable) {
+                        LogsHandler.unhandledException(e, "utilBox $box failed")
+                        boxes.add(UtilBox(name = box, reason = LogsHandler.message(e)))
+                    }
+                }
             }
+        } catch (e: Throwable) {
+            LogsHandler.unhandledException(e, "utilBox detection failed miserable")
         }
-        if (utilBoxQ.isEmpty()) {
-            Timber.d("No more options for utilbox. Bailing out.")
+        boxes.sortByDescending { it.score }
+        boxes.forEach { box ->
+            Timber.i("utilBox: ${box.name}: ${
+                                if (box.version.isNotEmpty())
+                                    "${box.version} -> ${box.score}"
+                                else
+                                    "${box.reason}"
+                                }"
+            )
+        }
+        utilBox = boxes.first()
+        if (utilBox.score <= 0) {
+            Timber.d("No good utilbox found")
             val message =
-                reasons.map { reason -> "${reason.key}: ${reason.value}" }
-                    .joinToString("\n")
+                boxes.map { box ->
+                    "${box.name}: ${
+                        if(box.version.isNotEmpty())
+                            "${box.version} -> ${box.score}"
+                        else
+                            "${box.reason}"
+                    }"
+                }.joinToString("\n")
             OABX.activity?.showToast(
-                "No utilbox found, tried these:\n${
-                    names.joinToString("\n")
+                "No good utilbox found, tried these:\n${
+                    boxes.map { box ->
+                        if(box.version.isNotEmpty()) "${box.version} -> ${box.score}" else ""
+                    }.joinToString("\n")
                 }${
                     if(message.isEmpty()) "" else "\n$message"}"
                 )
@@ -163,57 +259,6 @@ class ShellHandler {
         } catch (e: Throwable) {
             throw UnexpectedCommandResult("'$command' failed", shellResult)
         }
-    }
-
-    fun setUtilBoxPath(utilBoxName: String): Boolean {
-        utilBoxQ = quote(utilBoxName)
-        val reWhiteSpace = Regex("""\s+""")
-        try {
-            var shellResult = runAsRoot("$utilBoxQ --version")
-            if (shellResult.isSuccess) {
-                if (shellResult.out.isNotEmpty()) {
-                    val fields = shellResult.out[0].split(reWhiteSpace, 3)
-                    utilBoxVersion = fields[1]
-                    Timber.i("Using Utilbox $utilBoxName : $utilBoxQ : $utilBoxVersion")
-                    return true
-                } else {
-                    utilBoxVersion = ""
-                    Timber.i("Using Utilbox $utilBoxName : $utilBoxQ : no version")
-                    return true
-                }
-            } else {
-                utilBoxQ = ""
-                throw Exception() // goto catch
-            }
-        } catch(e: Throwable) {
-            try {
-                var shellResult = runAsRoot(utilBoxQ)
-                if (shellResult.isSuccess) {
-                    if (shellResult.out.isNotEmpty()) {
-                        val fields = shellResult.out[0].split(reWhiteSpace, 3)
-                        utilBoxVersion = fields[1]
-                        Timber.i("Using Utilbox $utilBoxName : $utilBoxQ : $utilBoxVersion")
-                        return true
-                    } else {
-                        utilBoxVersion = ""
-                        Timber.i("Using Utilbox $utilBoxName : $utilBoxQ : no version")
-                        return true
-                    }
-                } else {
-                    utilBoxQ = ""
-                    throw Exception() // goto catch
-                }
-            } catch (e: Throwable) {
-                utilBoxQ = ""
-                // no more options
-            }
-        } finally {
-            utilBoxVersion = utilBoxVersion.replace(Regex("""^[vV]"""), "")
-            utilBoxVersion = utilBoxVersion.replace(Regex("""-android$"""), "")
-        }
-        // not found => try bare executables (no utilbox prefixed)
-        utilBoxQ = ""
-        return false
     }
 
     class ShellCommandFailedException(
@@ -509,16 +554,23 @@ class ShellHandler {
 
     companion object {
 
-        var utilBoxQ = ""
-            private set
-        var utilBoxVersion = ""
-            private set
+        //private val UTILBOX_NAMES = listOf("busybox", "/sbin/.magisk/busybox/busybox", "toybox")
+        private val UTILBOX_NAMES = listOf(    // only toybox will work currently
+            //"busybox",
+            //"/sbin/.magisk/busybox/busybox"
+            "/data/local/toybox",
+            "toybox-ext",
+            "toybox_vendor",
+            "toybox",
+        )
+
+        var utilBox: UtilBox = UtilBox()
+        val utilBoxQ get() = utilBox.quote()
+
         lateinit var scriptDir : File
             private set
         var scriptUserDir : File? = null
             private set
-        //private val UTILBOX_NAMES = listOf("busybox", "/sbin/.magisk/busybox/busybox", "toybox")
-        private val UTILBOX_NAMES = listOf("/data/local/toybox", "toybox")    // only toybox will work currently
         val SCRIPTS_SUBDIR = "scripts"
         val EXCLUDE_CACHE_FILE = "tar_EXCLUDE_CACHE"
         val EXCLUDE_FILE = "tar_EXCLUDE"
