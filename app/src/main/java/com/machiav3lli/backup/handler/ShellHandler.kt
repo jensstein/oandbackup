@@ -26,6 +26,7 @@ import com.machiav3lli.backup.utils.BUFFER_SIZE
 import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
 import com.machiav3lli.backup.utils.showToast
 import com.topjohnwu.superuser.Shell
+import com.topjohnwu.superuser.Shell.ROOT_MOUNT_MASTER
 import com.topjohnwu.superuser.io.SuRandomAccessFile
 import com.vdurmont.semver4j.Semver
 import timber.log.Timber
@@ -93,6 +94,10 @@ class ShellHandler {
                           .setTimeout(20)
                           //.setInitializers(BusyBoxInstaller::class.java)
         Shell.setDefaultBuilder(builder)
+        Shell.getShell()
+
+        Timber.i("is root         = ${Shell.rootAccess()}")
+        Timber.i("is mount-master = $isMountMaster")
 
         val boxes = mutableListOf<UtilBox>()
         try {
@@ -563,6 +568,8 @@ class ShellHandler {
             "toybox_vendor",
             "toybox",
         )
+
+        val isMountMaster get() = Shell.getShell().status >= ROOT_MOUNT_MASTER
 
         var utilBox: UtilBox = UtilBox()
         val utilBoxQ get() = utilBox.quote()

@@ -501,7 +501,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             if (context.getDefaultSharedPreferences().getBoolean(PREFS_EXCLUDECACHE, true)) {
                 options += " --exclude ${quote(excludeCache)}"
             }
-            var suOptions = "--mount-master"
+            var suOptions = if(ShellHandler.isMountMaster) "--mount-master" else ""
 
             val cmd = "su $suOptions -c sh ${quote(tarScript)} create $utilBoxQ $options ${
                 quote(sourcePath)
