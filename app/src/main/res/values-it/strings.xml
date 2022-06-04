@@ -179,14 +179,13 @@
     <string name="prefs_passwordconfirmation">Conferma password di criptazione</string>
     <string name="prefs_advanced">Preferenze avanzate</string>
     <string name="radio_updated">Aggiornato</string>
-    <string name="intro_welcome_message">OAndBackupX è un fork della famigerata app OAndBackup con lo scopo di portarla nel 2020 ed oltre. Per ora la maggior parte delle funzionalità e dell\'interfaccia sono state riscritte ed alcune sono state aggiunte.
-\nL\'app è ancora nella fase beta e cambi del codice principale avvengono frequentemente. Quindi è importnate leggere attentamente il registro dei cambiamenti con ogni nuovo rilascio.
-\nTutti i tipi di contributo sono benvenuti, che siano idee, traduzioni, riscontri di bug o codice.
+    <string name="intro_welcome_message">Neo Backup (precedentemente OAndBackupX) è una fork della famigerata app OAndBackup con lo scopo di portarla nel 202X e parte della suite Neo Applications. Per ora l\'app è stata tutta riscritta, il prossimo passo sarebbe renderla robusta e aggiungere alcune features pianificate da molto tempo che potrebbero semplificare il flusso di lavoro di salvataggio/ripristino su ogni dispostivo.
+\nPertanto tutti i tipi di contributo sono benvenuti.
 \n
-\nOra, riguardo alle funzionalità dell\'app:
+\nOra riguardo alle funzionalità dell\'app:
 \n• L\'app richiede permessi di root e permette di fare il backup di app singole e dei loro dati.
 \n• Sia il salvataggio che il ripristino di app singole una alla volta o contemporaneamente che il ripristino di app molteplici è supportato.
-\n• Il ripristino di app di sistema dovrebbe essere possibile senza richiedere un riavvio successivamente, anche se non consigliamo comunque di farlo.
+\n• Il ripristino di app di sistema dovrebbe essere possibile senza richiedere un riavvio successivamente.
 \n• I salvataggi possono essere programmati senza limiti di numero ed è presente la possibilità di creare liste personalizzate di app.</string>
     <string name="welcome_to_oabx">Benvenuto/a a Neo Backup!</string>
     <string name="storage_access">Accesso archiviazione</string>
@@ -332,4 +331,19 @@
     <string name="dialogCancelAll">Annulla tutto</string>
     <string name="spec_fingerprint">Impronte digitali</string>
     <string name="prefs_restorepermissions_summary">Ripristina i permessi che sono stati concessi all\'app al momento del backup. Si noti che alcuni permessi non possono essere concessi programmaticamente e quindi causano il fallimento del ripristino del pacchetto nel suo complesso, che Neo Backup copre poi il ripristino del pacchetto senza permessi.</string>
+    <string name="prefs_loadingtoasts_summary">Mostra toasts quando la lista si sta caricando</string>
+    <string name="delete">Elimina</string>
+    <string name="loading_list">Caricando lista…</string>
+    <string name="dismiss">Ignora</string>
+    <string name="enabled">Abilitato</string>
+    <string name="sortAsc">Ascendente</string>
+    <string name="sortDesc">Discendente</string>
+    <string name="supended_apps_cleanup">ripulire qualsiasi residuo di applicazioni sospese</string>
+    <string name="prefs_installerpackagename">Il nome dell\'installer del pacchetto:</string>
+    <string name="root_missing">Permessi di ROOT mancanti!</string>
+    <string name="root_is_mandatory">Poiché le applicazioni sono isolate l\'una dall\'altra, i permessi di amministratore sono obbligatori per poter salvare e ripristinare i loro dati.</string>
+    <string name="see_faq">Guarda le FAQ!</string>
+    <string name="prefs_loadingtoasts">Caricamento toasts</string>
+    <string name="prefs_sessionIinstaller">Usa session installer</string>
+    <string name="prefs_sessionIinstaller_summary">Usa session installer invece dell\'installer base. Più lento ma evita problemi con Android 13+</string>
 </resources>
