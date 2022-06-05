@@ -1,0 +1,11 @@
+OAndBackupX 3.0.0**
+
+##### THIS RELEASE ISN'T COMPATIBLE WITH THE VERSIONS BEFORE
+* Cambiato: cartella di salvataggio predefinita è /OABX
+* Riscritta Soluzione di Crittografia (Credits @Pizze)
+* Aggiunto: ordina per Dimensione Dati
+* Aggiunto: finestra di avviso quando si abilita Crittografia
+* Aggiornato: Interfaccia Utente di Aiuto rinnovata
+* Aggiunto: suggerimenti per tutte le Icone dei Pulsanti
+* Aggiornato: AppSheet UI adattiva
+* Ottimizzazione dell'UI e delle prestazioni e molto altro
