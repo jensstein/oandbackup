@@ -662,23 +662,23 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             val (uid, gid, con) = uidgidcon
             Timber.i("Getting user/group info and apply it recursively on $targetPath")
             // get the contents. lib for example must be owned by root
+            //TODO hg42 I think, lib is always a link
+            //TODO hg42 directories we exclude would keep their uidgidcon from before
+            //TODO hg42 this doesn't seem to be correct, unless the apk instlal would manage updating uidgidcon
             val dataContents: MutableList<String> =
                 mutableListOf(*shell.suGetDirectoryContents(RootFile(targetPath)))
             // Maybe dirty: Remove what we don't wanted to have in the backup. Just don't touch it
             dataContents.removeAll(DATA_EXCLUDED_BASENAMES)
             dataContents.removeAll(DATA_EXCLUDED_CACHE_DIRS)
-            // calculate a list what must be updated
+            // calculate a list what must be updated inside the directory
             val chownTargets = dataContents.map { s -> RootFile(targetPath, s).absolutePath }
-            if (chownTargets.isEmpty()) {
-                // surprise. No data?
-                Timber.i("No chown targets. Is this an app without any $dataType ? Doing nothing.")
-                return
-            }
             Timber.d("Changing owner and group of '$targetPath' to $uid:$gid and selinux context to $con")
             var command =
                 "$utilBoxQ chown $uid:$gid ${
                     quote(RootFile(targetPath).absolutePath)
-                } ; $utilBoxQ chown -R $uid:$gid ${
+                }"
+            if (chownTargets.isNotEmpty())
+                command += " ; $utilBoxQ chown -R $uid:$gid ${
                     quoteMultiple(chownTargets)
                 }"
             command += if (con == "?") //TODO hg42: when does it happen?
