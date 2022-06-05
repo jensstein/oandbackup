@@ -131,6 +131,7 @@ dependencies {
     implementation("com.github.topjohnwu.libsu:core:$libsu")
     implementation("com.github.topjohnwu.libsu:io:$libsu")
     //implementation("com.github.topjohnwu.libsu:busybox:$libsu")
+    implementation("com.vdurmont:semver4j:3.1.0")
     //implementation("com.github.tony19:named-regexp:0.2.6") // regex named groups
 
     // UI

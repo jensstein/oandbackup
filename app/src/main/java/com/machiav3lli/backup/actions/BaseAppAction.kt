@@ -26,6 +26,7 @@ import com.machiav3lli.backup.PREFS_PMSUSPEND
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
+import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.tasks.AppActionWork
@@ -145,8 +146,8 @@ abstract class BaseAppAction protected constructor(
             "cache",
             "trash",
             ".thumbnails",
-            if (OABX.minSDK(Build.VERSION_CODES.R)) "..*" else null
-        )
+            if (utilBox.hasBugDotDotDir) "..*" else null
+        ).filterNotNull()
 
         val ignoredPackages = ("""(?x)
             # complete matches
