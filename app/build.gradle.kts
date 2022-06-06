@@ -33,7 +33,7 @@ android {
         applicationId = "com.machiav3lli.backup"
         minSdk = 26
         targetSdk = 32
-        versionCode = 8017
+        versionCode = 8018
         versionName = "8.0.3"
         buildConfigField("int", "MAJOR", "8")
         buildConfigField("int", "MINOR", "0")
@@ -72,7 +72,7 @@ android {
         }
         create("neo") {
             applicationIdSuffix = ".neo"
-            versionNameSuffix = "-alpha1"
+            versionNameSuffix = "-beta1"
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
