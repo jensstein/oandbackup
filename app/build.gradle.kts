@@ -23,7 +23,7 @@ plugins {
     kotlin("kapt")
     kotlin("plugin.serialization").version("1.6.21")
 }
-val compose = "1.2.0-beta01"
+val compose = "1.2.0-beta03"
 
 android {
     namespace = "com.machiav3lli.backup"
@@ -136,7 +136,7 @@ dependencies {
 
     // UI
     implementation("androidx.fragment:fragment-ktx:1.5.0-rc01")
-    implementation("com.google.android.material:material:1.7.0-alpha01")
+    implementation("com.google.android.material:material:1.7.0-alpha02")
     implementation("androidx.preference:preference-ktx:1.2.0")
     implementation("androidx.navigation:navigation-fragment-ktx:2.5.0-rc01")
     implementation("androidx.navigation:navigation-ui-ktx:2.5.0-rc01")
@@ -149,9 +149,9 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:$compose")
     implementation("androidx.compose.runtime:runtime-livedata:$compose")
     implementation("androidx.navigation:navigation-compose:2.5.0-rc01")
-    implementation("com.google.android.material:compose-theme-adapter-3:1.0.9")
-    implementation("androidx.compose.material3:material3:1.0.0-alpha11")
-    implementation("com.google.accompanist:accompanist-flowlayout:0.24.9-beta")
+    implementation("com.google.android.material:compose-theme-adapter-3:1.0.10")
+    implementation("androidx.compose.material3:material3:1.0.0-alpha13")
+    implementation("com.google.accompanist:accompanist-flowlayout:0.24.10-beta")
 
     // Testing
     implementation("androidx.test.ext:junit-ktx:1.1.3")
