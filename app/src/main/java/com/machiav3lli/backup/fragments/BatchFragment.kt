@@ -177,12 +177,24 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                     .find { it.contains(query, true) } != null
             includedBoolean && queryBoolean
         }
-        var allApkChecked by remember {
-            mutableStateOf(viewModel.apkCheckedList.size == list?.size)
+        val filteredList = list?.filter(filterPredicate)
+        var allApkChecked by remember(filteredList) {
+                mutableStateOf(
+                    viewModel.apkCheckedList.size ==
+                            filteredList
+                                ?.filter { !it.isSpecial && (backupBoolean || it.hasApk) }
+                                ?.size
+                )
         }
-        var allDataChecked by remember {
-            mutableStateOf(viewModel.dataCheckedList.size == list?.size)
+        var allDataChecked by remember(filteredList) {
+                mutableStateOf(
+                    viewModel.dataCheckedList.size ==
+                            filteredList
+                                ?.filter { backupBoolean || it.hasData }
+                                ?.size
+                )
         }
+
         val refreshing by viewModel.refreshing.observeAsState()
         val progress by viewModel.progress.observeAsState(Pair(false, 0f))
 
@@ -268,20 +280,20 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxWidth(),
-                        productsList = list?.filter(filterPredicate),
-                        !backupBoolean,
-                        viewModel.apkCheckedList,
-                        viewModel.dataCheckedList,
+                        productsList = filteredList,
+                        restore = !backupBoolean,
+                        apkCheckedList = viewModel.apkCheckedList,
+                        dataCheckedList = viewModel.dataCheckedList,
                         onApkClick = { item: Package, b: Boolean ->
                             if (b) viewModel.apkCheckedList.add(item.packageName)
                             else viewModel.apkCheckedList.remove(item.packageName)
                             allApkChecked =
-                                viewModel.apkCheckedList.size == list?.filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }?.size
+                                viewModel.apkCheckedList.size == filteredList?.filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }?.size
                         }, onDataClick = { item: Package, b: Boolean ->
                             if (b) viewModel.dataCheckedList.add(item.packageName)
                             else viewModel.dataCheckedList.remove(item.packageName)
                             allDataChecked =
-                                viewModel.dataCheckedList.size == list
+                                viewModel.dataCheckedList.size == filteredList
                                     ?.filter { ai -> backupBoolean || ai.hasData }?.size
                         }) { item, checkApk, checkData ->
                         when (checkApk) {
@@ -293,10 +305,10 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                             else -> viewModel.dataCheckedList.remove(item.packageName)
                         }
                         allApkChecked =
-                            viewModel.apkCheckedList.size == list
+                            viewModel.apkCheckedList.size == filteredList
                                 ?.filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }?.size
                         allDataChecked =
-                            viewModel.dataCheckedList.size == list
+                            viewModel.dataCheckedList.size == filteredList
                                 ?.filter { ai -> backupBoolean || ai.hasData }?.size
                     }
                     Row(
@@ -316,7 +328,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                             allApkChecked = checkBoolean
                             if (checkBoolean)
                                 viewModel.apkCheckedList.addAll(
-                                    list
+                                    filteredList
                                         ?.filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }
                                         ?.mapNotNull(Package::packageName).orEmpty()
                                 )
@@ -333,7 +345,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                             allDataChecked = checkBoolean
                             if (checkBoolean)
                                 viewModel.dataCheckedList.addAll(
-                                    list
+                                    filteredList
                                         ?.filter { ai -> backupBoolean || ai.hasData }
                                         ?.mapNotNull(Package::packageName).orEmpty()
                                 )
