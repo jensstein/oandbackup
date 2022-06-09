@@ -48,7 +48,7 @@ import com.machiav3lli.backup.PREFS_IGNORE_BATTERY_OPTIMIZATION
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.classAddress
 import com.machiav3lli.backup.databinding.ActivitySplashBinding
-import com.machiav3lli.backup.ui.compose.item.ActionChip
+import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.checkCallLogsPermission
 import com.machiav3lli.backup.utils.checkContactsPermission
@@ -104,7 +104,7 @@ fun RootMissing(activity: Activity? = null) {
                                     .fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(80.dp))
-                ActionChip(
+                ElevatedActionButton(
                     text = stringResource(id = R.string.dialogOK),
                     icon = painterResource(id = R.drawable.ic_issue),
                     fullWidth = true,

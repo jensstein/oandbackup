@@ -129,14 +129,14 @@ fun BackupItem(
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                ActionChip(
+                ElevatedActionButton(
                     icon = painterResource(id = R.drawable.ic_restore),
                     text = stringResource(id = R.string.restore),
                     positive = true,
                     onClick = { onRestore(item) },
                 )
 
-                ActionChip(
+                ElevatedActionButton(
                     icon = painterResource(id = R.drawable.ic_delete),
                     text = stringResource(id = R.string.deleteBackup),
                     positive = false,

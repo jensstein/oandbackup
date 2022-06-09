@@ -70,7 +70,6 @@ import com.machiav3lli.backup.mainFilterChipItems
 import com.machiav3lli.backup.schedSpecialFilterChipItems
 import com.machiav3lli.backup.scheduleBackupModeChipItems
 import com.machiav3lli.backup.services.ScheduleService
-import com.machiav3lli.backup.ui.compose.item.ActionChip
 import com.machiav3lli.backup.ui.compose.item.CheckChip
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.RoundButton
@@ -371,7 +370,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                                 ) {
-                                    ActionChip(
+                                    ElevatedActionButton(
                                         icon = painterResource(id = R.drawable.ic_customlist),
                                         text = stringResource(id = R.string.customListTitle),
                                         positive = it.customList.isNotEmpty(),
@@ -379,7 +378,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                                         modifier = Modifier.weight(1f),
                                         onClick = { showCustomListDialog() }
                                     )
-                                    ActionChip(
+                                    ElevatedActionButton(
                                         icon = painterResource(id = R.drawable.ic_blocklist),
                                         text = stringResource(id = R.string.sched_blocklist),
                                         positive = it.blockList.isNotEmpty(),

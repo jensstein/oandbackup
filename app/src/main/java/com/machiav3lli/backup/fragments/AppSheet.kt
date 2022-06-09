@@ -83,8 +83,8 @@ import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.tasks.BackupActionTask
 import com.machiav3lli.backup.tasks.RestoreActionTask
-import com.machiav3lli.backup.ui.compose.item.ActionChip
 import com.machiav3lli.backup.ui.compose.item.CardButton
+import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.PackageIcon
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TitleText
@@ -470,7 +470,7 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         AnimatedVisibility(visible = appInfo.isInstalled || appInfo.isSpecial) {
-                            ActionChip(
+                            ElevatedActionButton(
                                 icon = painterResource(id = R.drawable.ic_backup),
                                 text = stringResource(id = R.string.backup),
                                 fullWidth = true,
@@ -479,7 +479,7 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
                             )
                         }
                         AnimatedVisibility(visible = appInfo.hasBackups) {
-                            ActionChip(
+                            ElevatedActionButton(
                                 icon = painterResource(id = R.drawable.ic_delete),
                                 text = stringResource(id = R.string.delete_all_backups),
                                 fullWidth = true,
@@ -489,7 +489,7 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
                             )
                         }
                         AnimatedVisibility(visible = appInfo.isInstalled && !appInfo.isSpecial) {
-                            ActionChip(
+                            ElevatedActionButton(
                                 icon = painterResource(id = R.drawable.ic_force_kill),
                                 text = stringResource(id = R.string.forceKill),
                                 fullWidth = true,
@@ -501,7 +501,7 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
                             visible = appInfo.isInstalled && !appInfo.isSpecial && ((appInfo.storageStats?.dataBytes
                                 ?: 0L) >= 0L)
                         ) {
-                            ActionChip(
+                            ElevatedActionButton(
                                 icon = painterResource(id = R.drawable.ic_delete),
                                 text = stringResource(id = R.string.clear_cache),
                                 fullWidth = true,

@@ -103,7 +103,7 @@ fun ExportedScheduleItem(
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                ActionChip(
+                ElevatedActionButton(
                     icon = painterResource(id = R.drawable.ic_restore),
                     text = stringResource(id = R.string.dialog_import),
                     positive = true,
@@ -112,7 +112,7 @@ fun ExportedScheduleItem(
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                ActionChip(
+                ElevatedActionButton(
                     icon = painterResource(id = R.drawable.ic_delete),
                     text = stringResource(id = R.string.delete),
                     withText = false,

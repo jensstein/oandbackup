@@ -55,8 +55,8 @@ import com.machiav3lli.backup.mainBackupModeChipItems
 import com.machiav3lli.backup.mainFilterChipItems
 import com.machiav3lli.backup.mainSpecialFilterChipItems
 import com.machiav3lli.backup.sortChipItems
-import com.machiav3lli.backup.ui.compose.item.ActionChip
 import com.machiav3lli.backup.ui.compose.item.DoubleVerticalText
+import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.SwitchChip
 import com.machiav3lli.backup.ui.compose.item.TitleText
@@ -188,7 +188,7 @@ class SortFilterSheet(
                                 .wrapContentHeight(),
                             horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
-                            ActionChip(
+                            ElevatedActionButton(
                                 text = stringResource(id = R.string.resetFilter),
                                 icon = painterResource(id = R.drawable.ic_reset),
                                 modifier = Modifier.weight(1f),
@@ -200,7 +200,7 @@ class SortFilterSheet(
                                     dismissAllowingStateLoss()
                                 }
                             )
-                            ActionChip(
+                            ElevatedActionButton(
                                 text = stringResource(id = R.string.applyFilter),
                                 icon = painterResource(id = R.drawable.ic_apply),
                                 modifier = Modifier.weight(1f),

@@ -18,8 +18,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AssistChip
-import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -275,76 +273,6 @@ fun RoundButton(
     ) {
         Icon(painter = icon, contentDescription = description)
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ActionChip(
-    modifier: Modifier = Modifier,
-    icon: Painter,
-    text: String,
-    withText: Boolean = true,
-    positive: Boolean = true,
-    colored: Boolean = true,
-    enabled: Boolean = true,
-    fullWidth: Boolean = false,
-    onClick: () -> Unit
-) {
-    AssistChip(
-        modifier = modifier.padding(vertical = 8.dp, horizontal = 4.dp),
-        border = AssistChipDefaults.assistChipBorder(
-            borderColor = Color.Transparent,
-            borderWidth = 0.dp
-        ),
-        shape = MaterialTheme.shapes.large,
-        colors = AssistChipDefaults.assistChipColors(
-            containerColor = when {
-                positive && colored -> MaterialTheme.colorScheme.primaryContainer
-                colored -> MaterialTheme.colorScheme.secondaryContainer
-                else -> MaterialTheme.colorScheme.surface
-            },
-            disabledContainerColor = MaterialTheme.colorScheme.background,
-            labelColor = when {
-                positive && colored -> MaterialTheme.colorScheme.onPrimaryContainer
-                colored -> MaterialTheme.colorScheme.onSecondaryContainer
-                else -> MaterialTheme.colorScheme.onSurface
-            },
-            disabledLabelColor = MaterialTheme.colorScheme.surface,
-            leadingIconContentColor = when {
-                positive && colored -> MaterialTheme.colorScheme.onPrimaryContainer
-                colored -> MaterialTheme.colorScheme.onSecondaryContainer
-                else -> MaterialTheme.colorScheme.onSurface
-            },
-            disabledLeadingIconContentColor = MaterialTheme.colorScheme.surface
-        ),
-        enabled = enabled,
-        onClick = onClick,
-        leadingIcon = {
-            Icon(
-                modifier = Modifier.size(24.dp),
-                painter = icon,
-                contentDescription = text
-            )
-        },
-        label = {
-            Row(
-                Modifier,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (withText) Text(
-                    modifier = when {
-                        fullWidth -> Modifier.weight(1f)
-                        else -> Modifier.padding(start = 8.dp)
-                    },
-                    text = text,
-                    textAlign = TextAlign.Center,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.titleSmall
-                )
-            }
-        },
-    )
 }
 
 @Composable

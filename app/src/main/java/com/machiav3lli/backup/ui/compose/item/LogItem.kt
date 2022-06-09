@@ -99,14 +99,14 @@ fun LogItem(
                         )
                     }
                 }
-                ActionChip(
+                ElevatedActionButton(
                     icon = painterResource(id = R.drawable.ic_share),
                     text = stringResource(id = R.string.shareTitle),
                     withText = false,
                     positive = true,
                     onClick = { onShare(item) }
                 )
-                ActionChip(
+                ElevatedActionButton(
                     icon = painterResource(id = R.drawable.ic_delete),
                     text = stringResource(id = R.string.delete),
                     withText = false,

@@ -58,7 +58,7 @@ import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.item.ActionButton
-import com.machiav3lli.backup.ui.compose.item.ActionChip
+import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.ExpandableSearchAction
 import com.machiav3lli.backup.ui.compose.item.StateChip
 import com.machiav3lli.backup.ui.compose.item.TopBar
@@ -229,7 +229,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                             .padding(horizontal = 8.dp),
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        ActionChip(
+                        ElevatedActionButton(
                             icon = painterResource(id = R.drawable.ic_blocklist),
                             text = stringResource(id = R.string.sched_blocklist),
                             positive = false
@@ -252,7 +252,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
                             }
                         }
                         Spacer(modifier = Modifier.weight(1f))
-                        ActionChip(
+                        ElevatedActionButton(
                             icon = painterResource(id = R.drawable.ic_filter),
                             text = stringResource(id = R.string.sort_and_filter),
                             positive = true
