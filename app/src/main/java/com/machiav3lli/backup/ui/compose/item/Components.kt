@@ -162,14 +162,26 @@ fun ElevatedActionButton(
     positive: Boolean = true,
     icon: Painter? = null,
     fullWidth: Boolean = false,
+    enabled: Boolean = true,
+    colored: Boolean = true,
+    withText: Boolean = true,
     onClick: () -> Unit
 ) {
     ElevatedButton(
         modifier = modifier,
         colors = ButtonDefaults.elevatedButtonColors(
-            contentColor = if (positive) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer,
-            containerColor = if (positive) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer
+            contentColor = when {
+                !colored -> MaterialTheme.colorScheme.onSurface
+                positive -> MaterialTheme.colorScheme.onPrimaryContainer
+                else -> MaterialTheme.colorScheme.onSecondaryContainer
+            },
+            containerColor = when {
+                !colored -> MaterialTheme.colorScheme.surface
+                positive -> MaterialTheme.colorScheme.primaryContainer
+                else -> MaterialTheme.colorScheme.secondaryContainer
+            }
         ),
+        enabled = enabled,
         onClick = onClick
     ) {
         if (icon != null) {
@@ -179,15 +191,16 @@ fun ElevatedActionButton(
                 contentDescription = text
             )
         }
-        Text(
-            modifier = when {
-                fullWidth -> Modifier.weight(1f)
-                else -> Modifier.padding(start = 8.dp)
-            },
-            text = text,
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleSmall
-        )
+        if (withText)
+            Text(
+                modifier = when {
+                    fullWidth -> Modifier.weight(1f)
+                    else -> Modifier.padding(start = 8.dp)
+                },
+                text = text,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleSmall
+            )
     }
 }
 
