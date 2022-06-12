@@ -38,18 +38,27 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import com.machiav3lli.backup.PREFS_IGNORE_BATTERY_OPTIMIZATION
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.IntroActivityX
-import com.machiav3lli.backup.databinding.FragmentComposeBinding
 import com.machiav3lli.backup.ui.compose.item.PermissionItem
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.item.Permission
@@ -72,7 +81,6 @@ import com.machiav3lli.backup.utils.setBackupDir
 import timber.log.Timber
 
 class PermissionsFragment : Fragment() {
-    private lateinit var binding: FragmentComposeBinding
     private lateinit var powerManager: PowerManager
     private lateinit var prefs: SharedPreferences
 
@@ -147,14 +155,8 @@ class PermissionsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreate(savedInstanceState)
-        binding = FragmentComposeBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding.composeView.setContent {
-            PermissionsPage()
+        return ComposeView(requireContext()).apply {
+            setContent { PermissionsPage() }
         }
     }
 
@@ -166,51 +168,6 @@ class PermissionsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        updateState()
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    private fun PermissionsPage() {
-        val permissionsList = buildList {
-            if (!requireContext().hasStoragePermissions)
-                add(Pair(Permission.StorageAccess) { requireActivity().getStoragePermission() })
-            if (!requireContext().isStorageDirSetAndOk)
-                add(Pair(Permission.StorageLocation) {
-                    requireActivity().requireStorageLocation(askForDirectory)
-                })
-            if (!requireContext().checkBatteryOptimization(prefs, powerManager))
-                add(Pair(Permission.BatteryOptimization) {
-                    showBatteryOptimizationDialog(powerManager)
-                })
-            if (!requireContext().checkUsageStatsPermission)
-                add(Pair(Permission.UsageStats) { usageStatsPermission })
-            if (!requireContext().checkSMSMMSPermission)
-                add(Pair(Permission.SMSMMS) { smsmmsPermission })
-            if (!requireContext().checkCallLogsPermission)
-                add(Pair(Permission.CallLogs) { callLogsPermission })
-            if (!requireContext().checkContactsPermission)
-                add(Pair(Permission.Contacts) { contactsPermission })
-        }
-
-        AppTheme(
-            darkTheme = isSystemInDarkTheme()
-        ) {
-            Scaffold {
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(8.dp)
-                ) {
-                    items(permissionsList) {
-                        PermissionItem(it.first, it.second)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun updateState() {
         if (requireContext().hasStoragePermissions &&
             requireContext().isStorageDirSetAndOk &&
             requireContext().checkSMSMMSPermission &&
@@ -219,11 +176,62 @@ class PermissionsFragment : Fragment() {
             requireContext().checkUsageStatsPermission &&
             (prefs.getBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
                     || powerManager.isIgnoringBatteryOptimizations(requireContext().packageName))
+        ) (requireActivity() as IntroActivityX).moveTo(3)
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    private fun PermissionsPage() {
+        var permissionsList by remember {
+            mutableStateOf<List<Pair<Permission, () -> Unit>>>(emptyList())
+        }
+
+        val lifecycleOwner = LocalLifecycleOwner.current
+        DisposableEffect(key1 = lifecycleOwner, effect = {
+            val observer = LifecycleEventObserver { _, event ->
+                if (event == Lifecycle.Event.ON_RESUME) {
+                    permissionsList = buildList {
+                        if (!requireContext().hasStoragePermissions)
+                            add(Pair(Permission.StorageAccess) { requireActivity().getStoragePermission() })
+                        if (!requireContext().isStorageDirSetAndOk)
+                            add(Pair(Permission.StorageLocation) {
+                                requireActivity().requireStorageLocation(askForDirectory)
+                            })
+                        if (!requireContext().checkBatteryOptimization(prefs, powerManager))
+                            add(Pair(Permission.BatteryOptimization) {
+                                showBatteryOptimizationDialog(powerManager)
+                            })
+                        if (!requireContext().checkUsageStatsPermission)
+                            add(Pair(Permission.UsageStats) { usageStatsPermission })
+                        if (!requireContext().checkSMSMMSPermission)
+                            add(Pair(Permission.SMSMMS) { smsmmsPermission })
+                        if (!requireContext().checkCallLogsPermission)
+                            add(Pair(Permission.CallLogs) { callLogsPermission })
+                        if (!requireContext().checkContactsPermission)
+                            add(Pair(Permission.Contacts) { contactsPermission })
+                    }
+                }
+            }
+
+            lifecycleOwner.lifecycle.addObserver(observer)
+            onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+        })
+
+        AppTheme(
+            darkTheme = isSystemInDarkTheme()
         ) {
-            (requireActivity() as IntroActivityX).moveTo(3)
-        } else {
-            binding.composeView.setContent {
-                PermissionsPage()
+            Scaffold { paddingValues ->
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(paddingValues),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(8.dp)
+                ) {
+                    items(permissionsList) {
+                        PermissionItem(it.first, it.second)
+                    }
+                }
             }
         }
     }
