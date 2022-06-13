@@ -19,7 +19,11 @@ package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
 import android.content.Intent
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.PrefsActivity
 import com.machiav3lli.backup.handler.LogsHandler
@@ -33,39 +37,19 @@ class LogViewModel(private val appContext: Application) : AndroidViewModel(appCo
 
     var logsList = MediatorLiveData<MutableList<Log>>()
 
-    private var _refreshActive = MutableLiveData<Boolean>()
-    val refreshActive: LiveData<Boolean>
-        get() = _refreshActive
-
-    private val _refreshNow = MutableLiveData<Boolean>()
-    val refreshNow: LiveData<Boolean>
-        get() = _refreshNow
-
-    init {
-        refreshList()
-    }
-
-    fun finishRefresh() {
-        _refreshActive.value = false
-        _refreshNow.value = false
-    }
-
     fun refreshList() {
         viewModelScope.launch {
-            _refreshActive.value = true
-            logsList.value = recreateAppInfoList()
-            _refreshNow.value = true
+            logsList.value = recreateLogsList()
         }
     }
 
-    private suspend fun recreateAppInfoList(): MutableList<Log> = withContext(Dispatchers.IO) {
+    private suspend fun recreateLogsList(): MutableList<Log> = withContext(Dispatchers.IO) {
         LogsHandler(appContext).readLogs()
     }
 
     fun shareLog(log: Log) {
         viewModelScope.launch {
             share(log)
-            _refreshNow.value = true
         }
     }
 
@@ -94,14 +78,13 @@ class LogViewModel(private val appContext: Application) : AndroidViewModel(appCo
     fun deleteLog(log: Log) {
         viewModelScope.launch {
             delete(log)
-            _refreshNow.value = true
+            refreshList()
         }
     }
 
     private suspend fun delete(log: Log) {
         withContext(Dispatchers.IO) {
             log.delete(appContext)
-            refreshList()
         }
     }
 

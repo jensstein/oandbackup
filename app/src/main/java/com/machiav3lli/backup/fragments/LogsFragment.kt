@@ -26,17 +26,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.machiav3lli.backup.databinding.FragmentComposeBinding
 import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.ui.compose.recycler.LogRecycler
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.viewmodels.LogViewModel
 
 class LogsFragment : Fragment() {
-    private lateinit var binding: FragmentComposeBinding
     private lateinit var viewModel: LogViewModel
 
     override fun onCreateView(
@@ -45,54 +47,36 @@ class LogsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreate(savedInstanceState)
-        binding = FragmentComposeBinding.inflate(inflater, container, false)
-
         val viewModelFactory = LogViewModel.Factory(requireActivity().application)
         viewModel = ViewModelProvider(this, viewModelFactory)[LogViewModel::class.java]
 
-        viewModel.refreshActive.observe(viewLifecycleOwner) {
-            //binding.refreshLayout.isRefreshing = it
+        return ComposeView(requireContext()).apply {
+            setContent { LogsPage() }
         }
-        viewModel.refreshNow.observe(viewLifecycleOwner) { if (it) refresh() }
-        viewModel.logsList.observe(viewLifecycleOwner, ::redrawPage)
-
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupViews()
     }
 
     override fun onResume() {
         super.onResume()
-        if (viewModel.refreshNow.value == true) viewModel.refreshList()
-    }
-
-    private fun setupViews() {
-        // binding.refreshLayout.setOnRefreshListener { viewModel.refreshList() }
-    }
-
-    fun refresh() {
-        viewModel.finishRefresh()
+        viewModel.refreshList()
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
-    fun redrawPage(list: MutableList<Log>) {
-        binding.composeView.setContent {
-            AppTheme(
-                darkTheme = isSystemInDarkTheme()
-            ) {
-                Scaffold { paddingValues ->
-                    LogRecycler(
-                        modifier = Modifier
-                            .padding(paddingValues)
-                            .fillMaxSize(),
-                        productsList = list.sortedByDescending(Log::logDate),
-                        onShare = { viewModel.shareLog(it) },
-                        onDelete = { viewModel.deleteLog(it) }
-                    )
-                }
+    @Composable
+    fun LogsPage() {
+        val logs by viewModel.logsList.observeAsState()
+
+        AppTheme(
+            darkTheme = isSystemInDarkTheme()
+        ) {
+            Scaffold { paddingValues ->
+                LogRecycler(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .fillMaxSize(),
+                    productsList = logs?.sortedByDescending(Log::logDate),
+                    onShare = { viewModel.shareLog(it) },
+                    onDelete = { viewModel.deleteLog(it) }
+                )
             }
         }
     }
