@@ -27,7 +27,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil.annotation.ExperimentalCoilApi
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
@@ -36,7 +35,7 @@ import java.time.LocalTime
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalCoilApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScheduleItem(
     item: Schedule,
@@ -44,6 +43,7 @@ fun ScheduleItem(
     onCheckChanged: (Schedule, Boolean) -> Unit = { _: Schedule, _: Boolean -> }
 ) {
     val schedule by remember(item) { mutableStateOf(item) }
+    val (checked, check) = mutableStateOf(item.enabled)
 
     OutlinedCard(
         modifier = Modifier,
@@ -62,10 +62,10 @@ fun ScheduleItem(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Checkbox(checked = schedule.enabled,
+            Checkbox(checked = checked,
                 onCheckedChange = {
-                    schedule.enabled = it
-                    schedule.enabled = it
+                    // schedule.enabled = it
+                    check(it)
                     onCheckChanged(schedule, it)
                 }
             )
