@@ -18,20 +18,51 @@
 package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
-import androidx.lifecycle.*
-import com.machiav3lli.backup.dbs.entity.Schedule
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.dbs.dao.ScheduleDao
+import com.machiav3lli.backup.dbs.entity.Schedule
+import com.machiav3lli.backup.utils.cancelAlarm
+import com.machiav3lli.backup.utils.scheduleAlarm
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ScheduleViewModel(val id: Long, private val scheduleDB: ScheduleDao, appContext: Application)
-    : AndroidViewModel(appContext) {
+class ScheduleViewModel(
+    val id: Long,
+    private val scheduleDB: ScheduleDao,
+    appContext: Application
+) : AndroidViewModel(appContext) {
 
     var schedule = MediatorLiveData<Schedule>()
 
     init {
         schedule.addSource(scheduleDB.getLiveSchedule(id), schedule::setValue)
+    }
+
+
+    fun updateSchedule(schedule: Schedule?, rescheduleBoolean: Boolean) {
+        viewModelScope.launch {
+            this@ScheduleViewModel.schedule.value = schedule
+            schedule?.let { updateS(it, rescheduleBoolean) }
+        }
+    }
+
+    private suspend fun updateS(schedule: Schedule, rescheduleBoolean: Boolean) {
+        withContext(Dispatchers.IO) {
+            scheduleDB.update(schedule)
+            if (schedule.enabled)
+                scheduleAlarm(
+                    getApplication<Application>().baseContext,
+                    schedule.id,
+                    rescheduleBoolean
+                )
+            else
+                cancelAlarm(getApplication<Application>().baseContext, schedule.id)
+        }
     }
 
     fun deleteSchedule() {
@@ -46,9 +77,10 @@ class ScheduleViewModel(val id: Long, private val scheduleDB: ScheduleDao, appCo
         }
     }
 
-    class Factory(private val id: Long, private val scheduleDB: ScheduleDao,
-                  private val application: Application)
-        : ViewModelProvider.Factory {
+    class Factory(
+        private val id: Long, private val scheduleDB: ScheduleDao,
+        private val application: Application
+    ) : ViewModelProvider.Factory {
         @Suppress("unchecked_cast")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(ScheduleViewModel::class.java)) {

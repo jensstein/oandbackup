@@ -42,14 +42,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -58,7 +62,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.databinding.FragmentComposeBinding
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.dao.ScheduleDao
 import com.machiav3lli.backup.dbs.entity.Schedule
@@ -83,25 +86,21 @@ import com.machiav3lli.backup.utils.cancelAlarm
 import com.machiav3lli.backup.utils.filterToString
 import com.machiav3lli.backup.utils.modeToModes
 import com.machiav3lli.backup.utils.modesToString
-import com.machiav3lli.backup.utils.scheduleAlarm
 import com.machiav3lli.backup.utils.specialBackupsEnabled
 import com.machiav3lli.backup.utils.specialFilterToString
 import com.machiav3lli.backup.viewmodels.ScheduleViewModel
-import java.lang.ref.WeakReference
 import java.time.LocalTime
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
 class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
     private lateinit var viewModel: ScheduleViewModel
-    private lateinit var binding: FragmentComposeBinding
     private lateinit var database: ODatabase
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentComposeBinding.inflate(inflater, container, false)
         database = ODatabase.getInstance(requireContext())
         val viewModelFactory = ScheduleViewModel.Factory(
             scheduleId,
@@ -110,11 +109,9 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
         )
         viewModel = ViewModelProvider(this, viewModelFactory)[ScheduleViewModel::class.java]
 
-        viewModel.schedule.observe(viewLifecycleOwner) {
-            redrawPage()
+        return ComposeView(requireContext()).apply {
+            setContent { SchedulePage() }
         }
-
-        return binding.root
     }
 
     private fun getTimeLeft(schedule: Schedule): String {
@@ -134,16 +131,11 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
         return text
     }
 
-    private fun refresh(rescheduleBoolean: Boolean) {
-        Thread(
-            UpdateRunnable(
-                viewModel.schedule.value,
-                requireContext(),
-                database.scheduleDao,
-                rescheduleBoolean
-            )
-        )
-            .start()
+    private fun refresh(
+        schedule: Schedule? = viewModel.schedule.value,
+        rescheduleBoolean: Boolean
+    ) {
+        viewModel.updateSchedule(schedule, rescheduleBoolean)
     }
 
     private fun startSchedule() {
@@ -201,28 +193,6 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
         }
     }
 
-    class UpdateRunnable(
-        private val schedule: Schedule?,
-        context: Context?,
-        val scheduleDao: ScheduleDao,
-        private val rescheduleBoolean: Boolean
-    ) : Runnable {
-        private val contextReference: WeakReference<Context?> = WeakReference(context)
-
-        override fun run() {
-            val scheduler = contextReference.get()
-            if (scheduler != null) {
-                schedule?.let {
-                    scheduleDao.update(it)
-                    if (it.enabled)
-                        scheduleAlarm(scheduler, it.id, rescheduleBoolean)
-                    else
-                        cancelAlarm(scheduler, it.id)
-                }
-            }
-        }
-    }
-
     internal class StartSchedule(
         val context: Context,
         val scheduleDao: ScheduleDao,
@@ -246,7 +216,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
     private fun showNameEditorDialog() {
         ScheduleNameDialog(viewModel.schedule.value?.name.toString()) {
             viewModel.schedule.value?.name = it
-            refresh(false)
+            refresh(rescheduleBoolean = false)
         }.show(requireActivity().supportFragmentManager, "SCHEDULENAME_DIALOG")
     }
 
@@ -257,7 +227,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
             { _, hourOfDay, minute ->
                 viewModel.schedule.value?.timeHour = hourOfDay
                 viewModel.schedule.value?.timeMinute = minute
-                refresh(true)
+                refresh(rescheduleBoolean = true)
             },
             viewModel.schedule.value?.timeHour ?: 0,
             viewModel.schedule.value?.timeMinute ?: 0,
@@ -269,7 +239,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
     private fun showIntervalSetterDialog() {
         IntervalInDaysDialog(viewModel.schedule.value?.interval.toString()) { newInterval: Int ->
             viewModel.schedule.value?.interval = newInterval
-            refresh(true)
+            refresh(rescheduleBoolean = true)
         }.show(requireActivity().supportFragmentManager, "INTERVALDAYS_DIALOG")
     }
 
@@ -280,7 +250,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                 ?: MAIN_FILTER_DEFAULT, false
         ) { newList: Set<String> ->
             viewModel.schedule.value?.customList = newList
-            refresh(false)
+            refresh(rescheduleBoolean = false)
         }.show(requireActivity().supportFragmentManager, "CUSTOMLIST_DIALOG")
     }
 
@@ -291,176 +261,179 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                 ?: MAIN_FILTER_DEFAULT, true
         ) { newList: Set<String> ->
             viewModel.schedule.value?.blockList = newList
-            refresh(false)
+            refresh(rescheduleBoolean = false)
         }.show(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
-    fun redrawPage() {
-        binding.composeView.setContent {
-            AppTheme(
-                darkTheme = isSystemInDarkTheme()
-            ) {
-                viewModel.schedule.value?.let {
-                    Column(
-                        modifier = Modifier.height(IntrinsicSize.Min)
-                    ) {
-                        CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onBackground) {
-                            Column(
-                                modifier = Modifier
-                                    .background(color = Color.Transparent)
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 8.dp)
-                                    .weight(1f)
-                                    .verticalScroll(rememberScrollState()),
-                                verticalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                                ) {
-                                    TitleText(R.string.sched_name)
-                                    Text(
-                                        text = it.name,
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .clickable { showNameEditorDialog() },
-                                        style = MaterialTheme.typography.titleLarge,
-                                        textAlign = TextAlign.Center,
-                                    )
-                                    RoundButton(
-                                        icon = painterResource(id = R.drawable.ic_arrow_down),
-                                        description = stringResource(id = R.string.dismiss),
-                                        onClick = { dismissAllowingStateLoss() }
-                                    )
-                                }
-                                Row(
-                                    modifier = Modifier.height(IntrinsicSize.Min),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                                ) {
-                                    TitleText(R.string.sched_hourOfDay)
-                                    Text(
-                                        text = LocalTime.of(it.timeHour, it.timeMinute).toString(),
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .fillMaxHeight()
-                                            .clickable { showTimePickerDialog() },
-                                        color = MaterialTheme.colorScheme.primary,
-                                        textAlign = TextAlign.End,
-                                    )
-                                }
-                                Row(
-                                    modifier = Modifier.height(IntrinsicSize.Min),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                                ) {
-                                    TitleText(R.string.sched_interval)
-                                    Text(
-                                        text = it.interval.toString(),
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .fillMaxHeight()
-                                            .clickable { showIntervalSetterDialog() },
-                                        color = MaterialTheme.colorScheme.primary,
-                                        textAlign = TextAlign.End,
-                                    )
-                                }
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                                ) {
-                                    ElevatedActionButton(
-                                        icon = painterResource(id = R.drawable.ic_customlist),
-                                        text = stringResource(id = R.string.customListTitle),
-                                        positive = it.customList.isNotEmpty(),
-                                        fullWidth = true,
-                                        modifier = Modifier.weight(1f),
-                                        onClick = { showCustomListDialog() }
-                                    )
-                                    ElevatedActionButton(
-                                        icon = painterResource(id = R.drawable.ic_blocklist),
-                                        text = stringResource(id = R.string.sched_blocklist),
-                                        positive = it.blockList.isNotEmpty(),
-                                        fullWidth = true,
-                                        modifier = Modifier.weight(1f),
-                                        onClick = { showBlockListDialog() }
-                                    )
-                                }
-                                TitleText(R.string.filter_options)
-                                MultiSelectableChipGroup(
-                                    list = if (requireContext().specialBackupsEnabled) mainFilterChipItems
-                                    else mainFilterChipItems.minus(ChipItem.Special),
-                                    selectedFlags = it.filter
-                                ) { flag ->
-                                    it.filter = it.filter xor flag
-                                    refresh(false)
-                                }
-                                TitleText(R.string.sched_mode)
-                                MultiSelectableChipGroup(
-                                    list = scheduleBackupModeChipItems,
-                                    selectedFlags = it.mode
-                                ) { flag ->
-                                    it.mode = it.mode xor flag
-                                    refresh(false)
-                                }
-                                TitleText(R.string.other_filters_options)
-                                SelectableChipGroup(
-                                    list = schedSpecialFilterChipItems,
-                                    selectedFlag = it.specialFilter
-                                ) { flag ->
-                                    it.specialFilter = flag
-                                    refresh(false)
-                                }
-                            }
+    @Composable
+    fun SchedulePage() {
+        val schedule by viewModel.schedule.observeAsState()
+        val (checked, check) = mutableStateOf(viewModel.schedule.value?.enabled == true)
 
-                        }
-                        CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
-                            Column(
-                                modifier = Modifier
-                                    .background(color = MaterialTheme.colorScheme.surface)
-                                    .fillMaxWidth()
-                                    .padding(8.dp)
-                                    .wrapContentHeight(),
-                                verticalArrangement = Arrangement.spacedBy(4.dp)
+        AppTheme(
+            darkTheme = isSystemInDarkTheme()
+        ) {
+
+            schedule?.let {
+                Column(
+                    modifier = Modifier.height(IntrinsicSize.Min)
+                ) {
+                    CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onBackground) {
+                        Column(
+                            modifier = Modifier
+                                .background(color = Color.Transparent)
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp)
+                                .weight(1f)
+                                .verticalScroll(rememberScrollState()),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
-                                Row() {
-                                    AnimatedVisibility(visible = it.enabled) {
-                                        Text(
-                                            text = "${stringResource(id = R.string.sched_timeLeft)} "
-                                                .plus(getTimeLeft(it))
-                                        )
-                                    }
-                                }
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    CheckChip(
-                                        checked = it.enabled,
-                                        textId = R.string.sched_checkbox,
-                                        checkedTextId = R.string.enabled,
-                                        onCheckedChange = { checked ->
-                                            it.enabled = checked
-                                            refresh(true)
-                                        }
-                                    )
-                                    Spacer(modifier = Modifier.weight(1f))
-                                    ElevatedActionButton(
-                                        text = stringResource(id = R.string.delete),
-                                        icon = painterResource(id = R.drawable.ic_delete),
-                                        positive = false,
-                                        fullWidth = false
-                                    ) {
-                                        viewModel.deleteSchedule()
-                                        cancelAlarm(requireContext(), scheduleId)
-                                        dismissAllowingStateLoss()
-                                    }
-                                }
-                                ElevatedActionButton(
-                                    text = stringResource(id = R.string.sched_activateButton),
-                                    icon = painterResource(id = R.drawable.ic_backup),
-                                    fullWidth = true,
-                                    onClick = { startSchedule() }
+                                TitleText(R.string.sched_name)
+                                Text(
+                                    text = it.name,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .clickable { showNameEditorDialog() },
+                                    style = MaterialTheme.typography.titleLarge,
+                                    textAlign = TextAlign.Center,
+                                )
+                                RoundButton(
+                                    icon = painterResource(id = R.drawable.ic_arrow_down),
+                                    description = stringResource(id = R.string.dismiss),
+                                    onClick = { dismissAllowingStateLoss() }
                                 )
                             }
+                            Row(
+                                modifier = Modifier.height(IntrinsicSize.Min),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                TitleText(R.string.sched_hourOfDay)
+                                Text(
+                                    text = LocalTime.of(it.timeHour, it.timeMinute).toString(),
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight()
+                                        .clickable { showTimePickerDialog() },
+                                    color = MaterialTheme.colorScheme.primary,
+                                    textAlign = TextAlign.End,
+                                )
+                            }
+                            Row(
+                                modifier = Modifier.height(IntrinsicSize.Min),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                TitleText(R.string.sched_interval)
+                                Text(
+                                    text = it.interval.toString(),
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight()
+                                        .clickable { showIntervalSetterDialog() },
+                                    color = MaterialTheme.colorScheme.primary,
+                                    textAlign = TextAlign.End,
+                                )
+                            }
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                ElevatedActionButton(
+                                    icon = painterResource(id = R.drawable.ic_customlist),
+                                    text = stringResource(id = R.string.customListTitle),
+                                    positive = it.customList.isNotEmpty(),
+                                    fullWidth = true,
+                                    modifier = Modifier.weight(1f),
+                                    onClick = { showCustomListDialog() }
+                                )
+                                ElevatedActionButton(
+                                    icon = painterResource(id = R.drawable.ic_blocklist),
+                                    text = stringResource(id = R.string.sched_blocklist),
+                                    positive = it.blockList.isNotEmpty(),
+                                    fullWidth = true,
+                                    modifier = Modifier.weight(1f),
+                                    onClick = { showBlockListDialog() }
+                                )
+                            }
+                            TitleText(R.string.filter_options)
+                            MultiSelectableChipGroup(
+                                list = if (requireContext().specialBackupsEnabled) mainFilterChipItems
+                                else mainFilterChipItems.minus(ChipItem.Special),
+                                selectedFlags = it.filter
+                            ) { flag ->
+                                it.filter = it.filter xor flag
+                                refresh(it, false)
+                            }
+                            TitleText(R.string.sched_mode)
+                            MultiSelectableChipGroup(
+                                list = scheduleBackupModeChipItems,
+                                selectedFlags = it.mode
+                            ) { flag ->
+                                it.mode = it.mode xor flag
+                                refresh(it, false)
+                            }
+                            TitleText(R.string.other_filters_options)
+                            SelectableChipGroup(
+                                list = schedSpecialFilterChipItems,
+                                selectedFlag = it.specialFilter
+                            ) { flag ->
+                                it.specialFilter = flag
+                                refresh(it, false)
+                            }
+                        }
+
+                    }
+                    CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
+                        Column(
+                            modifier = Modifier
+                                .background(color = MaterialTheme.colorScheme.surface)
+                                .fillMaxWidth()
+                                .padding(8.dp)
+                                .wrapContentHeight(),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Row {
+                                AnimatedVisibility(visible = checked) {
+                                    Text(
+                                        text = "${stringResource(id = R.string.sched_timeLeft)} "
+                                            .plus(getTimeLeft(it))
+                                    )
+                                }
+                            }
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                CheckChip(
+                                    checked = it.enabled,
+                                    textId = R.string.sched_checkbox,
+                                    checkedTextId = R.string.enabled,
+                                    onCheckedChange = { checked ->
+                                        check(checked)
+                                        it.enabled = checked
+                                        refresh(it, true)
+                                    }
+                                )
+                                Spacer(modifier = Modifier.weight(1f))
+                                ElevatedActionButton(
+                                    text = stringResource(id = R.string.delete),
+                                    icon = painterResource(id = R.drawable.ic_delete),
+                                    positive = false,
+                                    fullWidth = false
+                                ) {
+                                    viewModel.deleteSchedule()
+                                    cancelAlarm(requireContext(), scheduleId)
+                                    dismissAllowingStateLoss()
+                                }
+                            }
+                            ElevatedActionButton(
+                                text = stringResource(id = R.string.sched_activateButton),
+                                icon = painterResource(id = R.drawable.ic_backup),
+                                fullWidth = true,
+                                onClick = { startSchedule() }
+                            )
                         }
                     }
                 }

@@ -235,8 +235,8 @@ fun MultiSelectableChipGroup(
                     ButtonIcon(it.iconId, it.textId)
                 },
                 onClick = {
-                    setFlag(selectedFlags xor it.flag)
                     onClick(it.flag)
+                    setFlag(selectedFlags xor it.flag)
                 },
                 label = {
                     Text(

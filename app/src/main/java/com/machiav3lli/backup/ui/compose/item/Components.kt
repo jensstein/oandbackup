@@ -312,6 +312,8 @@ fun CheckChip(
     modifier: Modifier = Modifier,
     onCheckedChange: (Boolean) -> Unit
 ) {
+    val (checked, check) = remember { mutableStateOf(checked) }
+
     FilterChip(
         modifier = modifier.padding(vertical = 8.dp, horizontal = 4.dp),
         selected = checked,
@@ -326,7 +328,10 @@ fun CheckChip(
         selectedIcon = {
             ButtonIcon(R.drawable.ic_all, R.string.enabled)
         },
-        onClick = { onCheckedChange(!checked) },
+        onClick = {
+            onCheckedChange(!checked)
+            check(!checked)
+        },
         label = {
             Row {
                 Text(text = if (checked) stringResource(id = checkedTextId) else stringResource(id = textId))
