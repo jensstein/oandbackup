@@ -18,7 +18,11 @@
 package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.PrefsActivity
 import com.machiav3lli.backup.dbs.dao.ScheduleDao
@@ -35,28 +39,9 @@ class ExportsViewModel(val database: ScheduleDao, private val appContext: Applic
 
     var exportsList = MediatorLiveData<MutableList<Pair<Schedule, StorageFile>>>()
 
-    private var _refreshActive = MutableLiveData<Boolean>()
-    val refreshActive: LiveData<Boolean>
-        get() = _refreshActive
-
-    private val _refreshNow = MutableLiveData<Boolean>()
-    val refreshNow: LiveData<Boolean>
-        get() = _refreshNow
-
-    init {
-        refreshList()
-    }
-
-    fun finishRefresh() {
-        _refreshActive.value = false
-        _refreshNow.value = false
-    }
-
     fun refreshList() {
         viewModelScope.launch {
-            _refreshActive.value = true
             exportsList.value = recreateExportsList()
-            _refreshNow.value = true
         }
     }
 
@@ -68,14 +53,13 @@ class ExportsViewModel(val database: ScheduleDao, private val appContext: Applic
     fun deleteExport(exportFile: StorageFile) {
         viewModelScope.launch {
             delete(exportFile)
-            _refreshNow.value = true
+            refreshList()
         }
     }
 
     private suspend fun delete(exportFile: StorageFile) {
         withContext(Dispatchers.IO) {
             exportFile.delete()
-            refreshList()
         }
     }
 

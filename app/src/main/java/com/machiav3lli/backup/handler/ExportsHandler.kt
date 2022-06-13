@@ -27,6 +27,7 @@ import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logErrors
 import com.machiav3lli.backup.handler.LogsHandler.Companion.unhandledException
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import com.machiav3lli.backup.utils.getBackupDir
 import timber.log.Timber
 import java.io.BufferedOutputStream
@@ -67,6 +68,7 @@ class ExportsHandler(var context: Context) {
     @Throws(IOException::class)
     fun readExports(): MutableList<Pair<Schedule, StorageFile>> {
         val exports = mutableListOf<Pair<Schedule, StorageFile>>()
+        invalidateCache { it.contains(exportsDirectory?.name.orEmpty()) }
         exportsDirectory?.listFiles()?.forEach {
             if (it.isFile) try {
                 exports.add(Pair(Schedule(it), it))
