@@ -55,38 +55,38 @@ class Package {
     internal constructor(
         context: Context,
         appInfo: AppInfo,
-        backups: List<Backup> = emptyList()
+        backups: List<Backup>? = emptyList()
     ) {
         packageName = appInfo.packageName
         this.packageInfo = appInfo
         getAppBackupRoot()
         if (appInfo.installed) refreshStorageStats(context)
-        updateBackupList(backups)
+        updateBackupList(backups ?: emptyList())
         OABX.app.packageCache.put(packageName, this)
     }
 
     constructor(
         context: Context,
         specialInfo: SpecialInfo,
-        backups: List<Backup> = emptyList()
+        backups: List<Backup>? = emptyList()
     ) {
         packageName = specialInfo.packageName
         this.packageInfo = specialInfo
         getAppBackupRoot()
-        updateBackupList(backups)
+        updateBackupList(backups ?: emptyList())
         OABX.app.packageCache.put(packageName, this)
     }
 
     constructor(
         context: Context,
         packageInfo: android.content.pm.PackageInfo,
-        backups: List<Backup> = emptyList()
+        backups: List<Backup>? = emptyList()
     ) {
         packageName = packageInfo.packageName
         this.packageInfo = AppInfo(context, packageInfo)
         getAppBackupRoot()
         refreshStorageStats(context)
-        updateBackupList(backups)
+        updateBackupList(backups ?: emptyList())
         OABX.app.packageCache.put(packageName, this)
     }
 
@@ -128,13 +128,13 @@ class Package {
         context: Context,
         packageInfo: android.content.pm.PackageInfo,
         backupRoot: StorageFile?,
-        backups: List<Backup> = emptyList()
+        backups: List<Backup>? = emptyList()
     ) {
         this.packageName = packageInfo.packageName
         this.packageInfo = AppInfo(context, packageInfo)
         this.packageBackupDir = backupRoot?.findFile(packageName)
         refreshStorageStats(context)
-        updateBackupList(backups)
+        updateBackupList(backups ?: emptyList())
         OABX.app.packageCache.put(packageName, this)
     }
 

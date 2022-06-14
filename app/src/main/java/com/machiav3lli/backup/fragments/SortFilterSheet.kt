@@ -26,7 +26,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -69,7 +68,7 @@ import com.machiav3lli.backup.utils.specialBackupsEnabled
 
 class SortFilterSheet(
     private var mSortFilterModel: SortFilterModel = SortFilterModel(),
-    private val stats: Triple<Int, Int, Int>
+    private val stats: Triple<Int, Int, Int> = Triple(0, 0, 0)
 ) : BaseSheet() {
 
     override fun onCreateView(
@@ -84,11 +83,7 @@ class SortFilterSheet(
         }
     }
 
-    // TODO Omit using layout fully in next iteration
-    @OptIn(
-        ExperimentalMaterial3Api::class,
-        ExperimentalLayoutApi::class
-    )
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun SortFilterPage() {
         AppTheme(

@@ -42,7 +42,6 @@ import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupDir
-import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import com.machiav3lli.backup.utils.suCopyFileToDocument
 import timber.log.Timber
 import java.io.FileNotFoundException
@@ -59,8 +58,7 @@ object BackupRestoreHelper {
     ): ActionResult {
         var reBackupMode = backupMode
         val housekeepingWhen = fromString(
-            context.getDefaultSharedPreferences()
-                .getString(PREFS_HOUSEKEEPING_MOMENT, HousekeepingMoment.AFTER.value)
+            OABX.prefString(PREFS_HOUSEKEEPING_MOMENT, HousekeepingMoment.AFTER.value)
                 ?: HousekeepingMoment.AFTER.value
         )
         if (housekeepingWhen == HousekeepingMoment.BEFORE) {

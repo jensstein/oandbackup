@@ -60,6 +60,7 @@ import com.machiav3lli.backup.utils.hasStoragePermissions
 import com.machiav3lli.backup.utils.isStorageDirSetAndOk
 import com.machiav3lli.backup.utils.setCustomTheme
 import com.topjohnwu.superuser.Shell
+import kotlin.system.exitProcess
 
 
 @Preview
@@ -79,6 +80,7 @@ fun RootMissing(activity: Activity? = null) {
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxSize()
+                    .padding(paddingValues)
                     .padding(50.dp)
             ) {
                 Text(
@@ -86,22 +88,19 @@ fun RootMissing(activity: Activity? = null) {
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = Color.Red,
-                    modifier = Modifier
-                                    .fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(40.dp))
                 Text(
                     text = stringResource(R.string.root_is_mandatory),
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier
-                                    .fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(40.dp))
                 Text(
                     text = stringResource(R.string.see_faq),
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier
-                                    .fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(80.dp))
                 ElevatedActionButton(
@@ -111,7 +110,7 @@ fun RootMissing(activity: Activity? = null) {
                     modifier = Modifier
                 ) {
                     activity?.finishAffinity()
-                    System.exit(0)
+                    exitProcess(0)
                 }
             }
         }

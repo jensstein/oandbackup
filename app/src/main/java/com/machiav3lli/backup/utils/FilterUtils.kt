@@ -32,6 +32,7 @@ import com.machiav3lli.backup.MODE_DATA_EXT
 import com.machiav3lli.backup.MODE_DATA_MEDIA
 import com.machiav3lli.backup.MODE_DATA_OBB
 import com.machiav3lli.backup.MODE_NONE
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_OLDBACKUPS
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.SPECIAL_FILTER_DISABLED
@@ -82,7 +83,7 @@ private fun List<Package>.applySpecialFilter(
         launchableAppsList = context.packageManager.queryIntentActivities(mainIntent, 0)
             .map { it.activityInfo.packageName }
     }
-    val days = context.getDefaultSharedPreferences().getInt(PREFS_OLDBACKUPS, 7)
+    val days = OABX.prefInt(PREFS_OLDBACKUPS, 7)
     predicate = when (specialFilter) {
         SPECIAL_FILTER_NEW_UPDATED -> { appInfo: Package ->
             !appInfo.hasBackups || appInfo.isUpdated

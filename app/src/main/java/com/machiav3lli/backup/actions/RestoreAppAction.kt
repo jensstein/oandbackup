@@ -53,7 +53,6 @@ import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.CryptoSetupException
 import com.machiav3lli.backup.utils.decryptStream
 import com.machiav3lli.backup.utils.getCryptoSalt
-import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import com.machiav3lli.backup.utils.getEncryptionPassword
 import com.machiav3lli.backup.utils.isAllowDowngrade
 import com.machiav3lli.backup.utils.isDisableVerification
@@ -163,7 +162,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             Timber.i("[${backup.packageName}] Skip restoring app's data; not part of the backup or restore mode")
         }
         if (backup.hasDevicesProtectedData && backupMode and MODE_DATA_DE == MODE_DATA_DE) {
-            Timber.i("[${backup.packageName}] Restoring app's protected data")
+            Timber.i("[${backup.packageName}] Restoring app's device-protected data")
             work?.setOperation("prt")
             restoreDeviceProtectedData(app, backup, backupDir, true)
         } else {
@@ -556,8 +555,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
 
                     var options = ""
                     options += " --exclude " + quote(exclude)
-                    if (context.getDefaultSharedPreferences()
-                            .getBoolean(PREFS_EXCLUDECACHE, true)
+                    if (OABX.prefFlag(PREFS_EXCLUDECACHE, true)
                     ) {
                         options += " --exclude " + quote(excludeCache)
                     }

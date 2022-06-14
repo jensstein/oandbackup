@@ -96,7 +96,7 @@ fun ButtonIcon(
 
 @Composable
 fun PackageIcon(
-    item: Package,
+    item: Package?,
     imageData: Any
 ) {
     AsyncImage(
@@ -113,10 +113,10 @@ fun PackageIcon(
 
 
 @Composable
-fun placeholderIconPainter(item: Package) = painterResource(
+fun placeholderIconPainter(item: Package?) = painterResource(
     when {
-        item.isSpecial -> R.drawable.ic_placeholder_special
-        item.isSystem -> R.drawable.ic_placeholder_system
+        item?.isSpecial == true -> R.drawable.ic_placeholder_special
+        item?.isSystem == true -> R.drawable.ic_placeholder_system
         else -> R.drawable.ic_placeholder_user
     }
 )

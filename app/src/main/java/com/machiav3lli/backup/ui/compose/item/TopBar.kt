@@ -41,13 +41,17 @@ import com.machiav3lli.backup.R
 
 @Composable
 fun TopBar(
+    modifier: Modifier = Modifier,
     title: String,
     actions: @Composable (RowScope.() -> Unit)
 ) {
     SmallTopAppBar(
-        modifier = Modifier.wrapContentHeight(),
+        modifier = modifier.wrapContentHeight(),
         title = {
-            Text(text = title, style = MaterialTheme.typography.headlineMedium)
+            Text(
+                text = title,
+                style = MaterialTheme.typography.headlineMedium
+            )
         },
         colors = TopAppBarDefaults.smallTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.surface,
@@ -55,7 +59,6 @@ fun TopBar(
             actionIconContentColor = MaterialTheme.colorScheme.onSurface,
             navigationIconContentColor = MaterialTheme.colorScheme.onSurface
         ),
-        //elevation = 0.dp,
         actions = actions
     )
 }

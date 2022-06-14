@@ -35,10 +35,10 @@ interface AppInfoDao : BaseDao<AppInfo> {
     val allLive: LiveData<MutableList<AppInfo>>
 
     @Query("SELECT * FROM appinfo WHERE packageName = :packageName")
-    fun get(packageName: String): MutableList<AppInfo>
+    fun get(packageName: String): AppInfo
 
     @Query("SELECT * FROM appinfo WHERE packageName = :packageName")
-    fun getLive(packageName: String): LiveData<List<AppInfo>>
+    fun getLive(packageName: String): LiveData<AppInfo>
 
     @Query("DELETE FROM appinfo")
     fun emptyTable()

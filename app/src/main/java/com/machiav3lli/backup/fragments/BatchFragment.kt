@@ -179,20 +179,20 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
         }
         val filteredList = list?.filter(filterPredicate)
         var allApkChecked by remember(filteredList) {
-                mutableStateOf(
-                    viewModel.apkCheckedList.size ==
-                            filteredList
-                                ?.filter { !it.isSpecial && (backupBoolean || it.hasApk) }
-                                ?.size
-                )
+            mutableStateOf(
+                viewModel.apkCheckedList.size ==
+                        filteredList
+                            ?.filter { !it.isSpecial && (backupBoolean || it.hasApk) }
+                            ?.size
+            )
         }
         var allDataChecked by remember(filteredList) {
-                mutableStateOf(
-                    viewModel.dataCheckedList.size ==
-                            filteredList
-                                ?.filter { backupBoolean || it.hasData }
-                                ?.size
-                )
+            mutableStateOf(
+                viewModel.dataCheckedList.size ==
+                        filteredList
+                            ?.filter { backupBoolean || it.hasData }
+                            ?.size
+            )
         }
 
         val refreshing by viewModel.refreshing.observeAsState()
