@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -38,24 +39,40 @@ import timber.log.Timber
 
 class AppSheetViewModel(
     app: Package,
+    //database: ODatabase,
     var shellCommands: ShellCommands,
     private val appContext: Application
 ) : AndroidViewModel(appContext) {
 
-    var appInfo by mutableStateOf(app) //MediatorLiveData<Package>()
+    var thePackage = MutableLiveData(app)
 
-    private var notificationId: Int
+    //var packageInfo = MediatorLiveData<AppInfo>()
+    //var backups = MediatorLiveData<List<Backup>>()
+    var snackbarText = MutableLiveData("")
+
+    private var notificationId: Int = System.currentTimeMillis().toInt()
 
     var refreshNow by mutableStateOf(false)
-    var snackbarText by mutableStateOf("")
 
     init {
-        notificationId = System.currentTimeMillis().toInt()
-        //refreshNow.observeForever {
-        //    appInfo.value?.let {
-        //        invalidateCacheForPackage(it.packageName)
-        //    }
-        //}
+        /*packageInfo.addSource(database.appInfoDao.getLive(app.packageName)) {
+            packageInfo.value = it
+            if (it != null && !it.isSpecial)
+                thePackage.postValue(Package(appContext, it, backups.value))
+            else
+                // TODO fix specials
+                thePackage.postValue(
+                    SpecialInfo.getSpecialPackages(appContext)
+                        .find { sp -> sp.packageName == it?.packageName }
+                        .apply { this?.refreshBackupList() }
+                )
+        }
+        backups.addSource(database.backupDao.getLive(app.packageName)) {
+            backups.value = it
+            packageInfo.value?.let { pi ->
+                thePackage.postValue(Package(appContext, pi, it))
+            }
+        }*/
     }
 
     fun uninstallApp() {
@@ -67,18 +84,18 @@ class AppSheetViewModel(
 
     private suspend fun uninstall() {
         withContext(Dispatchers.IO) {
-            appInfo.let {
-                Timber.i("uninstalling: ${appInfo.packageLabel}")
+            thePackage.value?.let { mPackage ->
+                Timber.i("uninstalling: ${mPackage.packageLabel}")
                 try {
                     shellCommands.uninstall(
-                        appInfo.packageName, appInfo.apkPath,
-                        appInfo.dataPath, appInfo.isSystem
+                        mPackage.packageName, mPackage.apkPath,
+                        mPackage.dataPath, mPackage.isSystem
                     )
                     showNotification(
                         appContext,
                         MainActivityX::class.java,
                         notificationId++,
-                        appInfo.packageLabel,
+                        mPackage.packageLabel,
                         appContext.getString(com.machiav3lli.backup.R.string.uninstallSuccess),
                         true
                     )
@@ -87,7 +104,7 @@ class AppSheetViewModel(
                         appContext,
                         MainActivityX::class.java,
                         notificationId++,
-                        appInfo.packageLabel,
+                        mPackage.packageLabel,
                         appContext.getString(com.machiav3lli.backup.R.string.uninstallFailure),
                         true
                     )
@@ -107,7 +124,7 @@ class AppSheetViewModel(
     @Throws(ShellCommands.ShellActionFailedException::class)
     private suspend fun enableDisable(users: MutableList<String>, enable: Boolean) {
         withContext(Dispatchers.IO) {
-            shellCommands.enableDisablePackage(appInfo.packageName, users, enable)
+            shellCommands.enableDisablePackage(thePackage.value?.packageName, users, enable)
         }
     }
 
@@ -124,7 +141,7 @@ class AppSheetViewModel(
 
     private suspend fun delete(backup: Backup) {
         withContext(Dispatchers.IO) {
-            appInfo.deleteBackup(backup)
+            thePackage.value?.deleteBackup(backup)
         }
     }
 
@@ -137,19 +154,20 @@ class AppSheetViewModel(
 
     private suspend fun deleteAll() {
         withContext(Dispatchers.IO) {
-            appInfo.deleteAllBackups()
+            thePackage.value?.deleteAllBackups()
         }
     }
 
     class Factory(
-        private val app: Package,
+        private val packageInfo: Package,
+        // private val database: ODatabase,
         private val shellCommands: ShellCommands,
         private val application: Application
     ) : ViewModelProvider.Factory {
         @Suppress("unchecked_cast")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(AppSheetViewModel::class.java)) {
-                return AppSheetViewModel(app, shellCommands, application) as T
+                return AppSheetViewModel(packageInfo, shellCommands, application) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }
