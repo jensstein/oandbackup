@@ -23,7 +23,11 @@ plugins {
     kotlin("kapt")
     kotlin("plugin.serialization").version("1.6.21")
 }
-val compose = "1.2.0-beta03"
+val kotlin = "1.6.21"
+val compose = "1.2.0-rc01"
+val room = "2.5.0-alpha02"
+val navigation = "2.5.0-rc02"
+val libsu = "3.2.1"
 
 android {
     namespace = "com.machiav3lli.backup"
@@ -113,12 +117,12 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.21")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin")
 
     // Libs
-    implementation("androidx.room:room-runtime:2.5.0-alpha01")
-    implementation("androidx.room:room-ktx:2.5.0-alpha01")
-    kapt("androidx.room:room-compiler:2.5.0-alpha01")
+    implementation("androidx.room:room-runtime:$room")
+    implementation("androidx.room:room-ktx:$room")
+    kapt("androidx.room:room-compiler:$room")
     implementation("androidx.work:work-runtime-ktx:2.8.0-alpha02")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.1")
@@ -127,7 +131,6 @@ dependencies {
     implementation("org.apache.commons:commons-compress:1.21")
     implementation("commons-io:commons-io:2.11.0")
     implementation("com.jakewharton.timber:timber:5.0.1")
-    val libsu = "3.2.1"
     implementation("com.github.topjohnwu.libsu:core:$libsu")
     implementation("com.github.topjohnwu.libsu:io:$libsu")
     //implementation("com.github.topjohnwu.libsu:busybox:$libsu")
@@ -138,8 +141,8 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.5.0-rc01")
     implementation("com.google.android.material:material:1.7.0-alpha02")
     implementation("androidx.preference:preference-ktx:1.2.0")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.5.0-rc01")
-    implementation("androidx.navigation:navigation-ui-ktx:2.5.0-rc01")
+    implementation("androidx.navigation:navigation-fragment-ktx:$navigation")
+    implementation("androidx.navigation:navigation-ui-ktx:$navigation")
     implementation("io.coil-kt:coil-compose:2.1.0")
 
     // Compose
@@ -148,8 +151,8 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling:$compose")
     implementation("androidx.compose.foundation:foundation:$compose")
     implementation("androidx.compose.runtime:runtime-livedata:$compose")
-    implementation("androidx.navigation:navigation-compose:2.5.0-rc01")
-    implementation("com.google.android.material:compose-theme-adapter-3:1.0.10")
+    implementation("androidx.navigation:navigation-compose:$navigation")
+    implementation("com.google.android.material:compose-theme-adapter-3:1.0.11")
     implementation("androidx.compose.material3:material3:1.0.0-alpha13")
     implementation("com.google.accompanist:accompanist-flowlayout:0.24.10-beta")
 
