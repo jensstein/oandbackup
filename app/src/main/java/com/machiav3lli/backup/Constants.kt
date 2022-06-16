@@ -145,13 +145,19 @@ val mainBackupModeChipItems: List<ChipItem> =
 
 const val MAIN_SORT_LABEL = 0
 const val MAIN_SORT_PACKAGENAME = 1
-const val MAIN_SORT_DATASIZE = 2
-const val MAIN_SORT_BACKUPDATE = 3
+const val MAIN_SORT_APPSIZE = 2
+const val MAIN_SORT_DATASIZE = 3
+const val MAIN_SORT_APPDATASIZE = 4
+const val MAIN_SORT_BACKUPSIZE = 5
+const val MAIN_SORT_BACKUPDATE = 6
 
 val sortChipItems = listOf(
     ChipItem.Label,
     ChipItem.PackageName,
+    ChipItem.AppSize,
     ChipItem.DataSize,
+    ChipItem.AppDataSize,
+    ChipItem.BackupSize,
     ChipItem.BackupDate
 )
 
