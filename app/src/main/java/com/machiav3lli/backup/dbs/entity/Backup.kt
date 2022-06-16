@@ -173,8 +173,7 @@ data class Backup constructor(
         get() = cipherType != null && cipherType?.isNotEmpty() == true
 
     fun getBackupInstanceFolder(appBackupDir: StorageFile?): StorageFile? =
-        appBackupDir?.findFile(backupFolderName) ?:
-        appBackupDir?.findFile(backupFolderNameOld)
+        appBackupDir?.findFile(backupFolderName) ?: appBackupDir?.findFile(backupFolderNameOld)
 
     fun toAppInfo() = AppInfo(
         packageName,
@@ -273,7 +272,7 @@ data class Backup constructor(
     companion object {
         fun fromJson(json: String): Backup {
             Timber.d("json: $json")
-            return Json.decodeFromString<Backup>(json)
+            return Json.decodeFromString(json)
         }
 
         fun createFrom(propertiesFile: StorageFile): Backup? {

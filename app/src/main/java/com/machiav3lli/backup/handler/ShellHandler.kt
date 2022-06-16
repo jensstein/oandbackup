@@ -37,14 +37,19 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-val testedVersions = "0.8.0 - 0.8.7"
-val bugDotDotDir   = "0.8.3 - 0.8.6"
+const val testedVersions = "0.8.0 - 0.8.7"
+const val bugDotDotDir = "0.8.3 - 0.8.6"
 
 class ShellHandler {
 
     var assets: AssetHandler
 
-    class UtilBox(var name: String = "", var version: String = "0.0.0", var reason: String = "", var score: Double = 0.0) {
+    class UtilBox(
+        var name: String = "",
+        var version: String = "0.0.0",
+        var reason: String = "",
+        var score: Double = 0.0
+    ) {
 
         var isTestedVersion = false
         var hasBugDotDotDir = false
@@ -54,16 +59,16 @@ class ShellHandler {
             version = version.replace(Regex("""^[vV]"""), "")
             version = version.replace(Regex("""-android$"""), "")
             semver = Semver(version, Semver.SemverType.NPM)
-            if(semver.satisfies("=0.0.0")) {
+            if (semver.satisfies("=0.0.0")) {
                 score = 0.0
             } else {
-                if ( ! name.contains("vendor") ) {
+                if (!name.contains("vendor")) {
                     score += 0.000_000_000_1
                 }
-                if ( name.contains("ext") ) {
+                if (name.contains("ext")) {
                     score += 0.000_000_000_1
                 }
-                if ( name.contains("local") ) {
+                if (name.contains("local")) {
                     score += 0.000_000_000_1
                 }
                 if (semver.satisfies(testedVersions)) {
@@ -83,7 +88,7 @@ class ShellHandler {
             }
         }
 
-        fun detectBugDotDotDir(): Boolean {
+        private fun detectBugDotDotDir(): Boolean {
             //TODO hg42 may use a real "feature" test instead of version
             return semver.satisfies(bugDotDotDir)
         }
@@ -94,9 +99,9 @@ class ShellHandler {
     init {
         Shell.enableVerboseLogging = BuildConfig.DEBUG
         val builder = Shell.Builder.create()
-                          .setFlags(Shell.FLAG_MOUNT_MASTER)
-                          .setTimeout(20)
-                          //.setInitializers(BusyBoxInstaller::class.java)
+            .setFlags(Shell.FLAG_MOUNT_MASTER)
+            .setTimeout(20)
+        //.setInitializers(BusyBoxInstaller::class.java)
         Shell.setDefaultBuilder(builder)
         Shell.getShell()
 
@@ -111,26 +116,26 @@ class ShellHandler {
                 try {
                     val shellResult = runAsRoot("$box --version")
                     if (shellResult.isSuccess) {
-                        if (shellResult.out.isNotEmpty()) {
+                        boxVersion = if (shellResult.out.isNotEmpty()) {
                             val fields = shellResult.out[0].split(reWhiteSpace, 3)
-                            boxVersion = fields[1]
+                            fields[1]
                         } else {
-                            boxVersion = ""
+                            ""
                         }
                         boxes.add(UtilBox(name = box, version = boxVersion))
                     } else {
                         throw Exception() // goto catch
                     }
-                } catch(e: Throwable) {
+                } catch (e: Throwable) {
                     LogsHandler.unhandledException(e, "utilBox $box --version failed")
                     try {
                         val shellResult = runAsRoot(box)
                         if (shellResult.isSuccess) {
-                            if (shellResult.out.isNotEmpty()) {
+                            boxVersion = if (shellResult.out.isNotEmpty()) {
                                 val fields = shellResult.out[0].split(reWhiteSpace, 3)
-                                boxVersion = fields[1]
+                                fields[1]
                             } else {
-                                boxVersion = ""
+                                ""
                             }
                             boxes.add(UtilBox(name = box, version = boxVersion))
                         } else {
@@ -147,12 +152,13 @@ class ShellHandler {
         }
         boxes.sortByDescending { it.score }
         boxes.forEach { box ->
-            Timber.i("utilBox: ${box.name}: ${
-                                if (box.version.isNotEmpty())
-                                    "${box.version} -> ${box.score}"
-                                else
-                                    "${box.reason}"
-                                }"
+            Timber.i(
+                "utilBox: ${box.name}: ${
+                    if (box.version.isNotEmpty())
+                        "${box.version} -> ${box.score}"
+                    else
+                        box.reason
+                }"
             )
         }
         utilBox = boxes.first()
@@ -161,20 +167,21 @@ class ShellHandler {
             val message =
                 boxes.map { box ->
                     "${box.name}: ${
-                        if(box.version.isNotEmpty())
+                        if (box.version.isNotEmpty())
                             "${box.version} -> ${box.score}"
                         else
-                            "${box.reason}"
+                            box.reason
                     }"
                 }.joinToString("\n")
             OABX.activity?.showToast(
                 "No good utilbox found, tried these:\n${
                     boxes.map { box ->
-                        if(box.version.isNotEmpty()) "${box.version} -> ${box.score}" else ""
+                        if (box.version.isNotEmpty()) "${box.version} -> ${box.score}" else ""
                     }.joinToString("\n")
                 }${
-                    if(message.isEmpty()) "" else "\n$message"}"
-                )
+                    if (message.isEmpty()) "" else "\n$message"
+                }"
+            )
             //throw UtilboxNotAvailableException(message)
         }
 
@@ -193,12 +200,12 @@ class ShellHandler {
         val relativeParent = parent ?: ""
         val result = shellResult.out.asSequence()
             .filter { it.isNotEmpty() }
-            .filter { ! it.startsWith("total") }
+            .filter { !it.startsWith("total") }
             .mapNotNull { FileInfo.fromLsOutput(it, relativeParent, File(path).parent!!) }
             .toMutableList()
-        if(result.size < 1)
+        if (result.size < 1)
             throw UnexpectedCommandResult("cannot get file info for '$path'", shellResult)
-        if(result.size > 1)
+        if (result.size > 1)
             Timber.w("more than one file found for '$path', taking the first", shellResult)
         return result[0]
     }
@@ -222,14 +229,14 @@ class ShellHandler {
     ): List<FileInfo> {
         val useFindLs = OABX.prefFlag(PREFS_FINDLS, true)
         val shellResult =
-                if (recursive && useFindLs)
-                    runAsRoot("$utilBoxQ find ${quote(path)} -print0 | $utilBoxQ xargs -0 ls -bdAll")
-                else
-                    runAsRoot("$utilBoxQ ls -bAll ${quote(path)}")
+            if (recursive && useFindLs)
+                runAsRoot("$utilBoxQ find ${quote(path)} -print0 | $utilBoxQ xargs -0 ls -bdAll")
+            else
+                runAsRoot("$utilBoxQ ls -bAll ${quote(path)}")
         val relativeParent = parent ?: ""
         val result = shellResult.out
             .filter { it.isNotEmpty() }
-            .filter { ! it.startsWith("total") }
+            .filter { !it.startsWith("total") }
             .mapNotNull { FileInfo.fromLsOutput(it, null, path) }
             .toMutableList()
         if (recursive && !useFindLs) {
@@ -300,7 +307,7 @@ class ShellHandler {
             REGULAR_FILE, BLOCK_DEVICE, CHAR_DEVICE, DIRECTORY, SYMBOLIC_LINK, NAMED_PIPE, SOCKET
         }
 
-        val absolutePath: String = absoluteParent + '/' + filePath
+        val absolutePath: String = "$absoluteParent/$filePath"
 
         //val fileMode = fileMode
         //val fileSize = fileSize
@@ -325,9 +332,9 @@ class ShellHandler {
         }
 
         companion object {
-            private val PATTERN_LINKSPLIT       = Regex(" -> ") //Pattern.compile(" -> ")
-            private val FALLBACK_MODE_FOR_DIR   = translatePosixPermissionToMode("rwxrwx--x")
-            private val FALLBACK_MODE_FOR_FILE  = translatePosixPermissionToMode("rw-rw----")
+            private val PATTERN_LINKSPLIT = Regex(" -> ") //Pattern.compile(" -> ")
+            private val FALLBACK_MODE_FOR_DIR = translatePosixPermissionToMode("rwxrwx--x")
+            private val FALLBACK_MODE_FOR_FILE = translatePosixPermissionToMode("rw-rw----")
             private val FALLBACK_MODE_FOR_CACHE = translatePosixPermissionToMode("rwxrws--x")
 
             /*  from toybox ls.c
@@ -341,26 +348,28 @@ class ShellHandler {
                   }
             */
 
-            fun unescapeLsOutput(str : String) : String {
+            fun unescapeLsOutput(str: String): String {
                 val is_escaped = Regex("""\\([\\abefnrtv ]|\d\d\d)""")
                 return str.replace(
-                            is_escaped
-                        ) { match: MatchResult ->
-                            val matched = match.groups[1]?.value ?: "?" // "?" cannot happen because it matched
-                            when (matched) {
-                                """\""" -> """\"""
-                                "a" -> "\u0007"
-                                "b" -> "\u0008"
-                                "e" -> "\u001b"
-                                "f" -> "\u000c"
-                                "n" -> "\u000a"
-                                "r" -> "\u000d"
-                                "t" -> "\u0009"
-                                "v" -> "\u000b"
-                                " " -> " "
-                                else -> (((matched[0].digitToInt() * 8) + matched[1].digitToInt()) * 8 + matched[2].digitToInt()).toChar().toString()
-                            }
-                        }
+                    is_escaped
+                ) { match: MatchResult ->
+                    val matched =
+                        match.groups[1]?.value ?: "?" // "?" cannot happen because it matched
+                    when (matched) {
+                        """\""" -> """\"""
+                        "a" -> "\u0007"
+                        "b" -> "\u0008"
+                        "e" -> "\u001b"
+                        "f" -> "\u000c"
+                        "n" -> "\u000a"
+                        "r" -> "\u000d"
+                        "t" -> "\u0009"
+                        "v" -> "\u000b"
+                        " " -> " "
+                        else -> (((matched[0].digitToInt() * 8) + matched[1].digitToInt()) * 8 + matched[2].digitToInt()).toChar()
+                            .toString()
+                    }
+                }
             }
 
             /**
@@ -451,24 +460,24 @@ class ShellHandler {
                 )
                 val match = regex.matchEntire(lsLine)
                 if (match == null) throw Exception("ls output does not match expectations (regex)")
-                val modeFlags   = match.groupValues[1]
-                val owner       = match.groupValues[3]
-                val group       = match.groupValues[4]
-                val size        = match.groupValues[5]
+                val modeFlags = match.groupValues[1]
+                val owner = match.groupValues[3]
+                val group = match.groupValues[4]
+                val size = match.groupValues[5]
                 //val mdatetime   = match.groupValues[6]
-                val mdate       = match.groupValues[7]
-                val mtime       = match.groupValues[8]
-                val mzone       = match.groupValues[11]
-                var name        = match.groupValues[12]
+                val mdate = match.groupValues[7]
+                val mtime = match.groupValues[8]
+                val mzone = match.groupValues[11]
+                var name = match.groupValues[12]
                 val fileModTime =
-                        if(mzone.isEmpty())
-                            // 2020-11-26 04:35
-                            SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-                                .parse("$mdate $mtime")
-                        else
-                            // 2020-11-26 04:35:21(.543772855) +0100
-                            SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.getDefault())
-                                .parse("$mdate $mtime $mzone")
+                    if (mzone.isEmpty())
+                    // 2020-11-26 04:35
+                        SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+                            .parse("$mdate $mtime")
+                    else
+                    // 2020-11-26 04:35:21(.543772855) +0100
+                        SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.getDefault())
+                            .parse("$mdate $mtime $mzone")
                 // If ls was executed with a file as parameter, the full path is echoed. This is not
                 // good for processing. Removing the absolute parent and setting the parent to be the parent
                 // and not the file itself (hg42: huh? a parent should be a parent and never the file itself)
@@ -527,7 +536,7 @@ class ShellHandler {
                         val nameAndLink = PATTERN_LINKSPLIT.split(filePath as CharSequence)
                         //TODO hg42 what if PATTERN_LINK_SPLIT is part of a file or link path? (should be pretty rare)
                         //TODO hg42 in this case we get more parts and we could check which part combinations exist
-                        if(nameAndLink.size > 2)
+                        if (nameAndLink.size > 2)
                             Timber.e("we got more than one 'link arrow' in '$filePath'")
                         filePath = nameAndLink[0]
                         linkName = nameAndLink[1]
@@ -564,7 +573,8 @@ class ShellHandler {
     companion object {
 
         //private val UTILBOX_NAMES = listOf("busybox", "/sbin/.magisk/busybox/busybox", "toybox")
-        private val UTILBOX_NAMES = listOf(    // only toybox will work currently
+        private val UTILBOX_NAMES = listOf(
+            // only toybox will work currently
             //"busybox",
             //"/sbin/.magisk/busybox/busybox"
             "/data/local/toybox",
@@ -578,9 +588,9 @@ class ShellHandler {
         var utilBox: UtilBox = UtilBox()
         val utilBoxQ get() = utilBox.quote()
 
-        lateinit var scriptDir : File
+        lateinit var scriptDir: File
             private set
-        var scriptUserDir : File? = null
+        var scriptUserDir: File? = null
             private set
         val SCRIPTS_SUBDIR = "scripts"
         val EXCLUDE_CACHE_FILE = "tar_EXCLUDE_CACHE"
@@ -718,12 +728,12 @@ class ShellHandler {
             }
         }
 
-        fun findAssetFile(assetFileName : String) : File? {
-            var found : File? = null
+        fun findAssetFile(assetFileName: String): File? {
+            var found: File? = null
             scriptUserDir?.let {
                 found = File(it, assetFileName)
             }
-            if( ! (found?.isFile ?: false) )
+            if (found?.isFile != true)
                 found = File(scriptDir, assetFileName)
             return found
         }
