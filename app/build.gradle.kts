@@ -71,8 +71,8 @@ android {
         named("debug") {
             applicationIdSuffix = ".debug"
             isMinifyEnabled = false
-            manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher"
-            manifestPlaceholders["appIconRound"] = "@mipmap/ic_launcher_round"
+            manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher_vv"
+            manifestPlaceholders["appIconRound"] = "@mipmap/ic_launcher_round_vv"
         }
         create("neo") {
             applicationIdSuffix = ".neo"
