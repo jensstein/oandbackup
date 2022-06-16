@@ -19,6 +19,7 @@ import com.machiav3lli.backup.utils.exists
 import com.machiav3lli.backup.utils.getName
 import com.machiav3lli.backup.utils.isDirectory
 import com.machiav3lli.backup.utils.isFile
+import com.machiav3lli.backup.utils.length
 import com.machiav3lli.backup.utils.suRecursiveCopyFilesToDocument
 import timber.log.Timber
 import java.io.File
@@ -177,6 +178,10 @@ open class StorageFile {
 
     fun exists(): Boolean =
         file?.exists() ?: context?.let { context -> _uri?.exists(context) } ?: false
+
+    val size: Long
+        get() = (context?.let { uri?.length(it) } ?: 0L) +
+                listFiles().sumOf { it.size }
 
     fun inputStream(): InputStream? {
         return file?.inputStream() ?: _uri?.let { uri ->
