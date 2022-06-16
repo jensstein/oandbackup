@@ -28,7 +28,7 @@ import com.machiav3lli.backup.utils.showToast
 import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.Shell.ROOT_MOUNT_MASTER
 import com.topjohnwu.superuser.io.SuRandomAccessFile
-import com.vdurmont.semver4j.Semver
+import de.voize.semver4k.Semver
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
@@ -75,7 +75,11 @@ class ShellHandler {
                 } else {
                     score += 1000.0
                 }
-                score += ((semver.major * 1000.0 + semver.minor) * 1000.0 + semver.patch) / 1_000_000_000.0
+                score += (semver.major?.times(1000) ?: 0)
+                    .plus(semver.minor ?: 0)
+                    .times(1000)
+                    .plus(semver.patch ?: 0)
+                    .div(1_000_000_000)
             }
         }
 
