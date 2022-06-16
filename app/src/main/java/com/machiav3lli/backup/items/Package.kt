@@ -420,8 +420,14 @@ class Package {
     val hasMediaData: Boolean
         get() = backupList.any { it.hasMediaData }
 
+    val appBytes: Long
+        get() = if (packageInfo.isSpecial) 0 else storageStats?.appBytes ?: 0
+
     val dataBytes: Long
         get() = if (packageInfo.isSpecial) 0 else storageStats?.dataBytes ?: 0
+
+    val backupBytes: Long
+        get() = latestBackup?.size ?: 0
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
