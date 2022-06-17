@@ -27,7 +27,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import com.machiav3lli.backup.BuildConfig
@@ -38,7 +37,6 @@ import com.machiav3lli.backup.PREFS_SKIPPEDENCRYPTION
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ActivityMainXBinding
 import com.machiav3lli.backup.dbs.ODatabase
-import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.fragments.ProgressViewController
 import com.machiav3lli.backup.fragments.RefreshViewController
 import com.machiav3lli.backup.handler.LogsHandler
@@ -57,7 +55,6 @@ import com.machiav3lli.backup.viewmodels.MainViewModel
 import com.topjohnwu.superuser.Shell
 import timber.log.Timber
 import kotlin.system.exitProcess
-
 
 class MainActivityX : BaseActivity() {
 
@@ -196,7 +193,6 @@ class MainActivityX : BaseActivity() {
         return false
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     private fun setupNavigation() {
         try {
             val navHostFragment =
@@ -248,10 +244,6 @@ class MainActivityX : BaseActivity() {
 
     fun updatePackage(packageName: String) {
         viewModel.updatePackage(packageName)
-    }
-
-    fun updateAppExtras(appExtras: AppExtras) {
-        viewModel.updateExtras(appExtras)
     }
 
     fun setRefreshViewController(refreshViewController: RefreshViewController) {

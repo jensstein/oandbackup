@@ -574,51 +574,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
         }
     }
 
-    /* TODO re-add extras
-    private fun setupExtras() {
-
-        binding.noteText.setText(appExtras.note.toCharArray(), 0, appExtras.note.length)
-        binding.tagsGroup.removeAllViews()
-        appExtras.customTags.forEach { pn ->
-            val chip = Chip(requireContext())
-            chip.text = pn
-            chip.setChipDrawable(
-                ChipDrawable.createFromAttributes(
-                    requireContext(),
-                    null,
-                    0,
-                    R.style.Chip_Tag
-                )
-            )
-            chip.isClickable = false
-            chip.setCloseIconResource(R.drawable.ic_close)
-            val typedValue = TypedValue()
-            requireContext().theme.resolveAttribute(R.attr.colorSecondary, typedValue, true)
-            chip.closeIconTint = ColorStateList.valueOf(typedValue.data)
-            chip.isCloseIconVisible = true
-            chip.setOnCloseIconClickListener {
-                binding.tagsGroup.removeView(it)
-                appExtras.customTags = appExtras.customTags.minus(pn)
-                viewModel.refreshNow = true
-            }
-            binding.tagsGroup.addView(chip)
-        }
-    }
-
-    private fun setupOnClicks() {
-        // tags
-        binding.addTag.setOnClickListener {
-            appExtras.customTags = appExtras.customTags.plus(binding.newTag.text.toString())
-            binding.newTag.text = null
-            viewModel.refreshNow = true
-        }
-
-        // note
-        binding.saveNote.setOnClickListener {
-            appExtras.note = binding.noteText.text.toString()
-            viewModel.refreshNow = true
-        }
-    } */
+    // TODO re-add note
 
     override fun onActionCalled(
         actionType: ActionType?,

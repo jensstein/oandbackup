@@ -55,15 +55,10 @@ class MainViewModel(
     var packageList = MediatorLiveData<MutableList<Package>>()
     var backupsMap = MediatorLiveData<Map<String, List<Backup>>>()
     var blocklist = MediatorLiveData<List<Blocklist>>()
+    var appExtrasMap = MediatorLiveData<Map<String, AppExtras>>()
 
     // TODO fix force refresh on changing backup directory or change method
     val isNeedRefresh = MutableLiveData(false)
-    var appExtrasList: MutableList<AppExtras>
-        get() = db.appExtrasDao.all
-        set(value) {
-            db.appExtrasDao.deleteAll()
-            db.appExtrasDao.insert(*value.toTypedArray())
-        }
 
     init {
         blocklist.addSource(db.blocklistDao.liveAll, blocklist::setValue)
@@ -99,6 +94,9 @@ class MainViewModel(
                     )
                 }
             }
+        }
+        appExtrasMap.addSource(db.appExtrasDao.liveAll) {
+            appExtrasMap.value = it.associateBy(AppExtras::packageName)
         }
     }
 
@@ -175,6 +173,17 @@ class MainViewModel(
             } else
                 db.appExtrasDao.insert(appExtras)
             true
+        }
+    }
+
+    fun setExtras(appExtras: Map<String, AppExtras>) {
+        viewModelScope.launch { replaceExtras(appExtras.values) }
+    }
+
+    private suspend fun replaceExtras(appExtras: Collection<AppExtras>) {
+        withContext(Dispatchers.IO) {
+            db.appExtrasDao.deleteAll()
+            db.appExtrasDao.insert(*appExtras.toTypedArray())
         }
     }
 

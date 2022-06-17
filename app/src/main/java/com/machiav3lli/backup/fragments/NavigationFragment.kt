@@ -27,7 +27,6 @@ import androidx.work.WorkManager
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
-import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.Package
@@ -38,11 +37,6 @@ abstract class NavigationFragment : Fragment(), ProgressViewController {
     protected var sheetSortFilter: SortFilterSheet? = null
     val packageList: MediatorLiveData<MutableList<Package>>
         get() = requireMainActivity().viewModel.packageList
-    var appExtrasList: MutableList<AppExtras>
-        get() = requireMainActivity().viewModel.appExtrasList
-        set(value) {
-            requireMainActivity().viewModel.appExtrasList = value
-        }
 
     override fun onResume() {
         super.onResume()
