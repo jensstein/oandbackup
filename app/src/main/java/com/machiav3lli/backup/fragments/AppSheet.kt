@@ -88,6 +88,7 @@ import com.machiav3lli.backup.ui.compose.item.CardButton
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.PackageIcon
 import com.machiav3lli.backup.ui.compose.item.RoundButton
+import com.machiav3lli.backup.ui.compose.item.TagsBlock
 import com.machiav3lli.backup.ui.compose.item.TitleText
 import com.machiav3lli.backup.ui.compose.recycler.BackupRecycler
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
@@ -133,6 +134,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
     fun AppPage() {
         val thePackage by viewModel.thePackage.observeAsState()
         val snackbarText by viewModel.snackbarText.observeAsState()
+        val appExtras by viewModel.appExtras.observeAsState()
 
         thePackage?.let { packageInfo ->
             val imageData by remember(packageInfo) {
@@ -457,6 +459,23 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                 }
                             }
                         }
+                        TitleText(textId = R.string.title_tags)
+                        TagsBlock(
+                            tags = appExtras?.customTags ?: mutableSetOf(),
+                            onRemove = {
+                                viewModel.setExtras(appExtras?.apply {
+                                    customTags.remove(it)
+                                })
+                            },
+                            onAdd = {
+                                viewModel.setExtras(appExtras?.apply {
+                                    if (customTags.isNotEmpty())
+                                        customTags.add(it)
+                                    else
+                                        customTags = mutableSetOf(it)
+                                })
+                            }
+                        )
                         TitleText(textId = R.string.available_actions)
                         Column(
                             modifier = Modifier.fillMaxWidth(),
