@@ -74,6 +74,7 @@ import com.machiav3lli.backup.BUNDLE_USERS
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.entity.AppExtras
+import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dialogs.BackupDialogFragment
 import com.machiav3lli.backup.dialogs.RestoreDialogFragment
@@ -107,11 +108,17 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val database = ODatabase.getInstance(requireContext())
         val users =
             if (savedInstanceState != null) savedInstanceState.getStringArrayList(BUNDLE_USERS) else ArrayList()
         val shellCommands = ShellCommands(users)
         val viewModelFactory =
-            AppSheetViewModel.Factory(appInfo, shellCommands, requireActivity().application)
+            AppSheetViewModel.Factory(
+                appInfo,
+                database,
+                shellCommands,
+                requireActivity().application
+            )
         viewModel = ViewModelProvider(this, viewModelFactory)[AppSheetViewModel::class.java]
 
         return ComposeView(requireContext()).apply {

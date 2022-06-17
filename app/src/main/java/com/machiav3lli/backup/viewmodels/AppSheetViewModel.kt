@@ -22,11 +22,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.activities.MainActivityX
+import com.machiav3lli.backup.dbs.ODatabase
+import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellCommands
@@ -39,40 +42,23 @@ import timber.log.Timber
 
 class AppSheetViewModel(
     app: Package,
-    //database: ODatabase,
-    var shellCommands: ShellCommands,
+    private val database: ODatabase,
+    private var shellCommands: ShellCommands,
     private val appContext: Application
 ) : AndroidViewModel(appContext) {
 
     var thePackage = MutableLiveData(app)
+    var appExtras = MediatorLiveData<AppExtras>()
 
-    //var packageInfo = MediatorLiveData<AppInfo>()
-    //var backups = MediatorLiveData<List<Backup>>()
     var snackbarText = MutableLiveData("")
 
     private var notificationId: Int = System.currentTimeMillis().toInt()
-
     var refreshNow by mutableStateOf(false)
 
     init {
-        /*packageInfo.addSource(database.appInfoDao.getLive(app.packageName)) {
-            packageInfo.value = it
-            if (it != null && !it.isSpecial)
-                thePackage.postValue(Package(appContext, it, backups.value))
-            else
-                // TODO fix specials
-                thePackage.postValue(
-                    SpecialInfo.getSpecialPackages(appContext)
-                        .find { sp -> sp.packageName == it?.packageName }
-                        .apply { this?.refreshBackupList() }
-                )
+        appExtras.addSource(database.appExtrasDao.getLive(app.packageName)) {
+            appExtras.value = it ?: AppExtras(app.packageName)
         }
-        backups.addSource(database.backupDao.getLive(app.packageName)) {
-            backups.value = it
-            packageInfo.value?.let { pi ->
-                thePackage.postValue(Package(appContext, pi, it))
-            }
-        }*/
     }
 
     fun uninstallApp() {
@@ -158,16 +144,32 @@ class AppSheetViewModel(
         }
     }
 
+    fun setExtras(appExtras: AppExtras?) {
+        viewModelScope.launch {
+            replaceExtras(appExtras)
+            refreshNow = true
+        }
+    }
+
+    private suspend fun replaceExtras(appExtras: AppExtras?) {
+        withContext(Dispatchers.IO) {
+            if (appExtras != null)
+                database.appExtrasDao.replaceInsert(appExtras)
+            else
+                thePackage.value?.let { database.appExtrasDao.deleteByPackageName(it.packageName) }
+        }
+    }
+
     class Factory(
         private val packageInfo: Package,
-        // private val database: ODatabase,
+        private val database: ODatabase,
         private val shellCommands: ShellCommands,
         private val application: Application
     ) : ViewModelProvider.Factory {
         @Suppress("unchecked_cast")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(AppSheetViewModel::class.java)) {
-                return AppSheetViewModel(packageInfo, shellCommands, application) as T
+                return AppSheetViewModel(packageInfo, database, shellCommands, application) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }
