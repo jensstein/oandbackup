@@ -56,7 +56,6 @@ import com.machiav3lli.backup.ALT_MODE_UNSET
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
@@ -143,6 +142,15 @@ class HomeFragment : NavigationFragment(),
             BatchDialogFragment(true, selectedList, selectedListModes, this)
                 .show(requireActivity().supportFragmentManager, "DialogFragment")
         }
+    }
+
+    private fun onClickOpenAppSheet(item: Package) {
+        if (appSheet != null) appSheet?.dismissAllowingStateLoss()
+        appSheet = AppSheet(item)
+        appSheet?.showNow(
+            parentFragmentManager,
+            "Package ${item.packageName}"
+        )
     }
 
     override fun onConfirmed(
@@ -290,14 +298,7 @@ class HomeFragment : NavigationFragment(),
                             .weight(1f)
                             .fillMaxWidth(),
                         productsList = queriedList,
-                        onClick = { item ->
-                            if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                            appSheet = AppSheet(item, AppExtras(item.packageName))
-                            appSheet?.showNow(
-                                parentFragmentManager,
-                                "Package ${item.packageName}"
-                            )
-                        }
+                        onClick = ::onClickOpenAppSheet
                     )
                     AnimatedVisibility(visible = !updatedApps.isNullOrEmpty()) {
                         Column(
@@ -329,15 +330,9 @@ class HomeFragment : NavigationFragment(),
                                 }
                             }
                             AnimatedVisibility(visible = updatedVisible) {
-                                UpdatedPackageRecycler(productsList = updatedApps,
-                                    onClick = { item ->
-                                        if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                                        appSheet = AppSheet(item, AppExtras(item.packageName))
-                                        appSheet?.showNow(
-                                            parentFragmentManager,
-                                            "Package ${item.packageName}"
-                                        )
-                                    }
+                                UpdatedPackageRecycler(
+                                    productsList = updatedApps,
+                                    onClick = ::onClickOpenAppSheet
                                 )
                             }
                         }

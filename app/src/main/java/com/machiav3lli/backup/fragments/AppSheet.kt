@@ -73,7 +73,6 @@ import com.machiav3lli.backup.ActionListener
 import com.machiav3lli.backup.BUNDLE_USERS
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dialogs.BackupDialogFragment
@@ -99,8 +98,7 @@ import com.machiav3lli.backup.utils.showToast
 import com.machiav3lli.backup.viewmodels.AppSheetViewModel
 import timber.log.Timber
 
-class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
-    BaseSheet(), ActionListener {
+class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
     private lateinit var viewModel: AppSheetViewModel
 
     override fun onCreateView(
@@ -144,7 +142,6 @@ class AppSheet(val appInfo: Package, var appExtras: AppExtras) :
                 )
             }
             if (viewModel.refreshNow) {
-                requireMainActivity().updateAppExtras(appExtras)
                 requireMainActivity().updatePackage(packageInfo.packageName ?: "")
                 viewModel.refreshNow = false
             }
