@@ -30,7 +30,7 @@
     <string name="showOnlyDataBackedUp">Само са сачуваним подацима</string>
     <string name="radio_special">Само посебне копије</string>
     <string name="sortByLabel">Поређај по ознаци</string>
-    <string name="sortByPackageName">Поређај по имену пакета</string>
+    <string name="sortByPackageName">Поређај по називу пакета</string>
     <string name="sort">Поређај и филтрирај</string>
     <string name="uninstallDialogMessage">Уклонити ову апликацију?</string>
     <string name="deleteBackupDialogMessage">Обрисати резервну копију?</string>
@@ -67,7 +67,7 @@
     <string name="batchDeleteNotificationTitle">Обриши резервне копије</string>
     <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
     <string name="batchDeleteBackupsDeleted">Резервне копије које су обрисане:</string>
-    <string name="batchDeleteNothingToDelete">Не постоје резервне копије</string>
+    <string name="batchDeleteNothingToDelete">Не постоје резервне копије за брисање</string>
     <string name="enablePackage">Омогући</string>
     <!--enablePackageTitle: title for a list of checkable users-->
     <string name="enablePackageTitle">Омогући за кориснике</string>
