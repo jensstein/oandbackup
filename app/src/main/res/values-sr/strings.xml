@@ -68,11 +68,11 @@
     <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
     <string name="batchDeleteBackupsDeleted">Резервне копије које су обрисане:</string>
     <string name="batchDeleteNothingToDelete">Не постоје резервне копије за брисање</string>
-    <string name="enablePackage">Омогући</string>
+    <string name="enablePackage">Омогући апликацију</string>
     <!--enablePackageTitle: title for a list of checkable users-->
-    <string name="enablePackageTitle">Омогући за кориснике</string>
-    <string name="disablePackage">Онемогући</string>
-    <string name="disablePackageTitle">Онемогући за кориснике</string>
+    <string name="enablePackageTitle">Омогући апликацију за кориснике</string>
+    <string name="disablePackage">Онемогући апликацију</string>
+    <string name="disablePackageTitle">Онемогући апликацију за кориснике</string>
     <string name="prefs_title">Подешавања</string>
     <string name="prefs_acquirewakelock">Спречи режим мировања</string>
     <string name="prefs_acquirewakelock_summary">Осигурава да уређај не уђе у режим мировања током израде резервне копије за више апликација. Убрзаће сам процес прављења копија, али ће потрошити више електричне енергије.</string>
@@ -160,4 +160,18 @@
     <string name="empty_filtered_list">Филтрирана листа је празна.</string>
     <string name="ignore_battery_optimization_title">Оптимизација батерије</string>
     <string name="ignore_battery_optimization_message">Израда резервне копије се понекад може прекинути. Да би сте то спречили, искључите оптимизацију батерије.</string>
+    <string name="prefs_loadingtoasts"></string>
+    <string name="radio_obbdata">ОББ Подаци</string>
+    <string name="radio_externaldata">Спољашњи Подаци</string>
+    <string name="radio_deviceprotecteddata">Заштићени Подаци Уређаја</string>
+    <string name="radio_mediadata">Подаци о Медијима</string>
+    <string name="error_pmDataIncompleteException_dataRestoreFailed">Подаци апликације нису повраћени.</string>
+    <string name="prefs_user">Поставке корисника</string>
+    <string name="prefs_service">Поставке услуге</string>
+    <string name="prefs_advanced">Напредне поставке</string>
+    <string name="prefs_devicelock_summary">Заштити апликацију акредитивима уређаја</string>
+    <string name="prefs_theme_system">Тема система</string>
+    <string name="prefs_devicelock">Закључавање уређаја</string>
+    <string name="prefs_biometriclock">Биометричко закључавање</string>
+    <string name="showSplitAPKs">Раздвој-АПК</string>
 </resources>
