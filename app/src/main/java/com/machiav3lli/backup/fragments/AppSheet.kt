@@ -86,6 +86,7 @@ import com.machiav3lli.backup.tasks.BackupActionTask
 import com.machiav3lli.backup.tasks.RestoreActionTask
 import com.machiav3lli.backup.ui.compose.item.CardButton
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
+import com.machiav3lli.backup.ui.compose.item.MorphableTextField
 import com.machiav3lli.backup.ui.compose.item.PackageIcon
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TagsBlock
@@ -474,6 +475,15 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                     else
                                         customTags = mutableSetOf(it)
                                 })
+                            }
+                        )
+                        TitleText(textId = R.string.title_note)
+                        MorphableTextField(
+                            text = appExtras?.note,
+                            onCancel = {
+                            },
+                            onSave = {
+                                viewModel.setExtras(appExtras?.apply { note = it })
                             }
                         )
                         TitleText(textId = R.string.available_actions)
