@@ -24,7 +24,7 @@ plugins {
     kotlin("plugin.serialization").version("1.6.21")
 }
 val kotlin = "1.6.21"
-val compose = "1.2.0-rc01"
+val compose = "1.2.0-rc02"
 val room = "2.5.0-alpha02"
 val navigation = "2.5.0-rc02"
 val libsu = "3.2.1"
@@ -134,7 +134,7 @@ dependencies {
     implementation("com.github.topjohnwu.libsu:core:$libsu")
     implementation("com.github.topjohnwu.libsu:io:$libsu")
     //implementation("com.github.topjohnwu.libsu:busybox:$libsu")
-    implementation("de.voize:semver4k:4.0.2")
+    implementation("de.voize:semver4k:4.1.0")
     //implementation("com.github.tony19:named-regexp:0.2.6") // regex named groups
 
     // UI
@@ -152,9 +152,9 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:$compose")
     implementation("androidx.compose.runtime:runtime-livedata:$compose")
     implementation("androidx.navigation:navigation-compose:$navigation")
-    implementation("com.google.android.material:compose-theme-adapter-3:1.0.11")
+    implementation("com.google.android.material:compose-theme-adapter-3:1.0.12")
     implementation("androidx.compose.material3:material3:1.0.0-alpha13")
-    implementation("com.google.accompanist:accompanist-flowlayout:0.24.10-beta")
+    implementation("com.google.accompanist:accompanist-flowlayout:0.24.12-rc")
 
     // Testing
     implementation("androidx.test.ext:junit-ktx:1.1.3")
