@@ -4,6 +4,8 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.BorderStroke
@@ -434,27 +436,45 @@ fun SwitchChip(
     }
 }
 
+
 @Composable
-fun HorizontalExpandingVisibility(
-    expanded: Boolean = false,
+fun StatefulAnimatedVisibility(
+    currentState: Boolean = false,
+    enterPositive: EnterTransition,
+    exitPositive: ExitTransition,
+    enterNegative: EnterTransition,
+    exitNegative: ExitTransition,
     expandedView: @Composable (AnimatedVisibilityScope.() -> Unit),
     collapsedView: @Composable (AnimatedVisibilityScope.() -> Unit)
 ) {
     AnimatedVisibility(
-        visible = !expanded,
-        enter = expandHorizontally(expandFrom = Alignment.Start),
-        exit = shrinkHorizontally(shrinkTowards = Alignment.Start),
+        visible = !currentState,
+        enter = enterNegative,
+        exit = exitNegative,
         content = collapsedView
     )
     AnimatedVisibility(
-        visible = expanded,
-        enter = expandHorizontally(expandFrom = Alignment.End),
-        exit = shrinkHorizontally(shrinkTowards = Alignment.End),
+        visible = currentState,
+        enter = enterPositive,
+        exit = exitPositive,
         content = expandedView
     )
 }
 
 @Composable
+fun HorizontalExpandingVisibility(
+    expanded: Boolean = false,
+    expandedView: @Composable (AnimatedVisibilityScope.() -> Unit),
+    collapsedView: @Composable (AnimatedVisibilityScope.() -> Unit)
+) = StatefulAnimatedVisibility(
+    currentState = expanded,
+    enterPositive = expandHorizontally(expandFrom = Alignment.End),
+    exitPositive = shrinkHorizontally(shrinkTowards = Alignment.End),
+    enterNegative = expandHorizontally(expandFrom = Alignment.Start),
+    exitNegative = shrinkHorizontally(shrinkTowards = Alignment.Start),
+    collapsedView = collapsedView,
+    expandedView = expandedView
+)
 fun PackageLabels(
     item: Package
 ) {
