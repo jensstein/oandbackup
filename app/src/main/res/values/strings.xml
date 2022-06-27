@@ -351,4 +351,5 @@
     <string name="root_is_mandatory">Because applications are isolated from each other, superuser access is mandatory to be able to backup and restore their data.</string>
     <string name="see_faq">See FAQ!</string>
     <string name="add_tag">Add new tag</string>
+    <string name="edit_note">Edit note</string>
 </resources>
