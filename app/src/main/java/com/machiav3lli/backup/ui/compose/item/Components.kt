@@ -7,7 +7,11 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -475,6 +479,23 @@ fun HorizontalExpandingVisibility(
     collapsedView = collapsedView,
     expandedView = expandedView
 )
+
+@Composable
+fun VerticalFadingVisibility(
+    expanded: Boolean = false,
+    expandedView: @Composable (AnimatedVisibilityScope.() -> Unit),
+    collapsedView: @Composable (AnimatedVisibilityScope.() -> Unit)
+) = StatefulAnimatedVisibility(
+    currentState = expanded,
+    enterPositive = fadeIn() + expandIn(expandFrom = Alignment.BottomCenter),
+    exitPositive = fadeOut() + shrinkOut(shrinkTowards = Alignment.BottomCenter),
+    enterNegative = fadeIn() + expandIn(expandFrom = Alignment.TopCenter),
+    exitNegative = fadeOut() + shrinkOut(shrinkTowards = Alignment.TopCenter),
+    collapsedView = collapsedView,
+    expandedView = expandedView
+)
+
+@Composable
 fun PackageLabels(
     item: Package
 ) {
