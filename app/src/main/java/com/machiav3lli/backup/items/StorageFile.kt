@@ -180,7 +180,7 @@ open class StorageFile {
         file?.exists() ?: context?.let { context -> _uri?.exists(context) } ?: false
 
     val size: Long
-        get() = (context?.let { uri?.length(it) } ?: 0L) +
+        get() = (if(file != null) (file?.length() ?: 0L) else (context?.let { uri?.length(it) } ?: 0L)) +
                 listFiles().sumOf { it.size }
 
     fun inputStream(): InputStream? {
