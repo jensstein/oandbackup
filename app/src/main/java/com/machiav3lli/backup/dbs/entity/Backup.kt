@@ -200,6 +200,7 @@ data class Backup constructor(
             ", iv='" + iv + '\'' +
             ", cpuArch='" + cpuArch + '\'' +
             ", backupVersionCode='" + backupVersionCode + '\'' +
+            ", size=" + size +
             ", permissions='" + permissions + '\'' +
             '}'
 
