@@ -21,11 +21,14 @@ import com.machiav3lli.backup.utils.isDirectory
 import com.machiav3lli.backup.utils.isFile
 import com.machiav3lli.backup.utils.length
 import com.machiav3lli.backup.utils.suRecursiveCopyFilesToDocument
+import org.apache.commons.io.FileUtils.listFiles
 import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStream
 import java.io.OutputStream
+import java.lang.Long.max
+import java.lang.Long.min
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
@@ -180,8 +183,12 @@ open class StorageFile {
         file?.exists() ?: context?.let { context -> _uri?.exists(context) } ?: false
 
     val size: Long
-        get() = (if(file != null) (file?.length() ?: 0L) else (context?.let { uri?.length(it) } ?: 0L)) +
-                listFiles().sumOf { it.size }
+        get() = (
+            if (file != null)
+                (file?.length() ?: 0L)
+            else
+                (context?.let { max(0L, uri?.length(it) ?: 0L) } ?: 0L)
+            ) + listFiles().sumOf { it.size }
 
     fun inputStream(): InputStream? {
         return file?.inputStream() ?: _uri?.let { uri ->
@@ -466,6 +473,10 @@ open class StorageFile {
         fun invalidateCache() {
             invalidateFilters = mutableListOf({ true })
             cacheCheck() //TODO
+        }
+
+        fun cacheInvalidate(storageFile: StorageFile) {
+            storageFile.path?.let { path -> invalidateCache { it.startsWith(path) } }
         }
 
         fun cacheGetFiles(id: String): List<StorageFile>? {
