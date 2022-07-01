@@ -168,6 +168,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 if (context.isEncryptionEnabled()) {
                     backupBuilder.setCipherType(CIPHER_ALGORITHM)
                 }
+                StorageFile.cacheInvalidate(backupInstanceDir)
                 backupBuilder.setSize(backupInstanceDir.size)
 
                 backup = backupBuilder.createBackup()
