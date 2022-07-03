@@ -150,35 +150,29 @@ abstract class BaseAppAction protected constructor(
         ).filterNotNull()
 
         val ignoredPackages = ("""(?x)
-            # complete matches
               android
-            # pattern matches
-            | .*\.android\.shell
-            | .*\.android\.systemui
-            | .*\.android\.externalstorage
-            | .*\.android\.mtp
-            | .*\.android\.providers\.downloads\.ui
-            | .*\.android\.gms
-            | .*\.android\.gsf
-            | .*\.android\.providers\.media\b.*
-            # program values
+            | ^com\.(google\.)?android\.shell
+            | ^com\.(google\.)?android\.systemui
+            | ^com\.(google\.)?android\.externalstorage
+            | ^com\.(google\.)?android\.mtp
+            | ^com\.(google\.)?android\.providers\.downloads\.ui
+            | ^com\.(google\.)?android\.gms
+            | ^com\.(google\.)?android\.gsf
+            | ^com\.(google\.)?android\.providers\.media\b.*
             | """ + Regex.escape(BuildConfig.APPLICATION_ID) + """
             """).toRegex()
 
         val doNotStop = ("""(?x)
-            # complete matches
               android
-            # pattern matches
-            | .*\.android\.shell
-            | .*\.android\.systemui
-            | .*\.android\.externalstorage
-            | .*\.android\.mtp
-            | .*\.android\.providers\.downloads\.ui
-            | .*\.android\.gms
-            | .*\.android\.gsf
-            | .*\.android\.providers\.media\b.*
-            | .*\.android\.providers\..*
-            # program values
+            | ^com\.(google\.)?android\.shell
+            | ^com\.(google\.)?android\.systemui
+            | ^com\.(google\.)?android\.externalstorage
+            | ^com\.(google\.)?android\.mtp
+            | ^com\.(google\.)?android\.providers\.downloads\.ui
+            | ^com\.(google\.)?android\.gms
+            | ^com\.(google\.)?android\.gsf
+            | ^com\.(google\.)?android\.providers\.media\b.*
+            | ^com\.(google\.)?android\.providers\..*
             | """ + Regex.escape(BuildConfig.APPLICATION_ID) + """
             """).toRegex()
 
