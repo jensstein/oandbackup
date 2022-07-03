@@ -21,11 +21,11 @@ import android.content.Context
 import android.content.ContextWrapper
 import com.machiav3lli.backup.utils.setLanguage
 
-class ContextWraperX(base: Context) : ContextWrapper(base) {
+class ContextWrapperX(base: Context) : ContextWrapper(base) {
     companion object {
         fun wrap(context: Context): ContextWrapper {
             val config = context.setLanguage()
-            return ContextWraperX(context.createConfigurationContext(config))
+            return ContextWrapperX(context.createConfigurationContext(config))
         }
     }
 }
