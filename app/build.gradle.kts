@@ -21,12 +21,13 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
-    kotlin("plugin.serialization").version("1.6.21")
+    kotlin("plugin.serialization").version("1.7.0")
 }
-val kotlin = "1.6.21"
-val compose = "1.2.0-rc02"
+val kotlin = "1.7.0"
+val composeCompiler = "1.2.0"
+val compose = "1.2.0-rc03"
 val room = "2.5.0-alpha02"
-val navigation = "2.5.0-rc02"
+val navigation = "2.5.0"
 val libsu = "3.2.1"
 
 android {
@@ -96,7 +97,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = compose
+        kotlinCompilerExtensionVersion = composeCompiler
     }
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
@@ -126,7 +127,7 @@ dependencies {
     kapt("androidx.room:room-compiler:$room")
     implementation("androidx.work:work-runtime-ktx:2.8.0-alpha02")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.1")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.0")
     implementation("androidx.security:security-crypto-ktx:1.1.0-alpha03")
     implementation("androidx.biometric:biometric:1.2.0-alpha04")
     implementation("org.apache.commons:commons-compress:1.21")
@@ -139,7 +140,7 @@ dependencies {
     //implementation("com.github.tony19:named-regexp:0.2.6") // regex named groups
 
     // UI
-    implementation("androidx.fragment:fragment-ktx:1.5.0-rc01")
+    implementation("androidx.fragment:fragment-ktx:1.5.0")
     implementation("com.google.android.material:material:1.7.0-alpha02")
     implementation("androidx.preference:preference-ktx:1.2.0")
     implementation("androidx.navigation:navigation-fragment-ktx:$navigation")
@@ -153,9 +154,9 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:$compose")
     implementation("androidx.compose.runtime:runtime-livedata:$compose")
     implementation("androidx.navigation:navigation-compose:$navigation")
-    implementation("com.google.android.material:compose-theme-adapter-3:1.0.12")
-    implementation("androidx.compose.material3:material3:1.0.0-alpha13")
-    implementation("com.google.accompanist:accompanist-flowlayout:0.24.12-rc")
+    implementation("com.google.android.material:compose-theme-adapter-3:1.0.13")
+    implementation("androidx.compose.material3:material3:1.0.0-alpha14")
+    implementation("com.google.accompanist:accompanist-flowlayout:0.24.13-rc")
 
     // Testing
     implementation("androidx.test.ext:junit-ktx:1.1.3")
