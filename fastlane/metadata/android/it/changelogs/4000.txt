@@ -1,0 +1,11 @@
+**OAndBackupX 4.0.0*
+
+**NUOVA VERSIONE PRINCIPALE**: incompatibile con le vecchie versioni
+**PEGGIORAMENTO PRESTAZIONI**: causato dall'utilizzo di SAF rispetto all'accesso diretto e rende le prestazioni a seconda del SOC
+
+* Aggiunto: Supporto Storage Access Framework
+* Aggiunto: Supporto Multi Backup
+* Aggiunto: messaggi più chiari che informano l'utente sui processi in esecuzione
+* Aggiornato: la directory di backup è /OABackupX ora
+* Aggiornato: Traduzioni
+* Miglioramenti e molto altro

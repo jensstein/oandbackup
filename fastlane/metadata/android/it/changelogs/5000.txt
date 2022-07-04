@@ -1,0 +1,9 @@
+**NUOVA VERSIONE PRINCIPALE**: incompatibile con le vecchie versioni.
+**MIGRATO A KOTLIN**
+LE AZIONI PIANIFICATE POSSONO DURARE SOLO 10 MINUTI (VINCOLO DI SISTEMA): quindi partiziona il tuo gruppo di app.
+
+* Aggiunto: Modalità individuali per le applicazioni nella finestra di azione batch
+* Aggiornato: La scelta di una directory di backup non crea più una cartella figlio
+* Risolto: APK/ dati non trovati errore
+* Eliminato: Autorizzazione di archiviazione persistente
+* Miglioramenti e molto altro
