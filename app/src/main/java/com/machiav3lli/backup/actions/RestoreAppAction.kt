@@ -665,9 +665,9 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             //TODO hg42 this doesn't seem to be correct, unless the apk instlal would manage updating uidgidcon
             val dataContents: MutableList<String> =
                 mutableListOf(*shell.suGetDirectoryContents(RootFile(targetPath)))
-            // Maybe dirty: Remove what we don't wanted to have in the backup. Just don't touch it
-            dataContents.removeAll(DATA_EXCLUDED_BASENAMES)
-            dataContents.removeAll(DATA_EXCLUDED_CACHE_DIRS)
+            // Don't exclude any files from chown, as this may cause SELINUX issues (lost of data on restart)
+            // dataContents.removeAll(DATA_EXCLUDED_BASENAMES)
+            // dataContents.removeAll(DATA_EXCLUDED_CACHE_DIRS)
             // calculate a list what must be updated inside the directory
             val chownTargets = dataContents.map { s -> RootFile(targetPath, s).absolutePath }
             Timber.d("Changing owner and group of '$targetPath' to $uid:$gid and selinux context to $con")
