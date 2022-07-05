@@ -146,7 +146,7 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
             Timber.e("$app: Restore $BACKUP_DIR_DATA failed with IOException. System might be inconsistent: $e")
             throw RestoreFailedException("IOException", e)
         } finally {
-            val backupDeleted = FileUtils.deleteQuietly(tempPath)
+            val backupDeleted = FileUtils.deleteQuietly(tempPath)   // if deleteQuietly is missing, org.apache.commons.io is wrong (shitty version from 2003 that looks newer)
             Timber.d("$app: Uncompressed $BACKUP_DIR_DATA was deleted: $backupDeleted")
         }
         if (app.packageName == "special.smsmms.json" || app.packageName == "special.calllogs.json") {
