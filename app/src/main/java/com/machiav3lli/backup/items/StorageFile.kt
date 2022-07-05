@@ -187,7 +187,15 @@ open class StorageFile {
             val resolver = context.contentResolver
             var cursor: Cursor? = null
             try {
-                resolver.query(_uri!!, null, null, null, null)?.let { cursor ->
+                resolver.query(
+                            _uri!!,
+                            arrayOf(
+                                DocumentsContract.Document.COLUMN_DISPLAY_NAME,
+                                DocumentsContract.Document.COLUMN_MIME_TYPE,
+                                DocumentsContract.Document.COLUMN_SIZE,
+                                DocumentsContract.Document.COLUMN_LAST_MODIFIED
+                            ), null, null, null
+                )?.let { cursor ->
                     if (cursor.moveToFirst()) {
                         return DocumentInfo(
                             displayName = getCursorString(
@@ -198,8 +206,10 @@ open class StorageFile {
                                 cursor,
                                 DocumentsContract.Document.COLUMN_MIME_TYPE
                             ) ?: "",
-                            size = getCursorLong(cursor, DocumentsContract.Document.COLUMN_SIZE)
-                                ?: 0,
+                            size = getCursorLong(
+                                cursor,
+                                DocumentsContract.Document.COLUMN_SIZE
+                            ) ?: 0,
                             lastModified = getCursorLong(
                                 cursor,
                                 DocumentsContract.Document.COLUMN_LAST_MODIFIED
