@@ -66,8 +66,8 @@ abstract class BaseAppAction protected constructor(
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
             val script = ShellHandler.findAssetFile("package.sh").toString()
             Timber.w("---------------------------------------- Preprocess package $packageName uid ${applicationInfo.uid}")
-            if (applicationInfo.uid < 10000) { // exclude several system users, e.g. system, radio
-                Timber.w("Ignore processes of system user UID < 10000")
+            if (applicationInfo.uid < android.os.Process.FIRST_APPLICATION_UID) { // exclude several system users, e.g. system, radio
+                Timber.w("Ignore processes of system user UID < ${android.os.Process.FIRST_APPLICATION_UID}")
                 return
             }
             if (!packageName.matches(doNotStop)) { // will stop most activity, needs a good blacklist
@@ -92,8 +92,8 @@ abstract class BaseAppAction protected constructor(
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
             val script = ShellHandler.findAssetFile("package.sh").toString()
             Timber.w("........................................ Postprocess package $packageName uid ${applicationInfo.uid}")
-            if (applicationInfo.uid < 10000) { // exclude several system users, e.g. system, radio
-                Timber.w("Ignore processes of system user UID < 10000")
+            if (applicationInfo.uid < android.os.Process.FIRST_APPLICATION_UID) { // exclude several system users, e.g. system, radio
+                Timber.w("Ignore processes of system user UID < ${android.os.Process.FIRST_APPLICATION_UID}")
                 return
             }
             stopped[packageName]?.let { pids ->
