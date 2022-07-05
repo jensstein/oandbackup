@@ -40,6 +40,7 @@ import androidx.core.app.ActivityCompat
 import androidx.preference.PreferenceManager
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_ACCENT_COLOR
 import com.machiav3lli.backup.PREFS_ALLOWDOWNGRADE
 import com.machiav3lli.backup.PREFS_BIOMETRICLOCK
@@ -163,7 +164,8 @@ fun Context.setBackupDir(value: Uri) {
         .buildDocumentUriUsingTree(value, DocumentsContract.getTreeDocumentId(value))
     getDefaultSharedPreferences().edit()
         .putString(PREFS_PATH_BACKUP_DIRECTORY, fullUri.toString()).apply()
-    FileUtils.invalidateBackupLocation()
+    OABX.main?.needRefresh = true       // post refreshing view
+    //FileUtils.invalidateBackupLocation()
 }
 
 val Context.isStorageDirSetAndOk: Boolean

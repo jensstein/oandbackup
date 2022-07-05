@@ -96,7 +96,7 @@ class Package {
         backupDir: StorageFile?,
     ) {
         this.packageBackupDir = backupDir
-        this.packageName = packageName ?: backupDir?.name!!
+        this.packageName = packageName
         refreshBackupList()
         try {
             val pi = context.packageManager.getPackageInfo(
@@ -121,7 +121,7 @@ class Package {
                 this.packageInfo = latestBackup!!.toAppInfo()
             }
         }
-        packageName?.let { OABX.app.packageCache.put(it, this) }
+        OABX.app.packageCache.put(packageName, this)
     }
 
     constructor(
@@ -164,6 +164,7 @@ class Package {
 
     fun updateBackupList(new: List<Backup>) {
         backupList = new
+        backupListDirty = false
     }
 
     fun refreshBackupList() {
@@ -174,8 +175,10 @@ class Package {
             ?.filter(StorageFile::isPropertyFile)
             ?.forEach { propFile ->
                 try {
-                    //Backup.createFrom(propFile)?.let { addBackup(it) }
-                    Backup.createFrom(propFile)?.let { backups.add(it) }
+                    Backup.createFrom(propFile)?.let {
+                        //addBackup(it)       // refresh view immediately? but does not work...
+                        backups.add(it)
+                    }
                 } catch (e: Backup.BrokenBackupException) {
                     val message =
                         "Incomplete backup or wrong structure found in $propFile"
@@ -191,7 +194,6 @@ class Package {
                 }
             }
         updateBackupList(backups)
-        backupListDirty = false
     }
 
     private fun ensureBackupsLoaded(): List<Backup> {

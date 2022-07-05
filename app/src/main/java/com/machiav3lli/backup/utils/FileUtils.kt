@@ -62,8 +62,8 @@ object FileUtils {
     fun invalidateBackupLocation() {
         backupLocation = null
         Package.invalidateAllPackages()
-        OABX.main?.viewModel?.refreshList()     // immediately start refreshing packages
-        OABX.main?.needRefresh = true           // post refreshing view
+        OABX.main?.viewModel?.refreshList()     // immediately rebuild package list
+        //OABX.main?.needRefresh = true       // post refreshing view
     }
 
     fun getName(fullPath: String): String {
