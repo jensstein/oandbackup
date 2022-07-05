@@ -18,6 +18,7 @@
 package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -37,8 +38,7 @@ import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Blocklist
 import com.machiav3lli.backup.handler.toAppInfoList
 import com.machiav3lli.backup.handler.toPackageList
-import com.machiav3lli.backup.handler.updateAppInfoTable
-import com.machiav3lli.backup.handler.updateBackupTable
+import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.Package.Companion.invalidateCacheForPackage
 import com.machiav3lli.backup.utils.showToast
@@ -59,6 +59,7 @@ class MainViewModel(
 
     // TODO fix force refresh on changing backup directory or change method
     val isNeedRefresh = MutableLiveData(false)
+    var refreshing = mutableStateOf(0)
 
     init {
         blocklist.addSource(db.blocklistDao.liveAll, blocklist::setValue)
@@ -103,24 +104,26 @@ class MainViewModel(
     // TODO add to interface
     fun refreshList() {
         viewModelScope.launch {
-            val showToasts = OABX.prefFlag(PREFS_LOADINGTOASTS, true)
-            val startTime = System.currentTimeMillis()
-            OABX.activity?.showToast("recreateAppInfoList ...", showToasts)
             recreateAppInfoList()
-            val after = System.currentTimeMillis()
-            OABX.activity?.showToast(
-                "recreateAppInfoList: ${((after - startTime) / 1000 + 0.5).toInt()} sec",
-                showToasts
-            )
             isNeedRefresh.postValue(false)
         }
     }
 
-    private suspend fun recreateAppInfoList() =
+    private suspend fun recreateAppInfoList() {
         withContext(Dispatchers.IO) {
-            appContext.updateAppInfoTable(db.appInfoDao)
-            appContext.updateBackupTable(db.backupDao)
+            refreshing.value++;
+            val startTime = System.currentTimeMillis()
+            val showToasts = OABX.prefFlag(PREFS_LOADINGTOASTS, true)
+            OABX.activity?.showToast("recreateAppInfoList ...", showToasts)
+            appContext.updateAppTables(db.appInfoDao, db.backupDao)
+            val after = System.currentTimeMillis()
+            OABX.activity?.showToast(
+            "recreateAppInfoList: ${((after - startTime) / 1000 + 0.5).toInt()} sec",
+                showToasts
+            )
+            refreshing.value--;
         }
+    }
 
     fun updatePackage(packageName: String) {
         viewModelScope.launch {
@@ -132,6 +135,7 @@ class MainViewModel(
 
     private suspend fun updateDataOf(packageName: String) =
         withContext(Dispatchers.IO) {
+            refreshing.value++;
             invalidateCacheForPackage(packageName)
             val appPackage = packageList.value?.find { it.packageName == packageName }
             try {
@@ -156,6 +160,7 @@ class MainViewModel(
             } catch (e: AssertionError) {
                 Timber.w(e.message ?: "")
             }
+            refreshing.value--;
         }
 
     fun updateExtras(appExtras: AppExtras) {

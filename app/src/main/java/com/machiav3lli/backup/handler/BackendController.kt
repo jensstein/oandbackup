@@ -220,19 +220,22 @@ fun List<AppInfo>.toPackageList(
     return packageList
 }
 
-fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
+fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
     val startTime = System.currentTimeMillis()
     val showToasts = OABX.prefFlag(PREFS_LOADINGTOASTS, true)
 
-    OABX.activity?.showToast("updateAppInfoTable...", showToasts)
+    OABX.main?.viewModel?.refreshing?.value?.inc()
+    OABX.activity?.showToast("updateAppTables...", showToasts)
 
     val pm = packageManager
-    val installedAppList = pm.getInstalledPackagesWithPermissions()
-    val installedAppNames = installedAppList.map { it.packageName }.toList()
-    val specialList = SpecialInfo.getSpecialPackages(this).map { it.packageName }
+    val installedPackages = pm.getInstalledPackagesWithPermissions()
+    val installedNames = installedPackages.map { it.packageName }.toList()
+    val specialPackages = SpecialInfo.getSpecialPackages(this)
+    val specialNames = specialPackages.map { it.packageName }
+    val backups = mutableListOf<Backup>()
 
     if (!OABX.appsSuspendedChecked && OABX.prefFlag(PREFS_PMSUSPEND, false)) {
-        installedAppNames.filter { packageName ->
+        installedNames.filter { packageName ->
             0 != (OABX.activity?.packageManager
                 ?.getPackageInfo(packageName, 0)
                 ?.applicationInfo
@@ -250,79 +253,50 @@ fun Context.updateAppInfoTable(appInfoDao: AppInfoDao) {
     }
 
     val directoriesInBackupRoot = getBackupPackageDirectories()
-    val packagesWithBackup: List<AppInfo> =
+    val packagesWithBackup =
     // Try to create AppInfo objects
     // if it fails, null the object for filtering in the next step to avoid crashes
         // filter out previously failed backups
         directoriesInBackupRoot
             .filterNot {
                 it.name?.let { name ->
-                    /* installedAppNames.contains(name) || */ specialList.contains(name)
+                    specialNames.contains(name)
                 } ?: true
             }
             .mapNotNull {
                 try {
                     // TODO Add a direct constructor
-                    Package(this, it.name!!, it).packageInfo as AppInfo
+                    val pkg = Package(this, it.name!!, it)
+                    pkg.backupsNewestFirst.forEach { backups.add(it) }
+                    pkg
                 } catch (e: AssertionError) {
                     Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
                     null
                 }
             }
             .toList()
+
+    specialPackages.forEach {
+        it.refreshBackupList()
+        it.backupsNewestFirst.forEach { backups.add(it) }
+    }
+
+    val packagesWithBackupNames = packagesWithBackup.map { it.packageName }
     val appInfoList =
-        installedAppList
-            .filterNot { it.packageName in packagesWithBackup.map(AppInfo::packageName) }
+        installedPackages
+            .filterNot { it.packageName in packagesWithBackupNames }
             .map { AppInfo(this, it) }
-            .union(packagesWithBackup)
-            .toTypedArray()
-    appInfoDao.updateList(*appInfoList)
+            .union(packagesWithBackup.map { it.packageInfo as AppInfo })
+
+    appInfoDao.updateList(*appInfoList.toTypedArray())
+    backupDao.updateList(*backups.toTypedArray())
 
     val afterTime = System.currentTimeMillis()
     OABX.activity?.showToast(
-        "updateAppInfoTable: ${((afterTime - startTime) / 1000 + 0.5).toInt()} sec",
+        "updateAppTables: ${((afterTime - startTime) / 1000 + 0.5).toInt()} sec",
         showToasts
     )
-}
-
-fun Context.updateBackupTable(backupDao: BackupDao) {
-    val startTime = System.currentTimeMillis()
-    val showToasts = OABX.prefFlag(PREFS_LOADINGTOASTS, true)
-
-    OABX.activity?.showToast("updateBackupTable...", showToasts)
-
-    val directoriesInBackupRoot = getBackupPackageDirectories()
-    val backupList = mutableListOf<Backup>()
-    directoriesInBackupRoot
-        .map {
-            it.listFiles()
-                .filter(StorageFile::isPropertyFile)
-                .forEach { propFile ->
-                    try {
-                        Backup.createFrom(propFile)?.let(backupList::add)
-                    } catch (e: Backup.BrokenBackupException) {
-                        val message =
-                            "Incomplete backup or wrong structure found in $propFile"
-                        Timber.w(message)
-                    } catch (e: NullPointerException) {
-                        val message =
-                            "(Null) Incomplete backup or wrong structure found in $propFile"
-                        Timber.w(message)
-                    } catch (e: Throwable) {
-                        val message =
-                            "(catchall) Incomplete backup or wrong structure found in $propFile"
-                        LogsHandler.unhandledException(e, message)
-                    }
-                }
-        }
-
-    backupDao.updateList(*backupList.toTypedArray())
-
-    val afterTime = System.currentTimeMillis()
-    OABX.activity?.showToast(
-        "updateBackupTable: ${((afterTime - startTime) / 1000 + 0.5).toInt()} sec",
-        showToasts
-    )
+    OABX.main?.viewModel?.refreshing?.value?.dec()
 }
 
 @Throws(

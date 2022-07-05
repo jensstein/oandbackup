@@ -113,7 +113,6 @@ class HomeFragment : NavigationFragment(),
         OABX.main?.viewModel?.isNeedRefresh?.observe(viewLifecycleOwner) {
             viewModel.refreshing.postValue(it)
         }
-
         packageList.observe(requireActivity()) { refreshView(it) }
     }
 
