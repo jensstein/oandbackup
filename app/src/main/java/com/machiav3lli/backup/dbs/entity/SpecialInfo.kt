@@ -68,6 +68,12 @@ open class SpecialInfo : PackageInfo {
         private var threadCount = 0
         private var locked = false
 
+        fun clearCache() {
+            synchronized(specialPackages) {
+                specialPackages.clear()
+            }
+        }
+
         @Throws(
             BackupLocationInAccessibleException::class,
             StorageLocationNotConfiguredException::class

@@ -144,7 +144,6 @@ class MainActivityX : BaseActivity() {
             if (it) {
                 if (viewModel.refreshing.value == 0) {
                     invalidateBackupLocation()
-                    //viewModel.refreshList()
                 }
             }
         }

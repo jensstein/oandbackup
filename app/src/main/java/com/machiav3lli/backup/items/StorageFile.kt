@@ -8,6 +8,9 @@ import android.net.Uri
 import android.provider.DocumentsContract
 import android.text.TextUtils
 import androidx.core.content.FileProvider
+import androidx.core.database.getIntOrNull
+import androidx.core.database.getLongOrNull
+import androidx.core.database.getStringOrNull
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_ALLOWSHADOWINGDEFAULT
 import com.machiav3lli.backup.PREFS_CACHEURIS
@@ -32,24 +35,17 @@ import kotlin.collections.set
 
 fun getCursorString(cursor: Cursor, columnName: String): String? {
     val index = cursor.getColumnIndex(columnName)
-    return if (index != -1) cursor.getString(index) else null
+    return cursor.getStringOrNull(index)
 }
 
 fun getCursorLong(cursor: Cursor, columnName: String): Long? {
     val index = cursor.getColumnIndex(columnName)
-    if (index == -1) return null
-    val value = cursor.getString(index) ?: return null
-    return try {
-        value.toLong()
-    } catch (e: NumberFormatException) {
-        null
-    }
+    return cursor.getLongOrNull(index)
 }
 
-// Missing or null values are returned as 0
 fun getCursorInt(cursor: Cursor, columnName: String): Int? {
     val index = cursor.getColumnIndex(columnName)
-    return if (index != -1) cursor.getInt(index) else null
+    return cursor.getIntOrNull(index)
 }
 
 /*

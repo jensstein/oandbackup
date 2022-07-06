@@ -21,6 +21,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.items.Package
 import java.io.File
 import java.nio.file.attribute.PosixFilePermission
@@ -62,8 +63,8 @@ object FileUtils {
     fun invalidateBackupLocation() {
         backupLocation = null
         Package.invalidateAllPackages()
+        SpecialInfo.clearCache()
         OABX.main?.viewModel?.refreshList()     // immediately rebuild package list
-        //OABX.main?.needRefresh = true       // post refreshing view
     }
 
     fun getName(fullPath: String): String {
