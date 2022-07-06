@@ -271,6 +271,7 @@ data class Backup constructor(
     ) : Exception(message, cause)
 
     companion object {
+
         fun fromJson(json: String): Backup {
             Timber.d("json: $json")
             return Json.decodeFromString(json)
@@ -279,7 +280,7 @@ data class Backup constructor(
         fun createFrom(propertiesFile: StorageFile): Backup? {
             var json = ""
             try {
-                json = propertiesFile.inputStream()!!.reader().readText()
+                json = propertiesFile.readText()
                 return fromJson(json)
             } catch (e: FileNotFoundException) {
                 throw BrokenBackupException(

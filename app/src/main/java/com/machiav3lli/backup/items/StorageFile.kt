@@ -459,6 +459,18 @@ open class StorageFile {
         return ok
     }
 
+    fun readText(): String {
+        return try {
+            file?.readText()
+                ?: run { inputStream()?.reader()?.readText() ?: "" }
+        } catch (e: FileNotFoundException) {
+            ""
+        } catch (e: Throwable) {
+            LogsHandler.unhandledException(e, _uri)
+            ""
+        }
+    }
+
     fun findUri(displayName: String): Uri? {
         try {
             for (file in listFiles()) {

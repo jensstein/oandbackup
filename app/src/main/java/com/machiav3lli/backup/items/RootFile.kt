@@ -350,6 +350,10 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
         return cmdBool("[ -e $quoted ] && $utilBoxQ touch -t $date $quoted")
     }
 
+    fun readText(): String {
+        return runAsRoot("$utilBoxQ cat $quoted").out.joinToString("\n")
+    }
+
     /**
      * Returns an array of strings naming the files and directories in the
      * directory denoted by this abstract pathname.
