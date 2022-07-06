@@ -79,7 +79,7 @@
     <string name="prefs_pathbackupfolder">Фасцикла за резервне копије</string>
     <string name="prefs_oldbackups">Филтрирај резервне копије по времену</string>
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
-    <string name="prefs_oldbackups_summary">Филтрирај резервне копије старије од вредности наведене у данима.</string>
+    <string name="prefs_oldbackups_summary">Филтрирај резервне копије старије од вредности наведене у данима. Користи уз филтер \'Прикажи старе резервне копије\'.</string>
     <string name="prefs_copyselfapk">Копирај сопствени Apk</string>
     <string name="prefs_copyselfapk_summary">Смести копију neobackup-а на врх фасцикле са резервним копијама при прављењу исте</string>
     <string name="prefs_languages">Језици</string>
@@ -145,7 +145,7 @@
     <string name="prefs_theme_light">Светла</string>
     <string name="prefs_housekeepingmoment_after">Након израде резервне копије</string>
     <string name="prefs_housekeepingmoment_before">Пре израде резервне копије</string>
-    <string name="prefs_encryption">Енкрипција</string>
+    <string name="prefs_encryption">Шифровање</string>
     <string name="sched_add">Закажи</string>
     <string name="app_s_type_title">Тип апликације:</string>
     <string name="version_name_title">Назив верзије:</string>
@@ -154,13 +154,13 @@
     <string name="prefs_theme_dark">Тамна</string>
     <string name="spec_fingerprint">Отисци прста</string>
     <string name="prefs_password_match_false">Лозинке се не поклапају</string>
-    <string name="prefs_encryption_summary">Омогући енкрипцију копије података</string>
+    <string name="prefs_encryption_summary">Омогући шифровање копије података</string>
     <string name="error_creating_notification_channel">Није могуће направити канал за обавештења</string>
     <string name="prefs_batchdelete_summary">Обриши резервне копије свих апликација које тренутно нису инсталиране.</string>
     <string name="empty_filtered_list">Филтрирана листа је празна.</string>
     <string name="ignore_battery_optimization_title">Оптимизација батерије</string>
     <string name="ignore_battery_optimization_message">Израда резервне копије се понекад може прекинути. Да би сте то спречили, искључите оптимизацију батерије.</string>
-    <string name="prefs_loadingtoasts"></string>
+    <string name="prefs_loadingtoasts"/>
     <string name="radio_obbdata">ОББ Подаци</string>
     <string name="radio_externaldata">Спољашњи Подаци</string>
     <string name="radio_deviceprotecteddata">Заштићени Подаци Уређаја</string>
@@ -174,4 +174,8 @@
     <string name="prefs_devicelock">Закључавање уређаја</string>
     <string name="prefs_biometriclock">Биометричко закључавање</string>
     <string name="showSplitAPKs">Раздвој-АПК</string>
+    <string name="prefs_password">Лозинка за Шифровање</string>
+    <string name="prefs_password_summary">Подеси на празно да онемогућиш шифровање</string>
+    <string name="prefs_passwordconfirmation">Потврда лозинке за Шифровање</string>
+    <string name="prefs_biometriclock_summary">Заштити апликацију биометричким закључавањем уређаја (пр. отисак прста, откључавање лицем)</string>
 </resources>
