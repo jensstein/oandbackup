@@ -28,7 +28,6 @@ import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER_OLD
 import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_CACHEPACKAGES
-import com.machiav3lli.backup.PREFS_ENSUREBACKUPSPRIVATE
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.SpecialInfo
@@ -203,13 +202,10 @@ class Package {
     }
 
     fun ensureBackupList() {
-        if (!OABX.prefFlag(PREFS_ENSUREBACKUPSPRIVATE, false))
-            ensureBackupsLoaded()
+        ensureBackupsLoaded()
     }
 
     private fun needBackupList(): List<Backup> {
-        if (OABX.prefFlag(PREFS_ENSUREBACKUPSPRIVATE, false))
-            return ensureBackupsLoaded()
         return backupList
     }
 

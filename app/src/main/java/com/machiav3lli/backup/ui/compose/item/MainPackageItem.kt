@@ -24,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_ENSUREBACKUPSINCOMPOSE
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.getFormattedDate
@@ -44,11 +43,6 @@ fun MainPackageItem(
         )
     }
     Timber.i("recompose MainPackageItem ${packageItem.packageName}")
-
-    // TODO investigate if needed
-    if (OABX.prefFlag(PREFS_ENSUREBACKUPSINCOMPOSE, false))
-        packageItem.ensureBackupList()
-
 
     OutlinedCard(
         modifier = Modifier,

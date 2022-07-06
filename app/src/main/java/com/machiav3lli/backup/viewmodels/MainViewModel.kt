@@ -30,7 +30,6 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.context
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
 import com.machiav3lli.backup.PREFS_CACHEONUPDATE
-import com.machiav3lli.backup.PREFS_ENSUREBACKUPSPRIVATE
 import com.machiav3lli.backup.PREFS_LOADINGTOASTS
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.AppExtras
@@ -146,8 +145,7 @@ class MainViewModel(
                         val new = Package.get(packageName) {
                             Package(appContext, packageName, getAppBackupRoot())
                         }
-                        if (!OABX.prefFlag(PREFS_ENSUREBACKUPSPRIVATE, false))
-                            new.ensureBackupList()
+                        new.ensureBackupList()
                         new.refreshFromPackageManager(context)
                         new.refreshStorageStats(context)
                         if (!isSpecial) db.appInfoDao.update(new.packageInfo as AppInfo)

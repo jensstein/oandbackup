@@ -70,18 +70,6 @@
             android:title="usePackageCacheOnUpdate" />
 
         <androidx.preference.CheckBoxPreference
-            android:defaultValue="false"
-            android:key="useEnsureBackupListPrivate"
-            android:summary="use ensureBackupList only in package properties"
-            android:title="useEnsureBackupListPrivate" />
-
-        <androidx.preference.CheckBoxPreference
-            android:defaultValue="false"
-            android:key="useEnsureBackupListInComposable"
-            android:summary="use ensureBackupList in Composables (only when useEnsureBackupListPrivate disabled)"
-            android:title="useEnsureBackupListInComposable" />
-
-        <androidx.preference.CheckBoxPreference
             android:defaultValue="true"
             android:key="useColumnNameSAF"
             android:summary="eventually disable this, if you have problems with SAF storage"
