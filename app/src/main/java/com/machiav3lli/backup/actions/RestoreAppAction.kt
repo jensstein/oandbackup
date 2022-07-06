@@ -562,7 +562,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                     var suOptions = "--mount-master"
 
                     val cmd =
-                        "su $suOptions -c sh $qTarScript extract $utilBoxQ ${options} ${
+                        "su $suOptions -c sh $qTarScript extract $utilBoxQ $options ${
                             quote(
                                 targetDir
                             )
@@ -589,7 +589,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                     if (errLines.isNotEmpty()) {
                         val errFiltered = errLines.joinToString("\n")
                         Timber.i(errFiltered)
-                        throw BaseAppAction.ScriptException(errFiltered)
+                        throw ScriptException(errFiltered)
                     }
                 }
             } catch (e: FileNotFoundException) {
@@ -662,7 +662,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             // get the contents. lib for example must be owned by root
             //TODO hg42 I think, lib is always a link
             //TODO hg42 directories we exclude would keep their uidgidcon from before
-            //TODO hg42 this doesn't seem to be correct, unless the apk instlal would manage updating uidgidcon
+            //TODO hg42 this doesn't seem to be correct, unless the apk install would manage updating uidgidcon
             val dataContents: MutableList<String> =
                 mutableListOf(*shell.suGetDirectoryContents(RootFile(targetPath)))
             // Don't exclude any files from chown, as this may cause SELINUX issues (lost of data on restart)
@@ -1030,12 +1030,12 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         return path.contains(packageName)
     }
 
-    class RestoreFailedException : BaseAppAction.AppActionFailedException {
+    class RestoreFailedException : AppActionFailedException {
         constructor(message: String?) : super(message)
         constructor(message: String?, cause: Throwable?) : super(message, cause)
     }
 
-    class PackageManagerDataIncompleteException(var seconds: Long) :
+    class PackageManagerDataIncompleteException(val seconds: Long) :
         Exception("PackageManager returned invalid data paths after trying $seconds seconds to retrieve them")
 
     companion object {

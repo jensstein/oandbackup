@@ -141,13 +141,13 @@ abstract class BaseAppAction protected constructor(
             "lib",      //TODO hg42 what about architecture dependent names? or may be application specific? lib* ???
             "no_backup" //TODO hg42 use Context.getNoBackupFilesDir() ??? tricky, because it's an absolute path (remove common part...)
         )
-        val DATA_EXCLUDED_NAMES = listOf(
+        val DATA_EXCLUDED_NAMES = listOfNotNull(
             "com.google.android.gms.appid.xml",
             "cache",
             "trash",
             ".thumbnails",
             if (utilBox.hasBugDotDotDir) "..*" else null
-        ).filterNotNull()
+        )
 
         val ignoredPackages = ("""(?x)
               android
