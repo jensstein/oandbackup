@@ -13,6 +13,7 @@ import androidx.core.database.getLongOrNull
 import androidx.core.database.getStringOrNull
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_ALLOWSHADOWINGDEFAULT
+import com.machiav3lli.backup.PREFS_CACHEFILELISTS
 import com.machiav3lli.backup.PREFS_CACHEURIS
 import com.machiav3lli.backup.PREFS_COLUMNNAMESAF
 import com.machiav3lli.backup.PREFS_INVALIDATESELECTIVE
@@ -601,13 +602,7 @@ open class StorageFile {
         fun fromUri(context: Context, uri: Uri): StorageFile {
             // Todo: Figure out what's wrong with the Uris coming from the intent and why they need to be processed
             //  with DocumentsContract.buildDocumentUriUsingTree(value, DocumentsContract.getTreeDocumentId(value)) first
-            if (OABX.prefFlag(PREFS_CACHEURIS, false)) {
-                return StorageFile(
-                    null,
-                    context,
-                    uri
-                )
-            } else {
+            if (OABX.prefFlag(PREFS_CACHEURIS, true)) {
                 cacheCheck()
                 val id = uri.toString()
                 return cacheGetUri(id)
@@ -616,6 +611,12 @@ open class StorageFile {
                         context,
                         uri
                     ).also { cacheSetUri(id, it) }
+            } else {
+                return StorageFile(
+                    null,
+                    context,
+                    uri
+                )
             }
         }
 
@@ -654,8 +655,11 @@ open class StorageFile {
         }
 
         fun cacheGetFiles(id: String): List<StorageFile>? {
-            cacheCheck()
-            return fileListCache[id]
+            if (OABX.prefFlag(PREFS_CACHEFILELISTS, true)) {
+                cacheCheck()
+                return fileListCache[id]
+            }
+            return null
         }
 
         fun cacheSetFiles(id: String, files: List<StorageFile>) {
