@@ -363,7 +363,7 @@ open class StorageFile {
                 (file?.length() ?: 0L)
             else
                 (documentInfo?.size ?: 0)
-            ) + listFiles().sumOf { it.size }
+            )
 
     fun inputStream(): InputStream? {
         return file?.inputStream() ?: _uri?.let { uri ->
