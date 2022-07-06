@@ -199,12 +199,6 @@
             android:summary=""
             android:title="cacheFileLists" />
 
-        <androidx.preference.CheckBoxPreference
-            android:defaultValue="false"
-            android:key="cacheRootFileAttributes"
-            android:summary="cache some attributes like exists, isDirectory, isFile, saves many shell commands but may fail if external changes happen"
-            android:title="cacheRootFileAttributes" />
-
         <androidx.preference.SeekBarPreference
             android:defaultValue="1"
             android:inputType="number"
