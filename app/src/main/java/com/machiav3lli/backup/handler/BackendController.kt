@@ -42,6 +42,7 @@ import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.items.StorageFile.Companion.cacheInvalidate
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupDir
@@ -329,8 +330,9 @@ fun Context.updateBackupTable(backupDao: BackupDao) {
     StorageLocationNotConfiguredException::class
 )
 fun Context.getBackupPackageDirectories(): List<StorageFile> {
-    StorageFile.invalidateCache()
+    //StorageFile.invalidateCache()     // no -> only invalidate the backups
     val backupRoot = getBackupDir()
+    cacheInvalidate(backupRoot)         // only invalidate the backups (TODO but forcing it should probably be somewhere else, e.g. button action)
     try {
         return backupRoot.listFiles()
             .filter {

@@ -1,9 +1,12 @@
 package com.machiav3lli.backup.items
 
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
+import android.text.TextUtils
 import androidx.core.content.FileProvider
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_ALLOWSHADOWINGDEFAULT
@@ -15,23 +18,143 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
-import com.machiav3lli.backup.utils.exists
-import com.machiav3lli.backup.utils.getName
-import com.machiav3lli.backup.utils.isDirectory
-import com.machiav3lli.backup.utils.isFile
-import com.machiav3lli.backup.utils.length
 import com.machiav3lli.backup.utils.suRecursiveCopyFilesToDocument
-import org.apache.commons.io.FileUtils.listFiles
 import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStream
 import java.io.OutputStream
 import java.lang.Long.max
-import java.lang.Long.min
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
+
+
+fun getCursorString(cursor: Cursor, columnName: String): String? {
+    val index = cursor.getColumnIndex(columnName)
+    return if (index != -1) cursor.getString(index) else null
+}
+
+fun getCursorLong(cursor: Cursor, columnName: String): Long? {
+    val index = cursor.getColumnIndex(columnName)
+    if (index == -1) return null
+    val value = cursor.getString(index) ?: return null
+    return try {
+        value.toLong()
+    } catch (e: NumberFormatException) {
+        null
+    }
+}
+
+// Missing or null values are returned as 0
+fun getCursorInt(cursor: Cursor, columnName: String): Int? {
+    val index = cursor.getColumnIndex(columnName)
+    return if (index != -1) cursor.getInt(index) else null
+}
+
+/*
+
+private fun Uri.getRawType(context: Context): String? = try {
+    context.contentResolver.query(this, null, null, null, null)?.let { cursor ->
+        cursor.run {
+            if (moveToFirst())
+                //context.contentResolver.getType(this@getRawType)
+                getCursorString(this, DocumentsContract.Document.COLUMN_MIME_TYPE)
+            else
+                null
+        }.also { cursor.close() }
+    }
+} catch (e: Throwable) {
+    LogsHandler.unhandledException(e, this)
+    null
+}
+
+fun Uri.canRead(context: Context): Boolean = when {
+    context.checkCallingOrSelfUriPermission(
+        this,
+        Intent.FLAG_GRANT_READ_URI_PERMISSION
+    ) // Ignore if grant doesn't allow read
+            != PackageManager.PERMISSION_GRANTED -> false
+    else                                         -> !TextUtils.isEmpty(getRawType(context))
+} // Ignore documents without MIME
+
+fun Uri.canWrite(context: Context): Boolean {
+    // Ignore if grant doesn't allow write
+    if (context.checkCallingOrSelfUriPermission(this, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        != PackageManager.PERMISSION_GRANTED
+    ) {
+        return false
+    }
+    val type = getRawType(context)
+    val flags = queryForLong(context, DocumentsContract.Document.COLUMN_FLAGS)?.toInt() ?: 0
+    // Ignore documents without MIME
+    if (TextUtils.isEmpty(type)) {
+        return false
+    }
+    // Deletable documents considered writable
+    if (flags and DocumentsContract.Document.FLAG_SUPPORTS_DELETE != 0) {
+        return true
+    }
+    //return if (DocumentsContract.Document.MIME_TYPE_DIR == type && flags and DocumentsContract.Document.FLAG_DIR_SUPPORTS_CREATE != 0) {
+    return if (DocumentsContract.Document.MIME_TYPE_DIR.equals(type) && flags and DocumentsContract.Document.FLAG_DIR_SUPPORTS_CREATE != 0) {
+        // Directories that allow create considered writable
+        true
+    } else !TextUtils.isEmpty(type)
+            && flags and DocumentsContract.Document.FLAG_SUPPORTS_WRITE != 0
+    // Writable normal files considered writable
+}
+
+*/
+
+fun Uri.exists(context: Context): Boolean {
+    val resolver = context.contentResolver
+    var cursor: Cursor? = null
+    return try {
+        cursor = resolver.query(
+            this, arrayOf(
+                DocumentsContract.Document.COLUMN_DOCUMENT_ID
+            ), null, null, null
+        )
+        cursor?.count ?: 0 > 0
+    } catch (e: IllegalArgumentException) {
+        false
+    } catch (e: Throwable) {
+        LogsHandler.unhandledException(e, this)
+        false
+    } finally {
+        closeQuietly(cursor)
+    }
+}
+
+private fun Uri.queryForLong(context: Context, column: String): Long? {
+    val resolver = context.contentResolver
+    var cursor: Cursor? = null
+    try {
+        cursor = resolver.query(this, null, null, null, null)
+        if (cursor!!.moveToFirst()) {
+            return getCursorLong(cursor, column)
+        }
+    } catch (e: Throwable) {
+        LogsHandler.unhandledException(e, "$this column: $column")
+    } finally {
+        closeQuietly(cursor)
+    }
+    return 0
+}
+
+private fun closeQuietly(closeable: AutoCloseable?) {
+    if (closeable != null) {
+        try {
+            closeable.close()
+        } catch (rethrown: RuntimeException) {
+            throw rethrown
+        } catch (e: Throwable) {
+            LogsHandler.unhandledException(e)
+        }
+    }
+}
+
+
 
 // TODO MAYBE migrate at some point to FuckSAF
 
@@ -52,6 +175,51 @@ open class StorageFile {
     private var file: RootFile? = null
     private var parentFile: RootFile? = null
 
+    private data class DocumentInfo(val displayName: String, val mimeType: String, val size: Long, val lastModified: Long)
+    private var documentInfo: DocumentInfo? = null
+        get() {
+            if(field == null)
+                field = retrieveDocumentInfo()
+            return field
+        }
+    private fun retrieveDocumentInfo(): DocumentInfo? {
+        context?.let { context ->
+            val resolver = context.contentResolver
+            var cursor: Cursor? = null
+            try {
+                resolver.query(_uri!!, null, null, null, null)?.let { cursor ->
+                    if (cursor.moveToFirst()) {
+                        return DocumentInfo(
+                            displayName = getCursorString(
+                                cursor,
+                                DocumentsContract.Document.COLUMN_DISPLAY_NAME
+                            ) ?: "???",
+                            mimeType = getCursorString(
+                                cursor,
+                                DocumentsContract.Document.COLUMN_MIME_TYPE
+                            ) ?: "",
+                            size = getCursorLong(cursor, DocumentsContract.Document.COLUMN_SIZE)
+                                ?: 0,
+                            lastModified = getCursorLong(
+                                cursor,
+                                DocumentsContract.Document.COLUMN_LAST_MODIFIED
+                            ) ?: 0,
+                            //documentId = getCursorString(cursor, Document.COLUMN_DOCUMENT_ID),
+                            //flags = getCursorInt(cursor, Document.COLUMN_FLAGS),
+                            //summary = getCursorString(cursor, Document.COLUMN_SUMMARY),
+                            //icon = getCursorInt(cursor, Document.COLUMN_ICON),
+                        )
+                    }
+                }
+            } catch (e: Throwable) {
+                LogsHandler.unhandledException(e, "$this")
+            } finally {
+                closeQuietly(cursor)
+            }
+        }
+        return null
+    }
+
     constructor(
         parent: StorageFile?,
         context: Context?,
@@ -60,7 +228,7 @@ open class StorageFile {
         allowShadowing: Boolean = OABX.prefFlag(
             PREFS_ALLOWSHADOWINGDEFAULT,
             false
-        ) // Storage files that should be shadowable should be explicitly decalred as such
+        ) // Storage files that should be shadowable should be explicitly declared as such
     ) {
         this.parent = parent
         this.context = context
@@ -154,7 +322,7 @@ open class StorageFile {
         get() {
             if (field == null) {
                 field = file?.name ?: let {
-                    context?.let { context -> _uri?.getName(context) }
+                    documentInfo?.displayName
                 }
             }
             return field
@@ -171,23 +339,23 @@ open class StorageFile {
     }
 
     val isFile: Boolean
-        get() = file?.isFile ?: context?.let { context -> _uri?.isFile(context) } ?: false
+        get() = ! isDirectory
 
     val isDirectory: Boolean
-        get() = file?.isDirectory ?: context?.let { context -> _uri?.isDirectory(context) } ?: false
+        get() = file?.isDirectory ?: (documentInfo?.mimeType == DocumentsContract.Document.MIME_TYPE_DIR)
 
     val isPropertyFile: Boolean
         get() = name?.endsWith(".properties") ?: false
 
     fun exists(): Boolean =
-        file?.exists() ?: context?.let { context -> _uri?.exists(context) } ?: false
+        file?.exists() ?: ! documentInfo?.mimeType.isNullOrEmpty()
 
     val size: Long
         get() = (
             if (file != null)
                 (file?.length() ?: 0L)
             else
-                (context?.let { max(0L, uri?.length(it) ?: 0L) } ?: 0L)
+                (documentInfo?.size ?: 0)
             ) + listFiles().sumOf { it.size }
 
     fun inputStream(): InputStream? {
