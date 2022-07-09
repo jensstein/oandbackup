@@ -100,7 +100,7 @@
     <string name="prefs_excludecache_summary">Bersihkan cache aplikasi sebelum melakukan mencadangkan data</string>
     <string name="prefs_acquirewakelock_summary">Dapatkan wakelock saat operasi batch sedang berjalan untuk mencegah tidur. Mempercepat backup dan memulihkan secara signifikan tetapi akan mengkonsumsi lebih banyak daya.</string>
     <string name="prefs_oldbackups_summary">Saring cadangan yang lebih lama dari nilai dalam beberapa hari. digunakan dengan filter \'tampilkan backup lama\'.</string>
-    <string name="prefs_copyselfapk_summary">Tempatkan salinan OAndBackupX di tingkat atas folder cadangan</string>
+    <string name="prefs_copyselfapk_summary">Tempatkan salinan Neo Backup di tingkat atas folder cadangan</string>
     <string name="prefs_rememberfiltering_summary">Menyimpan metode penyortiran dan penyaringan yang dipilih. Hanya yang ditandai oleh kotak centang di menu yang dipertimbangkan.</string>
     <string name="prefs_batchdelete_summary">Hapus cadangan semua aplikasi yang saat ini tidak diinstal.</string>
     <string name="sched_title">Penjadwalan</string>
@@ -183,7 +183,7 @@
 \n • Baik mencadangkan dan memulihkan program satu per satu dan mendukung pencadangan dan pemulihan banyak program.
 \n • Mengembalikan aplikasi sistem semestinya dapat dilakukan tanpa memerlukan reboot setelahnya, tetapi kami tetap tidak menyarankan untuk melakukannya.
 \n • Pencadangan dapat dijadwalkan tanpa batasan jumlah jadwal individu dan ada kemungkinan membuat daftar kustom yang unik.</string>
-    <string name="welcome_to_oabx">Selamat datang di OABX!</string>
+    <string name="welcome_to_oabx">Selamat datang di Neo Backup!</string>
     <string name="storage_access">Akses Penyimpanan</string>
     <string name="sort_and_filter">Urutkan &amp; Saring</string>
     <string name="enable_encryption_message">Tidak aman menyimpan data Anda di perangkat Anda yang tidak dienkripsi. Untuk keamanan data Anda, aktifkan enkripsi dan setel kata sandi.</string>
@@ -308,4 +308,23 @@
     <string name="all_data">Periksa semua data</string>
     <string name="all_apk">Periksa semua APK</string>
     <string name="showDisabled">Aplikasi nonaktif</string>
+    <string name="sortAppSize">ukuran aplikasi</string>
+    <string name="sortAppDataSize">ukuran data aplikasi</string>
+    <string name="sortBackupSize">ukuran cadangan</string>
+    <string name="grant_contacts_message">Ini penting untuk dapat mencocokkan kontak dengan SMS/MMS.</string>
+    <string name="prefs_restorepermissions">Pulihkan izin</string>
+    <string name="prefs_loadingtoasts_summary">Tampilkan toast saat daftar sedang dimuat</string>
+    <string name="contacts_permission_title">izin kontak</string>
+    <string name="dialogCancelAll">batalkan semua</string>
+    <string name="grant_smsmms_message">Ini penting untuk dapat mencadangkan/mengembalikan SMS/MMS Anda.</string>
+    <string name="spec_fingerprint">Sidik jari</string>
+    <string name="calllogs_permission_title">izin log panggilan</string>
+    <string name="grant_calllogs_message">Ini penting untuk dapat mencadangkan/memulihkan Log Panggilan Anda.</string>
+    <string name="spec_smsmmsjson">SMS/MMS JSON</string>
+    <string name="spec_calllogsjson">log panggilan JSON</string>
+    <string name="smsmms_permission_title">Izin SMS/MMS</string>
+    <string name="prefs_sessionIinstaller">gunakan penginstal sesi</string>
+    <string name="prefs_sessionIinstaller_summary">Gunakan penginstal sesi daripada penginstal dasar. Lebih lambat tetapi menghindari masalah dengan Android 13+</string>
+    <string name="prefs_installerpackagename">Nama paket penginstal:</string>
+    <string name="prefs_restorepermissions_summary">Pulihkan izin yang diberikan ke aplikasi pada saat pencadangan. Perhatikan bahwa beberapa izin tidak dapat diberikan secara terprogram sehingga menyebabkan pemulihan paket gagal secara keseluruhan, yang kemudian dicakup oleh Neo Backup untuk memulihkan paket tanpa izin.</string>
 </resources>
