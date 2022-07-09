@@ -346,4 +346,9 @@
     <string name="prefs_installerpackagename">Packetname des Installationsprogramms:</string>
     <string name="prefs_restorepermissions_summary">Wiederherstellung der Berechtigungen, die der Anwendung zum Zeitpunkt der Sicherung gewährt waren. Beachten Sie, dass einige Berechtigungen nicht programmatisch gewährt werden können und daher die Wiederherstellung des Pakets insgesamt fehlschlägt, was Neo Backup dann für die Wiederherstellung des Pakets ohne Berechtigungen übernimmt.</string>
     <string name="supended_apps_cleanup">Bereinigung aller übrig gebliebenen angehaltenen Apps</string>
+    <string name="sortAppDataSize">App-Datengröße</string>
+    <string name="sortBackupSize">Sicherungsgröße</string>
+    <string name="edit_note">Notiz bearbeiten</string>
+    <string name="sortAppSize">App-Größe</string>
+    <string name="add_tag">Neuen Tag hinzufügen</string>
 </resources>
