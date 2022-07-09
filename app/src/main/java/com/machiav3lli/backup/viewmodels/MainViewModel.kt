@@ -41,11 +41,11 @@ import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.Package.Companion.invalidateCacheForPackage
-import com.machiav3lli.backup.utils.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import kotlin.system.measureTimeMillis
 
 class MainViewModel(
     private val db: ODatabase,
@@ -112,16 +112,11 @@ class MainViewModel(
     private suspend fun recreateAppInfoList() {
         withContext(Dispatchers.IO) {
             refreshing.value++;
-            val startTime = System.currentTimeMillis()
-            val showToasts = OABX.prefFlag(PREFS_LOADINGTOASTS, true)
-            OABX.activity?.showToast("recreateAppInfoList ...", showToasts)
-            packageList.postValue(null)
-            appContext.updateAppTables(db.appInfoDao, db.backupDao)
-            val after = System.currentTimeMillis()
-            OABX.activity?.showToast(
-            "recreateAppInfoList: ${((after - startTime) / 1000 + 0.5).toInt()} sec",
-                showToasts
-            )
+            val time = measureTimeMillis {
+                packageList.postValue(null)
+                appContext.updateAppTables(db.appInfoDao, db.backupDao)
+            }
+            OABX.addInfoText("recreateAppInfoList: ${(time / 1000 + 0.5).toInt()} sec")
             refreshing.value--;
         }
     }

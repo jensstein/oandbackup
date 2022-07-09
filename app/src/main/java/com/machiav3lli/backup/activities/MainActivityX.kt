@@ -31,6 +31,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.OABX.Companion.addInfoText
 import com.machiav3lli.backup.PREFS_CATCHUNCAUGHT
 import com.machiav3lli.backup.PREFS_MAXCRASHLINES
 import com.machiav3lli.backup.PREFS_SKIPPEDENCRYPTION
@@ -50,7 +51,6 @@ import com.machiav3lli.backup.utils.itemIdToOrder
 import com.machiav3lli.backup.utils.navigateLeft
 import com.machiav3lli.backup.utils.navigateRight
 import com.machiav3lli.backup.utils.setCustomTheme
-import com.machiav3lli.backup.utils.showToast
 import com.machiav3lli.backup.utils.sortFilterModel
 import com.machiav3lli.backup.viewmodels.MainViewModel
 import com.topjohnwu.superuser.Shell
@@ -190,7 +190,7 @@ class MainActivityX : BaseActivity() {
             null -> {}
             "android.intent.action.MAIN" -> {}
             else -> {
-                showToast("Main: command '$command'")
+                addInfoText("Main: command '$command'")
             }
         }
         return false

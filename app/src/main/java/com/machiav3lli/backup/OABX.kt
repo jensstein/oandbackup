@@ -25,6 +25,10 @@ import android.content.IntentFilter
 import android.os.Build
 import android.os.PowerManager
 import android.util.LruCache
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
@@ -32,6 +36,10 @@ import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
@@ -86,6 +94,12 @@ class OABX : Application() {
         if (prefFlag(PREFS_CANCELONSTART, false))
             work?.cancel()
         work?.prune()
+
+        MainScope().launch {
+            delay(1000)
+            addInfoText("[click to hide/show permanently]")
+            addInfoText("")
+        }
     }
 
     override fun onTerminate() {
@@ -155,6 +169,29 @@ class OABX : Application() {
 
         fun prefInt(name: String, default: Int) = context.getDefaultSharedPreferences()
             .getInt(name, default)
+
+        var infoLines = mutableStateListOf<String>()
+
+        val nInfoLines = 100
+        var showInfo by mutableStateOf(false)
+
+        fun clearInfoText() {
+            infoLines = mutableStateListOf()
+        }
+
+        fun addInfoText(value: String) {
+            infoLines.add(value)
+            if(infoLines.size > nInfoLines)
+                infoLines.drop(1)
+        }
+
+        fun getInfoText(n: Int, fill: String? = null): String {
+            val lines = infoLines.takeLast(n).toMutableList()
+            if(fill != null)
+                while(lines.size < n)
+                    lines.add(fill)
+            return lines.joinToString("\n")
+        }
 
         // if any background work is to be done
         private var theWakeLock: PowerManager.WakeLock? = null

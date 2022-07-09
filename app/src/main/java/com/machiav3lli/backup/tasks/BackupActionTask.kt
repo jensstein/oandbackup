@@ -24,7 +24,7 @@ import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.Package
-import com.machiav3lli.backup.utils.showToast
+import kotlin.system.measureTimeMillis
 
 class BackupActionTask(
     appInfo: Package, oAndBackupX: MainActivityX, shellHandler: ShellHandler, backupMode: Int,
@@ -35,20 +35,22 @@ class BackupActionTask(
 ) {
 
     override fun doInBackground(vararg params: Void?): ActionResult? {
+
         val mainActivityX = mainActivityXReference.get()
         if (mainActivityX == null || mainActivityX.isFinishing) {
             return ActionResult(app, null, "", false)
         }
-        val startTime = System.currentTimeMillis()
 
-        notificationId = System.currentTimeMillis().toInt()
-        publishProgress()
+        val time = measureTimeMillis {
 
-        result = BackupRestoreHelper.backup(mainActivityX, null, shellHandler, app, mode)
+            notificationId = System.currentTimeMillis().toInt()
+            publishProgress()
 
-        val afterTime = System.currentTimeMillis()
-        OABX.activity?.showToast(
-            "backup: ${app.packageName}: ${((afterTime - startTime) / 1000 + 0.5).toInt()} sec"
+            result = BackupRestoreHelper.backup(mainActivityX, null, shellHandler, app, mode)
+
+        }
+        OABX.addInfoText(
+            "backup: ${app.packageName}: ${(time / 1000 + 0.5).toInt()} sec"
         )
         return result
     }

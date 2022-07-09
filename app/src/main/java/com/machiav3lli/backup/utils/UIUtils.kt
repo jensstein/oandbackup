@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.ColorUtils
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_LANGUAGES_DEFAULT
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
@@ -124,8 +125,10 @@ fun Activity.showWarning(
         .show()
 }
 
-fun Activity.showToast(message: String?, should: Boolean = true) = runOnUiThread {
-    if (should) Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+fun Activity.showToast(message: String, should: Boolean = true) = runOnUiThread {
+    if (should) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
 }
 
 val Context.colorAccent: Int

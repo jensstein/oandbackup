@@ -96,7 +96,6 @@ import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.ui.compose.theme.Updated
 import com.machiav3lli.backup.utils.showError
-import com.machiav3lli.backup.utils.showToast
 import com.machiav3lli.backup.viewmodels.AppSheetViewModel
 import timber.log.Timber
 
@@ -539,7 +538,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                         if (!app.isSpecial && !app.isInstalled
                                             && !item.hasApk && item.hasAppData
                                         ) {
-                                            requireActivity().showToast(getString(R.string.notInstalledModeDataWarning))
+                                            OABX.addInfoText(getString(R.string.notInstalledModeDataWarning))
                                         } else {
                                             RestoreDialogFragment(
                                                 app,
@@ -559,7 +558,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                             .setTitle(app.packageLabel)
                                             .setMessage(R.string.deleteBackupDialogMessage)
                                             .setPositiveButton(R.string.dialogYes) { dialog: DialogInterface?, _: Int ->
-                                                requireActivity().showToast(
+                                                OABX.addInfoText(
                                                     "${app.packageLabel}: ${
                                                         getString(
                                                             R.string.deleteBackup
@@ -656,7 +655,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
             .setTitle(app.packageLabel)
             .setMessage(R.string.uninstallDialogMessage)
             .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
-                requireActivity().showToast("${app.packageLabel}: ${getString(R.string.uninstallProgress)}")
+                OABX.addInfoText("${app.packageLabel}: ${getString(R.string.uninstallProgress)}")
                 viewModel.uninstallApp()
             }
             .setNegativeButton(R.string.dialogNo, null)
@@ -673,7 +672,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
             .setTitle(app.packageLabel)
             .setMessage(R.string.deleteBackupDialogMessage)
             .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
-                requireActivity().showToast(
+                OABX.addInfoText(
                     "${app.packageLabel}: ${
                         getString(
                             R.string.delete_all_backups

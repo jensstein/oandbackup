@@ -24,7 +24,6 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_FINDLS
 import com.machiav3lli.backup.utils.BUFFER_SIZE
 import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
-import com.machiav3lli.backup.utils.showToast
 import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.Shell.ROOT_MOUNT_MASTER
 import com.topjohnwu.superuser.io.SuRandomAccessFile
@@ -173,7 +172,7 @@ class ShellHandler {
                             box.reason
                     }"
                 }.joinToString("\n")
-            OABX.activity?.showToast(
+            OABX.addInfoText(
                 "No good utilbox found, tried these:\n${
                     boxes.map { box ->
                         if (box.version.isNotEmpty()) "${box.version} -> ${box.score}" else ""
