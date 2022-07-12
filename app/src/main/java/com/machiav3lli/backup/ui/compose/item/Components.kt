@@ -46,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -549,6 +550,7 @@ fun PackageLabels(
         },
         R.string.app_s_type_title,
         tint = when {
+            item.isDisabled -> Gray
             item.isSpecial -> Special
             item.isSystem -> System
             else -> User
