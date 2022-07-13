@@ -28,7 +28,6 @@ import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER_OLD
 import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_CACHEPACKAGES
-import com.machiav3lli.backup.PREFS_ENSUREBACKUPSPRIVATE
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.SpecialInfo
@@ -55,38 +54,38 @@ class Package {
     internal constructor(
         context: Context,
         appInfo: AppInfo,
-        backups: List<Backup> = emptyList()
+        backups: List<Backup>? = emptyList()
     ) {
         packageName = appInfo.packageName
         this.packageInfo = appInfo
         getAppBackupRoot()
         if (appInfo.installed) refreshStorageStats(context)
-        updateBackupList(backups)
+        updateBackupList(backups ?: emptyList())
         OABX.app.packageCache.put(packageName, this)
     }
 
     constructor(
         context: Context,
         specialInfo: SpecialInfo,
-        backups: List<Backup> = emptyList()
+        backups: List<Backup>? = emptyList()
     ) {
         packageName = specialInfo.packageName
         this.packageInfo = specialInfo
         getAppBackupRoot()
-        updateBackupList(backups)
+        updateBackupList(backups ?: emptyList())
         OABX.app.packageCache.put(packageName, this)
     }
 
     constructor(
         context: Context,
         packageInfo: android.content.pm.PackageInfo,
-        backups: List<Backup> = emptyList()
+        backups: List<Backup>? = emptyList()
     ) {
         packageName = packageInfo.packageName
         this.packageInfo = AppInfo(context, packageInfo)
         getAppBackupRoot()
         refreshStorageStats(context)
-        updateBackupList(backups)
+        updateBackupList(backups ?: emptyList())
         OABX.app.packageCache.put(packageName, this)
     }
 
@@ -96,7 +95,7 @@ class Package {
         backupDir: StorageFile?,
     ) {
         this.packageBackupDir = backupDir
-        this.packageName = packageName ?: backupDir?.name!!
+        this.packageName = packageName
         refreshBackupList()
         try {
             val pi = context.packageManager.getPackageInfo(
@@ -121,20 +120,20 @@ class Package {
                 this.packageInfo = latestBackup!!.toAppInfo()
             }
         }
-        packageName?.let { OABX.app.packageCache.put(it, this) }
+        OABX.app.packageCache.put(packageName, this)
     }
 
     constructor(
         context: Context,
         packageInfo: android.content.pm.PackageInfo,
         backupRoot: StorageFile?,
-        backups: List<Backup> = emptyList()
+        backups: List<Backup>? = emptyList()
     ) {
         this.packageName = packageInfo.packageName
         this.packageInfo = AppInfo(context, packageInfo)
         this.packageBackupDir = backupRoot?.findFile(packageName)
         refreshStorageStats(context)
-        updateBackupList(backups)
+        updateBackupList(backups ?: emptyList())
         OABX.app.packageCache.put(packageName, this)
     }
 
@@ -164,6 +163,7 @@ class Package {
 
     fun updateBackupList(new: List<Backup>) {
         backupList = new
+        backupListDirty = false
     }
 
     fun refreshBackupList() {
@@ -174,8 +174,10 @@ class Package {
             ?.filter(StorageFile::isPropertyFile)
             ?.forEach { propFile ->
                 try {
-                    //Backup.createFrom(propFile)?.let { addBackup(it) }
-                    Backup.createFrom(propFile)?.let { backups.add(it) }
+                    Backup.createFrom(propFile)?.let {
+                        //addBackup(it)       // refresh view immediately? but does not work...
+                        backups.add(it)
+                    }
                 } catch (e: Backup.BrokenBackupException) {
                     val message =
                         "Incomplete backup or wrong structure found in $propFile"
@@ -191,7 +193,6 @@ class Package {
                 }
             }
         updateBackupList(backups)
-        backupListDirty = false
     }
 
     private fun ensureBackupsLoaded(): List<Backup> {
@@ -201,13 +202,10 @@ class Package {
     }
 
     fun ensureBackupList() {
-        if (!OABX.prefFlag(PREFS_ENSUREBACKUPSPRIVATE, false))
-            ensureBackupsLoaded()
+        ensureBackupsLoaded()
     }
 
     private fun needBackupList(): List<Backup> {
-        if (OABX.prefFlag(PREFS_ENSUREBACKUPSPRIVATE, false))
-            return ensureBackupsLoaded()
         return backupList
     }
 
@@ -420,8 +418,14 @@ class Package {
     val hasMediaData: Boolean
         get() = backupList.any { it.hasMediaData }
 
+    val appBytes: Long
+        get() = if (packageInfo.isSpecial) 0 else storageStats?.appBytes ?: 0
+
     val dataBytes: Long
         get() = if (packageInfo.isSpecial) 0 else storageStats?.dataBytes ?: 0
+
+    val backupBytes: Long
+        get() = latestBackup?.size ?: 0
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

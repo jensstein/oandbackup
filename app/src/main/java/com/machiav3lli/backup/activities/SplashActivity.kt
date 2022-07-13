@@ -48,7 +48,7 @@ import com.machiav3lli.backup.PREFS_IGNORE_BATTERY_OPTIMIZATION
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.classAddress
 import com.machiav3lli.backup.databinding.ActivitySplashBinding
-import com.machiav3lli.backup.ui.compose.item.ActionChip
+import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.checkCallLogsPermission
 import com.machiav3lli.backup.utils.checkContactsPermission
@@ -60,6 +60,7 @@ import com.machiav3lli.backup.utils.hasStoragePermissions
 import com.machiav3lli.backup.utils.isStorageDirSetAndOk
 import com.machiav3lli.backup.utils.setCustomTheme
 import com.topjohnwu.superuser.Shell
+import kotlin.system.exitProcess
 
 
 @Preview
@@ -79,6 +80,7 @@ fun RootMissing(activity: Activity? = null) {
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxSize()
+                    .padding(paddingValues)
                     .padding(50.dp)
             ) {
                 Text(
@@ -86,32 +88,29 @@ fun RootMissing(activity: Activity? = null) {
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = Color.Red,
-                    modifier = Modifier
-                                    .fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(40.dp))
                 Text(
                     text = stringResource(R.string.root_is_mandatory),
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier
-                                    .fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(40.dp))
                 Text(
                     text = stringResource(R.string.see_faq),
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier
-                                    .fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(80.dp))
-                ActionChip(
+                ElevatedActionButton(
                     text = stringResource(id = R.string.dialogOK),
                     icon = painterResource(id = R.drawable.ic_issue),
                     fullWidth = true,
                     modifier = Modifier
                 ) {
                     activity?.finishAffinity()
-                    System.exit(0)
+                    exitProcess(0)
                 }
             }
         }

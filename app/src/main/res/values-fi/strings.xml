@@ -202,7 +202,7 @@
     <string name="prefs_accent_4">Tuhti vihreä</string>
     <string name="prefs_accent_5">Raikas lime</string>
     <string name="prefs_accent_6">Myrskynkeltainen</string>
-    <string name="backup">Varmuuskopio</string>
+    <string name="backup">Varmuuskopioi</string>
     <string name="showDisabled">Käytöstä poistetut sovellukset</string>
     <string name="prefs_accent_7">Aprikoosin oranssi</string>
     <string name="prefs_secondary_0">Arktinen syaani</string>
@@ -313,4 +313,27 @@
     <string name="delete">Poista</string>
     <string name="prefs_unset">Ei asetettu</string>
     <string name="batch">Erä</string>
+    <string name="dismiss">Ohita</string>
+    <string name="enabled">Käytössä</string>
+    <string name="sortAsc">Nouseva</string>
+    <string name="sortDesc">Laskeva</string>
+    <string name="prefs_loadingtoasts_summary">Näytä ilmoitukset, kun listaa ladataan</string>
+    <string name="prefs_loadingtoasts">Latausilmoitukset</string>
+    <string name="prefs_restorepermissions">Palauta käyttöoikeudet</string>
+    <string name="prefs_restorepermissions_summary">Palauta sovellukselle varmuuskopiointiaikana myönnettynä olleet käyttöoikeudet. Huomioi, että joitain käyttöoikeuksia ei voida palauttaa ohjelmallisesti ja se aiheuttaa koko paketin palautuksen epäonnistumisen. Tässä tapauksessa Neo Backup palauttaa paketin ilman käyttöoikeuksia.</string>
+    <string name="dialogCancelAll">Peruuta kaikki</string>
+    <string name="prefs_sessionIinstaller_summary">Käytä sessioasentajaa Android 13+ kanssa. Vaikka se on hitaampi, vältät ongelmia.</string>
+    <string name="root_missing">Root-oikeudet puuttuvat!</string>
+    <string name="root_is_mandatory">Koska sovellukset ovat toisistaan eristettyinä, vaaditaan pääkäyttäjän oikeudet varmuuskopiointiin ja palautukseen.</string>
+    <string name="see_faq">Katso FAQ!</string>
+    <string name="prefs_sessionIinstaller">Käytä sessioasentajaa</string>
+    <string name="prefs_installerpackagename">Asennuspakkauksen nimi:</string>
+    <string name="intro_welcome_message">Neo Backup (aikaisemmin OAndBackupX) perustuu nimekkääseen OAndBackupiin tavoitteena tuoda OAndBackup vuoteen 202X ja osaksi Neo Applications-kokoelmaa. Sovellus on täysin kokonaan ohjelmoitu, tavoitteena on tehdä siitä vankka kaikkien laitteiden varmuuskopiointityökalu pitkään suunnitteilla olleilla, käyttöä helpottavilla ominaisuuksilla.
+\nYhteistyö ja kontribuutiot on aina tervetullutta.
+\n
+\n Tämänhetkinen toiminnallisuus:
+\n • Vaatii root-oikeudet, mahdollistaa yksittäisten sovellusten ja niiden datan varmuuskopioinnin.
+\n • Tukee myös useamman sovelluksen massavarmuuskopiointia ja -palautusta.
+\n • Järjestelmäsovellusten palauttaminen pitäisi olla mahdollista ilman uudelleenkäynnistystä.
+\n • Varmuuskopiot voidaan ajastaa rajoittamattomin ajastuksin ja mukautettavien varmuuskopiointilistoin.</string>
 </resources>

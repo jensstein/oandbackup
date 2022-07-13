@@ -24,9 +24,7 @@ import androidx.room.PrimaryKey
 class AppExtras(var packageName: String = "") {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
-
-    var customTags: Set<String> = setOf()
-
+    var customTags: MutableSet<String> = mutableSetOf()
     var note: String = ""
 
     override fun equals(other: Any?): Boolean {

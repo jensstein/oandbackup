@@ -1,14 +1,14 @@
 CHANGELOG
 =========
-8.0.2 (29.04.2021) 2 Commits
+8.0.2 (29.04.2022) 2 Commits
 ------------------
 - Fix: Auto-updating AppSheet package
 
-8.0.1 (29.04.2021) 2 Commits
+8.0.1 (29.04.2022) 2 Commits
 ------------------
 - Fix: Showing uninstalled apps
 
-8.0.0 (29.04.2021, a hot-fix for the unintended release of an alpha on F-Droid) +700 Commits
+8.0.0 (29.04.2022, a hot-fix for the unintended release of an alpha on F-Droid) +700 Commits
 ------------------
 NEW BACKUP STRUCTURE: Older backups (v6-v7) are experimentally supported. It's nevertheless preferred to use a new backup directory for a cleaner experience.
 NEW FILTER FORMAT: Requires resetting sort/filter manually.

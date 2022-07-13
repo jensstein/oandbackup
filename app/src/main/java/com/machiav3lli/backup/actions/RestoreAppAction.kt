@@ -53,7 +53,6 @@ import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.CryptoSetupException
 import com.machiav3lli.backup.utils.decryptStream
 import com.machiav3lli.backup.utils.getCryptoSalt
-import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import com.machiav3lli.backup.utils.getEncryptionPassword
 import com.machiav3lli.backup.utils.isAllowDowngrade
 import com.machiav3lli.backup.utils.isDisableVerification
@@ -163,7 +162,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             Timber.i("[${backup.packageName}] Skip restoring app's data; not part of the backup or restore mode")
         }
         if (backup.hasDevicesProtectedData && backupMode and MODE_DATA_DE == MODE_DATA_DE) {
-            Timber.i("[${backup.packageName}] Restoring app's protected data")
+            Timber.i("[${backup.packageName}] Restoring app's device-protected data")
             work?.setOperation("prt")
             restoreDeviceProtectedData(app, backup, backupDir, true)
         } else {
@@ -556,15 +555,14 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
 
                     var options = ""
                     options += " --exclude " + quote(exclude)
-                    if (context.getDefaultSharedPreferences()
-                            .getBoolean(PREFS_EXCLUDECACHE, true)
+                    if (OABX.prefFlag(PREFS_EXCLUDECACHE, true)
                     ) {
                         options += " --exclude " + quote(excludeCache)
                     }
                     var suOptions = "--mount-master"
 
                     val cmd =
-                        "su $suOptions -c sh $qTarScript extract $utilBoxQ ${options} ${
+                        "su $suOptions -c sh $qTarScript extract $utilBoxQ $options ${
                             quote(
                                 targetDir
                             )
@@ -591,7 +589,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                     if (errLines.isNotEmpty()) {
                         val errFiltered = errLines.joinToString("\n")
                         Timber.i(errFiltered)
-                        throw BaseAppAction.ScriptException(errFiltered)
+                        throw ScriptException(errFiltered)
                     }
                 }
             } catch (e: FileNotFoundException) {
@@ -660,26 +658,33 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     ) {
         try {
             val (uid, gid, con) = uidgidcon
+            val gidCache = "${gid}_cache"
             Timber.i("Getting user/group info and apply it recursively on $targetPath")
             // get the contents. lib for example must be owned by root
+            //TODO hg42 I think, lib is always a link
+            //TODO hg42 directories we exclude would keep their uidgidcon from before
+            //TODO hg42 this doesn't seem to be correct, unless the apk install would manage updating uidgidcon
             val dataContents: MutableList<String> =
                 mutableListOf(*shell.suGetDirectoryContents(RootFile(targetPath)))
-            // Maybe dirty: Remove what we don't wanted to have in the backup. Just don't touch it
-            dataContents.removeAll(DATA_EXCLUDED_BASENAMES)
-            dataContents.removeAll(DATA_EXCLUDED_CACHE_DIRS)
-            // calculate a list what must be updated
+            // Don't exclude any files from chown, as this may cause SELINUX issues (lost of data on restart)
+            // dataContents.removeAll(DATA_EXCLUDED_BASENAMES)
+            dataContents.removeAll(DATA_EXCLUDED_CACHE_DIRS)    // these are not excluded but processed differently! -> cacheTargets
+
+            // calculate a list what must be updated inside the directory
             val chownTargets = dataContents.map { s -> RootFile(targetPath, s).absolutePath }
-            if (chownTargets.isEmpty()) {
-                // surprise. No data?
-                Timber.i("No chown targets. Is this an app without any $dataType ? Doing nothing.")
-                return
-            }
+            val cacheTargets = DATA_EXCLUDED_CACHE_DIRS.map { s -> RootFile(targetPath, s).absolutePath }
             Timber.d("Changing owner and group of '$targetPath' to $uid:$gid and selinux context to $con")
             var command =
                 "$utilBoxQ chown $uid:$gid ${
                     quote(RootFile(targetPath).absolutePath)
-                } ; $utilBoxQ chown -R $uid:$gid ${
+                }"
+            if (chownTargets.isNotEmpty())
+                command += " ; $utilBoxQ chown -R $uid:$gid ${
                     quoteMultiple(chownTargets)
+                }"
+            if (cacheTargets.isNotEmpty())
+                command += " ; $utilBoxQ chown -R $uid:$gidCache ${
+                    quoteMultiple(cacheTargets)
                 }"
             command += if (con == "?") //TODO hg42: when does it happen?
                 " ; restorecon -RF -v ${quote(targetPath)}"
@@ -1032,12 +1037,12 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         return path.contains(packageName)
     }
 
-    class RestoreFailedException : BaseAppAction.AppActionFailedException {
+    class RestoreFailedException : AppActionFailedException {
         constructor(message: String?) : super(message)
         constructor(message: String?, cause: Throwable?) : super(message, cause)
     }
 
-    class PackageManagerDataIncompleteException(var seconds: Long) :
+    class PackageManagerDataIncompleteException(val seconds: Long) :
         Exception("PackageManager returned invalid data paths after trying $seconds seconds to retrieve them")
 
     companion object {

@@ -3,7 +3,10 @@ package com.machiav3lli.backup.ui.item
 import com.machiav3lli.backup.MAIN_FILTER_SPECIAL
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
+import com.machiav3lli.backup.MAIN_SORT_APPDATASIZE
+import com.machiav3lli.backup.MAIN_SORT_APPSIZE
 import com.machiav3lli.backup.MAIN_SORT_BACKUPDATE
+import com.machiav3lli.backup.MAIN_SORT_BACKUPSIZE
 import com.machiav3lli.backup.MAIN_SORT_DATASIZE
 import com.machiav3lli.backup.MAIN_SORT_LABEL
 import com.machiav3lli.backup.MAIN_SORT_PACKAGENAME
@@ -135,14 +138,32 @@ data class ChipItem(
         val PackageName = ChipItem(
             MAIN_SORT_PACKAGENAME,
             R.string.sortPackageName,
+            R.drawable.ic_empty,
+            R.color.ic_de_data
+        )
+        val AppSize = ChipItem(
+            MAIN_SORT_APPSIZE,
+            R.string.sortAppSize,
             R.drawable.ic_apk,
-            R.color.ic_exodus
+            R.color.ic_apk
         )
         val DataSize = ChipItem(
             MAIN_SORT_DATASIZE,
             R.string.sortDataSize,
-            R.drawable.ic_sizes,
+            R.drawable.ic_data,
             R.color.ic_data
+        )
+        val AppDataSize = ChipItem(
+            MAIN_SORT_APPDATASIZE,
+            R.string.sortAppDataSize,
+            R.drawable.ic_external_data,
+            R.color.ic_de_data_trans
+        )
+        val BackupSize = ChipItem(
+            MAIN_SORT_BACKUPSIZE,
+            R.string.sortBackupSize,
+            R.drawable.ic_sizes,
+            R.color.ic_ext_data
         )
         val BackupDate = ChipItem(
             MAIN_SORT_BACKUPDATE,

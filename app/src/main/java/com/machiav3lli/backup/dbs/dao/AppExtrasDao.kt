@@ -33,11 +33,11 @@ interface AppExtrasDao : BaseDao<AppExtras> {
     @get:Query("SELECT * FROM appextras ORDER BY packageName ASC")
     val liveAll: LiveData<MutableList<AppExtras>>
 
-    @Query("SELECT packageName FROM appextras WHERE packageName = :packageName")
-    fun get(packageName: String): MutableList<String>
+    @Query("SELECT * FROM appextras WHERE packageName = :packageName")
+    fun get(packageName: String): AppExtras
 
-    @Query("SELECT packageName FROM appextras WHERE packageName = :packageName")
-    fun getLive(packageName: String): LiveData<List<String>>
+    @Query("SELECT * FROM appextras WHERE packageName = :packageName")
+    fun getLive(packageName: String): LiveData<AppExtras>
 
     @Query("DELETE FROM appextras")
     fun deleteAll()

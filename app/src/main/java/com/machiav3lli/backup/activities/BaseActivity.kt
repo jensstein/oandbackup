@@ -19,7 +19,7 @@ package com.machiav3lli.backup.activities
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import com.machiav3lli.backup.ContextWraperX.Companion.wrap
+import com.machiav3lli.backup.ContextWrapperX.Companion.wrap
 
 abstract class BaseActivity : AppCompatActivity() {
 

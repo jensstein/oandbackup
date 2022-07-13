@@ -52,7 +52,6 @@ import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.encryptStream
 import com.machiav3lli.backup.utils.getCompressionLevel
 import com.machiav3lli.backup.utils.getCryptoSalt
-import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import com.machiav3lli.backup.utils.getEncryptionPassword
 import com.machiav3lli.backup.utils.initIv
 import com.machiav3lli.backup.utils.isCompressionEnabled
@@ -169,6 +168,9 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 if (context.isEncryptionEnabled()) {
                     backupBuilder.setCipherType(CIPHER_ALGORITHM)
                 }
+                StorageFile.cacheInvalidate(backupInstanceDir)
+                val backupSize = backupInstanceDir.listFiles().sumOf { it.size }
+                backupBuilder.setSize(backupSize)
 
                 backup = backupBuilder.createBackup()
 
@@ -335,7 +337,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             dirsInSource = dirsInSource
                 .filter { dir: ShellHandler.FileInfo -> !DATA_EXCLUDED_BASENAMES.contains(dir.filename) }
                 .toList()
-            if (context.getDefaultSharedPreferences().getBoolean(PREFS_EXCLUDECACHE, true)) {
+            if (OABX.prefFlag(PREFS_EXCLUDECACHE, true)) {
                 dirsInSource = dirsInSource
                     .filter { dir: ShellHandler.FileInfo -> !DATA_EXCLUDED_CACHE_DIRS.contains(dir.filename) }
                     .toList()
@@ -379,9 +381,9 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             val excludeCache = OABX.prefFlag(PREFS_EXCLUDECACHE, true)
             var allFilesToBackup =
                 shell.suGetDetailedDirectoryContents(sourcePath, true, sourcePath)
-                .filterNot { f: ShellHandler.FileInfo -> f.filename in DATA_EXCLUDED_BASENAMES } //TODO basenames! not all levels
-                .filterNot { f: ShellHandler.FileInfo -> f.filename in DATA_EXCLUDED_NAMES }
-                .filterNot { f: ShellHandler.FileInfo -> excludeCache && f.filename in DATA_EXCLUDED_CACHE_DIRS }
+                    .filterNot { f: ShellHandler.FileInfo -> f.filename in DATA_EXCLUDED_BASENAMES } //TODO basenames! not all levels
+                    .filterNot { f: ShellHandler.FileInfo -> f.filename in DATA_EXCLUDED_NAMES }
+                    .filterNot { f: ShellHandler.FileInfo -> excludeCache && f.filename in DATA_EXCLUDED_CACHE_DIRS }
             allFilesToBackup
         } catch (e: ShellCommandFailedException) {
             throw BackupFailedException("Could not list contents of $sourcePath", e)
@@ -498,10 +500,10 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
 
             var options = ""
             options += " --exclude ${quote(exclude)}"
-            if (context.getDefaultSharedPreferences().getBoolean(PREFS_EXCLUDECACHE, true)) {
+            if (OABX.prefFlag(PREFS_EXCLUDECACHE, true)) {
                 options += " --exclude ${quote(excludeCache)}"
             }
-            var suOptions = if(ShellHandler.isMountMaster) "--mount-master" else ""
+            var suOptions = if (ShellHandler.isMountMaster) "--mount-master" else ""
 
             val cmd = "su $suOptions -c sh ${quote(tarScript)} create $utilBoxQ $options ${
                 quote(sourcePath)

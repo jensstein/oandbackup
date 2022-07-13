@@ -34,7 +34,7 @@
     <string name="prefs_theme_system">Tema sistemului</string>
     <string name="prefs_oldbackups">Filtrează backupurile după vârstă</string>
     <string name="restoreProgress">Se restaurează…</string>
-    <string name="restoreSuccess">Restaurare completă</string>
+    <string name="restoreSuccess">Restaurare finalizată</string>
     <string name="restoreFailure">Eroare la restaurare</string>
     <string name="notInstalledModeDataWarning">Aplicația nu poate fi restaurată dintr-un backup fără APK</string>
     <string name="error_pmDataIncompleteException_dataRestoreFailed">Datele aplicației nu au fost restaurate.</string>
@@ -235,22 +235,33 @@
     <string name="exodus_report">Raport Exodus</string>
     <string name="launch_app">Lansează aplicația</string>
     <string name="forceKillMessage">Sigur vrei să forțezi oprirea aplicației\?</string>
-    <string name="backupSuccess">Backup complet</string>
-    <string name="batchSuccess">Operațiune completă</string>
-    <string name="batchFailure">Completată cu erori</string>
+    <string name="backupSuccess">Backup finalizat</string>
+    <string name="batchSuccess">Operațiune finalizată</string>
+    <string name="batchFailure">Finalizată cu erori</string>
     <string name="backupProgress">Se face backup…</string>
-    <string name="uninstallSuccess">Dezinstalare completă</string>
+    <string name="uninstallSuccess">Dezinstalare finalizată</string>
     <string name="usage_notes_title">Note privind utilizarea</string>
     <string name="main">Start</string>
     <string name="sortAsc">Ascendent</string>
     <string name="sortDesc">Descendent</string>
-    <string name="intro_welcome_message">Neo Backup este un fork al faimosului OAndBackup cu scopul de a-l aduce în 2020 și mai departe. Deocamdată, majoritatea funcționalităților și interfața de utilizare a aplicației sunt rescrise și unele sunt adăugate.
-\n Aplicația este încă în faza beta și se fac adesea multe modificări de bază. Așadar, te rugăm să citești cu atenție jurnalul modificărilor la fiecare nouă versiune.
-\n Toate tipurile de contribuții sunt binevenite, fie că este vorba de traduceri, idei, raportarea de buguri sau lucrul la cod.
+    <string name="intro_welcome_message">Neo Backup (fostul OAndBackupX) este un fork al OAndBackup cu scopul de a aduce OAndBackup în 202X și este parte din suita Neo Applications. Deocamdată, aplicația este deja rescrisă complet, urmând să o facem robustă și să adăugăm câteva caracteristici planificate îndelung care ar putea ușura fluxul de lucru de creare de backupuri/restaurare cu orice dispozitiv.
+\n Prin urmare, toate tipurile de contribuții sunt întotdeauna binevenite.
 \n
 \n Acum cu privire la funcționalitățile aplicației noastre:
 \n • Necesită root și îți permite să faci backupuri ale aplicațiilor individuale și ale datelor acestora.
 \n • Sunt suportate atât crearea de backupuri și restaurarea aplicațiilor individuale, una câte una, cât și crearea de backupuri și restaurarea în loturi a mai multor aplicații.
-\n • Restaurarea aplicațiilor de sistem ar trebui să fie posibilă fără a necesita o repornire ulterioară, dar totuși nu te sfătuim să o faci.
-\n • Backupurile pot fi planificate fără limită asupra numărului de planificări individuale și există posibilitatea de a crea liste personalizate unice.</string>
+\n • Restaurarea aplicațiilor de sistem ar trebui să fie posibilă fără a necesita o repornire ulterioară.
+\n • Backupurile pot fi planificate fără limită asupra numărului de planificări individuale și există posibilitatea de a crea liste personalizate din lista de aplicații instalate.</string>
+    <string name="prefs_loadingtoasts">Toasturi de încărcare</string>
+    <string name="prefs_loadingtoasts_summary">Afișează toasturi în timp ce se încarcă lista</string>
+    <string name="prefs_restorepermissions">Restaurează permisiunile</string>
+    <string name="error_updating_schedule_mode">Eroare la actualizarea %1$s din planificarea %2$d</string>
+    <string name="schedule_failed">Rularea planificării a eșuat</string>
+    <string name="prefs_devicelock">Blocarea dispozitivului</string>
+    <string name="prefs_devicelock_summary">Securizează aplicația cu datele de conectare ale dispozitivului</string>
+    <string name="prefs_biometriclock_summary">Securizează aplicația cu ajutorul blocării biometrice a dispozitivului (de ex., amprentă digitală, deblocare facială)</string>
+    <string name="prefs_biometriclock">Blocare biometrică</string>
+    <string name="dialog_unlock">Deblochează</string>
+    <string name="prefs_restorepermissions_summary">Restaurează permisiunile care au fost acordate aplicației la momentul backupului. Reține că unele permisiuni nu pot fi acordate în mod programatic și, prin urmare, fac ca restaurarea pachetului să eșueze în ansamblu, lucru pe care Neo Backup îl acoperă apoi restaurând pachetul fără permisiuni.</string>
+    <string name="prefs_acquirewakelock">Împiedică modul sleep</string>
 </resources>

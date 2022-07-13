@@ -56,13 +56,11 @@ import com.machiav3lli.backup.ALT_MODE_UNSET
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.item.ActionButton
-import com.machiav3lli.backup.ui.compose.item.ActionChip
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.ExpandableSearchAction
 import com.machiav3lli.backup.ui.compose.item.TopBar
@@ -115,7 +113,6 @@ class HomeFragment : NavigationFragment(),
         OABX.main?.viewModel?.isNeedRefresh?.observe(viewLifecycleOwner) {
             viewModel.refreshing.postValue(it)
         }
-
         packageList.observe(requireActivity()) { refreshView(it) }
     }
 
@@ -144,6 +141,15 @@ class HomeFragment : NavigationFragment(),
             BatchDialogFragment(true, selectedList, selectedListModes, this)
                 .show(requireActivity().supportFragmentManager, "DialogFragment")
         }
+    }
+
+    private fun onClickOpenAppSheet(item: Package) {
+        if (appSheet != null) appSheet?.dismissAllowingStateLoss()
+        appSheet = AppSheet(item)
+        appSheet?.showNow(
+            parentFragmentManager,
+            "Package ${item.packageName}"
+        )
     }
 
     override fun onConfirmed(
@@ -239,7 +245,7 @@ class HomeFragment : NavigationFragment(),
                             .padding(horizontal = 8.dp),
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        ActionChip(
+                        ElevatedActionButton(
                             icon = painterResource(id = R.drawable.ic_blocklist),
                             text = stringResource(id = R.string.sched_blocklist),
                             positive = false
@@ -262,7 +268,7 @@ class HomeFragment : NavigationFragment(),
                             }
                         }
                         Spacer(modifier = Modifier.weight(1f))
-                        ActionChip(
+                        ElevatedActionButton(
                             icon = painterResource(id = R.drawable.ic_filter),
                             text = stringResource(id = R.string.sort_and_filter),
                             positive = true
@@ -291,14 +297,7 @@ class HomeFragment : NavigationFragment(),
                             .weight(1f)
                             .fillMaxWidth(),
                         productsList = queriedList,
-                        onClick = { item ->
-                            if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                            appSheet = AppSheet(item, AppExtras(item.packageName))
-                            appSheet?.showNow(
-                                parentFragmentManager,
-                                "Package ${item.packageName}"
-                            )
-                        }
+                        onClick = ::onClickOpenAppSheet
                     )
                     AnimatedVisibility(visible = !updatedApps.isNullOrEmpty()) {
                         Column(
@@ -330,15 +329,9 @@ class HomeFragment : NavigationFragment(),
                                 }
                             }
                             AnimatedVisibility(visible = updatedVisible) {
-                                UpdatedPackageRecycler(productsList = updatedApps,
-                                    onClick = { item ->
-                                        if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                                        appSheet = AppSheet(item, AppExtras(item.packageName))
-                                        appSheet?.showNow(
-                                            parentFragmentManager,
-                                            "Package ${item.packageName}"
-                                        )
-                                    }
+                                UpdatedPackageRecycler(
+                                    productsList = updatedApps,
+                                    onClick = ::onClickOpenAppSheet
                                 )
                             }
                         }

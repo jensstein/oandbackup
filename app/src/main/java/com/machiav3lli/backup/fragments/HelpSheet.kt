@@ -124,9 +124,11 @@ class HelpSheet : BaseSheet() {
                         }
                     }
                 }
-            ) {
+            ) { paddingValues ->
                 LazyColumn(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(paddingValues),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(8.dp)
                 ) {
@@ -210,7 +212,6 @@ class HelpSheet : BaseSheet() {
     }
 
     private fun getUsageNotes(): String = try {
-        // binding.helpVersionName.text = requireActivity().packageManager.getPackageInfo(requireActivity().packageName, 0).versionName
         val stream = resources.openRawResource(R.raw.help)
         val htmlString = convertStreamToString(stream)
         stream.close()

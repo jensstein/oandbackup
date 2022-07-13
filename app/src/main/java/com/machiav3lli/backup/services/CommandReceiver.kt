@@ -10,7 +10,6 @@ import com.machiav3lli.backup.ACTION_SCHEDULE
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.utils.scheduleAlarm
-import com.machiav3lli.backup.utils.showToast
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -28,12 +27,12 @@ class CommandReceiver : //TODO hg42 how to maintain security?
             ACTION_CANCEL -> {
                 val batchName = intent.getStringExtra("name")
                 Timber.d("################################################### command intent cancel -------------> name=$batchName")
-                OABX.activity?.showToast("$command $batchName")
+                OABX.addInfoText("$command $batchName")
                 OABX.work.cancel(batchName)
             }
             ACTION_SCHEDULE -> {
                 intent.getStringExtra("name")?.let { name ->
-                    OABX.activity?.showToast("$command $name")
+                    OABX.addInfoText("$command $name")
                     Timber.d("################################################### command intent schedule -------------> name=$name")
                     Thread {
                         val now = System.currentTimeMillis()
@@ -53,7 +52,7 @@ class CommandReceiver : //TODO hg42 how to maintain security?
                     val time = intent.getStringExtra("time")
                     val setTime = time ?: SimpleDateFormat("HH:mm", Locale.getDefault())
                         .format(now + 120)
-                    OABX.activity?.showToast("$command $name $time -> $setTime")
+                    OABX.addInfoText("$command $name $time -> $setTime")
                     Timber.d("################################################### command intent schedule -------------> name=$name time=$time -> $setTime")
                     Thread {
                         val scheduleDao = ODatabase.getInstance(context).scheduleDao
@@ -72,7 +71,7 @@ class CommandReceiver : //TODO hg42 how to maintain security?
             }
             null -> {}
             else -> {
-                OABX.activity?.showToast("Command: command '$command'")
+                OABX.addInfoText("Command: command '$command'")
             }
         }
     }

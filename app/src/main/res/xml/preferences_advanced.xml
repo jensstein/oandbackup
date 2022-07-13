@@ -70,18 +70,6 @@
             android:title="usePackageCacheOnUpdate" />
 
         <androidx.preference.CheckBoxPreference
-            android:defaultValue="false"
-            android:key="useEnsureBackupListPrivate"
-            android:summary="use ensureBackupList only in package properties"
-            android:title="useEnsureBackupListPrivate" />
-
-        <androidx.preference.CheckBoxPreference
-            android:defaultValue="false"
-            android:key="useEnsureBackupListInComposable"
-            android:summary="use ensureBackupList in Composables (only when useEnsureBackupListPrivate disabled)"
-            android:title="useEnsureBackupListInComposable" />
-
-        <androidx.preference.CheckBoxPreference
             android:defaultValue="true"
             android:key="useColumnNameSAF"
             android:summary="eventually disable this, if you have problems with SAF storage"
@@ -198,12 +186,6 @@
             android:key="cacheFileLists"
             android:summary=""
             android:title="cacheFileLists" />
-
-        <androidx.preference.CheckBoxPreference
-            android:defaultValue="false"
-            android:key="cacheRootFileAttributes"
-            android:summary="cache some attributes like exists, isDirectory, isFile, saves many shell commands but may fail if external changes happen"
-            android:title="cacheRootFileAttributes" />
 
         <androidx.preference.SeekBarPreference
             android:defaultValue="1"

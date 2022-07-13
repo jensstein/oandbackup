@@ -1,20 +1,20 @@
 <html>
     <body>
-        <p><strong>Backup modes</strong>: An app can be backed up with only its apk, only its data or both. An app not currently installed can only be restored if the apk is present.
+        <p><strong>Modalità di Salvataggio</strong>: Un'applicazione può essere salvata con solo il suo apk, con solo i suoi dati o entrambi. Un'applicazione non installata al momento puà essere ripristinata solo se l'apk è presente. Tre tipi speciali di dati sono supportati oltre ai dati principali: dati protetti dal dispositivo, dati esterni e dati obb.
         </p>
-        <p><strong>Delete backup</strong>: Deletes the backup files for the chosen app.
+        <p><strong>Elimina salvataggio</strong>: Elimina i files di salvataggio di uno specifico salvataggio. Mentre "cancella salvataggi" cancella tutti i salvataggi dell'applicazione scelta.
         </p>
-        <p><strong>Uninstall</strong>: Somewhat more aggressive than a normal uninstall. In addition to doing a normal uninstall via android commands, uninstalling from OAndBackupX deletes files the app might have left over in /data/app-lib/.
+        <p><strong>Disinstalla</strong>: Un po' più aggressivo di un normale disinstalla. Inoltre a fare una disinstallazione normale tramite comandi android, disinstallare da OAndBackupX elimina i files che l'applicazione potrebbe aver lasciato residui in /data/app-lib/.
         </p>
-        <p><strong>Enable / disable</strong>: utilizza lo script di Android "pm" per abilitare o disabilitare un'app. La disabilitazione di un'app la rimuove dalla normale interfaccia utente senza disinstallarla. Può essere utilizzato per abilitare o disabilitare un'app per più utenti alla volta (se il dispositivo ha più utenti abilitati). Gli utenti vengono identificati con un id. 0 è il primo utente (proprietario).
+        <p><strong>Abilita/ disabilita</strong>: utilizza lo script di Android `pm` per abilitare o disabilitare un'app. La disabilitazione di un'app la rimuove dalla normale interfaccia utente senza disinstallarla. Può essere utilizzato per abilitare o disabilitare un'app per più utenti alla volta (se il dispositivo ha più utenti abilitati). Gli utenti vengono identificati con un ID. Per esempio 0 è il primo utente (proprietario) 10 è solitamente il profilo di lavoro.
         </p>
-        <p><strong>Multiple users</strong>: Multi-user is still somewhat experimental but should work. When restoring in a multi-user scenario, `pm install -r $apk` gets called and subsequently the app is disabled for every user who has the app listed in /data/system/user/$user/package-restrictions.xml (unless the app is listed as enabled="1"). <br /> This can create problems for users installing the same app at some later point, but is necessary to prevent the app from being installed to all users at the same time. The context menu has an option to enable or disable apps which can be used if other users become unable to use a specific app due to disabling on restore. <br /> Enabling and disabling only works after an initial install (not necessarily from OAndBackupx) or restore of the app.
+        <p><strong>Utenti Multipi</strong>: Multi-utente è ancora un po' sperimentale ma dovrebbe funzionare. Abilitare e disabilitare funziona solo dopo un'inziale installazione (non neccessariamente da OAndBackupx) o da un ripristino dell'applicazione.
         </p>
-        <p><strong>App prive di sistema</strong>: Il backup e il ripristino delle app prive di sistema installate come moduli Magisk non sono supportati e provarlo potrebbe portare a un errore di sistema e costringerti a formattare e installare da zero.
+        <p><strong>App prive di sistema</strong>: Il salvataggio e il ripristino delle app prive di sistema installate come moduli Magisk non sono supportati e provarlo potrebbe portare a un errore di sistema e costringerti a formattare e installare da zero.
         </p>
-        <p><strong>Navigazione</strong>: La barra di navigazione ha "Impostazioni", "Home", "Backup batch", "Ripristino batch" e "Backup pianificati" (in quest'ordine). Il numero di app aggiornate dopo l'ultimo backup verrà presentato come una notifica sul pulsante "Home".
+        <p><strong>Navigazione</strong>: La barra di navigazione ha "Impostazioni", "Home", "Salavataggi di gruppo", "Ripristino di gruppo" e "Salavataggi programmati" (in quest'ordine). Il numero di app aggiornate dopo l'ultimo backup verrà presentato come una notifica sul pulsante "Home".
         </p>
-        <p><strong>Apps che usano Keystore</strong>: Android ha una memoria crittografata per i dati sensibili. Le app che ne fanno uso per memorizzare i dati di accesso o alcune chiavi per il suo funzionamento non possono essere ripristinate correttamente. Due esempi di tali app sono Signal ed Element (Riot).
+        <p><strong>Apps che usano Keystore</strong>: Android ha una memoria crittografata per i dati sensibili. Le applicazioni che ne fanno uso per memorizzare i dati di accesso o alcune chiavi per il suo funzionamento non possono essere ripristinate correttamente. Due esempi di tali applicazioni sono Signal ed Element (Riot).
         </p>
     </body>
 </html>

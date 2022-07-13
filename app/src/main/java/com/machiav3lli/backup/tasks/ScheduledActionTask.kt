@@ -23,6 +23,7 @@ import com.machiav3lli.backup.MAIN_FILTER_SPECIAL
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
 import com.machiav3lli.backup.MODE_UNSET
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
 import com.machiav3lli.backup.PREFS_OLDBACKUPS
 import com.machiav3lli.backup.SPECIAL_FILTER_DISABLED
@@ -35,7 +36,6 @@ import com.machiav3lli.backup.handler.getInstalledPackageList
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import timber.log.Timber
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -93,7 +93,7 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
                     || (if (filter and MAIN_FILTER_USER == MAIN_FILTER_USER) !it.isSystem else false)
                     || (if (filter and MAIN_FILTER_SPECIAL == MAIN_FILTER_SPECIAL) it.isSpecial else false)
         }
-        val days = context.getDefaultSharedPreferences().getInt(PREFS_OLDBACKUPS, 7)
+        val days = OABX.prefInt(PREFS_OLDBACKUPS, 7)
         val specialPredicate: (Package) -> Boolean = when (specialFilter) {
             SPECIAL_FILTER_LAUNCHABLE -> { packageItem: Package ->
                 launchableAppsList.contains(packageItem.packageName) &&

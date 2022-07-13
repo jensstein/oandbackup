@@ -13,7 +13,7 @@ class AssetHandler(context: Context) {
     val VERSION_FILE = "__version__"
     val ASSETS_SUBDIR = "assets"
 
-    var directory : File
+    var directory: File
         private set
 
     init {
@@ -35,12 +35,12 @@ class AssetHandler(context: Context) {
                 File(directory, ShellHandler.EXCLUDE_FILE)
                     .writeText(
                         (BaseAppAction.DATA_EXCLUDED_BASENAMES.map { "./$it" } + BaseAppAction.DATA_EXCLUDED_NAMES)
-                            .map { it + "\n" }.joinToString("")
+                            .joinToString("") { it + "\n" }
                     )
                 File(directory, ShellHandler.EXCLUDE_CACHE_FILE)
                     .writeText(
                         BaseAppAction.DATA_EXCLUDED_CACHE_DIRS.map { "./$it" }
-                            .map { it + "\n" }.joinToString("")
+                            .joinToString("") { it + "\n" }
                     )
                 // validate with version file if completed
                 File(directory, VERSION_FILE).writeText(appVersion)

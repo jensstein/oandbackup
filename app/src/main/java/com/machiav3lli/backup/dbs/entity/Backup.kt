@@ -64,7 +64,9 @@ data class Backup constructor(
     var cipherType: String? = null,
     var iv: ByteArray?,
     var cpuArch: String?,
-    var permissions: List<String> = listOf()
+    var permissions: List<String> = listOf(),
+    var size: Long = 0,
+    var note: String = ""
 ) {
     private val backupFolderNameOld
         get() = String.format(
@@ -92,7 +94,8 @@ data class Backup constructor(
         compressionType: String?,
         cipherType: String?,
         iv: ByteArray?,
-        cpuArch: String?
+        cpuArch: String?,
+        size: Long
     ) : this(
         backupVersionCode = BuildConfig.MAJOR * 1000 + BuildConfig.MINOR,
         packageName = pi.packageName,
@@ -119,7 +122,8 @@ data class Backup constructor(
         cipherType = cipherType,
         iv = iv,
         cpuArch = cpuArch,
-        permissions = pi.grantedPermissions
+        permissions = pi.grantedPermissions,
+        size = size
     )
 
     constructor(
@@ -135,7 +139,8 @@ data class Backup constructor(
         cipherType: String?,
         iv: ByteArray?,
         cpuArch: String?,
-        permissions: List<String>
+        permissions: List<String>,
+        size: Long
     ) : this(
         backupVersionCode = BuildConfig.MAJOR * 1000 + BuildConfig.MINOR,
         packageName = base.packageName,
@@ -157,7 +162,8 @@ data class Backup constructor(
         cipherType = cipherType,
         iv = iv,
         cpuArch = cpuArch,
-        permissions = permissions
+        permissions = permissions,
+        size = size
     )
 
     val isCompressed: Boolean
@@ -167,8 +173,7 @@ data class Backup constructor(
         get() = cipherType != null && cipherType?.isNotEmpty() == true
 
     fun getBackupInstanceFolder(appBackupDir: StorageFile?): StorageFile? =
-        appBackupDir?.findFile(backupFolderName) ?:
-        appBackupDir?.findFile(backupFolderNameOld)
+        appBackupDir?.findFile(backupFolderName) ?: appBackupDir?.findFile(backupFolderNameOld)
 
     fun toAppInfo() = AppInfo(
         packageName,
@@ -195,6 +200,7 @@ data class Backup constructor(
             ", iv='" + iv + '\'' +
             ", cpuArch='" + cpuArch + '\'' +
             ", backupVersionCode='" + backupVersionCode + '\'' +
+            ", size=" + size +
             ", permissions='" + permissions + '\'' +
             '}'
 
@@ -265,15 +271,16 @@ data class Backup constructor(
     ) : Exception(message, cause)
 
     companion object {
+
         fun fromJson(json: String): Backup {
             Timber.d("json: $json")
-            return Json.decodeFromString<Backup>(json)
+            return Json.decodeFromString(json)
         }
 
         fun createFrom(propertiesFile: StorageFile): Backup? {
             var json = ""
             try {
-                json = propertiesFile.inputStream()!!.reader().readText()
+                json = propertiesFile.readText()
                 return fromJson(json)
             } catch (e: FileNotFoundException) {
                 throw BrokenBackupException(

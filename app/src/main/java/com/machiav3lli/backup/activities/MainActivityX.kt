@@ -27,23 +27,23 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.OABX.Companion.addInfoText
 import com.machiav3lli.backup.PREFS_CATCHUNCAUGHT
 import com.machiav3lli.backup.PREFS_MAXCRASHLINES
 import com.machiav3lli.backup.PREFS_SKIPPEDENCRYPTION
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.databinding.ActivityMainXBinding
 import com.machiav3lli.backup.dbs.ODatabase
-import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.fragments.ProgressViewController
 import com.machiav3lli.backup.fragments.RefreshViewController
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.SortFilterModel
+import com.machiav3lli.backup.utils.FileUtils.invalidateBackupLocation
 import com.machiav3lli.backup.utils.getPrivateSharedPrefs
 import com.machiav3lli.backup.utils.isEncryptionEnabled
 import com.machiav3lli.backup.utils.isRememberFiltering
@@ -51,13 +51,11 @@ import com.machiav3lli.backup.utils.itemIdToOrder
 import com.machiav3lli.backup.utils.navigateLeft
 import com.machiav3lli.backup.utils.navigateRight
 import com.machiav3lli.backup.utils.setCustomTheme
-import com.machiav3lli.backup.utils.showToast
 import com.machiav3lli.backup.utils.sortFilterModel
 import com.machiav3lli.backup.viewmodels.MainViewModel
 import com.topjohnwu.superuser.Shell
 import timber.log.Timber
 import kotlin.system.exitProcess
-
 
 class MainActivityX : BaseActivity() {
 
@@ -144,7 +142,9 @@ class MainActivityX : BaseActivity() {
         viewModel.backupsMap.observe(this) { }
         viewModel.isNeedRefresh.observe(this) {
             if (it) {
-                viewModel.refreshList()
+                if (viewModel.refreshing.value == 0) {
+                    invalidateBackupLocation()
+                }
             }
         }
 
@@ -190,13 +190,12 @@ class MainActivityX : BaseActivity() {
             null -> {}
             "android.intent.action.MAIN" -> {}
             else -> {
-                showToast("Main: command '$command'")
+                addInfoText("Main: command '$command'")
             }
         }
         return false
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     private fun setupNavigation() {
         try {
             val navHostFragment =
@@ -248,10 +247,6 @@ class MainActivityX : BaseActivity() {
 
     fun updatePackage(packageName: String) {
         viewModel.updatePackage(packageName)
-    }
-
-    fun updateAppExtras(appExtras: AppExtras) {
-        viewModel.updateExtras(appExtras)
     }
 
     fun setRefreshViewController(refreshViewController: RefreshViewController) {

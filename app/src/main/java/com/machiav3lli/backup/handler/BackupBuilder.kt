@@ -41,6 +41,7 @@ class BackupBuilder(
     private var compressionType: String? = null
     private var cipherType: String? = null
     private val cpuArch: String = Build.SUPPORTED_ABIS[0]
+    private var size: Long = 0L
     val backupPath = ensureBackupPath(backupRoot)
 
     private fun ensureBackupPath(backupRoot: StorageFile): StorageFile {
@@ -86,6 +87,10 @@ class BackupBuilder(
         this.cipherType = cipherType
     }
 
+    fun setSize(size: Long) {
+        this.size = size
+    }
+
     fun createBackup(): Backup {
         return Backup(
             base = packageInfo,
@@ -100,7 +105,8 @@ class BackupBuilder(
             cipherType = cipherType,
             iv = iv,
             cpuArch = cpuArch,
-            permissions = if (packageInfo is AppInfo) packageInfo.permissions else emptyList()
+            permissions = if (packageInfo is AppInfo) packageInfo.permissions else emptyList(),
+            size = size
         )
     }
 

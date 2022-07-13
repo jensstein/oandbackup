@@ -26,76 +26,58 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.machiav3lli.backup.databinding.FragmentComposeBinding
 import com.machiav3lli.backup.dbs.ODatabase
-import com.machiav3lli.backup.dbs.entity.Schedule
-import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.ui.compose.recycler.ExportedScheduleRecycler
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.viewmodels.ExportsViewModel
 
 class ExportsFragment : Fragment() {
-    private lateinit var binding: FragmentComposeBinding
     private lateinit var viewModel: ExportsViewModel
 
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         super.onCreate(savedInstanceState)
-        binding = FragmentComposeBinding.inflate(inflater, container, false)
-
         val dataSource = ODatabase.getInstance(requireContext()).scheduleDao
         val viewModelFactory = ExportsViewModel.Factory(dataSource, requireActivity().application)
         viewModel = ViewModelProvider(this, viewModelFactory)[ExportsViewModel::class.java]
 
-        viewModel.refreshActive.observe(viewLifecycleOwner) {
-            //binding.refreshLayout.isRefreshing = it
+        return ComposeView(requireContext()).apply {
+            setContent { ExportsPage() }
         }
-        viewModel.refreshNow.observe(viewLifecycleOwner) { if (it) refresh() }
-        viewModel.exportsList.observe(viewLifecycleOwner, ::redrawPage)
-
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupViews()
     }
 
     override fun onResume() {
         super.onResume()
-        if (viewModel.refreshNow.value == true) viewModel.refreshList()
-    }
-
-    private fun setupViews() {
-    }
-
-    fun refresh() {
-        viewModel.finishRefresh()
+        viewModel.refreshList()
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
-    fun redrawPage(list: MutableList<Pair<Schedule, StorageFile>>) {
-        binding.composeView.setContent {
-            AppTheme(
-                darkTheme = isSystemInDarkTheme()
-            ) {
-                Scaffold { paddingValues ->
-                    ExportedScheduleRecycler(
-                        modifier = Modifier
-                            .padding(paddingValues)
-                            .fillMaxSize(),
-                        productsList = list,
-                        onImport = { viewModel.importSchedule(it) },
-                        onDelete = { viewModel.deleteExport(it) }
-                    )
-                }
+    @Composable
+    fun ExportsPage() {
+        val exports by viewModel.exportsList.observeAsState()
+
+        AppTheme(
+            darkTheme = isSystemInDarkTheme()
+        ) {
+            Scaffold { paddingValues ->
+                ExportedScheduleRecycler(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .fillMaxSize(),
+                    productsList = exports,
+                    onImport = { viewModel.importSchedule(it) },
+                    onDelete = { viewModel.deleteExport(it) }
+                )
             }
         }
     }

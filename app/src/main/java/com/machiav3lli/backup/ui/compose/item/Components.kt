@@ -4,8 +4,14 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,8 +24,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AssistChip
-import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -42,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -98,7 +103,7 @@ fun ButtonIcon(
 
 @Composable
 fun PackageIcon(
-    item: Package,
+    item: Package?,
     imageData: Any
 ) {
     AsyncImage(
@@ -115,10 +120,10 @@ fun PackageIcon(
 
 
 @Composable
-fun placeholderIconPainter(item: Package) = painterResource(
+fun placeholderIconPainter(item: Package?) = painterResource(
     when {
-        item.isSpecial -> R.drawable.ic_placeholder_special
-        item.isSystem -> R.drawable.ic_placeholder_system
+        item?.isSpecial == true -> R.drawable.ic_placeholder_special
+        item?.isSystem == true -> R.drawable.ic_placeholder_system
         else -> R.drawable.ic_placeholder_user
     }
 )
@@ -162,14 +167,26 @@ fun ElevatedActionButton(
     positive: Boolean = true,
     icon: Painter? = null,
     fullWidth: Boolean = false,
+    enabled: Boolean = true,
+    colored: Boolean = true,
+    withText: Boolean = true,
     onClick: () -> Unit
 ) {
     ElevatedButton(
         modifier = modifier,
         colors = ButtonDefaults.elevatedButtonColors(
-            contentColor = if (positive) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer,
-            containerColor = if (positive) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer
+            contentColor = when {
+                !colored -> MaterialTheme.colorScheme.onSurface
+                positive -> MaterialTheme.colorScheme.onPrimaryContainer
+                else -> MaterialTheme.colorScheme.onSecondaryContainer
+            },
+            containerColor = when {
+                !colored -> MaterialTheme.colorScheme.surface
+                positive -> MaterialTheme.colorScheme.primaryContainer
+                else -> MaterialTheme.colorScheme.secondaryContainer
+            }
         ),
+        enabled = enabled,
         onClick = onClick
     ) {
         if (icon != null) {
@@ -179,15 +196,16 @@ fun ElevatedActionButton(
                 contentDescription = text
             )
         }
-        Text(
-            modifier = when {
-                fullWidth -> Modifier.weight(1f)
-                else -> Modifier.padding(start = 8.dp)
-            },
-            text = text,
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleSmall
-        )
+        if (withText)
+            Text(
+                modifier = when {
+                    fullWidth -> Modifier.weight(1f)
+                    else -> Modifier.padding(start = 8.dp)
+                },
+                text = text,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleSmall
+            )
     }
 }
 
@@ -264,76 +282,6 @@ fun RoundButton(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ActionChip(
-    modifier: Modifier = Modifier,
-    icon: Painter,
-    text: String,
-    withText: Boolean = true,
-    positive: Boolean = true,
-    colored: Boolean = true,
-    enabled: Boolean = true,
-    fullWidth: Boolean = false,
-    onClick: () -> Unit
-) {
-    AssistChip(
-        modifier = modifier.padding(vertical = 8.dp, horizontal = 4.dp),
-        border = AssistChipDefaults.assistChipBorder(
-            borderColor = Color.Transparent,
-            borderWidth = 0.dp
-        ),
-        shape = MaterialTheme.shapes.large,
-        colors = AssistChipDefaults.assistChipColors(
-            containerColor = when {
-                positive && colored -> MaterialTheme.colorScheme.primaryContainer
-                colored -> MaterialTheme.colorScheme.secondaryContainer
-                else -> MaterialTheme.colorScheme.surface
-            },
-            disabledContainerColor = MaterialTheme.colorScheme.background,
-            labelColor = when {
-                positive && colored -> MaterialTheme.colorScheme.onPrimaryContainer
-                colored -> MaterialTheme.colorScheme.onSecondaryContainer
-                else -> MaterialTheme.colorScheme.onSurface
-            },
-            disabledLabelColor = MaterialTheme.colorScheme.surface,
-            leadingIconContentColor = when {
-                positive && colored -> MaterialTheme.colorScheme.onPrimaryContainer
-                colored -> MaterialTheme.colorScheme.onSecondaryContainer
-                else -> MaterialTheme.colorScheme.onSurface
-            },
-            disabledLeadingIconContentColor = MaterialTheme.colorScheme.surface
-        ),
-        enabled = enabled,
-        onClick = onClick,
-        leadingIcon = {
-            Icon(
-                modifier = Modifier.size(24.dp),
-                painter = icon,
-                contentDescription = text
-            )
-        },
-        label = {
-            Row(
-                Modifier,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (withText) Text(
-                    modifier = when {
-                        fullWidth -> Modifier.weight(1f)
-                        else -> Modifier.padding(start = 8.dp)
-                    },
-                    text = text,
-                    textAlign = TextAlign.Center,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.titleSmall
-                )
-            }
-        },
-    )
-}
-
 @Composable
 fun StateChip(
     modifier: Modifier = Modifier,
@@ -371,6 +319,8 @@ fun CheckChip(
     modifier: Modifier = Modifier,
     onCheckedChange: (Boolean) -> Unit
 ) {
+    val (checked, check) = remember { mutableStateOf(checked) }
+
     FilterChip(
         modifier = modifier.padding(vertical = 8.dp, horizontal = 4.dp),
         selected = checked,
@@ -385,7 +335,10 @@ fun CheckChip(
         selectedIcon = {
             ButtonIcon(R.drawable.ic_all, R.string.enabled)
         },
-        onClick = { onCheckedChange(!checked) },
+        onClick = {
+            onCheckedChange(!checked)
+            check(!checked)
+        },
         label = {
             Row {
                 Text(text = if (checked) stringResource(id = checkedTextId) else stringResource(id = textId))
@@ -488,25 +441,60 @@ fun SwitchChip(
     }
 }
 
+
+@Composable
+fun StatefulAnimatedVisibility(
+    currentState: Boolean = false,
+    enterPositive: EnterTransition,
+    exitPositive: ExitTransition,
+    enterNegative: EnterTransition,
+    exitNegative: ExitTransition,
+    expandedView: @Composable (AnimatedVisibilityScope.() -> Unit),
+    collapsedView: @Composable (AnimatedVisibilityScope.() -> Unit)
+) {
+    AnimatedVisibility(
+        visible = !currentState,
+        enter = enterNegative,
+        exit = exitNegative,
+        content = collapsedView
+    )
+    AnimatedVisibility(
+        visible = currentState,
+        enter = enterPositive,
+        exit = exitPositive,
+        content = expandedView
+    )
+}
+
 @Composable
 fun HorizontalExpandingVisibility(
     expanded: Boolean = false,
     expandedView: @Composable (AnimatedVisibilityScope.() -> Unit),
     collapsedView: @Composable (AnimatedVisibilityScope.() -> Unit)
-) {
-    AnimatedVisibility(
-        visible = !expanded,
-        enter = expandHorizontally(expandFrom = Alignment.Start),
-        exit = shrinkHorizontally(shrinkTowards = Alignment.Start),
-        content = collapsedView
-    )
-    AnimatedVisibility(
-        visible = expanded,
-        enter = expandHorizontally(expandFrom = Alignment.End),
-        exit = shrinkHorizontally(shrinkTowards = Alignment.End),
-        content = expandedView
-    )
-}
+) = StatefulAnimatedVisibility(
+    currentState = expanded,
+    enterPositive = expandHorizontally(expandFrom = Alignment.End),
+    exitPositive = shrinkHorizontally(shrinkTowards = Alignment.End),
+    enterNegative = expandHorizontally(expandFrom = Alignment.Start),
+    exitNegative = shrinkHorizontally(shrinkTowards = Alignment.Start),
+    collapsedView = collapsedView,
+    expandedView = expandedView
+)
+
+@Composable
+fun VerticalFadingVisibility(
+    expanded: Boolean = false,
+    expandedView: @Composable (AnimatedVisibilityScope.() -> Unit),
+    collapsedView: @Composable (AnimatedVisibilityScope.() -> Unit)
+) = StatefulAnimatedVisibility(
+    currentState = expanded,
+    enterPositive = fadeIn() + expandIn(expandFrom = Alignment.BottomCenter),
+    exitPositive = fadeOut() + shrinkOut(shrinkTowards = Alignment.BottomCenter),
+    enterNegative = fadeIn() + expandIn(expandFrom = Alignment.TopCenter),
+    exitNegative = fadeOut() + shrinkOut(shrinkTowards = Alignment.TopCenter),
+    collapsedView = collapsedView,
+    expandedView = expandedView
+)
 
 @Composable
 fun PackageLabels(
@@ -562,6 +550,7 @@ fun PackageLabels(
         },
         R.string.app_s_type_title,
         tint = when {
+            item.isDisabled -> Gray
             item.isSpecial -> Special
             item.isSystem -> System
             else -> User

@@ -81,8 +81,6 @@ const val PREFS_ALLOWDOWNGRADE = "allowDowngrade"
 const val PREFS_CANCELONSTART = "cancelOnStart"
 const val PREFS_CACHEPACKAGES = "cachePackages"
 const val PREFS_CACHEONUPDATE = "usePackageCacheOnUpdate"
-const val PREFS_ENSUREBACKUPSPRIVATE = "useEnsureBackupListPrivate"
-const val PREFS_ENSUREBACKUPSINCOMPOSE = "useEnsureBackupListInComposable"
 const val PREFS_COLUMNNAMESAF = "useColumnNameSAF"
 const val PREFS_USEALARMCLOCK = "useAlarmClock"
 const val PREFS_USEEXACTRALARM = "useExactAlarm"
@@ -102,8 +100,7 @@ const val PREFS_CATCHUNCAUGHT = "catchUncaughtException"
 const val PREFS_MAXCRASHLINES = "maxCrashLines"
 const val PREFS_INVALIDATESELECTIVE = "invalidateSelective"
 const val PREFS_CACHEURIS = "cacheUris"
-const val PREFS_CACHEFILELISTS = "cacheRootFileAttributes"
-const val PREFS_CACHEROOTFILEATTRIBUTES = "cacheRootFileAttributes"
+const val PREFS_CACHEFILELISTS = "cacheFileLists"
 const val PREFS_MAXRETRIES = "maxRetriesPerPackage"
 const val PREFS_REFRESHDELAY = "delayBeforeRefreshAppInfo"
 const val PREFS_REFRESHTIMEOUT = "refreshAppInfoTimeout"
@@ -145,13 +142,19 @@ val mainBackupModeChipItems: List<ChipItem> =
 
 const val MAIN_SORT_LABEL = 0
 const val MAIN_SORT_PACKAGENAME = 1
-const val MAIN_SORT_DATASIZE = 2
-const val MAIN_SORT_BACKUPDATE = 3
+const val MAIN_SORT_APPSIZE = 2
+const val MAIN_SORT_DATASIZE = 3
+const val MAIN_SORT_APPDATASIZE = 4
+const val MAIN_SORT_BACKUPSIZE = 5
+const val MAIN_SORT_BACKUPDATE = 6
 
 val sortChipItems = listOf(
     ChipItem.Label,
     ChipItem.PackageName,
+    ChipItem.AppSize,
     ChipItem.DataSize,
+    ChipItem.AppDataSize,
+    ChipItem.BackupSize,
     ChipItem.BackupDate
 )
 

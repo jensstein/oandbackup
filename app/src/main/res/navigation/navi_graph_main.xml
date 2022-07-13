@@ -1,26 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     app:startDestination="@id/homeFragment">
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.machiav3lli.backup.fragments.HomeFragment"
-        tools:layout="@layout/fragment_compose" />
+        android:name="com.machiav3lli.backup.fragments.HomeFragment" />
 
     <fragment
         android:id="@+id/backupFragment"
-        android:name="com.machiav3lli.backup.fragments.BatchFragment$BackupFragment"
-        tools:layout="@layout/fragment_compose" />
+        android:name="com.machiav3lli.backup.fragments.BatchFragment$BackupFragment" />
 
     <fragment
         android:id="@+id/restoreFragment"
-        android:name="com.machiav3lli.backup.fragments.BatchFragment$RestoreFragment"
-        tools:layout="@layout/fragment_compose" />
+        android:name="com.machiav3lli.backup.fragments.BatchFragment$RestoreFragment" />
 
     <fragment
         android:id="@+id/schedulerFragment"
-        android:name="com.machiav3lli.backup.fragments.SchedulerFragment"
-        tools:layout="@layout/fragment_compose" />
+        android:name="com.machiav3lli.backup.fragments.SchedulerFragment" />
 </navigation>

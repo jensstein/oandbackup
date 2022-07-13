@@ -58,7 +58,7 @@
     <CheckBoxPreference
         android:defaultValue="false"
         android:icon="@drawable/ic_label"
-        android:key="loadingToasts"
+        android:key="showInfos"
         android:summary="@string/prefs_loadingtoasts_summary"
         android:title="@string/prefs_loadingtoasts" />
 

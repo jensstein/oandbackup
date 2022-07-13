@@ -66,8 +66,8 @@ abstract class BaseAppAction protected constructor(
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
             val script = ShellHandler.findAssetFile("package.sh").toString()
             Timber.w("---------------------------------------- Preprocess package $packageName uid ${applicationInfo.uid}")
-            if (applicationInfo.uid < 10000) { // exclude several system users, e.g. system, radio
-                Timber.w("Ignore processes of system user UID < 10000")
+            if (applicationInfo.uid < android.os.Process.FIRST_APPLICATION_UID) { // exclude several system users, e.g. system, radio
+                Timber.w("Ignore processes of system user UID < ${android.os.Process.FIRST_APPLICATION_UID}")
                 return
             }
             if (!packageName.matches(doNotStop)) { // will stop most activity, needs a good blacklist
@@ -92,8 +92,8 @@ abstract class BaseAppAction protected constructor(
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
             val script = ShellHandler.findAssetFile("package.sh").toString()
             Timber.w("........................................ Postprocess package $packageName uid ${applicationInfo.uid}")
-            if (applicationInfo.uid < 10000) { // exclude several system users, e.g. system, radio
-                Timber.w("Ignore processes of system user UID < 10000")
+            if (applicationInfo.uid < android.os.Process.FIRST_APPLICATION_UID) { // exclude several system users, e.g. system, radio
+                Timber.w("Ignore processes of system user UID < ${android.os.Process.FIRST_APPLICATION_UID}")
                 return
             }
             stopped[packageName]?.let { pids ->
@@ -141,44 +141,38 @@ abstract class BaseAppAction protected constructor(
             "lib",      //TODO hg42 what about architecture dependent names? or may be application specific? lib* ???
             "no_backup" //TODO hg42 use Context.getNoBackupFilesDir() ??? tricky, because it's an absolute path (remove common part...)
         )
-        val DATA_EXCLUDED_NAMES = listOf(
+        val DATA_EXCLUDED_NAMES = listOfNotNull(
             "com.google.android.gms.appid.xml",
             "cache",
             "trash",
             ".thumbnails",
             if (utilBox.hasBugDotDotDir) "..*" else null
-        ).filterNotNull()
+        )
 
         val ignoredPackages = ("""(?x)
-            # complete matches
               android
-            # pattern matches
-            | .*\.android\.shell
-            | .*\.android\.systemui
-            | .*\.android\.externalstorage
-            | .*\.android\.mtp
-            | .*\.android\.providers\.downloads\.ui
-            | .*\.android\.gms
-            | .*\.android\.gsf
-            | .*\.android\.providers\.media\b.*
-            # program values
+            | ^com\.(google\.)?android\.shell
+            | ^com\.(google\.)?android\.systemui
+            | ^com\.(google\.)?android\.externalstorage
+            | ^com\.(google\.)?android\.mtp
+            | ^com\.(google\.)?android\.providers\.downloads\.ui
+            | ^com\.(google\.)?android\.gms
+            | ^com\.(google\.)?android\.gsf
+            | ^com\.(google\.)?android\.providers\.media\b.*
             | """ + Regex.escape(BuildConfig.APPLICATION_ID) + """
             """).toRegex()
 
         val doNotStop = ("""(?x)
-            # complete matches
               android
-            # pattern matches
-            | .*\.android\.shell
-            | .*\.android\.systemui
-            | .*\.android\.externalstorage
-            | .*\.android\.mtp
-            | .*\.android\.providers\.downloads\.ui
-            | .*\.android\.gms
-            | .*\.android\.gsf
-            | .*\.android\.providers\.media\b.*
-            | .*\.android\.providers\..*
-            # program values
+            | ^com\.(google\.)?android\.shell
+            | ^com\.(google\.)?android\.systemui
+            | ^com\.(google\.)?android\.externalstorage
+            | ^com\.(google\.)?android\.mtp
+            | ^com\.(google\.)?android\.providers\.downloads\.ui
+            | ^com\.(google\.)?android\.gms
+            | ^com\.(google\.)?android\.gsf
+            | ^com\.(google\.)?android\.providers\.media\b.*
+            | ^com\.(google\.)?android\.providers\..*
             | """ + Regex.escape(BuildConfig.APPLICATION_ID) + """
             """).toRegex()
 

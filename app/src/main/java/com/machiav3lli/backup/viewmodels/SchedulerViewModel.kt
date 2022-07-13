@@ -26,6 +26,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.dbs.dao.ScheduleDao
 import com.machiav3lli.backup.dbs.entity.Schedule
+import com.machiav3lli.backup.utils.cancelAlarm
+import com.machiav3lli.backup.utils.scheduleAlarm
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -54,6 +56,26 @@ class SchedulerViewModel(val database: ScheduleDao, appContext: Application) :
                     .withSpecial(withSpecial)
                     .build()
             )
+        }
+    }
+
+    fun updateSchedule(schedule: Schedule?, rescheduleBoolean: Boolean) {
+        viewModelScope.launch {
+            schedule?.let { updateS(it, rescheduleBoolean) }
+        }
+    }
+
+    private suspend fun updateS(schedule: Schedule, rescheduleBoolean: Boolean) {
+        withContext(Dispatchers.IO) {
+            database.update(schedule)
+            if (schedule.enabled)
+                scheduleAlarm(
+                    getApplication<Application>().baseContext,
+                    schedule.id,
+                    rescheduleBoolean
+                )
+            else
+                cancelAlarm(getApplication<Application>().baseContext, schedule.id)
         }
     }
 

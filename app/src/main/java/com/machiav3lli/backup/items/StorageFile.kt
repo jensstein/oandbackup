@@ -5,8 +5,12 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
 import androidx.core.content.FileProvider
+import androidx.core.database.getIntOrNull
+import androidx.core.database.getLongOrNull
+import androidx.core.database.getStringOrNull
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_ALLOWSHADOWINGDEFAULT
+import com.machiav3lli.backup.PREFS_CACHEFILELISTS
 import com.machiav3lli.backup.PREFS_CACHEURIS
 import com.machiav3lli.backup.PREFS_COLUMNNAMESAF
 import com.machiav3lli.backup.PREFS_INVALIDATESELECTIVE
@@ -15,10 +19,6 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
-import com.machiav3lli.backup.utils.exists
-import com.machiav3lli.backup.utils.getName
-import com.machiav3lli.backup.utils.isDirectory
-import com.machiav3lli.backup.utils.isFile
 import com.machiav3lli.backup.utils.suRecursiveCopyFilesToDocument
 import timber.log.Timber
 import java.io.File
@@ -28,6 +28,126 @@ import java.io.OutputStream
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
+
+
+fun getCursorString(cursor: Cursor, columnName: String): String? {
+    val index = cursor.getColumnIndex(columnName)
+    return cursor.getStringOrNull(index)
+}
+
+fun getCursorLong(cursor: Cursor, columnName: String): Long? {
+    val index = cursor.getColumnIndex(columnName)
+    return cursor.getLongOrNull(index)
+}
+
+fun getCursorInt(cursor: Cursor, columnName: String): Int? {
+    val index = cursor.getColumnIndex(columnName)
+    return cursor.getIntOrNull(index)
+}
+
+/*
+
+private fun Uri.getRawType(context: Context): String? = try {
+    context.contentResolver.query(this, null, null, null, null)?.let { cursor ->
+        cursor.run {
+            if (moveToFirst())
+                //context.contentResolver.getType(this@getRawType)
+                getCursorString(this, DocumentsContract.Document.COLUMN_MIME_TYPE)
+            else
+                null
+        }.also { cursor.close() }
+    }
+} catch (e: Throwable) {
+    LogsHandler.unhandledException(e, this)
+    null
+}
+
+fun Uri.canRead(context: Context): Boolean = when {
+    context.checkCallingOrSelfUriPermission(
+        this,
+        Intent.FLAG_GRANT_READ_URI_PERMISSION
+    ) // Ignore if grant doesn't allow read
+            != PackageManager.PERMISSION_GRANTED -> false
+    else                                         -> !TextUtils.isEmpty(getRawType(context))
+} // Ignore documents without MIME
+
+fun Uri.canWrite(context: Context): Boolean {
+    // Ignore if grant doesn't allow write
+    if (context.checkCallingOrSelfUriPermission(this, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        != PackageManager.PERMISSION_GRANTED
+    ) {
+        return false
+    }
+    val type = getRawType(context)
+    val flags = queryForLong(context, DocumentsContract.Document.COLUMN_FLAGS)?.toInt() ?: 0
+    // Ignore documents without MIME
+    if (TextUtils.isEmpty(type)) {
+        return false
+    }
+    // Deletable documents considered writable
+    if (flags and DocumentsContract.Document.FLAG_SUPPORTS_DELETE != 0) {
+        return true
+    }
+    //return if (DocumentsContract.Document.MIME_TYPE_DIR == type && flags and DocumentsContract.Document.FLAG_DIR_SUPPORTS_CREATE != 0) {
+    return if (DocumentsContract.Document.MIME_TYPE_DIR.equals(type) && flags and DocumentsContract.Document.FLAG_DIR_SUPPORTS_CREATE != 0) {
+        // Directories that allow create considered writable
+        true
+    } else !TextUtils.isEmpty(type)
+            && flags and DocumentsContract.Document.FLAG_SUPPORTS_WRITE != 0
+    // Writable normal files considered writable
+}
+
+*/
+
+fun Uri.exists(context: Context): Boolean {
+    val resolver = context.contentResolver
+    var cursor: Cursor? = null
+    return try {
+        cursor = resolver.query(
+            this, arrayOf(
+                DocumentsContract.Document.COLUMN_DOCUMENT_ID
+            ), null, null, null
+        )
+        (cursor?.count ?: 0) > 0
+    } catch (e: IllegalArgumentException) {
+        false
+    } catch (e: Throwable) {
+        LogsHandler.unhandledException(e, this)
+        false
+    } finally {
+        closeQuietly(cursor)
+    }
+}
+
+private fun Uri.queryForLong(context: Context, column: String): Long? {
+    val resolver = context.contentResolver
+    var cursor: Cursor? = null
+    try {
+        cursor = resolver.query(this, null, null, null, null)
+        if (cursor!!.moveToFirst()) {
+            return getCursorLong(cursor, column)
+        }
+    } catch (e: Throwable) {
+        LogsHandler.unhandledException(e, "$this column: $column")
+    } finally {
+        closeQuietly(cursor)
+    }
+    return 0
+}
+
+private fun closeQuietly(closeable: AutoCloseable?) {
+    if (closeable != null) {
+        try {
+            closeable.close()
+        } catch (rethrown: RuntimeException) {
+            throw rethrown
+        } catch (e: Throwable) {
+            LogsHandler.unhandledException(e)
+        }
+    }
+}
+
+
 
 // TODO MAYBE migrate at some point to FuckSAF
 
@@ -48,6 +168,78 @@ open class StorageFile {
     private var file: RootFile? = null
     private var parentFile: RootFile? = null
 
+    data class DocumentInfo(val id: String, val name: String, val mimeType: String, val size: Long, val lastModified: Long)
+
+    private var documentInfo: DocumentInfo? = null
+        get() {
+            if(field == null)
+                field = retrieveDocumentInfo()
+            return field
+        }
+        private set(value) {
+            field = value
+        }
+
+    private fun retrieveDocumentInfo(cursor: Cursor): DocumentInfo {
+        val id = getCursorString(
+            cursor,
+            DocumentsContract.Document.COLUMN_DOCUMENT_ID
+        ) ?: "???"
+        val name = getCursorString(
+            cursor,
+            DocumentsContract.Document.COLUMN_DISPLAY_NAME
+        ) ?: "???"
+        val mimeType = getCursorString(
+            cursor,
+            DocumentsContract.Document.COLUMN_MIME_TYPE
+        ) ?: ""
+        var size = getCursorLong(
+            cursor,
+            DocumentsContract.Document.COLUMN_SIZE
+        ) ?: 0
+        if(size < 0)
+            size = 0
+        //Timber.d("size: $size file: $id")
+        var lastModified = getCursorLong(
+            cursor,
+            DocumentsContract.Document.COLUMN_LAST_MODIFIED
+        ) ?: 0
+        if(lastModified < 0)
+            lastModified = 0
+        //flags = getCursorInt(cursor, Document.COLUMN_FLAGS),
+        //summary = getCursorString(cursor, Document.COLUMN_SUMMARY),
+        //icon = getCursorInt(cursor, Document.COLUMN_ICON),
+        return DocumentInfo(
+            id = id,
+            name = name,
+            mimeType = mimeType,
+            size = size,
+            lastModified = lastModified
+        )
+    }
+
+    private fun retrieveDocumentInfo(): DocumentInfo? {
+        context?.let { context ->
+            val resolver = context.contentResolver
+            var cursor: Cursor? = null
+            try {
+                resolver.query(
+                            _uri!!,
+                            null /*documentColumns*/, null, null, null
+                )?.let { cursor ->
+                    if (cursor.moveToFirst()) {
+                        return retrieveDocumentInfo(cursor)
+                    }
+                }
+            } catch (e: Throwable) {
+                LogsHandler.unhandledException(e, "$this")
+            } finally {
+                closeQuietly(cursor)
+            }
+        }
+        return null
+    }
+
     constructor(
         parent: StorageFile?,
         context: Context?,
@@ -56,7 +248,7 @@ open class StorageFile {
         allowShadowing: Boolean = OABX.prefFlag(
             PREFS_ALLOWSHADOWINGDEFAULT,
             false
-        ) // Storage files that should be shadowable should be explicitly decalred as such
+        ) // Storage files that should be shadowable should be explicitly declared as such
     ) {
         this.parent = parent
         this.context = context
@@ -150,7 +342,7 @@ open class StorageFile {
         get() {
             if (field == null) {
                 field = file?.name ?: let {
-                    context?.let { context -> _uri?.getName(context) }
+                    documentInfo?.name
                 }
             }
             return field
@@ -167,16 +359,24 @@ open class StorageFile {
     }
 
     val isFile: Boolean
-        get() = file?.isFile ?: context?.let { context -> _uri?.isFile(context) } ?: false
+        get() = ! isDirectory
 
     val isDirectory: Boolean
-        get() = file?.isDirectory ?: context?.let { context -> _uri?.isDirectory(context) } ?: false
+        get() = file?.isDirectory ?: (documentInfo?.mimeType == DocumentsContract.Document.MIME_TYPE_DIR)
 
     val isPropertyFile: Boolean
         get() = name?.endsWith(".properties") ?: false
 
     fun exists(): Boolean =
-        file?.exists() ?: context?.let { context -> _uri?.exists(context) } ?: false
+        file?.exists() ?: ! documentInfo?.mimeType.isNullOrEmpty()
+
+    val size: Long
+        get() = (
+            if (file != null)
+                (file?.length() ?: 0L)
+            else
+                (documentInfo?.size ?: 0)
+            )
 
     fun inputStream(): InputStream? {
         return file?.inputStream() ?: _uri?.let { uri ->
@@ -272,6 +472,18 @@ open class StorageFile {
         return ok
     }
 
+    fun readText(): String {
+        return try {
+            file?.readText()
+                ?: run { inputStream()?.reader()?.readText() ?: "" }
+        } catch (e: FileNotFoundException) {
+            ""
+        } catch (e: Throwable) {
+            LogsHandler.unhandledException(e, _uri)
+            ""
+        }
+    }
+
     fun findUri(displayName: String): Uri? {
         try {
             for (file in listFiles()) {
@@ -319,14 +531,12 @@ open class StorageFile {
 
         path?.let { path ->
 
-            cacheGetFiles(path) ?: run {
+            val files = cacheGetFiles(path) ?: run {
+                val results = mutableListOf<StorageFile>()
                 file?.let { dir ->
-                    cacheSetFiles(
-                        path,
-                        dir.listFiles()?.map { child ->
-                            StorageFile(this, child)
-                        }?.toMutableList() ?: mutableListOf()
-                    )
+                    dir.listFiles()?.forEach { child ->
+                        results.add(StorageFile(this, child))
+                        }
                 } ?: run {
                     context?.contentResolver?.let { resolver ->
                         val childrenUri = try {
@@ -337,7 +547,6 @@ open class StorageFile {
                         } catch (e: IllegalArgumentException) {
                             return listOf()
                         }
-                        val results = mutableListOf<StorageFile>()
                         var cursor: Cursor? = null
                         try {
                             cursor = resolver.query(
@@ -345,36 +554,40 @@ open class StorageFile {
                                 // a query to DocumentsProvider which is.... slow."
                                 // so avoid getName by using COLUMN_DISPLAY_NAME
                                 // (also add name to constructor and allow setting the name field)
-                                childrenUri, arrayOf(
-                                    DocumentsContract.Document.COLUMN_DOCUMENT_ID,
-                                    DocumentsContract.Document.COLUMN_DISPLAY_NAME
-                                ),
+                                childrenUri, null /*documentColumns*/,
                                 null, null, null
                             )
                             var documentUri: Uri
                             while (cursor?.moveToNext() == true) {
-                                documentUri =
-                                    DocumentsContract.buildDocumentUriUsingTree(
-                                        this._uri,
-                                        cursor.getString(0)
-                                    )
-                                results.add(
-                                    if (OABX.prefFlag(PREFS_COLUMNNAMESAF, true))
-                                        StorageFile(this, context, documentUri, cursor.getString(1))
-                                    else
-                                        StorageFile(this, context, documentUri)
-                                )
+                                try {
+                                    val docInfo = retrieveDocumentInfo(cursor)
+                                    documentUri =
+                                        DocumentsContract.buildDocumentUriUsingTree(
+                                            this._uri,
+                                            docInfo.id
+                                        )
+                                    val file =
+                                        if (OABX.prefFlag(PREFS_COLUMNNAMESAF, true))
+                                            StorageFile(this, context, documentUri, docInfo.name)
+                                        else
+                                            StorageFile(this, context, documentUri)
+                                    file.documentInfo = docInfo
+                                    results.add(file)
+                                } catch (e: Throwable) {
+                                    LogsHandler.unhandledException(e, _uri)
+                                }
                             }
                         } catch (e: Throwable) {
                             LogsHandler.unhandledException(e, _uri)
                         } finally {
                             closeQuietly(cursor)
                         }
-                        cacheSetFiles(path, results)
                     }
                 }
+                cacheSetFiles(path, results)
+                results
             }
-            return cacheGetFiles(path) ?: listOf()
+            return files
         } ?: return listOf()
     }
 
@@ -412,16 +625,18 @@ open class StorageFile {
         private var uriStorageFileCache = mutableMapOf<String, StorageFile>()
         private var invalidateFilters = mutableListOf<(String) -> Boolean>()
 
+        val documentColumns = arrayOf(
+            DocumentsContract.Document.COLUMN_DOCUMENT_ID,
+            DocumentsContract.Document.COLUMN_DISPLAY_NAME,
+            DocumentsContract.Document.COLUMN_MIME_TYPE,
+            DocumentsContract.Document.COLUMN_SIZE,
+            DocumentsContract.Document.COLUMN_LAST_MODIFIED
+        )
+
         fun fromUri(context: Context, uri: Uri): StorageFile {
             // Todo: Figure out what's wrong with the Uris coming from the intent and why they need to be processed
             //  with DocumentsContract.buildDocumentUriUsingTree(value, DocumentsContract.getTreeDocumentId(value)) first
-            if (OABX.prefFlag(PREFS_CACHEURIS, false)) {
-                return StorageFile(
-                    null,
-                    context,
-                    uri
-                )
-            } else {
+            if (OABX.prefFlag(PREFS_CACHEURIS, true)) {
                 cacheCheck()
                 val id = uri.toString()
                 return cacheGetUri(id)
@@ -430,6 +645,12 @@ open class StorageFile {
                         context,
                         uri
                     ).also { cacheSetUri(id, it) }
+            } else {
+                return StorageFile(
+                    null,
+                    context,
+                    uri
+                )
             }
         }
 
@@ -463,9 +684,16 @@ open class StorageFile {
             cacheCheck() //TODO
         }
 
+        fun cacheInvalidate(storageFile: StorageFile) {
+            storageFile.path?.let { path -> invalidateCache { it.startsWith(path) } }
+        }
+
         fun cacheGetFiles(id: String): List<StorageFile>? {
-            cacheCheck()
-            return fileListCache[id]
+            if (OABX.prefFlag(PREFS_CACHEFILELISTS, true)) {
+                cacheCheck()
+                return fileListCache[id]
+            }
+            return null
         }
 
         fun cacheSetFiles(id: String, files: List<StorageFile>) {

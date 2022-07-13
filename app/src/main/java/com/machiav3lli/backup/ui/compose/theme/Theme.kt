@@ -23,17 +23,25 @@ fun AppTheme(
     CompositionLocalProvider(LocalShapes provides ShapeSize()) {
         MaterialTheme(
             colorScheme = when {
-                darkTheme -> DarkColors
-                else -> LightColors
-            }.copy(
-                primary = getPrimaryColor(LocalContext.current.accentStyle),
-                primaryContainer = getPrimaryColor(LocalContext.current.accentStyle)
-                    .brighter(0.2f),
-                inverseOnSurface = getPrimaryColor(LocalContext.current.accentStyle),
-                secondary = getSecondaryColor(LocalContext.current.secondaryStyle),
-                secondaryContainer = getSecondaryColor(LocalContext.current.secondaryStyle)
-                    .brighter(0.2f),
-            ),
+                darkTheme -> DarkColors.copy(
+                    primary = getPrimaryColor(LocalContext.current.accentStyle),
+                    primaryContainer = getPrimaryColor(LocalContext.current.accentStyle)
+                        .darker(0.2f),
+                    inverseOnSurface = getPrimaryColor(LocalContext.current.accentStyle),
+                    secondary = getSecondaryColor(LocalContext.current.secondaryStyle),
+                    secondaryContainer = getSecondaryColor(LocalContext.current.secondaryStyle)
+                        .darker(0.2f),
+                )
+                else -> LightColors.copy(
+                    primary = getPrimaryColor(LocalContext.current.accentStyle),
+                    primaryContainer = getPrimaryColor(LocalContext.current.accentStyle)
+                        .brighter(0.2f),
+                    inverseOnSurface = getPrimaryColor(LocalContext.current.accentStyle),
+                    secondary = getSecondaryColor(LocalContext.current.secondaryStyle),
+                    secondaryContainer = getSecondaryColor(LocalContext.current.secondaryStyle)
+                        .brighter(0.2f),
+                )
+            },
             content = content
         )
     }
@@ -42,11 +50,11 @@ fun AppTheme(
 private val LightColors = lightColorScheme(
     primary = LightPrimary,
     onPrimary = LightOnPrimary,
-    primaryContainer = LightPrimary.brighter(0.2f),
+    primaryContainer = LightPrimary.darker(0.1f),
     onPrimaryContainer = LightOnPrimary,
     secondary = LightSecondary,
     onSecondary = LightOnSecondary,
-    secondaryContainer = LightSecondary.brighter(0.2f),
+    secondaryContainer = LightSecondary.darker(0.1f),
     onSecondaryContainer = LightOnSecondary,
     surface = LightSurface,
     onSurface = LightOnSurface,
@@ -67,11 +75,11 @@ private val LightColors = lightColorScheme(
 private val DarkColors = darkColorScheme(
     primary = DarkPrimary,
     onPrimary = DarkOnPrimary,
-    primaryContainer = DarkPrimary.brighter(0.2f),
+    primaryContainer = DarkPrimary.brighter(0.1f),
     onPrimaryContainer = DarkOnPrimary,
     secondary = DarkSecondary,
     onSecondary = DarkOnSecondary,
-    secondaryContainer = DarkSecondary.brighter(0.2f),
+    secondaryContainer = DarkSecondary.brighter(0.1f),
     onSecondaryContainer = DarkOnSecondary,
     surface = DarkSurface,
     onSurface = DarkOnSurface,

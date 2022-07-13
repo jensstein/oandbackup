@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="backup">Sauvegarde</string>
-    <string name="restore">restaurer</string>
+    <string name="restore">Restaurer</string>
     <string name="backupConfirmation">Sauvegarder \?</string>
     <string name="restoreConfirmation">Restaurer \?</string>
     <string name="handleApk">APK</string>
@@ -79,9 +79,9 @@
     <string name="prefs_pathbackupfolder">Dossier de sauvegarde</string>
     <string name="prefs_oldbackups">Filtrer les sauvegardes par ancienneté</string>
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
-    <string name="prefs_oldbackups_summary">Filtrer les sauvegardes plus anciennes que le nombre de jours. Utilisé avec le filtre \'Afficher les anciennes sauvegardes\'.</string>
+    <string name="prefs_oldbackups_summary">Filtrer les sauvegardes plus anciennes que le nombre de jours. Utilisé avec le filtre « Afficher les anciennes sauvegardes ».</string>
     <string name="prefs_copyselfapk">Copier son propre APK</string>
-    <string name="prefs_copyselfapk_summary">Placez une copie de OAndBackupX à la racine du dossier de sauvegarde lors de la sauvegarde</string>
+    <string name="prefs_copyselfapk_summary">Placer une copie de Neo Backup au niveau supérieur du dossier de sauvegarde</string>
     <string name="prefs_languages">Langue</string>
     <string name="prefs_language_system">Système par défaut</string>
     <string name="prefs_rememberfiltering">Enregistrer les critères de tri et les filtres</string>
@@ -180,15 +180,14 @@
     <string name="intro_permission_usageaccess">L\'application a besoin de cette autorisation pour pouvoir vérifier les statistiques, la taille des données et du cache de vos applications.</string>
     <string name="intro_permission_storage_location">L\'application a besoin d\'un emplacement de sauvegarde pour stocker les sauvegardes. L\'application peut avoir besoin de quelques gigaoctets de stockage pour une sauvegarde complète et utilise beaucoup le système de fichiers. Veuillez garder cela à l\'esprit lorsque vous choisissez des emplacements de stockage en réseau.</string>
     <string name="intro_permission_storage">L\'application utilise une autorisation de lecture/écriture du stockage pour pouvoir accéder au stockage externe et offrir la possibilité de sauvegarder des données externes data/obb d\'autres applications.</string>
-    <string name="intro_welcome_message">OAndBackupX est un fourchette du célèbre OAndBackup ayant pour objectif de l\'amener à 2020 et au-delà. Pour l\'instant, la plupart des fonctionnalités et l\'interface utilisateur de l\'application ont été réécrites et certaines ont été ajoutées.
-\n L\'application est encore en phase bêta et de nombreux changements de base sont souvent effectués. Veuillez donc lire attentivement le journal des modifications à chaque nouvelle version.
-\n Tout type de contribution est le bienvenu, qu\'il s\'agisse de traductions, d\'idées, de signalements de bogues ou de travail sur le code.
+    <string name="intro_welcome_message">Neo Backup (anciennement OAndBackupX) est un fork du célèbre OAndBackup dans le but d\'amener OAndBackup sur 202X et de faire partie de la suite Neo Applications. Pour l\'instant, l\'application est déjà entièrement réécrite, il s\'agit maintenant de la rendre plus robuste et d\'ajouter quelques fonctionnalités prévues de longue date qui pourraient faciliter le flux de travail de sauvegarde/restauration avec n\'importe quel appareil.
+\n Par conséquent, tous les types de contribution sont toujours les bienvenus.
 \n
-\n Maintenant sur les fonctionnalitées de notre application :
-\n • Elle requiert le root et vous permet de sauvegarder les applications individuelles et leurs données.
-\n • La sauvegarde et la restauration de programmes individuels une à une ainsi que la sauvegarde et la restauration par lots de plusieurs programmes sont toutes deux prises en charge.
-\n • La restauration des applications système devrait être possible sans qu\'il soit nécessaire de redémarrer ensuite, mais nous vous déconseillons néanmoins de le faire.
-\n • Les sauvegardes peuvent être programmées sans limite du nombre de programmes individuels et il est possible de créer des listes personnalisées uniques.</string>
+\n Maintenant sur la fonctionnalité de notre application :
+\n - Elle nécessite un root et vous permet de sauvegarder des applications individuelles et leurs données.
+\n - La sauvegarde et la restauration de programmes individuels un par un et la sauvegarde et la restauration par lots de plusieurs programmes sont prises en charge.
+\n - La restauration des applications du système devrait être possible sans nécessiter un redémarrage ultérieur.
+\n - Les sauvegardes peuvent être planifiées sans limite du nombre de planifications individuelles et il y a la possibilité de créer des listes personnalisées à partir de la liste des applications installées.</string>
     <string name="help_appTypeHint">* L\'icône du type d\'application sera grise si l\'application est désinstallée et gris foncé si l\'application est désactivée.</string>
     <string name="help_legend">Légende :</string>
     <string name="prefs_housekeepingmoment_summary">Configure si la révision la plus ancienne est supprimée avant ou après la création d\'une nouvelle sauvegarde afin de libérer l\'espace disque utilisé par la sauvegarde.</string>
@@ -298,7 +297,7 @@
     <string name="forceKill">Forcer l\'arrêt</string>
     <string name="no_file_manager_message">Il n\'y a pas de gestionnaire de fichiers pour gérer SAF. Vous avez peut-être désactivé le gestionnaire de fichiers intégré. Veuillez le restaurer ou le réactiver.</string>
     <string name="error_encryptionpassword">Le mot de passe de chiffrement n\'est pas défini ou est incorrect !</string>
-    <string name="radio_mediadata">Données media</string>
+    <string name="radio_mediadata">Données média</string>
     <string name="error_pmDataIncompleteException_dataRestoreFailed">Les données de l\'application n\'ont pas été restaurées.</string>
     <string name="prefs_mediadata">Sauvegarder les fichiers media</string>
     <string name="prefs_mediadata_summary">Sauvegarde et restaure les fichiers médias de l\'application qui sont placés sur un stockage externe (par ex. /storage/emulated/0/Android/media/)</string>
@@ -313,5 +312,32 @@
     <string name="prefs_secondary_8">Menthe</string>
     <string name="help_changelog">Liste des modifications</string>
     <string name="sortBackupDate">Date de la sauvegarde</string>
-    <string name="prefs_accent_8">Citrouille Perano</string>
+    <string name="prefs_accent_8">Citrouille perano</string>
+    <string name="prefs_restorepermissions">Restaurer les autorisations</string>
+    <string name="prefs_restorepermissions_summary">Restaurer les autorisations qui étaient accordées à l\'application au moment de la sauvegarde. Notez que certaines permissions ne peuvent pas être accordées de manière programmatique et font donc échouer la restauration du paquet dans son ensemble, ce que Neo Backup couvre alors en restaurant le paquet sans autorisations.</string>
+    <string name="spec_calllogsjson">Journaux d\'appels JSON</string>
+    <string name="dialogCancelAll">Tout annuler</string>
+    <string name="grant_smsmms_message">C\'est essentiel pour pouvoir sauvegarder/restaurer vos SMS/MMS.</string>
+    <string name="calllogs_permission_title">Autorisations pour les journaux d\'appels</string>
+    <string name="sortAsc">Montant</string>
+    <string name="loading_list">Chargement de la liste…</string>
+    <string name="smsmms_permission_title">Autorisations SMS/MMS</string>
+    <string name="grant_calllogs_message">C\'est essentiel pour pouvoir sauvegarder/restaurer vos journaux d\'appels.</string>
+    <string name="contacts_permission_title">Autorisations des contacts</string>
+    <string name="grant_contacts_message">C\'est essentiel pour pouvoir associer un contact à un SMS/MMS.</string>
+    <string name="intro_permission_contacts">L\'application a besoin de cette permission pour pouvoir associer un contact à un SMS/MMS.</string>
+    <string name="intro_permission_smsmms">L\'application a besoin de cette permission pour pouvoir sauvegarder/restaurer vos SMS/MMS.</string>
+    <string name="delete">Supprimer</string>
+    <string name="schedule">Programme</string>
+    <string name="finished">fini</string>
+    <string name="supended_apps_cleanup">nettoyer les applications suspendues restantes</string>
+    <string name="spec_fingerprint">Empreintes</string>
+    <string name="spec_smsmmsjson">JSON SMS/MMS</string>
+    <string name="root_missing">Il manque la racine !</string>
+    <string name="root_is_mandatory">Les applications étant isolées les unes des autres, l\'accès du super-utilisateur est obligatoire pour pouvoir sauvegarder et restaurer leurs données.</string>
+    <string name="see_faq">Voir la FAQ !</string>
+    <string name="dismiss">Rejeter</string>
+    <string name="intro_permission_calllogs">L\'application a besoin de cette autorisation pour pouvoir sauvegarder/restaurer vos journaux d\'appels.</string>
+    <string name="enabled">Activé</string>
+    <string name="sortDesc">Descendant</string>
 </resources>

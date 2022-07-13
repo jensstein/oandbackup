@@ -22,7 +22,10 @@ import android.content.Intent
 import com.machiav3lli.backup.MAIN_FILTER_SPECIAL
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
+import com.machiav3lli.backup.MAIN_SORT_APPDATASIZE
+import com.machiav3lli.backup.MAIN_SORT_APPSIZE
 import com.machiav3lli.backup.MAIN_SORT_BACKUPDATE
+import com.machiav3lli.backup.MAIN_SORT_BACKUPSIZE
 import com.machiav3lli.backup.MAIN_SORT_DATASIZE
 import com.machiav3lli.backup.MAIN_SORT_PACKAGENAME
 import com.machiav3lli.backup.MODE_APK
@@ -32,6 +35,7 @@ import com.machiav3lli.backup.MODE_DATA_EXT
 import com.machiav3lli.backup.MODE_DATA_MEDIA
 import com.machiav3lli.backup.MODE_DATA_OBB
 import com.machiav3lli.backup.MODE_NONE
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_OLDBACKUPS
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.SPECIAL_FILTER_DISABLED
@@ -82,7 +86,7 @@ private fun List<Package>.applySpecialFilter(
         launchableAppsList = context.packageManager.queryIntentActivities(mainIntent, 0)
             .map { it.activityInfo.packageName }
     }
-    val days = context.getDefaultSharedPreferences().getInt(PREFS_OLDBACKUPS, 7)
+    val days = OABX.prefInt(PREFS_OLDBACKUPS, 7)
     predicate = when (specialFilter) {
         SPECIAL_FILTER_NEW_UPDATED -> { appInfo: Package ->
             !appInfo.hasBackups || appInfo.isUpdated
@@ -115,14 +119,20 @@ private fun List<Package>.applySort(sort: Int, sortAsc: Boolean): List<Package> 
     if (!sortAsc) {
         when (sort) {
             MAIN_SORT_PACKAGENAME -> sortedByDescending { it.packageName.lowercase() }
+            MAIN_SORT_APPSIZE -> sortedByDescending { it.appBytes }
             MAIN_SORT_DATASIZE -> sortedByDescending { it.dataBytes }
+            MAIN_SORT_APPDATASIZE -> sortedByDescending { it.appBytes + it.dataBytes }
+            MAIN_SORT_BACKUPSIZE -> sortedByDescending { it.backupBytes }
             MAIN_SORT_BACKUPDATE -> sortedWith(compareBy<Package> { it.latestBackup?.backupDate }.thenBy { it.packageLabel })
             else -> sortedByDescending { it.packageLabel.lowercase() }
         }
     } else {
         when (sort) {
             MAIN_SORT_PACKAGENAME -> sortedBy { it.packageName.lowercase() }
+            MAIN_SORT_APPSIZE -> sortedBy { it.appBytes }
             MAIN_SORT_DATASIZE -> sortedBy { it.dataBytes }
+            MAIN_SORT_APPDATASIZE -> sortedBy { it.appBytes + it.dataBytes }
+            MAIN_SORT_BACKUPSIZE -> sortedBy { it.backupBytes }
             MAIN_SORT_BACKUPDATE -> sortedWith(compareByDescending<Package> { it.latestBackup?.backupDate }.thenBy { it.packageLabel })
             else -> sortedBy { it.packageLabel.lowercase() }
         }
