@@ -160,7 +160,7 @@
     <string name="empty_filtered_list">Филтрирана листа је празна.</string>
     <string name="ignore_battery_optimization_title">Оптимизација батерије</string>
     <string name="ignore_battery_optimization_message">Израда резервне копије се понекад може прекинути. Да би сте то спречили, искључите оптимизацију батерије</string>
-    <string name="prefs_loadingtoasts"/>
+    <string name="prefs_loadingtoasts">Учитавам \"toasts\"</string>
     <string name="radio_obbdata">ОББ Подаци</string>
     <string name="radio_externaldata">Спољашњи Подаци</string>
     <string name="radio_deviceprotecteddata">Заштићени Подаци Уређаја</string>
@@ -272,7 +272,7 @@
     <string name="usage_notes_title">Белешке о Коришћењу</string>
     <string name="copyOwnApkSuccess">АПК апликације је копиран у директоријум резервних копија</string>
     <string name="intro_permission_smsmms">Апликацији је потребна ова дозвола како би могла да изради резервну копију или поврати твоје СМС/ММС.</string>
-    <string name="write_apps_list_filtered"/>
+    <string name="write_apps_list_filtered">Напиши фајл: листа филтрираних апликација</string>
     <string name="main">Главно</string>
     <string name="clear_cache">Обриши Кеш</string>
     <string name="sched_exported">Распореди су успешно извезени</string>
@@ -336,4 +336,21 @@
     <string name="prefs_secondary_2">Лиметаста</string>
     <string name="see_faq">Погледај Често постављана питања (FAQ)!</string>
     <string name="loading_list">Учитавам листу…</string>
+    <string name="prefs_loadingtoasts_summary">прикажи \"toasts\" док се листа учитава</string>
+    <string name="write_apps_list_all">Напиши фајл: листа свих апликација</string>
+    <plurals name="days_left">
+        <item quantity="one">%d дан,</item>
+        <item quantity="few">%d дани,</item>
+        <item quantity="other">%d дани,</item>
+    </plurals>
+    <plurals name="sched_interval_formal">
+        <item quantity="one">сваки дан</item>
+        <item quantity="few">свим %d данима</item>
+        <item quantity="other">%d дани</item>
+    </plurals>
+    <plurals name="updated_apps">
+        <item quantity="one">%d ажурирана апликација</item>
+        <item quantity="few">%d ажуриране апликације</item>
+        <item quantity="other">%d ажуриране апликације</item>
+    </plurals>
 </resources>
