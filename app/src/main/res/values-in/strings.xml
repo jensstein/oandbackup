@@ -327,4 +327,5 @@
     <string name="prefs_sessionIinstaller_summary">Gunakan penginstal sesi daripada penginstal dasar. Lebih lambat tetapi menghindari masalah dengan Android 13+</string>
     <string name="prefs_installerpackagename">Nama paket penginstal:</string>
     <string name="prefs_restorepermissions_summary">Pulihkan izin yang diberikan ke aplikasi pada saat pencadangan. Perhatikan bahwa beberapa izin tidak dapat diberikan secara terprogram sehingga menyebabkan pemulihan paket gagal secara keseluruhan, yang kemudian dicakup oleh Neo Backup untuk memulihkan paket tanpa izin.</string>
+    <string name="prefs_loadingtoasts">memuat toasts</string>
 </resources>
