@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardActions
@@ -36,7 +37,6 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -108,7 +108,7 @@ fun TopBar(
     var lastInfoText by remember { mutableStateOf(infoText) }
     val changed = (infoText != lastInfoText)
 
-    if(changed) {
+    if (changed) {
         lastInfoText = infoText
         tempShow = true
         scope.launch {
@@ -125,7 +125,6 @@ fun TopBar(
                     verticalAlignment = Alignment.Bottom,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(color = MaterialTheme.colorScheme.background)
                         .clickable {
                             OABX.showInfo = !OABX.showInfo
                             if (!OABX.showInfo)
@@ -140,7 +139,6 @@ fun TopBar(
                         textAlign = TextAlign.Start,
                         fontSize = 11.0.sp,
                         fontWeight = FontWeight(800),
-                        color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .absolutePadding(right = 4.dp, bottom = 4.dp)
                             .vertical()
@@ -152,6 +150,13 @@ fun TopBar(
                         fontSize = 11.0.sp,
                         lineHeight = 11.0.sp,
                         color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                color = MaterialTheme.colorScheme.background,
+                                shape = MaterialTheme.shapes.extraSmall
+                            )
+                            .padding(horizontal = 4.dp)
                     )
                 }
             } else {
