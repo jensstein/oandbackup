@@ -58,6 +58,12 @@
         app:initialExpandedChildrenCount="0">
 
         <androidx.preference.CheckBoxPreference
+            android:defaultValue="false"
+            android:key="showInfoLogBar"
+            android:summary="show the info log in top bar"
+            android:title="showInfoLogBar" />
+
+        <androidx.preference.CheckBoxPreference
             android:defaultValue="true"
             android:key="cachePackages"
             android:summary="cache Packages"

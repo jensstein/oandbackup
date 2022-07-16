@@ -50,8 +50,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.PREFS_SHOW_INFO_LOG
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.ui.compose.extensions.vertical
+import com.machiav3lli.backup.ui.compose.ifThen
+import com.machiav3lli.backup.ui.compose.vertical
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -118,7 +120,7 @@ fun TopBar(
     SmallTopAppBar(
         modifier = modifier.wrapContentHeight(),
         title = {
-            if (OABX.showInfo || tempShow) {
+            if ((OABX.showInfo || tempShow) && OABX.prefFlag(PREFS_SHOW_INFO_LOG, false)) {
                 Row(
                     verticalAlignment = Alignment.Bottom,
                     modifier = Modifier
@@ -157,8 +159,10 @@ fun TopBar(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxSize()
-                        .clickable {
-                            OABX.showInfo = !OABX.showInfo
+                        .ifThen(OABX.prefFlag(PREFS_SHOW_INFO_LOG, false)) {
+                            clickable {
+                                OABX.showInfo = !OABX.showInfo
+                            }
                         }
                 ) {
                     Text(
