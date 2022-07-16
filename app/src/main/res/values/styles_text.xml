@@ -17,11 +17,6 @@
  -->
 <resources>
 
-    <style name="TextViewWrapped">
-        <item name="android:ellipsize">end</item>
-        <item name="android:maxLines">1</item>
-    </style>
-
     <style name="TextAppearance.Headline" parent="TextAppearance.AppCompat.Headline">
         <item name="android:textSize">24sp</item>
         <item name="android:textStyle">bold</item>
@@ -32,23 +27,5 @@
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
-    </style>
-
-    <style name="TextAppearance.Label" parent="TextAppearance.AppCompat.Medium">
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">?colorControlNormal</item>
-    </style>
-
-    <style name="TextAppearance.Lines" parent="TextAppearance.AppCompat.Medium">
-        <item name="android:textSize">14sp</item>
-    </style>
-
-    <style name="TextAppearance.Secondary" parent="TextAppearance.AppCompat.Medium">
-        <item name="android:textSize">12sp</item>
-    </style>
-
-    <style name="TextAppearance.Toolbar.Title" parent="TextAppearance.Title">
-        <item name="android:textStyle">normal</item>
-        <item name="android:letterSpacing">0.050</item>
     </style>
 </resources>
