@@ -32,6 +32,9 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -63,6 +66,8 @@ import com.machiav3lli.backup.ui.compose.theme.Slate
 import com.machiav3lli.backup.ui.compose.theme.ThunderYellow
 import com.machiav3lli.backup.ui.compose.theme.TigerAmber
 import com.machiav3lli.backup.ui.compose.theme.Turquoise
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.util.*
 
 fun Context.setCustomTheme() {
@@ -299,4 +304,18 @@ fun Color.darker(rate: Float): Color {
     hslVal[2] -= rate * hslVal[2]
     hslVal[2] = hslVal[2].coerceIn(0f..1f)
     return Color(ColorUtils.HSLToColor(hslVal))
+}
+
+// TODO make easy callable from different contexts
+fun SnackbarHostState.show(
+    coroutineScope: CoroutineScope,
+    message: String,
+    actionText: String? = null,
+    onAction: () -> Unit = {}
+) {
+    coroutineScope.launch {
+        showSnackbar(message = message, actionLabel = actionText,withDismissAction = true).apply {
+            if (this == SnackbarResult.ActionPerformed) onAction()
+        }
+    }
 }
