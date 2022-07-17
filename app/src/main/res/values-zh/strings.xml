@@ -341,4 +341,9 @@
     <string name="prefs_installerpackagename">安装器的包名：</string>
     <string name="prefs_sessionIinstaller">使用会话安装器</string>
     <string name="prefs_sessionIinstaller_summary">使用会话安装器而不是基本安装器。安装速度更慢，但解决了 Android 13 的问题</string>
+    <string name="sortAppSize">应用大小</string>
+    <string name="sortAppDataSize">数据大小</string>
+    <string name="sortBackupSize">备份大小</string>
+    <string name="add_tag">新建标签</string>
+    <string name="edit_note">编辑</string>
 </resources>

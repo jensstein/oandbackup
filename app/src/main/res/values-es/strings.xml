@@ -329,4 +329,6 @@
     <string name="spec_fingerprint">Huellas dactilares</string>
     <string name="calllogs_permission_title">Permisos de registros de llamadas</string>
     <string name="loading_list">Cargando lista…</string>
+    <string name="prefs_sessionIinstaller">Usar el instalador de sesiones</string>
+    <string name="prefs_sessionIinstaller_summary">Utilice el instalador de sesiones en lugar del instalador básico. Más lento pero evita problemas con Android 13+</string>
 </resources>

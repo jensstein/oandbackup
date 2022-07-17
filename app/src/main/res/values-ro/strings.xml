@@ -67,7 +67,7 @@
     </plurals>
     <string name="help_changelog">Jurnalul modificărilor</string>
     <string name="all_data">Bifează toate datele</string>
-    <string name="sortPackageName">Numele pachetului</string>
+    <string name="sortPackageName">Numele pachetelor</string>
     <string name="sortDataSize">Dimensiunea datelor</string>
     <string name="other_filters_options">Filtre speciale:</string>
     <string name="sort_and_filter">Sortează și filtrează</string>
@@ -119,7 +119,7 @@
     <string name="stats_backups">Backupuri</string>
     <string name="all_apk">Bifează toate APK-urile</string>
     <string name="showDisabled">Aplicații dezactivate</string>
-    <string name="sortBackupDate">Data backupului</string>
+    <string name="sortBackupDate">Data backupurilor</string>
     <string name="sortByLabel">Sortează după etichetă</string>
     <string name="sort">Sortează și filtrează</string>
     <string name="sched_excludeSystemCheckBox">Exclude aplicațiile de sistem</string>
@@ -264,4 +264,14 @@
     <string name="dialog_unlock">Deblochează</string>
     <string name="prefs_restorepermissions_summary">Restaurează permisiunile care au fost acordate aplicației la momentul backupului. Reține că unele permisiuni nu pot fi acordate în mod programatic și, prin urmare, fac ca restaurarea pachetului să eșueze în ansamblu, lucru pe care Neo Backup îl acoperă apoi restaurând pachetul fără permisiuni.</string>
     <string name="prefs_acquirewakelock">Împiedică modul sleep</string>
+    <string name="sortAppSize">Dimensiunea aplicațiilor</string>
+    <string name="sortBackupSize">Dimensiunea backupurilor</string>
+    <string name="title_tags">Etichete:</string>
+    <string name="add_tag">Adaugă o etichetă nouă</string>
+    <string name="edit_note">Editează nota</string>
+    <string name="delete">Șterge</string>
+    <string name="sortAppDataSize">Dimensiunea aplicațiilor și a datelor</string>
+    <string name="prefs_installerpackagename">Numele pachetului installerului:</string>
+    <string name="prefs_sessionIinstaller">Folosește installerul sesiunii</string>
+    <string name="prefs_sessionIinstaller_summary">Folosește installerul sesiunii în locul installerului de bază. Mai lent, însă evită problemele cu Android 13+</string>
 </resources>
