@@ -223,7 +223,7 @@ fun TopBarButton(
         modifier = modifier,
         colors = ButtonDefaults.elevatedButtonColors(
             containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary
+            contentColor = MaterialTheme.colorScheme.onSurface
         ),
         contentPadding = PaddingValues(horizontal = 2.dp, vertical = 10.dp),
         shape = MaterialTheme.shapes.medium,

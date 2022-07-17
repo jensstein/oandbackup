@@ -32,7 +32,6 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
@@ -138,46 +137,6 @@ fun Activity.showToast(message: String, should: Boolean = true) = runOnUiThread 
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }
-
-val Context.colorAccent: Int
-    get() {
-        val tA = obtainStyledAttributes(intArrayOf(R.attr.colorAccent))
-        val color = tA.getColor(0, 0)
-        tA.recycle()
-        return color
-    }
-
-val Context.colorOnPrimary: Int
-    get() {
-        val tA = obtainStyledAttributes(intArrayOf(R.attr.colorOnPrimary))
-        val color = tA.getColor(0, 0)
-        tA.recycle()
-        return color
-    }
-
-val Context.colorPrimaryDark: Int
-    get() {
-        val tA = obtainStyledAttributes(intArrayOf(R.attr.colorPrimaryDark))
-        val color = tA.getColor(0, 0)
-        tA.recycle()
-        return color
-    }
-
-val Context.colorSecondary: Int
-    get() {
-        val tA = obtainStyledAttributes(intArrayOf(R.attr.colorSecondary))
-        val color = tA.getColor(0, 0)
-        tA.recycle()
-        return color
-    }
-
-val Context.colorOnSecondary: Int
-    get() {
-        val tA = obtainStyledAttributes(intArrayOf(R.attr.colorOnSecondary))
-        val color = tA.getColor(0, 0)
-        tA.recycle()
-        return color
-    }
 
 fun getThemeStyle(theme: String) = when (theme) {
     "light" -> AppCompatDelegate.MODE_NIGHT_NO
@@ -317,7 +276,7 @@ fun SnackbarHostState.show(
     onAction: () -> Unit = {}
 ) {
     coroutineScope.launch {
-        showSnackbar(message = message, actionLabel = actionText,withDismissAction = true).apply {
+        showSnackbar(message = message, actionLabel = actionText, withDismissAction = true).apply {
             if (this == SnackbarResult.ActionPerformed) onAction()
         }
     }

@@ -40,7 +40,6 @@ import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import com.machiav3lli.backup.utils.themeStyle
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -190,14 +189,14 @@ class OABX : Application() {
 
         fun addInfoText(value: String) {
             infoLines.add(value)
-            if(infoLines.size > nInfoLines)
+            if (infoLines.size > nInfoLines)
                 infoLines.drop(1)
         }
 
         fun getInfoText(n: Int, fill: String? = null): String {
             val lines = infoLines.takeLast(n).toMutableList()
-            if(fill != null)
-                while(lines.size < n)
+            if (fill != null)
+                while (lines.size < n)
                     lines.add(fill)
             return lines.joinToString("\n")
         }

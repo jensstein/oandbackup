@@ -52,6 +52,7 @@
 
     <androidx.preference.PreferenceCategory
         android:clickable="true"
+        android:key="developer_settings"
         android:icon="@drawable/ic_force_kill"
         android:summary="don't change unless a developer tells you"
         android:title="developer settings"
