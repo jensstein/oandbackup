@@ -3,26 +3,34 @@ package com.machiav3lli.backup.ui.compose.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
+import com.machiav3lli.backup.PREFS_THEME_DYNAMIC
 import com.machiav3lli.backup.utils.accentStyle
 import com.machiav3lli.backup.utils.brighter
 import com.machiav3lli.backup.utils.darker
 import com.machiav3lli.backup.utils.getPrimaryColor
 import com.machiav3lli.backup.utils.getSecondaryColor
 import com.machiav3lli.backup.utils.secondaryStyle
+import com.machiav3lli.backup.utils.themeStyle
 
 @Composable
 fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
+    val context = LocalContext.current
 
     CompositionLocalProvider(LocalShapes provides ShapeSize()) {
         MaterialTheme(
             colorScheme = when {
+                context.themeStyle == PREFS_THEME_DYNAMIC && isSystemInDarkTheme() ->
+                    dynamicDarkColorScheme(context)
+                context.themeStyle == PREFS_THEME_DYNAMIC -> dynamicLightColorScheme(context)
                 darkTheme -> DarkColors.copy(
                     primary = getPrimaryColor(LocalContext.current.accentStyle),
                     primaryContainer = getPrimaryColor(LocalContext.current.accentStyle)

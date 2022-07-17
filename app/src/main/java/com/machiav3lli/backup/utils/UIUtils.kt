@@ -42,8 +42,9 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.ColorUtils
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
-import com.machiav3lli.backup.OABX
+import com.google.android.material.color.DynamicColors
 import com.machiav3lli.backup.PREFS_LANGUAGES_DEFAULT
+import com.machiav3lli.backup.PREFS_THEME_DYNAMIC
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
@@ -72,9 +73,11 @@ import java.util.*
 
 fun Context.setCustomTheme() {
     AppCompatDelegate.setDefaultNightMode(getThemeStyle(themeStyle))
-    setTheme(R.style.AppTheme)
-    theme.applyStyle(getAccentStyle(accentStyle), true)
-    theme.applyStyle(getSecondaryStyle(secondaryStyle), true)
+    if (!(themeStyle == PREFS_THEME_DYNAMIC && DynamicColors.isDynamicColorAvailable())) {
+        setTheme(R.style.AppTheme)
+        theme.applyStyle(getAccentStyle(accentStyle), true)
+        theme.applyStyle(getSecondaryStyle(secondaryStyle), true)
+    } // TODO allow fine control on using custom accent/secondary colors?
 }
 
 fun Context.setLanguage(): Configuration {

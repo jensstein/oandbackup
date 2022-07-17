@@ -50,6 +50,7 @@ const val PREFS_SKIPPEDENCRYPTION = "skippedEncryptionCounter"
 
 const val PREFS_LANGUAGES = "languages"
 const val PREFS_THEME = "themes"
+const val PREFS_THEME_DYNAMIC = "dynamic"
 const val PREFS_ACCENT_COLOR = "themeAccentColor"
 const val PREFS_SECONDARY_COLOR = "themeSecondaryColor"
 const val PREFS_LANGUAGES_DEFAULT = "system"
