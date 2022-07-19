@@ -113,6 +113,42 @@ const val PREFS_SCHEDULESEXPORTIMPORT = "schedulesExportImport"
 const val PREFS_SAVEAPPSLIST = "saveAppsList"
 const val PREFS_LOGVIEWER = "logViewer"
 
+const val THEME_LIGHT = 0
+const val THEME_DARK = 1
+const val THEME_SYSTEM = 2
+const val THEME_DYNAMIC = 3
+
+val themeItems = mapOf(
+    THEME_LIGHT to R.string.prefs_theme_light,
+    THEME_DARK to R.string.prefs_theme_dark,
+    THEME_SYSTEM to R.string.prefs_theme_system,
+    THEME_DYNAMIC to R.string.prefs_theme_dynamic
+)
+
+val accentColorItems = mapOf(
+    0 to R.string.prefs_accent_0,
+    1 to R.string.prefs_accent_1,
+    2 to R.string.prefs_accent_2,
+    3 to R.string.prefs_accent_3,
+    4 to R.string.prefs_accent_4,
+    5 to R.string.prefs_accent_5,
+    6 to R.string.prefs_accent_6,
+    7 to R.string.prefs_accent_7,
+    8 to R.string.prefs_accent_8
+)
+
+val secondaryColorItems = mapOf(
+    0 to R.string.prefs_secondary_0,
+    1 to R.string.prefs_secondary_1,
+    2 to R.string.prefs_secondary_2,
+    3 to R.string.prefs_secondary_3,
+    4 to R.string.prefs_secondary_4,
+    5 to R.string.prefs_secondary_5,
+    6 to R.string.prefs_secondary_6,
+    7 to R.string.prefs_secondary_7,
+    8 to R.string.prefs_secondary_8
+)
+
 const val ALT_MODE_UNSET = 0
 const val ALT_MODE_APK = 1
 const val ALT_MODE_DATA = 2
