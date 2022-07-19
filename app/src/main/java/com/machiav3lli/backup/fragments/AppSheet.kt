@@ -52,6 +52,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -59,6 +62,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -95,8 +99,10 @@ import com.machiav3lli.backup.ui.compose.recycler.BackupRecycler
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.ui.compose.theme.Updated
+import com.machiav3lli.backup.utils.show
 import com.machiav3lli.backup.utils.showError
 import com.machiav3lli.backup.viewmodels.AppSheetViewModel
+import kotlinx.coroutines.CoroutineScope
 import timber.log.Timber
 
 class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
@@ -135,6 +141,8 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
         val thePackage by viewModel.thePackage.observeAsState()
         val snackbarText by viewModel.snackbarText.observeAsState()
         val appExtras by viewModel.appExtras.observeAsState()
+        val snackbarHostState = remember { SnackbarHostState() }
+        val coroutineScope = rememberCoroutineScope()
 
         thePackage?.let { packageInfo ->
             val imageData by remember(packageInfo) {
@@ -152,430 +160,451 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
             AppTheme(
                 darkTheme = isSystemInDarkTheme()
             ) {
-                CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState())
-                            .padding(horizontal = 8.dp),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        OutlinedCard(
-                            modifier = Modifier.padding(top = 8.dp),
-                            shape = RoundedCornerShape(LocalShapes.current.medium),
-                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface),
-                            colors = CardDefaults.outlinedCardColors(
-                                containerColor = MaterialTheme.colorScheme.background
-                            )
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(IntrinsicSize.Min)
-                                    .padding(8.dp),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                PackageIcon(item = packageInfo, imageData = imageData)
-
-                                Column(
-                                    modifier = Modifier
-                                        .wrapContentHeight()
-                                        .width(IntrinsicSize.Min)
-                                        .weight(1f)
-                                ) {
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .fillMaxHeight(0.4f),
-                                    ) {
-                                        Text(
-                                            text = packageInfo.packageLabel,
-                                            modifier = Modifier
-                                                .align(Alignment.CenterVertically)
-                                                .weight(1f),
-                                            softWrap = true,
-                                            overflow = TextOverflow.Ellipsis,
-                                            maxLines = 1,
-                                            style = MaterialTheme.typography.titleMedium
-                                        )
-                                    }
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .fillMaxHeight(0.4f),
-                                    ) {
-                                        Text(
-                                            text = packageInfo.packageName,
-                                            modifier = Modifier
-                                                .align(Alignment.CenterVertically)
-                                                .weight(1f),
-                                            softWrap = true,
-                                            overflow = TextOverflow.Ellipsis,
-                                            maxLines = 1,
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                    }
-                                }
-                                AnimatedVisibility(visible = packageInfo.isInstalled && !packageInfo.isSpecial) {
-                                    RoundButton(
-                                        icon = painterResource(id = R.drawable.ic_info),
-                                        modifier = Modifier.fillMaxHeight()
-                                    ) {
-                                        val intent =
-                                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                                        intent.data =
-                                            Uri.fromParts("package", packageInfo.packageName, null)
-                                        startActivity(intent)
-                                    }
-                                }
-                                RoundButton(
-                                    icon = painterResource(id = R.drawable.ic_arrow_down),
-                                    modifier = Modifier.fillMaxHeight()
-                                ) {
-                                    dismissAllowingStateLoss()
-                                }
-                            }
-                        }
-                        AnimatedVisibility(visible = !snackbarText.isNullOrEmpty()) {
-                            Text(
-                                text = snackbarText.toString(),
-                                color = MaterialTheme.colorScheme.primary,
-                                style = MaterialTheme.typography.titleMedium,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                        }
-                        AnimatedVisibility(
-                            modifier = Modifier.fillMaxWidth(),
-                            visible = !packageInfo.isSpecial
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(IntrinsicSize.Min),
-                                horizontalArrangement = Arrangement.spacedBy(2.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                // TODO Add enabled state
-                                CardButton(
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                        .weight(1f),
-                                    icon = painterResource(id = R.drawable.ic_exodus),
-                                    tint = colorResource(id = R.color.ic_exodus),
-                                    description = stringResource(id = R.string.exodus_report)
-                                ) {
-                                    requireContext().startActivity(
-                                        Intent(
-                                            Intent.ACTION_VIEW,
-                                            Uri.parse(exodusUrl(packageInfo.packageName))
-                                        )
-                                    )
-                                }
-                                AnimatedVisibility(
-                                    visible = true, //appInfo.isInstalled && ! appInfo.isDisabled,
-                                    modifier = Modifier.weight(1f)
-                                ) {
-                                    CardButton(
-                                        enabled = packageInfo.isInstalled && !packageInfo.isDisabled,
-                                        modifier = Modifier
-                                            .fillMaxHeight()
-                                            .weight(1f),
-                                        icon = painterResource(id = R.drawable.ic_launchable),
-                                        tint = colorResource(id = R.color.ic_obb),
-                                        description = stringResource(id = R.string.launch_app)
-                                    ) {
-                                        requireContext().packageManager.getLaunchIntentForPackage(
-                                            packageInfo.packageName
-                                        )?.let {
-                                            startActivity(it)
-                                        }
-                                    }
-                                }
-                                AnimatedVisibility(
-                                    visible = packageInfo.isInstalled,
-                                    modifier = Modifier.weight(1f)
-                                ) {
-                                    CardButton(
-                                        modifier = Modifier
-                                            .fillMaxHeight()
-                                            .weight(1f),
-                                        icon = painterResource(
-                                            id = if (packageInfo.isDisabled) R.drawable.ic_battery_optimization
-                                            else R.drawable.ic_exclude
-                                        ),
-                                        tint = if (packageInfo.isDisabled) MaterialTheme.colorScheme.primaryContainer
-                                        else MaterialTheme.colorScheme.secondary,
-                                        description = stringResource(
-                                            id = if (packageInfo.isDisabled) R.string.enablePackage
-                                            else R.string.disablePackage
-                                        ),
-                                        onClick = { showEnableDisableDialog(packageInfo.isDisabled) }
-                                    )
-                                }
-                                AnimatedVisibility(
-                                    visible = packageInfo.isInstalled && !packageInfo.isSystem,
-                                    modifier = Modifier.weight(1f)
-                                ) {
-                                    CardButton(
-                                        modifier = Modifier
-                                            .fillMaxHeight()
-                                            .weight(1f),
-                                        icon = painterResource(id = R.drawable.ic_delete),
-                                        tint = MaterialTheme.colorScheme.secondary,
-                                        description = stringResource(id = R.string.uninstall),
-                                        onClick = { showUninstallDialog(packageInfo) }
-                                    )
-                                }
-                                CardButton(
-                                    modifier = Modifier
-                                        .weight(1f),
-                                    icon = painterResource(id = R.drawable.ic_blocklist),
-                                    tint = colorResource(id = R.color.ic_updated),
-                                    description = stringResource(id = R.string.global_blocklist_add)
-                                ) {
-                                    requireMainActivity().viewModel.addToBlocklist(packageInfo.packageName)
-                                }
-                            }
-                        }
-                        AnimatedVisibility(
-                            visible = !packageInfo.isSpecial,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .width(IntrinsicSize.Min)
-                            ) {
-                                Row {
-                                    Text(text = stringResource(id = R.string.app_s_type_title))
-                                    Text(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        textAlign = TextAlign.End,
-                                        text = stringResource(id = if (packageInfo.isSpecial) R.string.apptype_special else if (packageInfo.isSystem) R.string.apptype_system else R.string.apptype_user),
-                                        color = when {
-                                            !packageInfo.isInstalled -> MaterialTheme.colorScheme.onSurfaceVariant
-                                            packageInfo.isDisabled -> MaterialTheme.colorScheme.surfaceVariant
-                                            packageInfo.isSpecial -> colorResource(R.color.ic_special)
-                                            packageInfo.isSystem -> colorResource(R.color.ic_system)
-                                            else -> colorResource(R.color.ic_user)
-                                        }
-                                    )
-                                }
-                                Row {
-                                    Text(text = stringResource(id = R.string.version_name_title))
-                                    Text(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        textAlign = TextAlign.End,
-                                        text = if (packageInfo.isUpdated) "${packageInfo.latestBackup?.versionName.orEmpty()} (${packageInfo.versionName})"
-                                        else packageInfo.versionName.orEmpty(),
-                                        color = if (packageInfo.isUpdated) Updated else MaterialTheme.colorScheme.onBackground
-                                    )
-                                }
-                                AnimatedVisibility(
-                                    visible = packageInfo.isInstalled,
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(IntrinsicSize.Min),
-                                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                                    ) {
-                                        Column(
-                                            modifier = Modifier
-                                                .weight(1f)
-                                                .width(IntrinsicSize.Min)
-                                        ) {
-                                            Text(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                text = stringResource(id = R.string.app_size)
-                                            )
-                                            Text(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                textAlign = TextAlign.End,
-                                                text = Formatter.formatFileSize(
-                                                    requireContext(),
-                                                    packageInfo.storageStats?.appBytes ?: 0
-                                                )
-                                            )
-                                            Text(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                text = stringResource(id = R.string.split_apks)
-                                            )
-                                            Text(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                textAlign = TextAlign.End,
-                                                text = stringResource(id = if (packageInfo.apkSplits.isEmpty()) R.string.dialogNo else R.string.dialogYes)
-                                            )
-                                        }
-                                        Divider(
-                                            color = MaterialTheme.colorScheme.surface,
-                                            modifier = Modifier
-                                                .fillMaxHeight()
-                                                .width(1.dp)
-                                        )
-                                        Column(
-                                            modifier = Modifier
-                                                .weight(1f)
-                                                .width(IntrinsicSize.Min)
-                                        ) {
-                                            AnimatedVisibility(
-                                                visible = packageInfo.isInstalled,
-                                                modifier = Modifier.fillMaxWidth()
-                                            ) {
-                                                Column {
-                                                    Text(
-                                                        modifier = Modifier.fillMaxWidth(),
-                                                        text = stringResource(id = R.string.data_size)
-                                                    )
-                                                    Text(
-                                                        modifier = Modifier.fillMaxWidth(),
-                                                        textAlign = TextAlign.End,
-                                                        text = Formatter.formatFileSize(
-                                                            requireContext(),
-                                                            packageInfo.storageStats?.dataBytes ?: 0
-                                                        ),
-                                                    )
-                                                    Text(
-                                                        modifier = Modifier.fillMaxWidth(),
-                                                        text = stringResource(id = R.string.cache_size)
-                                                    )
-                                                    Text(
-                                                        modifier = Modifier.fillMaxWidth(),
-                                                        textAlign = TextAlign.End,
-                                                        text = Formatter.formatFileSize(
-                                                            requireContext(),
-                                                            packageInfo.storageStats?.cacheBytes
-                                                                ?: 0
-                                                        ),
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        TitleText(textId = R.string.title_tags)
-                        TagsBlock(
-                            tags = appExtras?.customTags ?: mutableSetOf(),
-                            onRemove = {
-                                viewModel.setExtras(appExtras?.apply {
-                                    customTags.remove(it)
-                                })
-                            },
-                            onAdd = {
-                                viewModel.setExtras(appExtras?.apply {
-                                    if (customTags.isNotEmpty())
-                                        customTags.add(it)
-                                    else
-                                        customTags = mutableSetOf(it)
-                                })
-                            }
-                        )
-                        TitleText(textId = R.string.title_note)
-                        MorphableTextField(
-                            text = appExtras?.note,
-                            onCancel = {
-                            },
-                            onSave = {
-                                viewModel.setExtras(appExtras?.apply { note = it })
-                            }
-                        )
-                        TitleText(textId = R.string.available_actions)
+                Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) {
+                    CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
                         Column(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState())
+                                .padding(horizontal = 8.dp),
                             verticalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
-                            AnimatedVisibility(visible = packageInfo.isInstalled || packageInfo.isSpecial) {
-                                ElevatedActionButton(
-                                    icon = painterResource(id = R.drawable.ic_backup),
-                                    text = stringResource(id = R.string.backup),
-                                    fullWidth = true,
-                                    enabled = snackbarText.isNullOrEmpty(),
-                                    onClick = { showBackupDialog(packageInfo) }
+                            OutlinedCard(
+                                modifier = Modifier.padding(top = 8.dp),
+                                shape = RoundedCornerShape(LocalShapes.current.medium),
+                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface),
+                                colors = CardDefaults.outlinedCardColors(
+                                    containerColor = MaterialTheme.colorScheme.background
                                 )
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(IntrinsicSize.Min)
+                                        .padding(8.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    PackageIcon(item = packageInfo, imageData = imageData)
+
+                                    Column(
+                                        modifier = Modifier
+                                            .wrapContentHeight()
+                                            .width(IntrinsicSize.Min)
+                                            .weight(1f)
+                                    ) {
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .fillMaxHeight(0.4f),
+                                        ) {
+                                            Text(
+                                                text = packageInfo.packageLabel,
+                                                modifier = Modifier
+                                                    .align(Alignment.CenterVertically)
+                                                    .weight(1f),
+                                                softWrap = true,
+                                                overflow = TextOverflow.Ellipsis,
+                                                maxLines = 1,
+                                                style = MaterialTheme.typography.titleMedium
+                                            )
+                                        }
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .fillMaxHeight(0.4f),
+                                        ) {
+                                            Text(
+                                                text = packageInfo.packageName,
+                                                modifier = Modifier
+                                                    .align(Alignment.CenterVertically)
+                                                    .weight(1f),
+                                                softWrap = true,
+                                                overflow = TextOverflow.Ellipsis,
+                                                maxLines = 1,
+                                                style = MaterialTheme.typography.bodySmall,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                        }
+                                    }
+                                    AnimatedVisibility(visible = packageInfo.isInstalled && !packageInfo.isSpecial) {
+                                        RoundButton(
+                                            icon = painterResource(id = R.drawable.ic_info),
+                                            modifier = Modifier.fillMaxHeight()
+                                        ) {
+                                            val intent =
+                                                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                            intent.data =
+                                                Uri.fromParts(
+                                                    "package",
+                                                    packageInfo.packageName,
+                                                    null
+                                                )
+                                            startActivity(intent)
+                                        }
+                                    }
+                                    RoundButton(
+                                        icon = painterResource(id = R.drawable.ic_arrow_down),
+                                        modifier = Modifier.fillMaxHeight()
+                                    ) {
+                                        dismissAllowingStateLoss()
+                                    }
+                                }
                             }
-                            AnimatedVisibility(visible = packageInfo.hasBackups) {
-                                ElevatedActionButton(
-                                    icon = painterResource(id = R.drawable.ic_delete),
-                                    text = stringResource(id = R.string.delete_all_backups),
-                                    fullWidth = true,
-                                    positive = false,
-                                    enabled = snackbarText.isNullOrEmpty(),
-                                    onClick = { showDeleteAllBackupsDialog(packageInfo) }
-                                )
-                            }
-                            AnimatedVisibility(visible = packageInfo.isInstalled && !packageInfo.isSpecial) {
-                                ElevatedActionButton(
-                                    icon = painterResource(id = R.drawable.ic_force_kill),
-                                    text = stringResource(id = R.string.forceKill),
-                                    fullWidth = true,
-                                    colored = false,
-                                    onClick = { showForceKillDialog(packageInfo) }
+                            AnimatedVisibility(visible = !snackbarText.isNullOrEmpty()) {
+                                Text(
+                                    text = snackbarText.toString(),
+                                    color = MaterialTheme.colorScheme.primary,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.fillMaxWidth()
                                 )
                             }
                             AnimatedVisibility(
-                                visible = packageInfo.isInstalled && !packageInfo.isSpecial && ((packageInfo.storageStats?.dataBytes
-                                    ?: 0L) >= 0L)
+                                modifier = Modifier.fillMaxWidth(),
+                                visible = !packageInfo.isSpecial
                             ) {
-                                ElevatedActionButton(
-                                    icon = painterResource(id = R.drawable.ic_delete),
-                                    text = stringResource(id = R.string.clear_cache),
-                                    fullWidth = true,
-                                    colored = false,
-                                    onClick = { showClearCacheDialog(packageInfo) }
-                                )
-                            }
-                        }
-                        if (packageInfo.hasBackups) {
-                            BackupRecycler(productsList = packageInfo.backupsNewestFirst,
-                                onRestore = { item ->
-                                    packageInfo.let { app ->
-                                        if (!app.isSpecial && !app.isInstalled
-                                            && !item.hasApk && item.hasAppData
-                                        ) {
-                                            OABX.addInfoText(getString(R.string.notInstalledModeDataWarning))
-                                        } else {
-                                            RestoreDialogFragment(
-                                                app,
-                                                item,
-                                                this@AppSheet
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(IntrinsicSize.Min),
+                                    horizontalArrangement = Arrangement.spacedBy(2.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    // TODO Add enabled state
+                                    CardButton(
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .weight(1f),
+                                        icon = painterResource(id = R.drawable.ic_exodus),
+                                        tint = colorResource(id = R.color.ic_exodus),
+                                        description = stringResource(id = R.string.exodus_report)
+                                    ) {
+                                        requireContext().startActivity(
+                                            Intent(
+                                                Intent.ACTION_VIEW,
+                                                Uri.parse(exodusUrl(packageInfo.packageName))
                                             )
-                                                .show(
-                                                    requireActivity().supportFragmentManager,
-                                                    "restoreDialog"
-                                                )
+                                        )
+                                    }
+                                    AnimatedVisibility(
+                                        visible = true, //appInfo.isInstalled && ! appInfo.isDisabled,
+                                        modifier = Modifier.weight(1f)
+                                    ) {
+                                        CardButton(
+                                            enabled = packageInfo.isInstalled && !packageInfo.isDisabled,
+                                            modifier = Modifier
+                                                .fillMaxHeight()
+                                                .weight(1f),
+                                            icon = painterResource(id = R.drawable.ic_launchable),
+                                            tint = colorResource(id = R.color.ic_obb),
+                                            description = stringResource(id = R.string.launch_app)
+                                        ) {
+                                            requireContext().packageManager.getLaunchIntentForPackage(
+                                                packageInfo.packageName
+                                            )?.let {
+                                                startActivity(it)
+                                            }
                                         }
                                     }
-                                },
-                                onDelete = { item ->
-                                    packageInfo.let { app ->
-                                        AlertDialog.Builder(requireContext())
-                                            .setTitle(app.packageLabel)
-                                            .setMessage(R.string.deleteBackupDialogMessage)
-                                            .setPositiveButton(R.string.dialogYes) { dialog: DialogInterface?, _: Int ->
-                                                OABX.addInfoText(
-                                                    "${app.packageLabel}: ${
-                                                        getString(
-                                                            R.string.deleteBackup
-                                                        )
-                                                    }"
+                                    AnimatedVisibility(
+                                        visible = packageInfo.isInstalled,
+                                        modifier = Modifier.weight(1f)
+                                    ) {
+                                        CardButton(
+                                            modifier = Modifier
+                                                .fillMaxHeight()
+                                                .weight(1f),
+                                            icon = painterResource(
+                                                id = if (packageInfo.isDisabled) R.drawable.ic_battery_optimization
+                                                else R.drawable.ic_exclude
+                                            ),
+                                            tint = if (packageInfo.isDisabled) MaterialTheme.colorScheme.primaryContainer
+                                            else MaterialTheme.colorScheme.secondary,
+                                            description = stringResource(
+                                                id = if (packageInfo.isDisabled) R.string.enablePackage
+                                                else R.string.disablePackage
+                                            ),
+                                            onClick = { showEnableDisableDialog(packageInfo.isDisabled) }
+                                        )
+                                    }
+                                    AnimatedVisibility(
+                                        visible = packageInfo.isInstalled && !packageInfo.isSystem,
+                                        modifier = Modifier.weight(1f)
+                                    ) {
+                                        CardButton(
+                                            modifier = Modifier
+                                                .fillMaxHeight()
+                                                .weight(1f),
+                                            icon = painterResource(id = R.drawable.ic_delete),
+                                            tint = MaterialTheme.colorScheme.secondary,
+                                            description = stringResource(id = R.string.uninstall),
+                                            onClick = {
+                                                snackbarHostState.showUninstallDialog(
+                                                    packageInfo,
+                                                    coroutineScope
                                                 )
-                                                if (!app.hasBackups) {
-                                                    Timber.w("UI Issue! Tried to delete backups for app without backups.")
-                                                    dialog?.dismiss()
-                                                }
-                                                viewModel.deleteBackup(item)
                                             }
-                                            .setNegativeButton(R.string.dialogNo, null)
-                                            .show()
+                                        )
+                                    }
+                                    CardButton(
+                                        modifier = Modifier
+                                            .weight(1f),
+                                        icon = painterResource(id = R.drawable.ic_blocklist),
+                                        tint = colorResource(id = R.color.ic_updated),
+                                        description = stringResource(id = R.string.global_blocklist_add)
+                                    ) {
+                                        requireMainActivity().viewModel.addToBlocklist(packageInfo.packageName)
                                     }
                                 }
+                            }
+                            AnimatedVisibility(
+                                visible = !packageInfo.isSpecial,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .width(IntrinsicSize.Min)
+                                ) {
+                                    Row {
+                                        Text(text = stringResource(id = R.string.app_s_type_title))
+                                        Text(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.End,
+                                            text = stringResource(id = if (packageInfo.isSpecial) R.string.apptype_special else if (packageInfo.isSystem) R.string.apptype_system else R.string.apptype_user),
+                                            color = when {
+                                                !packageInfo.isInstalled -> MaterialTheme.colorScheme.onSurfaceVariant
+                                                packageInfo.isDisabled -> MaterialTheme.colorScheme.surfaceVariant
+                                                packageInfo.isSpecial -> colorResource(R.color.ic_special)
+                                                packageInfo.isSystem -> colorResource(R.color.ic_system)
+                                                else -> colorResource(R.color.ic_user)
+                                            }
+                                        )
+                                    }
+                                    Row {
+                                        Text(text = stringResource(id = R.string.version_name_title))
+                                        Text(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.End,
+                                            text = if (packageInfo.isUpdated) "${packageInfo.latestBackup?.versionName.orEmpty()} (${packageInfo.versionName})"
+                                            else packageInfo.versionName.orEmpty(),
+                                            color = if (packageInfo.isUpdated) Updated else MaterialTheme.colorScheme.onBackground
+                                        )
+                                    }
+                                    AnimatedVisibility(
+                                        visible = packageInfo.isInstalled,
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(IntrinsicSize.Min),
+                                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                        ) {
+                                            Column(
+                                                modifier = Modifier
+                                                    .weight(1f)
+                                                    .width(IntrinsicSize.Min)
+                                            ) {
+                                                Text(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    text = stringResource(id = R.string.app_size)
+                                                )
+                                                Text(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    textAlign = TextAlign.End,
+                                                    text = Formatter.formatFileSize(
+                                                        requireContext(),
+                                                        packageInfo.storageStats?.appBytes ?: 0
+                                                    )
+                                                )
+                                                Text(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    text = stringResource(id = R.string.split_apks)
+                                                )
+                                                Text(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    textAlign = TextAlign.End,
+                                                    text = stringResource(id = if (packageInfo.apkSplits.isEmpty()) R.string.dialogNo else R.string.dialogYes)
+                                                )
+                                            }
+                                            Divider(
+                                                color = MaterialTheme.colorScheme.surface,
+                                                modifier = Modifier
+                                                    .fillMaxHeight()
+                                                    .width(1.dp)
+                                            )
+                                            Column(
+                                                modifier = Modifier
+                                                    .weight(1f)
+                                                    .width(IntrinsicSize.Min)
+                                            ) {
+                                                AnimatedVisibility(
+                                                    visible = packageInfo.isInstalled,
+                                                    modifier = Modifier.fillMaxWidth()
+                                                ) {
+                                                    Column {
+                                                        Text(
+                                                            modifier = Modifier.fillMaxWidth(),
+                                                            text = stringResource(id = R.string.data_size)
+                                                        )
+                                                        Text(
+                                                            modifier = Modifier.fillMaxWidth(),
+                                                            textAlign = TextAlign.End,
+                                                            text = Formatter.formatFileSize(
+                                                                requireContext(),
+                                                                packageInfo.storageStats?.dataBytes
+                                                                    ?: 0
+                                                            ),
+                                                        )
+                                                        Text(
+                                                            modifier = Modifier.fillMaxWidth(),
+                                                            text = stringResource(id = R.string.cache_size)
+                                                        )
+                                                        Text(
+                                                            modifier = Modifier.fillMaxWidth(),
+                                                            textAlign = TextAlign.End,
+                                                            text = Formatter.formatFileSize(
+                                                                requireContext(),
+                                                                packageInfo.storageStats?.cacheBytes
+                                                                    ?: 0
+                                                            ),
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            TitleText(textId = R.string.title_tags)
+                            TagsBlock(
+                                tags = appExtras?.customTags ?: mutableSetOf(),
+                                onRemove = {
+                                    viewModel.setExtras(appExtras?.apply {
+                                        customTags.remove(it)
+                                    })
+                                },
+                                onAdd = {
+                                    viewModel.setExtras(appExtras?.apply {
+                                        if (customTags.isNotEmpty())
+                                            customTags.add(it)
+                                        else
+                                            customTags = mutableSetOf(it)
+                                    })
+                                }
                             )
+                            TitleText(textId = R.string.title_note)
+                            MorphableTextField(
+                                text = appExtras?.note,
+                                onCancel = {
+                                },
+                                onSave = {
+                                    viewModel.setExtras(appExtras?.apply { note = it })
+                                }
+                            )
+                            TitleText(textId = R.string.available_actions)
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                AnimatedVisibility(visible = packageInfo.isInstalled || packageInfo.isSpecial) {
+                                    ElevatedActionButton(
+                                        icon = painterResource(id = R.drawable.ic_backup),
+                                        text = stringResource(id = R.string.backup),
+                                        fullWidth = true,
+                                        enabled = snackbarText.isNullOrEmpty(),
+                                        onClick = { showBackupDialog(packageInfo) }
+                                    )
+                                }
+                                AnimatedVisibility(visible = packageInfo.hasBackups) {
+                                    ElevatedActionButton(
+                                        icon = painterResource(id = R.drawable.ic_delete),
+                                        text = stringResource(id = R.string.delete_all_backups),
+                                        fullWidth = true,
+                                        positive = false,
+                                        enabled = snackbarText.isNullOrEmpty(),
+                                        onClick = {
+                                            snackbarHostState.showDeleteAllBackupsDialog(
+                                                packageInfo,
+                                                coroutineScope
+                                            )
+                                        }
+                                    )
+                                }
+                                AnimatedVisibility(visible = packageInfo.isInstalled && !packageInfo.isSpecial) {
+                                    ElevatedActionButton(
+                                        icon = painterResource(id = R.drawable.ic_force_kill),
+                                        text = stringResource(id = R.string.forceKill),
+                                        fullWidth = true,
+                                        colored = false,
+                                        onClick = { showForceKillDialog(packageInfo) }
+                                    )
+                                }
+                                AnimatedVisibility(
+                                    visible = packageInfo.isInstalled && !packageInfo.isSpecial && ((packageInfo.storageStats?.dataBytes
+                                        ?: 0L) >= 0L)
+                                ) {
+                                    ElevatedActionButton(
+                                        icon = painterResource(id = R.drawable.ic_delete),
+                                        text = stringResource(id = R.string.clear_cache),
+                                        fullWidth = true,
+                                        colored = false,
+                                        onClick = { showClearCacheDialog(packageInfo) }
+                                    )
+                                }
+                            }
+                            if (packageInfo.hasBackups) {
+                                BackupRecycler(productsList = packageInfo.backupsNewestFirst,
+                                    onRestore = { item ->
+                                        packageInfo.let { app ->
+                                            if (!app.isSpecial && !app.isInstalled
+                                                && !item.hasApk && item.hasAppData
+                                            ) {
+                                                snackbarHostState.show(
+                                                    coroutineScope = coroutineScope,
+                                                    message = getString(R.string.notInstalledModeDataWarning)
+                                                )
+                                            } else {
+                                                RestoreDialogFragment(
+                                                    app,
+                                                    item,
+                                                    this@AppSheet
+                                                )
+                                                    .show(
+                                                        requireActivity().supportFragmentManager,
+                                                        "restoreDialog"
+                                                    )
+                                            }
+                                        }
+                                    },
+                                    onDelete = { item ->
+                                        packageInfo.let { app ->
+                                            AlertDialog.Builder(requireContext())
+                                                .setTitle(app.packageLabel)
+                                                .setMessage(R.string.deleteBackupDialogMessage)
+                                                .setPositiveButton(R.string.dialogYes) { dialog: DialogInterface?, _: Int ->
+                                                    snackbarHostState.show(
+                                                        coroutineScope = coroutineScope,
+                                                        message = "${app.packageLabel}: ${
+                                                            getString(
+                                                                R.string.deleteBackup
+                                                            )
+                                                        }"
+                                                    )
+                                                    if (!app.hasBackups) {
+                                                        Timber.w("UI Issue! Tried to delete backups for app without backups.")
+                                                        dialog?.dismiss()
+                                                    }
+                                                    viewModel.deleteBackup(item)
+                                                }
+                                                .setNegativeButton(R.string.dialogNo, null)
+                                                .show()
+                                        }
+                                    }
+                                )
+                            }
                         }
                     }
                 }
@@ -650,13 +679,19 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
         }
     }
 
-    private fun showUninstallDialog(app: Package) {
+    private fun SnackbarHostState.showUninstallDialog(
+        app: Package,
+        coroutineScope: CoroutineScope
+    ) {
         AlertDialog.Builder(requireContext())
             .setTitle(app.packageLabel)
             .setMessage(R.string.uninstallDialogMessage)
             .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
-                OABX.addInfoText("${app.packageLabel}: ${getString(R.string.uninstallProgress)}")
                 viewModel.uninstallApp()
+                this.show(
+                    coroutineScope = coroutineScope,
+                    message = "${app.packageLabel}: ${getString(R.string.uninstallProgress)}"
+                )
             }
             .setNegativeButton(R.string.dialogNo, null)
             .show()
@@ -667,19 +702,19 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
             .show(requireActivity().supportFragmentManager, "backupDialog")
     }
 
-    private fun showDeleteAllBackupsDialog(app: Package) {
+    private fun SnackbarHostState.showDeleteAllBackupsDialog(
+        app: Package,
+        coroutineScope: CoroutineScope
+    ) {
         AlertDialog.Builder(requireContext())
             .setTitle(app.packageLabel)
             .setMessage(R.string.deleteBackupDialogMessage)
             .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
-                OABX.addInfoText(
-                    "${app.packageLabel}: ${
-                        getString(
-                            R.string.delete_all_backups
-                        )
-                    }"
-                )
                 viewModel.deleteAllBackups()
+                this.show(
+                    coroutineScope = coroutineScope,
+                    message = "${app.packageLabel}: ${getString(R.string.delete_all_backups)}"
+                )
             }
             .setNegativeButton(R.string.dialogNo, null)
             .show()

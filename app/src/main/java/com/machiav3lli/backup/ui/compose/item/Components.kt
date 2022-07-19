@@ -102,6 +102,20 @@ fun ButtonIcon(
 }
 
 @Composable
+fun PrefIcon(
+    @DrawableRes iconId: Int,
+    text: String,
+    tint: Color? = null
+) {
+    Icon(
+        painter = painterResource(id = iconId),
+        contentDescription = text,
+        modifier = Modifier.size(32.dp),
+        tint = tint ?: LocalContentColor.current
+    )
+}
+
+@Composable
 fun PackageIcon(
     item: Package?,
     imageData: Any
@@ -223,7 +237,7 @@ fun TopBarButton(
         modifier = modifier,
         colors = ButtonDefaults.elevatedButtonColors(
             containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary
+            contentColor = MaterialTheme.colorScheme.onSurface
         ),
         contentPadding = PaddingValues(horizontal = 2.dp, vertical = 10.dp),
         shape = MaterialTheme.shapes.medium,

@@ -22,7 +22,6 @@
 
     <!-- Sheets & Dialogs -->
     <style name="Sheet.Bottom.Style" parent="Widget.Material3.BottomSheet.Modal">
-        <item name="chipStyle">@style/Chip.Filter</item>
         <item name="android:minHeight">750dp</item>
         <item name="backgroundTint">?backgroundColor</item>
         <item name="enableEdgeToEdge">true</item>
@@ -38,9 +37,9 @@
     </style>
 
     <style name="Bar.BottomNavigation" parent="Widget.Material3.BottomNavigationView">
-        <item name="itemIconTint">?colorControlNormal</item>
+        <item name="itemIconTint">?colorOnSurface</item>
         <item name="labelVisibilityMode">selected</item>
-        <item name="itemRippleColor">?colorAccent</item>
+        <item name="itemRippleColor">?colorPrimary</item>
         <item name="itemActiveIndicatorStyle">@style/Bar.Bottom.ActiveIndicator</item>
         <item name="itemIconSize">32dp</item>
         <item name="elevation">0dp</item>
@@ -51,12 +50,6 @@
     </style>
 
     <style name="AppTheme.PopupTheme" parent="ThemeOverlay.Material3.Dark" />
-
-    <style name="Widget.Toolbar" parent="Widget.Material3.Toolbar">
-        <item name="android:background">?android:windowBackground</item>
-        <item name="titleTextAppearance">@style/TextAppearance.Toolbar.Title</item>
-        <item name="popupTheme">@style/AppTheme.PopupTheme</item>
-    </style>
 
     <style name="Bar.AppBar" parent="Widget.Material3.AppBarLayout">
         <item name="android:layout_width">match_parent</item>
@@ -70,46 +63,6 @@
     </style>
 
     <!-- Buttons, Chips & Widgets -->
-    <style name="ItemLayout">
-        <item name="android:background">@drawable/bg_card_ripple</item>
-        <item name="android:orientation">horizontal</item>
-        <item name="android:padding">@dimen/cards_spacing</item>
-        <item name="android:clipToPadding">false</item>
-        <item name="android:elevation">4dp</item>
-    </style>
-
-    <style name="Cursor.Drawable" parent="Widget.AppCompat.AutoCompleteTextView">
-        <item name="android:textCursorDrawable">@drawable/cursor</item>
-    </style>
-
-    <style name="ImageButton.Positive" parent="Widget.AppCompat.ImageButton">
-        <item name="android:background">@drawable/bg_button_positive_ripple</item>
-        <item name="android:tint">?colorControlNormal</item>
-        <item name="android:stateListAnimator">@null</item>
-        <item name="android:textColor">?colorControlNormal</item>
-        <item name="android:elevation">4dp</item>
-    </style>
-
-    <style name="ImageButton.Negative" parent="ImageButton.Positive">
-        <item name="android:background">@drawable/bg_button_negative_ripple</item>
-    </style>
-
-    <style name="ImageButton.Exodus" parent="ImageButton.Positive">
-        <item name="android:background">@drawable/bg_button_exodus_ripple</item>
-    </style>
-
-    <style name="ImageButton.Launch" parent="ImageButton.Positive">
-        <item name="android:background">@drawable/bg_button_launch_ripple</item>
-    </style>
-
-    <style name="ImageButton.Neutral" parent="ImageButton.Positive">
-        <item name="android:background">@drawable/bg_button_neutral_ripple</item>
-    </style>
-
-    <style name="ImageButton.Blocklist" parent="ImageButton.Positive">
-        <item name="android:background">@drawable/bg_button_blocklist_ripple</item>
-    </style>
-
     <style name="Button.Round" parent="Widget.MaterialComponents.Button">
         <item name="android:background">@drawable/bg_button_round_accent</item>
         <item name="android:elevation">@dimen/cards_spacing</item>
@@ -117,101 +70,8 @@
 
     <style name="Button.Rectangular" parent="Widget.Material3.Button.TextButton.Icon">
         <item name="android:background">@drawable/bg_button_rectangular_transparent</item>
-        <item name="iconTint">?colorControlNormal</item>
-        <item name="android:textColor">?colorControlNormal</item>
+        <item name="iconTint">?colorOnSurface</item>
+        <item name="android:textColor">?colorOnSurface</item>
         <item name="android:padding">@dimen/cards_spacing</item>
-    </style>
-
-    <style name="Chip.Group" parent="Widget.Material3.ChipGroup">
-        <item name="chipSpacingHorizontal">@dimen/cards_spacing</item>
-        <item name="selectionRequired">true</item>
-        <item name="singleSelection">true</item>
-    </style>
-
-    <style name="Chip.Filter" parent="Widget.Material3.Chip.Suggestion">
-        <item name="chipBackgroundColor">@android:color/transparent</item>
-        <item name="chipStrokeColor">@color/chip_stroke</item>
-        <item name="chipSurfaceColor">@android:color/transparent</item>
-        <item name="android:textColor">@color/chip_text</item>
-        <item name="labelVisibilityMode">labeled</item>
-        <item name="checkedIconTint">?colorAccent</item>
-        <item name="chipStrokeWidth">1dp</item>
-    </style>
-
-    <style name="Chip.Mode" parent="Widget.Material3.Chip.Filter">
-        <item name="chipBackgroundColor">@android:color/transparent</item>
-        <item name="chipStrokeColor">@color/chip_stroke</item>
-        <item name="chipSurfaceColor">@android:color/transparent</item>
-        <item name="android:textColor">@color/chip_text</item>
-        <item name="labelVisibilityMode">labeled</item>
-        <item name="checkedIconTint">?colorAccent</item>
-        <item name="chipStrokeWidth">1dp</item>
-        <item name="chipIconVisible">true</item>
-        <item name="checkedIconVisible">false</item>
-        <item name="android:stateListAnimator">@null</item>
-    </style>
-
-    <style name="Chip.Data" parent="Widget.Material3.Chip.Suggestion">
-        <item name="chipBackgroundColor">@android:color/transparent</item>
-        <item name="chipStrokeColor">@color/ic_data</item>
-        <item name="rippleColor">@color/ic_data</item>
-        <item name="chipSurfaceColor">@color/chip_surface_data</item>
-        <item name="android:textColor">@color/chip_text_data</item>
-        <item name="chipIconTint">@color/chip_text_data</item>
-        <item name="chipIcon">@drawable/ic_data</item>
-        <item name="labelVisibilityMode">labeled</item>
-        <item name="chipStrokeWidth">1dp</item>
-        <item name="chipCornerRadius">8dp</item>
-        <item name="textEndPadding">0dp</item>
-        <item name="textStartPadding">0dp</item>
-        <item name="android:stateListAnimator">@null</item>
-    </style>
-
-    <style name="Chip.Apk" parent="Widget.Material3.Chip.Suggestion">
-        <item name="chipBackgroundColor">@android:color/transparent</item>
-        <item name="chipStrokeColor">@color/ic_apk</item>
-        <item name="rippleColor">@color/ic_apk</item>
-        <item name="chipSurfaceColor">@color/chip_surface_apk</item>
-        <item name="android:textColor">@color/chip_text_apk</item>
-        <item name="chipIconTint">@color/chip_text_apk</item>
-        <item name="chipIcon">@drawable/ic_apk</item>
-        <item name="labelVisibilityMode">labeled</item>
-        <item name="chipStrokeWidth">1dp</item>
-        <item name="chipCornerRadius">8dp</item>
-        <item name="textEndPadding">0dp</item>
-        <item name="textStartPadding">0dp</item>
-        <item name="android:stateListAnimator">@null</item>
-    </style>
-
-    <style name="Chip.Action" parent="Widget.Material3.Chip.Assist.Elevated">
-        <item name="chipBackgroundColor">?colorPrimaryDark</item>
-        <item name="labelVisibilityMode">labeled</item>
-        <item name="chipCornerRadius">8dp</item>
-        <item name="chipStrokeWidth">0dp</item>
-        <item name="rippleColor">?backgroundColor</item>
-        <item name="android:textColor">?colorControlNormal</item>
-    </style>
-
-    <style name="Chip.Action.Positive" parent="Chip.Action">
-        <item name="android:textColor">?android:strokeColor</item>
-        <item name="chipIconTint">?android:strokeColor</item>
-        <item name="rippleColor">?colorPrimary</item>
-        <item name="chipBackgroundColor">@color/chip_surface_positive</item>
-    </style>
-
-    <style name="Chip.Action.Negative" parent="Chip.Action">
-        <item name="android:textColor">?android:strokeColor</item>
-        <item name="chipIconTint">?android:strokeColor</item>
-        <item name="rippleColor">?colorSecondary</item>
-        <item name="chipBackgroundColor">@color/chip_surface_negative</item>
-    </style>
-
-    <style name="Chip.Tag" parent="Widget.Material3.Chip.Suggestion">
-        <item name="chipBackgroundColor">@android:color/transparent</item>
-        <item name="chipStrokeColor">?colorControlNormal</item>
-        <item name="chipSurfaceColor">@android:color/transparent</item>
-        <item name="android:textColor">?colorControlNormal</item>
-        <item name="labelVisibilityMode">labeled</item>
-        <item name="chipStrokeWidth">1dp</item>
     </style>
 </resources>

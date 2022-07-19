@@ -340,4 +340,15 @@
     <string name="intro_permission_calllogs">L\'application a besoin de cette autorisation pour pouvoir sauvegarder/restaurer vos journaux d\'appels.</string>
     <string name="enabled">Activé</string>
     <string name="sortDesc">Descendant</string>
+    <string name="prefs_loadingtoasts">Chargement des toasts</string>
+    <string name="prefs_loadingtoasts_summary">Afficher les toasts quand la liste se charge</string>
+    <string name="edit_note">Modifier la note</string>
+    <string name="add_tag">Ajouter une nouvelle étiquette</string>
+    <string name="batch">Par lots</string>
+    <string name="sortAppSize">Taille de l\'app</string>
+    <string name="sortBackupSize">Taille de la sauvegarde</string>
+    <string name="sortAppDataSize">Taille des données de l\'app</string>
+    <string name="prefs_installerpackagename">Le nom du paquet d\'installation :</string>
+    <string name="prefs_sessionIinstaller_summary">Utiliser installateur de session plutôt que la version basique. Plus lent mais évite certains problèmes avec Android 13 et plus</string>
+    <string name="prefs_sessionIinstaller">Utiliser l\'installateur de session</string>
 </resources>

@@ -16,10 +16,10 @@
  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  -->
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="?colorAccent">
+    android:color="?colorPrimary">
     <item android:id="@android:id/mask">
         <shape android:shape="rectangle">
-            <solid android:color="?colorPrimaryDark" />
+            <solid android:color="?colorPrimary" />
         </shape>
     </item>
     <item android:id="@android:id/background">

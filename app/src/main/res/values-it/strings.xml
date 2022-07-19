@@ -346,4 +346,9 @@
     <string name="prefs_loadingtoasts">Caricamento toasts</string>
     <string name="prefs_sessionIinstaller">Usa session installer</string>
     <string name="prefs_sessionIinstaller_summary">Usa session installer invece dell\'installer base. Più lento ma evita problemi con Android 13+</string>
+    <string name="sortBackupSize">Dimensioni di backup</string>
+    <string name="add_tag">Aggiungi nuovo tag</string>
+    <string name="sortAppSize">Dimensioni dell\'app</string>
+    <string name="sortAppDataSize">Dimensioni dei dati dell\'app</string>
+    <string name="edit_note">Modifica nota</string>
 </resources>

@@ -29,6 +29,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.google.android.material.color.DynamicColors
+import com.google.android.material.color.DynamicColorsOptions
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
@@ -36,8 +38,8 @@ import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
+import com.machiav3lli.backup.utils.themeStyle
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -77,6 +79,12 @@ class OABX : Application() {
     // TODO Add BroadcastReceiver for (UN)INSTALL_PACKAGE intents
     override fun onCreate() {
         super.onCreate()
+        DynamicColors.applyToActivitiesIfAvailable(
+            this,
+            DynamicColorsOptions.Builder()
+                .setPrecondition { _, _ -> themeStyle == PREFS_THEME_DYNAMIC }
+                .build()
+        )
         appRef = WeakReference(this)
 
         initShellHandler()
@@ -164,11 +172,23 @@ class OABX : Application() {
         fun prefFlag(name: String, default: Boolean) = context.getDefaultSharedPreferences()
             .getBoolean(name, default)
 
+        fun setPrefFlag(name: String, value: Boolean) = context.getDefaultSharedPreferences()
+            .edit()
+            .putBoolean(name, value).apply()
+
         fun prefString(name: String, default: String) = context.getDefaultSharedPreferences()
             .getString(name, default)
 
+        fun setPrefString(name: String, value: String) = context.getDefaultSharedPreferences()
+            .edit()
+            .putString(name, value).apply()
+
         fun prefInt(name: String, default: Int) = context.getDefaultSharedPreferences()
             .getInt(name, default)
+
+        fun setPrefInt(name: String, value: Int) = context.getDefaultSharedPreferences()
+            .edit()
+            .putInt(name, value).apply()
 
         var infoLines = mutableStateListOf<String>()
 
@@ -181,14 +201,14 @@ class OABX : Application() {
 
         fun addInfoText(value: String) {
             infoLines.add(value)
-            if(infoLines.size > nInfoLines)
+            if (infoLines.size > nInfoLines)
                 infoLines.drop(1)
         }
 
         fun getInfoText(n: Int, fill: String? = null): String {
             val lines = infoLines.takeLast(n).toMutableList()
-            if(fill != null)
-                while(lines.size < n)
+            if (fill != null)
+                while (lines.size < n)
                     lines.add(fill)
             return lines.joinToString("\n")
         }

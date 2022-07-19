@@ -20,12 +20,14 @@
         <item>@string/prefs_theme_light</item>
         <item>@string/prefs_theme_dark</item>
         <item>@string/prefs_theme_system</item>
+        <item>@string/prefs_theme_dynamic</item>
     </string-array>
 
     <string-array name="themeEntryValues">
         <item>light</item>
         <item>dark</item>
         <item>system</item>
+        <item>dynamic</item>
     </string-array>
 
     <string-array name="accentEntries">

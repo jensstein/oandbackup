@@ -38,7 +38,7 @@ android {
         applicationId = "com.machiav3lli.backup"
         minSdk = 26
         targetSdk = 32
-        versionCode = 8100
+        versionCode = 8101
         versionName = "8.1.0"
         buildConfigField("int", "MAJOR", "8")
         buildConfigField("int", "MINOR", "1")
@@ -65,7 +65,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            versionNameSuffix = "-alpha1"
+            versionNameSuffix = "-rc1"
             isMinifyEnabled = true
             manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher"
             manifestPlaceholders["appIconRound"] = "@mipmap/ic_launcher_round"
@@ -78,7 +78,7 @@ android {
         }
         create("neo") {
             applicationIdSuffix = ".neo"
-            versionNameSuffix = "-alpha1"
+            versionNameSuffix = "-rc1"
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -141,7 +141,7 @@ dependencies {
 
     // UI
     implementation("androidx.fragment:fragment-ktx:1.5.0")
-    implementation("com.google.android.material:material:1.7.0-alpha02")
+    implementation("com.google.android.material:material:1.7.0-alpha03")
     implementation("androidx.preference:preference-ktx:1.2.0")
     implementation("androidx.navigation:navigation-fragment-ktx:$vNavigation")
     implementation("androidx.navigation:navigation-ui-ktx:$vNavigation")
@@ -154,7 +154,7 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:$vCompose")
     implementation("androidx.compose.runtime:runtime-livedata:$vCompose")
     implementation("androidx.navigation:navigation-compose:$vNavigation")
-    implementation("com.google.android.material:compose-theme-adapter-3:1.0.13")
+    implementation("com.google.android.material:compose-theme-adapter-3:1.0.14")
     implementation("androidx.compose.material3:material3:1.0.0-alpha14")
     implementation("com.google.accompanist:accompanist-flowlayout:0.24.13-rc")
 

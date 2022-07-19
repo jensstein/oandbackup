@@ -267,13 +267,13 @@
     <string name="sched_imported">Розклад успішно імпортовано</string>
     <plurals name="updated_apps">
         <item quantity="one">%d оновлений додаток</item>
-        <item quantity="few">%d оновлених додатків</item>
+        <item quantity="few">%d оновлених додатки</item>
         <item quantity="many">%d оновлених додатків</item>
         <item quantity="other">%d оновлених додатків</item>
     </plurals>
     <plurals name="days_left">
         <item quantity="one">%d день,</item>
-        <item quantity="few">%d днів,</item>
+        <item quantity="few">%d дні,</item>
         <item quantity="many">%d днів,</item>
         <item quantity="other">%d днів,</item>
     </plurals>
@@ -341,4 +341,14 @@
     <string name="prefs_loadingtoasts">Прогрес завантаження</string>
     <string name="supended_apps_cleanup">вилучити залишені призупинені застосунки</string>
     <string name="root_missing">ROOT відсутній!</string>
+    <string name="sortAppSize">Розмір застосунку</string>
+    <string name="sortAppDataSize">Розмір даних застосунку</string>
+    <string name="sortBackupSize">Розмір запасної копії</string>
+    <string name="root_is_mandatory">Оскільки застосунки ізольовані один від одного, щоб запасати та відновлювати їх дані, потрібен доступ від імені суперкористувача.</string>
+    <string name="add_tag">Додати нову позначку</string>
+    <string name="edit_note">Змінити примітку</string>
+    <string name="prefs_sessionIinstaller">Використовувати встановлювач сеансу</string>
+    <string name="prefs_sessionIinstaller_summary">Використовувати встановлювач сеансів замість основного. Буде повільніше, але дозволяє уникнути проблем на Android 13+</string>
+    <string name="prefs_installerpackagename">Ім\'я пакета встановлювача:</string>
+    <string name="see_faq">Перегляньте поширенні запитання!</string>
 </resources>
