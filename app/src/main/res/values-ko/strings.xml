@@ -336,4 +336,9 @@
     <string name="intro_permission_storage_location_warning">기본 저장 디렉토리나 다운로드 폴더를 선택하지 말고 백업 전용 폴더를 만드십시오. 이에 대한 자세한 내용은 FAQ를 참고 바랍니다</string>
     <string name="sortAsc">오름차순</string>
     <string name="prefs_secondary_1">Ocean Teal</string>
+    <string name="sortAppSize">앱 크기</string>
+    <string name="sortAppDataSize">앱 데이터 크기</string>
+    <string name="sortBackupSize">백업 크기</string>
+    <string name="add_tag">새 태그 추가</string>
+    <string name="edit_note">노트 수정</string>
 </resources>

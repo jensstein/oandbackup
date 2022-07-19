@@ -351,4 +351,9 @@
     <string name="prefs_sessionIinstaller">استخدم مثبت الجلسة</string>
     <string name="prefs_installerpackagename">اسم حزمة المثبت:</string>
     <string name="prefs_sessionIinstaller_summary">استخدم مثبت الجلسة بدلا من المثبت الأساسي. أبطأ ولكن يتجنب المشكلات المتعلقة بنظام Android 13+</string>
+    <string name="sortAppSize">حجم التطبيق</string>
+    <string name="sortAppDataSize">حجم بيانات التطبيق</string>
+    <string name="sortBackupSize">حجم النسخ الاحتياطي</string>
+    <string name="add_tag">إضافة علامة جديدة</string>
+    <string name="edit_note">تحرير الملاحظة</string>
 </resources>

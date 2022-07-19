@@ -351,4 +351,9 @@
     <string name="prefs_installerpackagename">Имя пакета установщика:</string>
     <string name="see_faq">Смотрите FAQ (Часто задаваемые вопросы)!</string>
     <string name="root_is_mandatory">Так как приложения изолированы друг от друга, root доступ обязателен для создания резервных копий и восстановления их данных.</string>
+    <string name="sortAppDataSize">Размер данных приложения</string>
+    <string name="sortBackupSize">Размер резервной копии</string>
+    <string name="sortAppSize">Размер приложения</string>
+    <string name="add_tag">Добавить новую метку</string>
+    <string name="edit_note">Редактировать заметку</string>
 </resources>
