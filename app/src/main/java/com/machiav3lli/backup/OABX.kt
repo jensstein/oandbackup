@@ -172,11 +172,23 @@ class OABX : Application() {
         fun prefFlag(name: String, default: Boolean) = context.getDefaultSharedPreferences()
             .getBoolean(name, default)
 
+        fun setPrefFlag(name: String, value: Boolean) = context.getDefaultSharedPreferences()
+            .edit()
+            .putBoolean(name, value).apply()
+
         fun prefString(name: String, default: String) = context.getDefaultSharedPreferences()
             .getString(name, default)
 
+        fun setPrefString(name: String, value: String) = context.getDefaultSharedPreferences()
+            .edit()
+            .putString(name, value).apply()
+
         fun prefInt(name: String, default: Int) = context.getDefaultSharedPreferences()
             .getInt(name, default)
+
+        fun setPrefInt(name: String, value: Int) = context.getDefaultSharedPreferences()
+            .edit()
+            .putInt(name, value).apply()
 
         var infoLines = mutableStateListOf<String>()
 
