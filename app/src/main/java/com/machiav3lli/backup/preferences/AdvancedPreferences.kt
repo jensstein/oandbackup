@@ -1,14 +1,53 @@
 package com.machiav3lli.backup.preferences
 
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.PREFS_ALLOWDOWNGRADE
 import com.machiav3lli.backup.PREFS_DISABLEVERIFICATION
 import com.machiav3lli.backup.PREFS_ENABLESPECIALBACKUPS
 import com.machiav3lli.backup.PREFS_RESTOREWITHALLPERMISSIONS
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.ui.compose.item.SwitchPreference
+import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.DeData
 import com.machiav3lli.backup.ui.compose.theme.Special
 import com.machiav3lli.backup.ui.compose.theme.Updated
 import com.machiav3lli.backup.ui.item.Pref
+import com.machiav3lli.backup.utils.sortFilterModel
+
+@Composable
+fun AdvancedPrefsPage() {
+    val context = LocalContext.current
+    val prefs = listOf<Pref>(
+        EnableSpecialsPref,
+        DisableVerificationPref,
+        RestoreAllPermissionsPref,
+        AllowDowngradePref
+    )
+
+    AppTheme(
+        darkTheme = isSystemInDarkTheme()
+    ) {
+        LazyColumn(contentPadding = PaddingValues(8.dp)) {
+            items(items = prefs) {
+                when (it) {
+                    EnableSpecialsPref -> SwitchPreference(pref = it as Pref.BooleanPref) {
+                        val newModel = context.sortFilterModel
+                        newModel.mainFilter = newModel.mainFilter and MAIN_FILTER_DEFAULT
+                        context.sortFilterModel = newModel
+                    }
+                    is Pref.BooleanPref -> SwitchPreference(pref = it)
+                }
+            }
+        }
+    }
+}
 
 val EnableSpecialsPref = Pref.BooleanPref(
     key = PREFS_ENABLESPECIALBACKUPS,
