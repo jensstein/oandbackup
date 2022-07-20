@@ -36,6 +36,7 @@ import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.PREFS_FAKEBACKUPTIME
 import com.machiav3lli.backup.PREFS_MAXRETRIES
 import com.machiav3lli.backup.PREFS_USEEXPEDITED
 import com.machiav3lli.backup.PREFS_USEFOREGROUND
@@ -81,7 +82,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         }
         Timber.i(message)
 
-        if (OABX.prefInt("fakeBackupMinutes", 0) > 0) {
+        if (OABX.prefInt(PREFS_FAKEBACKUPTIME, 0) > 0) {
 
             val step = 1000L * 1
             val startTime = System.currentTimeMillis()
