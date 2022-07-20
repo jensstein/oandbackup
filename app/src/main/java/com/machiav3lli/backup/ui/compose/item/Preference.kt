@@ -118,11 +118,12 @@ fun SwitchPreference(
         titleId = pref.titleId,
         summaryId = pref.summaryId,
         icon = {
-            PrefIcon(
+            if (pref.iconId != -1) PrefIcon(
                 iconId = pref.iconId,
                 text = stringResource(id = pref.titleId),
                 tint = pref.iconTint
             )
+            else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
         isEnabled = isEnabled,
         onClick = {
@@ -165,11 +166,12 @@ fun CheckboxPreference(
         titleId = pref.titleId,
         summaryId = pref.summaryId,
         icon = {
-            PrefIcon(
+            if (pref.iconId != -1) PrefIcon(
                 iconId = pref.iconId,
                 text = stringResource(id = pref.titleId),
                 tint = pref.iconTint
             )
+            else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
         isEnabled = isEnabled,
         onClick = {
@@ -214,11 +216,12 @@ fun SeekBarPreference(
         titleId = pref.titleId,
         summaryId = pref.summaryId,
         icon = {
-            PrefIcon(
+            if (pref.iconId != -1) PrefIcon(
                 iconId = pref.iconId,
                 text = stringResource(id = pref.titleId),
                 tint = pref.iconTint
             )
+            else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
         isEnabled = isEnabled,
         bottomWidget = {
