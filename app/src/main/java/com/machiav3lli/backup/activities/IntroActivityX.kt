@@ -99,7 +99,7 @@ class IntroActivityX : BaseActivity() {
     }
 
     private fun launchMainActivity() {
-        if (isBiometricLockAvailable() && isBiometricLockEnabled()) {
+        if (isBiometricLockAvailable() && isBiometricLockEnabled() && isDeviceLockEnabled()) {
             launchBiometricPrompt(true)
         } else if (isDeviceLockAvailable() && isDeviceLockEnabled()) {
             launchBiometricPrompt(false)
