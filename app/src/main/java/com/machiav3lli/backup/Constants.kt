@@ -80,6 +80,7 @@ const val PREFS_INSTALLER_PACKAGENAME = "installationPackage"
 const val PREFS_RESTOREPERMISSIONS = "restorePermissions"
 const val PREFS_NUM_BACKUP_REVISIONS = "numBackupRevisions"
 const val PREFS_HOUSEKEEPING_MOMENT = "housekeepingMoment"
+const val PREFS_HOUSEKEEPING = "housekeeping"
 const val PREFS_DISABLEVERIFICATION = "disableVerification"
 const val PREFS_RESTOREWITHALLPERMISSIONS = "giveAllPermissions"
 const val PREFS_ALLOWDOWNGRADE = "allowDowngrade"
@@ -289,6 +290,15 @@ val BACKUP_DIRECTORY_INTENT = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
 fun classAddress(address: String): String = PREFS_SHARED_PRIVATE + address
 
 fun exodusUrl(app: String): String = "https://reports.exodus-privacy.eu.org/reports/$app/latest"
+
+
+const val HOUSEKEEPING_BEFORE = 0
+const val HOUSEKEEPING_AFTER = 1
+
+val housekeepingOptions = mapOf(
+    HOUSEKEEPING_BEFORE to R.string.prefs_housekeepingmoment_before,
+    HOUSEKEEPING_AFTER to R.string.prefs_housekeepingmoment_after
+)
 
 enum class HousekeepingMoment(val value: String) {
     BEFORE("before"), AFTER("after");

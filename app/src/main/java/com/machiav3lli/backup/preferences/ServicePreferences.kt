@@ -7,7 +7,7 @@ import com.machiav3lli.backup.PREFS_ENABLESESSIONINSTALLER
 import com.machiav3lli.backup.PREFS_ENCRYPTION
 import com.machiav3lli.backup.PREFS_EXCLUDECACHE
 import com.machiav3lli.backup.PREFS_EXTERNALDATA
-import com.machiav3lli.backup.PREFS_HOUSEKEEPING_MOMENT
+import com.machiav3lli.backup.PREFS_HOUSEKEEPING
 import com.machiav3lli.backup.PREFS_INSTALLER_PACKAGENAME
 import com.machiav3lli.backup.PREFS_MEDIADATA
 import com.machiav3lli.backup.PREFS_NUM_BACKUP_REVISIONS
@@ -16,7 +16,7 @@ import com.machiav3lli.backup.PREFS_PASSWORD
 import com.machiav3lli.backup.PREFS_PASSWORD_CONFIRMATION
 import com.machiav3lli.backup.PREFS_RESTOREPERMISSIONS
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.accentColorItems
+import com.machiav3lli.backup.housekeepingOptions
 import com.machiav3lli.backup.ui.compose.theme.APK
 import com.machiav3lli.backup.ui.compose.theme.DeData
 import com.machiav3lli.backup.ui.compose.theme.Exodus
@@ -142,11 +142,11 @@ val ExcludeCachePref = Pref.BooleanPref(
 )
 
 val HousekeepingPref = Pref.EnumPref(
-    key = PREFS_HOUSEKEEPING_MOMENT,
+    key = PREFS_HOUSEKEEPING,
     titleId = R.string.prefs_housekeepingmoment,
     summaryId = R.string.prefs_housekeepingmoment_summary,
     iconId = R.drawable.ic_delete,
     //iconTint = MaterialTheme.colorScheme.secondary,
-    entries = accentColorItems,
+    entries = housekeepingOptions,
     defaultValue = 0
 )
