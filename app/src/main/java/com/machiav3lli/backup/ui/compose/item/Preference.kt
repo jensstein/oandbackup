@@ -126,6 +126,30 @@ fun LaunchPreference(
 }
 
 @Composable
+fun EnumPreference(
+    modifier: Modifier = Modifier,
+    pref: Pref.EnumPref,
+    isEnabled: Boolean = true,
+    onClick: (() -> Unit) = {},
+) {
+    BasePreference(
+        modifier = modifier,
+        titleId = pref.titleId,
+        summaryId = pref.entries[OABX.prefInt(pref.key, pref.defaultValue)] ?: pref.summaryId,
+        icon = {
+            if (pref.iconId != -1) PrefIcon(
+                iconId = pref.iconId,
+                text = stringResource(id = pref.titleId),
+                tint = pref.iconTint
+            )
+            else Spacer(modifier = Modifier.requiredWidth(36.dp))
+        },
+        isEnabled = isEnabled,
+        onClick = onClick // TODO add Composable annotation
+    )
+}
+
+@Composable
 fun SwitchPreference(
     modifier: Modifier = Modifier,
     pref: Pref.BooleanPref,
