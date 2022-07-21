@@ -18,6 +18,7 @@
 package com.machiav3lli.backup
 
 import android.Manifest
+import android.content.Intent
 import com.machiav3lli.backup.ui.item.ChipItem
 import com.machiav3lli.backup.ui.item.Legend
 import com.machiav3lli.backup.ui.item.Link
@@ -278,6 +279,12 @@ val BACKUP_DATE_TIME_FORMATTER_OLD: DateTimeFormatter =
     DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss")
 val BACKUP_DATE_TIME_FORMATTER: DateTimeFormatter =
     DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSS")
+
+val BACKUP_DIRECTORY_INTENT = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+    .addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
+    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+    .addFlags(Intent.FLAG_GRANT_PREFIX_URI_PERMISSION)
 
 fun classAddress(address: String): String = PREFS_SHARED_PRIVATE + address
 
