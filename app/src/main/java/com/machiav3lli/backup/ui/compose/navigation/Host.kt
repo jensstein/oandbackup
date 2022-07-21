@@ -1,16 +1,27 @@
 package com.machiav3lli.backup.ui.compose.navigation
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.activity
 import androidx.navigation.compose.NavHost
 import androidx.navigation.fragment.fragment
-import com.machiav3lli.backup.activities.MainActivityX
-import com.machiav3lli.backup.activities.PrefsActivity
-import com.machiav3lli.backup.fragments.PrefsAdvancedFragment
-import com.machiav3lli.backup.fragments.PrefsServiceFragment
-import com.machiav3lli.backup.fragments.PrefsToolsFragment
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.machiav3lli.backup.activities.PrefsActivityX
 import com.machiav3lli.backup.fragments.PrefsUserFragment
+import com.machiav3lli.backup.preferences.AdvancedPrefsPage
+import com.machiav3lli.backup.preferences.ServicePrefsPage
+import com.machiav3lli.backup.preferences.ToolsPrefsPage
+import com.machiav3lli.backup.preferences.UserPrefsPage
 
 @Composable
         /** TODO Replace all those inefficient calls with real composables (When fragments are migrated) or wait androidx to fix fragment
@@ -33,8 +44,12 @@ import com.machiav3lli.backup.fragments.PrefsUserFragment
          *    )
          * }
          */
-fun MainNavHost(activity: MainActivityX, navController: NavHostController) =
-    NavHost(navController, startDestination = BottomNavItem.Home.destination) {
+fun MainNavHost(modifier: Modifier = Modifier, navController: NavHostController) =
+    NavHost(
+        modifier = modifier,
+        navController = navController,
+        startDestination = BottomNavItem.Home.destination
+    ) {
         fragment<PrefsUserFragment>(BottomNavItem.Home.destination) {
             label = navController.context.getString(BottomNavItem.Home.title)
         }
@@ -48,24 +63,43 @@ fun MainNavHost(activity: MainActivityX, navController: NavHostController) =
             label = navController.context.getString(BottomNavItem.Scheduler.title)
         }
         activity(BottomNavItem.Settings.destination) {
-            targetPackage = PrefsActivity::class.java.`package`.name
-            activityClass = PrefsActivity::class
+            targetPackage = PrefsActivityX::class.java.`package`.name
+            activityClass = PrefsActivityX::class
         }
     }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun PrefsNavHost(navController: NavHostController) =
-    NavHost(navController, startDestination = BottomNavItem.UserPrefs.destination) {
-        fragment<PrefsUserFragment>(BottomNavItem.UserPrefs.destination) {
-            label = navController.context.getString(BottomNavItem.UserPrefs.title)
+fun PrefsNavHost(modifier: Modifier = Modifier, navController: NavHostController) =
+    AnimatedNavHost(
+        modifier = modifier,
+        navController = navController,
+        startDestination = BottomNavItem.UserPrefs.destination
+    ) {
+        slideUpComposable(BottomNavItem.UserPrefs.destination) {
+            UserPrefsPage()
         }
-        fragment<PrefsServiceFragment>(BottomNavItem.ServicePrefs.destination) {
-            label = navController.context.getString(BottomNavItem.ServicePrefs.title)
+        slideUpComposable(route = BottomNavItem.ServicePrefs.destination) {
+            ServicePrefsPage()
         }
-        fragment<PrefsAdvancedFragment>(BottomNavItem.AdvancedPrefs.destination) {
-            label = navController.context.getString(BottomNavItem.AdvancedPrefs.title)
+        slideUpComposable(BottomNavItem.AdvancedPrefs.destination) {
+            AdvancedPrefsPage()
         }
-        fragment<PrefsToolsFragment>(BottomNavItem.ToolsPrefs.destination) {
-            label = navController.context.getString(BottomNavItem.ToolsPrefs.title)
+        slideUpComposable(BottomNavItem.ToolsPrefs.destination) {
+            ToolsPrefsPage()
         }
     }
+
+@OptIn(ExperimentalAnimationApi::class)
+fun NavGraphBuilder.slideUpComposable(
+    route: String,
+    composable: @Composable (AnimatedVisibilityScope.(NavBackStackEntry) -> Unit)
+) {
+    composable(
+        route,
+        enterTransition = { slideInVertically { height -> height } + fadeIn() },
+        exitTransition = { slideOutVertically { height -> -height } + fadeOut() }
+    ) {
+        composable(it)
+    }
+}
