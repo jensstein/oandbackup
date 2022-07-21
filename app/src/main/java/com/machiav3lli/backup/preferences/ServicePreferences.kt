@@ -1,5 +1,18 @@
 package com.machiav3lli.backup.preferences
 
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.PREFS_COMPRESSION_LEVEL
 import com.machiav3lli.backup.PREFS_DEVICEPROTECTEDDATA
@@ -16,8 +29,14 @@ import com.machiav3lli.backup.PREFS_PASSWORD
 import com.machiav3lli.backup.PREFS_PASSWORD_CONFIRMATION
 import com.machiav3lli.backup.PREFS_RESTOREPERMISSIONS
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.dialogs.BaseDialog
+import com.machiav3lli.backup.dialogs.EnumDialogUI
 import com.machiav3lli.backup.housekeepingOptions
+import com.machiav3lli.backup.ui.compose.item.EnumPreference
+import com.machiav3lli.backup.ui.compose.item.SeekBarPreference
+import com.machiav3lli.backup.ui.compose.item.SwitchPreference
 import com.machiav3lli.backup.ui.compose.theme.APK
+import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.DeData
 import com.machiav3lli.backup.ui.compose.theme.Exodus
 import com.machiav3lli.backup.ui.compose.theme.ExtDATA
@@ -26,6 +45,60 @@ import com.machiav3lli.backup.ui.compose.theme.OBB
 import com.machiav3lli.backup.ui.compose.theme.Special
 import com.machiav3lli.backup.ui.compose.theme.Updated
 import com.machiav3lli.backup.ui.item.Pref
+
+@Composable
+fun ServicePrefsPage() {
+    val context = LocalContext.current
+    val openDialog = remember { mutableStateOf(false) }
+    var dialogsPref by remember { mutableStateOf<Pref?>(null) }
+    val prefs = listOf(
+        EncryptionPref,
+        EncryptionPasswordPref,
+        ConfirmEncryptionPasswordPref,
+        DeDataPref,
+        ExtDataPref,
+        ObbPref,
+        MediaPref,
+        RestorePermissionsPref,
+        NumBackupsPref,
+        CompressionLevelPref,
+        SessionInstallerPref,
+        InstallerPackagePref,
+        ExcludeCachePref,
+        HousekeepingPref
+    )
+
+    AppTheme(
+        darkTheme = isSystemInDarkTheme()
+    ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(items = prefs) { pref ->
+                when (pref) {
+                    is Pref.BooleanPref -> SwitchPreference(pref = pref)
+                    is Pref.EnumPref -> EnumPreference(pref = pref) {
+                        dialogsPref = pref
+                        openDialog.value = true
+                    }
+                    is Pref.IntPref -> SeekBarPreference(pref = pref)
+                }
+            }
+        }
+
+        if (openDialog.value) {
+            BaseDialog(openDialogCustom = openDialog) {
+                when (dialogsPref) {
+                    is Pref.EnumPref -> EnumDialogUI(
+                        pref = dialogsPref as Pref.EnumPref,
+                        openDialogCustom = openDialog
+                    )
+                }
+            }
+        }
+    }
+}
 
 val EncryptionPref = Pref.BooleanPref(
     key = PREFS_ENCRYPTION,
