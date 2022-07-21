@@ -97,6 +97,54 @@ fun BasePreference(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PreferencesGroupHeader(
+    modifier: Modifier = Modifier,
+    @StringRes titleId: Int,
+    @StringRes summaryId: Int = -1,
+    @DrawableRes iconId: Int,
+    onClick: (() -> Unit)
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(MaterialTheme.shapes.medium)
+            .clickable { onClick() },
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.primary
+        )
+    ) {
+        Divider(thickness = 2.dp)
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            PrefIcon(iconId = iconId, text = stringResource(id = titleId))
+            Spacer(modifier = Modifier.requiredWidth(8.dp))
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = stringResource(id = titleId),
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                if (summaryId != -1) {
+                    Text(
+                        text = stringResource(id = summaryId),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+            }
+        }
+    }
+}
+
 @Composable
 fun LaunchPreference(
     modifier: Modifier = Modifier,
