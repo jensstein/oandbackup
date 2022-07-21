@@ -28,7 +28,7 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_ENABLESESSIONINSTALLER
 import com.machiav3lli.backup.PREFS_EXCLUDECACHE
 import com.machiav3lli.backup.PREFS_INSTALLER_PACKAGENAME
-import com.machiav3lli.backup.PREFS_REFRESHDELAY
+import com.machiav3lli.backup.PREFS_DELAYBEFOREREFRESHAPPINFO
 import com.machiav3lli.backup.PREFS_REFRESHAPPINFOTIMEOUT
 import com.machiav3lli.backup.PREFS_REFRESHTIMEOUT_DEFAULT
 import com.machiav3lli.backup.PREFS_RESTOREAVOIDTEMPCOPY
@@ -1001,7 +1001,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         val sleepTimeMs = 1000L
 
         // delay before first try
-        val delayMs = OABX.prefInt(PREFS_REFRESHDELAY, 0) * 1000L
+        val delayMs = OABX.prefInt(PREFS_DELAYBEFOREREFRESHAPPINFO, 0) * 1000L
         var timeWaitedMs = 0L
         do {
             Thread.sleep(sleepTimeMs)
