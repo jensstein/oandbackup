@@ -117,7 +117,7 @@ fun PrefIcon(
         painter = painterResource(id = iconId),
         contentDescription = text,
         modifier = Modifier.size(32.dp),
-        tint = tint ?: LocalContentColor.current
+        tint = tint ?: MaterialTheme.colorScheme.onBackground
     )
 }
 
@@ -150,7 +150,7 @@ fun placeholderIconPainter(item: Package?) = painterResource(
 
 @Composable
 fun ActionButton(
-    modifier: Modifier = Modifier.fillMaxWidth(),
+    modifier: Modifier = Modifier,
     text: String,
     positive: Boolean = true,
     icon: Painter? = null,

@@ -52,8 +52,6 @@ fun BasePreference(
             .ifThen(onClick != null) {
                 clickable(enabled = isEnabled, onClick = onClick!!)
             }
-
-
     ) {
         Row(
             modifier = modifier
@@ -102,7 +100,7 @@ fun BasePreference(
 @Composable
 fun LaunchPreference(
     modifier: Modifier = Modifier,
-    pref: Pref.LinkPref,
+    pref: Pref,
     isEnabled: Boolean = true,
     summary: String? = null,
     onClick: (() -> Unit) = {},

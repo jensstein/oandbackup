@@ -24,7 +24,7 @@ import com.machiav3lli.backup.ui.item.Pref
 
 val ThemePref = Pref.EnumPref(
     key = PREFS_THEME_X,
-    titleId = R.string.prefs_accent_color,
+    titleId = R.string.prefs_theme,
     iconId = R.drawable.ic_theme,
     iconTint = Special,
     entries = themeItems,
@@ -52,7 +52,7 @@ val SecondaryColorPref = Pref.EnumPref(
 val BackupFolderPref = Pref.StringPref(
     key = PREFS_PATH_BACKUP_DIRECTORY,
     titleId = R.string.prefs_pathbackupfolder,
-    iconId = R.drawable.ic_label,
+    iconId = R.drawable.ic_folder,
     iconTint = ExtDATA,
     defaultValue = ""
 )
