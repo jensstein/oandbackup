@@ -148,7 +148,6 @@ private fun closeQuietly(closeable: AutoCloseable?) {
 }
 
 
-
 // TODO MAYBE migrate at some point to FuckSAF
 
 open class StorageFile {
@@ -168,11 +167,17 @@ open class StorageFile {
     private var file: RootFile? = null
     private var parentFile: RootFile? = null
 
-    data class DocumentInfo(val id: String, val name: String, val mimeType: String, val size: Long, val lastModified: Long)
+    data class DocumentInfo(
+        val id: String,
+        val name: String,
+        val mimeType: String,
+        val size: Long,
+        val lastModified: Long
+    )
 
     private var documentInfo: DocumentInfo? = null
         get() {
-            if(field == null)
+            if (field == null)
                 field = retrieveDocumentInfo()
             return field
         }
@@ -197,14 +202,14 @@ open class StorageFile {
             cursor,
             DocumentsContract.Document.COLUMN_SIZE
         ) ?: 0
-        if(size < 0)
+        if (size < 0)
             size = 0
         //Timber.d("size: $size file: $id")
         var lastModified = getCursorLong(
             cursor,
             DocumentsContract.Document.COLUMN_LAST_MODIFIED
         ) ?: 0
-        if(lastModified < 0)
+        if (lastModified < 0)
             lastModified = 0
         //flags = getCursorInt(cursor, Document.COLUMN_FLAGS),
         //summary = getCursorString(cursor, Document.COLUMN_SUMMARY),
@@ -224,8 +229,8 @@ open class StorageFile {
             var cursor: Cursor? = null
             try {
                 resolver.query(
-                            _uri!!,
-                            null /*documentColumns*/, null, null, null
+                    _uri!!,
+                    null /*documentColumns*/, null, null, null
                 )?.let { cursor ->
                     if (cursor.moveToFirst()) {
                         return retrieveDocumentInfo(cursor)
@@ -359,24 +364,25 @@ open class StorageFile {
     }
 
     val isFile: Boolean
-        get() = ! isDirectory
+        get() = !isDirectory
 
     val isDirectory: Boolean
-        get() = file?.isDirectory ?: (documentInfo?.mimeType == DocumentsContract.Document.MIME_TYPE_DIR)
+        get() = file?.isDirectory
+            ?: (documentInfo?.mimeType == DocumentsContract.Document.MIME_TYPE_DIR)
 
     val isPropertyFile: Boolean
         get() = name?.endsWith(".properties") ?: false
 
     fun exists(): Boolean =
-        file?.exists() ?: ! documentInfo?.mimeType.isNullOrEmpty()
+        file?.exists() ?: !documentInfo?.mimeType.isNullOrEmpty()
 
     val size: Long
         get() = (
-            if (file != null)
-                (file?.length() ?: 0L)
-            else
-                (documentInfo?.size ?: 0)
-            )
+                if (file != null)
+                    (file?.length() ?: 0L)
+                else
+                    (documentInfo?.size ?: 0)
+                )
 
     fun inputStream(): InputStream? {
         return file?.inputStream() ?: _uri?.let { uri ->
@@ -536,7 +542,7 @@ open class StorageFile {
                 file?.let { dir ->
                     dir.listFiles()?.forEach { child ->
                         results.add(StorageFile(this, child))
-                        }
+                    }
                 } ?: run {
                     context?.contentResolver?.let { resolver ->
                         val childrenUri = try {
