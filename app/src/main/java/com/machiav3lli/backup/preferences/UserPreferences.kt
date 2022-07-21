@@ -1,14 +1,14 @@
 package com.machiav3lli.backup.preferences
 
-import com.machiav3lli.backup.PREFS_ACCENT_COLOR
+import com.machiav3lli.backup.PREFS_ACCENT_COLOR_X
 import com.machiav3lli.backup.PREFS_BIOMETRICLOCK
 import com.machiav3lli.backup.PREFS_DEVICELOCK
 import com.machiav3lli.backup.PREFS_LOADINGTOASTS
 import com.machiav3lli.backup.PREFS_OLDBACKUPS
 import com.machiav3lli.backup.PREFS_PATH_BACKUP_DIRECTORY
 import com.machiav3lli.backup.PREFS_REMEMBERFILTERING
-import com.machiav3lli.backup.PREFS_SECONDARY_COLOR
-import com.machiav3lli.backup.PREFS_THEME
+import com.machiav3lli.backup.PREFS_SECONDARY_COLOR_X
+import com.machiav3lli.backup.PREFS_THEME_X
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.accentColorItems
 import com.machiav3lli.backup.secondaryColorItems
@@ -23,7 +23,7 @@ import com.machiav3lli.backup.ui.item.Pref
 // TODO add language pref
 
 val ThemePref = Pref.EnumPref(
-    key = PREFS_THEME,
+    key = PREFS_THEME_X,
     titleId = R.string.prefs_accent_color,
     iconId = R.drawable.ic_theme,
     iconTint = Special,
@@ -32,7 +32,7 @@ val ThemePref = Pref.EnumPref(
 )
 
 val AccentColorPref = Pref.EnumPref(
-    key = PREFS_ACCENT_COLOR,
+    key = PREFS_ACCENT_COLOR_X,
     titleId = R.string.prefs_accent_color,
     iconId = R.drawable.ic_color_accent,
     //iconTint = MaterialTheme.colorScheme.primary,
@@ -41,7 +41,7 @@ val AccentColorPref = Pref.EnumPref(
 )
 
 val SecondaryColorPref = Pref.EnumPref(
-    key = PREFS_SECONDARY_COLOR,
+    key = PREFS_SECONDARY_COLOR_X,
     titleId = R.string.prefs_secondary_color,
     iconId = R.drawable.ic_color_secondary,
     //iconTint = MaterialTheme.colorScheme.secondary,
