@@ -39,6 +39,7 @@ fun BasePreference(
     modifier: Modifier = Modifier,
     @StringRes titleId: Int,
     @StringRes summaryId: Int = -1,
+    summary: String? = null,
     isEnabled: Boolean = true,
     icon: (@Composable () -> Unit)? = null,
     endWidget: (@Composable () -> Unit)? = null,
@@ -78,9 +79,9 @@ fun BasePreference(
                     style = MaterialTheme.typography.titleMedium,
                     fontSize = 16.sp
                 )
-                if (summaryId != -1) {
+                if (summaryId != -1 || summary != null) {
                     Text(
-                        text = stringResource(id = summaryId),
+                        text = summary ?: stringResource(id = summaryId),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = MaterialTheme.typography.bodyMedium,
                     )
@@ -103,12 +104,14 @@ fun LaunchPreference(
     modifier: Modifier = Modifier,
     pref: Pref.LinkPref,
     isEnabled: Boolean = true,
+    summary: String? = null,
     onClick: (() -> Unit) = {},
 ) {
     BasePreference(
         modifier = modifier,
         titleId = pref.titleId,
         summaryId = pref.summaryId,
+        summary = summary,
         icon = {
             if (pref.iconId != -1) PrefIcon(
                 iconId = pref.iconId,
