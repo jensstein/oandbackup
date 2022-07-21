@@ -1,10 +1,13 @@
 package com.machiav3lli.backup.preferences
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.PREFS_BATCH_DELETE
@@ -34,7 +37,11 @@ fun ToolsPrefsPage() {
     AppTheme(
         darkTheme = isSystemInDarkTheme()
     ) {
-        LazyColumn(contentPadding = PaddingValues(8.dp)) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             items(items = prefs) {
                 LaunchPreference(pref = it) {
                     // TODO add special action to each when (it) { }
