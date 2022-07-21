@@ -1,15 +1,48 @@
 package com.machiav3lli.backup.preferences
 
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.PREFS_BATCH_DELETE
 import com.machiav3lli.backup.PREFS_COPYSELF
 import com.machiav3lli.backup.PREFS_LOGVIEWER
 import com.machiav3lli.backup.PREFS_SAVEAPPSLIST
 import com.machiav3lli.backup.PREFS_SCHEDULESEXPORTIMPORT
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.ui.compose.item.LaunchPreference
+import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.DeData
 import com.machiav3lli.backup.ui.compose.theme.Exodus
 import com.machiav3lli.backup.ui.compose.theme.ExtDATA
 import com.machiav3lli.backup.ui.item.Pref
+
+@Composable
+fun ToolsPrefsPage() {
+    val context = LocalContext.current
+    val prefs = listOf(
+        CleanupBackupFolderPref,
+        CopySelfPref,
+        ExportImportSchedulesPref,
+        SaveAppsListPref,
+        LogViewerPref
+    )
+
+    AppTheme(
+        darkTheme = isSystemInDarkTheme()
+    ) {
+        LazyColumn(contentPadding = PaddingValues(8.dp)) {
+            items(items = prefs) {
+                LaunchPreference(pref = it) {
+                    // TODO add special action to each when (it) { }
+                }
+            }
+        }
+    }
+}
 
 val CleanupBackupFolderPref = Pref.LinkPref(
     key = PREFS_BATCH_DELETE,
