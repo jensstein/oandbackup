@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -22,6 +24,7 @@ import com.machiav3lli.backup.PREFS_CACHEURIS
 import com.machiav3lli.backup.PREFS_CANCELONSTART
 import com.machiav3lli.backup.PREFS_CATCHUNCAUGHTEXCEPTION
 import com.machiav3lli.backup.PREFS_COLUMNNAMESAF
+import com.machiav3lli.backup.PREFS_DELAYBEFOREREFRESHAPPINFO
 import com.machiav3lli.backup.PREFS_DISABLEVERIFICATION
 import com.machiav3lli.backup.PREFS_ENABLESPECIALBACKUPS
 import com.machiav3lli.backup.PREFS_FAKEBACKUPSECONDS
@@ -31,7 +34,6 @@ import com.machiav3lli.backup.PREFS_MAXCRASHLINES
 import com.machiav3lli.backup.PREFS_MAXRETRIESPERPACKAGE
 import com.machiav3lli.backup.PREFS_PAUSEAPPS
 import com.machiav3lli.backup.PREFS_PMSUSPEND
-import com.machiav3lli.backup.PREFS_DELAYBEFOREREFRESHAPPINFO
 import com.machiav3lli.backup.PREFS_REFRESHAPPINFOTIMEOUT
 import com.machiav3lli.backup.PREFS_RESTOREAVOIDTEMPCOPY
 import com.machiav3lli.backup.PREFS_RESTORETARCMD
@@ -44,6 +46,8 @@ import com.machiav3lli.backup.PREFS_USEEXACTRALARM
 import com.machiav3lli.backup.PREFS_USEEXPEDITED
 import com.machiav3lli.backup.PREFS_USEFOREGROUND
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.ui.compose.item.PreferencesGroupHeader
+import com.machiav3lli.backup.ui.compose.item.SeekBarPreference
 import com.machiav3lli.backup.ui.compose.item.SwitchPreference
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.DeData
@@ -55,11 +59,42 @@ import com.machiav3lli.backup.utils.sortFilterModel
 @Composable
 fun AdvancedPrefsPage() {
     val context = LocalContext.current
+    var (expanded, expand) = remember { mutableStateOf(false) }
     val prefs = listOf<Pref>(
         EnableSpecialsPref,
         DisableVerificationPref,
         RestoreAllPermissionsPref,
         AllowDowngradePref
+    )
+    val devOptions = listOf(
+        ShowInfoLogBarPref,
+        CachePackagePref,
+        UsePackageCacheOnUpdatePref,
+        UseColumnNameSAFPref,
+        CancelOnStartPref,
+        UseAlarmClockPref,
+        UseExactAlarmPref,
+        PauseAppPref,
+        SuspendAppPref,
+        BackupTarCmdPref,
+        RestoreTarCmdPref,
+        StrictHardLinksPref,
+        RestoreAvoidTempCopyPref,
+        ShadowRootFilePref,
+        AllowShadowingDefaultPref,
+        UseFindLsPref,
+        AssembleFileListOneStepPref,
+        CatchUncaughtExceptionPref,
+        MaxCrashLinesPref,
+        InvalidateSelectivePref,
+        CacheUrisPref,
+        CacheFileListsPref,
+        MaxRetriesPerPackagePref,
+        DelayBeforeRefreshAppInfoPref,
+        RefreshAppInfoTimeoutPref,
+        UseForegroundPref,
+        UseExpeditedPref,
+        FakeBackupSecondsPref
     )
 
     AppTheme(
@@ -78,6 +113,23 @@ fun AdvancedPrefsPage() {
                         context.sortFilterModel = newModel
                     }
                     is Pref.BooleanPref -> SwitchPreference(pref = it)
+                    is Pref.IntPref -> SeekBarPreference(pref = it)
+                }
+            }
+            item {
+                PreferencesGroupHeader(
+                    titleId = R.string.prefs_dev_settings,
+                    summaryId = R.string.prefs_dev_settings_summary,
+                    iconId = R.drawable.ic_force_kill
+                ) {
+                    expand(!expanded)
+                }
+            }
+            // TODO add Dev options expandable holder
+            if (expanded) items(items = devOptions) {
+                when (it) {
+                    is Pref.BooleanPref -> SwitchPreference(pref = it)
+                    is Pref.IntPref -> SeekBarPreference(pref = it)
                 }
             }
         }
