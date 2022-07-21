@@ -672,7 +672,10 @@ open class StorageFile {
 
         fun invalidateCache(filter: (String) -> Boolean) {
             if (OABX.prefFlag(PREFS_INVALIDATESELECTIVE, true)) {
-                invalidateFilters.add(filter)
+                try {
+                    invalidateFilters.add(filter)
+                } catch (e: ArrayIndexOutOfBoundsException) {
+                }
                 cacheCheck() //TODO
             } else {
                 invalidateCache()
