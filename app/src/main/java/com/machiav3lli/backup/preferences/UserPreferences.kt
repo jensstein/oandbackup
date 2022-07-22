@@ -1,6 +1,7 @@
 package com.machiav3lli.backup.preferences
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,6 +23,7 @@ import com.machiav3lli.backup.BACKUP_DIRECTORY_INTENT
 import com.machiav3lli.backup.PREFS_ACCENT_COLOR_X
 import com.machiav3lli.backup.PREFS_BIOMETRICLOCK
 import com.machiav3lli.backup.PREFS_DEVICELOCK
+import com.machiav3lli.backup.PREFS_LANGUAGES
 import com.machiav3lli.backup.PREFS_LOADINGTOASTS
 import com.machiav3lli.backup.PREFS_OLDBACKUPS
 import com.machiav3lli.backup.PREFS_PATH_BACKUP_DIRECTORY
@@ -32,21 +34,25 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.accentColorItems
 import com.machiav3lli.backup.dialogs.BaseDialog
 import com.machiav3lli.backup.dialogs.EnumDialogUI
+import com.machiav3lli.backup.dialogs.ListDialogUI
 import com.machiav3lli.backup.secondaryColorItems
 import com.machiav3lli.backup.themeItems
 import com.machiav3lli.backup.ui.compose.item.EnumPreference
 import com.machiav3lli.backup.ui.compose.item.LaunchPreference
+import com.machiav3lli.backup.ui.compose.item.ListPreference
 import com.machiav3lli.backup.ui.compose.item.SeekBarPreference
 import com.machiav3lli.backup.ui.compose.item.SwitchPreference
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.DeData
 import com.machiav3lli.backup.ui.compose.theme.Exodus
 import com.machiav3lli.backup.ui.compose.theme.ExtDATA
+import com.machiav3lli.backup.ui.compose.theme.OBB
 import com.machiav3lli.backup.ui.compose.theme.Special
 import com.machiav3lli.backup.ui.compose.theme.Updated
 import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.backupDirConfigured
+import com.machiav3lli.backup.utils.getLanguageList
 import com.machiav3lli.backup.utils.isBiometricLockAvailable
 import com.machiav3lli.backup.utils.isDeviceLockAvailable
 import com.machiav3lli.backup.utils.isDeviceLockEnabled
@@ -61,6 +67,7 @@ fun UserPrefsPage() {
     var backupDir by remember { mutableStateOf(context.backupDirConfigured) }
     var isDeviceLockEnabled by remember { mutableStateOf(context.isDeviceLockEnabled()) }
     val prefs = listOf(
+        context.LanguagePref,
         ThemePref,
         AccentColorPref,
         SecondaryColorPref,
@@ -112,6 +119,10 @@ fun UserPrefsPage() {
                         pref = pref as Pref.BooleanPref,
                         isEnabled = context.isBiometricLockAvailable() && isDeviceLockEnabled
                     )
+                    is Pref.ListPref -> ListPreference(pref = pref) {
+                        dialogsPref = pref
+                        openDialog.value = true
+                    }
                     ThemePref, AccentColorPref, SecondaryColorPref -> EnumPreference(pref = pref as Pref.EnumPref) {
                         dialogsPref = pref
                         openDialog.value = true
@@ -128,6 +139,10 @@ fun UserPrefsPage() {
         if (openDialog.value) {
             BaseDialog(openDialogCustom = openDialog) {
                 when (dialogsPref) {
+                    is Pref.ListPref -> ListDialogUI(
+                        pref = dialogsPref as Pref.ListPref,
+                        openDialogCustom = openDialog
+                    )
                     is Pref.EnumPref -> EnumDialogUI(
                         pref = dialogsPref as Pref.EnumPref,
                         openDialogCustom = openDialog
@@ -139,6 +154,16 @@ fun UserPrefsPage() {
 }
 
 // TODO add language pref
+
+val Context.LanguagePref: Pref.ListPref
+    get() = Pref.ListPref(
+        key = PREFS_LANGUAGES,
+        titleId = R.string.prefs_languages,
+        iconId = R.drawable.ic_languages,
+        iconTint = OBB,
+        entries = getLanguageList(),
+        defaultValue = "system"
+    )
 
 val ThemePref = Pref.EnumPref(
     key = PREFS_THEME_X,
