@@ -241,14 +241,14 @@ val BackupTarCmdPref = Pref.BooleanPref(
     key = PREFS_BACKUPTARCMD,
     titleId = R.string.prefs_backuptarcmd,
     summaryId = R.string.prefs_backuptarcmd_summary,
-    defaultValue = false
+    defaultValue = true
 )
 
 val RestoreTarCmdPref = Pref.BooleanPref(
     key = PREFS_RESTORETARCMD,
     titleId = R.string.prefs_restoretarcmd,
     summaryId = R.string.prefs_restoretarcmd_summary,
-    defaultValue = false
+    defaultValue = true
 )
 
 val StrictHardLinksPref = Pref.BooleanPref(
