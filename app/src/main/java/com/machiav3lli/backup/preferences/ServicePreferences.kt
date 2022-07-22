@@ -32,8 +32,10 @@ import com.machiav3lli.backup.PREFS_RESTOREPERMISSIONS
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dialogs.BaseDialog
 import com.machiav3lli.backup.dialogs.EnumDialogUI
+import com.machiav3lli.backup.dialogs.StringDialogUI
 import com.machiav3lli.backup.housekeepingOptions
 import com.machiav3lli.backup.ui.compose.item.EnumPreference
+import com.machiav3lli.backup.ui.compose.item.LaunchPreference
 import com.machiav3lli.backup.ui.compose.item.SeekBarPreference
 import com.machiav3lli.backup.ui.compose.item.SwitchPreference
 import com.machiav3lli.backup.ui.compose.theme.APK
@@ -79,6 +81,10 @@ fun ServicePrefsPage() {
         ) {
             items(items = prefs) { pref ->
                 when (pref) {
+                    is Pref.StringPref -> LaunchPreference(pref = pref) {
+                        dialogsPref = pref
+                        openDialog.value = true
+                    }
                     is Pref.BooleanPref -> SwitchPreference(pref = pref)
                     is Pref.EnumPref -> EnumPreference(pref = pref) {
                         dialogsPref = pref
@@ -92,6 +98,15 @@ fun ServicePrefsPage() {
         if (openDialog.value) {
             BaseDialog(openDialogCustom = openDialog) {
                 when (dialogsPref) {
+                    EncryptionPasswordPref, ConfirmEncryptionPasswordPref -> StringDialogUI(
+                        pref = dialogsPref as Pref.StringPref,
+                        isPrivate = true,
+                        openDialogCustom = openDialog
+                    )
+                    is Pref.StringPref -> StringDialogUI(
+                        pref = dialogsPref as Pref.StringPref,
+                        openDialogCustom = openDialog
+                    )
                     is Pref.EnumPref -> EnumDialogUI(
                         pref = dialogsPref as Pref.EnumPref,
                         openDialogCustom = openDialog
@@ -120,7 +135,7 @@ val EncryptionPasswordPref = Pref.StringPref(
     defaultValue = ""
 )
 
-val ConfirmEncryptionPasswordPref = Pref.StringPref(
+val ConfirmEncryptionPasswordPref = Pref.StringPref( // TODO smart summary
     key = PREFS_PASSWORD_CONFIRMATION,
     titleId = R.string.prefs_passwordconfirmation,
     iconId = R.drawable.ic_password,
