@@ -200,6 +200,31 @@ fun EnumPreference(
 }
 
 @Composable
+fun ListPreference(
+    modifier: Modifier = Modifier,
+    pref: Pref.ListPref,
+    isEnabled: Boolean = true,
+    onClick: (() -> Unit) = {},
+) {
+    BasePreference(
+        modifier = modifier,
+        titleId = pref.titleId,
+        summaryId = pref.summaryId,
+        summary = pref.entries[OABX.prefString(pref.key, pref.defaultValue)],
+        icon = {
+            if (pref.iconId != -1) PrefIcon(
+                iconId = pref.iconId,
+                text = stringResource(id = pref.titleId),
+                tint = pref.iconTint
+            )
+            else Spacer(modifier = Modifier.requiredWidth(36.dp))
+        },
+        isEnabled = isEnabled,
+        onClick = onClick // TODO add Composable annotation
+    )
+}
+
+@Composable
 fun SwitchPreference(
     modifier: Modifier = Modifier,
     pref: Pref.BooleanPref,
@@ -302,14 +327,15 @@ fun SeekBarPreference(
     onValueChange: ((Int) -> Unit) = {},
 ) {
     val currentValue = OABX.prefInt(pref.key, pref.defaultValue)
-    var sliderPosition by remember { mutableStateOf(
+    var sliderPosition by remember {
+        mutableStateOf(
             pref.entries.indexOfFirst { it == currentValue }.let {
-                if(it < 0)
+                if (it < 0)
                     pref.entries.indexOfFirst { it == pref.defaultValue }
                 else
                     it
             }.let {
-                if(it < 0)
+                if (it < 0)
                     0
                 else
                     it
@@ -321,7 +347,7 @@ fun SeekBarPreference(
         OABX.setPrefInt(pref.key, value)
         sliderPosition = pos
     }
-    val last = pref.entries.size-1
+    val last = pref.entries.size - 1
 
     BasePreference(
         modifier = modifier,
