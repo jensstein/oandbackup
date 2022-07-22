@@ -25,15 +25,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.machiav3lli.backup.NAV_PREFS
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.R
+import com.machiav3lli.backup.fragments.HelpSheet
+import com.machiav3lli.backup.ui.compose.item.TopBar
+import com.machiav3lli.backup.ui.compose.item.TopBarButton
 import com.machiav3lli.backup.ui.compose.navigation.BottomNavBar
 import com.machiav3lli.backup.ui.compose.navigation.PrefsNavHost
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.setCustomTheme
 
 class PrefsActivityX : BaseActivity() {
+    private var helpSheet: HelpSheet? = null
+
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         OABX.activity = this
@@ -46,7 +54,20 @@ class PrefsActivityX : BaseActivity() {
                 val navController = rememberAnimatedNavController()
 
                 Scaffold(
-                    // TODO add topBar
+                    topBar = {
+                        TopBar(
+                            title = title.toString()
+                        ) {
+                            TopBarButton(
+                                icon = painterResource(id = R.drawable.ic_info),
+                                description = stringResource(id = R.string.help),
+                            ) {
+                                if (helpSheet != null && helpSheet!!.isVisible) helpSheet?.dismissAllowingStateLoss()
+                                helpSheet = HelpSheet()
+                                helpSheet!!.showNow(supportFragmentManager, "HELPSHEET")
+                            }
+                        }
+                    },
                     bottomBar = { BottomNavBar(page = NAV_PREFS, navController = navController) }
                 ) { paddingValues ->
                     PrefsNavHost(
