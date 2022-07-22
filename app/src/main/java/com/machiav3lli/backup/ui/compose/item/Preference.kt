@@ -1,5 +1,6 @@
 package com.machiav3lli.backup.ui.compose.item
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -11,7 +12,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
@@ -39,6 +43,7 @@ fun BasePreference(
     modifier: Modifier = Modifier,
     @StringRes titleId: Int,
     @StringRes summaryId: Int = -1,
+    summary: String? = null,
     isEnabled: Boolean = true,
     icon: (@Composable () -> Unit)? = null,
     endWidget: (@Composable () -> Unit)? = null,
@@ -51,13 +56,11 @@ fun BasePreference(
             .ifThen(onClick != null) {
                 clickable(enabled = isEnabled, onClick = onClick!!)
             }
-
-
     ) {
         Row(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(8.dp),
+                .padding(horizontal = 8.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             icon?.let {
@@ -78,9 +81,9 @@ fun BasePreference(
                     style = MaterialTheme.typography.titleMedium,
                     fontSize = 16.sp
                 )
-                if (summaryId != -1) {
+                if (summaryId != -1 || summary != null) {
                     Text(
-                        text = stringResource(id = summaryId),
+                        text = summary ?: stringResource(id = summaryId),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = MaterialTheme.typography.bodyMedium,
                     )
@@ -96,6 +99,104 @@ fun BasePreference(
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PreferencesGroupHeader(
+    modifier: Modifier = Modifier,
+    @StringRes titleId: Int,
+    @StringRes summaryId: Int = -1,
+    @DrawableRes iconId: Int,
+    onClick: (() -> Unit)
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(MaterialTheme.shapes.medium)
+            .clickable { onClick() },
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.primary
+        )
+    ) {
+        Divider(thickness = 2.dp)
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            PrefIcon(iconId = iconId, text = stringResource(id = titleId))
+            Spacer(modifier = Modifier.requiredWidth(8.dp))
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = stringResource(id = titleId),
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                if (summaryId != -1) {
+                    Text(
+                        text = stringResource(id = summaryId),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun LaunchPreference(
+    modifier: Modifier = Modifier,
+    pref: Pref,
+    isEnabled: Boolean = true,
+    summary: String? = null,
+    onClick: (() -> Unit) = {},
+) {
+    BasePreference(
+        modifier = modifier,
+        titleId = pref.titleId,
+        summaryId = pref.summaryId,
+        summary = summary,
+        icon = {
+            if (pref.iconId != -1) PrefIcon(
+                iconId = pref.iconId,
+                text = stringResource(id = pref.titleId),
+                tint = pref.iconTint
+            )
+            else Spacer(modifier = Modifier.requiredWidth(36.dp))
+        },
+        isEnabled = isEnabled,
+        onClick = onClick // TODO add Composable annotation
+    )
+}
+
+@Composable
+fun EnumPreference(
+    modifier: Modifier = Modifier,
+    pref: Pref.EnumPref,
+    isEnabled: Boolean = true,
+    onClick: (() -> Unit) = {},
+) {
+    BasePreference(
+        modifier = modifier,
+        titleId = pref.titleId,
+        summaryId = pref.entries[OABX.prefInt(pref.key, pref.defaultValue)] ?: pref.summaryId,
+        icon = {
+            if (pref.iconId != -1) PrefIcon(
+                iconId = pref.iconId,
+                text = stringResource(id = pref.titleId),
+                tint = pref.iconTint
+            )
+            else Spacer(modifier = Modifier.requiredWidth(36.dp))
+        },
+        isEnabled = isEnabled,
+        onClick = onClick // TODO add Composable annotation
+    )
 }
 
 @Composable
@@ -118,11 +219,12 @@ fun SwitchPreference(
         titleId = pref.titleId,
         summaryId = pref.summaryId,
         icon = {
-            PrefIcon(
+            if (pref.iconId != -1) PrefIcon(
                 iconId = pref.iconId,
                 text = stringResource(id = pref.titleId),
                 tint = pref.iconTint
             )
+            else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
         isEnabled = isEnabled,
         onClick = {
@@ -165,11 +267,12 @@ fun CheckboxPreference(
         titleId = pref.titleId,
         summaryId = pref.summaryId,
         icon = {
-            PrefIcon(
+            if (pref.iconId != -1) PrefIcon(
                 iconId = pref.iconId,
                 text = stringResource(id = pref.titleId),
                 tint = pref.iconTint
             )
+            else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
         isEnabled = isEnabled,
         onClick = {
@@ -214,11 +317,12 @@ fun SeekBarPreference(
         titleId = pref.titleId,
         summaryId = pref.summaryId,
         icon = {
-            PrefIcon(
+            if (pref.iconId != -1) PrefIcon(
                 iconId = pref.iconId,
                 text = stringResource(id = pref.titleId),
                 tint = pref.iconTint
             )
+            else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
         isEnabled = isEnabled,
         bottomWidget = {

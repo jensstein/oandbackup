@@ -1,5 +1,19 @@
 package com.machiav3lli.backup.preferences
 
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.PREFS_COMPRESSION_LEVEL
 import com.machiav3lli.backup.PREFS_DEVICEPROTECTEDDATA
@@ -7,7 +21,7 @@ import com.machiav3lli.backup.PREFS_ENABLESESSIONINSTALLER
 import com.machiav3lli.backup.PREFS_ENCRYPTION
 import com.machiav3lli.backup.PREFS_EXCLUDECACHE
 import com.machiav3lli.backup.PREFS_EXTERNALDATA
-import com.machiav3lli.backup.PREFS_HOUSEKEEPING_MOMENT
+import com.machiav3lli.backup.PREFS_HOUSEKEEPING
 import com.machiav3lli.backup.PREFS_INSTALLER_PACKAGENAME
 import com.machiav3lli.backup.PREFS_MEDIADATA
 import com.machiav3lli.backup.PREFS_NUM_BACKUP_REVISIONS
@@ -16,8 +30,16 @@ import com.machiav3lli.backup.PREFS_PASSWORD
 import com.machiav3lli.backup.PREFS_PASSWORD_CONFIRMATION
 import com.machiav3lli.backup.PREFS_RESTOREPERMISSIONS
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.accentColorItems
+import com.machiav3lli.backup.dialogs.BaseDialog
+import com.machiav3lli.backup.dialogs.EnumDialogUI
+import com.machiav3lli.backup.dialogs.StringDialogUI
+import com.machiav3lli.backup.housekeepingOptions
+import com.machiav3lli.backup.ui.compose.item.EnumPreference
+import com.machiav3lli.backup.ui.compose.item.LaunchPreference
+import com.machiav3lli.backup.ui.compose.item.SeekBarPreference
+import com.machiav3lli.backup.ui.compose.item.SwitchPreference
 import com.machiav3lli.backup.ui.compose.theme.APK
+import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.DeData
 import com.machiav3lli.backup.ui.compose.theme.Exodus
 import com.machiav3lli.backup.ui.compose.theme.ExtDATA
@@ -26,6 +48,74 @@ import com.machiav3lli.backup.ui.compose.theme.OBB
 import com.machiav3lli.backup.ui.compose.theme.Special
 import com.machiav3lli.backup.ui.compose.theme.Updated
 import com.machiav3lli.backup.ui.item.Pref
+
+@Composable
+fun ServicePrefsPage() {
+    val context = LocalContext.current
+    val openDialog = remember { mutableStateOf(false) }
+    var dialogsPref by remember { mutableStateOf<Pref?>(null) }
+    val prefs = listOf(
+        EncryptionPref,
+        EncryptionPasswordPref,
+        ConfirmEncryptionPasswordPref,
+        DeDataPref,
+        ExtDataPref,
+        ObbPref,
+        MediaPref,
+        RestorePermissionsPref,
+        NumBackupsPref,
+        CompressionLevelPref,
+        SessionInstallerPref,
+        InstallerPackagePref,
+        ExcludeCachePref,
+        HousekeepingPref
+    )
+
+    AppTheme(
+        darkTheme = isSystemInDarkTheme()
+    ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(items = prefs) { pref ->
+                when (pref) {
+                    is Pref.StringPref -> LaunchPreference(pref = pref) {
+                        dialogsPref = pref
+                        openDialog.value = true
+                    }
+                    is Pref.BooleanPref -> SwitchPreference(pref = pref)
+                    is Pref.EnumPref -> EnumPreference(pref = pref) {
+                        dialogsPref = pref
+                        openDialog.value = true
+                    }
+                    is Pref.IntPref -> SeekBarPreference(pref = pref)
+                }
+            }
+        }
+
+        if (openDialog.value) {
+            BaseDialog(openDialogCustom = openDialog) {
+                when (dialogsPref) {
+                    EncryptionPasswordPref, ConfirmEncryptionPasswordPref -> StringDialogUI(
+                        pref = dialogsPref as Pref.StringPref,
+                        isPrivate = true,
+                        openDialogCustom = openDialog
+                    )
+                    is Pref.StringPref -> StringDialogUI(
+                        pref = dialogsPref as Pref.StringPref,
+                        openDialogCustom = openDialog
+                    )
+                    is Pref.EnumPref -> EnumDialogUI(
+                        pref = dialogsPref as Pref.EnumPref,
+                        openDialogCustom = openDialog
+                    )
+                }
+            }
+        }
+    }
+}
 
 val EncryptionPref = Pref.BooleanPref(
     key = PREFS_ENCRYPTION,
@@ -45,7 +135,7 @@ val EncryptionPasswordPref = Pref.StringPref(
     defaultValue = ""
 )
 
-val ConfirmEncryptionPasswordPref = Pref.StringPref(
+val ConfirmEncryptionPasswordPref = Pref.StringPref( // TODO smart summary
     key = PREFS_PASSWORD_CONFIRMATION,
     titleId = R.string.prefs_passwordconfirmation,
     iconId = R.drawable.ic_password,
@@ -142,11 +232,11 @@ val ExcludeCachePref = Pref.BooleanPref(
 )
 
 val HousekeepingPref = Pref.EnumPref(
-    key = PREFS_HOUSEKEEPING_MOMENT,
+    key = PREFS_HOUSEKEEPING,
     titleId = R.string.prefs_housekeepingmoment,
     summaryId = R.string.prefs_housekeepingmoment_summary,
     iconId = R.drawable.ic_delete,
     //iconTint = MaterialTheme.colorScheme.secondary,
-    entries = accentColorItems,
+    entries = housekeepingOptions,
     defaultValue = 0
 )

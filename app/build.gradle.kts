@@ -28,6 +28,7 @@ val vComposeCompiler = "1.2.0"
 val vCompose = "1.2.0-rc03"
 val vRoom = "2.5.0-alpha02"
 val vNavigation = "2.5.0"
+val vAccompanist = "0.24.13-rc"
 val vLibsu = "3.2.1"
 
 android {
@@ -156,7 +157,9 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$vNavigation")
     implementation("com.google.android.material:compose-theme-adapter-3:1.0.14")
     implementation("androidx.compose.material3:material3:1.0.0-alpha14")
-    implementation("com.google.accompanist:accompanist-flowlayout:0.24.13-rc")
+    implementation("com.google.accompanist:accompanist-flowlayout:$vAccompanist")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:$vAccompanist")
+    implementation("com.google.accompanist:accompanist-navigation-animation:$vAccompanist")
 
     // Testing
     implementation("androidx.test.ext:junit-ktx:1.1.3")

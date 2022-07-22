@@ -113,6 +113,12 @@
         <activity android:name=".activities.IntroActivityX" />
         <activity android:name=".activities.MainActivityX" />
         <activity
+            android:name=".activities.PrefsActivityX"
+            android:exported="true"
+            android:label="@string/prefs_title"
+            android:launchMode="singleTask"
+            android:parentActivityName=".activities.MainActivityX" />
+        <activity
             android:name=".activities.PrefsActivity"
             android:exported="true"
             android:label="@string/prefs_title"

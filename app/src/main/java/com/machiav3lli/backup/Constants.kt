@@ -18,6 +18,7 @@
 package com.machiav3lli.backup
 
 import android.Manifest
+import android.content.Intent
 import com.machiav3lli.backup.ui.item.ChipItem
 import com.machiav3lli.backup.ui.item.Legend
 import com.machiav3lli.backup.ui.item.Link
@@ -50,9 +51,12 @@ const val PREFS_SKIPPEDENCRYPTION = "skippedEncryptionCounter"
 
 const val PREFS_LANGUAGES = "languages"
 const val PREFS_THEME = "themes"
+const val PREFS_THEME_X = "appTheme"
 const val PREFS_THEME_DYNAMIC = "dynamic"
 const val PREFS_ACCENT_COLOR = "themeAccentColor"
+const val PREFS_ACCENT_COLOR_X = "appAccentColor"
 const val PREFS_SECONDARY_COLOR = "themeSecondaryColor"
+const val PREFS_SECONDARY_COLOR_X = "appSecondaryColor"
 const val PREFS_LANGUAGES_DEFAULT = "system"
 const val PREFS_PATH_BACKUP_DIRECTORY = "pathBackupFolder"
 const val PREFS_LOADINGTOASTS = "loadingToasts"
@@ -76,6 +80,7 @@ const val PREFS_INSTALLER_PACKAGENAME = "installationPackage"
 const val PREFS_RESTOREPERMISSIONS = "restorePermissions"
 const val PREFS_NUM_BACKUP_REVISIONS = "numBackupRevisions"
 const val PREFS_HOUSEKEEPING_MOMENT = "housekeepingMoment"
+const val PREFS_HOUSEKEEPING = "housekeeping"
 const val PREFS_DISABLEVERIFICATION = "disableVerification"
 const val PREFS_RESTOREWITHALLPERMISSIONS = "giveAllPermissions"
 const val PREFS_ALLOWDOWNGRADE = "allowDowngrade"
@@ -97,16 +102,17 @@ const val PREFS_RESTOREAVOIDTEMPCOPY = "restoreAvoidTemporaryCopy"
 const val PREFS_SHADOWROOTFILE = "shadowRootFileForSAF"
 const val PREFS_ALLOWSHADOWINGDEFAULT = "allowShadowingDefault"
 const val PREFS_FINDLS = "useFindLs"
-const val PREFS_ASSEMBLE_FILE_ONE_STEP = "useAssembleFileListOneStep"
-const val PREFS_CATCHUNCAUGHT = "catchUncaughtException"
+const val PREFS_ASSEMBLEFILELISTONESTEP = "useAssembleFileListOneStep"
+const val PREFS_CATCHUNCAUGHTEXCEPTION = "catchUncaughtException"
 const val PREFS_MAXCRASHLINES = "maxCrashLines"
 const val PREFS_INVALIDATESELECTIVE = "invalidateSelective"
 const val PREFS_CACHEURIS = "cacheUris"
 const val PREFS_CACHEFILELISTS = "cacheFileLists"
-const val PREFS_MAXRETRIES = "maxRetriesPerPackage"
-const val PREFS_REFRESHDELAY = "delayBeforeRefreshAppInfo"
-const val PREFS_REFRESHTIMEOUT = "refreshAppInfoTimeout"
+const val PREFS_MAXRETRIESPERPACKAGE = "maxRetriesPerPackage"
+const val PREFS_DELAYBEFOREREFRESHAPPINFO = "delayBeforeRefreshAppInfo"
+const val PREFS_REFRESHAPPINFOTIMEOUT = "refreshAppInfoTimeout"
 const val PREFS_REFRESHTIMEOUT_DEFAULT = 30
+const val PREFS_FAKEBACKUPSECONDS = "fakeBackupSeconds"
 const val PREFS_BATCH_DELETE = "batchDelete"
 const val PREFS_COPYSELF = "copySelfApk"
 const val PREFS_SCHEDULESEXPORTIMPORT = "schedulesExportImport"
@@ -275,9 +281,24 @@ val BACKUP_DATE_TIME_FORMATTER_OLD: DateTimeFormatter =
 val BACKUP_DATE_TIME_FORMATTER: DateTimeFormatter =
     DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSS")
 
+val BACKUP_DIRECTORY_INTENT = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+    .addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
+    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+    .addFlags(Intent.FLAG_GRANT_PREFIX_URI_PERMISSION)
+
 fun classAddress(address: String): String = PREFS_SHARED_PRIVATE + address
 
 fun exodusUrl(app: String): String = "https://reports.exodus-privacy.eu.org/reports/$app/latest"
+
+
+const val HOUSEKEEPING_BEFORE = 0
+const val HOUSEKEEPING_AFTER = 1
+
+val housekeepingOptions = mapOf(
+    HOUSEKEEPING_BEFORE to R.string.prefs_housekeepingmoment_before,
+    HOUSEKEEPING_AFTER to R.string.prefs_housekeepingmoment_after
+)
 
 enum class HousekeepingMoment(val value: String) {
     BEFORE("before"), AFTER("after");

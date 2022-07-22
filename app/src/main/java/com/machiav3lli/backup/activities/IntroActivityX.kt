@@ -35,6 +35,7 @@ import com.machiav3lli.backup.PREFS_FIRST_LAUNCH
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.classAddress
 import com.machiav3lli.backup.databinding.ActivityIntroXBinding
+import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import com.machiav3lli.backup.utils.getPrivateSharedPrefs
 import com.machiav3lli.backup.utils.isBiometricLockAvailable
 import com.machiav3lli.backup.utils.isBiometricLockEnabled
@@ -53,7 +54,7 @@ class IntroActivityX : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityIntroXBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        prefs = getPrivateSharedPrefs()
+        prefs = getDefaultSharedPreferences()
         setupNavigation()
         if (intent.extras != null) {
             val fragmentNumber = intent.extras!!.getInt(classAddress(".fragmentNumber"))
@@ -99,7 +100,7 @@ class IntroActivityX : BaseActivity() {
     }
 
     private fun launchMainActivity() {
-        if (isBiometricLockAvailable() && isBiometricLockEnabled()) {
+        if (isBiometricLockAvailable() && isBiometricLockEnabled() && isDeviceLockEnabled()) {
             launchBiometricPrompt(true)
         } else if (isDeviceLockAvailable() && isDeviceLockEnabled()) {
             launchBiometricPrompt(false)

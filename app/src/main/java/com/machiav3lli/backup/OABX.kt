@@ -38,6 +38,7 @@ import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
+import com.machiav3lli.backup.utils.getPrivateSharedPrefs
 import com.machiav3lli.backup.utils.themeStyle
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -177,9 +178,16 @@ class OABX : Application() {
             .putBoolean(name, value).apply()
 
         fun prefString(name: String, default: String) = context.getDefaultSharedPreferences()
-            .getString(name, default)
+            .getString(name, default) ?: default
 
         fun setPrefString(name: String, value: String) = context.getDefaultSharedPreferences()
+            .edit()
+            .putString(name, value).apply()
+
+        fun prefPrivateString(name: String, default: String) = context.getPrivateSharedPrefs()
+            .getString(name, default) ?: default
+
+        fun setPrefPrivateString(name: String, value: String) = context.getPrivateSharedPrefs()
             .edit()
             .putString(name, value).apply()
 

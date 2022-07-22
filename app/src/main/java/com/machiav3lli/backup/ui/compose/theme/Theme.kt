@@ -30,7 +30,8 @@ fun AppTheme(
             colorScheme = when {
                 context.themeStyle == PREFS_THEME_DYNAMIC && isSystemInDarkTheme() ->
                     dynamicDarkColorScheme(context)
-                context.themeStyle == PREFS_THEME_DYNAMIC -> dynamicLightColorScheme(context)
+                context.themeStyle == PREFS_THEME_DYNAMIC ->
+                    dynamicLightColorScheme(context)
                 darkTheme -> DarkColors.copy(
                     primary = getPrimaryColor(LocalContext.current.accentStyle),
                     primaryContainer = getPrimaryColor(LocalContext.current.accentStyle)

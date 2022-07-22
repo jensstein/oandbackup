@@ -36,7 +36,7 @@ import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_MAXRETRIES
+import com.machiav3lli.backup.PREFS_MAXRETRIESPERPACKAGE
 import com.machiav3lli.backup.PREFS_USEEXPEDITED
 import com.machiav3lli.backup.PREFS_USEFOREGROUND
 import com.machiav3lli.backup.R
@@ -51,7 +51,6 @@ import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.services.CommandReceiver
-import kotlinx.coroutines.delay
 import timber.log.Timber
 
 class AppActionWork(val context: Context, workerParams: WorkerParameters) :
@@ -70,53 +69,16 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
 
     override suspend fun doWork(): Result {
 
-        var result: ActionResult? = null
+        var actionResult: ActionResult? = null
 
         setOperation("...")
 
-        var message =
+        var logMessage =
             "------------------------------------------------------------ Work: $batchName $packageName"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            message += " ui=${context.isUiContext}"
+            logMessage += " ui=${context.isUiContext}"
         }
-        Timber.i(message)
-
-        if (OABX.prefInt("fakeBackupMinutes", 0) > 0) {
-
-            val step = 1000L * 1
-            val startTime = System.currentTimeMillis()
-            do {
-                val now = System.currentTimeMillis()
-                val minutes = (now - startTime) / 60.0 / 1000.0
-                setOperation((minutes * 10).toInt().toString().padStart(3, '0'))
-                delay(step)
-            } while (minutes < OABX.prefInt("fakeBackupMinutes", 0))
-
-            val succeeded = true // random() < 0.75
-
-            return if (succeeded) {
-                setOperation("OK.")
-                Timber.w("package: $packageName OK")
-                Result.success(getWorkData("OK", result))
-            } else {
-                failures++
-                setVar(batchName, packageName, "failures", failures.toString())
-                if (failures <= OABX.prefInt(PREFS_MAXRETRIES, 1)) {
-                    setOperation("err")
-                    Timber.w("package: $packageName failures: $failures -> retry")
-                    Result.retry()
-                } else {
-                    val message = "$packageName\n${result?.message}"
-                    showNotification(
-                        context, MainActivityX::class.java,
-                        result.hashCode(), packageLabel, result?.message, message, false
-                    )
-                    setOperation("ERR")
-                    Timber.w("package: $packageName FAILED")
-                    Result.failure(getWorkData("ERR", result))
-                }
-            }
-        }
+        Timber.i(logMessage)
 
         val selectedMode = inputData.getInt("selectedMode", MODE_UNSET)
 
@@ -146,7 +108,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                     packageItem = Package(context, it.name!!, it)
                 } catch (e: AssertionError) {
                     Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
-                    result = ActionResult(
+                    actionResult = ActionResult(
                         null,
                         null,
                         "Could not process backup folder for uninstalled application in ${it.name}: $e",
@@ -163,7 +125,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                     try {
                         pi.refreshBackupList()  // optional, be up to date when the job is finally executed
                         OABX.shellHandlerInstance?.let { shellHandler ->
-                            result = when {
+                            actionResult = when {
                                 backupBoolean -> {
                                     BackupRestoreHelper.backup(
                                         context, this, shellHandler, pi, selectedMode
@@ -184,7 +146,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                         }
                         pi.refreshBackupList()  // who knows what happened in external space?
                     } catch (e: Throwable) {
-                        result = ActionResult(
+                        actionResult = ActionResult(
                             pi, null,
                             "not processed: $packageLabel: $e\n${e.stackTrace}", false
                         )
@@ -195,27 +157,27 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, packageLabel)
         }
-        val succeeded = result?.succeeded ?: false
+        val succeeded = actionResult?.succeeded ?: false
         return if (succeeded) {
             setOperation("OK.")
             Timber.w("package: $packageName OK")
-            Result.success(getWorkData("OK", result))
+            Result.success(getWorkData("OK", actionResult))
         } else {
             failures++
             setVar(batchName, packageName, "failures", failures.toString())
-            if (failures <= OABX.prefInt(PREFS_MAXRETRIES, 1)) {
+            if (failures <= OABX.prefInt(PREFS_MAXRETRIESPERPACKAGE, 1)) {
                 setOperation("err")
                 Timber.w("package: $packageName failures: $failures -> retry")
                 Result.retry()
             } else {
-                val message = "$packageName\n${result?.message}"
+                val message = "$packageName\n${actionResult?.message}"
                 showNotification(
                     context, MainActivityX::class.java,
-                    result.hashCode(), packageLabel, result?.message, message, false
+                    actionResult.hashCode(), packageLabel, actionResult?.message, message, false
                 )
                 setOperation("ERR")
                 Timber.w("package: $packageName FAILED")
-                Result.failure(getWorkData("ERR", result))
+                Result.failure(getWorkData("ERR", actionResult))
             }
         }
     }

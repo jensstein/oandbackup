@@ -159,12 +159,13 @@ val Context.backupDirConfigured: String
         return location
     }
 
-fun Context.setBackupDir(value: Uri) {
+fun Context.setBackupDir(value: Uri): String {
     val fullUri = DocumentsContract
         .buildDocumentUriUsingTree(value, DocumentsContract.getTreeDocumentId(value))
     getDefaultSharedPreferences().edit()
         .putString(PREFS_PATH_BACKUP_DIRECTORY, fullUri.toString()).apply()
     OABX.main?.needRefresh = true       // post refreshing view
+    return fullUri.toString()
     //FileUtils.invalidateBackupLocation()
 }
 
