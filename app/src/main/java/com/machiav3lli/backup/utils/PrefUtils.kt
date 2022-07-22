@@ -40,6 +40,7 @@ import androidx.core.app.ActivityCompat
 import androidx.preference.PreferenceManager
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_ACCENT_COLOR
 import com.machiav3lli.backup.PREFS_ALLOWDOWNGRADE
@@ -515,4 +516,18 @@ fun Context.getLocaleOfCode(localeCode: String): Locale = when {
         localeCode.substring(3)
     )
     else -> Locale(localeCode)
+}
+
+fun Context.getLanguageList() =
+    mapOf(PREFS_LANGUAGES_DEFAULT to resources.getString(R.string.prefs_language_system)) +
+            BuildConfig.DETECTED_LOCALES
+                .sorted()
+                .associateWith { translateLocale(getLocaleOfCode(it)) }
+
+private fun translateLocale(locale: Locale): String {
+    val country = locale.getDisplayCountry(locale)
+    val language = locale.getDisplayLanguage(locale)
+    return (language.replaceFirstChar { it.uppercase(Locale.getDefault()) }
+            + (if (country.isNotEmpty() && country.compareTo(language, true) != 0)
+        "($country)" else ""))
 }
