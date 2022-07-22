@@ -119,6 +119,63 @@ fun EnumDialogUI(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ListDialogUI(
+    pref: Pref.ListPref,
+    openDialogCustom: MutableState<Boolean>
+) {
+    val context = LocalContext.current
+    var selected by remember { mutableStateOf(OABX.prefString(pref.key, pref.defaultValue)) }
+    val entryPairs = pref.entries.toList()
+
+    Card(
+        shape = RoundedCornerShape(8.dp),
+        modifier = Modifier.padding(8.dp),
+        elevation = CardDefaults.elevatedCardElevation(8.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(text = stringResource(pref.titleId), style = MaterialTheme.typography.titleLarge)
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(top = 16.dp, bottom = 16.dp)
+            ) {
+                items(items = entryPairs) {
+                    val isSelected = rememberSaveable(selected) {
+                        mutableStateOf(selected == it.first)
+                    }
+                    SelectableRow(
+                        modifier = Modifier.clip(MaterialTheme.shapes.medium),
+                        title = it.second,
+                        selectedState = isSelected
+                    ) {
+                        selected = it.first
+                    }
+                }
+            }
+
+            Row(
+                Modifier.fillMaxWidth()
+            ) {
+                ActionButton(text = stringResource(id = R.string.dialogCancel)) {
+                    openDialogCustom.value = false
+                }
+                Spacer(Modifier.weight(1f))
+                ElevatedActionButton(text = stringResource(id = R.string.dialogSave)) {
+                    OABX.setPrefString(pref.key, selected)
+                    openDialogCustom.value = false
+                }
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun StringDialogUI(
