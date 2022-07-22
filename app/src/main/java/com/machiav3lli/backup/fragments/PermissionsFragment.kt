@@ -22,7 +22,6 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -56,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_IGNORE_BATTERY_OPTIMIZATION
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.IntroActivityX
@@ -69,7 +69,6 @@ import com.machiav3lli.backup.utils.checkCallLogsPermission
 import com.machiav3lli.backup.utils.checkContactsPermission
 import com.machiav3lli.backup.utils.checkSMSMMSPermission
 import com.machiav3lli.backup.utils.checkUsageStatsPermission
-import com.machiav3lli.backup.utils.getPrivateSharedPrefs
 import com.machiav3lli.backup.utils.getStoragePermission
 import com.machiav3lli.backup.utils.hasStoragePermissions
 import com.machiav3lli.backup.utils.isStorageDirSetAndOk
@@ -82,7 +81,6 @@ import timber.log.Timber
 
 class PermissionsFragment : Fragment() {
     private lateinit var powerManager: PowerManager
-    private lateinit var prefs: SharedPreferences
 
     private val askForDirectory =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -162,7 +160,6 @@ class PermissionsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        prefs = requireContext().getPrivateSharedPrefs()
         powerManager = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
     }
 
@@ -174,7 +171,7 @@ class PermissionsFragment : Fragment() {
             requireContext().checkCallLogsPermission &&
             requireContext().checkContactsPermission &&
             requireContext().checkUsageStatsPermission &&
-            (prefs.getBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
+            (OABX.prefFlag(PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
                     || powerManager.isIgnoringBatteryOptimizations(requireContext().packageName))
         ) (requireActivity() as IntroActivityX).moveTo(3)
     }
@@ -197,7 +194,7 @@ class PermissionsFragment : Fragment() {
                             add(Pair(Permission.StorageLocation) {
                                 requireActivity().requireStorageLocation(askForDirectory)
                             })
-                        if (!requireContext().checkBatteryOptimization(prefs, powerManager))
+                        if (!requireContext().checkBatteryOptimization(powerManager))
                             add(Pair(Permission.BatteryOptimization) {
                                 showBatteryOptimizationDialog(powerManager)
                             })
@@ -245,10 +242,10 @@ class PermissionsFragment : Fragment() {
                 intent.data = Uri.parse("package:" + requireContext().packageName)
                 try {
                     startActivity(intent)
-                    prefs.edit().putBoolean(
+                    OABX.setPrefFlag(
                         PREFS_IGNORE_BATTERY_OPTIMIZATION,
                         powerManager?.isIgnoringBatteryOptimizations(requireContext().packageName) == true
-                    ).apply()
+                    )
                 } catch (e: ActivityNotFoundException) {
                     Timber.w(e, "Ignore battery optimizations not supported")
                     Toast.makeText(
@@ -256,12 +253,11 @@ class PermissionsFragment : Fragment() {
                         R.string.ignore_battery_optimization_not_supported,
                         Toast.LENGTH_LONG
                     ).show()
-                    prefs.edit().putBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION, true).apply()
+                    OABX.setPrefFlag(PREFS_IGNORE_BATTERY_OPTIMIZATION, true)
                 }
             }
             .setNeutralButton(R.string.dialog_refuse) { _: DialogInterface?, _: Int ->
-                prefs.edit()
-                    ?.putBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION, true)?.apply()
+                OABX.setPrefFlag(PREFS_IGNORE_BATTERY_OPTIMIZATION, true)
             }
             .setCancelable(false)
             .show()

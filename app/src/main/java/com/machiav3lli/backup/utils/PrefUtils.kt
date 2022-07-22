@@ -434,8 +434,8 @@ val Context.checkUsageStatsPermission: Boolean
         }
     }
 
-fun Context.checkBatteryOptimization(prefs: SharedPreferences, powerManager: PowerManager)
-        : Boolean = prefs.getBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
+fun Context.checkBatteryOptimization(powerManager: PowerManager)
+        : Boolean = OABX.prefFlag(PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
         || powerManager.isIgnoringBatteryOptimizations(packageName)
 
 

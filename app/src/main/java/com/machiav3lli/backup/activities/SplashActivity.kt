@@ -55,7 +55,6 @@ import com.machiav3lli.backup.utils.checkContactsPermission
 import com.machiav3lli.backup.utils.checkRootAccess
 import com.machiav3lli.backup.utils.checkSMSMMSPermission
 import com.machiav3lli.backup.utils.checkUsageStatsPermission
-import com.machiav3lli.backup.utils.getPrivateSharedPrefs
 import com.machiav3lli.backup.utils.hasStoragePermissions
 import com.machiav3lli.backup.utils.isStorageDirSetAndOk
 import com.machiav3lli.backup.utils.setCustomTheme
@@ -128,7 +127,6 @@ class SplashActivity : BaseActivity() {
         Shell.getShell()
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val prefs = getPrivateSharedPrefs()
         val powerManager = this.getSystemService(POWER_SERVICE) as PowerManager
 
         if (!checkRootAccess()) {
@@ -139,7 +137,7 @@ class SplashActivity : BaseActivity() {
         }
 
         val introIntent = Intent(applicationContext, IntroActivityX::class.java)
-        if (prefs.getBoolean(PREFS_FIRST_LAUNCH, true)) {
+        if (OABX.prefFlag(PREFS_FIRST_LAUNCH, true)) {
             startActivity(introIntent)
         } else if (hasStoragePermissions &&
             isStorageDirSetAndOk &&
@@ -147,7 +145,7 @@ class SplashActivity : BaseActivity() {
             checkCallLogsPermission &&
             checkContactsPermission &&
             checkUsageStatsPermission &&
-            (prefs.getBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
+            (OABX.prefFlag(PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
                     || powerManager.isIgnoringBatteryOptimizations(packageName))
         ) {
             introIntent.putExtra(classAddress(".fragmentNumber"), 3)

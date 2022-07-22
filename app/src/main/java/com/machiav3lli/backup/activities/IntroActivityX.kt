@@ -19,7 +19,6 @@ package com.machiav3lli.backup.activities
 
 import android.app.Activity
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
@@ -35,8 +34,6 @@ import com.machiav3lli.backup.PREFS_FIRST_LAUNCH
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.classAddress
 import com.machiav3lli.backup.databinding.ActivityIntroXBinding
-import com.machiav3lli.backup.utils.getDefaultSharedPreferences
-import com.machiav3lli.backup.utils.getPrivateSharedPrefs
 import com.machiav3lli.backup.utils.isBiometricLockAvailable
 import com.machiav3lli.backup.utils.isBiometricLockEnabled
 import com.machiav3lli.backup.utils.isDeviceLockAvailable
@@ -45,7 +42,6 @@ import com.machiav3lli.backup.utils.setCustomTheme
 
 class IntroActivityX : BaseActivity() {
     private lateinit var binding: ActivityIntroXBinding
-    private lateinit var prefs: SharedPreferences
     private var navController: NavController? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +50,6 @@ class IntroActivityX : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityIntroXBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        prefs = getDefaultSharedPreferences()
         setupNavigation()
         if (intent.extras != null) {
             val fragmentNumber = intent.extras!!.getInt(classAddress(".fragmentNumber"))
@@ -73,7 +68,7 @@ class IntroActivityX : BaseActivity() {
             if (destination.id == R.id.welcomeFragment) {
                 binding.positiveButton.setText(R.string.dialog_start)
                 binding.positiveButton.setOnClickListener {
-                    prefs.edit().putBoolean(PREFS_FIRST_LAUNCH, false).apply()
+                    OABX.setPrefFlag(PREFS_FIRST_LAUNCH, false)
                     moveTo(2)
                 }
             }
