@@ -473,7 +473,7 @@ fun SelectableRow(
         modifier = modifier
             .fillMaxWidth()
             .clickable {
-                selectedState.value = !selectedState.value
+                selectedState.value = true
                 onClick()
             },
         verticalAlignment = Alignment.CenterVertically
@@ -481,7 +481,7 @@ fun SelectableRow(
         RadioButton(
             selected = selectedState.value,
             onClick = {
-                selectedState.value = !selectedState.value
+                selectedState.value = true
             },
             modifier = Modifier.padding(horizontal = 8.dp),
             colors = RadioButtonDefaults.colors(
