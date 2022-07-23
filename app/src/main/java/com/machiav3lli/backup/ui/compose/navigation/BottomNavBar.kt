@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.machiav3lli.backup.NAV_MAIN
@@ -36,6 +37,7 @@ fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
 
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.surface,
+        tonalElevation = 0.dp,
         contentColor = MaterialTheme.colorScheme.onSurface
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
