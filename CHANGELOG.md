@@ -1,5 +1,35 @@
 CHANGELOG
 =========
+8.1.0 (23.07.2022) +300 Commits
+------------------
+- Add: Dynamic color support (aka Material You)
+- Add: Backup size (applies only to new backups)
+- Add: Tags & Note
+- Add: Optional info log in the topBar (@hg42)
+- Add: Installer package name
+- Add: Session installer (in anticipation of A13 restrictions)
+- Add: New sort criteria
+- Add: Gray coloring of app type's label
+- Add: Loading and batch progress bars
+- Add: Filter permissions list
+- Add: Version name in HelpSheet (@hg42)
+- Add: Repeat restore try without permissions once if it fails
+- Fix: Data reset after reboot (@hg42)
+- Fix: Initial Root check (@hg42)
+- Fix: (catch&ignore) List-related irregular crash
+- Fix: DocumentInfo/size of files (@hg42)
+- Fix: Obey search with select all (@hg42)
+- Fix: Use proper first user appId instead of hardcoded one (@hg42)
+- Fix: Schedule's special filter visbility
+- Fix: OAndBackupX to Neo Backup in some strings (@whalehub)
+- Fix: Packages placeholder icons
+- Update: Use cancelable SnackBar for popup info
+- Update: Migrate sheets to stateful Compose
+- Update: Adapt --mount-master option to what libsu detected (@hg42)
+- Update: Show encryption reminder only three times
+- Update: Improve SAF access performance (@hg42)
+- Update: Select utilBox by score (@hg42)
+
 8.0.2 (29.04.2022) 2 Commits
 ------------------
 - Fix: Auto-updating AppSheet package

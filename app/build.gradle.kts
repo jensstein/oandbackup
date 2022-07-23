@@ -39,7 +39,7 @@ android {
         applicationId = "com.machiav3lli.backup"
         minSdk = 26
         targetSdk = 32
-        versionCode = 8101
+        versionCode = 8102
         versionName = "8.1.0"
         buildConfigField("int", "MAJOR", "8")
         buildConfigField("int", "MINOR", "1")
@@ -66,7 +66,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            versionNameSuffix = "-rc1"
             isMinifyEnabled = true
             manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher"
             manifestPlaceholders["appIconRound"] = "@mipmap/ic_launcher_round"
@@ -79,7 +78,6 @@ android {
         }
         create("neo") {
             applicationIdSuffix = ".neo"
-            versionNameSuffix = "-rc1"
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
