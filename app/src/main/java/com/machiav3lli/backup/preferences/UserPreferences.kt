@@ -58,6 +58,7 @@ import com.machiav3lli.backup.utils.isDeviceLockAvailable
 import com.machiav3lli.backup.utils.isDeviceLockEnabled
 import com.machiav3lli.backup.utils.restartApp
 import com.machiav3lli.backup.utils.setBackupDir
+import com.machiav3lli.backup.utils.setCustomTheme
 import timber.log.Timber
 
 @Composable
@@ -149,7 +150,7 @@ fun UserPrefsPage() {
                         pref = dialogsPref as Pref.EnumPref,
                         openDialogCustom = openDialog,
                         onChanged = {
-                            //context.setCustomThemeX()
+                            context.setCustomTheme()
                             context.restartApp()
                         }
                     )

@@ -39,7 +39,7 @@ import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import com.machiav3lli.backup.utils.getPrivateSharedPrefs
-import com.machiav3lli.backup.utils.themeStyle
+import com.machiav3lli.backup.utils.styleTheme
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -83,7 +83,7 @@ class OABX : Application() {
         DynamicColors.applyToActivitiesIfAvailable(
             this,
             DynamicColorsOptions.Builder()
-                .setPrecondition { _, _ -> themeStyle == PREFS_THEME_DYNAMIC }
+                .setPrecondition { _, _ -> styleTheme == THEME_DYNAMIC }
                 .build()
         )
         appRef = WeakReference(this)

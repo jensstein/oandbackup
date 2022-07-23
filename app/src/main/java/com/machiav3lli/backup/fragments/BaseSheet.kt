@@ -23,18 +23,16 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.machiav3lli.backup.activities.MainActivityX
-import com.machiav3lli.backup.utils.accentStyle
-import com.machiav3lli.backup.utils.getAccentStyle
-import com.machiav3lli.backup.utils.getSecondaryStyle
-import com.machiav3lli.backup.utils.secondaryStyle
+import com.machiav3lli.backup.utils.applyAccentStyle
+import com.machiav3lli.backup.utils.applySecondaryStyle
 
 open class BaseSheet : BottomSheetDialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val sheet = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
         sheet.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        sheet.context.theme.applyStyle(getAccentStyle(requireContext().accentStyle), true)
-        sheet.context.theme.applyStyle(getSecondaryStyle(requireContext().secondaryStyle), true)
+        sheet.context.theme.applyAccentStyle()
+        sheet.context.theme.applySecondaryStyle()
         return sheet
     }
 

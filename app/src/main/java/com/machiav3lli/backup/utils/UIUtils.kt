@@ -23,6 +23,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
@@ -43,8 +44,10 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import com.google.android.material.color.DynamicColors
 import com.machiav3lli.backup.PREFS_LANGUAGES_DEFAULT
-import com.machiav3lli.backup.PREFS_THEME_DYNAMIC
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.THEME_DARK
+import com.machiav3lli.backup.THEME_DYNAMIC
+import com.machiav3lli.backup.THEME_LIGHT
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.ActionResult
@@ -71,11 +74,11 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 fun Context.setCustomTheme() {
-    AppCompatDelegate.setDefaultNightMode(getThemeStyle(themeStyle))
-    if (!(themeStyle == PREFS_THEME_DYNAMIC && DynamicColors.isDynamicColorAvailable())) {
+    AppCompatDelegate.setDefaultNightMode(getThemeStyleX(styleTheme))
+    if (!(styleTheme == THEME_DYNAMIC && DynamicColors.isDynamicColorAvailable())) {
         setTheme(R.style.AppTheme)
-        theme.applyStyle(getAccentStyle(accentStyle), true)
-        theme.applyStyle(getSecondaryStyle(secondaryStyle), true)
+        theme.applyAccentStyle()
+        theme.applySecondaryStyle()
     } // TODO allow fine control on using custom accent/secondary colors?
 }
 
@@ -138,59 +141,65 @@ fun Activity.showToast(message: String, should: Boolean = true) = runOnUiThread 
     }
 }
 
-fun getThemeStyle(theme: String) = when (theme) {
-    "light" -> AppCompatDelegate.MODE_NIGHT_NO
-    "dark" -> AppCompatDelegate.MODE_NIGHT_YES
+fun getThemeStyleX(theme: Int) = when (theme) {
+    THEME_LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
+    THEME_DARK -> AppCompatDelegate.MODE_NIGHT_YES
     else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 }
 
-fun getAccentStyle(accent: String) = when (accent.last().digitToInt()) {
-    1 -> R.style.Accent1
-    2 -> R.style.Accent2
-    3 -> R.style.Accent3
-    4 -> R.style.Accent4
-    5 -> R.style.Accent5
-    6 -> R.style.Accent6
-    7 -> R.style.Accent7
-    8 -> R.style.Accent8
-    else -> R.style.Accent0
-}
+fun Resources.Theme.applyAccentStyle() = applyStyle(
+    when (stylePrimary) {
+        1 -> R.style.Accent1
+        2 -> R.style.Accent2
+        3 -> R.style.Accent3
+        4 -> R.style.Accent4
+        5 -> R.style.Accent5
+        6 -> R.style.Accent6
+        7 -> R.style.Accent7
+        8 -> R.style.Accent8
+        else -> R.style.Accent0
+    }, true
+)
 
-fun getPrimaryColor(accent: String) = when (accent.last().digitToInt()) {
-    1 -> FinePurple
-    2 -> CalmIndigo
-    3 -> Turquoise
-    4 -> BoldGreen
-    5 -> ChartreuseLime
-    6 -> ThunderYellow
-    7 -> ApricotOrange
-    8 -> PumpkinPerano
-    else -> RedComet
-}
+val primaryColor
+    get() = when (stylePrimary) {
+        1 -> FinePurple
+        2 -> CalmIndigo
+        3 -> Turquoise
+        4 -> BoldGreen
+        5 -> ChartreuseLime
+        6 -> ThunderYellow
+        7 -> ApricotOrange
+        8 -> PumpkinPerano
+        else -> RedComet
+    }
 
-fun getSecondaryStyle(secondary: String) = when (secondary.last().digitToInt()) {
-    1 -> R.style.Secondary1
-    2 -> R.style.Secondary2
-    3 -> R.style.Secondary3
-    4 -> R.style.Secondary4
-    5 -> R.style.Secondary5
-    6 -> R.style.Secondary6
-    7 -> R.style.Secondary7
-    8 -> R.style.Secondary8
-    else -> R.style.Secondary0
-}
+fun Resources.Theme.applySecondaryStyle() = applyStyle(
+    when (styleSecondary) {
+        1 -> R.style.Secondary1
+        2 -> R.style.Secondary2
+        3 -> R.style.Secondary3
+        4 -> R.style.Secondary4
+        5 -> R.style.Secondary5
+        6 -> R.style.Secondary6
+        7 -> R.style.Secondary7
+        8 -> R.style.Secondary8
+        else -> R.style.Secondary0
+    }, true
+)
 
-fun getSecondaryColor(secondary: String) = when (secondary.last().digitToInt()) {
-    1 -> OceanTeal
-    2 -> Limette
-    3 -> TigerAmber
-    4 -> LavaOrange
-    5 -> FlamingoPink
-    6 -> Slate
-    7 -> AzureBlue
-    8 -> Mint
-    else -> ArcticCyan
-}
+val secondaryColor
+    get() = when (styleSecondary) {
+        1 -> OceanTeal
+        2 -> Limette
+        3 -> TigerAmber
+        4 -> LavaOrange
+        5 -> FlamingoPink
+        6 -> Slate
+        7 -> AzureBlue
+        8 -> Mint
+        else -> ArcticCyan
+    }
 
 fun NavController.navigateRight(itemId: Int) = this.navigate(
     itemId,

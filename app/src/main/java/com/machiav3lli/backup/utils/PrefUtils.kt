@@ -43,6 +43,7 @@ import androidx.security.crypto.MasterKey
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_ACCENT_COLOR
+import com.machiav3lli.backup.PREFS_ACCENT_COLOR_X
 import com.machiav3lli.backup.PREFS_ALLOWDOWNGRADE
 import com.machiav3lli.backup.PREFS_BIOMETRICLOCK
 import com.machiav3lli.backup.PREFS_COMPRESSION_LEVEL
@@ -65,9 +66,11 @@ import com.machiav3lli.backup.PREFS_REMEMBERFILTERING
 import com.machiav3lli.backup.PREFS_RESTOREWITHALLPERMISSIONS
 import com.machiav3lli.backup.PREFS_SALT
 import com.machiav3lli.backup.PREFS_SECONDARY_COLOR
+import com.machiav3lli.backup.PREFS_SECONDARY_COLOR_X
 import com.machiav3lli.backup.PREFS_SHARED_PRIVATE
 import com.machiav3lli.backup.PREFS_SORT_FILTER
 import com.machiav3lli.backup.PREFS_THEME
+import com.machiav3lli.backup.PREFS_THEME_X
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.SortFilterModel
@@ -494,6 +497,18 @@ var Context.secondaryStyle: String
         ?: "secondary_0"
     set(value) = getDefaultSharedPreferences().edit().putString(PREFS_SECONDARY_COLOR, value)
         .apply()
+
+var styleTheme: Int
+    get() = OABX.prefInt(PREFS_THEME_X, 2)
+    set(value) = OABX.setPrefInt(PREFS_THEME_X, value)
+
+var stylePrimary: Int
+    get() = OABX.prefInt(PREFS_ACCENT_COLOR_X, 0)
+    set(value) = OABX.setPrefInt(PREFS_ACCENT_COLOR_X, value)
+
+var styleSecondary: Int
+    get() = OABX.prefInt(PREFS_SECONDARY_COLOR_X, 0)
+    set(value) = OABX.setPrefInt(PREFS_SECONDARY_COLOR_X, value)
 
 var Context.language: String
     get() = getDefaultSharedPreferences().getString(PREFS_LANGUAGES, PREFS_LANGUAGES_DEFAULT)
