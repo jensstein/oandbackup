@@ -68,7 +68,8 @@ fun BaseDialog(
 @Composable
 fun EnumDialogUI(
     pref: Pref.EnumPref,
-    openDialogCustom: MutableState<Boolean>
+    openDialogCustom: MutableState<Boolean>,
+    onChanged: (() -> Unit) = {}
 ) {
     val context = LocalContext.current
     var selected by remember { mutableStateOf(OABX.prefInt(pref.key, pref.defaultValue)) }
@@ -111,7 +112,10 @@ fun EnumDialogUI(
                 }
                 Spacer(Modifier.weight(1f))
                 ElevatedActionButton(text = stringResource(id = R.string.dialogSave)) {
-                    OABX.setPrefInt(pref.key, selected)
+                    if (OABX.prefInt(pref.key, pref.defaultValue) != selected) {
+                        OABX.setPrefInt(pref.key, selected)
+                        onChanged()
+                    }
                     openDialogCustom.value = false
                 }
             }
@@ -123,7 +127,8 @@ fun EnumDialogUI(
 @Composable
 fun ListDialogUI(
     pref: Pref.ListPref,
-    openDialogCustom: MutableState<Boolean>
+    openDialogCustom: MutableState<Boolean>,
+    onChanged: (() -> Unit) = {}
 ) {
     val context = LocalContext.current
     var selected by remember { mutableStateOf(OABX.prefString(pref.key, pref.defaultValue)) }
@@ -168,7 +173,10 @@ fun ListDialogUI(
                 }
                 Spacer(Modifier.weight(1f))
                 ElevatedActionButton(text = stringResource(id = R.string.dialogSave)) {
-                    OABX.setPrefString(pref.key, selected)
+                    if (OABX.prefString(pref.key, pref.defaultValue) != selected) {
+                        OABX.setPrefString(pref.key, selected)
+                        onChanged()
+                    }
                     openDialogCustom.value = false
                 }
             }
@@ -181,7 +189,8 @@ fun ListDialogUI(
 fun StringDialogUI(
     pref: Pref.StringPref,
     isPrivate: Boolean = false,
-    openDialogCustom: MutableState<Boolean>
+    openDialogCustom: MutableState<Boolean>,
+    onChanged: (() -> Unit) = {}
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
@@ -234,8 +243,14 @@ fun StringDialogUI(
                 }
                 Spacer(Modifier.weight(1f))
                 ElevatedActionButton(text = stringResource(id = R.string.dialogSave)) {
-                    if (isPrivate) OABX.setPrefPrivateString(pref.key, savedValue)
-                    else OABX.setPrefString(pref.key, savedValue)
+                    if ((isPrivate &&
+                                OABX.prefPrivateString(pref.key, pref.defaultValue) != savedValue)
+                        || OABX.prefString(pref.key, pref.defaultValue) != savedValue
+                    ) {
+                        if (isPrivate) OABX.setPrefPrivateString(pref.key, savedValue)
+                        else OABX.setPrefString(pref.key, savedValue)
+                        onChanged()
+                    }
                     openDialogCustom.value = false
                 }
             }

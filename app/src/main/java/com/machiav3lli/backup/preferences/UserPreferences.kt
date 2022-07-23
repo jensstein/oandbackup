@@ -56,6 +56,7 @@ import com.machiav3lli.backup.utils.getLanguageList
 import com.machiav3lli.backup.utils.isBiometricLockAvailable
 import com.machiav3lli.backup.utils.isDeviceLockAvailable
 import com.machiav3lli.backup.utils.isDeviceLockEnabled
+import com.machiav3lli.backup.utils.restartApp
 import com.machiav3lli.backup.utils.setBackupDir
 import timber.log.Timber
 
@@ -141,11 +142,16 @@ fun UserPrefsPage() {
                 when (dialogsPref) {
                     is Pref.ListPref -> ListDialogUI(
                         pref = dialogsPref as Pref.ListPref,
-                        openDialogCustom = openDialog
+                        openDialogCustom = openDialog,
+                        onChanged = { context.restartApp() }
                     )
-                    is Pref.EnumPref -> EnumDialogUI(
+                    ThemePref, AccentColorPref, SecondaryColorPref -> EnumDialogUI(
                         pref = dialogsPref as Pref.EnumPref,
-                        openDialogCustom = openDialog
+                        openDialogCustom = openDialog,
+                        onChanged = {
+                            //context.setCustomThemeX()
+                            context.restartApp()
+                        }
                     )
                 }
             }
