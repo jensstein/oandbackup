@@ -124,12 +124,13 @@ const val THEME_DARK = 1
 const val THEME_SYSTEM = 2
 const val THEME_DYNAMIC = 3
 
-val themeItems = mapOf(
+val themeItems = mutableMapOf(
     THEME_LIGHT to R.string.prefs_theme_light,
     THEME_DARK to R.string.prefs_theme_dark,
-    THEME_SYSTEM to R.string.prefs_theme_system,
-    THEME_DYNAMIC to R.string.prefs_theme_dynamic
-)
+    THEME_SYSTEM to R.string.prefs_theme_system
+).apply {
+    if (OABX.minSDK(31)) set(THEME_DYNAMIC, R.string.prefs_theme_dynamic)
+}
 
 val accentColorItems = mapOf(
     0 to R.string.prefs_accent_0,
