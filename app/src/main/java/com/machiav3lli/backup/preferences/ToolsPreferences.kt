@@ -19,6 +19,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_BATCH_DELETE
 import com.machiav3lli.backup.PREFS_COPYSELF
@@ -37,13 +38,19 @@ import com.machiav3lli.backup.ui.compose.theme.Exodus
 import com.machiav3lli.backup.ui.compose.theme.ExtDATA
 import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.utils.FileUtils.invalidateBackupLocation
+import com.machiav3lli.backup.utils.applyFilter
+import com.machiav3lli.backup.utils.getBackupDir
 import com.machiav3lli.backup.utils.show
+import com.machiav3lli.backup.utils.sortFilterModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.io.BufferedOutputStream
 import java.io.IOException
+import java.nio.charset.StandardCharsets
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,6 +83,10 @@ fun ToolsPrefsPage() {
                                 coroutineScope
                             )
                             CopySelfPref -> context.onClickCopySelf(
+                                snackbarHostState,
+                                coroutineScope
+                            )
+                            SaveAppsListPref -> context.onClickSaveAppsList(
                                 snackbarHostState,
                                 coroutineScope
                             )
@@ -228,6 +239,59 @@ val SaveAppsListPref = Pref.LinkPref(
     iconId = R.drawable.ic_list_ordered,
     iconTint = Exodus
 )
+
+
+private fun Context.onClickSaveAppsList(
+    snackbarHostState: SnackbarHostState,
+    coroutineScope: CoroutineScope
+): Boolean {
+    val packageList = OABX.main?.viewModel?.packageList?.value ?: emptyList()
+    if (packageList.isNotEmpty()) {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.prefs_saveappslist)
+            .setPositiveButton(R.string.radio_all) { _: DialogInterface, _: Int ->
+                writeAppsListFile(packageList
+                    .filter { it.isSystem }
+                    .map { "${it.packageLabel}: ${it.packageName}" },
+                    false  //TODO hg42 name first because of ":", better for scripts
+                )
+            }
+            .setNeutralButton(R.string.filtered_list) { _: DialogInterface, _: Int ->
+                writeAppsListFile(
+                    packageList.applyFilter(sortFilterModel, this)
+                        .map { "${it.packageLabel}: ${it.packageName}" },
+                    true
+                )
+            }
+            .setNegativeButton(R.string.dialogNo, null)
+            .show()
+    } else {
+        snackbarHostState.show(
+            coroutineScope,
+            getString(R.string.wait_noappslist),
+        )
+    }
+    return true
+}
+
+@Throws(IOException::class)
+fun Context.writeAppsListFile(appsList: List<String>, filteredBoolean: Boolean) {
+    val date = LocalDateTime.now()
+    val filesText = appsList.joinToString("\n")
+    val fileName = "${BACKUP_DATE_TIME_FORMATTER.format(date)}.appslist"
+    val listFile = getBackupDir().createFile("application/octet-stream", fileName)
+    BufferedOutputStream(listFile.outputStream())
+        .use { it.write(filesText.toByteArray(StandardCharsets.UTF_8)) }
+    showNotification(
+        this, PrefsActivityX::class.java, System.currentTimeMillis().toInt(),
+        getString(
+            if (filteredBoolean) R.string.write_apps_list_filtered
+            else R.string.write_apps_list_all
+        ), null, false
+    )
+    Timber.i("Wrote apps\' list file at $date")
+}
+
 
 val LogViewerPref = Pref.LinkPref(
     key = PREFS_LOGVIEWER,
