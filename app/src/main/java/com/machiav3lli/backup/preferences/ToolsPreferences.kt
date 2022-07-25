@@ -27,6 +27,7 @@ import com.machiav3lli.backup.PREFS_SAVEAPPSLIST
 import com.machiav3lli.backup.PREFS_SCHEDULESEXPORTIMPORT
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.PrefsActivityX
+import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.item.LaunchPreference
@@ -38,7 +39,11 @@ import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.utils.FileUtils.invalidateBackupLocation
 import com.machiav3lli.backup.utils.show
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.io.IOException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,6 +72,10 @@ fun ToolsPrefsPage() {
                     LaunchPreference(pref = pref) {
                         when (pref) {
                             CleanupBackupFolderPref -> context.onClickUninstalledBackupsDelete(
+                                snackbarHostState,
+                                coroutineScope
+                            )
+                            CopySelfPref -> context.onClickCopySelf(
                                 snackbarHostState,
                                 coroutineScope
                             )
@@ -158,6 +167,51 @@ val CopySelfPref = Pref.LinkPref(
     iconId = R.drawable.ic_andy,
     //iconTint = MaterialTheme.colorScheme.primary
 )
+
+private fun Context.onClickCopySelf(
+    snackbarHostState: SnackbarHostState,
+    coroutineScope: CoroutineScope
+): Boolean {
+    try {
+        GlobalScope.launch(Dispatchers.IO) {
+            if (BackupRestoreHelper.copySelfApk(
+                    this@onClickCopySelf,
+                    OABX.shellHandlerInstance!!
+                )
+            ) {
+                showNotification(
+                    this@onClickCopySelf,
+                    PrefsActivityX::class.java,
+                    System.currentTimeMillis().toInt(),
+                    getString(R.string.copyOwnApkSuccess),
+                    "",
+                    false
+                )
+                snackbarHostState.show(
+                    coroutineScope,
+                    getString(R.string.copyOwnApkSuccess)
+                )
+            } else {
+                showNotification(
+                    this@onClickCopySelf,
+                    PrefsActivityX::class.java,
+                    System.currentTimeMillis().toInt(),
+                    getString(R.string.copyOwnApkFailed),
+                    "",
+                    false
+                )
+                snackbarHostState.show(
+                    coroutineScope,
+                    getString(R.string.copyOwnApkFailed)
+                )
+            }
+        }
+    } catch (e: IOException) {
+        Timber.e("${getString(R.string.copyOwnApkFailed)}: $e")
+    } finally {
+        return true
+    }
+}
 
 val ExportImportSchedulesPref = Pref.LinkPref(
     key = PREFS_SCHEDULESEXPORTIMPORT,
