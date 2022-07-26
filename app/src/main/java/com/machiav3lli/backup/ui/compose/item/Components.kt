@@ -153,6 +153,7 @@ fun ActionButton(
     modifier: Modifier = Modifier,
     text: String,
     positive: Boolean = true,
+    iconOnSide: Boolean = false,
     icon: Painter? = null,
     onClick: () -> Unit
 ) {
@@ -164,13 +165,13 @@ fun ActionButton(
         onClick = onClick
     ) {
         Text(
-            modifier = Modifier.padding(start = 4.dp),
+            modifier = Modifier.padding(horizontal = 4.dp),
             text = text,
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.titleSmall
         )
         if (icon != null) {
-            Spacer(modifier = Modifier.weight(1f))
+            if (iconOnSide) Spacer(modifier = Modifier.weight(1f))
             Icon(
                 modifier = Modifier.size(24.dp),
                 painter = icon,

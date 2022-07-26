@@ -44,7 +44,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -310,13 +309,8 @@ class HomeFragment : NavigationFragment(),
                             ) {
                                 ActionButton(
                                     modifier = Modifier.weight(1f),
-                                    text = LocalContext.current.resources
-                                        .getQuantityString(
-                                            R.plurals.updated_apps,
-                                            updatedApps.orEmpty().size,
-                                            updatedApps.orEmpty().size
-                                        ),
-                                    icon = painterResource(id = if (updatedVisible) R.drawable.ic_arrow_down else R.drawable.ic_arrow_up)
+                                    text = updatedApps.orEmpty().size.toString(),
+                                    icon = painterResource(id = if (updatedVisible) R.drawable.ic_arrow_down else R.drawable.ic_updated)
                                 ) {
                                     updatedVisible = !updatedVisible
                                 }
