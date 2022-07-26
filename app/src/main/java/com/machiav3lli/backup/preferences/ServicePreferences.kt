@@ -193,7 +193,7 @@ val NumBackupsPref = Pref.IntPref(
     summaryId = R.string.prefs_numBackupRevisions_summary,
     iconId = R.drawable.ic_revisions,
     iconTint = Special,
-    entries = (0..10).toList(),
+    entries = (0..100).toList(),
     defaultValue = 2
 )
 
