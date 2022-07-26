@@ -14,12 +14,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
@@ -31,10 +29,7 @@ import com.machiav3lli.backup.PREFS_SAVEAPPSLIST
 import com.machiav3lli.backup.PREFS_SCHEDULESEXPORTIMPORT
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.PrefsActivityX
-import com.machiav3lli.backup.dialogs.ActionsDialogUI
-import com.machiav3lli.backup.dialogs.BaseDialog
 import com.machiav3lli.backup.handler.BackupRestoreHelper
-import com.machiav3lli.backup.handler.ExportsHandler
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.item.LaunchPreference
@@ -65,7 +60,6 @@ fun ToolsPrefsPage(navController: NavHostController) {
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-    val openExportsDialog = remember { mutableStateOf(false) }
     val prefs = listOf(
         CleanupBackupFolderPref,
         CopySelfPref,
@@ -95,9 +89,7 @@ fun ToolsPrefsPage(navController: NavHostController) {
                                 snackbarHostState,
                                 coroutineScope
                             )
-                            ExportImportSchedulesPref -> {
-                                openExportsDialog.value = true
-                            }
+                            ExportImportSchedulesPref -> navController.navigate(NavItem.Exports.destination)
                             SaveAppsListPref -> context.onClickSaveAppsList(
                                 snackbarHostState,
                                 coroutineScope
@@ -105,25 +97,6 @@ fun ToolsPrefsPage(navController: NavHostController) {
                             LogViewerPref -> navController.navigate(NavItem.Logs.destination)
                         }
                     }
-                }
-            }
-
-            if (openExportsDialog.value) {
-                BaseDialog(openDialogCustom = openExportsDialog) {
-                    ActionsDialogUI(
-                        mainText = stringResource(id = R.string.prefs_schedulesexportimport),
-                        openDialogCustom = openExportsDialog,
-                        primaryText = stringResource(id = R.string.dialog_export),
-                        primaryAction = {
-                            GlobalScope.launch(Dispatchers.IO) {
-                                ExportsHandler(context).exportSchedules()
-                            }
-                        },
-                        secondaryText = stringResource(id = R.string.dialog_import),
-                        secondaryAction = {
-                            navController.navigate(NavItem.Exports.destination)
-                        }
-                    )
                 }
             }
         }
