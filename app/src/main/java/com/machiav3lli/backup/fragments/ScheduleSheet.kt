@@ -32,25 +32,22 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.LocalContentColor
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
@@ -265,6 +262,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
         }.show(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
     }
 
+    @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
     @Composable
     fun SchedulePage() {
         val schedule by viewModel.schedule.observeAsState()
@@ -273,129 +271,15 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
         AppTheme(
             darkTheme = isSystemInDarkTheme()
         ) {
-
             schedule?.let {
-                Column(
-                    modifier = Modifier.height(IntrinsicSize.Min)
-                ) {
-                    CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onBackground) {
+                Scaffold(
+                    containerColor = Color.Transparent,
+                    contentColor = MaterialTheme.colorScheme.onBackground,
+                    bottomBar = {
                         Column(
                             modifier = Modifier
-                                .background(color = Color.Transparent)
-                                .fillMaxWidth()
-                                .padding(horizontal = 8.dp)
-                                .weight(1f)
-                                .verticalScroll(rememberScrollState()),
-                            verticalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                TitleText(R.string.sched_name)
-                                Text(
-                                    text = it.name,
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .clickable { showNameEditorDialog() },
-                                    style = MaterialTheme.typography.titleLarge,
-                                    textAlign = TextAlign.Center,
-                                )
-                                RoundButton(
-                                    icon = painterResource(id = R.drawable.ic_arrow_down),
-                                    description = stringResource(id = R.string.dismiss),
-                                    onClick = { dismissAllowingStateLoss() }
-                                )
-                            }
-                            Row(
-                                modifier = Modifier.height(IntrinsicSize.Min),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                TitleText(R.string.sched_hourOfDay)
-                                Text(
-                                    text = LocalTime.of(it.timeHour, it.timeMinute).toString(),
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .fillMaxHeight()
-                                        .clickable { showTimePickerDialog() },
-                                    color = MaterialTheme.colorScheme.primary,
-                                    textAlign = TextAlign.End,
-                                )
-                            }
-                            Row(
-                                modifier = Modifier.height(IntrinsicSize.Min),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                TitleText(R.string.sched_interval)
-                                Text(
-                                    text = it.interval.toString(),
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .fillMaxHeight()
-                                        .clickable { showIntervalSetterDialog() },
-                                    color = MaterialTheme.colorScheme.primary,
-                                    textAlign = TextAlign.End,
-                                )
-                            }
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                ElevatedActionButton(
-                                    icon = painterResource(id = R.drawable.ic_customlist),
-                                    text = stringResource(id = R.string.customListTitle),
-                                    positive = it.customList.isNotEmpty(),
-                                    fullWidth = true,
-                                    modifier = Modifier.weight(1f),
-                                    onClick = { showCustomListDialog() }
-                                )
-                                ElevatedActionButton(
-                                    icon = painterResource(id = R.drawable.ic_blocklist),
-                                    text = stringResource(id = R.string.sched_blocklist),
-                                    positive = it.blockList.isNotEmpty(),
-                                    fullWidth = true,
-                                    modifier = Modifier.weight(1f),
-                                    onClick = { showBlockListDialog() }
-                                )
-                            }
-                            TitleText(R.string.filter_options)
-                            MultiSelectableChipGroup(
-                                list = if (requireContext().specialBackupsEnabled) mainFilterChipItems
-                                else mainFilterChipItems.minus(ChipItem.Special),
-                                selectedFlags = it.filter
-                            ) { flag ->
-                                it.filter = it.filter xor flag
-                                refresh(it, false)
-                            }
-                            TitleText(R.string.sched_mode)
-                            MultiSelectableChipGroup(
-                                list = scheduleBackupModeChipItems,
-                                selectedFlags = it.mode
-                            ) { flag ->
-                                it.mode = it.mode xor flag
-                                refresh(it, false)
-                            }
-                            TitleText(R.string.other_filters_options)
-                            SelectableChipGroup(
-                                list = schedSpecialFilterChipItems,
-                                selectedFlag = it.specialFilter
-                            ) { flag ->
-                                it.specialFilter = flag
-                                refresh(it, false)
-                            }
-                        }
-
-                    }
-                    CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
-                        Column(
-                            modifier = Modifier
-                                .background(color = MaterialTheme.colorScheme.surface)
-                                .fillMaxWidth()
+                                .background(MaterialTheme.colorScheme.surface)
                                 .padding(8.dp)
-                                .wrapContentHeight(),
-                            verticalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
                             Row {
                                 AnimatedVisibility(visible = checked) {
@@ -434,6 +318,124 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                                 fullWidth = true,
                                 onClick = { startSchedule() }
                             )
+                        }
+                    }
+                ) { paddingValues ->
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(paddingValues),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(8.dp)
+                    ) {
+                        item {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                TitleText(R.string.sched_name)
+                                Text(
+                                    text = it.name,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .clickable { showNameEditorDialog() },
+                                    style = MaterialTheme.typography.titleLarge,
+                                    textAlign = TextAlign.Center,
+                                )
+                                RoundButton(
+                                    icon = painterResource(id = R.drawable.ic_arrow_down),
+                                    description = stringResource(id = R.string.dismiss),
+                                    onClick = { dismissAllowingStateLoss() }
+                                )
+                            }
+                        }
+                        item {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                TitleText(R.string.sched_hourOfDay)
+                                Text(
+                                    text = LocalTime.of(it.timeHour, it.timeMinute).toString(),
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight()
+                                        .clickable { showTimePickerDialog() },
+                                    color = MaterialTheme.colorScheme.primary,
+                                    textAlign = TextAlign.End,
+                                )
+                            }
+                        }
+                        item {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                TitleText(R.string.sched_interval)
+                                Text(
+                                    text = it.interval.toString(),
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight()
+                                        .clickable { showIntervalSetterDialog() },
+                                    color = MaterialTheme.colorScheme.primary,
+                                    textAlign = TextAlign.End,
+                                )
+                            }
+                        }
+                        item {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                ElevatedActionButton(
+                                    icon = painterResource(id = R.drawable.ic_customlist),
+                                    text = stringResource(id = R.string.customListTitle),
+                                    positive = it.customList.isNotEmpty(),
+                                    fullWidth = true,
+                                    modifier = Modifier.weight(1f),
+                                    onClick = { showCustomListDialog() }
+                                )
+                                ElevatedActionButton(
+                                    icon = painterResource(id = R.drawable.ic_blocklist),
+                                    text = stringResource(id = R.string.sched_blocklist),
+                                    positive = it.blockList.isNotEmpty(),
+                                    fullWidth = true,
+                                    modifier = Modifier.weight(1f),
+                                    onClick = { showBlockListDialog() }
+                                )
+                            }
+                        }
+
+                        item {
+                            TitleText(R.string.filter_options)
+                            MultiSelectableChipGroup(
+                                list = if (requireContext().specialBackupsEnabled) mainFilterChipItems
+                                else mainFilterChipItems.minus(ChipItem.Special),
+                                selectedFlags = it.filter
+                            ) { flag ->
+                                it.filter = it.filter xor flag
+                                refresh(it, false)
+                            }
+                        }
+                        item {
+                            TitleText(R.string.sched_mode)
+                            MultiSelectableChipGroup(
+                                list = scheduleBackupModeChipItems,
+                                selectedFlags = it.mode
+                            ) { flag ->
+                                it.mode = it.mode xor flag
+                                refresh(it, false)
+                            }
+                        }
+                        item {
+                            TitleText(R.string.other_filters_options)
+                            SelectableChipGroup(
+                                list = schedSpecialFilterChipItems,
+                                selectedFlag = it.specialFilter
+                            ) { flag ->
+                                it.specialFilter = flag
+                                refresh(it, false)
+                            }
                         }
                     }
                 }
