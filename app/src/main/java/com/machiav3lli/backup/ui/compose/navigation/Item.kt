@@ -19,16 +19,16 @@ sealed class NavItem(var title: Int, var icon: Int, var destination: String) {
         NavItem(R.string.prefs_title, R.drawable.ic_settings, "settings")
 
     object UserPrefs :
-        NavItem(R.string.prefs_user, R.drawable.ic_prefs_user, "prefs_user")
+        NavItem(R.string.prefs_user_short, R.drawable.ic_prefs_user, "prefs_user")
 
     object ServicePrefs :
-        NavItem(R.string.prefs_service, R.drawable.ic_prefs_service, "prefs_service")
+        NavItem(R.string.prefs_service_short, R.drawable.ic_prefs_service, "prefs_service")
 
     object AdvancedPrefs :
-        NavItem(R.string.prefs_advanced, R.drawable.ic_prefs_advanced, "prefs_advanced")
+        NavItem(R.string.prefs_advanced_short, R.drawable.ic_prefs_advanced, "prefs_advanced")
 
     object ToolsPrefs :
-        NavItem(R.string.prefs_tools, R.drawable.ic_prefs_tools, "prefs_tools")
+        NavItem(R.string.prefs_tools_short, R.drawable.ic_prefs_tools, "prefs_tools")
 
     object Exports : NavItem(
         R.string.prefs_schedulesexportimport,
