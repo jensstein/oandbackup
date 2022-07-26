@@ -21,7 +21,7 @@ import android.content.Context
 import com.machiav3lli.backup.EXPORTS_FOLDER_NAME
 import com.machiav3lli.backup.EXPORTS_INSTANCE
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.activities.PrefsActivity
+import com.machiav3lli.backup.activities.PrefsActivityX
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logErrors
@@ -60,7 +60,7 @@ class ExportsHandler(var context: Context) {
             }
         }
         showNotification(
-            context, PrefsActivity::class.java, System.currentTimeMillis().toInt(),
+            context, PrefsActivityX::class.java, System.currentTimeMillis().toInt(),
             context.getString(R.string.sched_exported), null, false
         )
     }

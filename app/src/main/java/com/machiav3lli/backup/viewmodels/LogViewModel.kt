@@ -25,7 +25,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.activities.PrefsActivity
+import com.machiav3lli.backup.activities.PrefsActivityX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.Log
@@ -67,7 +67,7 @@ class LogViewModel(private val appContext: Application) : AndroidViewModel(appCo
                     appContext.startActivity(shareFileIntent)
                 } else {
                     showNotification(
-                        appContext, PrefsActivity::class.java, System.currentTimeMillis().toInt(),
+                        appContext, PrefsActivityX::class.java, System.currentTimeMillis().toInt(),
                         appContext.getString(R.string.logs_share_failed), "", false
                     )
                 }

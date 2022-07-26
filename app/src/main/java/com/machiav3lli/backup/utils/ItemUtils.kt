@@ -41,8 +41,8 @@ fun List<AppExtras>.get(packageName: String) =
     find { it.packageName == packageName } ?: AppExtras(packageName)
 
 fun Int.itemIdToOrder(): Int = when (this) {
-    R.id.backupFragment, R.id.serviceFragment -> 1
-    R.id.restoreFragment, R.id.advancedFragment -> 2
-    R.id.schedulerFragment, R.id.toolsFragment -> 3
-    else -> 0 // R.id.homeFragment, R.id.userFragment
+    R.id.backupFragment -> 1
+    R.id.restoreFragment -> 2
+    R.id.schedulerFragment -> 3
+    else -> 0 // R.id.homeFragment
 }
