@@ -42,6 +42,7 @@ fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination?.route
+
         items.forEach { item ->
             val selected = currentDestination == item.destination
 
@@ -68,13 +69,12 @@ fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
                 selected = selected,
                 onClick = {
                     navController.navigate(item.destination) {
-                        navController.graph.startDestinationRoute?.let { destination ->
-                            popUpTo(destination) {
+                        navController.currentDestination?.id?.let {
+                            popUpTo(it) {
                                 inclusive = true
                                 saveState = true
                             }
                         }
-                        navController.graph.setStartDestination(item.destination)
                         launchSingleTop = true
                         restoreState = true
                     }
