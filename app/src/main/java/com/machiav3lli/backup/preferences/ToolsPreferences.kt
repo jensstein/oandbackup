@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
@@ -33,6 +34,7 @@ import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.item.LaunchPreference
+import com.machiav3lli.backup.ui.compose.navigation.NavItem
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.DeData
 import com.machiav3lli.backup.ui.compose.theme.Exodus
@@ -91,6 +93,7 @@ fun ToolsPrefsPage(navController: NavHostController) {
                                 snackbarHostState,
                                 coroutineScope
                             )
+                            LogViewerPref -> navController.navigate(NavItem.Logs.destination)
                         }
                     }
                 }

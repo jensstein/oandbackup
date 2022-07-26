@@ -15,9 +15,11 @@ import androidx.navigation.compose.NavHost
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.machiav3lli.backup.preferences.AdvancedPrefsPage
+import com.machiav3lli.backup.preferences.LogsPage
 import com.machiav3lli.backup.preferences.ServicePrefsPage
 import com.machiav3lli.backup.preferences.ToolsPrefsPage
 import com.machiav3lli.backup.preferences.UserPrefsPage
+import com.machiav3lli.backup.viewmodels.LogViewModel
 
 @Composable
         /** TODO Replace all those inefficient calls with real composables (When fragments are migrated) or wait androidx to fix fragment
@@ -69,6 +71,7 @@ fun MainNavHost(modifier: Modifier = Modifier, navController: NavHostController)
 fun PrefsNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
+    logsViewModel: LogViewModel,
 ) =
     AnimatedNavHost(
         modifier = modifier,
@@ -87,6 +90,8 @@ fun PrefsNavHost(
         slideUpComposable(NavItem.ToolsPrefs.destination) {
             ToolsPrefsPage(navController)
         }
+        slideUpComposable(NavItem.Logs.destination) {
+            LogsPage(logsViewModel)
         }
     }
 
