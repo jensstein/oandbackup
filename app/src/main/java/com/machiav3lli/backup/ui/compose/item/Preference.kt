@@ -381,7 +381,7 @@ fun SeekBarPreference(
                 Spacer(modifier = Modifier.requiredWidth(8.dp))
                 Text(
                     text = pref.entries[sliderPosition].toString(),
-                    modifier = Modifier.widthIn(min = 24.dp)
+                    modifier = Modifier.widthIn(min = 48.dp)
                 )
             }
         }
