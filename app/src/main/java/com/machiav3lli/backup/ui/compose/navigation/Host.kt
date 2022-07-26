@@ -15,10 +15,12 @@ import androidx.navigation.compose.NavHost
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.machiav3lli.backup.preferences.AdvancedPrefsPage
+import com.machiav3lli.backup.preferences.ExportsPage
 import com.machiav3lli.backup.preferences.LogsPage
 import com.machiav3lli.backup.preferences.ServicePrefsPage
 import com.machiav3lli.backup.preferences.ToolsPrefsPage
 import com.machiav3lli.backup.preferences.UserPrefsPage
+import com.machiav3lli.backup.viewmodels.ExportsViewModel
 import com.machiav3lli.backup.viewmodels.LogViewModel
 
 @Composable
@@ -72,6 +74,7 @@ fun PrefsNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     logsViewModel: LogViewModel,
+    exportsViewModel: ExportsViewModel
 ) =
     AnimatedNavHost(
         modifier = modifier,
@@ -89,6 +92,9 @@ fun PrefsNavHost(
         }
         slideUpComposable(NavItem.ToolsPrefs.destination) {
             ToolsPrefsPage(navController)
+        }
+        slideUpComposable(NavItem.Exports.destination) {
+            ExportsPage(exportsViewModel)
         }
         slideUpComposable(NavItem.Logs.destination) {
             LogsPage(logsViewModel)

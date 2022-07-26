@@ -30,6 +30,12 @@ sealed class NavItem(var title: Int, var icon: Int, var destination: String) {
     object ToolsPrefs :
         NavItem(R.string.prefs_tools, R.drawable.ic_prefs_tools, "prefs_tools")
 
+    object Exports : NavItem(
+        R.string.prefs_schedulesexportimport,
+        R.drawable.ic_scheduler,
+        "prefs_tools/exports"
+    )
+
     object Logs : NavItem(
         R.string.prefs_logviewer,
         R.drawable.ic_log,
