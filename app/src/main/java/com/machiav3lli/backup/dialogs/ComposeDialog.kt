@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -61,6 +62,54 @@ fun BaseDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         dialogUI()
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ActionsDialogUI(
+    mainText: String,
+    openDialogCustom: MutableState<Boolean>,
+    primaryText: String,
+    primaryAction: (() -> Unit) = {},
+    secondaryText: String = "",
+    secondaryAction: (() -> Unit)? = null
+) {
+    val context = LocalContext.current
+
+    Card(
+        shape = RoundedCornerShape(8.dp),
+        modifier = Modifier.padding(8.dp),
+        elevation = CardDefaults.elevatedCardElevation(8.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(text = mainText, style = MaterialTheme.typography.titleLarge)
+
+            Row(
+                Modifier.fillMaxWidth()
+            ) {
+                ActionButton(text = stringResource(id = R.string.dialogCancel)) {
+                    openDialogCustom.value = false
+                }
+                Spacer(Modifier.weight(1f))
+                if (secondaryAction != null) {
+                    ElevatedActionButton(text = secondaryText, positive = false) {
+                        secondaryAction()
+                        openDialogCustom.value = false
+                    }
+                    Spacer(Modifier.requiredWidth(8.dp))
+                }
+                ElevatedActionButton(text = primaryText) {
+                    primaryAction()
+                    openDialogCustom.value = false
+                }
+            }
+        }
     }
 }
 
@@ -184,7 +233,7 @@ fun ListDialogUI(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StringDialogUI(
     pref: Pref.StringPref,
