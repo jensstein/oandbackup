@@ -50,6 +50,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.painterResource
@@ -325,7 +326,8 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                 ) { paddingValues ->
                     LazyColumn(
                         modifier = Modifier
-                            .padding(paddingValues),
+                            .padding(paddingValues)
+                            .nestedScroll(nestedScrollConnection),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                         contentPadding = PaddingValues(8.dp)
                     ) {
