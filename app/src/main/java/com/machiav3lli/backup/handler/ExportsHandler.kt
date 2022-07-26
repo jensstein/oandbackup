@@ -68,7 +68,7 @@ class ExportsHandler(var context: Context) {
     @Throws(IOException::class)
     fun readExports(): MutableList<Pair<Schedule, StorageFile>> {
         val exports = mutableListOf<Pair<Schedule, StorageFile>>()
-        invalidateCache { it.contains(exportsDirectory?.name.orEmpty()) }
+        invalidateCache { it.contains(EXPORTS_FOLDER_NAME) }
         exportsDirectory?.listFiles()?.forEach {
             if (it.isFile) try {
                 exports.add(Pair(Schedule(it), it))
