@@ -50,6 +50,19 @@ class ExportsViewModel(val database: ScheduleDao, private val appContext: Applic
             ExportsHandler(appContext).readExports()
         }
 
+    fun exportSchedules() {
+        viewModelScope.launch {
+            export()
+            refreshList()
+        }
+    }
+
+    private suspend fun export() =
+        withContext(Dispatchers.IO) {
+            ExportsHandler(appContext).exportSchedules()
+        }
+
+
     fun deleteExport(exportFile: StorageFile) {
         viewModelScope.launch {
             delete(exportFile)

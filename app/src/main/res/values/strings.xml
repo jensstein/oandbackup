@@ -348,6 +348,7 @@
     <string name="shell_initproblem">Couldn\'t initiate the shell handler. Either missing toybox/busybox or disabled root permission for the app.</string>
     <string name="schedule_failed">Running schedule failed</string>
     <string name="dialog_export">Export</string>
+    <string name="dialog_export_schedules">Export my schedules</string>
     <string name="dialog_import">Import</string>
     <string name="error_datachanged">The app\'s data has been actively changed while doing the backup. Try killing its process before doing backup</string>
     <string name="sched_exported">Schedules were exported sucessfully</string>
