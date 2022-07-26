@@ -11,13 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.activity
 import androidx.navigation.compose.NavHost
-import androidx.navigation.fragment.fragment
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
-import com.machiav3lli.backup.activities.PrefsActivityX
-import com.machiav3lli.backup.fragments.PrefsUserFragment
 import com.machiav3lli.backup.preferences.AdvancedPrefsPage
 import com.machiav3lli.backup.preferences.ServicePrefsPage
 import com.machiav3lli.backup.preferences.ToolsPrefsPage
@@ -48,45 +44,48 @@ fun MainNavHost(modifier: Modifier = Modifier, navController: NavHostController)
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = BottomNavItem.Home.destination
+        startDestination = NavItem.Home.destination
     ) {
-        fragment<PrefsUserFragment>(BottomNavItem.Home.destination) {
-            label = navController.context.getString(BottomNavItem.Home.title)
+        /*fragment<PreferenceFragmentCompat>(NavItem.Home.destination) {
+            label = navController.context.getString(NavItem.Home.title)
         }
-        fragment<PrefsUserFragment>(BottomNavItem.Backup.destination) {
-            label = navController.context.getString(BottomNavItem.Backup.title)
+        fragment<PreferenceFragmentCompat>(NavItem.Backup.destination) {
+            label = navController.context.getString(NavItem.Backup.title)
         }
-        fragment<PrefsUserFragment>(BottomNavItem.Restore.destination) {
-            label = navController.context.getString(BottomNavItem.Restore.title)
+        fragment<PreferenceFragmentCompat>(NavItem.Restore.destination) {
+            label = navController.context.getString(NavItem.Restore.title)
         }
-        fragment<PrefsUserFragment>(BottomNavItem.Scheduler.destination) {
-            label = navController.context.getString(BottomNavItem.Scheduler.title)
+        fragment<PreferenceFragmentCompat>(NavItem.Scheduler.destination) {
+            label = navController.context.getString(NavItem.Scheduler.title)
         }
-        activity(BottomNavItem.Settings.destination) {
+        activity(NavItem.Settings.destination) {
             targetPackage = PrefsActivityX::class.java.`package`.name
             activityClass = PrefsActivityX::class
-        }
+        }*/
     }
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun PrefsNavHost(modifier: Modifier = Modifier, navController: NavHostController) =
+fun PrefsNavHost(
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+) =
     AnimatedNavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = BottomNavItem.UserPrefs.destination
+        startDestination = NavItem.UserPrefs.destination
     ) {
-        slideUpComposable(BottomNavItem.UserPrefs.destination) {
+        slideUpComposable(NavItem.UserPrefs.destination) {
             UserPrefsPage()
         }
-        slideUpComposable(route = BottomNavItem.ServicePrefs.destination) {
+        slideUpComposable(route = NavItem.ServicePrefs.destination) {
             ServicePrefsPage()
         }
-        slideUpComposable(BottomNavItem.AdvancedPrefs.destination) {
+        slideUpComposable(NavItem.AdvancedPrefs.destination) {
             AdvancedPrefsPage()
         }
-        slideUpComposable(BottomNavItem.ToolsPrefs.destination) {
             ToolsPrefsPage()
+        slideUpComposable(NavItem.ToolsPrefs.destination) {
         }
     }
 

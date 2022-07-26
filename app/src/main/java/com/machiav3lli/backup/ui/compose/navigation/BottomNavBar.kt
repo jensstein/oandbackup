@@ -21,17 +21,17 @@ import com.machiav3lli.backup.NAV_PREFS
 fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
     val items = when (page) {
         NAV_PREFS -> listOf(
-            BottomNavItem.UserPrefs,
-            BottomNavItem.ServicePrefs,
-            BottomNavItem.AdvancedPrefs,
-            BottomNavItem.ToolsPrefs
+            NavItem.UserPrefs,
+            NavItem.ServicePrefs,
+            NavItem.AdvancedPrefs,
+            NavItem.ToolsPrefs
         )
         else -> listOf(
-            BottomNavItem.Home,
-            BottomNavItem.Backup,
-            BottomNavItem.Restore,
-            BottomNavItem.Scheduler,
-            BottomNavItem.Settings
+            NavItem.Home,
+            NavItem.Backup,
+            NavItem.Restore,
+            NavItem.Scheduler,
+            NavItem.Settings
         )
     }
 

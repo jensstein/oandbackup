@@ -42,7 +42,6 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_ACCENT_COLOR
 import com.machiav3lli.backup.PREFS_ACCENT_COLOR_X
 import com.machiav3lli.backup.PREFS_ALLOWDOWNGRADE
 import com.machiav3lli.backup.PREFS_BIOMETRICLOCK
@@ -59,17 +58,14 @@ import com.machiav3lli.backup.PREFS_LANGUAGES_DEFAULT
 import com.machiav3lli.backup.PREFS_MEDIADATA
 import com.machiav3lli.backup.PREFS_OBBDATA
 import com.machiav3lli.backup.PREFS_PASSWORD
-import com.machiav3lli.backup.PREFS_PASSWORD_CONFIRMATION
 import com.machiav3lli.backup.PREFS_PATH_BACKUP_DIRECTORY
 import com.machiav3lli.backup.PREFS_PAUSEAPPS
 import com.machiav3lli.backup.PREFS_REMEMBERFILTERING
 import com.machiav3lli.backup.PREFS_RESTOREWITHALLPERMISSIONS
 import com.machiav3lli.backup.PREFS_SALT
-import com.machiav3lli.backup.PREFS_SECONDARY_COLOR
 import com.machiav3lli.backup.PREFS_SECONDARY_COLOR_X
 import com.machiav3lli.backup.PREFS_SHARED_PRIVATE
 import com.machiav3lli.backup.PREFS_SORT_FILTER
-import com.machiav3lli.backup.PREFS_THEME
 import com.machiav3lli.backup.PREFS_THEME_X
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.ShellHandler
@@ -114,16 +110,6 @@ fun Context.isEncryptionEnabled(): Boolean =
 fun Context.getEncryptionPassword(): String =
     getPrivateSharedPrefs().getString(PREFS_PASSWORD, "")
         ?: ""
-
-fun Context.setEncryptionPassword(value: String) =
-    getPrivateSharedPrefs().edit().putString(PREFS_PASSWORD, value).commit()
-
-fun Context.getEncryptionPasswordConfirmation(): String =
-    getPrivateSharedPrefs().getString(PREFS_PASSWORD_CONFIRMATION, "")
-        ?: ""
-
-fun Context.setEncryptionPasswordConfirmation(value: String) =
-    getPrivateSharedPrefs().edit().putString(PREFS_PASSWORD_CONFIRMATION, value).commit()
 
 fun Context.isCompressionEnabled(): Boolean =
     getCompressionLevel() > 0
@@ -483,20 +469,6 @@ val Context.isRememberFiltering: Boolean
     get() = getDefaultSharedPreferences().getBoolean(PREFS_REMEMBERFILTERING, true)
 
 class StorageLocationNotConfiguredException : Exception("Storage Location has not been configured")
-
-var Context.themeStyle: String
-    get() = getDefaultSharedPreferences().getString(PREFS_THEME, "system") ?: "system"
-    set(value) = getDefaultSharedPreferences().edit().putString(PREFS_THEME, value).apply()
-
-var Context.accentStyle: String
-    get() = getDefaultSharedPreferences().getString(PREFS_ACCENT_COLOR, "accent_0") ?: "accent_0"
-    set(value) = getDefaultSharedPreferences().edit().putString(PREFS_ACCENT_COLOR, value).apply()
-
-var Context.secondaryStyle: String
-    get() = getDefaultSharedPreferences().getString(PREFS_SECONDARY_COLOR, "secondary_0")
-        ?: "secondary_0"
-    set(value) = getDefaultSharedPreferences().edit().putString(PREFS_SECONDARY_COLOR, value)
-        .apply()
 
 var styleTheme: Int
     get() = OABX.prefInt(PREFS_THEME_X, 2)

@@ -24,7 +24,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.Arrangement
@@ -133,12 +132,6 @@ fun Activity.showWarning(
         .setNeutralButton(R.string.dialogOK, callback)
         .setCancelable(false)
         .show()
-}
-
-fun Activity.showToast(message: String, should: Boolean = true) = runOnUiThread {
-    if (should) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
 }
 
 fun getThemeStyleX(theme: Int) = when (theme) {
