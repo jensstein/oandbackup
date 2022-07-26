@@ -84,8 +84,9 @@ fun PrefsNavHost(
         slideUpComposable(NavItem.AdvancedPrefs.destination) {
             AdvancedPrefsPage()
         }
-            ToolsPrefsPage()
         slideUpComposable(NavItem.ToolsPrefs.destination) {
+            ToolsPrefsPage(navController)
+        }
         }
     }
 
