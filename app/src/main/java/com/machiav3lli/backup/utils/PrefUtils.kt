@@ -40,8 +40,9 @@ import androidx.core.app.ActivityCompat
 import androidx.preference.PreferenceManager
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_ACCENT_COLOR
+import com.machiav3lli.backup.PREFS_ACCENT_COLOR_X
 import com.machiav3lli.backup.PREFS_ALLOWDOWNGRADE
 import com.machiav3lli.backup.PREFS_BIOMETRICLOCK
 import com.machiav3lli.backup.PREFS_COMPRESSION_LEVEL
@@ -57,16 +58,15 @@ import com.machiav3lli.backup.PREFS_LANGUAGES_DEFAULT
 import com.machiav3lli.backup.PREFS_MEDIADATA
 import com.machiav3lli.backup.PREFS_OBBDATA
 import com.machiav3lli.backup.PREFS_PASSWORD
-import com.machiav3lli.backup.PREFS_PASSWORD_CONFIRMATION
 import com.machiav3lli.backup.PREFS_PATH_BACKUP_DIRECTORY
 import com.machiav3lli.backup.PREFS_PAUSEAPPS
 import com.machiav3lli.backup.PREFS_REMEMBERFILTERING
 import com.machiav3lli.backup.PREFS_RESTOREWITHALLPERMISSIONS
 import com.machiav3lli.backup.PREFS_SALT
-import com.machiav3lli.backup.PREFS_SECONDARY_COLOR
+import com.machiav3lli.backup.PREFS_SECONDARY_COLOR_X
 import com.machiav3lli.backup.PREFS_SHARED_PRIVATE
 import com.machiav3lli.backup.PREFS_SORT_FILTER
-import com.machiav3lli.backup.PREFS_THEME
+import com.machiav3lli.backup.PREFS_THEME_X
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.SortFilterModel
@@ -110,16 +110,6 @@ fun Context.isEncryptionEnabled(): Boolean =
 fun Context.getEncryptionPassword(): String =
     getPrivateSharedPrefs().getString(PREFS_PASSWORD, "")
         ?: ""
-
-fun Context.setEncryptionPassword(value: String) =
-    getPrivateSharedPrefs().edit().putString(PREFS_PASSWORD, value).commit()
-
-fun Context.getEncryptionPasswordConfirmation(): String =
-    getPrivateSharedPrefs().getString(PREFS_PASSWORD_CONFIRMATION, "")
-        ?: ""
-
-fun Context.setEncryptionPasswordConfirmation(value: String) =
-    getPrivateSharedPrefs().edit().putString(PREFS_PASSWORD_CONFIRMATION, value).commit()
 
 fun Context.isCompressionEnabled(): Boolean =
     getCompressionLevel() > 0
@@ -434,8 +424,8 @@ val Context.checkUsageStatsPermission: Boolean
         }
     }
 
-fun Context.checkBatteryOptimization(prefs: SharedPreferences, powerManager: PowerManager)
-        : Boolean = prefs.getBoolean(PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
+fun Context.checkBatteryOptimization(powerManager: PowerManager)
+        : Boolean = OABX.prefFlag(PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
         || powerManager.isIgnoringBatteryOptimizations(packageName)
 
 
@@ -480,19 +470,17 @@ val Context.isRememberFiltering: Boolean
 
 class StorageLocationNotConfiguredException : Exception("Storage Location has not been configured")
 
-var Context.themeStyle: String
-    get() = getDefaultSharedPreferences().getString(PREFS_THEME, "system") ?: "system"
-    set(value) = getDefaultSharedPreferences().edit().putString(PREFS_THEME, value).apply()
+var styleTheme: Int
+    get() = OABX.prefInt(PREFS_THEME_X, 2)
+    set(value) = OABX.setPrefInt(PREFS_THEME_X, value)
 
-var Context.accentStyle: String
-    get() = getDefaultSharedPreferences().getString(PREFS_ACCENT_COLOR, "accent_0") ?: "accent_0"
-    set(value) = getDefaultSharedPreferences().edit().putString(PREFS_ACCENT_COLOR, value).apply()
+var stylePrimary: Int
+    get() = OABX.prefInt(PREFS_ACCENT_COLOR_X, 0)
+    set(value) = OABX.setPrefInt(PREFS_ACCENT_COLOR_X, value)
 
-var Context.secondaryStyle: String
-    get() = getDefaultSharedPreferences().getString(PREFS_SECONDARY_COLOR, "secondary_0")
-        ?: "secondary_0"
-    set(value) = getDefaultSharedPreferences().edit().putString(PREFS_SECONDARY_COLOR, value)
-        .apply()
+var styleSecondary: Int
+    get() = OABX.prefInt(PREFS_SECONDARY_COLOR_X, 0)
+    set(value) = OABX.setPrefInt(PREFS_SECONDARY_COLOR_X, value)
 
 var Context.language: String
     get() = getDefaultSharedPreferences().getString(PREFS_LANGUAGES, PREFS_LANGUAGES_DEFAULT)
@@ -515,4 +503,18 @@ fun Context.getLocaleOfCode(localeCode: String): Locale = when {
         localeCode.substring(3)
     )
     else -> Locale(localeCode)
+}
+
+fun Context.getLanguageList() =
+    mapOf(PREFS_LANGUAGES_DEFAULT to resources.getString(R.string.prefs_language_system)) +
+            BuildConfig.DETECTED_LOCALES
+                .sorted()
+                .associateWith { translateLocale(getLocaleOfCode(it)) }
+
+private fun translateLocale(locale: Locale): String {
+    val country = locale.getDisplayCountry(locale)
+    val language = locale.getDisplayLanguage(locale)
+    return (language.replaceFirstChar { it.uppercase(Locale.getDefault()) }
+            + (if (country.isNotEmpty() && country.compareTo(language, true) != 0)
+        "($country)" else ""))
 }

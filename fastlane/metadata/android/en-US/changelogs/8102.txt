@@ -1,0 +1,8 @@
+- Add: Dynamic color support (aka Material You)
+- Add: Backup size (only new backups)
+- Add: Tags & Note
+- Add: Optional info log in the topBar
+- Add: Installer package name
+- Add: Session installer (needed on A13)
+- Fix: Data reset after reboot
+for more details, read the full changelog

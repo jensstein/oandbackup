@@ -241,14 +241,14 @@ val BackupTarCmdPref = Pref.BooleanPref(
     key = PREFS_BACKUPTARCMD,
     titleId = R.string.prefs_backuptarcmd,
     summaryId = R.string.prefs_backuptarcmd_summary,
-    defaultValue = false
+    defaultValue = true
 )
 
 val RestoreTarCmdPref = Pref.BooleanPref(
     key = PREFS_RESTORETARCMD,
     titleId = R.string.prefs_restoretarcmd,
     summaryId = R.string.prefs_restoretarcmd_summary,
-    defaultValue = false
+    defaultValue = true
 )
 
 val StrictHardLinksPref = Pref.BooleanPref(
@@ -304,7 +304,7 @@ val MaxCrashLinesPref = Pref.IntPref(
     key = PREFS_MAXCRASHLINES,
     titleId = R.string.prefs_maxcrashlines,
     summaryId = R.string.prefs_maxcrashlines_summary,
-    entries = (1..1000).toList(),
+    entries = (10..200 step 10).toList(),
     defaultValue = 50
 )
 
@@ -341,7 +341,7 @@ val DelayBeforeRefreshAppInfoPref = Pref.IntPref(
     key = PREFS_DELAYBEFOREREFRESHAPPINFO,
     titleId = R.string.prefs_delaybeforerefreshappinfo,
     summaryId = R.string.prefs_delaybeforerefreshappinfo_summary,
-    entries = (0..10).toList(),
+    entries = (0..30).toList(),
     defaultValue = 0
 )
 
@@ -349,7 +349,7 @@ val RefreshAppInfoTimeoutPref = Pref.IntPref(
     key = PREFS_REFRESHAPPINFOTIMEOUT,
     titleId = R.string.prefs_refreshappinfotimeout,
     summaryId = R.string.prefs_refreshappinfotimeout_summary,
-    entries = (0..120).toList(),
+    entries = ((0..9 step 1) + (10..120 step 10)).toList(),
     defaultValue = 30
 )
 
@@ -371,6 +371,6 @@ val FakeBackupSecondsPref = Pref.IntPref(
     key = PREFS_FAKEBACKUPSECONDS,
     titleId = R.string.prefs_fakebackupseconds,
     summaryId = R.string.prefs_fakebackupseconds_summary,
-    entries = (0..60).toList(),
+    entries = ((0..9 step 1) + (10..50 step 10) + (60..1200 step 60)).toList(),
     defaultValue = 0
 )

@@ -219,7 +219,7 @@ class MainActivityX : BaseActivity() {
         binding.buttonSettings.setOnClickListener {
             viewModel.packageList.value?.let { OABX.app.cache.put("appInfoList", it) }
             startActivity(
-                Intent(applicationContext, PrefsActivity::class.java)
+                Intent(applicationContext, PrefsActivityX::class.java)
             )
         }
     }
@@ -235,7 +235,7 @@ class MainActivityX : BaseActivity() {
                 .setMessage(R.string.enable_encryption_message)
                 .setPositiveButton(R.string.dialog_approve) { _: DialogInterface?, _: Int ->
                     startActivity(
-                        Intent(applicationContext, PrefsActivity::class.java).putExtra(
+                        Intent(applicationContext, PrefsActivityX::class.java).putExtra(
                             ".toEncryption",
                             true
                         )

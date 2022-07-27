@@ -48,8 +48,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -89,9 +92,11 @@ class HelpSheet : BaseSheet() {
         HelpPage()
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
     @Composable
     private fun HelpPage() {
+        val nestedScrollConnection = rememberNestedScrollInteropConnection()
+
         AppTheme(
             darkTheme = isSystemInDarkTheme()
         ) {
@@ -127,8 +132,8 @@ class HelpSheet : BaseSheet() {
             ) { paddingValues ->
                 LazyColumn(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(paddingValues),
+                        .padding(paddingValues)
+                        .nestedScroll(nestedScrollConnection),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(8.dp)
                 ) {

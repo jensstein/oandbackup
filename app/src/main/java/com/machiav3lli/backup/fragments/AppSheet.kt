@@ -35,21 +35,20 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
@@ -57,15 +56,18 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -88,6 +90,7 @@ import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.tasks.BackupActionTask
 import com.machiav3lli.backup.tasks.RestoreActionTask
+import com.machiav3lli.backup.ui.compose.item.BackupItem
 import com.machiav3lli.backup.ui.compose.item.CardButton
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.MorphableTextField
@@ -95,7 +98,6 @@ import com.machiav3lli.backup.ui.compose.item.PackageIcon
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TagsBlock
 import com.machiav3lli.backup.ui.compose.item.TitleText
-import com.machiav3lli.backup.ui.compose.recycler.BackupRecycler
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.ui.compose.theme.Updated
@@ -135,13 +137,14 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
         viewModel.thePackage.value = app
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
     @Composable
     fun AppPage() {
         val thePackage by viewModel.thePackage.observeAsState()
         val snackbarText by viewModel.snackbarText.observeAsState()
         val appExtras by viewModel.appExtras.observeAsState()
         val snackbarHostState = remember { SnackbarHostState() }
+        val nestedScrollConnection = rememberNestedScrollInteropConnection()
         val coroutineScope = rememberCoroutineScope()
 
         thePackage?.let { packageInfo ->
@@ -160,15 +163,22 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
             AppTheme(
                 darkTheme = isSystemInDarkTheme()
             ) {
-                Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) {
-                    CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .verticalScroll(rememberScrollState())
-                                .padding(horizontal = 8.dp),
-                            verticalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
+                Scaffold(
+                    containerColor = Color.Transparent,
+                    contentColor = MaterialTheme.colorScheme.onBackground,
+                    bottomBar = {
+
+                    },
+                    snackbarHost = { SnackbarHost(snackbarHostState) }
+                ) { paddingValues ->
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(paddingValues)
+                            .nestedScroll(nestedScrollConnection),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(8.dp)
+                    ) {
+                        item {
                             OutlinedCard(
                                 modifier = Modifier.padding(top = 8.dp),
                                 shape = RoundedCornerShape(LocalShapes.current.medium),
@@ -251,6 +261,8 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                     }
                                 }
                             }
+                        }
+                        item {
                             AnimatedVisibility(visible = !snackbarText.isNullOrEmpty()) {
                                 Text(
                                     text = snackbarText.toString(),
@@ -260,6 +272,8 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                     modifier = Modifier.fillMaxWidth()
                                 )
                             }
+                        }
+                        item {
                             AnimatedVisibility(
                                 modifier = Modifier.fillMaxWidth(),
                                 visible = !packageInfo.isSpecial
@@ -358,13 +372,14 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                     }
                                 }
                             }
+                        }
+                        item {
                             AnimatedVisibility(
                                 visible = !packageInfo.isSpecial,
                                 modifier = Modifier.fillMaxWidth()
                             ) {
                                 Column(
                                     modifier = Modifier
-                                        .weight(1f)
                                         .width(IntrinsicSize.Min)
                                 ) {
                                     Row {
@@ -478,6 +493,8 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                     }
                                 }
                             }
+                        }
+                        item {
                             TitleText(textId = R.string.title_tags)
                             TagsBlock(
                                 tags = appExtras?.customTags ?: mutableSetOf(),
@@ -495,6 +512,8 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                     })
                                 }
                             )
+                        }
+                        item {
                             TitleText(textId = R.string.title_note)
                             MorphableTextField(
                                 text = appExtras?.note,
@@ -504,6 +523,8 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                     viewModel.setExtras(appExtras?.apply { note = it })
                                 }
                             )
+                        }
+                        item {
                             TitleText(textId = R.string.available_actions)
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
@@ -555,64 +576,63 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                     )
                                 }
                             }
-                            if (packageInfo.hasBackups) {
-                                BackupRecycler(productsList = packageInfo.backupsNewestFirst,
-                                    onRestore = { item ->
-                                        packageInfo.let { app ->
-                                            if (!app.isSpecial && !app.isInstalled
-                                                && !item.hasApk && item.hasAppData
-                                            ) {
-                                                snackbarHostState.show(
-                                                    coroutineScope = coroutineScope,
-                                                    message = getString(R.string.notInstalledModeDataWarning)
+                        }
+                        items(items = packageInfo.backupsNewestFirst) {
+                            BackupItem(
+                                it,
+                                onRestore = { item ->
+                                    packageInfo.let { app ->
+                                        if (!app.isSpecial && !app.isInstalled
+                                            && !item.hasApk && item.hasAppData
+                                        ) {
+                                            snackbarHostState.show(
+                                                coroutineScope = coroutineScope,
+                                                message = getString(R.string.notInstalledModeDataWarning)
+                                            )
+                                        } else {
+                                            RestoreDialogFragment(
+                                                app,
+                                                item,
+                                                this@AppSheet
+                                            )
+                                                .show(
+                                                    requireActivity().supportFragmentManager,
+                                                    "restoreDialog"
                                                 )
-                                            } else {
-                                                RestoreDialogFragment(
-                                                    app,
-                                                    item,
-                                                    this@AppSheet
-                                                )
-                                                    .show(
-                                                        requireActivity().supportFragmentManager,
-                                                        "restoreDialog"
-                                                    )
-                                            }
-                                        }
-                                    },
-                                    onDelete = { item ->
-                                        packageInfo.let { app ->
-                                            AlertDialog.Builder(requireContext())
-                                                .setTitle(app.packageLabel)
-                                                .setMessage(R.string.deleteBackupDialogMessage)
-                                                .setPositiveButton(R.string.dialogYes) { dialog: DialogInterface?, _: Int ->
-                                                    snackbarHostState.show(
-                                                        coroutineScope = coroutineScope,
-                                                        message = "${app.packageLabel}: ${
-                                                            getString(
-                                                                R.string.deleteBackup
-                                                            )
-                                                        }"
-                                                    )
-                                                    if (!app.hasBackups) {
-                                                        Timber.w("UI Issue! Tried to delete backups for app without backups.")
-                                                        dialog?.dismiss()
-                                                    }
-                                                    viewModel.deleteBackup(item)
-                                                }
-                                                .setNegativeButton(R.string.dialogNo, null)
-                                                .show()
                                         }
                                     }
-                                )
-                            }
+                                },
+                                onDelete = { item ->
+                                    packageInfo.let { app ->
+                                        AlertDialog.Builder(requireContext())
+                                            .setTitle(app.packageLabel)
+                                            .setMessage(R.string.deleteBackupDialogMessage)
+                                            .setPositiveButton(R.string.dialogYes) { dialog: DialogInterface?, _: Int ->
+                                                snackbarHostState.show(
+                                                    coroutineScope = coroutineScope,
+                                                    message = "${app.packageLabel}: ${
+                                                        getString(
+                                                            R.string.deleteBackup
+                                                        )
+                                                    }"
+                                                )
+                                                if (!app.hasBackups) {
+                                                    Timber.w("UI Issue! Tried to delete backups for app without backups.")
+                                                    dialog?.dismiss()
+                                                }
+                                                viewModel.deleteBackup(item)
+                                            }
+                                            .setNegativeButton(R.string.dialogNo, null)
+                                            .show()
+                                    }
+                                }
+                            )
                         }
                     }
                 }
             }
         }
     }
-
-    // TODO re-add note
 
     override fun onActionCalled(
         actionType: ActionType?,

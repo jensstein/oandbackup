@@ -39,8 +39,8 @@ android {
         applicationId = "com.machiav3lli.backup"
         minSdk = 26
         targetSdk = 32
-        versionCode = 8101
-        versionName = "8.1.0"
+        versionCode = 8103
+        versionName = "8.1.1"
         buildConfigField("int", "MAJOR", "8")
         buildConfigField("int", "MINOR", "1")
 
@@ -73,6 +73,7 @@ android {
         }
         named("debug") {
             applicationIdSuffix = ".debug"
+            versionNameSuffix = "-rc1"
             isMinifyEnabled = false
             manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher_vv"
             manifestPlaceholders["appIconRound"] = "@mipmap/ic_launcher_round_vv"

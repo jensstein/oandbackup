@@ -80,9 +80,13 @@
     <string name="error_pmDataIncompleteException_dataRestoreFailed">App data has not been restored.</string>
     <string name="prefs_title">Preferences</string>
     <string name="prefs_user">User preferences</string>
+    <string name="prefs_user_short">Personal</string>
     <string name="prefs_service">Service preferences</string>
+    <string name="prefs_service_short">Service</string>
     <string name="prefs_advanced">Advanced preferences</string>
+    <string name="prefs_advanced_short">Advanced</string>
     <string name="prefs_tools">Tools</string>
+    <string name="prefs_tools_short">Tools</string>
     <string name="prefs_theme">Theme</string>
     <string name="prefs_theme_light">Light</string>
     <string name="prefs_theme_dark">Dark</string>
@@ -348,6 +352,7 @@
     <string name="shell_initproblem">Couldn\'t initiate the shell handler. Either missing toybox/busybox or disabled root permission for the app.</string>
     <string name="schedule_failed">Running schedule failed</string>
     <string name="dialog_export">Export</string>
+    <string name="dialog_export_schedules">Export my schedules</string>
     <string name="dialog_import">Import</string>
     <string name="error_datachanged">The app\'s data has been actively changed while doing the backup. Try killing its process before doing backup</string>
     <string name="sched_exported">Schedules were exported sucessfully</string>

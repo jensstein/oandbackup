@@ -19,6 +19,7 @@ package com.machiav3lli.backup.activities
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
@@ -31,6 +32,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.machiav3lli.backup.NAV_PREFS
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.fragments.HelpSheet
 import com.machiav3lli.backup.ui.compose.item.TopBar
 import com.machiav3lli.backup.ui.compose.item.TopBarButton
@@ -38,9 +40,17 @@ import com.machiav3lli.backup.ui.compose.navigation.BottomNavBar
 import com.machiav3lli.backup.ui.compose.navigation.PrefsNavHost
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.setCustomTheme
+import com.machiav3lli.backup.viewmodels.ExportsViewModel
+import com.machiav3lli.backup.viewmodels.LogViewModel
 
 class PrefsActivityX : BaseActivity() {
     private var helpSheet: HelpSheet? = null
+    private val exportsViewModel: ExportsViewModel by viewModels {
+        ExportsViewModel.Factory(ODatabase.getInstance(applicationContext).scheduleDao, application)
+    }
+    private val logsViewModel: LogViewModel by viewModels {
+        LogViewModel.Factory(application)
+    }
 
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,7 +82,9 @@ class PrefsActivityX : BaseActivity() {
                 ) { paddingValues ->
                     PrefsNavHost(
                         modifier = Modifier.padding(paddingValues),
-                        navController = navController
+                        navController = navController,
+                        logsViewModel = logsViewModel,
+                        exportsViewModel = exportsViewModel
                     )
                 }
             }

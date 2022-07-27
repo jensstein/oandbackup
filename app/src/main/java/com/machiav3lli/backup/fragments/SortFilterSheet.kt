@@ -25,26 +25,25 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -83,26 +82,62 @@ class SortFilterSheet(
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
     @Composable
     fun SortFilterPage() {
+        val nestedScrollConnection = rememberNestedScrollInteropConnection()
+
         AppTheme(
             darkTheme = isSystemInDarkTheme()
         ) {
             mSortFilterModel.let {
-                Column(
-                    modifier = Modifier.height(IntrinsicSize.Min)
-                ) {
-                    CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onBackground) {
-                        Column(
+                Scaffold(
+                    containerColor = Color.Transparent,
+                    contentColor = MaterialTheme.colorScheme.onBackground,
+                    bottomBar = {
+                        Row(
                             modifier = Modifier
-                                .background(color = Color.Transparent)
+                                .background(color = MaterialTheme.colorScheme.surface)
                                 .fillMaxWidth()
-                                .padding(horizontal = 8.dp)
-                                .weight(1f)
-                                .verticalScroll(rememberScrollState()),
-                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                                .padding(8.dp)
+                                .wrapContentHeight(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
+                            ElevatedActionButton(
+                                text = stringResource(id = R.string.resetFilter),
+                                icon = painterResource(id = R.drawable.ic_reset),
+                                modifier = Modifier.weight(1f),
+                                fullWidth = true,
+                                positive = false,
+                                onClick = {
+                                    requireContext().sortFilterModel = SortFilterModel()
+                                    requireMainActivity().refreshView()
+                                    dismissAllowingStateLoss()
+                                }
+                            )
+                            ElevatedActionButton(
+                                text = stringResource(id = R.string.applyFilter),
+                                icon = painterResource(id = R.drawable.ic_apply),
+                                modifier = Modifier.weight(1f),
+                                fullWidth = true,
+                                positive = true,
+                                onClick = {
+                                    requireContext().sortFilterModel = mSortFilterModel
+                                    requireMainActivity().refreshView()
+                                    dismissAllowingStateLoss()
+                                }
+                            )
+                        }
+                    }
+                ) { paddingValues ->
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(paddingValues)
+                            .nestedScroll(nestedScrollConnection),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(8.dp)
+                    ) {
+                        item {
                             OutlinedCard(
                                 modifier = Modifier.padding(top = 4.dp),
                                 colors = CardDefaults.outlinedCardColors(
@@ -135,6 +170,8 @@ class SortFilterSheet(
                                     }
                                 }
                             }
+                        }
+                        item {
                             TitleText(R.string.sort_options)
                             SelectableChipGroup(
                                 list = sortChipItems,
@@ -150,6 +187,8 @@ class SortFilterSheet(
                                 firstSelected = it.sortAsc,
                                 onCheckedChange = { checked -> it.sortAsc = checked }
                             )
+                        }
+                        item {
                             TitleText(R.string.filter_options)
                             MultiSelectableChipGroup(
                                 list = if (requireContext().specialBackupsEnabled) mainFilterChipItems
@@ -158,6 +197,8 @@ class SortFilterSheet(
                             ) { flag ->
                                 it.mainFilter = it.mainFilter xor flag
                             }
+                        }
+                        item {
                             TitleText(R.string.backup_filters)
                             MultiSelectableChipGroup(
                                 list = mainBackupModeChipItems,
@@ -165,6 +206,8 @@ class SortFilterSheet(
                             ) { flag ->
                                 it.backupFilter = it.backupFilter xor flag
                             }
+                        }
+                        item {
                             TitleText(R.string.other_filters_options)
                             SelectableChipGroup(
                                 list = mainSpecialFilterChipItems,
@@ -172,41 +215,6 @@ class SortFilterSheet(
                             ) { flag ->
                                 it.specialFilter = flag
                             }
-                        }
-                    }
-                    CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
-                        Row(
-                            modifier = Modifier
-                                .background(color = MaterialTheme.colorScheme.surface)
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                                .wrapContentHeight(),
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            ElevatedActionButton(
-                                text = stringResource(id = R.string.resetFilter),
-                                icon = painterResource(id = R.drawable.ic_reset),
-                                modifier = Modifier.weight(1f),
-                                fullWidth = true,
-                                positive = false,
-                                onClick = {
-                                    requireContext().sortFilterModel = SortFilterModel()
-                                    requireMainActivity().refreshView()
-                                    dismissAllowingStateLoss()
-                                }
-                            )
-                            ElevatedActionButton(
-                                text = stringResource(id = R.string.applyFilter),
-                                icon = painterResource(id = R.drawable.ic_apply),
-                                modifier = Modifier.weight(1f),
-                                fullWidth = true,
-                                positive = true,
-                                onClick = {
-                                    requireContext().sortFilterModel = mSortFilterModel
-                                    requireMainActivity().refreshView()
-                                    dismissAllowingStateLoss()
-                                }
-                            )
                         }
                     }
                 }

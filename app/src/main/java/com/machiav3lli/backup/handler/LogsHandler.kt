@@ -62,6 +62,7 @@ class LogsHandler(var context: Context) {
     @Throws(IOException::class)
     fun readLogs(): MutableList<Log> {
         val logs = mutableListOf<Log>()
+        StorageFile.invalidateCache { it.contains(LOG_FOLDER_NAME) }
         logsDirectory?.listFiles()?.forEach {
             if (it.isFile) try {
                 logs.add(Log(it))

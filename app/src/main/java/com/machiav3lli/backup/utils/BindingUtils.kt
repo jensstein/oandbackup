@@ -17,19 +17,9 @@
  */
 package com.machiav3lli.backup.utils
 
-import android.view.View
-import androidx.databinding.BindingAdapter
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-
-@BindingAdapter("exists")
-fun View.setExists(rightMode: Boolean) {
-    visibility = when {
-        rightMode -> View.VISIBLE
-        else -> View.GONE
-    }
-}
 
 fun LocalDateTime.getFormattedDate(withTime: Boolean): String? {
     val dtf = if (withTime) DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)

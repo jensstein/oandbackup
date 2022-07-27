@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.machiav3lli.backup.NAV_MAIN
@@ -20,26 +21,28 @@ import com.machiav3lli.backup.NAV_PREFS
 fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
     val items = when (page) {
         NAV_PREFS -> listOf(
-            BottomNavItem.UserPrefs,
-            BottomNavItem.ServicePrefs,
-            BottomNavItem.AdvancedPrefs,
-            BottomNavItem.ToolsPrefs
+            NavItem.UserPrefs,
+            NavItem.ServicePrefs,
+            NavItem.AdvancedPrefs,
+            NavItem.ToolsPrefs
         )
         else -> listOf(
-            BottomNavItem.Home,
-            BottomNavItem.Backup,
-            BottomNavItem.Restore,
-            BottomNavItem.Scheduler,
-            BottomNavItem.Settings
+            NavItem.Home,
+            NavItem.Backup,
+            NavItem.Restore,
+            NavItem.Scheduler,
+            NavItem.Settings
         )
     }
 
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.surface,
+        tonalElevation = 0.dp,
         contentColor = MaterialTheme.colorScheme.onSurface
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination?.route
+
         items.forEach { item ->
             val selected = currentDestination == item.destination
 
@@ -66,8 +69,11 @@ fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
                 selected = selected,
                 onClick = {
                     navController.navigate(item.destination) {
-                        navController.graph.startDestinationRoute?.let { destination ->
-                            popUpTo(destination) { saveState = true }
+                        navController.currentDestination?.id?.let {
+                            popUpTo(it) {
+                                inclusive = true
+                                saveState = true
+                            }
                         }
                         launchSingleTop = true
                         restoreState = true

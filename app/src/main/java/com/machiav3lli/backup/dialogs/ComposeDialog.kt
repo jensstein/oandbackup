@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -66,9 +67,58 @@ fun BaseDialog(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+fun ActionsDialogUI(
+    mainText: String,
+    openDialogCustom: MutableState<Boolean>,
+    primaryText: String,
+    primaryAction: (() -> Unit) = {},
+    secondaryText: String = "",
+    secondaryAction: (() -> Unit)? = null
+) {
+    val context = LocalContext.current
+
+    Card(
+        shape = RoundedCornerShape(8.dp),
+        modifier = Modifier.padding(8.dp),
+        elevation = CardDefaults.elevatedCardElevation(8.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(text = mainText, style = MaterialTheme.typography.titleLarge)
+
+            Row(
+                Modifier.fillMaxWidth()
+            ) {
+                ActionButton(text = stringResource(id = R.string.dialogCancel)) {
+                    openDialogCustom.value = false
+                }
+                Spacer(Modifier.weight(1f))
+                if (secondaryAction != null) {
+                    ElevatedActionButton(text = secondaryText, positive = false) {
+                        secondaryAction()
+                        openDialogCustom.value = false
+                    }
+                    Spacer(Modifier.requiredWidth(8.dp))
+                }
+                ElevatedActionButton(text = primaryText) {
+                    primaryAction()
+                    openDialogCustom.value = false
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun EnumDialogUI(
     pref: Pref.EnumPref,
-    openDialogCustom: MutableState<Boolean>
+    openDialogCustom: MutableState<Boolean>,
+    onChanged: (() -> Unit) = {}
 ) {
     val context = LocalContext.current
     var selected by remember { mutableStateOf(OABX.prefInt(pref.key, pref.defaultValue)) }
@@ -111,7 +161,10 @@ fun EnumDialogUI(
                 }
                 Spacer(Modifier.weight(1f))
                 ElevatedActionButton(text = stringResource(id = R.string.dialogSave)) {
-                    OABX.setPrefInt(pref.key, selected)
+                    if (OABX.prefInt(pref.key, pref.defaultValue) != selected) {
+                        OABX.setPrefInt(pref.key, selected)
+                        onChanged()
+                    }
                     openDialogCustom.value = false
                 }
             }
@@ -119,12 +172,74 @@ fun EnumDialogUI(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ListDialogUI(
+    pref: Pref.ListPref,
+    openDialogCustom: MutableState<Boolean>,
+    onChanged: (() -> Unit) = {}
+) {
+    val context = LocalContext.current
+    var selected by remember { mutableStateOf(OABX.prefString(pref.key, pref.defaultValue)) }
+    val entryPairs = pref.entries.toList()
+
+    Card(
+        shape = RoundedCornerShape(8.dp),
+        modifier = Modifier.padding(8.dp),
+        elevation = CardDefaults.elevatedCardElevation(8.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(text = stringResource(pref.titleId), style = MaterialTheme.typography.titleLarge)
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(top = 16.dp, bottom = 16.dp)
+            ) {
+                items(items = entryPairs) {
+                    val isSelected = rememberSaveable(selected) {
+                        mutableStateOf(selected == it.first)
+                    }
+                    SelectableRow(
+                        modifier = Modifier.clip(MaterialTheme.shapes.medium),
+                        title = it.second,
+                        selectedState = isSelected
+                    ) {
+                        selected = it.first
+                    }
+                }
+            }
+
+            Row(
+                Modifier.fillMaxWidth()
+            ) {
+                ActionButton(text = stringResource(id = R.string.dialogCancel)) {
+                    openDialogCustom.value = false
+                }
+                Spacer(Modifier.weight(1f))
+                ElevatedActionButton(text = stringResource(id = R.string.dialogSave)) {
+                    if (OABX.prefString(pref.key, pref.defaultValue) != selected) {
+                        OABX.setPrefString(pref.key, selected)
+                        onChanged()
+                    }
+                    openDialogCustom.value = false
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StringDialogUI(
     pref: Pref.StringPref,
     isPrivate: Boolean = false,
-    openDialogCustom: MutableState<Boolean>
+    openDialogCustom: MutableState<Boolean>,
+    onChanged: (() -> Unit) = {}
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
@@ -177,8 +292,14 @@ fun StringDialogUI(
                 }
                 Spacer(Modifier.weight(1f))
                 ElevatedActionButton(text = stringResource(id = R.string.dialogSave)) {
-                    if (isPrivate) OABX.setPrefPrivateString(pref.key, savedValue)
-                    else OABX.setPrefString(pref.key, savedValue)
+                    if ((isPrivate &&
+                                OABX.prefPrivateString(pref.key, pref.defaultValue) != savedValue)
+                        || OABX.prefString(pref.key, pref.defaultValue) != savedValue
+                    ) {
+                        if (isPrivate) OABX.setPrefPrivateString(pref.key, savedValue)
+                        else OABX.setPrefString(pref.key, savedValue)
+                        onChanged()
+                    }
                     openDialogCustom.value = false
                 }
             }
