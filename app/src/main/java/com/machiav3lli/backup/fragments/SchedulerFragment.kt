@@ -36,6 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -96,6 +97,7 @@ class SchedulerFragment : NavigationFragment() {
             darkTheme = isSystemInDarkTheme()
         ) {
             Scaffold(
+                containerColor = Color.Transparent,
                 topBar = {
                     TopBar(title = stringResource(id = R.string.sched_title)) {
                         TopBarButton(

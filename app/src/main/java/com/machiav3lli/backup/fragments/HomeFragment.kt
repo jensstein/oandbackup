@@ -43,6 +43,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -218,6 +219,7 @@ class HomeFragment : NavigationFragment(),
             darkTheme = isSystemInDarkTheme()
         ) {
             Scaffold(
+                containerColor = Color.Transparent,
                 topBar = {
                     TopBar(title = stringResource(id = R.string.main)) {
                         ExpandableSearchAction(
@@ -235,7 +237,6 @@ class HomeFragment : NavigationFragment(),
                 Column(
                     modifier = Modifier
                         .padding(paddingValues)
-                        .background(color = MaterialTheme.colorScheme.surface)
                         .fillMaxSize()
                 ) {
                     Row(
@@ -300,7 +301,9 @@ class HomeFragment : NavigationFragment(),
                     )
                     AnimatedVisibility(visible = !updatedApps.isNullOrEmpty()) {
                         Column(
-                            modifier = Modifier.wrapContentHeight()
+                            modifier = Modifier
+                                .background(MaterialTheme.colorScheme.surface)
+                                .wrapContentHeight()
                         ) {
                             Row(
                                 modifier = Modifier
