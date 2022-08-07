@@ -297,6 +297,8 @@ fun ExpandedSearchView(
         )
         IconButton(onClick = {
             onExpanded(false)
+            textFieldValue = TextFieldValue("")
+            onQueryChanged("")
             onClose()
         }) {
             Icon(
