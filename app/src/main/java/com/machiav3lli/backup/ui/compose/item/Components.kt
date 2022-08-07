@@ -191,7 +191,7 @@ fun ElevatedActionButton(
     fullWidth: Boolean = false,
     enabled: Boolean = true,
     colored: Boolean = true,
-    withText: Boolean = true,
+    withText: Boolean = text.isNotEmpty(),
     onClick: () -> Unit
 ) {
     ElevatedButton(
