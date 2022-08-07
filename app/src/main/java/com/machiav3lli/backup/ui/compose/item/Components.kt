@@ -354,8 +354,8 @@ fun CheckChip(
             containerColor = MaterialTheme.colorScheme.background,
             selectedContainerColor = MaterialTheme.colorScheme.primaryContainer
         ),
-        selectedIcon = {
-            ButtonIcon(R.drawable.ic_all, R.string.enabled)
+        leadingIcon = {
+            if (checked) ButtonIcon(R.drawable.ic_all, R.string.enabled)
         },
         onClick = {
             onCheckedChange(!checked)
@@ -414,9 +414,6 @@ fun SwitchChip(
             leadingIcon = {
                 ButtonIcon(firstIconId, firstTextId)
             },
-            selectedIcon = {
-                ButtonIcon(firstIconId, firstTextId)
-            },
             label = {
                 Row(
                     Modifier
@@ -463,7 +460,6 @@ fun SwitchChip(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectableRow(
     modifier: Modifier = Modifier,
@@ -495,7 +491,6 @@ fun SelectableRow(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CheckableRow(
     title: String,
