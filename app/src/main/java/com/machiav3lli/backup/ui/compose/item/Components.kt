@@ -160,7 +160,8 @@ fun ActionButton(
     TextButton(
         modifier = modifier,
         colors = ButtonDefaults.textButtonColors(
-            contentColor = if (positive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+            contentColor = if (positive) MaterialTheme.colorScheme.primary
+            else MaterialTheme.colorScheme.tertiary
         ),
         onClick = onClick
     ) {
@@ -199,12 +200,12 @@ fun ElevatedActionButton(
             contentColor = when {
                 !colored -> MaterialTheme.colorScheme.onSurface
                 positive -> MaterialTheme.colorScheme.onPrimaryContainer
-                else -> MaterialTheme.colorScheme.onSecondaryContainer
+                else -> MaterialTheme.colorScheme.onTertiaryContainer
             },
             containerColor = when {
                 !colored -> MaterialTheme.colorScheme.surface
                 positive -> MaterialTheme.colorScheme.primaryContainer
-                else -> MaterialTheme.colorScheme.secondaryContainer
+                else -> MaterialTheme.colorScheme.tertiaryContainer
             }
         ),
         enabled = enabled,

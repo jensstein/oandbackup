@@ -86,7 +86,7 @@ fun TagItem(
         colors = InputChipDefaults.inputChipColors(
             containerColor = if (action) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
             labelColor = if (action) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
-            trailingIconColor = if (action) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.secondary,
+            trailingIconColor = if (action) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.tertiary,
         ),
         border = InputChipDefaults.inputChipBorder(
             borderColor = MaterialTheme.colorScheme.surface,

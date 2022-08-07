@@ -334,7 +334,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                                 else R.drawable.ic_exclude
                                             ),
                                             tint = if (packageInfo.isDisabled) MaterialTheme.colorScheme.primaryContainer
-                                            else MaterialTheme.colorScheme.secondary,
+                                            else MaterialTheme.colorScheme.tertiaryContainer,
                                             description = stringResource(
                                                 id = if (packageInfo.isDisabled) R.string.enablePackage
                                                 else R.string.disablePackage
@@ -351,7 +351,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                                 .fillMaxHeight()
                                                 .weight(1f),
                                             icon = painterResource(id = R.drawable.ic_delete),
-                                            tint = MaterialTheme.colorScheme.secondary,
+                                            tint = MaterialTheme.colorScheme.tertiary,
                                             description = stringResource(id = R.string.uninstall),
                                             onClick = {
                                                 snackbarHostState.showUninstallDialog(
