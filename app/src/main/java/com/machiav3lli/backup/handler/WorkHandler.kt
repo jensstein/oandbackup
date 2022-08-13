@@ -260,8 +260,10 @@ class WorkHandler(appContext: Context) {
         val batchesKnown = mutableMapOf<String, BatchState>()
         var batchesStarted = -1
 
+        var lockProgress = object {}
+
         fun onProgress(handler: WorkHandler, workInfos: MutableList<WorkInfo>? = null) {
-            synchronized(batchesStarted) {
+            synchronized(lockProgress) {
                 onProgressNoSync(handler, workInfos)
             }
         }
