@@ -17,6 +17,7 @@ import com.machiav3lli.backup.PREFS_INVALIDATESELECTIVE
 import com.machiav3lli.backup.PREFS_SHADOWROOTFILE
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
+import com.machiav3lli.backup.handler.LogsHandler.Companion.unhandledException
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.utils.suRecursiveCopyFilesToDocument
@@ -58,7 +59,7 @@ private fun Uri.getRawType(context: Context): String? = try {
         }.also { cursor.close() }
     }
 } catch (e: Throwable) {
-    LogsHandler.unhandledException(e, this)
+    unhandledException(e, this)
     null
 }
 
@@ -112,7 +113,7 @@ fun Uri.exists(context: Context): Boolean {
     } catch (e: IllegalArgumentException) {
         false
     } catch (e: Throwable) {
-        LogsHandler.unhandledException(e, this)
+        unhandledException(e, this)
         false
     } finally {
         closeQuietly(cursor)
@@ -128,7 +129,7 @@ private fun Uri.queryForLong(context: Context, column: String): Long? {
             return getCursorLong(cursor, column)
         }
     } catch (e: Throwable) {
-        LogsHandler.unhandledException(e, "$this column: $column")
+        unhandledException(e, "$this column: $column")
     } finally {
         closeQuietly(cursor)
     }
@@ -142,7 +143,7 @@ private fun closeQuietly(closeable: AutoCloseable?) {
         } catch (rethrown: RuntimeException) {
             throw rethrown
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e)
+            unhandledException(e)
         }
     }
 }
@@ -237,7 +238,7 @@ open class StorageFile {
                     }
                 }
             } catch (e: Throwable) {
-                LogsHandler.unhandledException(e, "$this")
+                unhandledException(e, "$this")
             } finally {
                 closeQuietly(cursor)
             }
@@ -445,7 +446,7 @@ open class StorageFile {
         } catch (e: FileNotFoundException) {
             false
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, _uri)
+            unhandledException(e, _uri)
             false
         }
     }
@@ -471,7 +472,7 @@ open class StorageFile {
                 ok = true
             }
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, _uri)
+            unhandledException(e, _uri)
             ok = false
         }
         path?.let { cacheFilesAdd(it, this) }
@@ -483,9 +484,10 @@ open class StorageFile {
             file?.readText()
                 ?: run { inputStream()?.reader()?.readText() ?: "" }
         } catch (e: FileNotFoundException) {
+            logException(e, _uri)
             ""
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, _uri)
+            unhandledException(e, _uri)
             ""
         }
     }
@@ -499,7 +501,7 @@ open class StorageFile {
             }
         } catch (e: FileNotFoundException) {
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, _uri)
+            unhandledException(e, _uri)
         }
         return null
     }
@@ -517,7 +519,7 @@ open class StorageFile {
             }
         } catch (e: FileNotFoundException) {
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, _uri)
+            unhandledException(e, _uri)
         }
         return null
     }
@@ -580,11 +582,11 @@ open class StorageFile {
                                     file.documentInfo = docInfo
                                     results.add(file)
                                 } catch (e: Throwable) {
-                                    LogsHandler.unhandledException(e, _uri)
+                                    unhandledException(e, _uri)
                                 }
                             }
                         } catch (e: Throwable) {
-                            LogsHandler.unhandledException(e, _uri)
+                            unhandledException(e, _uri)
                         } finally {
                             closeQuietly(cursor)
                         }
@@ -618,7 +620,7 @@ open class StorageFile {
         } catch (e: FileNotFoundException) {
             false
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, _uri)
+            unhandledException(e, _uri)
             false
         }
         else -> false
@@ -671,7 +673,7 @@ open class StorageFile {
             } catch (e: FileNotFoundException) {
                 null
             } catch (e: Throwable) {
-                LogsHandler.unhandledException(e, uri)
+                unhandledException(e, uri)
                 null
             }
         }
@@ -760,7 +762,7 @@ open class StorageFile {
                     // noinspection ProhibitedExceptionThrown
                     throw rethrown
                 } catch (e: Throwable) {
-                    LogsHandler.unhandledException(e)
+                    logException(e)
                 }
             }
         }
