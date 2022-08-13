@@ -140,7 +140,7 @@ class LogsHandler(var context: Context) {
         }
 
         fun unhandledException(e: Throwable, what: Any? = null) {
-            logException(e, what, backTrace = true, "unexpected: ")
+            logException(e, what, backTrace = true, prefix = "unexpected: ")
         }
 
         fun handleErrorMessages(context: Context, errorText: String?): String? {

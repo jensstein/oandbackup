@@ -1,0 +1,8 @@
+Fix: Sheets scrolling
+Fix: Clumsy updates button on devices with low dpi
+Fix: Restrict process pausing detection
+Fix: Cleaning search bar on close
+Update: Revamp Prefs (based on Compose)
+Update: Revamp export/import tool
+Update: Backups retention limit to 100
+Update: Dynamic theme

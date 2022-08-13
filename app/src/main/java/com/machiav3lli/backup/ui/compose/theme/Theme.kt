@@ -35,8 +35,8 @@ fun AppTheme(
                     primaryContainer = primaryColor
                         .darker(0.2f),
                     inverseOnSurface = primaryColor,
-                    secondary = secondaryColor,
-                    secondaryContainer = secondaryColor
+                    tertiary = secondaryColor,
+                    tertiaryContainer = secondaryColor
                         .darker(0.2f),
                 )
                 else -> LightColors.copy(
@@ -44,8 +44,8 @@ fun AppTheme(
                     primaryContainer = primaryColor
                         .brighter(0.2f),
                     inverseOnSurface = primaryColor,
-                    secondary = secondaryColor,
-                    secondaryContainer = secondaryColor
+                    tertiary = secondaryColor,
+                    tertiaryContainer = secondaryColor
                         .brighter(0.2f),
                 )
             },

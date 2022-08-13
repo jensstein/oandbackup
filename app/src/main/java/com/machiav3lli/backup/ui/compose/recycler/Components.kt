@@ -38,8 +38,7 @@ fun <T> VerticalItemList(
     itemContent: @Composable LazyItemScope.(T) -> Unit
 ) {
     Box(
-        modifier = modifier
-            .background(MaterialTheme.colorScheme.background),
+        modifier = modifier,
         contentAlignment = if (list.isNullOrEmpty()) Alignment.Center else Alignment.TopStart
     ) {
         when {
@@ -108,9 +107,7 @@ fun <T> HorizontalItemList(
     itemContent: @Composable LazyItemScope.(T) -> Unit
 ) {
     Box(
-        modifier = modifier
-            .background(MaterialTheme.colorScheme.surface)
-            .fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         contentAlignment = if (list.isNullOrEmpty()) Alignment.Center else Alignment.CenterStart
     ) {
         when {
@@ -172,9 +169,6 @@ fun SelectableChipGroup(
                 leadingIcon = {
                     ButtonIcon(it.iconId, it.textId)
                 },
-                selectedIcon = {
-                    ButtonIcon(it.iconId, it.textId)
-                },
                 onClick = {
                     setFlag(it.flag)
                     onClick(it.flag)
@@ -229,9 +223,6 @@ fun MultiSelectableChipGroup(
                 ),
                 selected = it.flag and selectedFlags != 0,
                 leadingIcon = {
-                    ButtonIcon(it.iconId, it.textId)
-                },
-                selectedIcon = {
                     ButtonIcon(it.iconId, it.textId)
                 },
                 onClick = {

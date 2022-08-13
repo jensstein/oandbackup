@@ -21,7 +21,7 @@ import com.machiav3lli.backup.ui.compose.item.UpdatedPackageItem
 
 @Composable
 fun HomePackageRecycler(
-    modifier: Modifier = Modifier.fillMaxSize(),
+    modifier: Modifier = Modifier,
     productsList: List<Package>?,
     onClick: (Package) -> Unit = {}
 ) {

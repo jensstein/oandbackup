@@ -68,7 +68,6 @@ fun MorphableTextField(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TextViewBlock(
     text: String?,
@@ -92,6 +91,7 @@ fun TextViewBlock(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TextEditBlock(
     text: String?,

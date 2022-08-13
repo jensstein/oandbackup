@@ -1,5 +1,16 @@
 CHANGELOG
 =========
+8.1.1 (07.08.2022) +65 Commits
+------------------
+- Fix: Sheets scrolling
+- Fix: Clumsy updates button on devices with low dpi
+- Fix: Restrict process pausing detection
+- Fix: Cleaning search bar on close
+- Update: Revamp Prefs (based on Compose)
+- Update: Revamp export/import tool
+- Update: Backups retention limit to 100
+- Update: Dynamic theme
+
 8.1.0 (23.07.2022) +300 Commits
 ------------------
 - Add: Dynamic color support (aka Material You)

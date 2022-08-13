@@ -42,6 +42,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -202,6 +203,7 @@ open class BatchFragment(private val backupBoolean: Boolean) : NavigationFragmen
             darkTheme = isSystemInDarkTheme()
         ) {
             Scaffold(
+                containerColor = Color.Transparent,
                 topBar = {
                     TopBar(
                         title = stringResource(id = if (backupBoolean) R.string.backup else R.string.restore)

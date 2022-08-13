@@ -160,7 +160,8 @@ fun ActionButton(
     TextButton(
         modifier = modifier,
         colors = ButtonDefaults.textButtonColors(
-            contentColor = if (positive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+            contentColor = if (positive) MaterialTheme.colorScheme.primary
+            else MaterialTheme.colorScheme.tertiary
         ),
         onClick = onClick
     ) {
@@ -190,7 +191,7 @@ fun ElevatedActionButton(
     fullWidth: Boolean = false,
     enabled: Boolean = true,
     colored: Boolean = true,
-    withText: Boolean = true,
+    withText: Boolean = text.isNotEmpty(),
     onClick: () -> Unit
 ) {
     ElevatedButton(
@@ -199,12 +200,12 @@ fun ElevatedActionButton(
             contentColor = when {
                 !colored -> MaterialTheme.colorScheme.onSurface
                 positive -> MaterialTheme.colorScheme.onPrimaryContainer
-                else -> MaterialTheme.colorScheme.onSecondaryContainer
+                else -> MaterialTheme.colorScheme.onTertiaryContainer
             },
             containerColor = when {
                 !colored -> MaterialTheme.colorScheme.surface
                 positive -> MaterialTheme.colorScheme.primaryContainer
-                else -> MaterialTheme.colorScheme.secondaryContainer
+                else -> MaterialTheme.colorScheme.tertiaryContainer
             }
         ),
         enabled = enabled,
@@ -353,8 +354,8 @@ fun CheckChip(
             containerColor = MaterialTheme.colorScheme.background,
             selectedContainerColor = MaterialTheme.colorScheme.primaryContainer
         ),
-        selectedIcon = {
-            ButtonIcon(R.drawable.ic_all, R.string.enabled)
+        leadingIcon = {
+            if (checked) ButtonIcon(R.drawable.ic_all, R.string.enabled)
         },
         onClick = {
             onCheckedChange(!checked)
@@ -413,9 +414,6 @@ fun SwitchChip(
             leadingIcon = {
                 ButtonIcon(firstIconId, firstTextId)
             },
-            selectedIcon = {
-                ButtonIcon(firstIconId, firstTextId)
-            },
             label = {
                 Row(
                     Modifier
@@ -462,7 +460,6 @@ fun SwitchChip(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectableRow(
     modifier: Modifier = Modifier,
@@ -494,7 +491,6 @@ fun SelectableRow(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CheckableRow(
     title: String,
