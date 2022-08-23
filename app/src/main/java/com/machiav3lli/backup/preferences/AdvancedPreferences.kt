@@ -42,7 +42,7 @@ import com.machiav3lli.backup.PREFS_SHADOWROOTFILE
 import com.machiav3lli.backup.PREFS_SHOW_INFO_LOG
 import com.machiav3lli.backup.PREFS_STRICTHARDLINKS
 import com.machiav3lli.backup.PREFS_USEALARMCLOCK
-import com.machiav3lli.backup.PREFS_USEEXACTRALARM
+import com.machiav3lli.backup.PREFS_USEEXACTALARM
 import com.machiav3lli.backup.PREFS_USEEXPEDITED
 import com.machiav3lli.backup.PREFS_USEFOREGROUND
 import com.machiav3lli.backup.R
@@ -217,7 +217,7 @@ val UseAlarmClockPref = Pref.BooleanPref(
 )
 
 val UseExactAlarmPref = Pref.BooleanPref(
-    key = PREFS_USEEXACTRALARM,
+    key = PREFS_USEEXACTALARM,
     titleId = R.string.prefs_useexactalarm,
     summaryId = R.string.prefs_useexactalarm_summary,
     defaultValue = false
