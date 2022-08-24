@@ -1,0 +1,4 @@
+Jedná se o opravné vydání založené na verzi 8.0.0-alpha14, protože před několika týdny došlo k nechtěnému vydání.
+Opravuje problémy neúmyslného vydání a funguje spolehlivě, ale stále srovnatelně zpožděně, protože Compose stále neposkytuje nejlepší výkon a opravdové vydání by trvalo hodně. Do té doby vám přinášíme několik zajímavostí:
+* Aktualizace: Nový formát aktualizací (aplikace stále podporuje starší).
+* Oprava: Všechny problémy s A12 ve verzi 7

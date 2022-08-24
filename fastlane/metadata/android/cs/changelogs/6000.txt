@@ -1,0 +1,9 @@
+POTŘEBNÉ JASNÉ ÚDAJE
+* Přidáno: Export/import rozvrhů
+* Přidáno: Podpora vzestupného/sestupného řazení
+* Aktualizováno: Globální seznam bloků se vztahuje na hlavní
+* Aktualizováno: Zaškrtávací políčka "Použít režimy" v dialogových oknech zálohování/obnovení/rozvrhu.
+* Opraveno: Plány se nevypouštějí včas
+* Opraveno: Opožděná oznámení některých obnovených aplikací
+* Přidána katalánština
+* Spousta dalších vylepšení/oprav

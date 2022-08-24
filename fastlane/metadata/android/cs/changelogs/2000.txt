@@ -1,0 +1,9 @@
+**OndBackupX 2.0.0**
+* Přechod na sulib (Credits @Tiefkuehlpizze)
+* Definitivně odstraněny oab-utils (Credits @Tiefkuehlpizze)
+* Nové prvky uživatelského rozhraní pro App-, Filter- a ScheduleSheet
+* Opraveno plánované zálohování dat(sám)
+* Opraveno zipování externích/deData/obb podle předvoleb
+* Opraveno: zazipování prázdných složek external/deData/obb.
+* Aktualizována funkce čištění mezipaměti
+* Některé další úpravy uživatelského rozhraní a výkonu

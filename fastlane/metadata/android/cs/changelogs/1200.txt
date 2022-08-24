@@ -1,0 +1,4 @@
+**OndBackupX 1.2.0**
+* Aktualizováno: UŽIVATELSKÉ ROZHRANÍ
+* Opraveno: padání sdílení
+* Přidáno: možnosti zálohování dat chráněných zařízením a externích dat

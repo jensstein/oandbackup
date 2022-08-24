@@ -1,0 +1,10 @@
+**OndBackupX 3.1.0**
+
+* Odstraněno: zrušena podpora systému Android Nougat
+* Přidáno: nový systém značek
+* Přidáno: předvolba biometrického zámku
+* Aktualizováno: Celé uživatelské rozhraní
+* Aktualizováno: nastavení výchozí preference externích dat a obb na vypnuto
+* Opraveno: Některé pády uživatelského rozhraní
+* Přesunuto na Affero GPL v3
+a mnohem více
