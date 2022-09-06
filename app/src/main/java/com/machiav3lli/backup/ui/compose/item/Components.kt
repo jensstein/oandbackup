@@ -480,6 +480,7 @@ fun SelectableRow(
             selected = selectedState.value,
             onClick = {
                 selectedState.value = true
+                onClick()
             },
             modifier = Modifier.padding(horizontal = 8.dp),
             colors = RadioButtonDefaults.colors(
