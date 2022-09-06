@@ -50,9 +50,9 @@ import com.machiav3lli.backup.ui.compose.item.PreferencesGroupHeader
 import com.machiav3lli.backup.ui.compose.item.SeekBarPreference
 import com.machiav3lli.backup.ui.compose.item.SwitchPreference
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
-import com.machiav3lli.backup.ui.compose.theme.DeData
-import com.machiav3lli.backup.ui.compose.theme.Special
-import com.machiav3lli.backup.ui.compose.theme.Updated
+import com.machiav3lli.backup.ui.compose.theme.ColorDeData
+import com.machiav3lli.backup.ui.compose.theme.ColorSpecial
+import com.machiav3lli.backup.ui.compose.theme.ColorUpdated
 import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.utils.sortFilterModel
 
@@ -141,7 +141,7 @@ val EnableSpecialsPref = Pref.BooleanPref(
     titleId = R.string.prefs_enablespecial,
     summaryId = R.string.prefs_enablespecial_summary,
     iconId = R.drawable.ic_special,
-    iconTint = Special,
+    iconTint = ColorSpecial,
     defaultValue = false
 )
 
@@ -150,7 +150,7 @@ val DisableVerificationPref = Pref.BooleanPref(
     titleId = R.string.prefs_disableverification,
     summaryId = R.string.prefs_disableverification_summary,
     iconId = R.drawable.ic_andy,
-    iconTint = Updated,
+    iconTint = ColorUpdated,
     defaultValue = true
 )
 
@@ -159,7 +159,7 @@ val RestoreAllPermissionsPref = Pref.BooleanPref(
     titleId = R.string.prefs_restoreallpermissions,
     summaryId = R.string.prefs_restoreallpermissions_summary,
     iconId = R.drawable.ic_de_data,
-    iconTint = DeData,
+    iconTint = ColorDeData,
     defaultValue = false
 )
 
