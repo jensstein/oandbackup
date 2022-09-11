@@ -1,5 +1,15 @@
 CHANGELOG
 =========
+8.1.2 (12.09.2022) +30 Commits
+------------------
+- Fix: Wrong default for pmSuspend (@hg42)
+- Fix: Disabled app's text color in app sheet (@hg42)
+- Fix: List item selection
+- Fix: Pref's slider text color (@hg42)
+- Add: Pref's slider adaptive steps (@hg42)
+- Add: Prefs' dynamic title
+- Update: Prefs' BottomNavBar UI
+
 8.1.1 (07.08.2022) +65 Commits
 ------------------
 - Fix: Sheets scrolling
