@@ -160,8 +160,6 @@ fun UserPrefsPage() {
     }
 }
 
-// TODO add language pref
-
 val Context.LanguagePref: Pref.ListPref
     get() = Pref.ListPref(
         key = PREFS_LANGUAGES,
