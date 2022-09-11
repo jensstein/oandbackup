@@ -33,7 +33,7 @@ val vLibsu = "3.2.1"
 
 android {
     namespace = "com.machiav3lli.backup"
-    compileSdk = 32
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "com.machiav3lli.backup"
