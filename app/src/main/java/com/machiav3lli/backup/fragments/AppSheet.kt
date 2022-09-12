@@ -583,7 +583,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
             .show(requireActivity().supportFragmentManager, "backupDialog")
     }
 
-    private fun SnackbarHostState.showDeleteAllBackupsDialog(
+    fun SnackbarHostState.showDeleteAllBackupsDialog(
         app: Package,
         coroutineScope: CoroutineScope
     ) {

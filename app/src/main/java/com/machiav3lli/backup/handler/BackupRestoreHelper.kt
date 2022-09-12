@@ -150,7 +150,7 @@ object BackupRestoreHelper {
         return true
     }
 
-    private fun housekeepingPackageBackups(app: Package, before: Boolean) {
+    fun housekeepingPackageBackups(app: Package, before: Boolean) {
         var numBackupRevisions =
             OABX.prefInt(PREFS_NUM_BACKUP_REVISIONS, 2)
         if (numBackupRevisions == 0) {
