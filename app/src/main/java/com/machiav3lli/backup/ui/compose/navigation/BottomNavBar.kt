@@ -53,7 +53,7 @@ fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
                     Icon(
                         painter = painterResource(id = item.icon),
                         contentDescription = stringResource(id = item.title),
-                        modifier = Modifier.size(if (selected) 36.dp else 28.dp),
+                        modifier = Modifier.size(if (selected) 46.dp else 28.dp),
                     )
                 },
                 label = {
@@ -66,8 +66,10 @@ fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
                         )
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    indicatorColor = MaterialTheme.colorScheme.primary,
-                    selectedIconColor = MaterialTheme.colorScheme.onPrimary
+                    indicatorColor = MaterialTheme.colorScheme.surface,
+                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                    unselectedIconColor = MaterialTheme.colorScheme.onSurface,
+                    unselectedTextColor = MaterialTheme.colorScheme.onSurface,
                 ),
                 alwaysShowLabel = true,
                 selected = selected,
