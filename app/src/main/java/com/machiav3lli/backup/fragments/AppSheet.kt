@@ -100,12 +100,12 @@ import com.machiav3lli.backup.ui.compose.item.TagsBlock
 import com.machiav3lli.backup.ui.compose.item.TitleText
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.ColorDisabled
-import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.ui.compose.theme.ColorNotInstalled
 import com.machiav3lli.backup.ui.compose.theme.ColorSpecial
 import com.machiav3lli.backup.ui.compose.theme.ColorSystem
 import com.machiav3lli.backup.ui.compose.theme.ColorUpdated
 import com.machiav3lli.backup.ui.compose.theme.ColorUser
+import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.show
 import com.machiav3lli.backup.utils.showError
 import com.machiav3lli.backup.viewmodels.AppSheetViewModel
@@ -205,42 +205,24 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                     Column(
                                         modifier = Modifier
                                             .wrapContentHeight()
-                                            .width(IntrinsicSize.Min)
-                                            .weight(1f)
+                                            .weight(1f),
+                                        verticalArrangement = Arrangement.Center
                                     ) {
-                                        Row(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .fillMaxHeight(0.4f),
-                                        ) {
-                                            Text(
-                                                text = packageInfo.packageLabel,
-                                                modifier = Modifier
-                                                    .align(Alignment.CenterVertically)
-                                                    .weight(1f),
-                                                softWrap = true,
-                                                overflow = TextOverflow.Ellipsis,
-                                                maxLines = 1,
-                                                style = MaterialTheme.typography.titleMedium
-                                            )
-                                        }
-                                        Row(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .fillMaxHeight(0.4f),
-                                        ) {
-                                            Text(
-                                                text = packageInfo.packageName,
-                                                modifier = Modifier
-                                                    .align(Alignment.CenterVertically)
-                                                    .weight(1f),
-                                                softWrap = true,
-                                                overflow = TextOverflow.Ellipsis,
-                                                maxLines = 1,
-                                                style = MaterialTheme.typography.bodySmall,
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                                            )
-                                        }
+                                        Text(
+                                            text = packageInfo.packageLabel,
+                                            softWrap = true,
+                                            overflow = TextOverflow.Ellipsis,
+                                            maxLines = 1,
+                                            style = MaterialTheme.typography.titleMedium
+                                        )
+                                        Text(
+                                            text = packageInfo.packageName,
+                                            softWrap = true,
+                                            overflow = TextOverflow.Ellipsis,
+                                            maxLines = 1,
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
                                     }
                                     AnimatedVisibility(visible = packageInfo.isInstalled && !packageInfo.isSpecial) {
                                         RoundButton(
