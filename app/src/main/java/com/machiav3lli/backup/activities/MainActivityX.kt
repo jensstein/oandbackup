@@ -43,6 +43,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.machiav3lli.backup.BuildConfig
+import com.machiav3lli.backup.NAV_MAIN
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.addInfoText
 import com.machiav3lli.backup.PREFS_CATCHUNCAUGHTEXCEPTION
@@ -89,6 +90,7 @@ class MainActivityX : BaseActivity() {
         get() = viewModel.isNeedRefresh.value ?: false
         set(value) = viewModel.isNeedRefresh.postValue(value)
 
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         val context = this
         OABX.activity = this
@@ -169,7 +171,25 @@ class MainActivityX : BaseActivity() {
 
         runOnUiThread { showEncryptionDialog() }
 
-        setContentView(binding.root)
+        setContent {
+            AppTheme(
+                darkTheme = isSystemInDarkTheme()
+            ) {
+                val navController = rememberAnimatedNavController()
+
+                Scaffold(
+                    containerColor = Color.Transparent,
+                    contentColor = MaterialTheme.colorScheme.onBackground,
+                    bottomBar = { BottomNavBar(page = NAV_MAIN, navController = navController) }
+                ) { paddingValues ->
+                    MainNavHost(
+                        modifier = Modifier.padding(paddingValues),
+                        navController = navController,
+                        application = application
+                    )
+                }
+            }
+        }
 
         if (doIntent(intent))
             return
