@@ -208,8 +208,9 @@
     <string name="radio_externaldata">Dati esterni</string>
     <string name="fetching_action_list">Recupero elenco delle app per %1$s …</string>
     <plurals name="days_left">
-        <item quantity="one">%d giorno</item>
-        <item quantity="other">%d giorni</item>
+        <item quantity="one">%d giorno,</item>
+        <item quantity="many">%d giorni,</item>
+        <item quantity="other">%d giorni,</item>
     </plurals>
     <string name="intro_permission_batteryoptimization">L\'app può avere alcuni problemi eseguendo backup programmati su alcune ROM che adottano ottimizzazioni della batteria aggressive, ad es. MIUI, ma anche su vanilla AOSP può capitare un problema del genere.</string>
     <string name="help_issues">Problemi noti</string>
@@ -236,6 +237,7 @@
     <string name="help">Aiuto</string>
     <plurals name="updated_apps">
         <item quantity="one">%d app aggiornata</item>
+        <item quantity="many">%d app aggiornate</item>
         <item quantity="other">%d app aggiornate</item>
     </plurals>
     <string name="forceKillMessage">Sei sicuro di voler forzare la chiusura dell\'app\?</string>
@@ -255,6 +257,7 @@
     <string name="filtered_list">Elenco filtrato</string>
     <plurals name="sched_interval_formal">
         <item quantity="one">ogni giorno</item>
+        <item quantity="many">ogni %d giorni</item>
         <item quantity="other">ogni %d giorni</item>
     </plurals>
     <string name="intro_permission_storage_location_warning">Non selezionare la directory di archiviazione principale o la cartella Download, crea una cartella solo per i tuoi backup. Maggiori informazioni su questo nelle FAQ</string>
