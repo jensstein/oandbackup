@@ -73,8 +73,7 @@ fun MainNavHost(modifier: Modifier = Modifier, navController: NavHostController)
 fun PrefsNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    logsViewModel: LogViewModel,
-    exportsViewModel: ExportsViewModel
+    application: Application
 ) =
     AnimatedNavHost(
         modifier = modifier,
@@ -94,10 +93,21 @@ fun PrefsNavHost(
             ToolsPrefsPage(navController)
         }
         slideUpComposable(NavItem.Exports.destination) {
-            ExportsPage(exportsViewModel)
+            val viewModel = viewModel<ExportsViewModel>(
+                factory =
+                ExportsViewModel.Factory(
+                    ODatabase.getInstance(navController.context).scheduleDao,
+                    application
+                )
+            )
+            ExportsPage(viewModel)
         }
         slideUpComposable(NavItem.Logs.destination) {
-            LogsPage(logsViewModel)
+            val viewModel = viewModel<LogViewModel>(
+                factory =
+                LogViewModel.Factory(application)
+            )
+            LogsPage(viewModel)
         }
     }
 

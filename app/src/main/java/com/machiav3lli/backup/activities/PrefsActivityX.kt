@@ -100,8 +100,7 @@ class PrefsActivityX : BaseActivity() {
                     PrefsNavHost(
                         modifier = Modifier.padding(paddingValues),
                         navController = navController,
-                        logsViewModel = logsViewModel,
-                        exportsViewModel = exportsViewModel
+                        application = application
                     )
                 }
             }
