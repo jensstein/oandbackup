@@ -19,7 +19,6 @@ package com.machiav3lli.backup.utils
 
 import android.content.pm.PackageManager
 import androidx.navigation.NavDestination
-import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.navigation.NavItem
@@ -41,13 +40,6 @@ fun PackageManager.getInstalledPackagesWithPermissions() =
 
 fun List<AppExtras>.get(packageName: String) =
     find { it.packageName == packageName } ?: AppExtras(packageName)
-
-fun Int.itemIdToOrder(): Int = when (this) {
-    R.id.backupFragment -> 1
-    R.id.restoreFragment -> 2
-    R.id.schedulerFragment -> 3
-    else -> 0 // R.id.homeFragment
-}
 
 fun NavDestination.destinationToItem(): NavItem? = listOf(
     NavItem.UserPrefs,
