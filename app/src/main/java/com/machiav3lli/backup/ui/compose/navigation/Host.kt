@@ -124,3 +124,17 @@ fun NavGraphBuilder.slideUpComposable(
         composable(it)
     }
 }
+
+@OptIn(ExperimentalAnimationApi::class)
+fun NavGraphBuilder.fadeComposable(
+    route: String,
+    composable: @Composable (AnimatedVisibilityScope.(NavBackStackEntry) -> Unit)
+) {
+    composable(
+        route,
+        enterTransition = { fadeIn(initialAlpha = 0.1f) },
+        exitTransition = { fadeOut() }
+    ) {
+        composable(it)
+    }
+}
