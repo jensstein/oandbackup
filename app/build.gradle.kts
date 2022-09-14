@@ -27,7 +27,7 @@ val vKotlin = "1.7.0"
 val vComposeCompiler = "1.2.0"
 val vCompose = "1.2.1"
 val vRoom = "2.5.0-alpha03"
-val vNavigation = "2.5.1"
+val vNavigation = "2.5.2"
 val vAccompanist = "0.25.0"
 val vLibsu = "3.2.1"
 
@@ -124,7 +124,7 @@ dependencies {
     implementation("androidx.room:room-runtime:$vRoom")
     implementation("androidx.room:room-ktx:$vRoom")
     kapt("androidx.room:room-compiler:$vRoom")
-    implementation("androidx.work:work-runtime-ktx:2.8.0-alpha03")
+    implementation("androidx.work:work-runtime-ktx:2.8.0-alpha04")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
     implementation("androidx.security:security-crypto-ktx:1.1.0-alpha03")
@@ -153,8 +153,8 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:$vCompose")
     implementation("androidx.compose.runtime:runtime-livedata:$vCompose")
     implementation("androidx.navigation:navigation-compose:$vNavigation")
-    implementation("com.google.android.material:compose-theme-adapter-3:1.0.17")
-    implementation("androidx.compose.material3:material3:1.0.0-beta01")
+    implementation("com.google.android.material:compose-theme-adapter-3:1.0.18")
+    implementation("androidx.compose.material3:material3:1.0.0-beta02")
     implementation("com.google.accompanist:accompanist-flowlayout:$vAccompanist")
     implementation("com.google.accompanist:accompanist-systemuicontroller:$vAccompanist")
     implementation("com.google.accompanist:accompanist-navigation-animation:$vAccompanist")
