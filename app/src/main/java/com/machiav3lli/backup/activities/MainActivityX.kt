@@ -27,8 +27,21 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.NavHostFragment
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.addInfoText
@@ -42,7 +55,13 @@ import com.machiav3lli.backup.fragments.ProgressViewController
 import com.machiav3lli.backup.fragments.RefreshViewController
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
+import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.SortFilterModel
+import com.machiav3lli.backup.tasks.AppActionWork
+import com.machiav3lli.backup.tasks.FinishWork
+import com.machiav3lli.backup.ui.compose.navigation.BottomNavBar
+import com.machiav3lli.backup.ui.compose.navigation.MainNavHost
+import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.FileUtils.invalidateBackupLocation
 import com.machiav3lli.backup.utils.getPrivateSharedPrefs
 import com.machiav3lli.backup.utils.isEncryptionEnabled
@@ -292,4 +311,74 @@ class MainActivityX : BaseActivity() {
         }
     }
 
+    fun startBatchAction(
+        backupBoolean: Boolean,
+        selectedPackages: List<String?>,
+        selectedModes: List<Int>,
+        onSuccessfulFinish: Observer<WorkInfo>.(LiveData<WorkInfo>) -> Unit
+    ) {
+        val now = System.currentTimeMillis()
+        val notificationId = now.toInt()
+        val batchType = getString(if (backupBoolean) R.string.backup else R.string.restore)
+        val batchName = WorkHandler.getBatchName(batchType, now)
+
+        val selectedItems = selectedPackages
+            .mapIndexed { i, packageName ->
+                if (packageName.isNullOrEmpty()) null
+                else Pair(packageName, selectedModes[i])
+            }
+            .filterNotNull()
+
+        var errors = ""
+        var resultsSuccess = true
+        var counter = 0
+        val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
+        OABX.work.beginBatch(batchName)
+        selectedItems.forEach { (packageName, mode) ->
+
+            val oneTimeWorkRequest =
+                AppActionWork.Request(packageName, mode, backupBoolean, notificationId, batchName)
+            worksList.add(oneTimeWorkRequest)
+
+            val oneTimeWorkLiveData = WorkManager.getInstance(OABX.context)
+                .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
+            oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
+                override fun onChanged(t: WorkInfo?) {
+                    if (t?.state == WorkInfo.State.SUCCEEDED) {
+                        counter += 1
+
+                        val (succeeded, packageLabel, error) = AppActionWork.getOutput(t)
+                        if (error.isNotEmpty()) errors = "$errors$packageLabel: ${
+                            LogsHandler.handleErrorMessages(
+                                OABX.context,
+                                error
+                            )
+                        }\n"
+
+                        resultsSuccess = resultsSuccess and succeeded
+                        oneTimeWorkLiveData.removeObserver(this)
+                    }
+                }
+            })
+        }
+
+        val finishWorkRequest = FinishWork.Request(resultsSuccess, backupBoolean, batchName)
+
+        val finishWorkLiveData = WorkManager.getInstance(OABX.context)
+            .getWorkInfoByIdLiveData(finishWorkRequest.id)
+        finishWorkLiveData.observeForever(object : Observer<WorkInfo> {
+            override fun onChanged(t: WorkInfo?) {
+                if (t?.state == WorkInfo.State.SUCCEEDED) {
+                    onSuccessfulFinish(finishWorkLiveData)
+                }
+            }
+        })
+
+        if (worksList.isNotEmpty()) {
+            WorkManager.getInstance(OABX.context)
+                .beginWith(worksList)
+                .then(finishWorkRequest)
+                .enqueue()
+        }
+    }
 }
