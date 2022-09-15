@@ -377,8 +377,8 @@
     <string name="title_note"></string>
     <string name="help_changelog"></string>
     <string name="prefs_delaybeforerefreshappinfo_summary" translatable="false"></string>
-    <string name="enable_encryption_message"/>
-    <string name="sched_exported"/>
+    <string name="enable_encryption_message"></string>
+    <string name="sched_exported"></string>
     <string name="prefs_tools_terminal"></string>
     <string name="prefs_nobackupdata"></string>
     <string name="prefs_nobackupdata_summary"></string>
