@@ -379,4 +379,6 @@
     <string name="prefs_usealarmclock_summary" translatable="false"></string>
     <string name="dialogYes"></string>
     <string name="forceKillMessage"></string>
+    <string name="sched_exported"></string>
+    <string name="enable_encryption_message"></string>
 </resources>
