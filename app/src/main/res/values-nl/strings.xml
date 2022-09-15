@@ -390,7 +390,7 @@
     <string name="smsmms_permission_title"></string>
     <string name="forceKillMessage"/>
     <string name="msg_appkill_warning"/>
-    <string name="sched_exported"/>
+    <string name="sched_exported"></string>
     <string name="prefs_tools_terminal"></string>
     <string name="prefs_nobackupdata"></string>
     <string name="prefs_nobackupdata_summary"></string>
