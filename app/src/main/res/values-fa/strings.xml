@@ -377,4 +377,6 @@
     <string name="title_note"></string>
     <string name="help_changelog"></string>
     <string name="prefs_delaybeforerefreshappinfo_summary" translatable="false"></string>
+    <string name="enable_encryption_message"></string>
+    <string name="sched_exported"></string>
 </resources>
