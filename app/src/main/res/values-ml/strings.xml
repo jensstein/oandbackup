@@ -376,8 +376,8 @@
     <string name="prefs_cachefilelists_summary" translatable="false"></string>
     <string name="prefs_delaybeforerefreshappinfo_summary" translatable="false"></string>
     <string name="batch"></string>
-    <string name="enable_encryption_message"/>
-    <string name="sched_exported"/>
+    <string name="enable_encryption_message"></string>
+    <string name="sched_exported"></string>
     <string name="msg_appkill_warning"/>
     <string name="forceKillMessage"/>
     <string name="prefs_acquirewakelock_summary"/>
