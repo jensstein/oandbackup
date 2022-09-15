@@ -216,6 +216,7 @@
     <string name="prefs_disableverification_summary">Desactiva esta opción de desarrolladores mientras se restauran APKs y lo reactiva al acabar. Soluciona el error: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
     <plurals name="days_left">
         <item quantity="one">%d día,</item>
+        <item quantity="many">%d días,</item>
         <item quantity="other">%d días,</item>
     </plurals>
     <string name="help_issues">Errores conocidos</string>
@@ -236,6 +237,7 @@
     <string name="exodus_report">Reporte del Éxodo</string>
     <plurals name="updated_apps">
         <item quantity="one">%d aplicación actualizada</item>
+        <item quantity="many">%d aplicaciones actualizadas</item>
         <item quantity="other">%d aplicaciones actualizadas</item>
     </plurals>
     <string name="app_info">Info-App</string>
@@ -254,6 +256,7 @@
     <string name="prefs_devicelock">Bloqueo del dispositivo</string>
     <plurals name="sched_interval_formal">
         <item quantity="one">cada día</item>
+        <item quantity="many">cada %d días</item>
         <item quantity="other">cada %d días</item>
     </plurals>
     <string name="intro_permission_storage_location_warning">No elegir el directorio principal de almacenamiento o la carpeta Downloads, crear una carpeta solo para tus respaldos. Más sobre esto en el FAQ</string>
