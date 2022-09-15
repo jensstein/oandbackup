@@ -1,5 +1,1 @@
-<p>Crea y restaura respaldos de aplicaciones en tu dispositivo y guarda los datos de las apps en un lugar accesible al usuario. Soporta crear y restaurar una o múltiples aplicaciones.<p>
-<p>Fork de OAndBackup trayendo soporte a nuevas versiones Android y actualizando su apariencia.<p>
-<p><br><b>Ayuda a traducirlo en Weblate:</b> https://hosted.weblate.org/engage/oandbackupx/.</p>
-<p><br><b>Requiere superusuario:</b> Porque copia archivos de /data/data, /data/app y /system/app.</p>
-<p>Estado: Beta</p>
+<p>Haga y restaure copias de seguridad de las aplicaciones en su dispositivo y guarde los datos de las aplicaciones en una ubicación accesible para el usuario. Admite copias de seguridad y restauración de una o varias aplicaciones.</p> <p>Parte de las Aplicaciones Neo.</p> <p>Fork de OAndBackup brinda soporte para nuevas versiones de Android y apariencia actualizada.</p> <p><br><b>Ayuda a traducirlo en Weblate:</b> https://hosted.weblate.org/engage/oandbackupx/.</p> <p><br><b>Requiere raíz:</b> porque copia archivos de /data/data, /data/app y /system/app.</p> <p>Estado: Beta</p>
