@@ -1,25 +1,10 @@
-**OAndBackupX 4.0.0**
-
-**NEW MAJOR VERSION**: incompatible with the old releases
-**DEGRADE IN PERFORMANCE**: caused by using SAF compared to direct access and makes performance depending on your SOC
-
-* Added: Storage Access Framework support
-* Added: Symlink/Pipe Support
-* Added: Multi Backup support
-* Added: Allow parallel batch tasks
-* Added: Disable verification of apps over USB before installing and re-enable it afterwards
-* Added: APK & Data checkboxes in Batch
-* Added: HelpSheet to deliver help easily
-* Added: More clear messages informing user about running processes
-* Added: Arabic, Bosnian and Malayalam
-* Updated: Tags system
-* Updated: Use STOP/CONT to make sure no background processes ruin the backup
-* Updated: Restructure Schedules
-* Updated: Backups directory is /OABackupX now
-* Updated: Backup Structure
-* Updated: Whole new layouts for UI elements
-* Updated: Translations
-* Fixed: Log viewer
-* Fixed: Create Log when errors occur on backups
-* Removed: Annimon stream dependency
-* Far too many other improvements, fixes and cleanups
+INCOMPATIBLE WITH OLD RELEASES
+**DEGRADE IN PERFORMANCE**: caused by using SAF compared to direct access
+* Add: Storage Access Framework support
+* Add: Symlink/Pipe Support
+* Add: Multi Backup support
+* Add: Allow parallel batch tasks
+* Update: New UI/UX
+* Update: Tags system
+* Update: Backup Structure
+* Many other improvements, fixes and cleanups
