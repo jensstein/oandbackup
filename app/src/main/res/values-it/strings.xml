@@ -157,7 +157,7 @@
     <string name="help_license">Licenza</string>
     <string name="split_apks">Split APKs:</string>
     <string name="sort_and_filter">Ordina e filtra</string>
-    <string name="enable_encryption_message">Non è sicuro mantenere i tuoi dati sul tuo dispositivo non crittografati. Per la sicurezza dei tuoi dati abilita la crittografia e imposta una password.</string>
+    <string name="enable_encryption_message">Non è sicuro mantenere i tuoi dati non crittografati sul tuo dispositivo. Per la sicurezza dei tuoi dati abilita la crittografia e imposta una password.</string>
     <string name="enable_encryption_title">Crittografia dati</string>
     <string name="cache_size">Dimensione cache:</string>
     <string name="data_size">Dimensione dati:</string>
