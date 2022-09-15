@@ -374,10 +374,10 @@
     <string name="prefs_theme_dynamic"></string>
     <string name="intro_permission_batteryoptimization"></string>
     <string name="stats_backups"></string>
-    <string name="enable_encryption_message"/>
-    <string name="dialog_approve"/>
-    <string name="dialog_start"/>
-    <string name="sched_exported"/>
+    <string name="enable_encryption_message"></string>
+    <string name="dialog_approve"></string>
+    <string name="dialog_start"></string>
+    <string name="sched_exported"></string>
     <string name="forceKillMessage"/>
     <string name="msg_appkill_warning"/>
     <string name="prefs_tools_terminal"></string>
