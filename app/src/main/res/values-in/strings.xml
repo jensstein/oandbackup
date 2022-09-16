@@ -183,7 +183,7 @@
     <string name="welcome_to_oabx">Selamat datang di Neo Backup!</string>
     <string name="storage_access">Akses Penyimpanan</string>
     <string name="sort_and_filter">Urutkan &amp; Saring</string>
-    <string name="enable_encryption_message">Tidak aman menyimpan data Anda di perangkat Anda yang tidak dienkripsi. Untuk keamanan data Anda, aktifkan enkripsi dan setel kata sandi.</string>
+    <string name="enable_encryption_message">Tidak aman untuk menyimpan data anda di perangkat anda yang tidak dienkripsi. Untuk keamanan data anda, aktifkan enkripsi dan setel kata sandi.</string>
     <string name="enable_encryption_title">Enkripsi data</string>
     <string name="help_appTypeHint">* Ikon jenis aplikasi akan berwarna abu-abu jika aplikasi dicopot dan abu-abu tua jika aplikasi dinonaktifkan.</string>
     <string name="help_legend">Legenda:</string>
