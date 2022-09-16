@@ -238,7 +238,7 @@
     <string name="welcome_to_oabx">مرحبا بك في Neo Backup!</string>
     <string name="storage_access">الوصول إلى التخزين</string>
     <string name="sort_and_filter">فرز &amp; وتصفية</string>
-    <string name="enable_encryption_message">ليس من الآمن إبقاء بياناتك على جهازك غير مشفرة. لسلامة البيانات الخاصة بك تمكين التشفير وتعيين كلمة مرور.</string>
+    <string name="enable_encryption_message">ليس من الآمن عدم تشفير بياناتك على جهازك. من أجل سلامة بياناتك، قم بتمكين التشفير وتعيين كلمة مرور.</string>
     <string name="enable_encryption_title">تشفير البيانات</string>
     <string name="help_legend">اسطوره:</string>
     <string name="help_faq">الأسئلة المتداولة</string>
