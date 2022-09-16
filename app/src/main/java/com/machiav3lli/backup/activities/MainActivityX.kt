@@ -23,35 +23,47 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Looper
 import android.os.Process
-import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
+import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.NavHostFragment
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.machiav3lli.backup.BuildConfig
+import com.machiav3lli.backup.NAV_MAIN
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.addInfoText
 import com.machiav3lli.backup.PREFS_CATCHUNCAUGHTEXCEPTION
 import com.machiav3lli.backup.PREFS_MAXCRASHLINES
 import com.machiav3lli.backup.PREFS_SKIPPEDENCRYPTION
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.databinding.ActivityMainXBinding
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.fragments.ProgressViewController
 import com.machiav3lli.backup.fragments.RefreshViewController
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
-import com.machiav3lli.backup.items.SortFilterModel
+import com.machiav3lli.backup.handler.WorkHandler
+import com.machiav3lli.backup.tasks.AppActionWork
+import com.machiav3lli.backup.tasks.FinishWork
+import com.machiav3lli.backup.ui.compose.navigation.BottomNavBar
+import com.machiav3lli.backup.ui.compose.navigation.MainNavHost
+import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.FileUtils.invalidateBackupLocation
 import com.machiav3lli.backup.utils.getPrivateSharedPrefs
 import com.machiav3lli.backup.utils.isEncryptionEnabled
-import com.machiav3lli.backup.utils.isRememberFiltering
-import com.machiav3lli.backup.utils.itemIdToOrder
-import com.machiav3lli.backup.utils.navigateLeft
-import com.machiav3lli.backup.utils.navigateRight
 import com.machiav3lli.backup.utils.setCustomTheme
-import com.machiav3lli.backup.utils.sortFilterModel
 import com.machiav3lli.backup.viewmodels.MainViewModel
 import com.topjohnwu.superuser.Shell
 import timber.log.Timber
@@ -60,16 +72,18 @@ import kotlin.system.exitProcess
 class MainActivityX : BaseActivity() {
 
     private lateinit var prefs: SharedPreferences
-    private lateinit var refreshViewController: RefreshViewController
-    private lateinit var progressViewController: ProgressViewController
+    private lateinit var refreshViewController: RefreshViewController // TODO replace
+    private lateinit var progressViewController: ProgressViewController // TODO replace
 
-    lateinit var binding: ActivityMainXBinding
-    lateinit var viewModel: MainViewModel
+    val viewModel by viewModels<MainViewModel> {
+        MainViewModel.Factory(ODatabase.getInstance(OABX.context), application)
+    }
 
     var needRefresh: Boolean
         get() = viewModel.isNeedRefresh.value ?: false
         set(value) = viewModel.isNeedRefresh.postValue(value)
 
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         val context = this
         OABX.activity = this
@@ -125,41 +139,42 @@ class MainActivityX : BaseActivity() {
 
         Shell.getShell()
 
-        binding = ActivityMainXBinding.inflate(layoutInflater)
-        binding.lifecycleOwner = this
-        val database = ODatabase.getInstance(this)
         prefs = getPrivateSharedPrefs()
 
-        val viewModelFactory = MainViewModel.Factory(database, application)
-        viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
-        if (!isRememberFiltering) {
-            this.sortFilterModel = SortFilterModel()
-        }
         viewModel.blocklist.observe(this) {
             needRefresh = true
         }
         viewModel.packageList.observe(this) { }
         viewModel.backupsMap.observe(this) { }
         viewModel.isNeedRefresh.observe(this) {
-            if (it) {
-                if (viewModel.refreshing.value == 0) {
-                    invalidateBackupLocation()
-                }
-            }
+            if (it && viewModel.refreshing.value == 0)
+                invalidateBackupLocation()
         }
 
         runOnUiThread { showEncryptionDialog() }
 
-        setContentView(binding.root)
+        setContent {
+            AppTheme(
+                darkTheme = isSystemInDarkTheme()
+            ) {
+                val navController = rememberAnimatedNavController()
+
+                Scaffold(
+                    containerColor = Color.Transparent,
+                    contentColor = MaterialTheme.colorScheme.onBackground,
+                    bottomBar = { BottomNavBar(page = NAV_MAIN, navController = navController) }
+                ) { paddingValues ->
+                    MainNavHost(
+                        modifier = Modifier.padding(paddingValues),
+                        navController = navController,
+                        application = application
+                    )
+                }
+            }
+        }
 
         if (doIntent(intent))
             return
-    }
-
-    override fun onStart() {
-        super.onStart()
-        setupOnClicks()
-        setupNavigation()
     }
 
     override fun onResume() {
@@ -194,34 +209,6 @@ class MainActivityX : BaseActivity() {
             }
         }
         return false
-    }
-
-    private fun setupNavigation() {
-        try {
-            val navHostFragment =
-                supportFragmentManager.findFragmentById(R.id.fragmentContainer) as NavHostFragment
-            val navController = navHostFragment.navController
-            binding.bottomNavigation.setOnItemSelectedListener { item: MenuItem ->
-                if (item.itemId == binding.bottomNavigation.selectedItemId) return@setOnItemSelectedListener false
-                if (binding.bottomNavigation.selectedItemId.itemIdToOrder() < item.itemId.itemIdToOrder())
-                    navController.navigateRight(item.itemId)
-                else
-                    navController.navigateLeft(item.itemId)
-                true
-            }
-        } catch (e: ClassCastException) {
-            finish()
-            startActivity(intent)
-        }
-    }
-
-    private fun setupOnClicks() {
-        binding.buttonSettings.setOnClickListener {
-            viewModel.packageList.value?.let { OABX.app.cache.put("appInfoList", it) }
-            startActivity(
-                Intent(applicationContext, PrefsActivityX::class.java)
-            )
-        }
     }
 
     private fun showEncryptionDialog() {
@@ -272,14 +259,9 @@ class MainActivityX : BaseActivity() {
     }
 
     fun showSnackBar(message: String) {
-        binding.snackbarText.apply {
-            text = message
-            visibility = View.VISIBLE
-        }
     }
 
     fun dismissSnackBar() {
-        binding.snackbarText.visibility = View.GONE
     }
 
     fun whileShowingSnackBar(message: String, todo: () -> Unit) {
@@ -292,4 +274,74 @@ class MainActivityX : BaseActivity() {
         }
     }
 
+    fun startBatchAction(
+        backupBoolean: Boolean,
+        selectedPackages: List<String?>,
+        selectedModes: List<Int>,
+        onSuccessfulFinish: Observer<WorkInfo>.(LiveData<WorkInfo>) -> Unit
+    ) {
+        val now = System.currentTimeMillis()
+        val notificationId = now.toInt()
+        val batchType = getString(if (backupBoolean) R.string.backup else R.string.restore)
+        val batchName = WorkHandler.getBatchName(batchType, now)
+
+        val selectedItems = selectedPackages
+            .mapIndexed { i, packageName ->
+                if (packageName.isNullOrEmpty()) null
+                else Pair(packageName, selectedModes[i])
+            }
+            .filterNotNull()
+
+        var errors = ""
+        var resultsSuccess = true
+        var counter = 0
+        val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
+        OABX.work.beginBatch(batchName)
+        selectedItems.forEach { (packageName, mode) ->
+
+            val oneTimeWorkRequest =
+                AppActionWork.Request(packageName, mode, backupBoolean, notificationId, batchName)
+            worksList.add(oneTimeWorkRequest)
+
+            val oneTimeWorkLiveData = WorkManager.getInstance(OABX.context)
+                .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
+            oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
+                override fun onChanged(t: WorkInfo?) {
+                    if (t?.state == WorkInfo.State.SUCCEEDED) {
+                        counter += 1
+
+                        val (succeeded, packageLabel, error) = AppActionWork.getOutput(t)
+                        if (error.isNotEmpty()) errors = "$errors$packageLabel: ${
+                            LogsHandler.handleErrorMessages(
+                                OABX.context,
+                                error
+                            )
+                        }\n"
+
+                        resultsSuccess = resultsSuccess and succeeded
+                        oneTimeWorkLiveData.removeObserver(this)
+                    }
+                }
+            })
+        }
+
+        val finishWorkRequest = FinishWork.Request(resultsSuccess, backupBoolean, batchName)
+
+        val finishWorkLiveData = WorkManager.getInstance(OABX.context)
+            .getWorkInfoByIdLiveData(finishWorkRequest.id)
+        finishWorkLiveData.observeForever(object : Observer<WorkInfo> {
+            override fun onChanged(t: WorkInfo?) {
+                if (t?.state == WorkInfo.State.SUCCEEDED) {
+                    onSuccessfulFinish(finishWorkLiveData)
+                }
+            }
+        })
+
+        if (worksList.isNotEmpty()) {
+            WorkManager.getInstance(OABX.context)
+                .beginWith(worksList)
+                .then(finishWorkRequest)
+                .enqueue()
+        }
+    }
 }

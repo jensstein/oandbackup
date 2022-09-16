@@ -1,0 +1,6 @@
+Fix: Wrong default for pmSuspend
+Fix: Disabled app's text color in app sheet
+Fix: List item selection
+Fix: Pref's slider text color
+Add: Pref's slider adaptive steps
+Update: Prefs' BottomNavBar UI
