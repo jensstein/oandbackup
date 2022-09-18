@@ -180,7 +180,7 @@
     <string name="help_legend">Leyenda:</string>
     <string name="help_appTypeHint">* El icono de tipo de aplicación es gris si la aplicación está desinstalada o gris oscuro si está desactivada.</string>
     <string name="enable_encryption_title">Cifrado de datos</string>
-    <string name="enable_encryption_message">No es seguro guardar las copias de datos sin cifrar. Por su seguridad, activa el cifrado de datos e indica una contraseña.</string>
+    <string name="enable_encryption_message">No es seguro mantener sus datos en su dispositivo sin cifrar. Para la seguridad de sus datos, habilite el cifrado y establezca una contraseña.</string>
     <string name="sort_and_filter">Ordenar y filtrar</string>
     <string name="storage_access">Acceso al almacenamiento</string>
     <string name="welcome_to_oabx">¡Bienvenido a Neo Backup!</string>
@@ -265,7 +265,7 @@
     <string name="sortAscDesc">Ascendente-Descendente</string>
     <string name="logs_share_failed">Archivo de registro no encontrado</string>
     <string name="sched_imported">Las acciones programadas han sido importadas satisfactoriamente</string>
-    <string name="sched_exported">Las acciones programadas han sido exportadas satisfactoriamente</string>
+    <string name="sched_exported">Los horarios se exportaron con éxito</string>
     <string name="error_datachanged">Los datos de la aplicación han sido activamente cambiados mientras se hacía el respaldo. Prueba a detener su proceso antes de hacer el respaldo</string>
     <string name="dialog_import">Importar</string>
     <string name="dialog_export">Exportar</string>
