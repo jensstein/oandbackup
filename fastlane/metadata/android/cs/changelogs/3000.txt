@@ -1,11 +1,9 @@
-**OndBackupX 3.0.0**
-
-##### TATO VERZE NENÍ KOMPATIBILNÍ S PŘEDCHOZÍMI VERZEMI.
-* Změněno: výchozí adresář pro zálohování na /OABX
-* Přepracované řešení šifrování (zásluhy @Pizze)
-* Přidáno: třídění podle velikosti dat
-* Přidáno: dialogové okno s upozorněním na zapnutí šifrování
-* Aktualizováno: přepracované uživatelské rozhraní nápovědy
-* Přidáno: tooltipy pro všechny ikony tlačítek
-* Aktualizováno: AppSheet adaptivní uživatelské rozhraní
-* Přidáno: tlačítko pro vymazání mezipaměti na AppSheet
+##### TATO VERZE NENÍ KOMPATIBILNÍ S PŘEDCHOZÍMI VERZEMI
+* Aktualizace: výchozí adresář pro zálohování na /OABX
+* Aktualizace: Přepracované řešení šifrování (Credits @Pizze)
+* Aktualizace: přepracovaná nápověda a uživatelské rozhraní AppSheet
+* Aktualizace: předvolba clearCache na excludeCache
+* Aktualizace: přepsány celé funkce příkazů shellu (Credits @Pizze)
+* Přidáno: Řazení podle velikosti dat
+* Přidáno: Tooltipy pro všechny ikony
+* Přidáno: Tlačítko pro vymazání mezipaměti na AppSheet

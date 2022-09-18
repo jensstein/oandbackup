@@ -1,10 +1,10 @@
-**OndBackupX 4.0.0**
-
-**NOVÁ HLAVNÍ VERZE**: nekompatibilní se starými verzemi
-**SNÍŽENÍ VÝKONU**: způsobeno použitím SAF ve srovnání s přímým přístupem a způsobuje, že výkon závisí na vaší SOC
-
-* Přidáno: Podpora rámce pro přístup k úložišti
-* Přidáno: Podpora Symlink/Pipe
-* Přidáno: Podpora vícenásobného zálohování
-* Přidáno: Povolení paralelních dávkových úloh
-* Přidáno: Zakázání ověřování aplikací přes USB před instalací a jeho opětovné povolení po instalaci
+NEKOMPATIBILNÍ SE STARÝMI VYDÁNÍMI
+**SNÍŽENÍ VÝKONU**: způsobeno použitím SAF ve srovnání s přímým přístupem
+* Přidat: Podpora Storage Access Framework
+* Přidat: Podpora Symlink/Pipe
+* Přidat: Podpora vícenásobného zálohování
+* Přidat: Povolit paralelní dávkové úlohy
+* Aktualizace: Nové uživatelské rozhraní/UX
+* Aktualizace: Systém značek
+* Aktualizace: Struktura zálohování
+* Mnoho dalších vylepšení, oprav a vyčištění
