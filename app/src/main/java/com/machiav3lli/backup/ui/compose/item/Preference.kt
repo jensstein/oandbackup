@@ -21,6 +21,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,12 +30,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.PrefsDependencies
 import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.item.Pref
+import com.machiav3lli.backup.utils.getDefaultSharedPreferences
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
@@ -151,10 +158,23 @@ fun PreferencesGroupHeader(
 fun LaunchPreference(
     modifier: Modifier = Modifier,
     pref: Pref,
-    isEnabled: Boolean = true,
     summary: String? = null,
     onClick: (() -> Unit) = {},
 ) {
+    val context = LocalContext.current
+    var isEnabled by remember(context.PrefsDependencies[pref]) {
+        mutableStateOf(context.PrefsDependencies[pref] ?: true)
+    }
+
+    SideEffect {
+        CoroutineScope(Dispatchers.Default).launch {
+            context.getDefaultSharedPreferences()
+                .registerOnSharedPreferenceChangeListener { _, _ ->
+                    isEnabled = context.PrefsDependencies[pref] ?: true
+                }
+        }
+    }
+
     BasePreference(
         modifier = modifier,
         titleId = pref.titleId,
@@ -177,9 +197,22 @@ fun LaunchPreference(
 fun EnumPreference(
     modifier: Modifier = Modifier,
     pref: Pref.EnumPref,
-    isEnabled: Boolean = true,
     onClick: (() -> Unit) = {},
 ) {
+    val context = LocalContext.current
+    var isEnabled by remember(context.PrefsDependencies[pref]) {
+        mutableStateOf(context.PrefsDependencies[pref] ?: true)
+    }
+
+    SideEffect {
+        CoroutineScope(Dispatchers.Default).launch {
+            context.getDefaultSharedPreferences()
+                .registerOnSharedPreferenceChangeListener { _, _ ->
+                    isEnabled = context.PrefsDependencies[pref] ?: true
+                }
+        }
+    }
+
     BasePreference(
         modifier = modifier,
         titleId = pref.titleId,
@@ -201,9 +234,22 @@ fun EnumPreference(
 fun ListPreference(
     modifier: Modifier = Modifier,
     pref: Pref.ListPref,
-    isEnabled: Boolean = true,
     onClick: (() -> Unit) = {},
 ) {
+    val context = LocalContext.current
+    var isEnabled by remember(context.PrefsDependencies[pref]) {
+        mutableStateOf(context.PrefsDependencies[pref] ?: true)
+    }
+
+    SideEffect {
+        CoroutineScope(Dispatchers.Default).launch {
+            context.getDefaultSharedPreferences()
+                .registerOnSharedPreferenceChangeListener { _, _ ->
+                    isEnabled = context.PrefsDependencies[pref] ?: true
+                }
+        }
+    }
+
     BasePreference(
         modifier = modifier,
         titleId = pref.titleId,
@@ -226,15 +272,26 @@ fun ListPreference(
 fun SwitchPreference(
     modifier: Modifier = Modifier,
     pref: Pref.BooleanPref,
-    isEnabled: Boolean = true,
     onCheckedChange: ((Boolean) -> Unit) = {},
 ) {
+    val context = LocalContext.current
+    var isEnabled by remember(context.PrefsDependencies[pref]) {
+        mutableStateOf(context.PrefsDependencies[pref] ?: true)
+    }
     var checked by remember(OABX.prefFlag(pref.key, pref.defaultValue)) {
         mutableStateOf(OABX.prefFlag(pref.key, pref.defaultValue))
     }
     val check = { value: Boolean ->
         OABX.setPrefFlag(pref.key, value)
         checked = value
+    }
+    SideEffect {
+        CoroutineScope(Dispatchers.Default).launch {
+            context.getDefaultSharedPreferences()
+                .registerOnSharedPreferenceChangeListener { _, _ ->
+                    isEnabled = context.PrefsDependencies[pref] ?: true
+                }
+        }
     }
 
     BasePreference(
@@ -273,15 +330,27 @@ fun SwitchPreference(
 fun CheckboxPreference(
     modifier: Modifier = Modifier,
     pref: Pref.BooleanPref,
-    isEnabled: Boolean = true,
     onCheckedChange: ((Boolean) -> Unit) = {},
 ) {
+    val context = LocalContext.current
+    var isEnabled by remember(context.PrefsDependencies[pref]) {
+        mutableStateOf(context.PrefsDependencies[pref] ?: true)
+    }
     var checked by remember(OABX.prefFlag(pref.key, pref.defaultValue)) {
         mutableStateOf(OABX.prefFlag(pref.key, pref.defaultValue))
     }
     val check = { checks: Boolean ->
         OABX.setPrefFlag(pref.key, checks)
         checked = checks
+    }
+
+    SideEffect {
+        CoroutineScope(Dispatchers.Default).launch {
+            context.getDefaultSharedPreferences()
+                .registerOnSharedPreferenceChangeListener { _, _ ->
+                    isEnabled = context.PrefsDependencies[pref] ?: true
+                }
+        }
     }
 
     BasePreference(
@@ -320,9 +389,12 @@ fun CheckboxPreference(
 fun SeekBarPreference(
     modifier: Modifier = Modifier,
     pref: Pref.IntPref,
-    isEnabled: Boolean = true,
     onValueChange: ((Int) -> Unit) = {},
 ) {
+    val context = LocalContext.current
+    var isEnabled by remember(context.PrefsDependencies[pref]) {
+        mutableStateOf(context.PrefsDependencies[pref] ?: true)
+    }
     val currentValue = OABX.prefInt(pref.key, pref.defaultValue)
     var sliderPosition by remember {
         mutableStateOf(
@@ -345,6 +417,15 @@ fun SeekBarPreference(
         sliderPosition = pos
     }
     val last = pref.entries.size - 1
+
+    SideEffect {
+        CoroutineScope(Dispatchers.Default).launch {
+            context.getDefaultSharedPreferences()
+                .registerOnSharedPreferenceChangeListener { _, _ ->
+                    isEnabled = context.PrefsDependencies[pref] ?: true
+                }
+        }
+    }
 
     BasePreference(
         modifier = modifier,
