@@ -280,7 +280,7 @@
     <string name="ignore_battery_optimization_message">Backups could stop sometimes. To prevent this, you should turn off the battery optimization</string>
     <string name="ignore_battery_optimization_not_supported">This device doesn\'t support ignoring battery optimizations unfortunately!</string>
     <string name="failed_unzipping">Error while unzipping the data, check the encryption password!</string>
-    <string name="split_apks">Split APKs:</string>
+    <string name="split_apks">Split-APKs</string>
     <string name="backup_filters">Backup Filters:</string>
     <string name="smsmms_permission_title">SMS/MMS Permissions</string>
     <string name="grant_smsmms_message">This is essential to be able to backup/restore your SMS/MMS.</string>
