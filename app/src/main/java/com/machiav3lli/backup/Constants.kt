@@ -251,8 +251,7 @@ const val BUNDLE_USERS = "users"
 
 const val HELP_CHANGELOG = "https://github.com/NeoApplications/Neo-Backup/blob/master/CHANGELOG.md"
 const val HELP_TELEGRAM = "https://t.me/neo_backup"
-const val HELP_ELEMENT =
-    "https://matrix.to/#/!PiXJUneYCnkWAjekqX:matrix.org?via=matrix.org&via=chat.astafu.de&via=zerc.net"
+const val HELP_MATRIX = "https://matrix.to/#/#neo-backup:matrix.org"
 const val HELP_LICENSE = "https://github.com/NeoApplications/Neo-Backup/blob/master/LICENSE.md"
 const val HELP_ISSUES = "https://github.com/NeoApplications/Neo-Backup/blob/master/ISSUES.md"
 const val HELP_FAQ = "https://github.com/NeoApplications/Neo-Backup/blob/master/FAQ.md"
