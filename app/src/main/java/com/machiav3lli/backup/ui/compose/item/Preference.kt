@@ -66,7 +66,14 @@ fun BasePreference(
 
     Column(
         modifier = Modifier
-            .clip(MaterialTheme.shapes.medium)
+            .clip(
+                RoundedCornerShape(
+                    topStart = if (base == 0f) 16.dp else 6.dp,
+                    topEnd = if (base == 0f) 16.dp else 6.dp,
+                    bottomStart = if (rank == 1f) 16.dp else 6.dp,
+                    bottomEnd = if (rank == 1f) 16.dp else 6.dp
+                )
+            )
             .background(MaterialTheme.colorScheme.surfaceColorAtElevation((rank * 24).dp))
             .ifThen(onClick != null) {
                 clickable(enabled = isEnabled, onClick = onClick!!)
