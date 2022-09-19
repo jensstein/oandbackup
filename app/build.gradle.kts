@@ -23,12 +23,12 @@ plugins {
     kotlin("kapt")
     kotlin("plugin.serialization").version("1.7.10")
 }
-val vComposeCompiler = "1.2.0"
-val vCompose = "1.2.1"
 val vKotlin = "1.7.10"
+val vComposeCompiler = "1.3.1"
+val vCompose = "1.3.0-beta02"
 val vRoom = "2.5.0-alpha03"
 val vNavigation = "2.5.2"
-val vAccompanist = "0.25.0"
+val vAccompanist = "0.26.3-beta"
 val vLibsu = "3.2.1"
 
 android {
