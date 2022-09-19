@@ -22,7 +22,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -49,12 +48,10 @@ import com.machiav3lli.backup.ALT_MODE_APK
 import com.machiav3lli.backup.ALT_MODE_BOTH
 import com.machiav3lli.backup.ALT_MODE_DATA
 import com.machiav3lli.backup.ALT_MODE_UNSET
-import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
-import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.Package
@@ -65,12 +62,8 @@ import com.machiav3lli.backup.ui.compose.recycler.UpdatedPackageRecycler
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.applyFilter
-import com.machiav3lli.backup.utils.getStats
 import com.machiav3lli.backup.utils.sortFilterModel
 import com.machiav3lli.backup.viewmodels.HomeViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -124,50 +117,6 @@ fun HomePage(viewModel: HomeViewModel) {
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
-            Row(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(horizontal = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                ElevatedActionButton(
-                    icon = painterResource(id = R.drawable.ic_blocklist),
-                    text = stringResource(id = R.string.sched_blocklist),
-                    positive = false
-                ) {
-                    GlobalScope.launch(Dispatchers.IO) {
-                        val blocklistedPackages =
-                            mainActivityX.viewModel.blocklist.value
-                                ?.mapNotNull { it.packageName }.orEmpty()
-
-                        PackagesListDialogFragment(
-                            blocklistedPackages,
-                            MAIN_FILTER_DEFAULT,
-                            true
-                        ) { newList: Set<String> ->
-                            context.viewModel.updateBlocklist(newList)
-                        }.show(
-                            context.supportFragmentManager,
-                            "BLOCKLIST_DIALOG"
-                        )
-                    }
-                }
-                Spacer(modifier = Modifier.weight(1f))
-                ElevatedActionButton(
-                    icon = painterResource(id = R.drawable.ic_filter),
-                    text = stringResource(id = R.string.sort_and_filter),
-                    positive = true
-                ) {
-                    if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(
-                        mainActivityX.sortFilterModel,
-                        getStats(list ?: mutableListOf())
-                    )
-                    sheetSortFilter?.showNow(
-                        mainActivityX.supportFragmentManager,
-                        "SORTFILTER_SHEET"
-                    )
-                }
-            }
             AnimatedVisibility(visible = refreshing ?: false) {
                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
             }
