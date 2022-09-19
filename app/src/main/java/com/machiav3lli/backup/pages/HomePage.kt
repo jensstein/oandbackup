@@ -56,7 +56,6 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.fragments.AppSheet
-import com.machiav3lli.backup.fragments.SortFilterSheet
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.item.ActionButton
@@ -81,8 +80,8 @@ fun HomePage(viewModel: HomeViewModel) {
     val context = LocalContext.current
     val mainActivityX = context as MainActivityX
     var appSheet: AppSheet? = null
-    var sheetSortFilter: SortFilterSheet? = null
     val list by mainActivityX.viewModel.packageList.observeAsState(null)
+    val modelSortFilter by mainActivityX.modelSortFilter.collectAsState(context.sortFilterModel)
     val filteredList by viewModel.filteredList.observeAsState(null)
     val query by mainActivityX.searchQuery.collectAsState(initial = "")
     val updatedApps = filteredList?.filter { it.isUpdated }
@@ -107,13 +106,9 @@ fun HomePage(viewModel: HomeViewModel) {
         }
     }
 
-    LaunchedEffect(key1 = list) {
-        sheetSortFilter = SortFilterSheet(
-            context.sortFilterModel, getStats(list ?: mutableListOf())
-        )
+    LaunchedEffect(list, modelSortFilter) {
         try {
-            viewModel.filteredList.value =
-                list?.applyFilter(context.sortFilterModel, context)
+            viewModel.filteredList.value = list?.applyFilter(modelSortFilter, context)
         } catch (e: FileUtils.BackupLocationInAccessibleException) {
             Timber.e("Could not update application list: $e")
         } catch (e: StorageLocationNotConfiguredException) {

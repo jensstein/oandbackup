@@ -60,10 +60,12 @@ import com.machiav3lli.backup.PREFS_SKIPPEDENCRYPTION
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
+import com.machiav3lli.backup.fragments.SortFilterSheet
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.ui.compose.item.ExpandableSearchAction
@@ -106,6 +108,10 @@ class MainActivityX : BaseActivity() {
 
     private val _searchQuery = MutableSharedFlow<String>()
     val searchQuery = _searchQuery.asSharedFlow()
+
+    private lateinit var sheetSortFilter: SortFilterSheet
+    private val _modelSortFilter = MutableSharedFlow<SortFilterModel>()
+    val modelSortFilter = _modelSortFilter.asSharedFlow()
 
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {

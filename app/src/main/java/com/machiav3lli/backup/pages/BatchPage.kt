@@ -22,7 +22,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -52,8 +51,6 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
-import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
-import com.machiav3lli.backup.fragments.SortFilterSheet
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.item.ActionButton
@@ -78,9 +75,9 @@ import timber.log.Timber
 fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
     val context = LocalContext.current
     val mainActivityX = context as MainActivityX
-    var sheetSortFilter: SortFilterSheet? = null
     // TODO include tags in search
-    val list by (context as MainActivityX).viewModel.packageList.observeAsState(null)
+    val list by mainActivityX.viewModel.packageList.observeAsState(null)
+    val modelSortFilter by mainActivityX.modelSortFilter.collectAsState(context.sortFilterModel)
     val filteredList by viewModel.filteredList.observeAsState(null)
     val query by mainActivityX.searchQuery.collectAsState(initial = "")
     OABX.main?.viewModel?.isNeedRefresh?.observeForever {
@@ -122,13 +119,9 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
         }
     }
 
-    LaunchedEffect(key1 = list) {
-        sheetSortFilter = SortFilterSheet(
-            context.sortFilterModel, getStats(list ?: mutableListOf())
-        )
+    LaunchedEffect(list, modelSortFilter) {
         try {
-            viewModel.filteredList.value =
-                list?.applyFilter(context.sortFilterModel, context)
+            viewModel.filteredList.value = list?.applyFilter(modelSortFilter, context)
         } catch (e: FileUtils.BackupLocationInAccessibleException) {
             Timber.e("Could not update application list: $e")
         } catch (e: StorageLocationNotConfiguredException) {
