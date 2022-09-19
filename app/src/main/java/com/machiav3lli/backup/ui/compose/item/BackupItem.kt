@@ -6,12 +6,12 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -28,7 +28,6 @@ import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.getFormattedDate
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BackupItem(
     item: Backup,
@@ -138,11 +137,12 @@ fun BackupItem(
                     positive = true,
                     onClick = { onRestore(item) },
                 )
-
+                Spacer(modifier = Modifier.weight(1f))
                 ElevatedActionButton(
                     icon = painterResource(id = R.drawable.ic_delete),
                     text = stringResource(id = R.string.deleteBackup),
                     positive = false,
+                    withText = false,
                     onClick = { onDelete(item) },
                 )
             }
