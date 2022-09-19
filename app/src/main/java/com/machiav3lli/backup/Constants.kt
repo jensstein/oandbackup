@@ -266,6 +266,13 @@ val IGNORED_PERMISSIONS = listOfNotNull(
 
 const val BUNDLE_USERS = "users"
 
+const val CHIP_TYPE = 0
+const val CHIP_VERSION = 1
+const val CHIP_SIZE_APP = 2
+const val CHIP_SIZE_DATA = 3
+const val CHIP_SIZE_CACHE = 4
+const val CHIP_SPLIT = 5
+
 const val HELP_CHANGELOG = "https://github.com/NeoApplications/Neo-Backup/blob/master/CHANGELOG.md"
 const val HELP_TELEGRAM = "https://t.me/neo_backup"
 const val HELP_MATRIX = "https://matrix.to/#/#neo-backup:matrix.org"
