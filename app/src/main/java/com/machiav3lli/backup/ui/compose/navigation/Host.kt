@@ -45,19 +45,19 @@ fun MainNavHost(
         navController = navController,
         startDestination = NavItem.Home.destination
     ) {
-        fadeComposable(NavItem.Home.destination) {
+        slideUpComposable(NavItem.Home.destination) {
             val viewModel = viewModel<HomeViewModel>(factory = HomeViewModel.Factory(application))
             HomePage(viewModel)
         }
-        fadeComposable(route = NavItem.Backup.destination) {
+        slideUpComposable(route = NavItem.Backup.destination) {
             val viewModel = viewModel<BatchViewModel>(factory = BatchViewModel.Factory(application))
             BatchPage(viewModel, true)
         }
-        fadeComposable(NavItem.Restore.destination) {
+        slideUpComposable(NavItem.Restore.destination) {
             val viewModel = viewModel<BatchViewModel>(factory = BatchViewModel.Factory(application))
             BatchPage(viewModel, false)
         }
-        fadeComposable(NavItem.Scheduler.destination) {
+        slideUpComposable(NavItem.Scheduler.destination) {
             val viewModel = viewModel<SchedulerViewModel>(
                 factory =
                 SchedulerViewModel.Factory(
