@@ -78,11 +78,12 @@ import timber.log.Timber
 @Composable
 fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
     val context = LocalContext.current
+    val mainActivityX = context as MainActivityX
     var sheetSortFilter: SortFilterSheet? = null
     // TODO include tags in search
     val list by (context as MainActivityX).viewModel.packageList.observeAsState(null)
     val filteredList by viewModel.filteredList.observeAsState(null)
-    val query by viewModel.searchQuery.observeAsState("")
+    val query by mainActivityX.searchQuery.collectAsState(initial = "")
     OABX.main?.viewModel?.isNeedRefresh?.observeForever {
         viewModel.refreshing.postValue(it)
     }

@@ -26,7 +26,6 @@ import com.machiav3lli.backup.items.Package
 
 class HomeViewModel(appContext: Application) : AndroidViewModel(appContext) {
     val filteredList: MutableLiveData<List<Package>?> = MutableLiveData(null)
-    val searchQuery = MutableLiveData<String>()
     val progress = MutableLiveData<Pair<Boolean, Float>>()
     val refreshing = MutableLiveData<Boolean>()
 

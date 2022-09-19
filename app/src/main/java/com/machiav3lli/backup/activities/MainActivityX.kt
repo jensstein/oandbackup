@@ -66,6 +66,8 @@ import com.machiav3lli.backup.utils.isEncryptionEnabled
 import com.machiav3lli.backup.utils.setCustomTheme
 import com.machiav3lli.backup.viewmodels.MainViewModel
 import com.topjohnwu.superuser.Shell
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import timber.log.Timber
 import kotlin.system.exitProcess
 
@@ -82,6 +84,9 @@ class MainActivityX : BaseActivity() {
     var needRefresh: Boolean
         get() = viewModel.isNeedRefresh.value ?: false
         set(value) = viewModel.isNeedRefresh.postValue(value)
+
+    private val _searchQuery = MutableSharedFlow<String>()
+    val searchQuery = _searchQuery.asSharedFlow()
 
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {

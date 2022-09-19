@@ -80,11 +80,12 @@ import timber.log.Timber
 fun HomePage(viewModel: HomeViewModel) {
     // TODO include tags in search
     val context = LocalContext.current
+    val mainActivityX = context as MainActivityX
     var appSheet: AppSheet? = null
     var sheetSortFilter: SortFilterSheet? = null
     val list by (context as MainActivityX).viewModel.packageList.observeAsState(null)
     val filteredList by viewModel.filteredList.observeAsState(null)
-    val query by viewModel.searchQuery.observeAsState("")
+    val query by mainActivityX.searchQuery.collectAsState(initial = "")
     val updatedApps = filteredList?.filter { it.isUpdated }
     var updatedVisible by remember(viewModel.filteredList.value) { mutableStateOf(false) }
     OABX.main?.viewModel?.isNeedRefresh?.observeForever {
