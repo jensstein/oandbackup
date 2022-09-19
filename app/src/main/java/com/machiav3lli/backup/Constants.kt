@@ -18,10 +18,19 @@
 package com.machiav3lli.backup
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
+import com.machiav3lli.backup.preferences.BiometricLockPref
+import com.machiav3lli.backup.preferences.ConfirmEncryptionPasswordPref
+import com.machiav3lli.backup.preferences.DeviceLockPref
+import com.machiav3lli.backup.preferences.EncryptionPasswordPref
 import com.machiav3lli.backup.ui.item.ChipItem
 import com.machiav3lli.backup.ui.item.Legend
 import com.machiav3lli.backup.ui.item.Link
+import com.machiav3lli.backup.ui.item.Pref
+import com.machiav3lli.backup.utils.isBiometricLockAvailable
+import com.machiav3lli.backup.utils.isDeviceLockAvailable
+import com.machiav3lli.backup.utils.isDeviceLockEnabled
 import java.time.format.DateTimeFormatter
 
 const val PREFS_SHARED_PRIVATE = "com.machiav3lli.backup"
@@ -118,6 +127,14 @@ const val PREFS_COPYSELF = "copySelfApk"
 const val PREFS_SCHEDULESEXPORTIMPORT = "schedulesExportImport"
 const val PREFS_SAVEAPPSLIST = "saveAppsList"
 const val PREFS_LOGVIEWER = "logViewer"
+
+val Context.PrefsDependencies: Map<Pref, Boolean>
+    get() = mutableMapOf(
+        BiometricLockPref to (isBiometricLockAvailable() && isDeviceLockEnabled()),
+        DeviceLockPref to isDeviceLockAvailable(),
+        EncryptionPasswordPref to OABX.prefFlag(PREFS_ENCRYPTION, false),
+        ConfirmEncryptionPasswordPref to OABX.prefFlag(PREFS_ENCRYPTION, false),
+    )
 
 const val THEME_LIGHT = 0
 const val THEME_DARK = 1
