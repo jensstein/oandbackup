@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,11 +36,7 @@ import com.machiav3lli.backup.dialogs.EnumDialogUI
 import com.machiav3lli.backup.dialogs.ListDialogUI
 import com.machiav3lli.backup.secondaryColorItems
 import com.machiav3lli.backup.themeItems
-import com.machiav3lli.backup.ui.compose.item.EnumPreference
-import com.machiav3lli.backup.ui.compose.item.LaunchPreference
-import com.machiav3lli.backup.ui.compose.item.ListPreference
-import com.machiav3lli.backup.ui.compose.item.SeekBarPreference
-import com.machiav3lli.backup.ui.compose.item.SwitchPreference
+import com.machiav3lli.backup.preferences.ui.PrefsGroup
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.ColorDeData
 import com.machiav3lli.backup.ui.compose.theme.ColorExodus
@@ -53,9 +48,6 @@ import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.backupDirConfigured
 import com.machiav3lli.backup.utils.getLanguageList
-import com.machiav3lli.backup.utils.isBiometricLockAvailable
-import com.machiav3lli.backup.utils.isDeviceLockAvailable
-import com.machiav3lli.backup.utils.isDeviceLockEnabled
 import com.machiav3lli.backup.utils.restartApp
 import com.machiav3lli.backup.utils.setBackupDir
 import com.machiav3lli.backup.utils.setCustomTheme
@@ -67,7 +59,6 @@ fun UserPrefsPage() {
     val openDialog = remember { mutableStateOf(false) }
     var dialogsPref by remember { mutableStateOf<Pref?>(null) }
     var backupDir by remember { mutableStateOf(context.backupDirConfigured) }
-    var isDeviceLockEnabled by remember { mutableStateOf(context.isDeviceLockEnabled()) }
     val prefs = listOf(
         context.LanguagePref,
         ThemePref,
@@ -109,37 +100,19 @@ fun UserPrefsPage() {
             contentPadding = PaddingValues(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(items = prefs) { pref ->
-                when (pref) {
-                    DeviceLockPref -> SwitchPreference(
-                        pref = pref as Pref.BooleanPref,
-                        isEnabled = context.isDeviceLockAvailable()
-                    ) {
-                        isDeviceLockEnabled = it
-                    }
-                    BiometricLockPref -> SwitchPreference(
-                        pref = pref as Pref.BooleanPref,
-                        isEnabled = context.isBiometricLockAvailable() && isDeviceLockEnabled
-                    )
-                    is Pref.ListPref -> ListPreference(pref = pref) {
-                        dialogsPref = pref
-                        openDialog.value = true
-                    }
-                    ThemePref, AccentColorPref, SecondaryColorPref -> EnumPreference(pref = pref as Pref.EnumPref) {
-                        dialogsPref = pref
-                        openDialog.value = true
-                    }
-                    BackupFolderPref -> LaunchPreference(pref = pref, summary = backupDir) {
-                        launcher.launch(BACKUP_DIRECTORY_INTENT)
-                    }
-                    is Pref.BooleanPref -> SwitchPreference(pref = pref)
-                    is Pref.IntPref -> SeekBarPreference(pref = pref)
+            item {
+                PrefsGroup(prefs = prefs) { pref ->
+                    dialogsPref = pref
+                    openDialog.value = true
                 }
             }
         }
 
         if (openDialog.value) {
-            BaseDialog(openDialogCustom = openDialog) {
+            if (dialogsPref == BackupFolderPref) {
+                launcher.launch(BACKUP_DIRECTORY_INTENT)
+            }
+            else BaseDialog(openDialogCustom = openDialog) {
                 when (dialogsPref) {
                     is Pref.ListPref -> ListDialogUI(
                         pref = dialogsPref as Pref.ListPref,

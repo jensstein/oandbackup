@@ -1,11 +1,15 @@
 package com.machiav3lli.backup.preferences
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,9 +50,8 @@ import com.machiav3lli.backup.PREFS_USEEXACTALARM
 import com.machiav3lli.backup.PREFS_USEEXPEDITED
 import com.machiav3lli.backup.PREFS_USEFOREGROUND
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.ui.compose.item.PreferencesGroupHeader
-import com.machiav3lli.backup.ui.compose.item.SeekBarPreference
-import com.machiav3lli.backup.ui.compose.item.SwitchPreference
+import com.machiav3lli.backup.preferences.ui.PrefsExpandableGroupHeader
+import com.machiav3lli.backup.preferences.ui.PrefsGroup
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.ColorDeData
 import com.machiav3lli.backup.ui.compose.theme.ColorSpecial
@@ -105,19 +108,17 @@ fun AdvancedPrefsPage() {
             contentPadding = PaddingValues(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(items = prefs) {
-                when (it) {
-                    EnableSpecialsPref -> SwitchPreference(pref = it as Pref.BooleanPref) {
+            item {
+                PrefsGroup(prefs = prefs) { pref ->
+                    if (pref == EnableSpecialsPref) {
                         val newModel = context.sortFilterModel
                         newModel.mainFilter = newModel.mainFilter and MAIN_FILTER_DEFAULT
                         context.sortFilterModel = newModel
                     }
-                    is Pref.BooleanPref -> SwitchPreference(pref = it)
-                    is Pref.IntPref -> SeekBarPreference(pref = it)
                 }
             }
             item {
-                PreferencesGroupHeader(
+                PrefsExpandableGroupHeader(
                     titleId = R.string.prefs_dev_settings,
                     summaryId = R.string.prefs_dev_settings_summary,
                     iconId = R.drawable.ic_force_kill
@@ -125,11 +126,13 @@ fun AdvancedPrefsPage() {
                     expand(!expanded)
                 }
             }
-            // TODO add Dev options expandable holder
-            if (expanded) items(items = devOptions) {
-                when (it) {
-                    is Pref.BooleanPref -> SwitchPreference(pref = it)
-                    is Pref.IntPref -> SeekBarPreference(pref = it)
+            item {
+                AnimatedVisibility(
+                    visible = expanded,
+                    enter = expandVertically() + fadeIn(),
+                    exit = shrinkVertically() + fadeOut()
+                ) {
+                    PrefsGroup(prefs = devOptions)
                 }
             }
         }

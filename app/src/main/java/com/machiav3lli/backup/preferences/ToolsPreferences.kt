@@ -6,9 +6,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -33,6 +35,7 @@ import com.machiav3lli.backup.activities.PrefsActivityX
 import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.preferences.ui.PrefsGroup
 import com.machiav3lli.backup.ui.compose.item.LaunchPreference
 import com.machiav3lli.backup.ui.compose.navigation.NavItem
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
@@ -75,30 +78,43 @@ fun ToolsPrefsPage(navController: NavHostController) {
         Scaffold(
             containerColor = Color.Transparent,
             snackbarHost = { SnackbarHost(snackbarHostState) }
-        ) {
+        ) { paddingValues ->
             LazyColumn(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize(),
                 contentPadding = PaddingValues(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(items = prefs) { pref ->
-                    LaunchPreference(pref = pref) {
-                        when (pref) {
-                            // TODO use only compose dialogs
-                            CleanupBackupFolderPref -> context.onClickUninstalledBackupsDelete(
-                                snackbarHostState,
-                                coroutineScope
-                            )
-                            CopySelfPref -> context.onClickCopySelf(
-                                snackbarHostState,
-                                coroutineScope
-                            )
-                            ExportImportSchedulesPref -> navController.navigate(NavItem.Exports.destination)
-                            SaveAppsListPref -> context.onClickSaveAppsList(
-                                snackbarHostState,
-                                coroutineScope
-                            )
-                            LogViewerPref -> navController.navigate(NavItem.Logs.destination)
+                item {
+                    val size = prefs.size
+
+                    PrefsGroup {
+                        prefs.forEachIndexed { index, pref ->
+                            LaunchPreference(
+                                pref = pref,
+                                index = index,
+                                groupSize = size,
+                            ) {
+                                when (pref) {
+                                    // TODO use only compose dialogs
+                                    CleanupBackupFolderPref -> context.onClickUninstalledBackupsDelete(
+                                        snackbarHostState,
+                                        coroutineScope
+                                    )
+                                    CopySelfPref -> context.onClickCopySelf(
+                                        snackbarHostState,
+                                        coroutineScope
+                                    )
+                                    ExportImportSchedulesPref -> navController.navigate(NavItem.Exports.destination)
+                                    SaveAppsListPref -> context.onClickSaveAppsList(
+                                        snackbarHostState,
+                                        coroutineScope
+                                    )
+                                    LogViewerPref -> navController.navigate(NavItem.Logs.destination)
+                                }
+                            }
+                            if (index < size - 1) Spacer(modifier = Modifier.height(4.dp))
                         }
                     }
                 }
