@@ -1,6 +1,5 @@
 package com.machiav3lli.backup.ui.compose.item
 
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,10 +13,7 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
@@ -118,53 +114,6 @@ fun BasePreference(
             endWidget?.let {
                 Spacer(modifier = Modifier.requiredWidth(8.dp))
                 endWidget()
-            }
-        }
-    }
-}
-
-@Composable
-fun PreferencesGroupHeader(
-    modifier: Modifier = Modifier,
-    @StringRes titleId: Int,
-    @StringRes summaryId: Int = -1,
-    @DrawableRes iconId: Int,
-    onClick: (() -> Unit)
-) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(MaterialTheme.shapes.medium)
-            .clickable { onClick() },
-        colors = CardDefaults.elevatedCardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = MaterialTheme.colorScheme.primary
-        )
-    ) {
-        Divider(thickness = 2.dp)
-        Row(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            PrefIcon(iconId = iconId, text = stringResource(id = titleId))
-            Spacer(modifier = Modifier.requiredWidth(8.dp))
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = stringResource(id = titleId),
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.titleMedium
-                )
-                if (summaryId != -1) {
-                    Text(
-                        text = stringResource(id = summaryId),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
             }
         }
     }
