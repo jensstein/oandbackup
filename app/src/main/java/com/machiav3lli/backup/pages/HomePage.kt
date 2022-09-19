@@ -33,6 +33,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -60,8 +61,6 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.item.ActionButton
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
-import com.machiav3lli.backup.ui.compose.item.ExpandableSearchAction
-import com.machiav3lli.backup.ui.compose.item.TopBar
 import com.machiav3lli.backup.ui.compose.recycler.HomePackageRecycler
 import com.machiav3lli.backup.ui.compose.recycler.UpdatedPackageRecycler
 import com.machiav3lli.backup.utils.FileUtils
@@ -83,7 +82,7 @@ fun HomePage(viewModel: HomeViewModel) {
     val mainActivityX = context as MainActivityX
     var appSheet: AppSheet? = null
     var sheetSortFilter: SortFilterSheet? = null
-    val list by (context as MainActivityX).viewModel.packageList.observeAsState(null)
+    val list by mainActivityX.viewModel.packageList.observeAsState(null)
     val filteredList by viewModel.filteredList.observeAsState(null)
     val query by mainActivityX.searchQuery.collectAsState(initial = "")
     val updatedApps = filteredList?.filter { it.isUpdated }
@@ -93,7 +92,7 @@ fun HomePage(viewModel: HomeViewModel) {
     }
 
     val filterPredicate = { item: Package ->
-        query.isNullOrEmpty() || listOf(item.packageName, item.packageLabel)
+        query.isEmpty() || listOf(item.packageName, item.packageLabel)
             .find { it.contains(query, true) } != null
     }
     val queriedList = filteredList?.filter(filterPredicate)
@@ -102,7 +101,7 @@ fun HomePage(viewModel: HomeViewModel) {
 
     val batchConfirmListener = object : BatchDialogFragment.ConfirmListener {
         override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {
-            (context as MainActivityX).startBatchAction(true, selectedPackages, selectedModes) {
+            mainActivityX.startBatchAction(true, selectedPackages, selectedModes) {
                 it.removeObserver(this)
             }
         }
@@ -124,23 +123,7 @@ fun HomePage(viewModel: HomeViewModel) {
         }
     }
 
-
-    Scaffold(
-        containerColor = Color.Transparent,
-        topBar = {
-            TopBar(title = stringResource(id = R.string.main)) {
-                ExpandableSearchAction(
-                    query = viewModel.searchQuery.value.orEmpty(),
-                    onQueryChanged = { new ->
-                        viewModel.searchQuery.value = new
-                    },
-                    onClose = {
-                        viewModel.searchQuery.value = ""
-                    }
-                )
-            }
-        }
-    ) { paddingValues ->
+    Scaffold(containerColor = Color.Transparent) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
@@ -159,7 +142,7 @@ fun HomePage(viewModel: HomeViewModel) {
                 ) {
                     GlobalScope.launch(Dispatchers.IO) {
                         val blocklistedPackages =
-                            (context as MainActivityX).viewModel.blocklist.value
+                            mainActivityX.viewModel.blocklist.value
                                 ?.mapNotNull { it.packageName }.orEmpty()
 
                         PackagesListDialogFragment(
@@ -181,11 +164,11 @@ fun HomePage(viewModel: HomeViewModel) {
                     positive = true
                 ) {
                     if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(
-                        (context as MainActivityX).sortFilterModel,
+                        mainActivityX.sortFilterModel,
                         getStats(list ?: mutableListOf())
                     )
                     sheetSortFilter?.showNow(
-                        (context as MainActivityX).supportFragmentManager,
+                        mainActivityX.supportFragmentManager,
                         "SORTFILTER_SHEET"
                     )
                 }
@@ -208,7 +191,7 @@ fun HomePage(viewModel: HomeViewModel) {
                     if (appSheet != null) appSheet?.dismissAllowingStateLoss()
                     appSheet = AppSheet(item)
                     appSheet?.showNow(
-                        (context as MainActivityX).supportFragmentManager,
+                        mainActivityX.supportFragmentManager,
                         "Package ${item.packageName}"
                     )
                 }
@@ -259,7 +242,7 @@ fun HomePage(viewModel: HomeViewModel) {
                                     batchConfirmListener
                                 )
                                     .show(
-                                        (context as MainActivityX).supportFragmentManager,
+                                        mainActivityX.supportFragmentManager,
                                         "DialogFragment"
                                     )
                             }
@@ -272,7 +255,7 @@ fun HomePage(viewModel: HomeViewModel) {
                                 if (appSheet != null) appSheet?.dismissAllowingStateLoss()
                                 appSheet = AppSheet(item)
                                 appSheet?.showNow(
-                                    (context as MainActivityX).supportFragmentManager,
+                                    mainActivityX.supportFragmentManager,
                                     "Package ${item.packageName}"
                                 )
                             }

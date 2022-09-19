@@ -32,6 +32,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -57,9 +58,7 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.item.ActionButton
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
-import com.machiav3lli.backup.ui.compose.item.ExpandableSearchAction
 import com.machiav3lli.backup.ui.compose.item.StateChip
-import com.machiav3lli.backup.ui.compose.item.TopBar
 import com.machiav3lli.backup.ui.compose.recycler.BatchPackageRecycler
 import com.machiav3lli.backup.ui.compose.theme.ColorAPK
 import com.machiav3lli.backup.ui.compose.theme.ColorData
@@ -91,7 +90,7 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
     val filterPredicate = { item: Package ->
         val includedBoolean = if (backupBoolean) item.isInstalled else item.hasBackups
         val queryBoolean =
-            query.isNullOrEmpty() || listOf(item.packageName, item.packageLabel)
+            query.isEmpty() || listOf(item.packageName, item.packageLabel)
                 .find { it.contains(query, true) } != null
         includedBoolean && queryBoolean
     }
@@ -139,24 +138,7 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
         }
     }
 
-    Scaffold(
-        containerColor = Color.Transparent,
-        topBar = {
-            TopBar(
-                title = stringResource(id = if (backupBoolean) R.string.backup else R.string.restore)
-            ) {
-                ExpandableSearchAction(
-                    query = viewModel.searchQuery.value.orEmpty(),
-                    onQueryChanged = { new ->
-                        viewModel.searchQuery.value = new
-                    },
-                    onClose = {
-                        viewModel.searchQuery.value = ""
-                    }
-                )
-            }
-        }
-    ) { paddingValues ->
+    Scaffold(containerColor = Color.Transparent) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
