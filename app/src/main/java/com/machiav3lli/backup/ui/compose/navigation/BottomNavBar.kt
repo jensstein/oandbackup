@@ -53,7 +53,7 @@ fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
                     Icon(
                         painter = painterResource(id = item.icon),
                         contentDescription = stringResource(id = item.title),
-                        modifier = Modifier.size(if (selected) 46.dp else 28.dp),
+                        modifier = Modifier.size(if (selected) 38.dp else 28.dp),
                     )
                 },
                 label = {
