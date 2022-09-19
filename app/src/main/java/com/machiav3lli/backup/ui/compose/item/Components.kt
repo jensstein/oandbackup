@@ -54,6 +54,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -61,6 +62,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.machiav3lli.backup.MAIN_FILTER_SPECIAL
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
@@ -130,7 +132,10 @@ fun PackageIcon(
         modifier = Modifier
             .size(48.dp)
             .clip(RoundedCornerShape(LocalShapes.current.medium)),
-        model = imageData,
+        model = ImageRequest.Builder(LocalContext.current)
+            .crossfade(true)
+            .data(imageData)
+            .build(),
         contentDescription = null,
         contentScale = ContentScale.Crop,
         error = placeholderIconPainter(item),
