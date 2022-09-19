@@ -84,6 +84,7 @@ import com.machiav3lli.backup.ui.compose.navigation.MainNavHost
 import com.machiav3lli.backup.ui.compose.navigation.NavItem
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.FileUtils.invalidateBackupLocation
+import com.machiav3lli.backup.utils.applyFilter
 import com.machiav3lli.backup.utils.destinationToItem
 import com.machiav3lli.backup.utils.getPrivateSharedPrefs
 import com.machiav3lli.backup.utils.getStats
@@ -293,7 +294,10 @@ class MainActivityX : BaseActivity() {
                                 ) {
                                     sheetSortFilter = SortFilterSheet(
                                         sortFilterModel,
-                                        getStats(list ?: mutableListOf())
+                                        getStats(
+                                            list?.applyFilter(sortFilterModel, context)
+                                                ?: emptyList()
+                                        ) // TODO apply page's filter too
                                     )
                                     sheetSortFilter.showNow(
                                         supportFragmentManager,

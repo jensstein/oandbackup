@@ -41,7 +41,7 @@ import com.machiav3lli.backup.ui.compose.theme.ColorUpdated
 import com.machiav3lli.backup.ui.compose.theme.ColorUser
 import com.machiav3lli.backup.ui.item.InfoChipItem
 
-fun getStats(appsList: MutableList<Package>): Triple<Int, Int, Int> {
+fun getStats(appsList: List<Package>): Triple<Int, Int, Int> {
     var backupsNumber = 0
     var updatedNumber = 0
     appsList.forEach {
