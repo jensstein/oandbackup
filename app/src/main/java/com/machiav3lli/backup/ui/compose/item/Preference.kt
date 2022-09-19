@@ -2,6 +2,7 @@ package com.machiav3lli.backup.ui.compose.item
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
@@ -20,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
@@ -51,14 +54,20 @@ fun BasePreference(
     @StringRes summaryId: Int = -1,
     summary: String? = null,
     isEnabled: Boolean = true,
+    index: Int = 0,
+    groupSize: Int = 1,
     icon: (@Composable () -> Unit)? = null,
     endWidget: (@Composable () -> Unit)? = null,
     bottomWidget: (@Composable () -> Unit)? = null,
     onClick: (() -> Unit)? = null,
 ) {
+    val base = index.toFloat() / groupSize
+    val rank = (index + 1f) / groupSize
+
     Column(
         modifier = Modifier
             .clip(MaterialTheme.shapes.medium)
+            .background(MaterialTheme.colorScheme.surfaceColorAtElevation((rank * 24).dp))
             .ifThen(onClick != null) {
                 clickable(enabled = isEnabled, onClick = onClick!!)
             }
@@ -158,6 +167,8 @@ fun PreferencesGroupHeader(
 fun LaunchPreference(
     modifier: Modifier = Modifier,
     pref: Pref,
+    index: Int = 0,
+    groupSize: Int = 1,
     summary: String? = null,
     onClick: (() -> Unit) = {},
 ) {
@@ -189,7 +200,9 @@ fun LaunchPreference(
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
         isEnabled = isEnabled,
-        onClick = onClick // TODO add Composable annotation
+        index = index,
+        groupSize = groupSize,
+        onClick = onClick
     )
 }
 
@@ -197,6 +210,8 @@ fun LaunchPreference(
 fun EnumPreference(
     modifier: Modifier = Modifier,
     pref: Pref.EnumPref,
+    index: Int = 0,
+    groupSize: Int = 1,
     onClick: (() -> Unit) = {},
 ) {
     val context = LocalContext.current
@@ -226,7 +241,9 @@ fun EnumPreference(
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
         isEnabled = isEnabled,
-        onClick = onClick // TODO add Composable annotation
+        index = index,
+        groupSize = groupSize,
+        onClick = onClick
     )
 }
 
@@ -234,6 +251,8 @@ fun EnumPreference(
 fun ListPreference(
     modifier: Modifier = Modifier,
     pref: Pref.ListPref,
+    index: Int = 0,
+    groupSize: Int = 1,
     onClick: (() -> Unit) = {},
 ) {
     val context = LocalContext.current
@@ -264,7 +283,9 @@ fun ListPreference(
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
         isEnabled = isEnabled,
-        onClick = onClick // TODO add Composable annotation
+        index = index,
+        groupSize = groupSize,
+        onClick = onClick
     )
 }
 
@@ -272,6 +293,8 @@ fun ListPreference(
 fun SwitchPreference(
     modifier: Modifier = Modifier,
     pref: Pref.BooleanPref,
+    index: Int = 0,
+    groupSize: Int = 1,
     onCheckedChange: ((Boolean) -> Unit) = {},
 ) {
     val context = LocalContext.current
@@ -307,6 +330,8 @@ fun SwitchPreference(
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
         isEnabled = isEnabled,
+        index = index,
+        groupSize = groupSize,
         onClick = {
             onCheckedChange(!checked)
             check(!checked)
@@ -330,6 +355,8 @@ fun SwitchPreference(
 fun CheckboxPreference(
     modifier: Modifier = Modifier,
     pref: Pref.BooleanPref,
+    index: Int = 0,
+    groupSize: Int = 1,
     onCheckedChange: ((Boolean) -> Unit) = {},
 ) {
     val context = LocalContext.current
@@ -366,6 +393,8 @@ fun CheckboxPreference(
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
         isEnabled = isEnabled,
+        index = index,
+        groupSize = groupSize,
         onClick = {
             onCheckedChange(!checked)
             check(!checked)
@@ -389,6 +418,8 @@ fun CheckboxPreference(
 fun SeekBarPreference(
     modifier: Modifier = Modifier,
     pref: Pref.IntPref,
+    index: Int = 0,
+    groupSize: Int = 1,
     onValueChange: ((Int) -> Unit) = {},
 ) {
     val context = LocalContext.current
@@ -440,6 +471,8 @@ fun SeekBarPreference(
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
         isEnabled = isEnabled,
+        index = index,
+        groupSize = groupSize,
         bottomWidget = {
             Row {
                 Slider(
