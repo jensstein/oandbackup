@@ -7,11 +7,11 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.expandHorizontally
-import androidx.compose.animation.expandIn
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
-import androidx.compose.animation.shrinkOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -84,13 +84,13 @@ import com.machiav3lli.backup.ui.compose.theme.ColorDeData
 import com.machiav3lli.backup.ui.compose.theme.ColorDisabled
 import com.machiav3lli.backup.ui.compose.theme.ColorExodus
 import com.machiav3lli.backup.ui.compose.theme.ColorExtDATA
-import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.ui.compose.theme.ColorMedia
 import com.machiav3lli.backup.ui.compose.theme.ColorOBB
 import com.machiav3lli.backup.ui.compose.theme.ColorSpecial
 import com.machiav3lli.backup.ui.compose.theme.ColorSystem
 import com.machiav3lli.backup.ui.compose.theme.ColorUpdated
 import com.machiav3lli.backup.ui.compose.theme.ColorUser
+import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.brighter
 
 @Composable
@@ -567,10 +567,10 @@ fun VerticalFadingVisibility(
     collapsedView: @Composable (AnimatedVisibilityScope.() -> Unit)
 ) = StatefulAnimatedVisibility(
     currentState = expanded,
-    enterPositive = fadeIn() + expandIn(expandFrom = Alignment.BottomCenter),
-    exitPositive = fadeOut() + shrinkOut(shrinkTowards = Alignment.BottomCenter),
-    enterNegative = fadeIn() + expandIn(expandFrom = Alignment.TopCenter),
-    exitNegative = fadeOut() + shrinkOut(shrinkTowards = Alignment.TopCenter),
+    enterPositive = fadeIn() + expandVertically(expandFrom = Alignment.Bottom),
+    exitPositive = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Bottom),
+    enterNegative = fadeIn() + expandVertically(expandFrom = Alignment.Top),
+    exitNegative = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
     collapsedView = collapsedView,
     expandedView = expandedView
 )
