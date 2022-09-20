@@ -257,7 +257,7 @@
     <string name="help_group_matrix">Unsere Gruppe auf Matrix</string>
     <string name="write_apps_list_all">Liste aller Apps wurde erstellt</string>
     <string name="write_apps_list_filtered">Gefilterte App-Liste wurde erstellt</string>
-    <string name="intro_permission_storage_location_warning">Wählen Sie nicht das Hauptspeicherverzeichnis oder den Downloads-Ordner, sondern erstellen Sie einen Ordner nur für Ihre Backups. Mehr dazu in den FAQ</string>
+    <string name="intro_permission_storage_location_warning">Wähle nicht das Hauptspeicherverzeichnis oder den Downloadordner, sondern erstelle einen Ordner nur für deine Backups. Mehr dazu in den FAQ</string>
     <plurals name="sched_interval_formal">
         <item quantity="one">jeden Tag</item>
         <item quantity="other">alle %d Tage</item>
@@ -273,9 +273,9 @@
     <string name="dialog_export">Export</string>
     <string name="schedule_failed">Geplante Backup Ausführung fehlgeschlagen</string>
     <string name="shell_initproblem">Konnte den Shell-Handler nicht initiieren. Entweder fehlt toybox/busybox oder die Root-Berechtigung wurde nicht erteilt.</string>
-    <string name="no_file_manager_message">Es ist kein SAF kompatibler Dateimanager vorhanden. Eventuell haben Sie den Betriebssystem-integrierten Dateimanager deaktivert. Bitte aktivieren oder stellen Sie ihn wieder her.</string>
+    <string name="no_file_manager_message">Es ist kein SAF kompatibler Dateimanager vorhanden. Eventuell hast du den betriebssystem-integrierten Dateimanager deaktivert. Bitte aktivieren oder stelle ihn wieder her.</string>
     <string name="no_file_manager_title">Kein SAF Dateimanager</string>
-    <string name="prefs_schedulesexportimport_summary">Export oder import einer Liste der zeitgesteuerten Backups, die du angelegt hast.</string>
+    <string name="prefs_schedulesexportimport_summary">Exportiert oder importiert einer Liste der zeitgesteuerten Backups, die du angelegt hast.</string>
     <string name="prefs_schedulesexportimport">Export/Import zeitgesteuerter Backups</string>
     <string name="backup_all_updated">Alle aktualisierten Apps sichern</string>
     <string name="error_encryptionpassword">Das Verschlüsselungspasswort ist entweder nicht gesetzt oder falsch!</string>
@@ -324,7 +324,7 @@
     <string name="batch">Stapelverarbeitung</string>
     <string name="spec_calllogsjson">Anruf-Protokolldatei JSON</string>
     <string name="intro_permission_smsmms">Die App benötigt diese Berechtigung, um SMS/MMS zu sichern und wiederherstellen zu können.</string>
-    <string name="loading_list">Die Liste wird geladen …</string>
+    <string name="loading_list">Liste wird geladen…</string>
     <string name="spec_smsmmsjson">SMS/MMS JSON</string>
     <string name="spec_fingerprint">Fingerabdruck</string>
     <string name="smsmms_permission_title">SMS/MMS Berechtigungen</string>
