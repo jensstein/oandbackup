@@ -1,5 +1,20 @@
 CHANGELOG
 =========
+8.1.3 (20.09.2022) +50 Commits
+------------------
+- Update: Migrate navigation fully to Compose
+- Update: Convert AppInfo to chips
+- Update: Layouts of BackupItem, Welcome Page, Permissions Page and AppSheet
+- Update: Unify TopBar and sort management by Main
+- Update: Apply Sort/Filter options to sheet's stats
+- Update: Make sheets fill available size
+- Update: Tag editor animation
+- Update: Revamp prefs UI
+- Update: Matrix link
+- Update: NavBar items UI
+- Fix: Inconsistent default theme pref (@hg42)
+- Fix: Cropping package name in AppSheet
+
 8.1.2 (12.09.2022) +30 Commits
 ------------------
 - Fix: Wrong default for pmSuspend (@hg42)
