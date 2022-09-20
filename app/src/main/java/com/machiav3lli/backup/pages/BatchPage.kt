@@ -107,7 +107,7 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
     val progress by viewModel.progress.observeAsState(Pair(false, 0f))
     val batchConfirmListener = object : BatchDialogFragment.ConfirmListener {
         override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {
-            mainActivityX.startBatchAction(true, selectedPackages, selectedModes) {
+            mainActivityX.startBatchAction(backupBoolean, selectedPackages, selectedModes) {
                 it.removeObserver(this)
             }
         }
