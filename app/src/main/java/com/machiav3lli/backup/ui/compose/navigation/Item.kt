@@ -3,6 +3,12 @@ package com.machiav3lli.backup.ui.compose.navigation
 import com.machiav3lli.backup.R
 
 sealed class NavItem(var title: Int, var icon: Int, var destination: String) {
+    object Welcome :
+        NavItem(R.string.welcome_to_oabx, R.drawable.ic_home, "intro_welcome")
+
+    object Permissions :
+        NavItem(R.string.permission_not_granted, R.drawable.ic_issue, "intro_permissions")
+
     object Home :
         NavItem(R.string.home, R.drawable.ic_home, "home")
 
@@ -14,6 +20,9 @@ sealed class NavItem(var title: Int, var icon: Int, var destination: String) {
 
     object Scheduler :
         NavItem(R.string.sched_title, R.drawable.ic_scheduler, "scheduler")
+
+    object Main :
+        NavItem(R.string.main, R.drawable.ic_home, "main")
 
     object Settings :
         NavItem(R.string.prefs_title, R.drawable.ic_settings, "settings")
