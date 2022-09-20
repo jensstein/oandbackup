@@ -16,8 +16,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.activity
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
+import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.PrefsActivityX
 import com.machiav3lli.backup.dbs.ODatabase
+import com.machiav3lli.backup.pages.PermissionsPage
+import com.machiav3lli.backup.pages.WelcomePage
 import com.machiav3lli.backup.pages.BatchPage
 import com.machiav3lli.backup.pages.HomePage
 import com.machiav3lli.backup.pages.SchedulerPage
@@ -112,6 +115,30 @@ fun PrefsNavHost(
                 LogViewModel.Factory(application)
             )
             LogsPage(viewModel)
+        }
+    }
+
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+fun IntroNavHost(
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    beenWelcomed: Boolean,
+) =
+    AnimatedNavHost(
+        modifier = modifier,
+        navController = navController,
+        startDestination = if (beenWelcomed) NavItem.Permissions.destination
+        else NavItem.Welcome.destination
+    ) {
+        slideUpComposable(NavItem.Welcome.destination) {
+            WelcomePage()
+        }
+        slideUpComposable(route = NavItem.Permissions.destination) {
+            PermissionsPage()
+        }
+        activity(NavItem.Main.destination) {
+            this.activityClass = MainActivityX::class
         }
     }
 
