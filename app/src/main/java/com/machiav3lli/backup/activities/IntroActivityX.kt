@@ -20,20 +20,28 @@ package com.machiav3lli.backup.activities
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
+import androidx.activity.compose.setContent
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.biometric.BiometricPrompt
 import androidx.biometric.BiometricPrompt.PromptInfo
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.core.content.ContextCompat
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
-import androidx.navigation.Navigation
+import androidx.navigation.NavHostController
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_FIRST_LAUNCH
+import com.machiav3lli.backup.PREFS_WELCOMED
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.classAddress
-import com.machiav3lli.backup.databinding.ActivityIntroXBinding
+import com.machiav3lli.backup.ui.compose.navigation.IntroNavHost
+import com.machiav3lli.backup.ui.compose.navigation.NavItem
+import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.isBiometricLockAvailable
 import com.machiav3lli.backup.utils.isBiometricLockEnabled
 import com.machiav3lli.backup.utils.isDeviceLockAvailable
@@ -41,52 +49,41 @@ import com.machiav3lli.backup.utils.isDeviceLockEnabled
 import com.machiav3lli.backup.utils.setCustomTheme
 
 class IntroActivityX : BaseActivity() {
-    private lateinit var binding: ActivityIntroXBinding
-    private var navController: NavController? = null
+    private lateinit var navController: NavHostController
 
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         OABX.activity = this
         setCustomTheme()
         super.onCreate(savedInstanceState)
-        binding = ActivityIntroXBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        setupNavigation()
-        if (intent.extras != null) {
-            val fragmentNumber = intent.extras!!.getInt(classAddress(".fragmentNumber"))
-            moveTo(fragmentNumber)
-        }
-    }
 
-    override fun onResume() {
-        super.onResume()
-        OABX.activity = this
-    }
+        setContent {
+            AppTheme(
+                darkTheme = isSystemInDarkTheme()
+            ) {
+                navController = rememberAnimatedNavController()
 
-    private fun setupNavigation() {
-        navController = Navigation.findNavController(this, R.id.introContainer)
-        navController!!.addOnDestinationChangedListener { _: NavController?, destination: NavDestination, _: Bundle? ->
-            if (destination.id == R.id.welcomeFragment) {
-                binding.positiveButton.setText(R.string.dialog_start)
-                binding.positiveButton.setOnClickListener {
-                    OABX.setPrefFlag(PREFS_FIRST_LAUNCH, false)
-                    moveTo(2)
+                Scaffold(
+                    containerColor = Color.Transparent,
+                    contentColor = MaterialTheme.colorScheme.onBackground,
+                ) { paddingValues ->
+                    IntroNavHost(
+                        modifier = Modifier.padding(paddingValues),
+                        navController = navController,
+                        OABX.prefFlag(PREFS_WELCOMED, false)
+                    )
                 }
             }
+
         }
     }
 
     fun moveTo(position: Int) {
+        OABX.setPrefFlag(PREFS_WELCOMED, position != 1)
         when (position) {
-            1 -> navController?.navigate(R.id.welcomeFragment)
-            2 -> {
-                navController?.navigate(R.id.permissionsFragment)
-                binding.positiveButton.visibility = View.GONE
-            }
-            3 -> {
-                binding.positiveButton.visibility = View.VISIBLE
-                binding.positiveButton.setOnClickListener { launchMainActivity() }
-                launchMainActivity()
-            }
+            1 -> navController.navigate(NavItem.Welcome.destination)
+            2 -> navController.navigate(NavItem.Permissions.destination)
+            3 -> launchMainActivity()
         }
     }
 
@@ -100,8 +97,7 @@ class IntroActivityX : BaseActivity() {
         } else if (isDeviceLockAvailable() && isDeviceLockEnabled()) {
             launchBiometricPrompt(false)
         } else {
-            startActivity(Intent(this, MainActivityX::class.java))
-            overridePendingTransition(0, 0)
+            navController.navigate(NavItem.Main.destination)
         }
     }
 
@@ -128,10 +124,10 @@ class IntroActivityX : BaseActivity() {
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
                     if (errorCode == BiometricPrompt.ERROR_USER_CANCELED) {
-                        binding.positiveButton.setText(R.string.dialog_unlock)
-                        binding.positiveButton.visibility = View.VISIBLE
+                        //binding.positiveButton.setText(R.string.dialog_unlock)
+                        //binding.positiveButton.visibility = View.VISIBLE
                     } else {
-                        binding.positiveButton.visibility = View.GONE
+                        //binding.positiveButton.visibility = View.GONE
                     }
                 }
             })
