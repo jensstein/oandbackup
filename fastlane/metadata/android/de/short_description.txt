@@ -1,1 +1,1 @@
-Dein quelloffenes Werkzeug, um deine Anwendungen …  und deine Daten zu sichern
+Das quelloffene Werkzeug zur Sicherung deiner Apps und Daten
