@@ -155,7 +155,7 @@
     <string name="ignore_battery_optimization_message">备份有时会意外停止。为避免这种情况，请关闭电池优化</string>
     <string name="ignore_battery_optimization_not_supported">此设备不支持忽略电池优化！</string>
     <string name="failed_unzipping">解压数据时出错，请检查加密密码是否正确！</string>
-    <string name="split_apks">拆分的APKs：</string>
+    <string name="split_apks">拆分的 APK</string>
     <string name="backup_filters">备份筛选：</string>
     <string name="grant_usage_access_title">允许查看使用情况</string>
     <string name="grant_usage_access_message">这用于获取有关应用程序文件大小的相关信息</string>
