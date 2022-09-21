@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,12 +33,9 @@ import com.machiav3lli.backup.dialogs.BaseDialog
 import com.machiav3lli.backup.dialogs.EnumDialogUI
 import com.machiav3lli.backup.dialogs.StringDialogUI
 import com.machiav3lli.backup.housekeepingOptions
-import com.machiav3lli.backup.ui.compose.item.EnumPreference
-import com.machiav3lli.backup.ui.compose.item.LaunchPreference
-import com.machiav3lli.backup.ui.compose.item.SeekBarPreference
-import com.machiav3lli.backup.ui.compose.item.SwitchPreference
-import com.machiav3lli.backup.ui.compose.theme.ColorAPK
+import com.machiav3lli.backup.preferences.ui.PrefsGroup
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
+import com.machiav3lli.backup.ui.compose.theme.ColorAPK
 import com.machiav3lli.backup.ui.compose.theme.ColorDeData
 import com.machiav3lli.backup.ui.compose.theme.ColorExodus
 import com.machiav3lli.backup.ui.compose.theme.ColorExtDATA
@@ -79,18 +75,10 @@ fun ServicePrefsPage() {
             contentPadding = PaddingValues(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(items = prefs) { pref ->
-                when (pref) {
-                    is Pref.StringPref -> LaunchPreference(pref = pref) {
-                        dialogsPref = pref
-                        openDialog.value = true
-                    }
-                    is Pref.BooleanPref -> SwitchPreference(pref = pref)
-                    is Pref.EnumPref -> EnumPreference(pref = pref) {
-                        dialogsPref = pref
-                        openDialog.value = true
-                    }
-                    is Pref.IntPref -> SeekBarPreference(pref = pref)
+            item {
+                PrefsGroup(prefs = prefs) { pref ->
+                    dialogsPref = pref
+                    openDialog.value = true
                 }
             }
         }

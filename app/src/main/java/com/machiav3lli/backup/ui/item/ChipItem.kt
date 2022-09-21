@@ -1,5 +1,6 @@
 package com.machiav3lli.backup.ui.item
 
+import androidx.compose.ui.graphics.Color
 import com.machiav3lli.backup.MAIN_FILTER_SPECIAL
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
@@ -173,3 +174,10 @@ data class ChipItem(
         )
     }
 }
+
+data class InfoChipItem(
+    val flag: Int,
+    val text: String,
+    val iconId: Int = -1,
+    val color: Color? = null
+)

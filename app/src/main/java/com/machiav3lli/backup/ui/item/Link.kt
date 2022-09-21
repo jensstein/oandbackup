@@ -1,7 +1,7 @@
 package com.machiav3lli.backup.ui.item
 
 import com.machiav3lli.backup.HELP_CHANGELOG
-import com.machiav3lli.backup.HELP_ELEMENT
+import com.machiav3lli.backup.HELP_MATRIX
 import com.machiav3lli.backup.HELP_FAQ
 import com.machiav3lli.backup.HELP_ISSUES
 import com.machiav3lli.backup.HELP_LICENSE
@@ -32,7 +32,7 @@ data class Link(
             R.string.help_group_matrix,
             R.drawable.ic_element,
             R.color.ic_apk,
-            HELP_ELEMENT
+            HELP_MATRIX
         )
         val License = Link(
             R.string.help_license,

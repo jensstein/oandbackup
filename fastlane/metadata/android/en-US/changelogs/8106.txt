@@ -1,0 +1,7 @@
+- Update: Migrate navigation fully to Compose
+- Update: Layouts of BackupItem, Welcome Page, Permissions Page and AppSheet
+- Update: Apply Sort/Filter options to sheet's stats
+- Update: Revamp prefs UI
+- Update: NavBar items UI
+- Fix: Inconsistent default theme pref (@hg42)
+- Fix: Cropping package name in AppSheet

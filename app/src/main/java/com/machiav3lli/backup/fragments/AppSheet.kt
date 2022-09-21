@@ -24,7 +24,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,16 +37,15 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -98,14 +96,10 @@ import com.machiav3lli.backup.ui.compose.item.PackageIcon
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TagsBlock
 import com.machiav3lli.backup.ui.compose.item.TitleText
+import com.machiav3lli.backup.ui.compose.recycler.InfoChipsBlock
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
-import com.machiav3lli.backup.ui.compose.theme.ColorDisabled
-import com.machiav3lli.backup.ui.compose.theme.ColorNotInstalled
-import com.machiav3lli.backup.ui.compose.theme.ColorSpecial
-import com.machiav3lli.backup.ui.compose.theme.ColorSystem
-import com.machiav3lli.backup.ui.compose.theme.ColorUpdated
-import com.machiav3lli.backup.ui.compose.theme.ColorUser
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
+import com.machiav3lli.backup.utils.infoChips
 import com.machiav3lli.backup.utils.show
 import com.machiav3lli.backup.utils.showError
 import com.machiav3lli.backup.viewmodels.AppSheetViewModel
@@ -179,7 +173,8 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                     LazyColumn(
                         modifier = Modifier
                             .padding(paddingValues)
-                            .nestedScroll(nestedScrollConnection),
+                            .nestedScroll(nestedScrollConnection)
+                            .fillMaxSize(),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                         contentPadding = PaddingValues(8.dp)
                     ) {
@@ -259,6 +254,9 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                     modifier = Modifier.fillMaxWidth()
                                 )
                             }
+                        }
+                        item {
+                            InfoChipsBlock(list = packageInfo.infoChips())
                         }
                         item {
                             AnimatedVisibility(
@@ -356,127 +354,6 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                         description = stringResource(id = R.string.global_blocklist_add)
                                     ) {
                                         requireMainActivity().viewModel.addToBlocklist(packageInfo.packageName)
-                                    }
-                                }
-                            }
-                        }
-                        item {
-                            AnimatedVisibility(
-                                visible = !packageInfo.isSpecial,
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Column(
-                                    modifier = Modifier
-                                        .width(IntrinsicSize.Min)
-                                ) {
-                                    Row {
-                                        Text(text = stringResource(id = R.string.app_s_type_title))
-                                        Text(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            textAlign = TextAlign.End,
-                                            text = stringResource(id = if (packageInfo.isSpecial) R.string.apptype_special else if (packageInfo.isSystem) R.string.apptype_system else R.string.apptype_user),
-                                            color = when {
-                                                !packageInfo.isInstalled -> ColorNotInstalled
-                                                packageInfo.isDisabled -> ColorDisabled
-                                                packageInfo.isSpecial -> ColorSpecial
-                                                packageInfo.isSystem -> ColorSystem
-                                                else -> ColorUser
-                                            }
-                                        )
-                                    }
-                                    Row {
-                                        Text(text = stringResource(id = R.string.version_name_title))
-                                        Text(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            textAlign = TextAlign.End,
-                                            text = if (packageInfo.isUpdated) "${packageInfo.latestBackup?.versionName.orEmpty()} (${packageInfo.versionName})"
-                                            else packageInfo.versionName.orEmpty(),
-                                            color = if (packageInfo.isUpdated) ColorUpdated else MaterialTheme.colorScheme.onBackground
-                                        )
-                                    }
-                                    AnimatedVisibility(
-                                        visible = packageInfo.isInstalled,
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        Row(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .height(IntrinsicSize.Min),
-                                            horizontalArrangement = Arrangement.spacedBy(6.dp)
-                                        ) {
-                                            Column(
-                                                modifier = Modifier
-                                                    .weight(1f)
-                                                    .width(IntrinsicSize.Min)
-                                            ) {
-                                                Text(
-                                                    modifier = Modifier.fillMaxWidth(),
-                                                    text = stringResource(id = R.string.app_size)
-                                                )
-                                                Text(
-                                                    modifier = Modifier.fillMaxWidth(),
-                                                    textAlign = TextAlign.End,
-                                                    text = Formatter.formatFileSize(
-                                                        requireContext(),
-                                                        packageInfo.storageStats?.appBytes ?: 0
-                                                    )
-                                                )
-                                                Text(
-                                                    modifier = Modifier.fillMaxWidth(),
-                                                    text = stringResource(id = R.string.split_apks)
-                                                )
-                                                Text(
-                                                    modifier = Modifier.fillMaxWidth(),
-                                                    textAlign = TextAlign.End,
-                                                    text = stringResource(id = if (packageInfo.apkSplits.isEmpty()) R.string.dialogNo else R.string.dialogYes)
-                                                )
-                                            }
-                                            Divider(
-                                                color = MaterialTheme.colorScheme.surface,
-                                                modifier = Modifier
-                                                    .fillMaxHeight()
-                                                    .width(1.dp)
-                                            )
-                                            Column(
-                                                modifier = Modifier
-                                                    .weight(1f)
-                                                    .width(IntrinsicSize.Min)
-                                            ) {
-                                                AnimatedVisibility(
-                                                    visible = packageInfo.isInstalled,
-                                                    modifier = Modifier.fillMaxWidth()
-                                                ) {
-                                                    Column {
-                                                        Text(
-                                                            modifier = Modifier.fillMaxWidth(),
-                                                            text = stringResource(id = R.string.data_size)
-                                                        )
-                                                        Text(
-                                                            modifier = Modifier.fillMaxWidth(),
-                                                            textAlign = TextAlign.End,
-                                                            text = Formatter.formatFileSize(
-                                                                requireContext(),
-                                                                packageInfo.storageStats?.dataBytes
-                                                                    ?: 0
-                                                            ),
-                                                        )
-                                                        Text(
-                                                            modifier = Modifier.fillMaxWidth(),
-                                                            text = stringResource(id = R.string.cache_size)
-                                                        )
-                                                        Text(
-                                                            modifier = Modifier.fillMaxWidth(),
-                                                            textAlign = TextAlign.End,
-                                                            text = Formatter.formatFileSize(
-                                                                requireContext(),
-                                                                packageInfo.storageStats?.cacheBytes
-                                                                    ?: 0
-                                                            ),
-                                                        )
-                                                    }
-                                                }
-                                            }
-                                        }
                                     }
                                 }
                             }

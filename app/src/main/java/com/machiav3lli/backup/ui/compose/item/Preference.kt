@@ -1,7 +1,7 @@
 package com.machiav3lli.backup.ui.compose.item
 
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,15 +12,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,12 +29,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.PrefsDependencies
 import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.item.Pref
+import com.machiav3lli.backup.utils.getDefaultSharedPreferences
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
@@ -44,14 +50,27 @@ fun BasePreference(
     @StringRes summaryId: Int = -1,
     summary: String? = null,
     isEnabled: Boolean = true,
+    index: Int = 0,
+    groupSize: Int = 1,
     icon: (@Composable () -> Unit)? = null,
     endWidget: (@Composable () -> Unit)? = null,
     bottomWidget: (@Composable () -> Unit)? = null,
     onClick: (() -> Unit)? = null,
 ) {
+    val base = index.toFloat() / groupSize
+    val rank = (index + 1f) / groupSize
+
     Column(
         modifier = Modifier
-            .clip(MaterialTheme.shapes.medium)
+            .clip(
+                RoundedCornerShape(
+                    topStart = if (base == 0f) 16.dp else 6.dp,
+                    topEnd = if (base == 0f) 16.dp else 6.dp,
+                    bottomStart = if (rank == 1f) 16.dp else 6.dp,
+                    bottomEnd = if (rank == 1f) 16.dp else 6.dp
+                )
+            )
+            .background(MaterialTheme.colorScheme.surfaceColorAtElevation((rank * 24).dp))
             .ifThen(onClick != null) {
                 clickable(enabled = isEnabled, onClick = onClick!!)
             }
@@ -101,60 +120,28 @@ fun BasePreference(
 }
 
 @Composable
-fun PreferencesGroupHeader(
-    modifier: Modifier = Modifier,
-    @StringRes titleId: Int,
-    @StringRes summaryId: Int = -1,
-    @DrawableRes iconId: Int,
-    onClick: (() -> Unit)
-) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(MaterialTheme.shapes.medium)
-            .clickable { onClick() },
-        colors = CardDefaults.elevatedCardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = MaterialTheme.colorScheme.primary
-        )
-    ) {
-        Divider(thickness = 2.dp)
-        Row(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            PrefIcon(iconId = iconId, text = stringResource(id = titleId))
-            Spacer(modifier = Modifier.requiredWidth(8.dp))
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = stringResource(id = titleId),
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.titleMedium
-                )
-                if (summaryId != -1) {
-                    Text(
-                        text = stringResource(id = summaryId),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
 fun LaunchPreference(
     modifier: Modifier = Modifier,
     pref: Pref,
-    isEnabled: Boolean = true,
+    index: Int = 0,
+    groupSize: Int = 1,
     summary: String? = null,
     onClick: (() -> Unit) = {},
 ) {
+    val context = LocalContext.current
+    var isEnabled by remember(context.PrefsDependencies[pref]) {
+        mutableStateOf(context.PrefsDependencies[pref] ?: true)
+    }
+
+    SideEffect {
+        CoroutineScope(Dispatchers.Default).launch {
+            context.getDefaultSharedPreferences()
+                .registerOnSharedPreferenceChangeListener { _, _ ->
+                    isEnabled = context.PrefsDependencies[pref] ?: true
+                }
+        }
+    }
+
     BasePreference(
         modifier = modifier,
         titleId = pref.titleId,
@@ -169,7 +156,9 @@ fun LaunchPreference(
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
         isEnabled = isEnabled,
-        onClick = onClick // TODO add Composable annotation
+        index = index,
+        groupSize = groupSize,
+        onClick = onClick
     )
 }
 
@@ -177,9 +166,24 @@ fun LaunchPreference(
 fun EnumPreference(
     modifier: Modifier = Modifier,
     pref: Pref.EnumPref,
-    isEnabled: Boolean = true,
+    index: Int = 0,
+    groupSize: Int = 1,
     onClick: (() -> Unit) = {},
 ) {
+    val context = LocalContext.current
+    var isEnabled by remember(context.PrefsDependencies[pref]) {
+        mutableStateOf(context.PrefsDependencies[pref] ?: true)
+    }
+
+    SideEffect {
+        CoroutineScope(Dispatchers.Default).launch {
+            context.getDefaultSharedPreferences()
+                .registerOnSharedPreferenceChangeListener { _, _ ->
+                    isEnabled = context.PrefsDependencies[pref] ?: true
+                }
+        }
+    }
+
     BasePreference(
         modifier = modifier,
         titleId = pref.titleId,
@@ -193,7 +197,9 @@ fun EnumPreference(
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
         isEnabled = isEnabled,
-        onClick = onClick // TODO add Composable annotation
+        index = index,
+        groupSize = groupSize,
+        onClick = onClick
     )
 }
 
@@ -201,9 +207,24 @@ fun EnumPreference(
 fun ListPreference(
     modifier: Modifier = Modifier,
     pref: Pref.ListPref,
-    isEnabled: Boolean = true,
+    index: Int = 0,
+    groupSize: Int = 1,
     onClick: (() -> Unit) = {},
 ) {
+    val context = LocalContext.current
+    var isEnabled by remember(context.PrefsDependencies[pref]) {
+        mutableStateOf(context.PrefsDependencies[pref] ?: true)
+    }
+
+    SideEffect {
+        CoroutineScope(Dispatchers.Default).launch {
+            context.getDefaultSharedPreferences()
+                .registerOnSharedPreferenceChangeListener { _, _ ->
+                    isEnabled = context.PrefsDependencies[pref] ?: true
+                }
+        }
+    }
+
     BasePreference(
         modifier = modifier,
         titleId = pref.titleId,
@@ -218,7 +239,9 @@ fun ListPreference(
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
         isEnabled = isEnabled,
-        onClick = onClick // TODO add Composable annotation
+        index = index,
+        groupSize = groupSize,
+        onClick = onClick
     )
 }
 
@@ -226,15 +249,28 @@ fun ListPreference(
 fun SwitchPreference(
     modifier: Modifier = Modifier,
     pref: Pref.BooleanPref,
-    isEnabled: Boolean = true,
+    index: Int = 0,
+    groupSize: Int = 1,
     onCheckedChange: ((Boolean) -> Unit) = {},
 ) {
+    val context = LocalContext.current
+    var isEnabled by remember(context.PrefsDependencies[pref]) {
+        mutableStateOf(context.PrefsDependencies[pref] ?: true)
+    }
     var checked by remember(OABX.prefFlag(pref.key, pref.defaultValue)) {
         mutableStateOf(OABX.prefFlag(pref.key, pref.defaultValue))
     }
     val check = { value: Boolean ->
         OABX.setPrefFlag(pref.key, value)
         checked = value
+    }
+    SideEffect {
+        CoroutineScope(Dispatchers.Default).launch {
+            context.getDefaultSharedPreferences()
+                .registerOnSharedPreferenceChangeListener { _, _ ->
+                    isEnabled = context.PrefsDependencies[pref] ?: true
+                }
+        }
     }
 
     BasePreference(
@@ -250,6 +286,8 @@ fun SwitchPreference(
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
         isEnabled = isEnabled,
+        index = index,
+        groupSize = groupSize,
         onClick = {
             onCheckedChange(!checked)
             check(!checked)
@@ -273,15 +311,29 @@ fun SwitchPreference(
 fun CheckboxPreference(
     modifier: Modifier = Modifier,
     pref: Pref.BooleanPref,
-    isEnabled: Boolean = true,
+    index: Int = 0,
+    groupSize: Int = 1,
     onCheckedChange: ((Boolean) -> Unit) = {},
 ) {
+    val context = LocalContext.current
+    var isEnabled by remember(context.PrefsDependencies[pref]) {
+        mutableStateOf(context.PrefsDependencies[pref] ?: true)
+    }
     var checked by remember(OABX.prefFlag(pref.key, pref.defaultValue)) {
         mutableStateOf(OABX.prefFlag(pref.key, pref.defaultValue))
     }
     val check = { checks: Boolean ->
         OABX.setPrefFlag(pref.key, checks)
         checked = checks
+    }
+
+    SideEffect {
+        CoroutineScope(Dispatchers.Default).launch {
+            context.getDefaultSharedPreferences()
+                .registerOnSharedPreferenceChangeListener { _, _ ->
+                    isEnabled = context.PrefsDependencies[pref] ?: true
+                }
+        }
     }
 
     BasePreference(
@@ -297,6 +349,8 @@ fun CheckboxPreference(
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
         isEnabled = isEnabled,
+        index = index,
+        groupSize = groupSize,
         onClick = {
             onCheckedChange(!checked)
             check(!checked)
@@ -320,9 +374,14 @@ fun CheckboxPreference(
 fun SeekBarPreference(
     modifier: Modifier = Modifier,
     pref: Pref.IntPref,
-    isEnabled: Boolean = true,
+    index: Int = 0,
+    groupSize: Int = 1,
     onValueChange: ((Int) -> Unit) = {},
 ) {
+    val context = LocalContext.current
+    var isEnabled by remember(context.PrefsDependencies[pref]) {
+        mutableStateOf(context.PrefsDependencies[pref] ?: true)
+    }
     val currentValue = OABX.prefInt(pref.key, pref.defaultValue)
     var sliderPosition by remember {
         mutableStateOf(
@@ -346,6 +405,15 @@ fun SeekBarPreference(
     }
     val last = pref.entries.size - 1
 
+    SideEffect {
+        CoroutineScope(Dispatchers.Default).launch {
+            context.getDefaultSharedPreferences()
+                .registerOnSharedPreferenceChangeListener { _, _ ->
+                    isEnabled = context.PrefsDependencies[pref] ?: true
+                }
+        }
+    }
+
     BasePreference(
         modifier = modifier,
         titleId = pref.titleId,
@@ -359,6 +427,8 @@ fun SeekBarPreference(
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
         isEnabled = isEnabled,
+        index = index,
+        groupSize = groupSize,
         bottomWidget = {
             Row {
                 Slider(

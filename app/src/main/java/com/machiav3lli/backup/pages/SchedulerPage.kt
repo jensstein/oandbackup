@@ -36,21 +36,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dbs.entity.Schedule
-import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.fragments.ScheduleSheet
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
-import com.machiav3lli.backup.ui.compose.item.TopBar
-import com.machiav3lli.backup.ui.compose.item.TopBarButton
 import com.machiav3lli.backup.ui.compose.recycler.ScheduleRecycler
 import com.machiav3lli.backup.utils.specialBackupsEnabled
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,37 +53,7 @@ fun SchedulerPage(viewModel: SchedulerViewModel) {
     val schedules by viewModel.schedules.observeAsState(null)
     val progress by viewModel.progress.observeAsState(Pair(false, 0f))
 
-    Scaffold(
-        containerColor = Color.Transparent,
-        topBar = {
-            TopBar(title = stringResource(id = R.string.sched_title)) {
-                TopBarButton(
-                    icon = painterResource(id = R.drawable.ic_blocklist),
-                    description = stringResource(id = R.string.sched_blocklist),
-                    onClick = {
-                        GlobalScope.launch(Dispatchers.IO) {
-                            val blocklistedPackages =
-                                (context as MainActivityX).viewModel.blocklist.value
-                                    ?.mapNotNull { it.packageName }.orEmpty()
-
-                            PackagesListDialogFragment(
-                                blocklistedPackages,
-                                MAIN_FILTER_DEFAULT,
-                                true
-                            ) { newList: Set<String> ->
-                                context.viewModel.updateBlocklist(
-                                    newList
-                                )
-                            }.show(
-                                context.supportFragmentManager,
-                                "BLOCKLIST_DIALOG"
-                            )
-                        }
-                    }
-                )
-            }
-        }
-    ) { paddingValues ->
+    Scaffold(containerColor = Color.Transparent) { paddingValues ->
         Column {
             AnimatedVisibility(visible = progress?.first == true) {
                 LinearProgressIndicator(

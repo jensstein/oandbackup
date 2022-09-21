@@ -22,7 +22,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -33,6 +32,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -48,31 +48,22 @@ import com.machiav3lli.backup.ALT_MODE_APK
 import com.machiav3lli.backup.ALT_MODE_BOTH
 import com.machiav3lli.backup.ALT_MODE_DATA
 import com.machiav3lli.backup.ALT_MODE_UNSET
-import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
-import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.fragments.AppSheet
-import com.machiav3lli.backup.fragments.SortFilterSheet
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.item.ActionButton
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
-import com.machiav3lli.backup.ui.compose.item.ExpandableSearchAction
-import com.machiav3lli.backup.ui.compose.item.TopBar
 import com.machiav3lli.backup.ui.compose.recycler.HomePackageRecycler
 import com.machiav3lli.backup.ui.compose.recycler.UpdatedPackageRecycler
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.applyFilter
-import com.machiav3lli.backup.utils.getStats
 import com.machiav3lli.backup.utils.sortFilterModel
 import com.machiav3lli.backup.viewmodels.HomeViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -80,11 +71,12 @@ import timber.log.Timber
 fun HomePage(viewModel: HomeViewModel) {
     // TODO include tags in search
     val context = LocalContext.current
+    val mainActivityX = context as MainActivityX
     var appSheet: AppSheet? = null
-    var sheetSortFilter: SortFilterSheet? = null
-    val list by (context as MainActivityX).viewModel.packageList.observeAsState(null)
+    val list by mainActivityX.viewModel.packageList.observeAsState(null)
+    val modelSortFilter by mainActivityX.modelSortFilter.collectAsState(context.sortFilterModel)
     val filteredList by viewModel.filteredList.observeAsState(null)
-    val query by viewModel.searchQuery.observeAsState("")
+    val query by mainActivityX.searchQuery.collectAsState(initial = "")
     val updatedApps = filteredList?.filter { it.isUpdated }
     var updatedVisible by remember(viewModel.filteredList.value) { mutableStateOf(false) }
     OABX.main?.viewModel?.isNeedRefresh?.observeForever {
@@ -92,7 +84,7 @@ fun HomePage(viewModel: HomeViewModel) {
     }
 
     val filterPredicate = { item: Package ->
-        query.isNullOrEmpty() || listOf(item.packageName, item.packageLabel)
+        query.isEmpty() || listOf(item.packageName, item.packageLabel)
             .find { it.contains(query, true) } != null
     }
     val queriedList = filteredList?.filter(filterPredicate)
@@ -101,19 +93,15 @@ fun HomePage(viewModel: HomeViewModel) {
 
     val batchConfirmListener = object : BatchDialogFragment.ConfirmListener {
         override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {
-            (context as MainActivityX).startBatchAction(true, selectedPackages, selectedModes) {
+            mainActivityX.startBatchAction(true, selectedPackages, selectedModes) {
                 it.removeObserver(this)
             }
         }
     }
 
-    LaunchedEffect(key1 = list) {
-        sheetSortFilter = SortFilterSheet(
-            context.sortFilterModel, getStats(list ?: mutableListOf())
-        )
+    LaunchedEffect(list, modelSortFilter) {
         try {
-            viewModel.filteredList.value =
-                list?.applyFilter(context.sortFilterModel, context)
+            viewModel.filteredList.value = list?.applyFilter(modelSortFilter, context)
         } catch (e: FileUtils.BackupLocationInAccessibleException) {
             Timber.e("Could not update application list: $e")
         } catch (e: StorageLocationNotConfiguredException) {
@@ -123,72 +111,12 @@ fun HomePage(viewModel: HomeViewModel) {
         }
     }
 
-
-    Scaffold(
-        containerColor = Color.Transparent,
-        topBar = {
-            TopBar(title = stringResource(id = R.string.main)) {
-                ExpandableSearchAction(
-                    query = viewModel.searchQuery.value.orEmpty(),
-                    onQueryChanged = { new ->
-                        viewModel.searchQuery.value = new
-                    },
-                    onClose = {
-                        viewModel.searchQuery.value = ""
-                    }
-                )
-            }
-        }
-    ) { paddingValues ->
+    Scaffold(containerColor = Color.Transparent) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
-            Row(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(horizontal = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                ElevatedActionButton(
-                    icon = painterResource(id = R.drawable.ic_blocklist),
-                    text = stringResource(id = R.string.sched_blocklist),
-                    positive = false
-                ) {
-                    GlobalScope.launch(Dispatchers.IO) {
-                        val blocklistedPackages =
-                            (context as MainActivityX).viewModel.blocklist.value
-                                ?.mapNotNull { it.packageName }.orEmpty()
-
-                        PackagesListDialogFragment(
-                            blocklistedPackages,
-                            MAIN_FILTER_DEFAULT,
-                            true
-                        ) { newList: Set<String> ->
-                            context.viewModel.updateBlocklist(newList)
-                        }.show(
-                            context.supportFragmentManager,
-                            "BLOCKLIST_DIALOG"
-                        )
-                    }
-                }
-                Spacer(modifier = Modifier.weight(1f))
-                ElevatedActionButton(
-                    icon = painterResource(id = R.drawable.ic_filter),
-                    text = stringResource(id = R.string.sort_and_filter),
-                    positive = true
-                ) {
-                    if (sheetSortFilter == null) sheetSortFilter = SortFilterSheet(
-                        (context as MainActivityX).sortFilterModel,
-                        getStats(list ?: mutableListOf())
-                    )
-                    sheetSortFilter?.showNow(
-                        (context as MainActivityX).supportFragmentManager,
-                        "SORTFILTER_SHEET"
-                    )
-                }
-            }
             AnimatedVisibility(visible = refreshing ?: false) {
                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
             }
@@ -207,7 +135,7 @@ fun HomePage(viewModel: HomeViewModel) {
                     if (appSheet != null) appSheet?.dismissAllowingStateLoss()
                     appSheet = AppSheet(item)
                     appSheet?.showNow(
-                        (context as MainActivityX).supportFragmentManager,
+                        mainActivityX.supportFragmentManager,
                         "Package ${item.packageName}"
                     )
                 }
@@ -258,7 +186,7 @@ fun HomePage(viewModel: HomeViewModel) {
                                     batchConfirmListener
                                 )
                                     .show(
-                                        (context as MainActivityX).supportFragmentManager,
+                                        mainActivityX.supportFragmentManager,
                                         "DialogFragment"
                                     )
                             }
@@ -271,7 +199,7 @@ fun HomePage(viewModel: HomeViewModel) {
                                 if (appSheet != null) appSheet?.dismissAllowingStateLoss()
                                 appSheet = AppSheet(item)
                                 appSheet?.showNow(
-                                    (context as MainActivityX).supportFragmentManager,
+                                    mainActivityX.supportFragmentManager,
                                     "Package ${item.packageName}"
                                 )
                             }
