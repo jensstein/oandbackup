@@ -232,7 +232,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         if (splitApksInBackup.isEmpty()) {
             Timber.d("[$packageName] The backup does not contain split apks")
         } else {
-            apksToRestore += splitApksInBackup.drop(0)
+            apksToRestore += splitApksInBackup.drop(0) // drop(0) means clone
             Timber.i("[%s] Package is splitted into %d apks", packageName, apksToRestore.size)
         }
         /* in newer android versions selinux rules prevent system_server
