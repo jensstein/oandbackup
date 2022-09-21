@@ -213,14 +213,16 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     open fun restorePackage(backupDir: StorageFile, backup: Backup) {
         val packageName = backup.packageName
         Timber.i("[$packageName] Restoring from $backupDir")
-        val baseApkFile = backupDir.findFile(BASE_APK_FILENAME)
-            ?: throw RestoreFailedException("$BASE_APK_FILENAME is missing in backup", null)
-        Timber.d("[$packageName] Found $BASE_APK_FILENAME in backup archive")
+        val apkTargetPath = File(backup.sourceDir ?: BASE_APK_FILENAME)
+        val baseApkName = apkTargetPath.name
+        val baseApkFile = backupDir.findFile(baseApkName)
+            ?: throw RestoreFailedException("$baseApkName is missing in backup", null)
+        Timber.d("[$packageName] Found $baseApkName in backup archive")
         val splitApksInBackup: Array<StorageFile> = try {
             backupDir.listFiles()
-                .filter { !it.isDirectory } // Forget about dictionaries immediately
-                .filter { it.name?.endsWith(".apk") == true } // Only apks are relevant
-                .filter { it.name != BASE_APK_FILENAME } // Base apk is a special case
+                .filter { it.name?.endsWith(".apk") == true } // Only apks are relevant (first because it's a cheap test)
+                .filter { !it.isDirectory } // Forget directories (in case it's called *.apk)
+                .filter { it.name != baseApkName } // Base apk is a special case
                 .toTypedArray()
         } catch (e: FileNotFoundException) {
             Timber.e("Restore APKs failed: %s", e.message)
