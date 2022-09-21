@@ -3,7 +3,6 @@ package com.machiav3lli.backup.preferences
 import android.content.Context
 import android.content.DialogInterface
 import androidx.appcompat.app.AlertDialog
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -72,9 +71,7 @@ fun ToolsPrefsPage(navController: NavHostController) {
         LogViewerPref
     )
 
-    AppTheme(
-        darkTheme = isSystemInDarkTheme()
-    ) {
+    AppTheme {
         Scaffold(
             containerColor = Color.Transparent,
             snackbarHost = { SnackbarHost(snackbarHostState) }

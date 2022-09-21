@@ -26,7 +26,6 @@ import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.biometric.BiometricPrompt
 import androidx.biometric.BiometricPrompt.PromptInfo
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -58,9 +57,7 @@ class IntroActivityX : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            AppTheme(
-                darkTheme = isSystemInDarkTheme()
-            ) {
+            AppTheme {
                 navController = rememberAnimatedNavController()
 
                 Scaffold(

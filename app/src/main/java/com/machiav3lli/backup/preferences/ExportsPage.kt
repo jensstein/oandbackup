@@ -17,7 +17,6 @@
  */
 package com.machiav3lli.backup.preferences
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,9 +45,7 @@ fun ExportsPage(viewModel: ExportsViewModel) {
         viewModel.refreshList()
     }
 
-    AppTheme(
-        darkTheme = isSystemInDarkTheme()
-    ) {
+    AppTheme {
         Scaffold(
             floatingActionButton = {
                 ExtendedFloatingActionButton(onClick = viewModel::exportSchedules) {

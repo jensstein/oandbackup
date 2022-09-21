@@ -1,6 +1,5 @@
 package com.machiav3lli.backup.preferences
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -67,9 +66,7 @@ fun ServicePrefsPage() {
         HousekeepingPref
     )
 
-    AppTheme(
-        darkTheme = isSystemInDarkTheme()
-    ) {
+    AppTheme {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(8.dp),

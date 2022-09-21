@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,9 +33,9 @@ import com.machiav3lli.backup.accentColorItems
 import com.machiav3lli.backup.dialogs.BaseDialog
 import com.machiav3lli.backup.dialogs.EnumDialogUI
 import com.machiav3lli.backup.dialogs.ListDialogUI
+import com.machiav3lli.backup.preferences.ui.PrefsGroup
 import com.machiav3lli.backup.secondaryColorItems
 import com.machiav3lli.backup.themeItems
-import com.machiav3lli.backup.preferences.ui.PrefsGroup
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.ColorDeData
 import com.machiav3lli.backup.ui.compose.theme.ColorExodus
@@ -92,9 +91,7 @@ fun UserPrefsPage() {
             }
         }
 
-    AppTheme(
-        darkTheme = isSystemInDarkTheme()
-    ) {
+    AppTheme {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(8.dp),
@@ -111,8 +108,7 @@ fun UserPrefsPage() {
         if (openDialog.value) {
             if (dialogsPref == BackupFolderPref) {
                 launcher.launch(BACKUP_DIRECTORY_INTENT)
-            }
-            else BaseDialog(openDialogCustom = openDialog) {
+            } else BaseDialog(openDialogCustom = openDialog) {
                 when (dialogsPref) {
                     is Pref.ListPref -> ListDialogUI(
                         pref = dialogsPref as Pref.ListPref,

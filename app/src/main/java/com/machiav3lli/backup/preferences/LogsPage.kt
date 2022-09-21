@@ -17,7 +17,6 @@
  */
 package com.machiav3lli.backup.preferences
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,9 +40,7 @@ fun LogsPage(viewModel: LogViewModel) {
         viewModel.refreshList()
     }
 
-    AppTheme(
-        darkTheme = isSystemInDarkTheme()
-    ) {
+    AppTheme {
         Scaffold { paddingValues ->
             LogRecycler(
                 modifier = Modifier

@@ -29,7 +29,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -195,9 +194,7 @@ class MainActivityX : BaseActivity() {
         runOnUiThread { showEncryptionDialog() }
 
         setContent {
-            AppTheme(
-                darkTheme = isSystemInDarkTheme()
-            ) {
+            AppTheme {
                 val navController = rememberAnimatedNavController()
                 val query by searchQuery.collectAsState(initial = "")
                 val list by viewModel.packageList.observeAsState(null)

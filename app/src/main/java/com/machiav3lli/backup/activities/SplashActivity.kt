@@ -22,7 +22,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.PowerManager
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -71,9 +70,7 @@ fun DefaultPreview() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RootMissing(activity: Activity? = null) {
-    AppTheme(
-        darkTheme = isSystemInDarkTheme()
-    ) {
+    AppTheme {
         Scaffold { paddingValues ->
             Column(
                 verticalArrangement = Arrangement.Center,
