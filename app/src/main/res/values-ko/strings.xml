@@ -151,7 +151,7 @@
     <string name="ignore_battery_optimization_message">백업은 종종 중지될 수 있습니다. 배터리 최적화를 끄면 이를 막을 수 있습니다</string>
     <string name="ignore_battery_optimization_not_supported">안타깝게도 이 디바이스는 배터리 최적화 예외를 지원하지 않습니다!</string>
     <string name="failed_unzipping">데이터 압축을 푸는 동안 오류가 발생했습니다. 암호를 확인하십시오!</string>
-    <string name="split_apks">분할 APK:</string>
+    <string name="split_apks">분할 APK</string>
     <string name="calllogs_permission_title">통화 기록 권한</string>
     <string name="grant_calllogs_message">통화 기록 백업/복구에 필수적입니다.</string>
     <string name="contacts_permission_title">연락처 권한</string>
@@ -290,7 +290,7 @@
     <string name="applyFilter">적용</string>
     <string name="backup_filters">백업 필터:</string>
     <string name="grant_smsmms_message">SMS/MMS 백업/복구에 필수적입니다.</string>
-    <string name="enable_encryption_message">디바이스의 데이터를 암호화하지 않은 상태로 보관하는 것은 안전하지 않습니다. 데이터의 안전을 위해 암호화를 활성화하고 암호를 설정하십시오.</string>
+    <string name="enable_encryption_message">기기의 데이터를 암호화하지 않은 상태로 보관하는 것은 안전하지 않습니다. 데이터의 안전을 위해 암호화를 활성화하고 암호를 설정하십시오.</string>
     <string name="grant_usage_access_message">앱 파일의 크기 정보를 알기 위해 필수적입니다</string>
     <string name="app_s_icon">앱 아이콘</string>
     <string name="bothBackedUp">APK 및 데이터</string>
@@ -325,7 +325,7 @@
     <string name="help">도움말</string>
     <string name="no_file_manager_message">SAF를 관리할 파일 매니저가 없습니다. 내장 파일 매니저를 비활성화 했을 수 있습니다. 복원하거나 다시 활성화하십시오.</string>
     <string name="dialog_export">내보내기</string>
-    <string name="sched_exported">스케줄을 성공적으로 내보냈습니다</string>
+    <string name="sched_exported">일정을 성공적으로 내보냈습니다</string>
     <string name="schedule">스케줄</string>
     <string name="dismiss">취소</string>
     <string name="root_is_mandatory">앱은 서로 격리되어 있으므로 앱 데이터를 백업 및 복원하려면 superuser 액세스가 필수입니다.</string>
