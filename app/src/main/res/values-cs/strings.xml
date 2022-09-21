@@ -242,7 +242,7 @@
     <string name="encrypted_data_title">Šifrovaná data:</string>
     <string name="ignore_battery_optimization_title">Optimalizace baterie</string>
     <string name="ignore_battery_optimization_message">Zálohy se někdy mohou zastavit. Pro zabránění byste měli vypnout optimalizaci baterie</string>
-    <string name="split_apks">Rozdělená APK:</string>
+    <string name="split_apks">Rozdělená APK</string>
     <string name="backup_filters">Filtry záloh:</string>
     <string name="smsmms_permission_title">Oprávnění SMS/MMS</string>
     <string name="grant_smsmms_message">To je nezbytné pro zálohování/obnovu SMS/MMS.</string>
