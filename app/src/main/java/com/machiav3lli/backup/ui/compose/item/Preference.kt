@@ -151,7 +151,6 @@ fun LaunchPreference(
             if (pref.iconId != -1) PrefIcon(
                 iconId = pref.iconId,
                 text = stringResource(id = pref.titleId),
-                tint = pref.iconTint
             )
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
@@ -192,7 +191,6 @@ fun EnumPreference(
             if (pref.iconId != -1) PrefIcon(
                 iconId = pref.iconId,
                 text = stringResource(id = pref.titleId),
-                tint = pref.iconTint
             )
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
@@ -234,7 +232,6 @@ fun ListPreference(
             if (pref.iconId != -1) PrefIcon(
                 iconId = pref.iconId,
                 text = stringResource(id = pref.titleId),
-                tint = pref.iconTint
             )
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
@@ -281,7 +278,6 @@ fun SwitchPreference(
             if (pref.iconId != -1) PrefIcon(
                 iconId = pref.iconId,
                 text = stringResource(id = pref.titleId),
-                tint = pref.iconTint
             )
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
@@ -344,7 +340,6 @@ fun CheckboxPreference(
             if (pref.iconId != -1) PrefIcon(
                 iconId = pref.iconId,
                 text = stringResource(id = pref.titleId),
-                tint = pref.iconTint
             )
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
@@ -422,7 +417,6 @@ fun SeekBarPreference(
             if (pref.iconId != -1) PrefIcon(
                 iconId = pref.iconId,
                 text = stringResource(id = pref.titleId),
-                tint = pref.iconTint
             )
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
