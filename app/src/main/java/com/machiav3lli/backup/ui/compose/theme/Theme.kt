@@ -26,7 +26,7 @@ fun AppTheme(
     CompositionLocalProvider(LocalShapes provides ShapeSize()) {
         MaterialTheme(
             colorScheme = when {
-                styleTheme == THEME_DYNAMIC && isSystemInDarkTheme() ->
+                styleTheme == THEME_DYNAMIC && darkTheme ->
                     dynamicDarkColorScheme(context)
                 styleTheme == THEME_DYNAMIC ->
                     dynamicLightColorScheme(context)
@@ -38,6 +38,7 @@ fun AppTheme(
                     tertiary = secondaryColor,
                     tertiaryContainer = secondaryColor
                         .darker(0.2f),
+                    surfaceTint = primaryColor
                 )
                 else -> LightColors.copy(
                     primary = primaryColor,
@@ -47,6 +48,7 @@ fun AppTheme(
                     tertiary = secondaryColor,
                     tertiaryContainer = secondaryColor
                         .brighter(0.2f),
+                    surfaceTint = primaryColor
                 )
             },
             content = content
@@ -76,7 +78,7 @@ private val LightColors = lightColorScheme(
     error = LightError,
     onError = LightOnError,
     errorContainer = LightError.brighter(0.3f),
-    onErrorContainer = LightOnError.darker(0.3f)
+    onErrorContainer = LightOnError.darker(0.3f),
 )
 
 private val DarkColors = darkColorScheme(

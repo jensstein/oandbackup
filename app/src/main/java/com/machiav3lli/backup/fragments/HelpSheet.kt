@@ -27,7 +27,6 @@ import android.view.ViewGroup
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
@@ -98,9 +97,7 @@ class HelpSheet : BaseSheet() {
     private fun HelpPage() {
         val nestedScrollConnection = rememberNestedScrollInteropConnection()
 
-        AppTheme(
-            darkTheme = isSystemInDarkTheme()
-        ) {
+        AppTheme {
             Scaffold(
                 topBar = {
                     Row(

@@ -23,7 +23,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -88,9 +87,7 @@ class SortFilterSheet(
     fun SortFilterPage() {
         val nestedScrollConnection = rememberNestedScrollInteropConnection()
 
-        AppTheme(
-            darkTheme = isSystemInDarkTheme()
-        ) {
+        AppTheme {
             mSortFilterModel.let {
                 Scaffold(
                     containerColor = Color.Transparent,

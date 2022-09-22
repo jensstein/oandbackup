@@ -29,7 +29,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -272,9 +271,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
         val (checked, check) = mutableStateOf(viewModel.schedule.value?.enabled == true)
         val nestedScrollConnection = rememberNestedScrollInteropConnection()
 
-        AppTheme(
-            darkTheme = isSystemInDarkTheme()
-        ) {
+        AppTheme {
             schedule?.let {
                 Scaffold(
                     containerColor = Color.Transparent,

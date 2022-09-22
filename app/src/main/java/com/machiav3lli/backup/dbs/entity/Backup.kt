@@ -62,7 +62,7 @@ data class Backup constructor(
     var hasMediaData: Boolean = false,
     var compressionType: String? = "gz",
     var cipherType: String? = null,
-    var iv: ByteArray?,
+    var iv: ByteArray? = byteArrayOf(),
     var cpuArch: String?,
     var permissions: List<String> = listOf(),
     var size: Long = 0,
