@@ -430,16 +430,16 @@ fun Context.checkBatteryOptimization(powerManager: PowerManager)
 
 
 val Context.isBackupDeviceProtectedData: Boolean
-    get() = getDefaultSharedPreferences().getBoolean(PREFS_DEVICEPROTECTEDDATA, true)
+    get() = OABX.prefFlag(PREFS_DEVICEPROTECTEDDATA, true)
 
 val Context.isBackupExternalData: Boolean
-    get() = getDefaultSharedPreferences().getBoolean(PREFS_EXTERNALDATA, false)
+    get() = OABX.prefFlag(PREFS_EXTERNALDATA, true)
 
 val Context.isBackupObbData: Boolean
-    get() = getDefaultSharedPreferences().getBoolean(PREFS_OBBDATA, false)
+    get() = OABX.prefFlag(PREFS_OBBDATA, true)
 
 val Context.isBackupMediaData: Boolean
-    get() = getDefaultSharedPreferences().getBoolean(PREFS_MEDIADATA, false)
+    get() = OABX.prefFlag(PREFS_MEDIADATA, true)
 
 val Context.isPauseApps: Boolean
     get() = getDefaultSharedPreferences().getBoolean(PREFS_PAUSEAPPS, true)
