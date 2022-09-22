@@ -23,6 +23,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.machiav3lli.backup.NAV_MAIN
 import com.machiav3lli.backup.NAV_PREFS
+import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.PREFS_SQUEEZE_NAV_TEXT
+import com.machiav3lli.backup.ui.compose.item.ResponsiveText
 
 @Composable
 fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
@@ -70,12 +73,18 @@ fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
                     )
                 },
                 label = {
-                    if (!selected)
+                    if (!selected && OABX.prefFlag(PREFS_SQUEEZE_NAV_TEXT, false))
+                        ResponsiveText(
+                            text = stringResource(id = item.title),
+                            maxLines = 1,
+                            textStyle = MaterialTheme.typography.bodyMedium,
+                        )
+                    else if (!selected)
                         Text(
                             text = stringResource(id = item.title),
                             style = MaterialTheme.typography.bodyMedium,
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
+                            overflow = TextOverflow.Ellipsis
                         )
                 },
                 colors = NavigationBarItemDefaults.colors(
