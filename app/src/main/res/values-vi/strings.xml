@@ -63,7 +63,7 @@
     <string name="welcome_to_oabx">Chào mừng đến Neo Backup!</string>
     <string name="storage_access">Quyền truy cập bộ nhớ</string>
     <string name="sort_and_filter">Sắp xếp &amp; Lọc</string>
-    <string name="enable_encryption_message">Việc giữ cho dữ liệu của bạn trên thiết bị không được mã hoá là không an toàn. Để dữ liệu của bạn được an toàn, hãy bật mã hoá và đặt một mật khẩu.</string>
+    <string name="enable_encryption_message">Việc giữ cho dữ liệu của bạn trên thiết bị không được mã hoá là không an toàn. Vì sự an toàn dữ liệu của bạn, hãy bật mã hoá và đặt một mật khẩu.</string>
     <string name="enable_encryption_title">Mã hoá dữ liệu</string>
     <string name="help_appTypeHint">* Biểu tượng loại ứng dụng sẽ là xám nếu ứng dụng bị gỡ cài đặt và xám đậm nếu ứng dụng bị tắt.</string>
     <string name="help_legend">Chú giải:</string>
@@ -77,7 +77,7 @@
     <string name="grant_usage_access_message">Việc này là cần thiết để lấy thông tin về kích cỡ các tệp của các ứng dụng</string>
     <string name="grant_usage_access_title">Cấp quyền truy cập dữ liệu sử dụng</string>
     <string name="backup_filters">Bộ lọc sao lưu:</string>
-    <string name="split_apks">APK tách:</string>
+    <string name="split_apks">Tách rời APKs</string>
     <string name="failed_unzipping">Lỗi khi giải nén zip dữ liệu, hãy kiểm tra mật khẩu mã hoá!</string>
     <string name="ignore_battery_optimization_not_supported">Không may mắn là thiết bị này không hỗ trợ bỏ qua tối ưu hoá pin!</string>
     <string name="ignore_battery_optimization_message">Các bản sao lưu đôi khi có thể dừng. Để ngăn chặn điều này, bạn nên tắt tối ưu hoá pin</string>
