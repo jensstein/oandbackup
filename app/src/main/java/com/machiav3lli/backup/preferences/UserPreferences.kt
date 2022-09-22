@@ -23,6 +23,7 @@ import com.machiav3lli.backup.PREFS_BIOMETRICLOCK
 import com.machiav3lli.backup.PREFS_DEVICELOCK
 import com.machiav3lli.backup.PREFS_LANGUAGES
 import com.machiav3lli.backup.PREFS_LOADINGTOASTS
+import com.machiav3lli.backup.PREFS_MULTILINE_INFOCHIPS
 import com.machiav3lli.backup.PREFS_OLDBACKUPS
 import com.machiav3lli.backup.PREFS_PATH_BACKUP_DIRECTORY
 import com.machiav3lli.backup.PREFS_REMEMBERFILTERING
@@ -42,6 +43,7 @@ import com.machiav3lli.backup.ui.compose.theme.ColorExodus
 import com.machiav3lli.backup.ui.compose.theme.ColorExtDATA
 import com.machiav3lli.backup.ui.compose.theme.ColorOBB
 import com.machiav3lli.backup.ui.compose.theme.ColorSpecial
+import com.machiav3lli.backup.ui.compose.theme.ColorSystem
 import com.machiav3lli.backup.ui.compose.theme.ColorUpdated
 import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
@@ -67,6 +69,7 @@ fun UserPrefsPage() {
         LoadingToastsPref,
         DeviceLockPref,
         BiometricLockPref,
+        MultilineInfoChipsPref,
         DaysOldPref,
         RememberFilterPref
     )
@@ -197,6 +200,15 @@ val BiometricLockPref = Pref.BooleanPref(
     summaryId = R.string.prefs_biometriclock_summary,
     iconId = R.drawable.ic_biometric,
     iconTint = ColorDeData,
+    defaultValue = false
+)
+
+val MultilineInfoChipsPref = Pref.BooleanPref(
+    key = PREFS_MULTILINE_INFOCHIPS,
+    titleId = R.string.prefs_multilineinfochips,
+    summaryId = R.string.prefs_multilineinfochips_summary,
+    iconId = R.drawable.ic_biometric,
+    iconTint = ColorSystem,
     defaultValue = false
 )
 

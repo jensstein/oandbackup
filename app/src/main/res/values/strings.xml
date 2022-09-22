@@ -103,6 +103,8 @@
     <string name="prefs_devicelock_summary">Secure the app with device credentials</string>
     <string name="prefs_biometriclock">Biometric lock</string>
     <string name="prefs_biometriclock_summary">Secure the app with the device\'s biometric lock (e.g. fingerprint, face unlock)</string>
+    <string name="prefs_multilineinfochips">Multi-line info chips</string>
+    <string name="prefs_multilineinfochips_summary">Allow info chips in app sheet to span over multi-lines</string>
     <string name="prefs_rememberfiltering">Remember sort and filter</string>
     <string name="prefs_rememberfiltering_summary">Saves the chosen sorting and filtering method. Only those marked by a checkbox in the menu are considered.</string>
     <string name="prefs_oldbackups">Filter backups by age</string>
