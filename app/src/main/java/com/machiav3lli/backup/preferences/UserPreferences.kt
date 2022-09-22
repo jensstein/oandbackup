@@ -28,6 +28,7 @@ import com.machiav3lli.backup.PREFS_OLDBACKUPS
 import com.machiav3lli.backup.PREFS_PATH_BACKUP_DIRECTORY
 import com.machiav3lli.backup.PREFS_REMEMBERFILTERING
 import com.machiav3lli.backup.PREFS_SECONDARY_COLOR_X
+import com.machiav3lli.backup.PREFS_SQUEEZE_NAV_TEXT
 import com.machiav3lli.backup.PREFS_THEME_X
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.accentColorItems
@@ -70,6 +71,7 @@ fun UserPrefsPage() {
         DeviceLockPref,
         BiometricLockPref,
         MultilineInfoChipsPref,
+        SqueezeNavTextPref,
         DaysOldPref,
         RememberFilterPref
     )
@@ -207,8 +209,15 @@ val MultilineInfoChipsPref = Pref.BooleanPref(
     key = PREFS_MULTILINE_INFOCHIPS,
     titleId = R.string.prefs_multilineinfochips,
     summaryId = R.string.prefs_multilineinfochips_summary,
-    iconId = R.drawable.ic_biometric,
     iconTint = ColorSystem,
+    defaultValue = false
+)
+
+val SqueezeNavTextPref = Pref.BooleanPref(
+    key = PREFS_SQUEEZE_NAV_TEXT,
+    titleId = R.string.prefs_squeezenavtext,
+    summaryId = R.string.prefs_squeezenavtext_summary,
+    iconTint = ColorOBB,
     defaultValue = false
 )
 
