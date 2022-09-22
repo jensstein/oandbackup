@@ -168,7 +168,7 @@
     <string name="ignore_battery_optimization_message">Los respaldos podrían detenerse algunas veces. Para evitarlo, deberías desactivar la optimización de batería</string>
     <string name="ignore_battery_optimization_not_supported">Desafortunadamente, ¡este dispositivo no soporta desactivar la optimización de bateria!</string>
     <string name="failed_unzipping">Error descomprimiendo los datos, ¡revisa la contraseña de cifrado!</string>
-    <string name="split_apks">Dividir APKs:</string>
+    <string name="split_apks">Dividir los APKs</string>
     <string name="backup_filters">Filtros de respaldo:</string>
     <string name="grant_usage_access_title">Garantizar acceso al uso</string>
     <string name="grant_usage_access_message">Es esencial para obtener la información de los tamaños de los archivos de las aplicaciones</string>
@@ -349,14 +349,14 @@
     <string name="sortDesc">Descendente</string>
     <string name="prefs_loadingtoasts_summary">Mostrando las notificaciones del sistema mientras se carga la lista</string>
     <string name="dismiss">Descartar</string>
-    <string name="supended_apps_cleanup">Limpiar residuos de aplicaciones suspendidas</string>
+    <string name="supended_apps_cleanup">limpiar las aplicaciones suspendidas sobrantes</string>
     <string name="prefs_loadingtoasts">Cargando las notificaciones del sistema</string>
     <string name="prefs_theme_dynamic">Tema dinámico (si está disponible)</string>
     <string name="add_tag">Agregar nueva etiqueta</string>
     <string name="edit_note">Editar nota</string>
-    <string name="root_is_mandatory">Debido a que las aplicaciones están aisladas entre sí, el acceso de superusuario es obligatorio para poder realizar copias de seguridad y restaurar sus datos.</string>
-    <string name="enabled">Habilitado</string>
-    <string name="see_faq">¡Ver la Lista de Preguntas Frecuentes!</string>
+    <string name="root_is_mandatory">Dado que las aplicaciones están aisladas unas de otras, el acceso de superusuario es obligatorio para poder hacer copias de seguridad y restaurar sus datos.</string>
+    <string name="enabled">Activado</string>
+    <string name="see_faq">Consulte las preguntas frecuentes</string>
     <string name="sortAppDataSize">Tamaño de los datos de la aplicación</string>
     <string name="dialog_export_schedules">Exportar mis horarios</string>
     <string name="delete">Borrar</string>
