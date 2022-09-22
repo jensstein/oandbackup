@@ -359,6 +359,6 @@
     <string name="see_faq">Consulte las preguntas frecuentes</string>
     <string name="sortAppDataSize">Tamaño de los datos de la aplicación</string>
     <string name="dialog_export_schedules">Exportar mis horarios</string>
-    <string name="delete">Borrar</string>
+    <string name="delete">Eliminar</string>
     <string name="root_missing">¡Falta ROOT!</string>
 </resources>
