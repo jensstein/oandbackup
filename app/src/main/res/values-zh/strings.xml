@@ -223,7 +223,7 @@
     <string name="stats_updated">已更新</string>
     <string name="radio_launchable">可启动的应用</string>
     <string name="prefs_allowdowngrade">允许降级还原</string>
-    <string name="prefs_allowdowngrade_summary">允许还原的应用程序版本比已安装应用程序的版本更旧。</string>
+    <string name="prefs_allowdowngrade_summary">允许还原到比已安装版本要老的版本（仅适用于可调试版本）。</string>
     <string name="prefs_restoreallpermissions">全权限还原</string>
     <string name="prefs_restoreallpermissions_summary">还原应用程序时授予应用所需的全部权限。</string>
     <string name="help_faq">常见问题</string>
