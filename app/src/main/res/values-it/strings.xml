@@ -228,7 +228,7 @@
     <string name="stats_updated">Aggiornato</string>
     <string name="radio_launchable">App avviabili</string>
     <string name="prefs_allowdowngrade">Consenti l\'installazione di una versione anteriore</string>
-    <string name="prefs_allowdowngrade_summary">Consenti il ripristino di una versione precedente dell\'app installata.</string>
+    <string name="prefs_allowdowngrade_summary">Consenti il ripristino di una versione precedente dell\'app installata (si applica solo alle versioni di cui è possibile eseguire il debug).</string>
     <string name="prefs_restoreallpermissions">Ripristina con tutte le autorizzazioni</string>
     <string name="prefs_restoreallpermissions_summary">Assegna all\'app ripristinata tutte le autorizzazioni richieste.</string>
     <string name="help_faq">Domande frequenti</string>
@@ -362,4 +362,5 @@
     <string name="prefs_user_short">Personale</string>
     <string name="prefs_service_short">Servizio</string>
     <string name="prefs_advanced_short">Avanzate</string>
+    <string name="prefs_squeezenavtext_summary">Consenti il ridimensionamento del testo sotto gli elementi della barra di navigazione per adattarlo alla larghezza disponibile.</string>
 </resources>
