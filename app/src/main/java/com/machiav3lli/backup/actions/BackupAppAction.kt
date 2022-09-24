@@ -68,7 +68,7 @@ import java.io.IOException
 import java.io.OutputStream
 import java.nio.charset.StandardCharsets
 
-val COMPRESSION_ALGORITHM = "gz"
+const val COMPRESSION_ALGORITHM = "gz"
 
 open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellHandler) :
     BaseAppAction(context, work, shell) {

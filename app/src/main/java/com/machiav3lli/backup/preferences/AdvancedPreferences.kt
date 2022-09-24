@@ -17,7 +17,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.PREFS_ALLOWDOWNGRADE
-import com.machiav3lli.backup.PREFS_ALLOWSHADOWINGDEFAULT
 import com.machiav3lli.backup.PREFS_BACKUPTARCMD
 import com.machiav3lli.backup.PREFS_CACHEFILELISTS
 import com.machiav3lli.backup.PREFS_CACHEONUPDATE
@@ -39,7 +38,6 @@ import com.machiav3lli.backup.PREFS_REFRESHAPPINFOTIMEOUT
 import com.machiav3lli.backup.PREFS_RESTOREAVOIDTEMPCOPY
 import com.machiav3lli.backup.PREFS_RESTORETARCMD
 import com.machiav3lli.backup.PREFS_RESTOREWITHALLPERMISSIONS
-import com.machiav3lli.backup.PREFS_SHADOWROOTFILE
 import com.machiav3lli.backup.PREFS_STRICTHARDLINKS
 import com.machiav3lli.backup.PREFS_USEALARMCLOCK
 import com.machiav3lli.backup.PREFS_USEEXACTALARM
@@ -232,13 +230,13 @@ val RestoreAvoidTempCopyPref = BooleanPref(
 )
 
 val pref_allowShadowingDefault = BooleanPref(
-    key = "dev." + PREFS_ALLOWSHADOWINGDEFAULT,
+    key = "dev.allowShadowingDefault",
     summaryId = R.string.prefs_allowshadowingdefault_summary,
     defaultValue = false
 )
 
 val pref_shadowRootFile = BooleanPref(
-    key = "dev." + PREFS_SHADOWROOTFILE,
+    key = "dev.shadowRootFile",
     summaryId = R.string.prefs_shadowrootfile_summary,
     defaultValue = false
 )

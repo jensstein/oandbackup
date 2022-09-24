@@ -9,17 +9,16 @@ import androidx.core.database.getIntOrNull
 import androidx.core.database.getLongOrNull
 import androidx.core.database.getStringOrNull
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_ALLOWSHADOWINGDEFAULT
 import com.machiav3lli.backup.PREFS_CACHEFILELISTS
 import com.machiav3lli.backup.PREFS_CACHEURIS
 import com.machiav3lli.backup.PREFS_COLUMNNAMESAF
 import com.machiav3lli.backup.PREFS_INVALIDATESELECTIVE
-import com.machiav3lli.backup.PREFS_SHADOWROOTFILE
-import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
 import com.machiav3lli.backup.handler.LogsHandler.Companion.unhandledException
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
+import com.machiav3lli.backup.preferences.pref_allowShadowingDefault
+import com.machiav3lli.backup.preferences.pref_shadowRootFile
 import com.machiav3lli.backup.utils.suRecursiveCopyFilesToDocument
 import timber.log.Timber
 import java.io.File
@@ -251,16 +250,13 @@ open class StorageFile {
         context: Context?,
         uri: Uri?,
         name: String? = null,
-        allowShadowing: Boolean = OABX.prefFlag(
-            PREFS_ALLOWSHADOWINGDEFAULT,
-            false
-        ) // Storage files that should be shadowable should be explicitly declared as such
+        allowShadowing: Boolean = pref_allowShadowingDefault.value // Storage files that should be shadowable should be explicitly declared as such
     ) {
         this.parent = parent
         this.context = context
         this._uri = uri
         name?.let { this.name = it }
-        if (OABX.prefFlag(PREFS_SHADOWROOTFILE, false) && allowShadowing) {
+        if (pref_shadowRootFile.value && allowShadowing) {
             fun isValidPath(file: RootFile?): Boolean =
                 file?.let { file.exists() && file.canRead() && file.canWrite() } ?: false
             parent ?: run {
