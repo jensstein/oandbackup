@@ -146,7 +146,7 @@
     <string name="prefs_stopcont_summary">Chỉ dành cho chuyên gia: Việc này có thể giúp, nếu ứng dụng đang thay đổi các tệp trong khi sao lưu và việc sao lưu thất bại.</string>
     <string name="prefs_stopcont">Dừng-tiếp tục xử lý trước và sau các ứng dụng khi sao lưu/khôi phục</string>
     <string name="prefs_allowdowngrade">Cho phép hạ cấp</string>
-    <string name="prefs_allowdowngrade_summary">Cho phép khôi phục một phiên bản cũ hơn của ứng dụng đã cài đặt.</string>
+    <string name="prefs_allowdowngrade_summary">Cho phép khôi phục một phiên bản cũ hơn của ứng dụng đã cài đặt (chỉ áp dụng cho các phiên bản có thể vá lỗi).</string>
     <string name="prefs_restoreallpermissions">Khôi phục với tất cả quyền</string>
     <string name="prefs_restoreallpermissions_summary">Cho ứng dụng được khôi phục tất cả quyền mà nó hỏi.</string>
     <string name="prefs_disableverification_summary">Tắt tuỳ chọn cho nhà phát triển này trong khi khôi phục các tệp APK và bật lại nó sau đó. Giải quyết lỗi: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
