@@ -8,7 +8,13 @@ import com.machiav3lli.backup.ui.compose.item.LaunchPreference
 import com.machiav3lli.backup.ui.compose.item.ListPreference
 import com.machiav3lli.backup.ui.compose.item.SeekBarPreference
 import com.machiav3lli.backup.ui.compose.item.SwitchPreference
+import com.machiav3lli.backup.ui.item.BooleanPref
+import com.machiav3lli.backup.ui.item.EnumPref
+import com.machiav3lli.backup.ui.item.IntPref
+import com.machiav3lli.backup.ui.item.ListPref
+import com.machiav3lli.backup.ui.item.PasswordPref
 import com.machiav3lli.backup.ui.item.Pref
+import com.machiav3lli.backup.ui.item.StringPref
 import com.machiav3lli.backup.utils.backupDirConfigured
 
 @Composable
@@ -18,35 +24,52 @@ fun PrefsBuilder(
     index: Int,
     size: Int,
 ) {
-    val context = LocalContext.current
-
     when (pref) {
-        is Pref.BooleanPref -> SwitchPreference(
+
+        is BooleanPref -> SwitchPreference(
             pref = pref,
             index = index,
             groupSize = size,
         )
-        is Pref.IntPref -> SeekBarPreference(
+
+        is IntPref     -> SeekBarPreference(
             pref = pref,
             index = index,
             groupSize = size,
         )
-        is Pref.StringPref -> LaunchPreference(
+
+        is PasswordPref  -> LaunchPreference(   // place before StringPref, because it's derived
             pref = pref,
-            summary = if (pref == BackupFolderPref) context.backupDirConfigured
-            else null,
+            summary = null,
             index = index,
             groupSize = size,
-        ) { onDialogPref(pref) }
-        is Pref.ListPref -> ListPreference(
+        ) {
+            onDialogPref(pref)
+        }
+
+        is StringPref  -> LaunchPreference(
+            pref = pref,
+            summary = pref.value,
+            index = index,
+            groupSize = size,
+        ) {
+            onDialogPref(pref)
+        }
+
+        is ListPref   -> ListPreference(
             pref = pref,
             index = index,
             groupSize = size,
-        ) { onDialogPref(pref) }
-        is Pref.EnumPref -> EnumPreference(
+        ) {
+            onDialogPref(pref)
+        }
+
+        is EnumPref   -> EnumPreference(
             pref = pref,
             index = index,
             groupSize = size,
-        ) { onDialogPref(pref) }
+        ) {
+            onDialogPref(pref)
+        }
     }
 }

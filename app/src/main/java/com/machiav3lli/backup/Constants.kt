@@ -24,6 +24,11 @@ import com.machiav3lli.backup.preferences.BiometricLockPref
 import com.machiav3lli.backup.preferences.ConfirmEncryptionPasswordPref
 import com.machiav3lli.backup.preferences.DeviceLockPref
 import com.machiav3lli.backup.preferences.EncryptionPasswordPref
+import com.machiav3lli.backup.preferences.EncryptionPref
+import com.machiav3lli.backup.preferences.pref_allowShadowingDefault
+import com.machiav3lli.backup.preferences.pref_pauseApps
+import com.machiav3lli.backup.preferences.pref_pmSuspend
+import com.machiav3lli.backup.preferences.pref_shadowRootFile
 import com.machiav3lli.backup.ui.item.ChipItem
 import com.machiav3lli.backup.ui.item.Legend
 import com.machiav3lli.backup.ui.item.Link
@@ -97,7 +102,6 @@ const val PREFS_DISABLEVERIFICATION = "disableVerification"
 const val PREFS_RESTOREWITHALLPERMISSIONS = "giveAllPermissions"
 const val PREFS_ALLOWDOWNGRADE = "allowDowngrade"
 const val PREFS_CANCELONSTART = "cancelOnStart"
-const val PREFS_SHOW_INFO_LOG = "showInfoLogBar"
 const val PREFS_CACHEPACKAGES = "cachePackages"
 const val PREFS_CACHEONUPDATE = "usePackageCacheOnUpdate"
 const val PREFS_COLUMNNAMESAF = "useColumnNameSAF"
@@ -124,7 +128,6 @@ const val PREFS_MAXRETRIESPERPACKAGE = "maxRetriesPerPackage"
 const val PREFS_DELAYBEFOREREFRESHAPPINFO = "delayBeforeRefreshAppInfo"
 const val PREFS_REFRESHAPPINFOTIMEOUT = "refreshAppInfoTimeout"
 const val PREFS_REFRESHTIMEOUT_DEFAULT = 30
-const val PREFS_FAKEBACKUPSECONDS = "fakeBackupSeconds"
 const val PREFS_BATCH_DELETE = "batchDelete"
 const val PREFS_COPYSELF = "copySelfApk"
 const val PREFS_SCHEDULESEXPORTIMPORT = "schedulesExportImport"
@@ -135,8 +138,10 @@ val Context.PrefsDependencies: Map<Pref, Boolean>
     get() = mutableMapOf(
         BiometricLockPref to (isBiometricLockAvailable() && isDeviceLockEnabled()),
         DeviceLockPref to isDeviceLockAvailable(),
-        EncryptionPasswordPref to OABX.prefFlag(PREFS_ENCRYPTION, false),
-        ConfirmEncryptionPasswordPref to OABX.prefFlag(PREFS_ENCRYPTION, false),
+        EncryptionPasswordPref to EncryptionPref.value,
+        ConfirmEncryptionPasswordPref to EncryptionPref.value,
+        pref_pmSuspend to pref_pauseApps.value,
+        pref_shadowRootFile to pref_allowShadowingDefault.value
     )
 
 const val THEME_LIGHT = 0

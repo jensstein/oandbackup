@@ -48,7 +48,10 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.ui.compose.item.ActionButton
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.SelectableRow
+import com.machiav3lli.backup.ui.item.EnumPref
+import com.machiav3lli.backup.ui.item.ListPref
 import com.machiav3lli.backup.ui.item.Pref
+import com.machiav3lli.backup.ui.item.StringPref
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -114,7 +117,7 @@ fun ActionsDialogUI(
 
 @Composable
 fun EnumDialogUI(
-    pref: Pref.EnumPref,
+    pref: EnumPref,
     openDialogCustom: MutableState<Boolean>,
     onChanged: (() -> Unit) = {}
 ) {
@@ -172,7 +175,7 @@ fun EnumDialogUI(
 
 @Composable
 fun ListDialogUI(
-    pref: Pref.ListPref,
+    pref: ListPref,
     openDialogCustom: MutableState<Boolean>,
     onChanged: (() -> Unit) = {}
 ) {
@@ -233,7 +236,7 @@ fun ListDialogUI(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StringDialogUI(
-    pref: Pref.StringPref,
+    pref: StringPref,
     isPrivate: Boolean = false,
     openDialogCustom: MutableState<Boolean>,
     onChanged: (() -> Unit) = {}

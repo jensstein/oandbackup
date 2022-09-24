@@ -32,7 +32,6 @@ import com.machiav3lli.backup.OABX.Companion.app
 import com.machiav3lli.backup.PREFS_ASSEMBLEFILELISTONESTEP
 import com.machiav3lli.backup.PREFS_BACKUPTARCMD
 import com.machiav3lli.backup.PREFS_EXCLUDECACHE
-import com.machiav3lli.backup.PREFS_FAKEBACKUPSECONDS
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.BackupBuilder
 import com.machiav3lli.backup.handler.LogsHandler
@@ -45,6 +44,7 @@ import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.RootFile
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.preferences.pref_fakeBackupSeconds
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.CIPHER_ALGORITHM
 import com.machiav3lli.backup.utils.CryptoSetupException
@@ -126,7 +126,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             }
 
             try {
-                val fakeSeconds = OABX.prefInt(PREFS_FAKEBACKUPSECONDS, 0)
+                val fakeSeconds = pref_fakeBackupSeconds.value
                 if (fakeSeconds > 0) {
 
                     val actionResult: ActionResult? = null

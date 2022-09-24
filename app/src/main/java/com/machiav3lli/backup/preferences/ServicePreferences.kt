@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.BuildConfig
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_COMPRESSION_LEVEL
 import com.machiav3lli.backup.PREFS_DEVICEPROTECTEDDATA
 import com.machiav3lli.backup.PREFS_ENABLESESSIONINSTALLER
@@ -42,29 +43,20 @@ import com.machiav3lli.backup.ui.compose.theme.ColorMedia
 import com.machiav3lli.backup.ui.compose.theme.ColorOBB
 import com.machiav3lli.backup.ui.compose.theme.ColorSpecial
 import com.machiav3lli.backup.ui.compose.theme.ColorUpdated
+import com.machiav3lli.backup.ui.item.BooleanPref
+import com.machiav3lli.backup.ui.item.EnumPref
+import com.machiav3lli.backup.ui.item.IntPref
+import com.machiav3lli.backup.ui.item.PasswordPref
 import com.machiav3lli.backup.ui.item.Pref
+import com.machiav3lli.backup.ui.item.StringPref
 
 @Composable
 fun ServicePrefsPage() {
     val context = LocalContext.current
     val openDialog = remember { mutableStateOf(false) }
     var dialogsPref by remember { mutableStateOf<Pref?>(null) }
-    val prefs = listOf(
-        EncryptionPref,
-        EncryptionPasswordPref,
-        ConfirmEncryptionPasswordPref,
-        DeDataPref,
-        ExtDataPref,
-        ObbPref,
-        MediaPref,
-        RestorePermissionsPref,
-        NumBackupsPref,
-        CompressionLevelPref,
-        SessionInstallerPref,
-        InstallerPackagePref,
-        ExcludeCachePref,
-        HousekeepingPref
-    )
+
+    val prefs = Pref.preferences["srv"] ?: listOf()
 
     AppTheme {
         LazyColumn(
@@ -83,17 +75,17 @@ fun ServicePrefsPage() {
         if (openDialog.value) {
             BaseDialog(openDialogCustom = openDialog) {
                 when (dialogsPref) {
-                    EncryptionPasswordPref, ConfirmEncryptionPasswordPref -> StringDialogUI(
-                        pref = dialogsPref as Pref.StringPref,
+                    is PasswordPref -> StringDialogUI(
+                        pref = dialogsPref as PasswordPref,
                         isPrivate = true,
                         openDialogCustom = openDialog
                     )
-                    is Pref.StringPref -> StringDialogUI(
-                        pref = dialogsPref as Pref.StringPref,
+                    is StringPref   -> StringDialogUI(
+                        pref = dialogsPref as StringPref,
                         openDialogCustom = openDialog
                     )
-                    is Pref.EnumPref -> EnumDialogUI(
-                        pref = dialogsPref as Pref.EnumPref,
+                    is EnumPref     -> EnumDialogUI(
+                        pref = dialogsPref as EnumPref,
                         openDialogCustom = openDialog
                     )
                 }
@@ -102,8 +94,8 @@ fun ServicePrefsPage() {
     }
 }
 
-val EncryptionPref = Pref.BooleanPref(
-    key = PREFS_ENCRYPTION,
+val EncryptionPref = BooleanPref(
+    key = "srv." + PREFS_ENCRYPTION,
     titleId = R.string.prefs_encryption,
     summaryId = R.string.prefs_encryption_summary,
     iconId = R.drawable.ic_encryption,
@@ -111,8 +103,8 @@ val EncryptionPref = Pref.BooleanPref(
     defaultValue = false
 )
 
-val EncryptionPasswordPref = Pref.StringPref(
-    key = PREFS_PASSWORD,
+val EncryptionPasswordPref = PasswordPref(
+    key = "srv." + PREFS_PASSWORD,
     titleId = R.string.prefs_password,
     summaryId = R.string.prefs_password_summary,
     iconId = R.drawable.ic_password,
@@ -120,15 +112,15 @@ val EncryptionPasswordPref = Pref.StringPref(
     defaultValue = ""
 )
 
-val ConfirmEncryptionPasswordPref = Pref.StringPref( // TODO smart summary
-    key = PREFS_PASSWORD_CONFIRMATION,
+val ConfirmEncryptionPasswordPref = PasswordPref( // TODO smart summary
+    key = "srv." + PREFS_PASSWORD_CONFIRMATION,
     titleId = R.string.prefs_passwordconfirmation,
     iconId = R.drawable.ic_password,
     defaultValue = ""
 )
 
-val DeDataPref = Pref.BooleanPref(
-    key = PREFS_DEVICEPROTECTEDDATA,
+val DeDataPref = BooleanPref(
+    key = "srv." + PREFS_DEVICEPROTECTEDDATA,
     titleId = R.string.prefs_deviceprotecteddata,
     summaryId = R.string.prefs_deviceprotecteddata_summary,
     iconId = R.drawable.ic_de_data,
@@ -136,8 +128,8 @@ val DeDataPref = Pref.BooleanPref(
     defaultValue = true
 )
 
-val ExtDataPref = Pref.BooleanPref(
-    key = PREFS_EXTERNALDATA,
+val ExtDataPref = BooleanPref(
+    key = "srv." + PREFS_EXTERNALDATA,
     titleId = R.string.prefs_externaldata,
     summaryId = R.string.prefs_externaldata_summary,
     iconId = R.drawable.ic_external_data,
@@ -145,8 +137,8 @@ val ExtDataPref = Pref.BooleanPref(
     defaultValue = true
 )
 
-val ObbPref = Pref.BooleanPref(
-    key = PREFS_OBBDATA,
+val ObbPref = BooleanPref(
+    key = "srv." + PREFS_OBBDATA,
     titleId = R.string.prefs_obbdata,
     summaryId = R.string.prefs_obbdata_summary,
     iconId = R.drawable.ic_obb_data,
@@ -154,8 +146,8 @@ val ObbPref = Pref.BooleanPref(
     defaultValue = true
 )
 
-val MediaPref = Pref.BooleanPref(
-    key = PREFS_MEDIADATA,
+val MediaPref = BooleanPref(
+    key = "srv." + PREFS_MEDIADATA,
     titleId = R.string.prefs_mediadata,
     summaryId = R.string.prefs_mediadata_summary,
     iconId = R.drawable.ic_media_data,
@@ -163,8 +155,8 @@ val MediaPref = Pref.BooleanPref(
     defaultValue = true
 )
 
-val RestorePermissionsPref = Pref.BooleanPref(
-    key = PREFS_RESTOREPERMISSIONS,
+val RestorePermissionsPref = BooleanPref(
+    key = "srv." + PREFS_RESTOREPERMISSIONS,
     titleId = R.string.prefs_restorepermissions,
     summaryId = R.string.prefs_restorepermissions_summary,
     iconId = R.drawable.ic_sizes,
@@ -172,8 +164,8 @@ val RestorePermissionsPref = Pref.BooleanPref(
     defaultValue = true
 )
 
-val NumBackupsPref = Pref.IntPref(
-    key = PREFS_NUM_BACKUP_REVISIONS,
+val NumBackupsPref = IntPref(
+    key = "srv." + PREFS_NUM_BACKUP_REVISIONS,
     titleId = R.string.prefs_numBackupRevisions,
     summaryId = R.string.prefs_numBackupRevisions_summary,
     iconId = R.drawable.ic_revisions,
@@ -182,8 +174,8 @@ val NumBackupsPref = Pref.IntPref(
     defaultValue = 2
 )
 
-val CompressionLevelPref = Pref.IntPref(
-    key = PREFS_COMPRESSION_LEVEL,
+val CompressionLevelPref = IntPref(
+    key = "srv." + PREFS_COMPRESSION_LEVEL,
     titleId = R.string.prefs_compression_level,
     summaryId = R.string.prefs_compression_level_summary,
     iconId = R.drawable.ic_compression_level,
@@ -192,32 +184,32 @@ val CompressionLevelPref = Pref.IntPref(
     defaultValue = 2
 )
 
-val SessionInstallerPref = Pref.BooleanPref(
-    key = PREFS_ENABLESESSIONINSTALLER,
+val SessionInstallerPref = BooleanPref(
+    key = "srv." + PREFS_ENABLESESSIONINSTALLER,
     titleId = R.string.prefs_sessionIinstaller,
     summaryId = R.string.prefs_sessionIinstaller_summary,
     iconId = R.drawable.ic_label,
     defaultValue = true
 )
 
-val InstallerPackagePref = Pref.StringPref(
-    key = PREFS_INSTALLER_PACKAGENAME,
+val InstallerPackagePref = StringPref(
+    key = "srv." + PREFS_INSTALLER_PACKAGENAME,
     titleId = R.string.prefs_installerpackagename,
     iconId = R.drawable.ic_launchable,
     iconTint = ColorOBB,
     defaultValue = BuildConfig.APPLICATION_ID
 )
 
-val ExcludeCachePref = Pref.BooleanPref(
-    key = PREFS_EXCLUDECACHE,
+val ExcludeCachePref = BooleanPref(
+    key = "srv." + PREFS_EXCLUDECACHE,
     titleId = R.string.prefs_excludecache,
     summaryId = R.string.prefs_excludecache_summary,
     iconId = R.drawable.ic_exclude,
     defaultValue = false
 )
 
-val HousekeepingPref = Pref.EnumPref(
-    key = PREFS_HOUSEKEEPING,
+val HousekeepingPref = EnumPref(
+    key = "srv." + PREFS_HOUSEKEEPING,
     titleId = R.string.prefs_housekeepingmoment,
     summaryId = R.string.prefs_housekeepingmoment_summary,
     iconId = R.drawable.ic_delete,

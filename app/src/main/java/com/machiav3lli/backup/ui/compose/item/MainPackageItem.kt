@@ -23,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.getFormattedDate
