@@ -349,4 +349,8 @@
     <string name="prefs_advanced_short">Nâng cao</string>
     <string name="prefs_dev_settings">Cài đặt nhà phát triển</string>
     <string name="prefs_dev_settings_summary">Đừng thay đổi trừ khi nhà phát triển bảo thế!</string>
+    <string name="prefs_multilineinfochips">Chip thông tin nhiều dòng</string>
+    <string name="prefs_squeezenavtext">Bó gọn chữ ở mục điều hướng</string>
+    <string name="prefs_multilineinfochips_summary">Cho phép chip trong nơi chứa thông tin ứng dụng hiển thị nhiều dòng.</string>
+    <string name="prefs_squeezenavtext_summary">Cho phép chữ dưới mục thanh điều hướng được thay đổi kích thước để vừa với độ rộng có sẵn.</string>
 </resources>
