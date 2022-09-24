@@ -363,4 +363,7 @@
     <string name="prefs_service_short">Servizio</string>
     <string name="prefs_advanced_short">Avanzate</string>
     <string name="prefs_squeezenavtext_summary">Consenti il ridimensionamento del testo sotto gli elementi della barra di navigazione per adattarlo alla larghezza disponibile.</string>
+    <string name="prefs_multilineinfochips">Chip informativi multilinea</string>
+    <string name="prefs_multilineinfochips_summary">Consenti ai chip informativi nel foglio dell\'app di estendersi su più righe.</string>
+    <string name="prefs_squeezenavtext">Comprimi testo elemento navigazione</string>
 </resources>
