@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.PREFS_ALLOWDOWNGRADE
 import com.machiav3lli.backup.PREFS_ALLOWSHADOWINGDEFAULT
-import com.machiav3lli.backup.PREFS_ASSEMBLEFILELISTONESTEP
 import com.machiav3lli.backup.PREFS_BACKUPTARCMD
 import com.machiav3lli.backup.PREFS_CACHEFILELISTS
 import com.machiav3lli.backup.PREFS_CACHEONUPDATE
@@ -247,12 +246,6 @@ val pref_shadowRootFile = BooleanPref(
 val UseFindLsPref = BooleanPref(
     key = "dev." + PREFS_FINDLS,
     summaryId = R.string.prefs_usefindls_summary,
-    defaultValue = true
-)
-
-val AssembleFileListOneStepPref = BooleanPref(
-    key = "dev." + PREFS_ASSEMBLEFILELISTONESTEP,
-    summaryId = R.string.prefs_assemblefilelistonestep_summary,
     defaultValue = true
 )
 
