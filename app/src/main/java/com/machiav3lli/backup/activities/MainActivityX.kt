@@ -443,7 +443,7 @@ class MainActivityX : BaseActivity() {
         selectedItems.forEach { (packageName, mode) ->
 
             val oneTimeWorkRequest =
-                AppActionWork.Request(packageName, mode, backupBoolean, notificationId, batchName)
+                AppActionWork.Request(packageName, mode, backupBoolean, notificationId, batchName, true)
             worksList.add(oneTimeWorkRequest)
 
             val oneTimeWorkLiveData = WorkManager.getInstance(OABX.context)

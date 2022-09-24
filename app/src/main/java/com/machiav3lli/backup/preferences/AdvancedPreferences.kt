@@ -41,8 +41,6 @@ import com.machiav3lli.backup.PREFS_RESTOREWITHALLPERMISSIONS
 import com.machiav3lli.backup.PREFS_STRICTHARDLINKS
 import com.machiav3lli.backup.PREFS_USEALARMCLOCK
 import com.machiav3lli.backup.PREFS_USEEXACTALARM
-import com.machiav3lli.backup.PREFS_USEEXPEDITED
-import com.machiav3lli.backup.PREFS_USEFOREGROUND
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.preferences.ui.PrefsExpandableGroupHeader
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
@@ -301,18 +299,18 @@ val RefreshAppInfoTimeoutPref = IntPref(
 
 val pref_useWorkManagerForSingleManualJob = BooleanPref(
     key = "dev.useWorkManagerForSingleManualJob",
-    summary = "queue single manual jobs",
+    summary = "also queue single manual jobs from app sheet (note they are added at the end of the queue for now)",
     defaultValue = false
 )
 
-val UseForegroundPref = BooleanPref(
-    key = "dev." + PREFS_USEFOREGROUND,
+val pref_useForeground = BooleanPref(
+    key = "dev.useForeground",
     summaryId = R.string.prefs_useforeground_summary,
     defaultValue = true
 )
 
-val UseExpeditedPref = BooleanPref(
-    key = "dev." + PREFS_USEEXPEDITED,
+val pref_useExpedited = BooleanPref(
+    key = "dev.useExpedited",
     summaryId = R.string.prefs_useexpedited_summary,
     defaultValue = true
 )

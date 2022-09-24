@@ -33,12 +33,12 @@ import com.machiav3lli.backup.ACTION_CANCEL
 import com.machiav3lli.backup.ACTION_SCHEDULE
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_USEFOREGROUND
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.handler.showNotification
+import com.machiav3lli.backup.preferences.pref_useForeground
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.tasks.ScheduledActionTask
@@ -62,7 +62,7 @@ open class ScheduleService : Service() {
         OABX.service = this
         this.notificationId = System.currentTimeMillis().toInt()
 
-        if (OABX.prefFlag(PREFS_USEFOREGROUND, true)) {
+        if (pref_useForeground.value) {
             createNotificationChannel()
             createForegroundInfo()
             startForeground(notification.hashCode(), this.notification)
@@ -172,7 +172,8 @@ open class ScheduleService : Service() {
                                     mode,
                                     true,
                                     notificationId,
-                                    batchName
+                                    batchName,
+                                    false
                                 )
                             worksList.add(oneTimeWorkRequest)
 

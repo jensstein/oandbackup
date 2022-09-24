@@ -85,6 +85,7 @@ import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.preferences.pref_useWorkManagerForSingleManualJob
 import com.machiav3lli.backup.tasks.BackupActionTask
 import com.machiav3lli.backup.tasks.RestoreActionTask
 import com.machiav3lli.backup.ui.compose.item.BackupItem
@@ -503,19 +504,43 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
         viewModel.thePackage.value?.let { p ->
             when {
                 actionType === ActionType.BACKUP -> {
-                    BackupActionTask(
-                        p, requireMainActivity(), OABX.shellHandlerInstance!!, mode,
-                        this
-                    ).execute()
+                    if(pref_useWorkManagerForSingleManualJob.value) {
+                        OABX.main?.startBatchAction(
+                            true,
+                            listOf(this.appInfo.packageName),
+                            listOf(mode)
+                        ) {
+                            //viewModel.refreshNow.value = true
+                            // TODO refresh only the influenced packages
+                            it.removeObserver(this)
+                        }
+                    } else {
+                        BackupActionTask(
+                            p, requireMainActivity(), OABX.shellHandlerInstance!!, mode,
+                            this
+                        ).execute()
+                    }
                 }
                 actionType === ActionType.RESTORE -> {
-                    backup?.let { backupProps: Backup ->
-                        val backupDir =
-                            backupProps.getBackupInstanceFolder(p.getAppBackupRoot())
-                        RestoreActionTask(
-                            p, requireMainActivity(), OABX.shellHandlerInstance!!, mode,
-                            backupProps, backupDir!!, this
-                        ).execute()
+                    if(pref_useWorkManagerForSingleManualJob.value) {
+                        OABX.main?.startBatchAction(
+                            false,
+                            listOf(this.appInfo.packageName),
+                            listOf(mode)
+                        ) {
+                            //viewModel.refreshNow.value = true
+                            // TODO refresh only the influenced packages
+                            it.removeObserver(this)
+                        }
+                    } else {
+                        backup?.let { backupProps: Backup ->
+                            val backupDir =
+                                backupProps.getBackupInstanceFolder(p.getAppBackupRoot())
+                            RestoreActionTask(
+                                p, requireMainActivity(), OABX.shellHandlerInstance!!, mode,
+                                backupProps, backupDir!!, this
+                            ).execute()
+                        }
                     }
                 }
                 else -> {
