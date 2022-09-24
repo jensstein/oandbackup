@@ -140,6 +140,18 @@ val AllowDowngradePref = BooleanPref(
 
 // dev settings
 
+val pref_tapToSelect = BooleanPref(
+    key = "dev.tapToSelect",
+    summary = "a short tap selects, otherwise a long tap starts selection mode [switch tabs to activate]",
+    defaultValue = false
+)
+
+val pref_useBackupRestoreWithSelection = BooleanPref(
+    key = "dev.useBackupRestoreWithSelection",
+    summary = "selection context menu shows allows 'Backup' and 'Restore' (both work on apk and data)",
+    defaultValue = false
+)
+
 val pref_showInfoLogBar = BooleanPref(
     key = "dev.showInfoLogBar",
     summaryId = R.string.prefs_showinfologbar_summary,

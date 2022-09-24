@@ -170,6 +170,8 @@ class OABX : Application() {
         val context: Context get() = app.applicationContext
         val work: WorkHandler get() = app.work!!
 
+        fun getString(resId: Int) = context.getString(resId)
+
         fun prefFlag(name: String, default: Boolean) = context.getDefaultSharedPreferences()
             .getBoolean(name, default)
 

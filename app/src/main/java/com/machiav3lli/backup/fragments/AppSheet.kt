@@ -578,7 +578,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
             .show()
     }
 
-    private fun showBackupDialog(app: Package) {
+    fun showBackupDialog(app: Package) {
         BackupDialogFragment(app, this)
             .show(requireActivity().supportFragmentManager, "backupDialog")
     }
