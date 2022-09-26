@@ -42,8 +42,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_FIRST_LAUNCH
-import com.machiav3lli.backup.PREFS_IGNORE_BATTERY_OPTIMIZATION
+import com.machiav3lli.backup.preferences.persist_firstLaunch
+import com.machiav3lli.backup.preferences.persist_ignoreBatteryOptimization
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.classAddress
 import com.machiav3lli.backup.databinding.ActivitySplashBinding
@@ -134,7 +134,7 @@ class SplashActivity : BaseActivity() {
         }
 
         val introIntent = Intent(applicationContext, IntroActivityX::class.java)
-        if (OABX.prefFlag(PREFS_FIRST_LAUNCH, true)) {
+        if (persist_firstLaunch.value) {
             startActivity(introIntent)
         } else if (hasStoragePermissions &&
             isStorageDirSetAndOk &&
@@ -142,7 +142,7 @@ class SplashActivity : BaseActivity() {
             checkCallLogsPermission &&
             checkContactsPermission &&
             checkUsageStatsPermission &&
-            (OABX.prefFlag(PREFS_IGNORE_BATTERY_OPTIMIZATION, false)
+            (persist_ignoreBatteryOptimization.value
                     || powerManager.isIgnoringBatteryOptimizations(packageName))
         ) {
             introIntent.putExtra(classAddress(".fragmentNumber"), 3)

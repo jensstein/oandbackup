@@ -24,7 +24,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.machiav3lli.backup.NAV_MAIN
 import com.machiav3lli.backup.NAV_PREFS
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_SQUEEZE_NAV_TEXT
+import com.machiav3lli.backup.preferences.pref_squeezeNavText
 import com.machiav3lli.backup.ui.compose.item.ResponsiveText
 
 @Composable
@@ -73,7 +73,7 @@ fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
                     )
                 },
                 label = {
-                    if (!selected && OABX.prefFlag(PREFS_SQUEEZE_NAV_TEXT, false))
+                    if (!selected && pref_squeezeNavText.value)
                         ResponsiveText(
                             text = stringResource(id = item.title),
                             maxLines = 1,

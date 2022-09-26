@@ -22,7 +22,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_PMSUSPEND
+import com.machiav3lli.backup.preferences.pref_pmSuspend
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
@@ -56,7 +56,7 @@ abstract class BaseAppAction protected constructor(
         protected constructor(message: String?, cause: Throwable?) : super(message, cause)
     }
 
-    private fun prepostOptions(): String = if (OABX.prefFlag(PREFS_PMSUSPEND, false))
+    private fun prepostOptions(): String = if (pref_pmSuspend.value)
         "--suspend"
     else
         ""

@@ -2,11 +2,9 @@ package com.machiav3lli.backup.ui.item
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.machiav3lli.backup.OABX
 import timber.log.Timber
-import kotlin.reflect.KProperty
 
 open class Pref(
     var key: String,
@@ -45,7 +43,9 @@ class BooleanPref(
     iconTint: Color? = null,
     val defaultValue: Boolean
 ) : Pref(key, summary, titleId, summaryId, iconId, iconTint) {
-    val value get() = OABX.prefFlag(key, defaultValue)
+    var value
+        get() = OABX.prefFlag(key, defaultValue)
+        set(value) = OABX.setPrefFlag(key, value)
 }
 
 class IntPref(
@@ -58,7 +58,9 @@ class IntPref(
     val entries: List<Int>,
     val defaultValue: Int
 ) : Pref(key, summary, titleId, summaryId, iconId, iconTint) {
-    val value get() = OABX.prefInt(key, defaultValue)
+    var value
+        get() = OABX.prefInt(key, defaultValue)
+        set(value) = OABX.setPrefInt(key, value)
 }
 
 open class StringPref(
@@ -70,7 +72,9 @@ open class StringPref(
     iconTint: Color? = null,
     val defaultValue: String
 ) : Pref(key, summary, titleId, summaryId, iconId, iconTint) {
-    val value get() = OABX.prefString(key, defaultValue)
+    var value
+        get() = OABX.prefString(key, defaultValue)
+        set(value) = OABX.setPrefString(key, value)
 }
 
 class PasswordPref(
@@ -93,7 +97,9 @@ class ListPref(
     val entries: Map<String, String>,
     val defaultValue: String
 ) : Pref(key, summary, titleId, summaryId, iconId, iconTint) {
-    val value get() = OABX.prefString(key, defaultValue)
+    var value
+        get() = OABX.prefString(key, defaultValue)
+        set(value) = OABX.setPrefString(key, value)
 }
 
 class EnumPref(
@@ -106,7 +112,9 @@ class EnumPref(
     val entries: Map<Int, Int>,
     val defaultValue: Int
 ) : Pref(key, summary, titleId, summaryId, iconId, iconTint) {
-    val value get() = OABX.prefInt(key, defaultValue)
+    var value
+        get() = OABX.prefInt(key, defaultValue)
+        set(value) = OABX.setPrefInt(key, value)
 }
 
 class LinkPref(

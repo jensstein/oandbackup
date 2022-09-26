@@ -1,8 +1,6 @@
 package com.machiav3lli.backup.preferences.ui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import com.machiav3lli.backup.preferences.BackupFolderPref
 import com.machiav3lli.backup.ui.compose.item.EnumPreference
 import com.machiav3lli.backup.ui.compose.item.LaunchPreference
 import com.machiav3lli.backup.ui.compose.item.ListPreference
@@ -15,7 +13,6 @@ import com.machiav3lli.backup.ui.item.ListPref
 import com.machiav3lli.backup.ui.item.PasswordPref
 import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.ui.item.StringPref
-import com.machiav3lli.backup.utils.backupDirConfigured
 
 @Composable
 fun PrefsBuilder(

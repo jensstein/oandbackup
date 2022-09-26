@@ -36,7 +36,7 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_WELCOMED
+import com.machiav3lli.backup.preferences.persist_beenWelcomed
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.ui.compose.navigation.IntroNavHost
 import com.machiav3lli.backup.ui.compose.navigation.NavItem
@@ -67,7 +67,7 @@ class IntroActivityX : BaseActivity() {
                     IntroNavHost(
                         modifier = Modifier.padding(paddingValues),
                         navController = navController,
-                        OABX.prefFlag(PREFS_WELCOMED, false)
+                        persist_beenWelcomed.value
                     )
                 }
             }
@@ -76,7 +76,7 @@ class IntroActivityX : BaseActivity() {
     }
 
     fun moveTo(position: Int) {
-        OABX.setPrefFlag(PREFS_WELCOMED, position != 1)
+        persist_beenWelcomed.value = position != 1
         when (position) {
             1 -> navController.navigate(NavItem.Welcome.destination)
             2 -> navController.navigate(NavItem.Permissions.destination)

@@ -29,8 +29,8 @@ import com.machiav3lli.backup.MODE_DATA_MEDIA
 import com.machiav3lli.backup.MODE_DATA_OBB
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.app
-import com.machiav3lli.backup.PREFS_BACKUPTARCMD
-import com.machiav3lli.backup.PREFS_EXCLUDECACHE
+import com.machiav3lli.backup.preferences.pref_backupTarCmd
+import com.machiav3lli.backup.preferences.pref_excludeCache
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.BackupBuilder
 import com.machiav3lli.backup.handler.LogsHandler
@@ -353,7 +353,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     private fun assembleFileList(sourcePath: String): List<ShellHandler.FileInfo> {
         // get and filter the whole tree at once //TODO use iterator instead of list
         return try {
-            val excludeCache = OABX.prefFlag(PREFS_EXCLUDECACHE, true)
+            val excludeCache = pref_excludeCache.value
             val allFilesToBackup =
                 shell.suGetDetailedDirectoryContents(sourcePath, true, sourcePath)
                     .filterNot { f: ShellHandler.FileInfo -> f.filename in DATA_EXCLUDED_BASENAMES } //TODO basenames! not all levels
@@ -467,7 +467,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
 
             var options = ""
             options += " --exclude ${quote(exclude)}"
-            if (OABX.prefFlag(PREFS_EXCLUDECACHE, true)) {
+            if (pref_excludeCache.value) {
                 options += " --exclude ${quote(excludeCache)}"
             }
             var suOptions = if (ShellHandler.isMountMaster) "--mount-master" else ""
@@ -531,7 +531,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         iv: ByteArray?
     ): Boolean {
         Timber.i("${app.packageName} <- $sourcePath")
-        if (OABX.prefFlag(PREFS_BACKUPTARCMD, true)) {
+        if (pref_backupTarCmd.value) {
             return genericBackupDataTarCmd(
                 dataType,
                 backupInstanceDir,

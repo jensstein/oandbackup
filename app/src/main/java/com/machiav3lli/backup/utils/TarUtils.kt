@@ -18,7 +18,7 @@
 package com.machiav3lli.backup.utils
 
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_STRICTHARDLINKS
+import com.machiav3lli.backup.preferences.pref_strictHardLinks
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.DATA_EXCLUDED_BASENAMES
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.DATA_EXCLUDED_CACHE_DIRS
 import com.machiav3lli.backup.handler.ShellHandler
@@ -186,7 +186,7 @@ fun setAttributes(targetFile: RootFile, tarEntry: TarArchiveEntry) {
 @Throws(IOException::class)
 fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile, forceOldVersion: Boolean = false) {
     val qUtilBox = ShellHandler.utilBoxQ
-    val strictHardLinks = OABX.prefFlag(PREFS_STRICTHARDLINKS, false) && ! forceOldVersion
+    val strictHardLinks = pref_strictHardLinks.value && ! forceOldVersion
     val postponeInfo = mutableMapOf<String, TarArchiveEntry>()
     generateSequence { nextTarEntry }.forEach { tarEntry ->
         val targetFile = RootFile(targetDir, tarEntry.name)

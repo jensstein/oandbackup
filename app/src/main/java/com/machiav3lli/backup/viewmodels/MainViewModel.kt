@@ -28,7 +28,7 @@ import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.context
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
-import com.machiav3lli.backup.PREFS_CACHEONUPDATE
+import com.machiav3lli.backup.preferences.pref_usePackageCacheOnUpdate
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dbs.entity.AppInfo
@@ -134,7 +134,7 @@ class MainViewModel(
             val appPackage = packageList.value?.find { it.packageName == packageName }
             try {
                 appPackage?.apply {
-                    if (OABX.prefFlag(PREFS_CACHEONUPDATE, false)) {
+                    if (pref_usePackageCacheOnUpdate.value) {
                         val new = Package.get(packageName) {
                             Package(appContext, packageName, getAppBackupRoot())
                         }

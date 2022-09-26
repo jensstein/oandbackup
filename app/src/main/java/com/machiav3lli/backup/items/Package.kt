@@ -27,7 +27,7 @@ import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER_OLD
 import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_CACHEPACKAGES
+import com.machiav3lli.backup.preferences.pref_cachePackages
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.SpecialInfo
@@ -460,7 +460,7 @@ class Package {
 
     companion object {
         fun get(packageName: String, creator: () -> Package): Package {
-            if (OABX.prefFlag(PREFS_CACHEPACKAGES, true))
+            if (pref_cachePackages.value)
                 return OABX.app.packageCache[packageName] ?: creator()
             return creator()
         }

@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_MULTILINE_INFOCHIPS
+import com.machiav3lli.backup.preferences.pref_multilineInfoChips
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.Log
@@ -143,7 +143,7 @@ fun InfoChipsBlock(
     modifier: Modifier = Modifier,
     list: List<InfoChipItem>,
 ) {
-    if (OABX.prefFlag(PREFS_MULTILINE_INFOCHIPS, false))
+    if (pref_multilineInfoChips.value)
         FlowRow(
             modifier = modifier.fillMaxWidth(),
             mainAxisSpacing = 8.dp,
