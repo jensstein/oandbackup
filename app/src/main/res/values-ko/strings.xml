@@ -272,7 +272,7 @@
     <string name="spec_wallpaper">배경화면</string>
     <string name="spec_fingerprint">지문</string>
     <string name="prefs_compression_level">압축 레벨</string>
-    <string name="prefs_allowdowngrade_summary">설치한 앱의 이전 버전 복원을 허용합니다.</string>
+    <string name="prefs_allowdowngrade_summary">설치한 앱의 이전 버전 복원을 허용합니다 (디버그 가능 버전에만 적용됨).</string>
     <string name="sched_excludeSystemCheckBox">시스템 앱 제외</string>
     <string name="sortPackageName">패키지명</string>
     <string name="prefs_restoreallpermissions_summary">복원한 앱이 요청하는 모든 권한을 부여합니다.</string>
@@ -349,4 +349,6 @@
     <string name="prefs_user_short">개인</string>
     <string name="prefs_advanced_short">고급</string>
     <string name="prefs_service_short">서비스</string>
+    <string name="prefs_squeezenavtext">내비게이션 항목의 글자 줄이기</string>
+    <string name="prefs_squeezenavtext_summary">내비게이션 바 항목 밑의 글자를 폭에 꼭 맞게 줄일 수 있도록 합니다.</string>
 </resources>
