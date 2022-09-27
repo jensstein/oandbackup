@@ -9,6 +9,7 @@ import com.machiav3lli.backup.ui.compose.item.SwitchPreference
 import com.machiav3lli.backup.ui.item.BooleanPref
 import com.machiav3lli.backup.ui.item.EnumPref
 import com.machiav3lli.backup.ui.item.IntPref
+import com.machiav3lli.backup.ui.item.LaunchPref
 import com.machiav3lli.backup.ui.item.ListPref
 import com.machiav3lli.backup.ui.item.PasswordPref
 import com.machiav3lli.backup.ui.item.Pref
@@ -68,5 +69,13 @@ fun PrefsBuilder(
         ) {
             onDialogPref(pref)
         }
+
+        is LaunchPref -> LaunchPreference(
+            pref = pref,
+            summary = null,
+            index = index,
+            groupSize = size,
+            onClick = pref.onClick
+        )
     }
 }
