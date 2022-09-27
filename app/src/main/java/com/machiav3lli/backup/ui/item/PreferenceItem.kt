@@ -129,3 +129,13 @@ class LinkPref(
     @DrawableRes iconId: Int = -1,
     iconTint: Color? = null
 ) : Pref(key, summary, titleId, summaryId, iconId, iconTint)
+
+class LaunchPref(
+    key: String,
+    summary: String? = null,
+    @StringRes titleId: Int = -1,
+    @StringRes summaryId: Int = -1,
+    @DrawableRes iconId: Int = -1,
+    iconTint: Color? = null,
+    val onClick: (() -> Unit) = {}
+) : Pref(key, summary, titleId, summaryId, iconId, iconTint)
