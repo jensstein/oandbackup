@@ -25,6 +25,7 @@ import com.machiav3lli.backup.ui.compose.theme.ColorSpecial
 import com.machiav3lli.backup.ui.compose.theme.ColorUpdated
 import com.machiav3lli.backup.ui.item.BooleanPref
 import com.machiav3lli.backup.ui.item.IntPref
+import com.machiav3lli.backup.ui.item.LaunchPref
 import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.ui.item.StringPref
 import com.machiav3lli.backup.utils.sortFilterModel
@@ -304,6 +305,12 @@ val pref_fakeBackupSeconds = IntPref(
     defaultValue = 0
 )
 
+val pref_forceCrash = LaunchPref(
+    key = "dev.forceCrash",
+    summary = "crash the app [for testing only]"
+)  {
+    throw Exception("forceCrash")
+}
 
 
 
