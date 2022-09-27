@@ -18,12 +18,18 @@
 package com.machiav3lli.backup.handler
 
 import android.content.Context
+import android.os.Process
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
+import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.LOG_FOLDER_NAME
 import com.machiav3lli.backup.LOG_INSTANCE
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.preferences.pref_maxCrashLines
+import com.machiav3lli.backup.preferences.pref_useLogCat
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupDir
@@ -44,7 +50,28 @@ class LogsHandler(var context: Context) {
     @Throws(IOException::class)
     fun writeToLogFile(logText: String) {
         val date = LocalDateTime.now()
-        val logItem = Log(logText, date)
+        val logItem = Log(
+            logText +
+            "\n\n" +
+            "${BuildConfig.APPLICATION_ID} ${BuildConfig.VERSION_NAME}\n" +
+            "${utilBox.name} ${utilBox.version} ${utilBox.score} ${
+                if (utilBox.isTestedVersion) "tested" else "untested"
+            }${
+                if (utilBox.hasBugDotDotDir) " bugDotDotDir" else ""
+            }\n" +
+            "\n" +
+            if (pref_useLogCat.value)
+                ShellHandler.runAsRoot(
+                    "logcat -d -t ${
+                        pref_maxCrashLines.value
+                    } --pid=${
+                        Process.myPid()
+                    }"  // -d = dump and exit
+                ).out.joinToString("\n")
+            else
+                OABX.lastLogMessages.joinToString("\n"),
+            date
+        )
         val logFileName = String.format(
             LOG_INSTANCE,
             BACKUP_DATE_TIME_FORMATTER.format(date)

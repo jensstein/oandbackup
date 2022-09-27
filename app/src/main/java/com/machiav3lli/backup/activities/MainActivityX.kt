@@ -72,6 +72,7 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.SortFilterModel
+import com.machiav3lli.backup.preferences.pref_useLogCat
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
@@ -137,38 +138,15 @@ class MainActivityX : BaseActivity() {
         if (pref_catchUncaughtException.value) {
             Thread.setDefaultUncaughtExceptionHandler { _, e ->
                 try {
-                    val maxCrashLines = pref_maxCrashLines.value
+                    Timber.i("\n\n" + "=".repeat(60))
                     LogsHandler.unhandledException(e)
-                    LogsHandler(context).writeToLogFile(
-                        "uncaught exception happened:\n\n" +
-                                "\n${BuildConfig.APPLICATION_ID} ${BuildConfig.VERSION_NAME}"
-                                + "\n" +
-                                runAsRoot(
-                                    "logcat -d -t $maxCrashLines --pid=${Process.myPid()}"  // -d = dump and exit
-                                ).out.joinToString("\n")
-                    )
-                    val longToastTime = 3000
-                    val showTime = 12000
+                    LogsHandler(context).writeToLogFile("uncaught: ${e.message}")
                     object : Thread() {
                         override fun run() {
                             Looper.prepare()
-                            repeat(showTime / longToastTime) {
-                                Toast.makeText(
-                                    context,
-                                    "Uncaught Exception\n${e.message ?: ""}\n${e.cause ?: ""}",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                                sleep(longToastTime.toLong())
-                            }
-                            Toast.makeText(
-                                context,
-                                "restarting application...",
-                                Toast.LENGTH_LONG
-                            ).show()
                             Looper.loop()
                         }
                     }.start()
-                    Thread.sleep(showTime.toLong())
                 } catch (e: Throwable) {
                     // ignore
                 } finally {
