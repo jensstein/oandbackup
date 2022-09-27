@@ -52,8 +52,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_IGNORE_BATTERY_OPTIMIZATION
+import com.machiav3lli.backup.preferences.persist_ignoreBatteryOptimization
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.IntroActivityX
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
@@ -225,10 +224,8 @@ fun AppCompatActivity.showBatteryOptimizationDialog(powerManager: PowerManager?)
             intent.data = Uri.parse("package:" + packageName)
             try {
                 startActivity(intent)
-                OABX.setPrefFlag(
-                    PREFS_IGNORE_BATTERY_OPTIMIZATION,
+                persist_ignoreBatteryOptimization.value =
                     powerManager?.isIgnoringBatteryOptimizations(packageName) == true
-                )
             } catch (e: ActivityNotFoundException) {
                 Timber.w(e, "Ignore battery optimizations not supported")
                 Toast.makeText(
@@ -236,11 +233,11 @@ fun AppCompatActivity.showBatteryOptimizationDialog(powerManager: PowerManager?)
                     R.string.ignore_battery_optimization_not_supported,
                     Toast.LENGTH_LONG
                 ).show()
-                OABX.setPrefFlag(PREFS_IGNORE_BATTERY_OPTIMIZATION, true)
+                persist_ignoreBatteryOptimization.value = true
             }
         }
         .setNeutralButton(R.string.dialog_refuse) { _: DialogInterface?, _: Int ->
-            OABX.setPrefFlag(PREFS_IGNORE_BATTERY_OPTIMIZATION, true)
+            persist_ignoreBatteryOptimization.value = true
         }
         .setCancelable(false)
         .show()

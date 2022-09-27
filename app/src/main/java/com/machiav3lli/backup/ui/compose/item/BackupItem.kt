@@ -74,7 +74,6 @@ fun BackupItem(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                Text(text = Formatter.formatFileSize(LocalContext.current, item.size))
                 BackupLabels(item = item)
             }
             Row(
@@ -98,6 +97,12 @@ fun BackupItem(
                     modifier = Modifier.align(Alignment.CenterVertically),
                     softWrap = true,
                     overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = " - ${Formatter.formatFileSize(LocalContext.current, item.size)}",
                     maxLines = 1,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant

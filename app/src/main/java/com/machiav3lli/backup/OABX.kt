@@ -35,6 +35,8 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.preferences.pref_cancelOnStart
+import com.machiav3lli.backup.preferences.pref_maxCrashLines
 import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
@@ -45,6 +47,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.lang.ref.WeakReference
+import java.time.LocalDateTime
 
 class OABX : Application() {
 
@@ -63,6 +66,25 @@ class OABX : Application() {
                 priority: Int, tag: String?, message: String, t: Throwable?
             ) {
                 super.log(priority, "$tag", message, t)
+
+                val prio =
+                        when (priority) {
+                            android.util.Log.VERBOSE -> "V"
+                            android.util.Log.ASSERT -> "A"
+                            android.util.Log.DEBUG -> "D"
+                            android.util.Log.ERROR -> "E"
+                            android.util.Log.INFO -> "I"
+                            android.util.Log.WARN -> "W"
+                            else                  -> "?"
+                        }
+                val date = LocalDateTime.now()
+                lastLogMessages.add("$date $prio $tag : $message")
+                try {
+                    while (lastLogMessages.size > pref_maxCrashLines.value)
+                        lastLogMessages.removeAt(0)
+                } catch(e: Throwable) {
+                    // ignore
+                }
             }
 
             override fun createStackElementTag(element: StackTraceElement): String {
@@ -100,7 +122,7 @@ class OABX : Application() {
         )
 
         work = WorkHandler(context)
-        if (prefFlag(PREFS_CANCELONSTART, false))
+        if (pref_cancelOnStart.value)
             work?.cancel()
         work?.prune()
 
@@ -118,6 +140,8 @@ class OABX : Application() {
     }
 
     companion object {
+
+        val lastLogMessages = mutableListOf<String>()
 
         // app should always be created
         var appRef: WeakReference<OABX> = WeakReference(null)
@@ -169,6 +193,8 @@ class OABX : Application() {
 
         val context: Context get() = app.applicationContext
         val work: WorkHandler get() = app.work!!
+
+        fun getString(resId: Int) = context.getString(resId)
 
         fun prefFlag(name: String, default: Boolean) = context.getDefaultSharedPreferences()
             .getBoolean(name, default)

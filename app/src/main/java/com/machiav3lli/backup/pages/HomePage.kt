@@ -130,7 +130,7 @@ fun HomePage(viewModel: HomeViewModel) {
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(),
-                productsList = queriedList,
+                productsList = queriedList ?: listOf(),
                 onClick = { item ->
                     if (appSheet != null) appSheet?.dismissAllowingStateLoss()
                     appSheet = AppSheet(item)

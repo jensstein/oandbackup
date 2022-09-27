@@ -24,11 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_BATCH_DELETE
-import com.machiav3lli.backup.PREFS_COPYSELF
-import com.machiav3lli.backup.PREFS_LOGVIEWER
-import com.machiav3lli.backup.PREFS_SAVEAPPSLIST
-import com.machiav3lli.backup.PREFS_SCHEDULESEXPORTIMPORT
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.PrefsActivityX
 import com.machiav3lli.backup.handler.BackupRestoreHelper
@@ -41,6 +36,7 @@ import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.ColorDeData
 import com.machiav3lli.backup.ui.compose.theme.ColorExodus
 import com.machiav3lli.backup.ui.compose.theme.ColorExtDATA
+import com.machiav3lli.backup.ui.item.LinkPref
 import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.utils.FileUtils.invalidateBackupLocation
 import com.machiav3lli.backup.utils.applyFilter
@@ -63,13 +59,8 @@ fun ToolsPrefsPage(navController: NavHostController) {
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-    val prefs = listOf(
-        CleanupBackupFolderPref,
-        CopySelfPref,
-        ExportImportSchedulesPref,
-        SaveAppsListPref,
-        LogViewerPref
-    )
+
+    val prefs = Pref.preferences["tool"] ?: listOf()
 
     AppTheme {
         Scaffold(
@@ -95,20 +86,20 @@ fun ToolsPrefsPage(navController: NavHostController) {
                             ) {
                                 when (pref) {
                                     // TODO use only compose dialogs
-                                    CleanupBackupFolderPref -> context.onClickUninstalledBackupsDelete(
+                                    pref_batchDelete            -> context.onClickUninstalledBackupsDelete(
                                         snackbarHostState,
                                         coroutineScope
                                     )
-                                    CopySelfPref -> context.onClickCopySelf(
+                                    pref_copySelfApk            -> context.onClickCopySelf(
                                         snackbarHostState,
                                         coroutineScope
                                     )
-                                    ExportImportSchedulesPref -> navController.navigate(NavItem.Exports.destination)
-                                    SaveAppsListPref -> context.onClickSaveAppsList(
+                                    pref_schedulesExportImport  -> navController.navigate(NavItem.Exports.destination)
+                                    pref_saveAppsList           -> context.onClickSaveAppsList(
                                         snackbarHostState,
                                         coroutineScope
                                     )
-                                    LogViewerPref -> navController.navigate(NavItem.Logs.destination)
+                                    pref_logViewer              -> navController.navigate(NavItem.Logs.destination)
                                 }
                             }
                             if (index < size - 1) Spacer(modifier = Modifier.height(4.dp))
@@ -120,8 +111,8 @@ fun ToolsPrefsPage(navController: NavHostController) {
     }
 }
 
-val CleanupBackupFolderPref = Pref.LinkPref(
-    key = PREFS_BATCH_DELETE,
+val pref_batchDelete = LinkPref(
+    key = "tool.batchDelete",
     titleId = R.string.prefs_batchdelete,
     summaryId = R.string.prefs_batchdelete_summary,
     iconId = R.drawable.ic_delete,
@@ -193,8 +184,8 @@ private fun Context.deleteBackups(deleteList: List<Package>) {
     )
 }
 
-val CopySelfPref = Pref.LinkPref(
-    key = PREFS_COPYSELF,
+val pref_copySelfApk = LinkPref(
+    key = "tool.copySelfApk",
     titleId = R.string.prefs_copyselfapk,
     summaryId = R.string.prefs_copyselfapk_summary,
     iconId = R.drawable.ic_andy,
@@ -246,16 +237,16 @@ private fun Context.onClickCopySelf(
     }
 }
 
-val ExportImportSchedulesPref = Pref.LinkPref(
-    key = PREFS_SCHEDULESEXPORTIMPORT,
+val pref_schedulesExportImport = LinkPref(
+    key = "tool.schedulesExportImport",
     titleId = R.string.prefs_schedulesexportimport,
     summaryId = R.string.prefs_schedulesexportimport_summary,
     iconId = R.drawable.ic_scheduler,
     iconTint = ColorExtDATA
 )
 
-val SaveAppsListPref = Pref.LinkPref(
-    key = PREFS_SAVEAPPSLIST,
+val pref_saveAppsList = LinkPref(
+    key = "tool.saveAppsList",
     titleId = R.string.prefs_saveappslist,
     summaryId = R.string.prefs_saveappslist_summary,
     iconId = R.drawable.ic_list_ordered,
@@ -315,8 +306,8 @@ fun Context.writeAppsListFile(appsList: List<String>, filteredBoolean: Boolean) 
 }
 
 
-val LogViewerPref = Pref.LinkPref(
-    key = PREFS_LOGVIEWER,
+val pref_logViewer = LinkPref(
+    key = "tool.logViewer",
     titleId = R.string.prefs_logviewer,
     iconId = R.drawable.ic_log,
     iconTint = ColorDeData

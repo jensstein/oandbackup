@@ -9,17 +9,16 @@ import androidx.core.database.getIntOrNull
 import androidx.core.database.getLongOrNull
 import androidx.core.database.getStringOrNull
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_ALLOWSHADOWINGDEFAULT
-import com.machiav3lli.backup.PREFS_CACHEFILELISTS
-import com.machiav3lli.backup.PREFS_CACHEURIS
-import com.machiav3lli.backup.PREFS_COLUMNNAMESAF
-import com.machiav3lli.backup.PREFS_INVALIDATESELECTIVE
-import com.machiav3lli.backup.PREFS_SHADOWROOTFILE
-import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.preferences.pref_cacheFileLists
+import com.machiav3lli.backup.preferences.pref_cacheUris
+import com.machiav3lli.backup.preferences.pref_useColumnNameSAF
+import com.machiav3lli.backup.preferences.pref_invalidateSelective
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
 import com.machiav3lli.backup.handler.LogsHandler.Companion.unhandledException
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
+import com.machiav3lli.backup.preferences.pref_allowShadowingDefault
+import com.machiav3lli.backup.preferences.pref_shadowRootFile
 import com.machiav3lli.backup.utils.suRecursiveCopyFilesToDocument
 import timber.log.Timber
 import java.io.File
@@ -251,16 +250,13 @@ open class StorageFile {
         context: Context?,
         uri: Uri?,
         name: String? = null,
-        allowShadowing: Boolean = OABX.prefFlag(
-            PREFS_ALLOWSHADOWINGDEFAULT,
-            false
-        ) // Storage files that should be shadowable should be explicitly declared as such
+        allowShadowing: Boolean = pref_allowShadowingDefault.value // Storage files that should be shadowable should be explicitly declared as such
     ) {
         this.parent = parent
         this.context = context
         this._uri = uri
         name?.let { this.name = it }
-        if (OABX.prefFlag(PREFS_SHADOWROOTFILE, false) && allowShadowing) {
+        if (pref_shadowRootFile.value && allowShadowing) {
             fun isValidPath(file: RootFile?): Boolean =
                 file?.let { file.exists() && file.canRead() && file.canWrite() } ?: false
             parent ?: run {
@@ -575,7 +571,7 @@ open class StorageFile {
                                             docInfo.id
                                         )
                                     val file =
-                                        if (OABX.prefFlag(PREFS_COLUMNNAMESAF, true))
+                                        if (pref_useColumnNameSAF.value)
                                             StorageFile(this, context, documentUri, docInfo.name)
                                         else
                                             StorageFile(this, context, documentUri)
@@ -644,7 +640,7 @@ open class StorageFile {
         fun fromUri(context: Context, uri: Uri): StorageFile {
             // Todo: Figure out what's wrong with the Uris coming from the intent and why they need to be processed
             //  with DocumentsContract.buildDocumentUriUsingTree(value, DocumentsContract.getTreeDocumentId(value)) first
-            if (OABX.prefFlag(PREFS_CACHEURIS, true)) {
+            if (pref_cacheUris.value) {
                 cacheCheck()
                 val id = uri.toString()
                 return cacheGetUri(id)
@@ -679,7 +675,7 @@ open class StorageFile {
         }
 
         fun invalidateCache(filter: (String) -> Boolean) {
-            if (OABX.prefFlag(PREFS_INVALIDATESELECTIVE, true)) {
+            if (pref_invalidateSelective.value) {
                 try {
                     invalidateFilters.add(filter)
                 } catch (e: ArrayIndexOutOfBoundsException) {
@@ -700,7 +696,7 @@ open class StorageFile {
         }
 
         fun cacheGetFiles(id: String): List<StorageFile>? {
-            if (OABX.prefFlag(PREFS_CACHEFILELISTS, true)) {
+            if (pref_cacheFileLists.value) {
                 cacheCheck()
                 return fileListCache[id]
             }

@@ -21,12 +21,8 @@ import android.content.Context
 import android.content.pm.PackageManager
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.HousekeepingMoment
-import com.machiav3lli.backup.HousekeepingMoment.Companion.fromString
 import com.machiav3lli.backup.MODE_APK
 import com.machiav3lli.backup.MODE_DATA
-import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_HOUSEKEEPING_MOMENT
-import com.machiav3lli.backup.PREFS_NUM_BACKUP_REVISIONS
 import com.machiav3lli.backup.actions.BackupAppAction
 import com.machiav3lli.backup.actions.BackupSpecialAction
 import com.machiav3lli.backup.actions.RestoreAppAction
@@ -38,6 +34,8 @@ import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
+import com.machiav3lli.backup.preferences.pref_housekeepingMoment
+import com.machiav3lli.backup.preferences.pref_numBackupRevisions
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
@@ -57,11 +55,8 @@ object BackupRestoreHelper {
         backupMode: Int
     ): ActionResult {
         var reBackupMode = backupMode
-        val housekeepingWhen = fromString(
-            OABX.prefString(PREFS_HOUSEKEEPING_MOMENT, HousekeepingMoment.AFTER.value)
-                ?: HousekeepingMoment.AFTER.value
-        )
-        if (housekeepingWhen == HousekeepingMoment.BEFORE) {
+        val housekeepingWhen = pref_housekeepingMoment.value
+        if (housekeepingWhen == HousekeepingMoment.BEFORE.ordinal) {
             housekeepingPackageBackups(packageItem, true)
         }
         // Select and prepare the action to use
@@ -89,7 +84,7 @@ object BackupRestoreHelper {
             Timber.i("[${packageItem.packageName}] Backup FAILED: ${result.succeeded} ${result.message}")
         }
 
-        if (housekeepingWhen == HousekeepingMoment.AFTER) {
+        if (housekeepingWhen == HousekeepingMoment.AFTER.ordinal) {
             housekeepingPackageBackups(packageItem, false)
         }
         return result
@@ -150,9 +145,9 @@ object BackupRestoreHelper {
         return true
     }
 
-    private fun housekeepingPackageBackups(app: Package, before: Boolean) {
+    fun housekeepingPackageBackups(app: Package, before: Boolean) {
         var numBackupRevisions =
-            OABX.prefInt(PREFS_NUM_BACKUP_REVISIONS, 2)
+            pref_numBackupRevisions.value
         if (numBackupRevisions == 0) {
             Timber.i("[${app.packageName}] Infinite backup revisions configured. Not deleting any backup.")
             return

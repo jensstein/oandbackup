@@ -25,12 +25,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.context
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
-import com.machiav3lli.backup.PREFS_CACHEONUPDATE
-import com.machiav3lli.backup.PREFS_LOADINGTOASTS
+import com.machiav3lli.backup.preferences.pref_usePackageCacheOnUpdate
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dbs.entity.AppInfo
@@ -136,7 +134,7 @@ class MainViewModel(
             val appPackage = packageList.value?.find { it.packageName == packageName }
             try {
                 appPackage?.apply {
-                    if (OABX.prefFlag(PREFS_CACHEONUPDATE, false)) {
+                    if (pref_usePackageCacheOnUpdate.value) {
                         val new = Package.get(packageName) {
                             Package(appContext, packageName, getAppBackupRoot())
                         }
@@ -189,11 +187,17 @@ class MainViewModel(
 
     fun addToBlocklist(packageName: String) {
         viewModelScope.launch {
-            insertIntoBlocklist(packageName)
+            insertIntoBlocklistDB(packageName)
         }
     }
 
-    private suspend fun insertIntoBlocklist(packageName: String) {
+    //fun removeFromBlocklist(packageName: String) {
+    //    viewModelScope.launch {
+    //        removeFromBlocklistDB(packageName)
+    //    }
+    //}
+
+    private suspend fun insertIntoBlocklistDB(packageName: String) {
         withContext(Dispatchers.IO) {
             db.blocklistDao.insert(
                 Blocklist.Builder()
@@ -206,13 +210,24 @@ class MainViewModel(
         }
     }
 
+    //private suspend fun removeFromBlocklistDB(packageName: String) {
+    //    updateBlocklist(
+    //        (blocklist.value
+    //            ?.map { it.packageName }
+    //            ?.filterNotNull()
+    //            ?.filterNot { it == packageName }
+    //            ?: listOf()
+    //        ).toSet()
+    //    )
+    //}
+
     fun updateBlocklist(newList: Set<String>) {
         viewModelScope.launch {
-            insertIntoBlocklist(newList)
+            insertIntoBlocklistDB(newList)
         }
     }
 
-    private suspend fun insertIntoBlocklist(newList: Set<String>) =
+    private suspend fun insertIntoBlocklistDB(newList: Set<String>) =
         withContext(Dispatchers.IO) {
             db.blocklistDao.updateList(PACKAGES_LIST_GLOBAL_ID, newList)
             packageList.value?.removeIf { newList.contains(it.packageName) }

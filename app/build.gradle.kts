@@ -118,7 +118,9 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$vKotlin")
+    //implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$vKotlin")
+    implementation(kotlin("stdlib"))
+    implementation(kotlin("reflect"))
 
     // Libs
     implementation("androidx.room:room-runtime:$vRoom")

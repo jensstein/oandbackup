@@ -14,9 +14,15 @@ import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.flowlayout.FlowMainAxisAlignment
+import com.google.accompanist.flowlayout.FlowRow
+import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.preferences.pref_multilineInfoChips
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.Log
@@ -34,11 +40,15 @@ import com.machiav3lli.backup.ui.item.InfoChipItem
 @Composable
 fun HomePackageRecycler(
     modifier: Modifier = Modifier,
-    productsList: List<Package>?,
+    productsList: List<Package>,
     onClick: (Package) -> Unit = {}
 ) {
+    val selection = remember { mutableStateMapOf<Package, Boolean>() }
+    productsList.forEach {
+        selection.putIfAbsent(it, false)
+    }
     VerticalItemList(modifier = modifier, list = productsList) {
-        MainPackageItem(it, onClick)
+        MainPackageItem(it, productsList, selection, onClick)
     }
 }
 
@@ -133,7 +143,41 @@ fun InfoChipsBlock(
     modifier: Modifier = Modifier,
     list: List<InfoChipItem>,
 ) {
-    LazyRow(
+    if (pref_multilineInfoChips.value)
+        FlowRow(
+            modifier = modifier.fillMaxWidth(),
+            mainAxisSpacing = 8.dp,
+            crossAxisSpacing = 4.dp,
+            mainAxisAlignment = FlowMainAxisAlignment.Center
+        ) {
+            list.forEach { chip ->
+                SuggestionChip(
+                    icon = {
+                        if (chip.iconId != -1) Icon(
+                            painter = painterResource(id = chip.iconId),
+                            contentDescription = chip.text,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    },
+                    border = SuggestionChipDefaults.suggestionChipBorder(
+                        borderColor = MaterialTheme.colorScheme.surface,
+                        borderWidth = 0.dp
+                    ),
+                    label = {
+                        Text(text = chip.text)
+                    },
+                    colors = SuggestionChipDefaults.suggestionChipColors(
+                        containerColor = chip.color ?: MaterialTheme.colorScheme.surface,
+                        labelColor = if (chip.color != null) MaterialTheme.colorScheme.background
+                        else MaterialTheme.colorScheme.onSurface,
+                        iconContentColor = if (chip.color != null) MaterialTheme.colorScheme.background
+                        else MaterialTheme.colorScheme.onSurface,
+                    ),
+                    onClick = {}
+                )
+            }
+        }
+    else LazyRow(
         modifier = modifier
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)

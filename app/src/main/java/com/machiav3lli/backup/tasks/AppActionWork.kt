@@ -36,9 +36,7 @@ import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_MAXRETRIESPERPACKAGE
-import com.machiav3lli.backup.PREFS_USEEXPEDITED
-import com.machiav3lli.backup.PREFS_USEFOREGROUND
+import com.machiav3lli.backup.preferences.pref_maxRetriesPerPackage
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.BackupRestoreHelper
@@ -50,6 +48,8 @@ import com.machiav3lli.backup.handler.getSpecial
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.preferences.pref_useExpedited
+import com.machiav3lli.backup.preferences.pref_useForeground
 import com.machiav3lli.backup.services.CommandReceiver
 import timber.log.Timber
 
@@ -69,6 +69,13 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
 
     override suspend fun doWork(): Result {
 
+        OABX.wakelock(true)
+
+        if (pref_useForeground.value)
+        //if (inputData.getBoolean("immediate", false))
+            setForeground(getForegroundInfo())
+            //setForegroundAsync(getForegroundInfo())  //TODO hg42 what's the difference?
+
         var actionResult: ActionResult? = null
 
         setOperation("...")
@@ -81,9 +88,6 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         Timber.i(logMessage)
 
         val selectedMode = inputData.getInt("selectedMode", MODE_UNSET)
-
-        if (OABX.prefFlag(PREFS_USEFOREGROUND, true))
-            setForeground(getForegroundInfo())
 
         var packageItem: Package? = null
 
@@ -157,15 +161,16 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, packageLabel)
         }
+
         val succeeded = actionResult?.succeeded ?: false
-        return if (succeeded) {
+        val result = if (succeeded) {
             setOperation("OK.")
             Timber.w("package: $packageName OK")
             Result.success(getWorkData("OK", actionResult))
         } else {
             failures++
             setVar(batchName, packageName, "failures", failures.toString())
-            if (failures <= OABX.prefInt(PREFS_MAXRETRIESPERPACKAGE, 1)) {
+            if (failures <= pref_maxRetriesPerPackage.value) {
                 setOperation("err")
                 Timber.w("package: $packageName failures: $failures -> retry")
                 Result.retry()
@@ -180,6 +185,9 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                 Result.failure(getWorkData("ERR", actionResult))
             }
         }
+
+        OABX.wakelock(false)
+        return result
     }
 
     fun setOperation(operation: String = "") {
@@ -272,7 +280,8 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             mode: Int,
             backupBoolean: Boolean,
             notificationId: Int,
-            batchName: String
+            batchName: String,
+            immediate: Boolean
         ): OneTimeWorkRequest {
             val builder = OneTimeWorkRequest.Builder(AppActionWork::class.java)
 
@@ -286,11 +295,12 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                         "backupBoolean" to backupBoolean,
                         "notificationId" to notificationId,
                         "batchName" to batchName,
-                        "operation" to "..."
+                        "operation" to "...",
+                        "immediate" to immediate
                     )
                 )
 
-            if (OABX.prefFlag(PREFS_USEEXPEDITED, true))
+            if (immediate or pref_useExpedited.value)
                 builder.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
 
             return builder.build()

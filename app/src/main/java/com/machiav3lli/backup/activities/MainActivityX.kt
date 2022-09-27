@@ -60,9 +60,9 @@ import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.NAV_MAIN
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.addInfoText
-import com.machiav3lli.backup.PREFS_CATCHUNCAUGHTEXCEPTION
-import com.machiav3lli.backup.PREFS_MAXCRASHLINES
-import com.machiav3lli.backup.PREFS_SKIPPEDENCRYPTION
+import com.machiav3lli.backup.preferences.pref_catchUncaughtException
+import com.machiav3lli.backup.preferences.pref_maxCrashLines
+import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
@@ -72,6 +72,7 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.SortFilterModel
+import com.machiav3lli.backup.preferences.pref_useLogCat
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
@@ -134,41 +135,18 @@ class MainActivityX : BaseActivity() {
 
         OABX.appsSuspendedChecked = false
 
-        if (OABX.prefFlag(PREFS_CATCHUNCAUGHTEXCEPTION, false)) {
+        if (pref_catchUncaughtException.value) {
             Thread.setDefaultUncaughtExceptionHandler { _, e ->
                 try {
-                    val maxCrashLines = OABX.prefInt(PREFS_MAXCRASHLINES, 50)
+                    Timber.i("\n\n" + "=".repeat(60))
                     LogsHandler.unhandledException(e)
-                    LogsHandler(context).writeToLogFile(
-                        "uncaught exception happened:\n\n" +
-                                "\n${BuildConfig.APPLICATION_ID} ${BuildConfig.VERSION_NAME}"
-                                + "\n" +
-                                runAsRoot(
-                                    "logcat -d -t $maxCrashLines --pid=${Process.myPid()}"  // -d = dump and exit
-                                ).out.joinToString("\n")
-                    )
-                    val longToastTime = 3000
-                    val showTime = 12000
+                    LogsHandler(context).writeToLogFile("uncaught: ${e.message}")
                     object : Thread() {
                         override fun run() {
                             Looper.prepare()
-                            repeat(showTime / longToastTime) {
-                                Toast.makeText(
-                                    context,
-                                    "Uncaught Exception\n${e.message ?: ""}\n${e.cause ?: ""}",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                                sleep(longToastTime.toLong())
-                            }
-                            Toast.makeText(
-                                context,
-                                "restarting application...",
-                                Toast.LENGTH_LONG
-                            ).show()
                             Looper.loop()
                         }
                     }.start()
-                    Thread.sleep(showTime.toLong())
                 } catch (e: Throwable) {
                     // ignore
                 } finally {
@@ -356,8 +334,8 @@ class MainActivityX : BaseActivity() {
     private fun showEncryptionDialog() {
         val dontShowAgain = isEncryptionEnabled()
         if (dontShowAgain) return
-        val dontShowCounter = prefs.getInt(PREFS_SKIPPEDENCRYPTION, 0)
-        prefs.edit().putInt(PREFS_SKIPPEDENCRYPTION, dontShowCounter + 1).apply()
+        val dontShowCounter = persist_skippedEncryptionCounter.value
+        persist_skippedEncryptionCounter.value = dontShowCounter + 1
         if (dontShowCounter % 10 == 0 && dontShowCounter <= 30) {
             AlertDialog.Builder(this)
                 .setTitle(R.string.enable_encryption_title)
@@ -443,7 +421,7 @@ class MainActivityX : BaseActivity() {
         selectedItems.forEach { (packageName, mode) ->
 
             val oneTimeWorkRequest =
-                AppActionWork.Request(packageName, mode, backupBoolean, notificationId, batchName)
+                AppActionWork.Request(packageName, mode, backupBoolean, notificationId, batchName, true)
             worksList.add(oneTimeWorkRequest)
 
             val oneTimeWorkLiveData = WorkManager.getInstance(OABX.context)
