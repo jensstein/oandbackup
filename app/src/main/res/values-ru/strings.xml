@@ -364,4 +364,7 @@
     <string name="prefs_advanced_short">Расширенный</string>
     <string name="prefs_tools_short">Инструменты</string>
     <string name="dialog_export_schedules">Экспорт моих расписаний</string>
+    <string name="prefs_multilineinfochips">Многострочные информационные фишки</string>
+    <string name="prefs_multilineinfochips_summary">Разрешить информационным фишкам в листе приложений занимать несколько строк.</string>
+    <string name="prefs_squeezenavtext">Сжать текст элемента навигации</string>
 </resources>
