@@ -227,6 +227,12 @@ val pref_catchUncaughtException = BooleanPref(
     defaultValue = false
 )
 
+val pref_useLogCat = BooleanPref(
+    key = "dev.useLogCat",
+    summary = "use logcat instead of internal log",
+    defaultValue = false
+)
+
 val pref_maxCrashLines = IntPref(
     key = "dev.maxCrashLines",
     summaryId = R.string.prefs_maxcrashlines_summary,

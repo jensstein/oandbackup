@@ -47,6 +47,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.lang.ref.WeakReference
+import java.time.LocalDateTime
 
 class OABX : Application() {
 
@@ -57,8 +58,6 @@ class OABX : Application() {
 
     var work: WorkHandler? = null
 
-    val lastLogMessages = mutableListOf<String>()
-
     // TODO Add database here
     init {
         Timber.plant(object : Timber.DebugTree() {
@@ -68,7 +67,18 @@ class OABX : Application() {
             ) {
                 super.log(priority, "$tag", message, t)
 
-                lastLogMessages.add("[$priority] $tag : $message")
+                val prio =
+                        when (priority) {
+                            android.util.Log.VERBOSE -> "V"
+                            android.util.Log.ASSERT -> "A"
+                            android.util.Log.DEBUG -> "D"
+                            android.util.Log.ERROR -> "E"
+                            android.util.Log.INFO -> "I"
+                            android.util.Log.WARN -> "W"
+                            else                  -> "?"
+                        }
+                val date = LocalDateTime.now()
+                lastLogMessages.add("$date $prio $tag : $message")
                 try {
                     while (lastLogMessages.size > pref_maxCrashLines.value)
                         lastLogMessages.removeAt(0)
@@ -130,6 +140,8 @@ class OABX : Application() {
     }
 
     companion object {
+
+        val lastLogMessages = mutableListOf<String>()
 
         // app should always be created
         var appRef: WeakReference<OABX> = WeakReference(null)
