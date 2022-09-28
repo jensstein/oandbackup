@@ -247,7 +247,7 @@
     <string name="prefs_saveappslist_summary">Выводит список приложений в текстовый файл в папке с р.к.</string>
     <string name="prefs_saveappslist">Сохранить список приложений</string>
     <string name="prefs_allowdowngrade">Разрешить даунгрейд</string>
-    <string name="prefs_allowdowngrade_summary">Позволить восстановление более старой версии приложения.</string>
+    <string name="prefs_allowdowngrade_summary">Позволить восстановление более старой версии приложения (применимо только к версиям для отладки).</string>
     <string name="prefs_restoreallpermissions">Восстановить со всеми разрешениями</string>
     <string name="prefs_restoreallpermissions_summary">Выдать восстановленным приложениям все запрашиваемые ими разрешения.</string>
     <string name="prefs_disableverification_summary">Отключает эту опцию разработчика во время восстановления APK-файлов и включает её снова после. Это исключает ошибку: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
@@ -367,4 +367,5 @@
     <string name="prefs_multilineinfochips">Многострочные информационные фишки</string>
     <string name="prefs_multilineinfochips_summary">Разрешить информационным фишкам в листе приложений занимать несколько строк.</string>
     <string name="prefs_squeezenavtext">Сжать текст элемента навигации</string>
+    <string name="prefs_squeezenavtext_summary">Позволить менять размер текста под элементами панели навигации, чтобы заполнить доступную ширину.</string>
 </resources>
