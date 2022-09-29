@@ -249,7 +249,7 @@ fun StringDialogUI(
         textFieldFocusRequester.requestFocus()
     }
     var savedValue by remember {
-        mutableStateOf(pref.value)
+        mutableStateOf(if(isPrivate) "" else pref.value)
     }
 
     Card(
