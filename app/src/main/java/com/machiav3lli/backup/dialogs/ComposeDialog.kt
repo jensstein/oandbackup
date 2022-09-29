@@ -44,14 +44,12 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.ui.compose.item.ActionButton
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.SelectableRow
 import com.machiav3lli.backup.ui.item.EnumPref
 import com.machiav3lli.backup.ui.item.ListPref
-import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.ui.item.StringPref
 import kotlinx.coroutines.delay
 
@@ -123,7 +121,7 @@ fun EnumDialogUI(
     onChanged: (() -> Unit) = {}
 ) {
     val context = LocalContext.current
-    var selected by remember { mutableStateOf(OABX.prefInt(pref.key, pref.defaultValue)) }
+    var selected by remember { mutableStateOf(pref.value) }
     val entryPairs = pref.entries.toList()
 
     Card(
@@ -163,8 +161,8 @@ fun EnumDialogUI(
                 }
                 Spacer(Modifier.weight(1f))
                 ElevatedActionButton(text = stringResource(id = R.string.dialogSave)) {
-                    if (OABX.prefInt(pref.key, pref.defaultValue) != selected) {
-                        OABX.setPrefInt(pref.key, selected)
+                    if (pref.value != selected) {
+                        pref.value =selected
                         onChanged()
                     }
                     openDialogCustom.value = false
@@ -181,7 +179,7 @@ fun ListDialogUI(
     onChanged: (() -> Unit) = {}
 ) {
     val context = LocalContext.current
-    var selected by remember { mutableStateOf(OABX.prefString(pref.key, pref.defaultValue)) }
+    var selected by remember { mutableStateOf(pref.value) }
     val entryPairs = pref.entries.toList()
 
     Card(
@@ -223,8 +221,8 @@ fun ListDialogUI(
                 }
                 Spacer(Modifier.weight(1f))
                 ElevatedActionButton(text = stringResource(id = R.string.dialogSave)) {
-                    if (OABX.prefString(pref.key, pref.defaultValue) != selected) {
-                        OABX.setPrefString(pref.key, selected)
+                    if (pref.value != selected) {
+                        pref.value = selected
                         onChanged()
                     }
                     openDialogCustom.value = false
@@ -251,10 +249,7 @@ fun StringDialogUI(
         textFieldFocusRequester.requestFocus()
     }
     var savedValue by remember {
-        mutableStateOf(
-            if (isPrivate) OABX.prefPrivateString(pref.key, pref.defaultValue)
-            else OABX.prefString(pref.key, pref.defaultValue)
-        )
+        mutableStateOf(pref.value)
     }
 
     Card(
@@ -300,12 +295,8 @@ fun StringDialogUI(
                 }
                 Spacer(Modifier.weight(1f))
                 ElevatedActionButton(text = stringResource(id = R.string.dialogSave)) {
-                    if ((isPrivate &&
-                                OABX.prefPrivateString(pref.key, pref.defaultValue) != savedValue)
-                        || OABX.prefString(pref.key, pref.defaultValue) != savedValue
-                    ) {
-                        if (isPrivate) OABX.setPrefPrivateString(pref.key, savedValue)
-                        else OABX.setPrefString(pref.key, savedValue)
+                    if (pref.value != savedValue) {
+                        pref.value = savedValue
                         onChanged()
                     }
                     openDialogCustom.value = false

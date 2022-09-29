@@ -195,7 +195,7 @@ fun EnumPreference(
         modifier = modifier,
         key = pref.key,
         titleId = pref.titleId,
-        summaryId = pref.entries[OABX.prefInt(pref.key, pref.defaultValue)] ?: pref.summaryId,
+        summaryId = pref.entries[pref.value] ?: pref.summaryId,
         icon = {
             if (pref.iconId != -1) PrefIcon(
                 iconId = pref.iconId,
@@ -237,7 +237,7 @@ fun ListPreference(
         key = pref.key,
         titleId = pref.titleId,
         summaryId = pref.summaryId,
-        summary = pref.entries[OABX.prefString(pref.key, pref.defaultValue)],
+        summary = pref.entries[pref.value],
         icon = {
             if (pref.iconId != -1) PrefIcon(
                 iconId = pref.iconId,
@@ -264,11 +264,9 @@ fun SwitchPreference(
     var isEnabled by remember(context.PrefsDependencies[pref]) {
         mutableStateOf(context.PrefsDependencies[pref] ?: true)
     }
-    var checked by remember(OABX.prefFlag(pref.key, pref.defaultValue)) {
-        mutableStateOf(OABX.prefFlag(pref.key, pref.defaultValue))
-    }
+    var checked by remember(pref.value) { mutableStateOf(pref.value) }
     val check = { value: Boolean ->
-        OABX.setPrefFlag(pref.key, value)
+        pref.value = value
         checked = value
     }
     SideEffect {
@@ -327,12 +325,10 @@ fun CheckboxPreference(
     var isEnabled by remember(context.PrefsDependencies[pref]) {
         mutableStateOf(context.PrefsDependencies[pref] ?: true)
     }
-    var checked by remember(OABX.prefFlag(pref.key, pref.defaultValue)) {
-        mutableStateOf(OABX.prefFlag(pref.key, pref.defaultValue))
-    }
-    val check = { checks: Boolean ->
-        OABX.setPrefFlag(pref.key, checks)
-        checked = checks
+    var checked by remember(pref.value) { mutableStateOf(pref.value) }
+    val check = { value: Boolean ->
+        pref.value = value
+        checked = value
     }
 
     SideEffect {
@@ -391,7 +387,7 @@ fun SeekBarPreference(
     var isEnabled by remember(context.PrefsDependencies[pref]) {
         mutableStateOf(context.PrefsDependencies[pref] ?: true)
     }
-    val currentValue = OABX.prefInt(pref.key, pref.defaultValue)
+    val currentValue = pref.value
     var sliderPosition by remember {
         mutableStateOf(
             pref.entries.indexOfFirst { it == currentValue }.let {
@@ -409,7 +405,7 @@ fun SeekBarPreference(
     }
     val savePosition = { pos: Int ->
         val value = pref.entries[pos]
-        OABX.setPrefInt(pref.key, value)
+        pref.value = value
         sliderPosition = pos
     }
     val last = pref.entries.size - 1
