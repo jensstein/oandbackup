@@ -99,13 +99,17 @@ class IntroActivityX : BaseActivity() {
     }
 
     private fun launchBiometricPrompt(withBiometric: Boolean) {
-        val biometricPrompt = createBiometricPrompt(this)
-        val promptInfo = PromptInfo.Builder()
-            .setTitle(getString(R.string.prefs_biometriclock))
-            .setConfirmationRequired(true)
-            .setAllowedAuthenticators(DEVICE_CREDENTIAL or (if (withBiometric) BIOMETRIC_WEAK else 0))
-            .build()
-        biometricPrompt.authenticate(promptInfo)
+        try {
+            val biometricPrompt = createBiometricPrompt(this)
+            val promptInfo = PromptInfo.Builder()
+                .setTitle(getString(R.string.prefs_biometriclock))
+                .setConfirmationRequired(true)
+                .setAllowedAuthenticators(DEVICE_CREDENTIAL or (if (withBiometric) BIOMETRIC_WEAK else 0))
+                .build()
+            biometricPrompt.authenticate(promptInfo)
+        } catch(e: Throwable) {
+            startActivity(Intent(this, MainActivityX::class.java))
+        }
     }
 
     private fun createBiometricPrompt(activity: Activity): BiometricPrompt {
