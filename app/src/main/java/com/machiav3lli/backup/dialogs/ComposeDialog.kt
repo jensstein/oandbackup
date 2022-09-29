@@ -250,11 +250,17 @@ fun StringDialogUI(
         delay(100)
         textFieldFocusRequester.requestFocus()
     }
-    var savedValue by remember { mutableStateOf(if(isPrivate) "" else pref.value) }
+    var savedValue by remember { mutableStateOf(pref.value) }
     var savedValueConfirm by remember { mutableStateOf("") }
     var isEdited by remember { mutableStateOf(false) }
 
-    val textColor = if(isPrivate) { if(savedValue != savedValueConfirm) Color.Red else Color.Green } else Color.Unspecified
+    val textColor = if(isPrivate) {
+        if(savedValue != savedValueConfirm)
+            Color.Red
+        else
+            Color.Green
+    } else
+        MaterialTheme.colorScheme.onBackground
 
     Card(
         shape = RoundedCornerShape(8.dp),
@@ -275,7 +281,7 @@ fun StringDialogUI(
                 modifier = Modifier
                     .fillMaxWidth()
                     .focusRequester(textFieldFocusRequester),
-                value = savedValue,
+                value = if(isEdited) savedValue else "",
                 colors = TextFieldDefaults.textFieldColors(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
@@ -324,8 +330,7 @@ fun StringDialogUI(
             if(isPrivate && confirm) {
                 TextField(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        , //.focusRequester(textFieldFocusRequester),
+                        .fillMaxWidth(),
                     value = savedValueConfirm,
                     colors = TextFieldDefaults.textFieldColors(
                         focusedIndicatorColor = Color.Transparent,
@@ -347,20 +352,6 @@ fun StringDialogUI(
                         keyboardType = if(isPrivate) KeyboardType.Password else KeyboardType.Text
                     ),
                     keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-                    trailingIcon = {
-                        //val image = if (passwordVisible)
-                        //    Icons.Filled.Visibility
-                        //else
-                        //    Icons.Filled.VisibilityOff
-
-                        // Please provide localized description for accessibility services
-                        //val description = if (passwordVisible) "Hide password" else "Show password"  //???
-
-                        IconButton(onClick = {isPasswordVisible = !isPasswordVisible}) {
-                            //Icon(imageVector  = image, description = description)
-                            Text(if(isPasswordVisible) "<O>" else "<=>")
-                        }
-                    }
                 )
             }
 
