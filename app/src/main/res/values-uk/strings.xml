@@ -64,7 +64,7 @@
     <string name="app_size">Розмір додатка:</string>
     <string name="grant_usage_access_title">Надати доступ до використання</string>
     <string name="backup_filters">Резервні фільтри:</string>
-    <string name="split_apks">Розділити файли .apk:</string>
+    <string name="split_apks">Розділені файли .apk:</string>
     <string name="failed_unzipping">Помилка під час розпакування даних, перевірте пароль шифрування!</string>
     <string name="ignore_battery_optimization_not_supported">На жаль, цей пристрій не підтримує ігнорування оптимізації батареї!</string>
     <string name="ignore_battery_optimization_message">Резервні копії іноді можуть припинятися. Щоб цього не сталося, слід вимкнути оптимізацію акумулятора</string>
@@ -134,7 +134,7 @@
     <string name="prefs_stopcont_summary">Лише для експертів: це може допомогти, якщо програма змінює файли під час резервного копіювання, а резервне копіювання не вдається.</string>
     <string name="prefs_stopcont">STOP-CONT до і після обробки програм для резервного копіювання/відновлення</string>
     <string name="prefs_allowdowngrade">Дозволити зниження рівня</string>
-    <string name="prefs_allowdowngrade_summary">Дозволити відновлення попередньої версії встановленої програми.</string>
+    <string name="prefs_allowdowngrade_summary">Дозволити відновлення старої версії встановленої програми (стосується тільки налагоджуваних версій).</string>
     <string name="prefs_restoreallpermissions">Відновити з усіма дозволами</string>
     <string name="prefs_restoreallpermissions_summary">Надати всі дозволи додатку для відновлення, які були надані.</string>
     <string name="prefs_disableverification_summary">Вимикає цю опцію розробника під час відновлення файлів .apk, а потім знову вмикає її. Вирішує помилку: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
@@ -354,4 +354,8 @@
     <string name="prefs_user_short">Особисті</string>
     <string name="prefs_service_short">Службові</string>
     <string name="dialog_export_schedules">Експорт моїх розкладів</string>
+    <string name="prefs_multilineinfochips_summary">Дозволити інформаційним фішкам в аркуші застосунку займати кілька рядків.</string>
+    <string name="prefs_multilineinfochips">Багаторядкові інформаційні фішки</string>
+    <string name="prefs_squeezenavtext">Стиснути текст навігаційного елемента</string>
+    <string name="prefs_squeezenavtext_summary">Дозволити зміну розміру тексту під елементами навігаційної панелі відповідно до доступної ширини.</string>
 </resources>
