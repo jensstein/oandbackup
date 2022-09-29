@@ -38,6 +38,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -280,8 +281,14 @@ fun StringDialogUI(
                 shape = MaterialTheme.shapes.medium,
                 singleLine = true,
                 onValueChange = { savedValue = it },
-                visualTransformation = if (isPrivate) PasswordVisualTransformation() else VisualTransformation.None,
-                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                visualTransformation = if (isPrivate)
+                    PasswordVisualTransformation()
+                else
+                    VisualTransformation.None,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done,
+                    keyboardType = if(isPrivate) KeyboardType.Password else KeyboardType.Text
+                ),
                 keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
             )
 
