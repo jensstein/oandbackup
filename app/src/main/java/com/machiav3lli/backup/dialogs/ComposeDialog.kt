@@ -15,6 +15,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -237,6 +238,7 @@ fun ListDialogUI(
 fun StringDialogUI(
     pref: StringPref,
     isPrivate: Boolean = false,
+    confirm: Boolean = false,
     openDialogCustom: MutableState<Boolean>,
     onChanged: (() -> Unit) = {}
 ) {
@@ -248,9 +250,11 @@ fun StringDialogUI(
         delay(100)
         textFieldFocusRequester.requestFocus()
     }
-    var savedValue by remember {
-        mutableStateOf(if(isPrivate) "" else pref.value)
-    }
+    var savedValue by remember { mutableStateOf(if(isPrivate) "" else pref.value) }
+    var savedValueConfirm by remember { mutableStateOf("") }
+    var isEdited by remember { mutableStateOf(false) }
+
+    val textColor = if(isPrivate) { if(savedValue != savedValueConfirm) Color.Red else Color.Green } else Color.Unspecified
 
     Card(
         shape = RoundedCornerShape(8.dp),
@@ -258,6 +262,9 @@ fun StringDialogUI(
         elevation = CardDefaults.elevatedCardElevation(8.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background)
     ) {
+        // from https://stackoverflow.com/questions/65304229/toggle-password-field-jetpack-compose
+        var isPasswordVisible by remember { mutableStateOf(!isPrivate) }  // rememberSavable?
+
         Column(
             modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -272,20 +279,90 @@ fun StringDialogUI(
                 colors = TextFieldDefaults.textFieldColors(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
+                    textColor = textColor
                 ),
                 shape = MaterialTheme.shapes.medium,
                 singleLine = true,
-                onValueChange = { savedValue = it },
-                visualTransformation = if (isPrivate)
-                    PasswordVisualTransformation()
+                onValueChange = {
+                    isEdited = true
+                    savedValue = it
+                },
+                visualTransformation = if (isPasswordVisible)
+                    VisualTransformation.None
                 else
-                    VisualTransformation.None,
+                    PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Done,
                     keyboardType = if(isPrivate) KeyboardType.Password else KeyboardType.Text
                 ),
                 keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+                trailingIcon = {
+                    //val image = if (passwordVisible)
+                    //    Icons.Filled.Visibility
+                    //else
+                    //    Icons.Filled.VisibilityOff
+
+                    // Please provide localized description for accessibility services
+                    //val description = if (passwordVisible) "Hide password" else "Show password"  //???
+
+                    IconButton(onClick = {isPasswordVisible = !isPasswordVisible}) {
+                        //Icon(imageVector  = image, description = description)
+                        Text(if(isPasswordVisible) "<O>" else "<=>")
+                    }
+                },
+                placeholder = {
+                    if(isPrivate) {
+                        if (pref.value.isNotEmpty() and !isEdited) {
+                            if (isPasswordVisible)
+                                Text(pref.value)
+                            else
+                                Text("**********")
+                        }
+                    }
+                }
             )
+            if(isPrivate && confirm) {
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        , //.focusRequester(textFieldFocusRequester),
+                    value = savedValueConfirm,
+                    colors = TextFieldDefaults.textFieldColors(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        textColor = textColor
+                    ),
+                    shape = MaterialTheme.shapes.medium,
+                    singleLine = true,
+                    onValueChange = {
+                        isEdited = true
+                        savedValueConfirm = it
+                    },
+                    visualTransformation = if (isPasswordVisible)
+                        VisualTransformation.None
+                    else
+                        PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Done,
+                        keyboardType = if(isPrivate) KeyboardType.Password else KeyboardType.Text
+                    ),
+                    keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+                    trailingIcon = {
+                        //val image = if (passwordVisible)
+                        //    Icons.Filled.Visibility
+                        //else
+                        //    Icons.Filled.VisibilityOff
+
+                        // Please provide localized description for accessibility services
+                        //val description = if (passwordVisible) "Hide password" else "Show password"  //???
+
+                        IconButton(onClick = {isPasswordVisible = !isPasswordVisible}) {
+                            //Icon(imageVector  = image, description = description)
+                            Text(if(isPasswordVisible) "<O>" else "<=>")
+                        }
+                    }
+                )
+            }
 
             Row(
                 Modifier.fillMaxWidth()
@@ -295,7 +372,7 @@ fun StringDialogUI(
                 }
                 Spacer(Modifier.weight(1f))
                 ElevatedActionButton(text = stringResource(id = R.string.dialogSave)) {
-                    if (pref.value != savedValue) {
+                    if ((pref.value != savedValue) and (!confirm or (savedValue == savedValueConfirm))) {
                         pref.value = savedValue
                         onChanged()
                     }

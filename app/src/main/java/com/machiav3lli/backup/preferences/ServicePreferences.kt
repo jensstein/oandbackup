@@ -63,6 +63,7 @@ fun ServicePrefsPage() {
                     is PasswordPref -> StringDialogUI(
                         pref = dialogsPref as PasswordPref,
                         isPrivate = true,
+                        confirm = true,
                         openDialogCustom = openDialog
                     )
                     is StringPref   -> StringDialogUI(
@@ -94,13 +95,6 @@ val pref_password = PasswordPref(
     summaryId = R.string.prefs_password_summary,
     iconId = R.drawable.ic_password,
     iconTint = ColorUpdated,
-    defaultValue = ""
-)
-
-val pref_passwordConfirmation = PasswordPref( // TODO smart summary
-    key = "srv.passwordConfirmation",
-    titleId = R.string.prefs_passwordconfirmation,
-    iconId = R.drawable.ic_password,
     defaultValue = ""
 )
 
