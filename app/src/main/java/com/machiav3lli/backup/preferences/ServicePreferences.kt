@@ -13,21 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.BuildConfig
-import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_COMPRESSION_LEVEL
-import com.machiav3lli.backup.PREFS_DEVICEPROTECTEDDATA
-import com.machiav3lli.backup.PREFS_ENABLESESSIONINSTALLER
-import com.machiav3lli.backup.PREFS_ENCRYPTION
-import com.machiav3lli.backup.PREFS_EXCLUDECACHE
-import com.machiav3lli.backup.PREFS_EXTERNALDATA
-import com.machiav3lli.backup.PREFS_HOUSEKEEPING
-import com.machiav3lli.backup.PREFS_INSTALLER_PACKAGENAME
-import com.machiav3lli.backup.PREFS_MEDIADATA
-import com.machiav3lli.backup.PREFS_NUM_BACKUP_REVISIONS
-import com.machiav3lli.backup.PREFS_OBBDATA
-import com.machiav3lli.backup.PREFS_PASSWORD
-import com.machiav3lli.backup.PREFS_PASSWORD_CONFIRMATION
-import com.machiav3lli.backup.PREFS_RESTOREPERMISSIONS
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dialogs.BaseDialog
 import com.machiav3lli.backup.dialogs.EnumDialogUI
@@ -94,8 +79,8 @@ fun ServicePrefsPage() {
     }
 }
 
-val EncryptionPref = BooleanPref(
-    key = "srv." + PREFS_ENCRYPTION,
+val pref_encryption = BooleanPref(
+    key = "srv.encryption",
     titleId = R.string.prefs_encryption,
     summaryId = R.string.prefs_encryption_summary,
     iconId = R.drawable.ic_encryption,
@@ -103,8 +88,8 @@ val EncryptionPref = BooleanPref(
     defaultValue = false
 )
 
-val EncryptionPasswordPref = PasswordPref(
-    key = "srv." + PREFS_PASSWORD,
+val pref_password = PasswordPref(
+    key = "srv.password",
     titleId = R.string.prefs_password,
     summaryId = R.string.prefs_password_summary,
     iconId = R.drawable.ic_password,
@@ -112,15 +97,15 @@ val EncryptionPasswordPref = PasswordPref(
     defaultValue = ""
 )
 
-val ConfirmEncryptionPasswordPref = PasswordPref( // TODO smart summary
-    key = "srv." + PREFS_PASSWORD_CONFIRMATION,
+val pref_passwordConfirmation = PasswordPref( // TODO smart summary
+    key = "srv.passwordConfirmation",
     titleId = R.string.prefs_passwordconfirmation,
     iconId = R.drawable.ic_password,
     defaultValue = ""
 )
 
-val DeDataPref = BooleanPref(
-    key = "srv." + PREFS_DEVICEPROTECTEDDATA,
+val pref_backupDeviceProtectedData = BooleanPref(
+    key = "srv.backupDeviceProtectedData",
     titleId = R.string.prefs_deviceprotecteddata,
     summaryId = R.string.prefs_deviceprotecteddata_summary,
     iconId = R.drawable.ic_de_data,
@@ -128,8 +113,8 @@ val DeDataPref = BooleanPref(
     defaultValue = true
 )
 
-val ExtDataPref = BooleanPref(
-    key = "srv." + PREFS_EXTERNALDATA,
+val pref_backupExternalData = BooleanPref(
+    key = "srv.backupExternalData",
     titleId = R.string.prefs_externaldata,
     summaryId = R.string.prefs_externaldata_summary,
     iconId = R.drawable.ic_external_data,
@@ -137,8 +122,8 @@ val ExtDataPref = BooleanPref(
     defaultValue = true
 )
 
-val ObbPref = BooleanPref(
-    key = "srv." + PREFS_OBBDATA,
+val pref_backupObbData = BooleanPref(
+    key = "srv.backupObbData",
     titleId = R.string.prefs_obbdata,
     summaryId = R.string.prefs_obbdata_summary,
     iconId = R.drawable.ic_obb_data,
@@ -146,8 +131,8 @@ val ObbPref = BooleanPref(
     defaultValue = true
 )
 
-val MediaPref = BooleanPref(
-    key = "srv." + PREFS_MEDIADATA,
+val pref_backupMediaData = BooleanPref(
+    key = "srv.backupMediaData",
     titleId = R.string.prefs_mediadata,
     summaryId = R.string.prefs_mediadata_summary,
     iconId = R.drawable.ic_media_data,
@@ -155,8 +140,8 @@ val MediaPref = BooleanPref(
     defaultValue = true
 )
 
-val RestorePermissionsPref = BooleanPref(
-    key = "srv." + PREFS_RESTOREPERMISSIONS,
+val pref_restorePermissions = BooleanPref(
+    key = "srv.restorePermissions",
     titleId = R.string.prefs_restorepermissions,
     summaryId = R.string.prefs_restorepermissions_summary,
     iconId = R.drawable.ic_sizes,
@@ -164,8 +149,8 @@ val RestorePermissionsPref = BooleanPref(
     defaultValue = true
 )
 
-val NumBackupsPref = IntPref(
-    key = "srv." + PREFS_NUM_BACKUP_REVISIONS,
+val pref_numBackupRevisions = IntPref(
+    key = "srv.numBackupRevisions",
     titleId = R.string.prefs_numBackupRevisions,
     summaryId = R.string.prefs_numBackupRevisions_summary,
     iconId = R.drawable.ic_revisions,
@@ -174,8 +159,8 @@ val NumBackupsPref = IntPref(
     defaultValue = 2
 )
 
-val CompressionLevelPref = IntPref(
-    key = "srv." + PREFS_COMPRESSION_LEVEL,
+val pref_compressionLevel = IntPref(
+    key = "srv.compressionLevel",
     titleId = R.string.prefs_compression_level,
     summaryId = R.string.prefs_compression_level_summary,
     iconId = R.drawable.ic_compression_level,
@@ -184,32 +169,32 @@ val CompressionLevelPref = IntPref(
     defaultValue = 2
 )
 
-val SessionInstallerPref = BooleanPref(
-    key = "srv." + PREFS_ENABLESESSIONINSTALLER,
+val pref_enableSessionInstaller = BooleanPref(
+    key = "srv.enableSessionInstaller",
     titleId = R.string.prefs_sessionIinstaller,
     summaryId = R.string.prefs_sessionIinstaller_summary,
     iconId = R.drawable.ic_label,
     defaultValue = true
 )
 
-val InstallerPackagePref = StringPref(
-    key = "srv." + PREFS_INSTALLER_PACKAGENAME,
+val pref_installationPackage = StringPref(
+    key = "srv.installationPackage",
     titleId = R.string.prefs_installerpackagename,
     iconId = R.drawable.ic_launchable,
     iconTint = ColorOBB,
     defaultValue = BuildConfig.APPLICATION_ID
 )
 
-val ExcludeCachePref = BooleanPref(
-    key = "srv." + PREFS_EXCLUDECACHE,
+val pref_excludeCache = BooleanPref(
+    key = "srv.excludeCache",
     titleId = R.string.prefs_excludecache,
     summaryId = R.string.prefs_excludecache_summary,
     iconId = R.drawable.ic_exclude,
     defaultValue = false
 )
 
-val HousekeepingPref = EnumPref(
-    key = "srv." + PREFS_HOUSEKEEPING,
+val pref_housekeepingMoment = EnumPref(
+    key = "srv.housekeepingMoment",
     titleId = R.string.prefs_housekeepingmoment,
     summaryId = R.string.prefs_housekeepingmoment_summary,
     iconId = R.drawable.ic_delete,

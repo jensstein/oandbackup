@@ -35,6 +35,7 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.preferences.pref_cancelOnStart
 import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
@@ -100,7 +101,7 @@ class OABX : Application() {
         )
 
         work = WorkHandler(context)
-        if (prefFlag(PREFS_CANCELONSTART, false))
+        if (pref_cancelOnStart.value)
             work?.cancel()
         work?.prune()
 

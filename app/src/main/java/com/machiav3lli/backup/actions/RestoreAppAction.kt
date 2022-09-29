@@ -25,15 +25,14 @@ import com.machiav3lli.backup.MODE_DATA_EXT
 import com.machiav3lli.backup.MODE_DATA_MEDIA
 import com.machiav3lli.backup.MODE_DATA_OBB
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_ENABLESESSIONINSTALLER
-import com.machiav3lli.backup.PREFS_EXCLUDECACHE
-import com.machiav3lli.backup.PREFS_INSTALLER_PACKAGENAME
-import com.machiav3lli.backup.PREFS_DELAYBEFOREREFRESHAPPINFO
-import com.machiav3lli.backup.PREFS_REFRESHAPPINFOTIMEOUT
-import com.machiav3lli.backup.PREFS_REFRESHTIMEOUT_DEFAULT
-import com.machiav3lli.backup.PREFS_RESTOREAVOIDTEMPCOPY
-import com.machiav3lli.backup.PREFS_RESTOREPERMISSIONS
-import com.machiav3lli.backup.PREFS_RESTORETARCMD
+import com.machiav3lli.backup.preferences.pref_enableSessionInstaller
+import com.machiav3lli.backup.preferences.pref_excludeCache
+import com.machiav3lli.backup.preferences.pref_installationPackage
+import com.machiav3lli.backup.preferences.pref_delayBeforeRefreshAppInfo
+import com.machiav3lli.backup.preferences.pref_refreshAppInfoTimeout
+import com.machiav3lli.backup.preferences.pref_restoreAvoidTemporaryCopy
+import com.machiav3lli.backup.preferences.pref_restorePermissions
+import com.machiav3lli.backup.preferences.pref_restoreTarCmd
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.LogsHandler
@@ -296,7 +295,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                 runAsRoot("settings put global verifier_verify_adb_installs 0")
 
             when {
-                OABX.prefFlag(PREFS_ENABLESESSIONINSTALLER, false) -> {
+                pref_enableSessionInstaller.value -> {
                     val packageFiles = listOf(baseApkFile).plus(splitApksInBackup).map {
                         RootFile(stagingApkPath, "$packageName.${it.name}")
                     }
@@ -348,9 +347,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             success = runAsRoot(sb.toString()).isSuccess // TODO integrate permissionsResult too
 
             val permissionsCmd = mutableListOf<String>()
-            if (!context.isRestoreAllPermissions &&
-                OABX.prefFlag(PREFS_RESTOREPERMISSIONS, true)
-            ) {
+            if (!context.isRestoreAllPermissions && pref_restorePermissions.value) {
                 backup.permissions
                     .filterNot { it.isEmpty() }
                     .forEach { p ->
@@ -473,7 +470,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             TarArchiveInputStream(
                 openArchiveFile(archive, isCompressed, isEncrypted, iv)
             ).use { archiveStream ->
-                if (OABX.prefFlag(PREFS_RESTOREAVOIDTEMPCOPY, true)) {
+                if (pref_restoreAvoidTemporaryCopy.value) {
                     // clear the data from the final directory
                     wipeDirectory(
                         targetPath,
@@ -557,8 +554,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
 
                     var options = ""
                     options += " --exclude " + quote(exclude)
-                    if (OABX.prefFlag(PREFS_EXCLUDECACHE, true)
-                    ) {
+                    if (pref_excludeCache.value) {
                         options += " --exclude " + quote(excludeCache)
                     }
                     var suOptions = "--mount-master"
@@ -629,7 +625,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         forceOldVersion: Boolean = false
     ) {
         Timber.i("${OABX.app.packageName} -> $targetPath")
-        if (!forceOldVersion && OABX.prefFlag(PREFS_RESTORETARCMD, true)) {
+        if (!forceOldVersion && pref_restoreTarCmd.value) {
             return genericRestoreFromArchiveTarCmd(
                 dataType,
                 archive,
@@ -992,7 +988,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             basePackageName?.let { "-p $basePackageName" },
             if (context.isRestoreAllPermissions) "-g" else null,
             if (context.isAllowDowngrade) "-d" else null,
-            "-i ${OABX.prefString(PREFS_INSTALLER_PACKAGENAME, OABX.app.packageName)}",
+            "-i ${pref_installationPackage.value}",
             "-t",
             "-r",
             "-S", apkPath.length().toString(),
@@ -1006,7 +1002,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     ): String =
         listOfNotNull(
             "pm", "install-create",
-            "-i", OABX.prefString(PREFS_INSTALLER_PACKAGENAME, OABX.app.packageName),
+            "-i", pref_installationPackage.value,
             "--user", profileId,
             "-r",
             "-t",
@@ -1041,7 +1037,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         val sleepTimeMs = 1000L
 
         // delay before first try
-        val delayMs = OABX.prefInt(PREFS_DELAYBEFOREREFRESHAPPINFO, 0) * 1000L
+        val delayMs = pref_delayBeforeRefreshAppInfo.value * 1000L
         var timeWaitedMs = 0L
         do {
             Thread.sleep(sleepTimeMs)
@@ -1050,7 +1046,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
 
         // try multiple times to get valid paths from PackageManager
         // maxWaitMs is cumulated sleep time between tries
-        val maxWaitMs = OABX.prefInt(PREFS_REFRESHAPPINFOTIMEOUT, PREFS_REFRESHTIMEOUT_DEFAULT) * 1000L
+        val maxWaitMs = pref_refreshAppInfoTimeout.value * 1000L
         timeWaitedMs = 0L
         var attemptNo = 0
         do {

@@ -60,9 +60,9 @@ import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.NAV_MAIN
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.addInfoText
-import com.machiav3lli.backup.PREFS_CATCHUNCAUGHTEXCEPTION
-import com.machiav3lli.backup.PREFS_MAXCRASHLINES
-import com.machiav3lli.backup.PREFS_SKIPPEDENCRYPTION
+import com.machiav3lli.backup.preferences.pref_catchUncaughtException
+import com.machiav3lli.backup.preferences.pref_maxCrashLines
+import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
@@ -134,10 +134,10 @@ class MainActivityX : BaseActivity() {
 
         OABX.appsSuspendedChecked = false
 
-        if (OABX.prefFlag(PREFS_CATCHUNCAUGHTEXCEPTION, false)) {
+        if (pref_catchUncaughtException.value) {
             Thread.setDefaultUncaughtExceptionHandler { _, e ->
                 try {
-                    val maxCrashLines = OABX.prefInt(PREFS_MAXCRASHLINES, 50)
+                    val maxCrashLines = pref_maxCrashLines.value
                     LogsHandler.unhandledException(e)
                     LogsHandler(context).writeToLogFile(
                         "uncaught exception happened:\n\n" +
@@ -356,8 +356,8 @@ class MainActivityX : BaseActivity() {
     private fun showEncryptionDialog() {
         val dontShowAgain = isEncryptionEnabled()
         if (dontShowAgain) return
-        val dontShowCounter = prefs.getInt(PREFS_SKIPPEDENCRYPTION, 0)
-        prefs.edit().putInt(PREFS_SKIPPEDENCRYPTION, dontShowCounter + 1).apply()
+        val dontShowCounter = persist_skippedEncryptionCounter.value
+        persist_skippedEncryptionCounter.value = dontShowCounter + 1
         if (dontShowCounter % 10 == 0 && dontShowCounter <= 30) {
             AlertDialog.Builder(this)
                 .setTitle(R.string.enable_encryption_title)

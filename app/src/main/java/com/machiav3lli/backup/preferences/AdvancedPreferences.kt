@@ -16,31 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
-import com.machiav3lli.backup.PREFS_ALLOWDOWNGRADE
-import com.machiav3lli.backup.PREFS_BACKUPTARCMD
-import com.machiav3lli.backup.PREFS_CACHEFILELISTS
-import com.machiav3lli.backup.PREFS_CACHEONUPDATE
-import com.machiav3lli.backup.PREFS_CACHEPACKAGES
-import com.machiav3lli.backup.PREFS_CACHEURIS
-import com.machiav3lli.backup.PREFS_CANCELONSTART
-import com.machiav3lli.backup.PREFS_CATCHUNCAUGHTEXCEPTION
-import com.machiav3lli.backup.PREFS_COLUMNNAMESAF
-import com.machiav3lli.backup.PREFS_DELAYBEFOREREFRESHAPPINFO
-import com.machiav3lli.backup.PREFS_DISABLEVERIFICATION
-import com.machiav3lli.backup.PREFS_ENABLESPECIALBACKUPS
-import com.machiav3lli.backup.PREFS_FINDLS
-import com.machiav3lli.backup.PREFS_INVALIDATESELECTIVE
-import com.machiav3lli.backup.PREFS_MAXCRASHLINES
-import com.machiav3lli.backup.PREFS_MAXRETRIESPERPACKAGE
-import com.machiav3lli.backup.PREFS_PAUSEAPPS
-import com.machiav3lli.backup.PREFS_PMSUSPEND
-import com.machiav3lli.backup.PREFS_REFRESHAPPINFOTIMEOUT
-import com.machiav3lli.backup.PREFS_RESTOREAVOIDTEMPCOPY
-import com.machiav3lli.backup.PREFS_RESTORETARCMD
-import com.machiav3lli.backup.PREFS_RESTOREWITHALLPERMISSIONS
-import com.machiav3lli.backup.PREFS_STRICTHARDLINKS
-import com.machiav3lli.backup.PREFS_USEALARMCLOCK
-import com.machiav3lli.backup.PREFS_USEEXACTALARM
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.preferences.ui.PrefsExpandableGroupHeader
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
@@ -51,6 +26,7 @@ import com.machiav3lli.backup.ui.compose.theme.ColorUpdated
 import com.machiav3lli.backup.ui.item.BooleanPref
 import com.machiav3lli.backup.ui.item.IntPref
 import com.machiav3lli.backup.ui.item.Pref
+import com.machiav3lli.backup.ui.item.StringPref
 import com.machiav3lli.backup.utils.sortFilterModel
 
 @Composable
@@ -69,7 +45,7 @@ fun AdvancedPrefsPage() {
         ) {
             item {
                 PrefsGroup(prefs = prefs) { pref ->
-                    if (pref == EnableSpecialsPref) {
+                    if (pref == pref_enableSpecialBackups) {
                         val newModel = context.sortFilterModel
                         newModel.mainFilter = newModel.mainFilter and MAIN_FILTER_DEFAULT
                         context.sortFilterModel = newModel
@@ -98,8 +74,8 @@ fun AdvancedPrefsPage() {
     }
 }
 
-val EnableSpecialsPref = BooleanPref(
-    key = "adv." + PREFS_ENABLESPECIALBACKUPS,
+val pref_enableSpecialBackups = BooleanPref(
+    key = "adv.enableSpecialBackups",
     titleId = R.string.prefs_enablespecial,
     summaryId = R.string.prefs_enablespecial_summary,
     iconId = R.drawable.ic_special,
@@ -107,8 +83,8 @@ val EnableSpecialsPref = BooleanPref(
     defaultValue = false
 )
 
-val DisableVerificationPref = BooleanPref(
-    key = "adv." + PREFS_DISABLEVERIFICATION,
+val pref_disableVerification = BooleanPref(
+    key = "adv.disableVerification",
     titleId = R.string.prefs_disableverification,
     summaryId = R.string.prefs_disableverification_summary,
     iconId = R.drawable.ic_andy,
@@ -116,8 +92,8 @@ val DisableVerificationPref = BooleanPref(
     defaultValue = true
 )
 
-val RestoreAllPermissionsPref = BooleanPref(
-    key = "adv." + PREFS_RESTOREWITHALLPERMISSIONS,
+val pref_giveAllPermissions = BooleanPref(
+    key = "adv.giveAllPermissions",
     titleId = R.string.prefs_restoreallpermissions,
     summaryId = R.string.prefs_restoreallpermissions_summary,
     iconId = R.drawable.ic_de_data,
@@ -125,8 +101,8 @@ val RestoreAllPermissionsPref = BooleanPref(
     defaultValue = false
 )
 
-val AllowDowngradePref = BooleanPref(
-    key = "adv." + PREFS_ALLOWDOWNGRADE,
+val pref_allowDowngrade = BooleanPref(
+    key = "adv.allowDowngrade",
     titleId = R.string.prefs_allowdowngrade,
     summaryId = R.string.prefs_allowdowngrade_summary,
     iconId = R.drawable.ic_restore,
@@ -153,76 +129,76 @@ val pref_showInfoLogBar = BooleanPref(
     defaultValue = false
 )
 
-val CachePackagePref = BooleanPref(
-    key = "dev." + PREFS_CACHEPACKAGES,
+val pref_cachePackages = BooleanPref(
+    key = "dev.cachePackages",
     summaryId = R.string.prefs_cachepackages_summary,
     defaultValue = true
 )
 
-val UsePackageCacheOnUpdatePref = BooleanPref(
-    key = "dev." + PREFS_CACHEONUPDATE,
+val pref_usePackageCacheOnUpdate = BooleanPref(
+    key = "dev.usePackageCacheOnUpdate",
     summaryId = R.string.prefs_usepackagecacheonupdate_summary,
     defaultValue = false
 )
 
-val UseColumnNameSAFPref = BooleanPref(
-    key = "dev." + PREFS_COLUMNNAMESAF,
+val pref_useColumnNameSAF = BooleanPref(
+    key = "dev.useColumnNameSAF",
     summaryId = R.string.prefs_usecolumnnamesaf_summary,
     defaultValue = true
 )
 
-val CancelOnStartPref = BooleanPref(
-    key = "dev." + PREFS_CANCELONSTART,
+val pref_cancelOnStart = BooleanPref(
+    key = "dev.cancelOnStart",
     summaryId = R.string.prefs_cancelonstart_summary,
     defaultValue = false
 )
 
-val UseAlarmClockPref = BooleanPref(
-    key = "dev." + PREFS_USEALARMCLOCK,
+val pref_useAlarmClock = BooleanPref(
+    key = "dev.useAlarmClock",
     summaryId = R.string.prefs_usealarmclock_summary,
     defaultValue = false
 )
 
-val UseExactAlarmPref = BooleanPref(
-    key = "dev." + PREFS_USEEXACTALARM,
+val pref_useExactAlarm = BooleanPref(
+    key = "dev.useExactAlarm",
     summaryId = R.string.prefs_useexactalarm_summary,
     defaultValue = false
 )
 
 val pref_pauseApps = BooleanPref(
-    key = "dev." + PREFS_PAUSEAPPS,
+    key = "dev.pauseApps",
     summaryId = R.string.prefs_pauseapps_summary,
     defaultValue = true
 )
 
 val pref_pmSuspend = BooleanPref(
-    key = "dev." + PREFS_PMSUSPEND,
+    key = "dev.pmSuspend",
     summaryId = R.string.prefs_pmsuspend_summary,
     defaultValue = false
 )
 
 //val pref_pmSuspend_init = run { pref_pmSuspend.isEnabled = { pref_pauseApps.value } }
 
-val BackupTarCmdPref = BooleanPref(
-    key = "dev." + PREFS_BACKUPTARCMD,
+val pref_backupTarCmd = BooleanPref(
+    key = "dev.backupTarCmd",
     summaryId = R.string.prefs_backuptarcmd_summary,
     defaultValue = true
 )
 
-val RestoreTarCmdPref = BooleanPref(
-    key = "dev." + PREFS_RESTORETARCMD,
+val pref_restoreTarCmd = BooleanPref(
+    key = "dev.restoreTarCmd",
     summaryId = R.string.prefs_restoretarcmd_summary,
     defaultValue = true
 )
 
-val StrictHardLinksPref = BooleanPref(
-    key = "dev." + PREFS_STRICTHARDLINKS,
+val pref_strictHardLinks = BooleanPref(
+    key = "dev.strictHardLinks",
     summaryId = R.string.prefs_stricthardlinks_summary,
     defaultValue = false
 )
 
-val RestoreAvoidTempCopyPref = BooleanPref(
-    key = "dev." + PREFS_RESTOREAVOIDTEMPCOPY,
+val pref_restoreAvoidTemporaryCopy = BooleanPref(
+    key = "dev.restoreAvoidTemporaryCopy",
     summaryId = R.string.prefs_restoreavoidtempcopy_summary,
     defaultValue = false
 )
@@ -239,59 +215,59 @@ val pref_shadowRootFile = BooleanPref(
     defaultValue = false
 )
 
-val UseFindLsPref = BooleanPref(
-    key = "dev." + PREFS_FINDLS,
+val pref_useFindLs = BooleanPref(
+    key = "dev.useFindLs",
     summaryId = R.string.prefs_usefindls_summary,
     defaultValue = true
 )
 
-val CatchUncaughtExceptionPref = BooleanPref(
-    key = "dev." + PREFS_CATCHUNCAUGHTEXCEPTION,
+val pref_catchUncaughtException = BooleanPref(
+    key = "dev.catchUncaughtException",
     summaryId = R.string.prefs_catchuncaughtexception_summary,
     defaultValue = false
 )
 
-val MaxCrashLinesPref = IntPref(
-    key = "dev." + PREFS_MAXCRASHLINES,
+val pref_maxCrashLines = IntPref(
+    key = "dev.maxCrashLines",
     summaryId = R.string.prefs_maxcrashlines_summary,
     entries = (10..200 step 10).toList(),
     defaultValue = 50
 )
 
-val InvalidateSelectivePref = BooleanPref(
-    key = "dev." + PREFS_INVALIDATESELECTIVE,
+val pref_invalidateSelective = BooleanPref(
+    key = "dev.invalidateSelective",
     summaryId = R.string.prefs_invalidateselective_summary,
     defaultValue = true
 )
 
-val CacheUrisPref = BooleanPref(
-    key = "dev." + PREFS_CACHEURIS,
+val pref_cacheUris = BooleanPref(
+    key = "dev.cacheUris",
     summaryId = R.string.prefs_cacheuris_summary,
     defaultValue = true
 )
 
-val CacheFileListsPref = BooleanPref(
-    key = "dev." + PREFS_CACHEFILELISTS,
+val pref_cacheFileLists = BooleanPref(
+    key = "dev.cacheFileLists",
     summaryId = R.string.prefs_cachefilelists_summary,
     defaultValue = true
 )
 
-val MaxRetriesPerPackagePref = IntPref(
-    key = "dev." + PREFS_MAXRETRIESPERPACKAGE,
+val pref_maxRetriesPerPackage = IntPref(
+    key = "dev.maxRetriesPerPackage",
     summaryId = R.string.prefs_maxretriesperpackage_summary,
     entries = (0..10).toList(),
     defaultValue = 1
 )
 
-val DelayBeforeRefreshAppInfoPref = IntPref(
-    key = "dev." + PREFS_DELAYBEFOREREFRESHAPPINFO,
+val pref_delayBeforeRefreshAppInfo = IntPref(
+    key = "dev.delayBeforeRefreshAppInfo",
     summaryId = R.string.prefs_delaybeforerefreshappinfo_summary,
     entries = (0..30).toList(),
     defaultValue = 0
 )
 
-val RefreshAppInfoTimeoutPref = IntPref(
-    key = "dev." + PREFS_REFRESHAPPINFOTIMEOUT,
+val pref_refreshAppInfoTimeout = IntPref(
+    key = "dev.refreshAppInfoTimeout",
     summaryId = R.string.prefs_refreshappinfotimeout_summary,
     entries = ((0..9 step 1) + (10..120 step 10)).toList(),
     defaultValue = 30
@@ -319,5 +295,39 @@ val pref_fakeBackupSeconds = IntPref(
     key = "dev.fakeBackupSeconds",
     summary = "[seconds] time for faked backups, 0 = do not fake",
     entries = ((0..9 step 1) + (10..50 step 10) + (60..1200 step 60)).toList(),
+    defaultValue = 0
+)
+
+
+
+
+val persist_firstLaunch = BooleanPref(
+    key = "persist.firstLaunch",
+    defaultValue = false
+)
+
+val persist_beenWelcomed = BooleanPref(
+    key = "persist.beenWelcomed",
+    defaultValue = false
+)
+
+val persist_ignoreBatteryOptimization =  BooleanPref(
+    key = "persist.ignoreBatteryOptimization",
+    defaultValue = false
+)
+
+val persist_sortFilter = StringPref(
+    key = "persist.sortFilter",
+    defaultValue = ""
+)
+
+val persist_salt = StringPref(
+    key = "persist.salt",
+    defaultValue = ""
+)
+
+val persist_skippedEncryptionCounter = IntPref(
+    key = "persist.skippedEncryptionCounter",
+    entries = (0..100).toList(),
     defaultValue = 0
 )

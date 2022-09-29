@@ -21,7 +21,7 @@ package com.machiav3lli.backup.handler
 import android.os.Environment.DIRECTORY_DOCUMENTS
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_FINDLS
+import com.machiav3lli.backup.preferences.pref_useFindLs
 import com.machiav3lli.backup.utils.BUFFER_SIZE
 import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
 import com.topjohnwu.superuser.Shell
@@ -226,7 +226,7 @@ class ShellHandler {
         recursive: Boolean,
         parent: String? = null
     ): List<FileInfo> {
-        val useFindLs = OABX.prefFlag(PREFS_FINDLS, true)
+        val useFindLs = pref_useFindLs.value
         val shellResult =
             if (recursive && useFindLs)
                 runAsRoot("$utilBoxQ find ${quote(path)} -print0 | $utilBoxQ xargs -0 ls -bdAll")

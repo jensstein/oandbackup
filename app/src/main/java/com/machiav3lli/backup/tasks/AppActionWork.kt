@@ -36,7 +36,7 @@ import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_MAXRETRIESPERPACKAGE
+import com.machiav3lli.backup.preferences.pref_maxRetriesPerPackage
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.BackupRestoreHelper
@@ -170,7 +170,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         } else {
             failures++
             setVar(batchName, packageName, "failures", failures.toString())
-            if (failures <= OABX.prefInt(PREFS_MAXRETRIESPERPACKAGE, 1)) {
+            if (failures <= pref_maxRetriesPerPackage.value) {
                 setOperation("err")
                 Timber.w("package: $packageName failures: $failures -> retry")
                 Result.retry()
