@@ -53,6 +53,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -805,7 +806,7 @@ fun DoubleVerticalText(
 @Composable
 fun CardSubRow(
     text: String,
-    icon: Painter,
+    icon: ImageVector,
     iconColor: Color = MaterialTheme.colorScheme.onBackground,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
@@ -823,7 +824,7 @@ fun CardSubRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(painter = icon, contentDescription = text, tint = iconColor)
+            Icon(imageVector = icon, contentDescription = text, tint = iconColor)
             Text(
                 text = text,
                 maxLines = 1,
