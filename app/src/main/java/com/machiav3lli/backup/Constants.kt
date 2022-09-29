@@ -25,7 +25,6 @@ import com.machiav3lli.backup.preferences.pref_biometricLock
 import com.machiav3lli.backup.preferences.pref_deviceLock
 import com.machiav3lli.backup.preferences.pref_encryption
 import com.machiav3lli.backup.preferences.pref_password
-import com.machiav3lli.backup.preferences.pref_passwordConfirmation
 import com.machiav3lli.backup.preferences.pref_pauseApps
 import com.machiav3lli.backup.preferences.pref_pmSuspend
 import com.machiav3lli.backup.preferences.pref_shadowRootFile
@@ -65,7 +64,6 @@ val Context.PrefsDependencies: Map<Pref, Boolean>
         pref_biometricLock to (isBiometricLockAvailable() && isDeviceLockEnabled()),
         pref_deviceLock to isDeviceLockAvailable(),
         pref_password to pref_encryption.value,
-        pref_passwordConfirmation to pref_encryption.value,
         pref_pmSuspend to pref_pauseApps.value,
         pref_shadowRootFile to pref_allowShadowingDefault.value
     )
