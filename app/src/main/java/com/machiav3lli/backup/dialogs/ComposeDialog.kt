@@ -15,6 +15,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -35,6 +36,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -52,6 +54,8 @@ import com.machiav3lli.backup.ui.compose.item.SelectableRow
 import com.machiav3lli.backup.ui.item.EnumPref
 import com.machiav3lli.backup.ui.item.ListPref
 import com.machiav3lli.backup.ui.item.StringPref
+import com.mikepenz.iconics.compose.Image
+import com.mikepenz.iconics.typeface.library.phosphor.Phosphor
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -303,17 +307,17 @@ fun StringDialogUI(
                 ),
                 keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
                 trailingIcon = {
-                    //val image = if (passwordVisible)
-                    //    Icons.Filled.Visibility
-                    //else
-                    //    Icons.Filled.VisibilityOff
-
-                    // Please provide localized description for accessibility services
-                    //val description = if (passwordVisible) "Hide password" else "Show password"  //???
-
                     IconButton(onClick = {isPasswordVisible = !isPasswordVisible}) {
-                        //Icon(imageVector  = image, description = description)
-                        Text(if(isPasswordVisible) "<O>" else "<=>")
+                        if (isPasswordVisible)
+                            Image(
+                                Phosphor.Icon.pho_eye,
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+                            )
+                        else
+                            Image(
+                                Phosphor.Icon.pho_eye_slash,
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+                            )
                     }
                 },
                 placeholder = {
