@@ -30,7 +30,6 @@ val vRoom = "2.5.0-alpha03"
 val vNavigation = "2.5.2"
 val vAccompanist = "0.26.3-beta"
 val vLibsu = "3.2.1"
-val vIconics = "5.3.4"
 
 android {
     namespace = "com.machiav3lli.backup"
@@ -161,11 +160,6 @@ dependencies {
     implementation("com.google.accompanist:accompanist-flowlayout:$vAccompanist")
     implementation("com.google.accompanist:accompanist-systemuicontroller:$vAccompanist")
     implementation("com.google.accompanist:accompanist-navigation-animation:$vAccompanist")
-
-    implementation("com.mikepenz:iconics-core:$vIconics")
-    implementation("com.mikepenz:iconics-compose:$vIconics")
-    implementation("com.mikepenz:phosphor-typeface:1.0.0.0-kotlin@aar")
-    implementation("com.mikepenz:community-material-typeface:6.4.95.0-kotlin@aar")
 
     // Testing
     implementation("androidx.test.ext:junit-ktx:1.1.3")
