@@ -58,7 +58,7 @@ data class ChipItem(
             MODE_NONE,
             R.string.showNotBackedup,
             Icon.IcEmpty,
-            R.color.chip_icon_accent
+            R.color.material_on_surface_emphasis_high_type
         )
         val Apk = ChipItem(
             MODE_APK,
@@ -148,7 +148,7 @@ data class ChipItem(
             SPECIAL_FILTER_NOT_INSTALLED,
             R.string.showNotInstalled,
             Icon.IcDelete,
-            R.color.chip_icon_secondary
+            R.color.material_on_surface_emphasis_high_type
         )
         val Label = ChipItem(
             MAIN_SORT_LABEL,
