@@ -198,6 +198,6 @@ data class ChipItem(
 data class InfoChipItem(
     val flag: Int,
     val text: String,
-    val iconId: Int = -1,
+    val icon: ImageVector? = null,
     val color: Color? = null
 )

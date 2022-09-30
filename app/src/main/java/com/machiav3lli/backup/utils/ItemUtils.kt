@@ -32,6 +32,11 @@ import com.machiav3lli.backup.CHIP_VERSION
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.ui.compose.icons.Icon
+import com.machiav3lli.backup.ui.compose.icons.icon.IcSpecial
+import com.machiav3lli.backup.ui.compose.icons.icon.IcSystem
+import com.machiav3lli.backup.ui.compose.icons.icon.IcUpdated
+import com.machiav3lli.backup.ui.compose.icons.icon.IcUser
 import com.machiav3lli.backup.ui.compose.navigation.NavItem
 import com.machiav3lli.backup.ui.compose.theme.ColorDisabled
 import com.machiav3lli.backup.ui.compose.theme.ColorNotInstalled
@@ -64,10 +69,10 @@ fun Package.infoChips(): List<InfoChipItem> = listOfNotNull(
     InfoChipItem(
         flag = CHIP_TYPE,
         text = stringResource(if (isSpecial) R.string.apptype_special else if (isSystem) R.string.apptype_system else R.string.apptype_user),
-        iconId = when {
-            isSpecial -> R.drawable.ic_special
-            isSystem -> R.drawable.ic_system
-            else -> R.drawable.ic_user
+        icon = when {
+            isSpecial -> Icon.IcSpecial
+            isSystem -> Icon.IcSystem
+            else -> Icon.IcUser
         },
         color = when {
             !isInstalled -> ColorNotInstalled
@@ -80,7 +85,7 @@ fun Package.infoChips(): List<InfoChipItem> = listOfNotNull(
     InfoChipItem(
         flag = CHIP_VERSION,
         text = versionName ?: versionCode.toString(),
-        iconId = if (this.isUpdated) R.drawable.ic_updated else -1,
+        icon = if (this.isUpdated) Icon.IcUpdated else null,
         color = if (this.isUpdated) ColorUpdated else null,
     ),
     InfoChipItem(
