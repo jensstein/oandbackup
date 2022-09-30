@@ -53,6 +53,9 @@ import com.machiav3lli.backup.mainBackupModeChipItems
 import com.machiav3lli.backup.mainFilterChipItems
 import com.machiav3lli.backup.mainSpecialFilterChipItems
 import com.machiav3lli.backup.sortChipItems
+import com.machiav3lli.backup.ui.compose.icons.Icon
+import com.machiav3lli.backup.ui.compose.icons.icon.IcArrowDown
+import com.machiav3lli.backup.ui.compose.icons.icon.IcArrowUp
 import com.machiav3lli.backup.ui.compose.item.DoubleVerticalText
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.RoundButton
@@ -180,9 +183,9 @@ class SortFilterSheet(
                             }
                             SwitchChip(
                                 firstTextId = R.string.sortAsc,
-                                firstIconId = R.drawable.ic_arrow_up,
+                                firstIcon = Icon.IcArrowUp,
                                 secondTextId = R.string.sortDesc,
-                                secondIconId = R.drawable.ic_arrow_down,
+                                secondIcon = Icon.IcArrowDown,
                                 firstSelected = it.sortAsc,
                                 onCheckedChange = { checked -> it.sortAsc = checked }
                             )

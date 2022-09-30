@@ -1,6 +1,5 @@
 package com.machiav3lli.backup.ui.compose.item
 
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
@@ -81,6 +80,21 @@ import com.machiav3lli.backup.SPECIAL_FILTER_OLD
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.ui.compose.icons.Icon
+import com.machiav3lli.backup.ui.compose.icons.icon.IcAll
+import com.machiav3lli.backup.ui.compose.icons.icon.IcApk
+import com.machiav3lli.backup.ui.compose.icons.icon.IcData
+import com.machiav3lli.backup.ui.compose.icons.icon.IcDeData
+import com.machiav3lli.backup.ui.compose.icons.icon.IcExclude
+import com.machiav3lli.backup.ui.compose.icons.icon.IcExternalData
+import com.machiav3lli.backup.ui.compose.icons.icon.IcLaunchable
+import com.machiav3lli.backup.ui.compose.icons.icon.IcMediaData
+import com.machiav3lli.backup.ui.compose.icons.icon.IcObbData
+import com.machiav3lli.backup.ui.compose.icons.icon.IcOld
+import com.machiav3lli.backup.ui.compose.icons.icon.IcSpecial
+import com.machiav3lli.backup.ui.compose.icons.icon.IcSystem
+import com.machiav3lli.backup.ui.compose.icons.icon.IcUpdated
+import com.machiav3lli.backup.ui.compose.icons.icon.IcUser
 import com.machiav3lli.backup.ui.compose.theme.ColorAPK
 import com.machiav3lli.backup.ui.compose.theme.ColorData
 import com.machiav3lli.backup.ui.compose.theme.ColorDeData
@@ -98,12 +112,12 @@ import com.machiav3lli.backup.utils.brighter
 
 @Composable
 fun ButtonIcon(
-    @DrawableRes iconId: Int,
+    icon: ImageVector,
     @StringRes textId: Int,
     tint: Color? = null
 ) {
     Icon(
-        painter = painterResource(id = iconId),
+        imageVector = icon,
         contentDescription = stringResource(id = textId),
         modifier = Modifier.size(24.dp),
         tint = tint ?: LocalContentColor.current
@@ -361,7 +375,7 @@ fun CheckChip(
             selectedContainerColor = MaterialTheme.colorScheme.primaryContainer
         ),
         leadingIcon = {
-            if (checked) ButtonIcon(R.drawable.ic_all, R.string.enabled)
+            if (checked) ButtonIcon(Icon.IcAll, R.string.enabled)
         },
         onClick = {
             onCheckedChange(!checked)
@@ -379,9 +393,9 @@ fun CheckChip(
 @Composable
 fun SwitchChip(
     firstTextId: Int,
-    firstIconId: Int,
+    firstIcon: ImageVector,
     secondTextId: Int,
-    secondIconId: Int,
+    secondIcon: ImageVector,
     firstSelected: Boolean = true,
     colors: SelectableChipColors = FilterChipDefaults.filterChipColors(
         labelColor = MaterialTheme.colorScheme.onSurface,
@@ -418,7 +432,7 @@ fun SwitchChip(
                 selectFirst(true)
             },
             leadingIcon = {
-                ButtonIcon(firstIconId, firstTextId)
+                ButtonIcon(firstIcon, firstTextId)
             },
             label = {
                 Row(
@@ -460,7 +474,7 @@ fun SwitchChip(
                 }
             },
             trailingIcon = {
-                ButtonIcon(secondIconId, secondTextId)
+                ButtonIcon(secondIcon, secondTextId)
             }
         )
     }
@@ -587,51 +601,51 @@ fun PackageLabels(
 ) {
     AnimatedVisibility(visible = item.isUpdated) {
         ButtonIcon(
-            R.drawable.ic_updated, R.string.radio_updated,
+            Icon.IcUpdated, R.string.radio_updated,
             tint = ColorUpdated
         )
     }
     AnimatedVisibility(visible = item.hasMediaData) {
         ButtonIcon(
-            R.drawable.ic_media_data, R.string.radio_mediadata,
+            Icon.IcMediaData, R.string.radio_mediadata,
             tint = ColorMedia
         )
     }
     AnimatedVisibility(visible = item.hasObbData) {
         ButtonIcon(
-            R.drawable.ic_obb_data, R.string.radio_obbdata,
+            Icon.IcObbData, R.string.radio_obbdata,
             tint = ColorOBB
         )
     }
     AnimatedVisibility(visible = item.hasExternalData) {
         ButtonIcon(
-            R.drawable.ic_external_data, R.string.radio_externaldata,
+            Icon.IcExternalData, R.string.radio_externaldata,
             tint = ColorExtDATA
         )
     }
     AnimatedVisibility(visible = item.hasDevicesProtectedData) {
         ButtonIcon(
-            R.drawable.ic_de_data, R.string.radio_deviceprotecteddata,
+            Icon.IcDeData, R.string.radio_deviceprotecteddata,
             tint = ColorDeData
         )
     }
     AnimatedVisibility(visible = item.hasAppData) {
         ButtonIcon(
-            R.drawable.ic_data, R.string.radio_data,
+            Icon.IcData, R.string.radio_data,
             tint = ColorData
         )
     }
     AnimatedVisibility(visible = item.hasApk) {
         ButtonIcon(
-            R.drawable.ic_apk, R.string.radio_apk,
+            Icon.IcApk, R.string.radio_apk,
             tint = ColorAPK
         )
     }
     ButtonIcon(
         when {
-            item.isSpecial -> R.drawable.ic_special
-            item.isSystem -> R.drawable.ic_system
-            else -> R.drawable.ic_user
+            item.isSpecial -> Icon.IcSpecial
+            item.isSystem -> Icon.IcSystem
+            else -> Icon.IcUser
         },
         R.string.app_s_type_title,
         tint = when {
@@ -649,37 +663,37 @@ fun BackupLabels(
 ) {
     AnimatedVisibility(visible = item.hasMediaData) {
         ButtonIcon(
-            R.drawable.ic_media_data, R.string.radio_mediadata,
+            Icon.IcMediaData, R.string.radio_mediadata,
             tint = ColorMedia
         )
     }
     AnimatedVisibility(visible = item.hasObbData) {
         ButtonIcon(
-            R.drawable.ic_obb_data, R.string.radio_obbdata,
+            Icon.IcObbData, R.string.radio_obbdata,
             tint = ColorOBB
         )
     }
     AnimatedVisibility(visible = item.hasExternalData) {
         ButtonIcon(
-            R.drawable.ic_external_data, R.string.radio_externaldata,
+            Icon.IcExternalData, R.string.radio_externaldata,
             tint = ColorExtDATA
         )
     }
     AnimatedVisibility(visible = item.hasDevicesProtectedData) {
         ButtonIcon(
-            R.drawable.ic_de_data, R.string.radio_deviceprotecteddata,
+            Icon.IcDeData, R.string.radio_deviceprotecteddata,
             tint = ColorDeData
         )
     }
     AnimatedVisibility(visible = item.hasAppData) {
         ButtonIcon(
-            R.drawable.ic_data, R.string.radio_data,
+            Icon.IcData, R.string.radio_data,
             tint = ColorData
         )
     }
     AnimatedVisibility(visible = item.hasApk) {
         ButtonIcon(
-            R.drawable.ic_apk, R.string.radio_apk,
+            Icon.IcApk, R.string.radio_apk,
             tint = ColorAPK
         )
     }
@@ -690,37 +704,37 @@ fun BackupLabels(
 fun ScheduleTypes(item: Schedule) {
     AnimatedVisibility(visible = item.mode and MODE_DATA_MEDIA == MODE_DATA_MEDIA) {
         ButtonIcon(
-            R.drawable.ic_media_data, R.string.radio_mediadata,
+            Icon.IcMediaData, R.string.radio_mediadata,
             tint = ColorMedia
         )
     }
     AnimatedVisibility(visible = item.mode and MODE_DATA_OBB == MODE_DATA_OBB) {
         ButtonIcon(
-            R.drawable.ic_obb_data, R.string.radio_obbdata,
+            Icon.IcObbData, R.string.radio_obbdata,
             tint = ColorOBB
         )
     }
     AnimatedVisibility(visible = item.mode and MODE_DATA_EXT == MODE_DATA_EXT) {
         ButtonIcon(
-            R.drawable.ic_external_data, R.string.radio_externaldata,
+            Icon.IcExternalData, R.string.radio_externaldata,
             tint = ColorExtDATA
         )
     }
     AnimatedVisibility(visible = item.mode and MODE_DATA_DE == MODE_DATA_DE) {
         ButtonIcon(
-            R.drawable.ic_de_data, R.string.radio_deviceprotecteddata,
+            Icon.IcDeData, R.string.radio_deviceprotecteddata,
             tint = ColorDeData
         )
     }
     AnimatedVisibility(visible = item.mode and MODE_DATA == MODE_DATA) {
         ButtonIcon(
-            R.drawable.ic_data, R.string.radio_data,
+            Icon.IcData, R.string.radio_data,
             tint = ColorData
         )
     }
     AnimatedVisibility(visible = item.mode and MODE_APK == MODE_APK) {
         ButtonIcon(
-            R.drawable.ic_apk, R.string.radio_apk,
+            Icon.IcApk, R.string.radio_apk,
             tint = ColorAPK
         )
     }
@@ -733,29 +747,29 @@ fun ScheduleFilters(
 ) {
     AnimatedVisibility(visible = item.filter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM) {
         ButtonIcon(
-            R.drawable.ic_system, R.string.radio_system,
+            Icon.IcSystem, R.string.radio_system,
             tint = ColorSystem
         )
     }
     AnimatedVisibility(visible = item.filter and MAIN_FILTER_USER == MAIN_FILTER_USER) {
         ButtonIcon(
-            R.drawable.ic_user, R.string.radio_user,
+            Icon.IcUser, R.string.radio_user,
             tint = ColorUser
         )
     }
     AnimatedVisibility(visible = item.filter and MAIN_FILTER_SPECIAL == MAIN_FILTER_SPECIAL) {
         ButtonIcon(
-            R.drawable.ic_special, R.string.radio_special,
+            Icon.IcSpecial, R.string.radio_special,
             tint = ColorSpecial
         )
     }
     AnimatedVisibility(visible = item.specialFilter != SPECIAL_FILTER_ALL) {
         ButtonIcon(
             when (item.specialFilter) {
-                SPECIAL_FILTER_DISABLED -> R.drawable.ic_exclude
-                SPECIAL_FILTER_LAUNCHABLE -> R.drawable.ic_launchable
-                SPECIAL_FILTER_OLD -> R.drawable.ic_old
-                else -> R.drawable.ic_updated
+                SPECIAL_FILTER_DISABLED -> Icon.IcExclude
+                SPECIAL_FILTER_LAUNCHABLE -> Icon.IcLaunchable
+                SPECIAL_FILTER_OLD -> Icon.IcOld
+                else -> Icon.IcUpdated
             },
             R.string.app_s_type_title,
             tint = when (item.specialFilter) {
