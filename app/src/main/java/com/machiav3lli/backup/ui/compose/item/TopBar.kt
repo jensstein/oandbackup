@@ -39,7 +39,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.buildAnnotatedString
@@ -54,6 +53,7 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.preferences.pref_showInfoLogBar
 import com.machiav3lli.backup.ui.compose.icons.Icon
+import com.machiav3lli.backup.ui.compose.icons.icon.IcClose
 import com.machiav3lli.backup.ui.compose.icons.icon.IcRefresh
 import com.machiav3lli.backup.ui.compose.icons.icon.IcSearch
 import com.machiav3lli.backup.ui.compose.ifThen
@@ -289,7 +289,7 @@ fun ExpandedSearchView(
             ),
             leadingIcon = {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_search),
+                    imageVector = Icon.IcSearch,
                     contentDescription = stringResource(id = R.string.search),
                 )
             },
@@ -305,7 +305,7 @@ fun ExpandedSearchView(
             onClose()
         }) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_close),
+                imageVector = Icon.IcClose,
                 contentDescription = stringResource(id = R.string.dialogCancel)
             )
         }

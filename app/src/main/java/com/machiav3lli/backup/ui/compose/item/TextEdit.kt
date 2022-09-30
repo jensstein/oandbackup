@@ -31,13 +31,15 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.ui.compose.icons.Icon
+import com.machiav3lli.backup.ui.compose.icons.icon.IcClose
+import com.machiav3lli.backup.ui.compose.icons.icon.IcSaveNote
 
 @Composable
 fun MorphableTextField(
@@ -128,7 +130,7 @@ fun TextEditBlock(
             onExpanded(false)
         }) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_close),
+                imageVector = Icon.IcClose,
                 contentDescription = stringResource(id = R.string.dialogCancel)
             )
         }
@@ -156,7 +158,7 @@ fun TextEditBlock(
             onExpanded(false)
         }) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_save_note),
+                imageVector = Icon.IcSaveNote,
                 contentDescription = stringResource(id = R.string.dialogSave)
             )
         }
