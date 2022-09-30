@@ -36,17 +36,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.preferences.persist_firstLaunch
-import com.machiav3lli.backup.preferences.persist_ignoreBatteryOptimization
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.classAddress
 import com.machiav3lli.backup.databinding.ActivitySplashBinding
+import com.machiav3lli.backup.preferences.persist_firstLaunch
+import com.machiav3lli.backup.preferences.persist_ignoreBatteryOptimization
+import com.machiav3lli.backup.ui.compose.icons.Icon
+import com.machiav3lli.backup.ui.compose.icons.icon.IcIssue
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.checkCallLogsPermission
@@ -101,7 +102,7 @@ fun RootMissing(activity: Activity? = null) {
                 Spacer(modifier = Modifier.height(80.dp))
                 ElevatedActionButton(
                     text = stringResource(id = R.string.dialogOK),
-                    icon = painterResource(id = R.drawable.ic_issue),
+                    icon = Icon.IcIssue,
                     fullWidth = true,
                     modifier = Modifier
                 ) {

@@ -207,7 +207,7 @@ fun ElevatedActionButton(
     modifier: Modifier = Modifier,
     text: String,
     positive: Boolean = true,
-    icon: Painter? = null,
+    icon: ImageVector? = null,
     fullWidth: Boolean = false,
     enabled: Boolean = true,
     colored: Boolean = true,
@@ -234,7 +234,7 @@ fun ElevatedActionButton(
         if (icon != null) {
             Icon(
                 modifier = Modifier.size(24.dp),
-                painter = icon,
+                imageVector = icon,
                 contentDescription = text
             )
         }

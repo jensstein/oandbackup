@@ -72,6 +72,11 @@ import com.machiav3lli.backup.mainFilterChipItems
 import com.machiav3lli.backup.schedSpecialFilterChipItems
 import com.machiav3lli.backup.scheduleBackupModeChipItems
 import com.machiav3lli.backup.services.ScheduleService
+import com.machiav3lli.backup.ui.compose.icons.Icon
+import com.machiav3lli.backup.ui.compose.icons.icon.IcBackup
+import com.machiav3lli.backup.ui.compose.icons.icon.IcBlocklist
+import com.machiav3lli.backup.ui.compose.icons.icon.IcCustomlist
+import com.machiav3lli.backup.ui.compose.icons.icon.IcDelete
 import com.machiav3lli.backup.ui.compose.item.CheckChip
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.RoundButton
@@ -304,7 +309,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                                 Spacer(modifier = Modifier.weight(1f))
                                 ElevatedActionButton(
                                     text = stringResource(id = R.string.delete),
-                                    icon = painterResource(id = R.drawable.ic_delete),
+                                    icon = Icon.IcDelete,
                                     positive = false,
                                     fullWidth = false
                                 ) {
@@ -315,7 +320,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                             }
                             ElevatedActionButton(
                                 text = stringResource(id = R.string.sched_activateButton),
-                                icon = painterResource(id = R.drawable.ic_backup),
+                                icon = Icon.IcBackup,
                                 fullWidth = true,
                                 onClick = { startSchedule() }
                             )
@@ -391,7 +396,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                                 horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 ElevatedActionButton(
-                                    icon = painterResource(id = R.drawable.ic_customlist),
+                                    icon = Icon.IcCustomlist,
                                     text = stringResource(id = R.string.customListTitle),
                                     positive = it.customList.isNotEmpty(),
                                     fullWidth = true,
@@ -399,7 +404,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                                     onClick = { showCustomListDialog() }
                                 )
                                 ElevatedActionButton(
-                                    icon = painterResource(id = R.drawable.ic_blocklist),
+                                    icon = Icon.IcBlocklist,
                                     text = stringResource(id = R.string.sched_blocklist),
                                     positive = it.blockList.isNotEmpty(),
                                     fullWidth = true,

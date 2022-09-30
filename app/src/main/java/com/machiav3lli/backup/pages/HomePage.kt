@@ -55,6 +55,8 @@ import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.ui.compose.icons.Icon
+import com.machiav3lli.backup.ui.compose.icons.icon.IcUpdate
 import com.machiav3lli.backup.ui.compose.item.ActionButton
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.recycler.HomePackageRecycler
@@ -161,7 +163,7 @@ fun HomePage(viewModel: HomeViewModel) {
                         ElevatedActionButton(
                             modifier = Modifier,
                             text = stringResource(id = R.string.backup_all_updated),
-                            icon = painterResource(id = R.drawable.ic_update)
+                            icon = Icon.IcUpdate
                         ) {
                             val selectedList = updatedApps.orEmpty()
                                 .map { it.packageInfo }

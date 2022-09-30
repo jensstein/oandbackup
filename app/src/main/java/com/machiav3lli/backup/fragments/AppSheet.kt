@@ -88,6 +88,10 @@ import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.preferences.pref_useWorkManagerForSingleManualJob
 import com.machiav3lli.backup.tasks.BackupActionTask
 import com.machiav3lli.backup.tasks.RestoreActionTask
+import com.machiav3lli.backup.ui.compose.icons.Icon
+import com.machiav3lli.backup.ui.compose.icons.icon.IcBackup
+import com.machiav3lli.backup.ui.compose.icons.icon.IcDelete
+import com.machiav3lli.backup.ui.compose.icons.icon.IcForceKill
 import com.machiav3lli.backup.ui.compose.item.BackupItem
 import com.machiav3lli.backup.ui.compose.item.CardButton
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
@@ -394,7 +398,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                             ) {
                                 AnimatedVisibility(visible = packageInfo.isInstalled || packageInfo.isSpecial) {
                                     ElevatedActionButton(
-                                        icon = painterResource(id = R.drawable.ic_backup),
+                                        icon = Icon.IcBackup,
                                         text = stringResource(id = R.string.backup),
                                         fullWidth = true,
                                         enabled = snackbarText.isNullOrEmpty(),
@@ -403,7 +407,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                 }
                                 AnimatedVisibility(visible = packageInfo.hasBackups) {
                                     ElevatedActionButton(
-                                        icon = painterResource(id = R.drawable.ic_delete),
+                                        icon = Icon.IcDelete,
                                         text = stringResource(id = R.string.delete_all_backups),
                                         fullWidth = true,
                                         positive = false,
@@ -418,7 +422,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                 }
                                 AnimatedVisibility(visible = packageInfo.isInstalled && !packageInfo.isSpecial) {
                                     ElevatedActionButton(
-                                        icon = painterResource(id = R.drawable.ic_force_kill),
+                                        icon = Icon.IcForceKill,
                                         text = stringResource(id = R.string.forceKill),
                                         fullWidth = true,
                                         colored = false,
@@ -430,7 +434,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                         ?: 0L) >= 0L)
                                 ) {
                                     ElevatedActionButton(
-                                        icon = painterResource(id = R.drawable.ic_delete),
+                                        icon = Icon.IcDelete,
                                         text = stringResource(id = R.string.clear_cache),
                                         fullWidth = true,
                                         colored = false,
@@ -504,7 +508,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
         viewModel.thePackage.value?.let { p ->
             when {
                 actionType === ActionType.BACKUP -> {
-                    if(pref_useWorkManagerForSingleManualJob.value) {
+                    if (pref_useWorkManagerForSingleManualJob.value) {
                         OABX.main?.startBatchAction(
                             true,
                             listOf(this.appInfo.packageName),
@@ -522,7 +526,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                     }
                 }
                 actionType === ActionType.RESTORE -> {
-                    if(pref_useWorkManagerForSingleManualJob.value) {
+                    if (pref_useWorkManagerForSingleManualJob.value) {
                         OABX.main?.startBatchAction(
                             false,
                             listOf(this.appInfo.packageName),

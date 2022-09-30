@@ -22,8 +22,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Looper
-import android.os.Process
-import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -55,26 +53,25 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.NAV_MAIN
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.addInfoText
-import com.machiav3lli.backup.preferences.pref_catchUncaughtException
-import com.machiav3lli.backup.preferences.pref_maxCrashLines
-import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.fragments.SortFilterSheet
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.SortFilterModel
-import com.machiav3lli.backup.preferences.pref_useLogCat
+import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
+import com.machiav3lli.backup.preferences.pref_catchUncaughtException
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
+import com.machiav3lli.backup.ui.compose.icons.Icon
+import com.machiav3lli.backup.ui.compose.icons.icon.IcBlocklist
+import com.machiav3lli.backup.ui.compose.icons.icon.IcFilter
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.ExpandableSearchAction
 import com.machiav3lli.backup.ui.compose.item.TopBar
@@ -241,7 +238,7 @@ class MainActivityX : BaseActivity() {
                                 horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 ElevatedActionButton(
-                                    icon = painterResource(id = R.drawable.ic_blocklist),
+                                    icon = Icon.IcBlocklist,
                                     text = stringResource(id = R.string.sched_blocklist),
                                     positive = false
                                 ) {
@@ -263,7 +260,7 @@ class MainActivityX : BaseActivity() {
                                 }
                                 Spacer(modifier = Modifier.weight(1f))
                                 ElevatedActionButton(
-                                    icon = painterResource(id = R.drawable.ic_filter),
+                                    icon = Icon.IcFilter,
                                     text = stringResource(id = R.string.sort_and_filter),
                                     positive = true
                                 ) {
@@ -421,7 +418,14 @@ class MainActivityX : BaseActivity() {
         selectedItems.forEach { (packageName, mode) ->
 
             val oneTimeWorkRequest =
-                AppActionWork.Request(packageName, mode, backupBoolean, notificationId, batchName, true)
+                AppActionWork.Request(
+                    packageName,
+                    mode,
+                    backupBoolean,
+                    notificationId,
+                    batchName,
+                    true
+                )
             worksList.add(oneTimeWorkRequest)
 
             val oneTimeWorkLiveData = WorkManager.getInstance(OABX.context)

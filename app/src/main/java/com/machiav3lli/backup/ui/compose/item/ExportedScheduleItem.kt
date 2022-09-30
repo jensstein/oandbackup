@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,6 +25,9 @@ import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.ui.compose.icons.Icon
+import com.machiav3lli.backup.ui.compose.icons.icon.IcDelete
+import com.machiav3lli.backup.ui.compose.icons.icon.IcRestore
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import java.time.LocalTime
 
@@ -104,7 +106,7 @@ fun ExportedScheduleItem(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 ElevatedActionButton(
-                    icon = painterResource(id = R.drawable.ic_restore),
+                    icon = Icon.IcRestore,
                     text = stringResource(id = R.string.dialog_import),
                     positive = true,
                     onClick = { onRestore(item) }
@@ -113,7 +115,7 @@ fun ExportedScheduleItem(
                 Spacer(modifier = Modifier.weight(1f))
 
                 ElevatedActionButton(
-                    icon = painterResource(id = R.drawable.ic_delete),
+                    icon = Icon.IcDelete,
                     text = stringResource(id = R.string.delete),
                     withText = false,
                     positive = false,

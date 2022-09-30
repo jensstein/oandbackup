@@ -35,12 +35,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.IntroActivityX
 import com.machiav3lli.backup.linksList
+import com.machiav3lli.backup.ui.compose.icons.Icon
+import com.machiav3lli.backup.ui.compose.icons.icon.IcArrowForward
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.LinkItem
 
@@ -60,7 +61,7 @@ fun WelcomePage() {
                 ElevatedActionButton(
                     modifier = Modifier.padding(horizontal = 24.dp),
                     text = stringResource(id = R.string.dialog_start),
-                    icon = painterResource(id = R.drawable.ic_arrow_forward),
+                    icon = Icon.IcArrowForward,
                 ) {
                     (context as IntroActivityX).moveTo(2)
                 }
