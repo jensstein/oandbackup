@@ -29,49 +29,5 @@
         <item name="behavior_fitToContents">true</item>
     </style>
 
-    <!-- Bars -->
-    <style name="Bar.Bottom" parent="Widget.Design.ScrimInsetsFrameLayout">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:elevation">0dp</item>
-    </style>
-
-    <style name="Bar.BottomNavigation" parent="Widget.Material3.BottomNavigationView">
-        <item name="itemIconTint">?colorOnSurface</item>
-        <item name="labelVisibilityMode">selected</item>
-        <item name="itemRippleColor">?colorPrimary</item>
-        <item name="itemActiveIndicatorStyle">@style/Bar.Bottom.ActiveIndicator</item>
-        <item name="itemIconSize">32dp</item>
-        <item name="elevation">0dp</item>
-    </style>
-
-    <style name="Bar.Bottom.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
-        <item name="android:color">?colorPrimary</item>
-    </style>
-
     <style name="AppTheme.PopupTheme" parent="ThemeOverlay.Material3.Dark" />
-
-    <style name="Bar.AppBar" parent="Widget.Material3.AppBarLayout">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:padding">8dp</item>
-        <item name="android:background">@android:color/transparent</item>
-        <item name="popupTheme">@style/AppTheme.PopupTheme</item>
-        <item name="android:orientation">horizontal</item>
-        <item name="android:elevation">4dp</item>
-        <item name="android:clipToPadding">false</item>
-    </style>
-
-    <!-- Buttons, Chips & Widgets -->
-    <style name="Button.Round" parent="Widget.MaterialComponents.Button">
-        <item name="android:background">@drawable/bg_button_round_accent</item>
-        <item name="android:elevation">@dimen/cards_spacing</item>
-    </style>
-
-    <style name="Button.Rectangular" parent="Widget.Material3.Button.TextButton.Icon">
-        <item name="android:background">@drawable/bg_button_rectangular_transparent</item>
-        <item name="iconTint">?colorOnSurface</item>
-        <item name="android:textColor">?colorOnSurface</item>
-        <item name="android:padding">@dimen/cards_spacing</item>
-    </style>
 </resources>
