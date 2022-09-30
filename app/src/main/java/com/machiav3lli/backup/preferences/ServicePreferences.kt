@@ -19,6 +19,20 @@ import com.machiav3lli.backup.dialogs.EnumDialogUI
 import com.machiav3lli.backup.dialogs.StringDialogUI
 import com.machiav3lli.backup.housekeepingOptions
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
+import com.machiav3lli.backup.ui.compose.icons.Icon
+import com.machiav3lli.backup.ui.compose.icons.icon.IcCompressionLevel
+import com.machiav3lli.backup.ui.compose.icons.icon.IcDeData
+import com.machiav3lli.backup.ui.compose.icons.icon.IcDelete
+import com.machiav3lli.backup.ui.compose.icons.icon.IcEncryption
+import com.machiav3lli.backup.ui.compose.icons.icon.IcExclude
+import com.machiav3lli.backup.ui.compose.icons.icon.IcExternalData
+import com.machiav3lli.backup.ui.compose.icons.icon.IcLabel
+import com.machiav3lli.backup.ui.compose.icons.icon.IcLaunchable
+import com.machiav3lli.backup.ui.compose.icons.icon.IcMediaData
+import com.machiav3lli.backup.ui.compose.icons.icon.IcObbData
+import com.machiav3lli.backup.ui.compose.icons.icon.IcPassword
+import com.machiav3lli.backup.ui.compose.icons.icon.IcRevisions
+import com.machiav3lli.backup.ui.compose.icons.icon.IcSizes
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.ColorAPK
 import com.machiav3lli.backup.ui.compose.theme.ColorDeData
@@ -66,11 +80,11 @@ fun ServicePrefsPage() {
                         confirm = true,
                         openDialogCustom = openDialog
                     )
-                    is StringPref   -> StringDialogUI(
+                    is StringPref -> StringDialogUI(
                         pref = dialogsPref as StringPref,
                         openDialogCustom = openDialog
                     )
-                    is EnumPref     -> EnumDialogUI(
+                    is EnumPref -> EnumDialogUI(
                         pref = dialogsPref as EnumPref,
                         openDialogCustom = openDialog
                     )
@@ -84,7 +98,7 @@ val pref_encryption = BooleanPref(
     key = "srv.encryption",
     titleId = R.string.prefs_encryption,
     summaryId = R.string.prefs_encryption_summary,
-    iconId = R.drawable.ic_encryption,
+    icon = Icon.IcEncryption,
     iconTint = ColorUpdated,
     defaultValue = false
 )
@@ -93,7 +107,7 @@ val pref_password = PasswordPref(
     key = "srv.password",
     titleId = R.string.prefs_password,
     summaryId = R.string.prefs_password_summary,
-    iconId = R.drawable.ic_password,
+    icon = Icon.IcPassword,
     iconTint = ColorUpdated,
     defaultValue = ""
 )
@@ -102,7 +116,7 @@ val pref_backupDeviceProtectedData = BooleanPref(
     key = "srv.backupDeviceProtectedData",
     titleId = R.string.prefs_deviceprotecteddata,
     summaryId = R.string.prefs_deviceprotecteddata_summary,
-    iconId = R.drawable.ic_de_data,
+    icon = Icon.IcDeData,
     iconTint = ColorDeData,
     defaultValue = true
 )
@@ -111,7 +125,7 @@ val pref_backupExternalData = BooleanPref(
     key = "srv.backupExternalData",
     titleId = R.string.prefs_externaldata,
     summaryId = R.string.prefs_externaldata_summary,
-    iconId = R.drawable.ic_external_data,
+    icon = Icon.IcExternalData,
     iconTint = ColorExtDATA,
     defaultValue = true
 )
@@ -120,7 +134,7 @@ val pref_backupObbData = BooleanPref(
     key = "srv.backupObbData",
     titleId = R.string.prefs_obbdata,
     summaryId = R.string.prefs_obbdata_summary,
-    iconId = R.drawable.ic_obb_data,
+    icon = Icon.IcObbData,
     iconTint = ColorOBB,
     defaultValue = true
 )
@@ -129,7 +143,7 @@ val pref_backupMediaData = BooleanPref(
     key = "srv.backupMediaData",
     titleId = R.string.prefs_mediadata,
     summaryId = R.string.prefs_mediadata_summary,
-    iconId = R.drawable.ic_media_data,
+    icon = Icon.IcMediaData,
     iconTint = ColorMedia,
     defaultValue = true
 )
@@ -138,7 +152,7 @@ val pref_restorePermissions = BooleanPref(
     key = "srv.restorePermissions",
     titleId = R.string.prefs_restorepermissions,
     summaryId = R.string.prefs_restorepermissions_summary,
-    iconId = R.drawable.ic_sizes,
+    icon = Icon.IcSizes,
     iconTint = ColorAPK,
     defaultValue = true
 )
@@ -147,7 +161,7 @@ val pref_numBackupRevisions = IntPref(
     key = "srv.numBackupRevisions",
     titleId = R.string.prefs_numBackupRevisions,
     summaryId = R.string.prefs_numBackupRevisions_summary,
-    iconId = R.drawable.ic_revisions,
+    icon = Icon.IcRevisions,
     iconTint = ColorSpecial,
     entries = ((0..9) + (10..20 step 2) + (50..200 step 50)).toList(),
     defaultValue = 2
@@ -157,7 +171,7 @@ val pref_compressionLevel = IntPref(
     key = "srv.compressionLevel",
     titleId = R.string.prefs_compression_level,
     summaryId = R.string.prefs_compression_level_summary,
-    iconId = R.drawable.ic_compression_level,
+    icon = Icon.IcCompressionLevel,
     iconTint = ColorExodus,
     entries = (0..9).toList(),
     defaultValue = 2
@@ -167,14 +181,14 @@ val pref_enableSessionInstaller = BooleanPref(
     key = "srv.enableSessionInstaller",
     titleId = R.string.prefs_sessionIinstaller,
     summaryId = R.string.prefs_sessionIinstaller_summary,
-    iconId = R.drawable.ic_label,
+    icon = Icon.IcLabel,
     defaultValue = true
 )
 
 val pref_installationPackage = StringPref(
     key = "srv.installationPackage",
     titleId = R.string.prefs_installerpackagename,
-    iconId = R.drawable.ic_launchable,
+    icon = Icon.IcLaunchable,
     iconTint = ColorOBB,
     defaultValue = BuildConfig.APPLICATION_ID
 )
@@ -183,7 +197,7 @@ val pref_excludeCache = BooleanPref(
     key = "srv.excludeCache",
     titleId = R.string.prefs_excludecache,
     summaryId = R.string.prefs_excludecache_summary,
-    iconId = R.drawable.ic_exclude,
+    icon = Icon.IcExclude,
     defaultValue = false
 )
 
@@ -191,7 +205,7 @@ val pref_housekeepingMoment = EnumPref(
     key = "srv.housekeepingMoment",
     titleId = R.string.prefs_housekeepingmoment,
     summaryId = R.string.prefs_housekeepingmoment_summary,
-    iconId = R.drawable.ic_delete,
+    icon = Icon.IcDelete,
     //iconTint = MaterialTheme.colorScheme.secondary,
     entries = housekeepingOptions,
     defaultValue = 0

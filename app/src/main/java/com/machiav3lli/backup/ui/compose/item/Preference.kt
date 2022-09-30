@@ -33,7 +33,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PrefsDependencies
 import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.item.BooleanPref
@@ -104,8 +103,8 @@ fun BasePreference(
                     style = MaterialTheme.typography.titleMedium,
                     fontSize = 16.sp
                 )
-                var summaryText= if (summaryId != -1) stringResource(id = summaryId) else ""
-                if (summaryText.isNotEmpty() && ! summary.isNullOrEmpty())
+                var summaryText = if (summaryId != -1) stringResource(id = summaryId) else ""
+                if (summaryText.isNotEmpty() && !summary.isNullOrEmpty())
                     summaryText += " : "
                 summaryText += summary ?: ""
                 Text(
@@ -156,8 +155,8 @@ fun LaunchPreference(
         titleId = pref.titleId,
         summaryId = pref.summaryId,
         icon = {
-            if (pref.iconId != -1) PrefIcon(
-                iconId = pref.iconId,
+            if (pref.icon != null) PrefIcon(
+                icon = pref.icon,
                 text = stringResource(id = pref.titleId),
             )
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
@@ -197,8 +196,8 @@ fun EnumPreference(
         titleId = pref.titleId,
         summaryId = pref.entries[pref.value] ?: pref.summaryId,
         icon = {
-            if (pref.iconId != -1) PrefIcon(
-                iconId = pref.iconId,
+            if (pref.icon != null) PrefIcon(
+                icon = pref.icon,
                 text = stringResource(id = pref.titleId),
             )
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
@@ -239,8 +238,8 @@ fun ListPreference(
         summaryId = pref.summaryId,
         summary = pref.entries[pref.value],
         icon = {
-            if (pref.iconId != -1) PrefIcon(
-                iconId = pref.iconId,
+            if (pref.icon != null) PrefIcon(
+                icon = pref.icon,
                 text = stringResource(id = pref.titleId),
             )
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
@@ -285,8 +284,8 @@ fun SwitchPreference(
         titleId = pref.titleId,
         summaryId = pref.summaryId,
         icon = {
-            if (pref.iconId != -1) PrefIcon(
-                iconId = pref.iconId,
+            if (pref.icon != null) PrefIcon(
+                icon = pref.icon,
                 text = stringResource(id = pref.titleId),
             )
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
@@ -347,8 +346,8 @@ fun CheckboxPreference(
         titleId = pref.titleId,
         summaryId = pref.summaryId,
         icon = {
-            if (pref.iconId != -1) PrefIcon(
-                iconId = pref.iconId,
+            if (pref.icon != null) PrefIcon(
+                icon = pref.icon,
                 text = stringResource(id = pref.titleId),
             )
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
@@ -426,8 +425,8 @@ fun SeekBarPreference(
         titleId = pref.titleId,
         summaryId = pref.summaryId,
         icon = {
-            if (pref.iconId != -1) PrefIcon(
-                iconId = pref.iconId,
+            if (pref.icon != null) PrefIcon(
+                icon = pref.icon,
                 text = stringResource(id = pref.titleId),
             )
             else Spacer(modifier = Modifier.requiredWidth(36.dp))

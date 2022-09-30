@@ -112,12 +112,12 @@ fun ButtonIcon(
 
 @Composable
 fun PrefIcon(
-    @DrawableRes iconId: Int,
+    icon: ImageVector,
     text: String,
     tint: Color? = null
 ) {
     Icon(
-        painter = painterResource(id = iconId),
+        imageVector = icon,
         contentDescription = text,
         modifier = Modifier.size(32.dp),
         tint = tint ?: MaterialTheme.colorScheme.onBackground

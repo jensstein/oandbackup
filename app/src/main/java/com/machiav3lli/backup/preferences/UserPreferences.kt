@@ -27,6 +27,16 @@ import com.machiav3lli.backup.dialogs.ListDialogUI
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
 import com.machiav3lli.backup.secondaryColorItems
 import com.machiav3lli.backup.themeItems
+import com.machiav3lli.backup.ui.compose.icons.Icon
+import com.machiav3lli.backup.ui.compose.icons.icon.IcBiometric
+import com.machiav3lli.backup.ui.compose.icons.icon.IcColorAccent
+import com.machiav3lli.backup.ui.compose.icons.icon.IcColorSecondary
+import com.machiav3lli.backup.ui.compose.icons.icon.IcEncryption
+import com.machiav3lli.backup.ui.compose.icons.icon.IcFilter
+import com.machiav3lli.backup.ui.compose.icons.icon.IcFolder
+import com.machiav3lli.backup.ui.compose.icons.icon.IcLanguages
+import com.machiav3lli.backup.ui.compose.icons.icon.IcOld
+import com.machiav3lli.backup.ui.compose.icons.icon.IcTheme
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.ColorDeData
 import com.machiav3lli.backup.ui.compose.theme.ColorExodus
@@ -70,9 +80,9 @@ fun UserPrefsPage() {
                     }
                     if (oldDir != uri.toString()) {
                         val flags = it.flags and (
-                                            Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                        )
+                                Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                                )
                         context.contentResolver.takePersistableUriPermission(uri, flags)
                         Timber.i("setting uri $uri")
                         backupDir = context.setBackupDir(uri)
@@ -100,7 +110,7 @@ fun UserPrefsPage() {
                 launcher.launch(BACKUP_DIRECTORY_INTENT)
             } else BaseDialog(openDialogCustom = openDialog) {
                 when (dialogsPref) {
-                    pref_languages         -> ListDialogUI(
+                    pref_languages -> ListDialogUI(
                         pref = dialogsPref as ListPref,
                         openDialogCustom = openDialog,
                         onChanged = { context.restartApp() }
@@ -124,16 +134,16 @@ fun UserPrefsPage() {
 val pref_languages = ListPref(
     key = "user.languages",
     titleId = R.string.prefs_languages,
-    iconId = R.drawable.ic_languages,
+    icon = Icon.IcLanguages,
     iconTint = ColorOBB,
     entries = OABX.context.getLanguageList(),
     defaultValue = PREFS_LANGUAGES_DEFAULT
-    )
+)
 
 val pref_appTheme = EnumPref(
     key = "user.appTheme",
     titleId = R.string.prefs_theme,
-    iconId = R.drawable.ic_theme,
+    icon = Icon.IcTheme,
     iconTint = ColorSpecial,
     entries = themeItems,
     defaultValue = 2
@@ -142,7 +152,7 @@ val pref_appTheme = EnumPref(
 val pref_appAccentColor = EnumPref(
     key = "user.appAccentColor",
     titleId = R.string.prefs_accent_color,
-    iconId = R.drawable.ic_color_accent,
+    icon = Icon.IcColorAccent,
     //iconTint = MaterialTheme.colorScheme.primary,
     entries = accentColorItems,
     defaultValue = 0
@@ -151,7 +161,7 @@ val pref_appAccentColor = EnumPref(
 val pref_appSecondaryColor = EnumPref(
     key = "user.appSecondaryColor",
     titleId = R.string.prefs_secondary_color,
-    iconId = R.drawable.ic_color_secondary,
+    icon = Icon.IcColorSecondary,
     //iconTint = MaterialTheme.colorScheme.secondary,
     entries = secondaryColorItems,
     defaultValue = 0
@@ -160,7 +170,7 @@ val pref_appSecondaryColor = EnumPref(
 val pref_pathBackupFolder = StringPref(
     key = "user.pathBackupFolder",
     titleId = R.string.prefs_pathbackupfolder,
-    iconId = R.drawable.ic_folder,
+    icon = Icon.IcFolder,
     iconTint = ColorExtDATA,
     defaultValue = ""
 )
@@ -169,7 +179,7 @@ val pref_deviceLock = BooleanPref(
     key = "user.deviceLock",
     titleId = R.string.prefs_devicelock,
     summaryId = R.string.prefs_devicelock_summary,
-    iconId = R.drawable.ic_encryption,
+    icon = Icon.IcEncryption,
     iconTint = ColorUpdated,
     defaultValue = false
 )
@@ -178,7 +188,7 @@ val pref_biometricLock = BooleanPref(
     key = "user.biometricLock",
     titleId = R.string.prefs_biometriclock,
     summaryId = R.string.prefs_biometriclock_summary,
-    iconId = R.drawable.ic_biometric,
+    icon = Icon.IcBiometric,
     iconTint = ColorDeData,
     defaultValue = false
 )
@@ -203,7 +213,7 @@ val pref_oldBackups = IntPref(
     key = "user.oldBackups",
     titleId = R.string.prefs_oldbackups,
     summaryId = R.string.prefs_oldbackups_summary,
-    iconId = R.drawable.ic_old,
+    icon = Icon.IcOld,
     iconTint = ColorExodus,
     entries = (1..30).toList(),
     defaultValue = 2
@@ -213,6 +223,6 @@ val pref_rememberFiltering = BooleanPref(
     key = "user.rememberFiltering",
     titleId = R.string.prefs_rememberfiltering,
     summaryId = R.string.prefs_rememberfiltering_summary,
-    iconId = R.drawable.ic_filter,
+    icon = Icon.IcFilter,
     defaultValue = false
 )

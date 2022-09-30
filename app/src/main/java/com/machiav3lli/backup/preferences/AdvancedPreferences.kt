@@ -19,6 +19,12 @@ import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.preferences.ui.PrefsExpandableGroupHeader
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
+import com.machiav3lli.backup.ui.compose.icons.Icon
+import com.machiav3lli.backup.ui.compose.icons.icon.IcAndy
+import com.machiav3lli.backup.ui.compose.icons.icon.IcDeData
+import com.machiav3lli.backup.ui.compose.icons.icon.IcForceKill
+import com.machiav3lli.backup.ui.compose.icons.icon.IcRestore
+import com.machiav3lli.backup.ui.compose.icons.icon.IcSpecial
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.ColorDeData
 import com.machiav3lli.backup.ui.compose.theme.ColorSpecial
@@ -57,7 +63,7 @@ fun AdvancedPrefsPage() {
                 PrefsExpandableGroupHeader(
                     titleId = R.string.prefs_dev_settings,
                     summaryId = R.string.prefs_dev_settings_summary,
-                    iconId = R.drawable.ic_force_kill
+                    icon = Icon.IcForceKill
                 ) {
                     expand(!expanded)
                 }
@@ -79,7 +85,7 @@ val pref_enableSpecialBackups = BooleanPref(
     key = "adv.enableSpecialBackups",
     titleId = R.string.prefs_enablespecial,
     summaryId = R.string.prefs_enablespecial_summary,
-    iconId = R.drawable.ic_special,
+    icon = Icon.IcSpecial,
     iconTint = ColorSpecial,
     defaultValue = false
 )
@@ -88,7 +94,7 @@ val pref_disableVerification = BooleanPref(
     key = "adv.disableVerification",
     titleId = R.string.prefs_disableverification,
     summaryId = R.string.prefs_disableverification_summary,
-    iconId = R.drawable.ic_andy,
+    icon = Icon.IcAndy,
     iconTint = ColorUpdated,
     defaultValue = true
 )
@@ -97,7 +103,7 @@ val pref_giveAllPermissions = BooleanPref(
     key = "adv.giveAllPermissions",
     titleId = R.string.prefs_restoreallpermissions,
     summaryId = R.string.prefs_restoreallpermissions_summary,
-    iconId = R.drawable.ic_de_data,
+    icon = Icon.IcDeData,
     iconTint = ColorDeData,
     defaultValue = false
 )
@@ -106,7 +112,7 @@ val pref_allowDowngrade = BooleanPref(
     key = "adv.allowDowngrade",
     titleId = R.string.prefs_allowdowngrade,
     summaryId = R.string.prefs_allowdowngrade_summary,
-    iconId = R.drawable.ic_restore,
+    icon = Icon.IcRestore,
     defaultValue = false
 )
 
@@ -308,10 +314,9 @@ val pref_fakeBackupSeconds = IntPref(
 val pref_forceCrash = LaunchPref(
     key = "dev.forceCrash",
     summary = "crash the app [for testing only]"
-)  {
+) {
     throw Exception("forceCrash")
 }
-
 
 
 val persist_firstLaunch = BooleanPref(
@@ -324,7 +329,7 @@ val persist_beenWelcomed = BooleanPref(
     defaultValue = false
 )
 
-val persist_ignoreBatteryOptimization =  BooleanPref(
+val persist_ignoreBatteryOptimization = BooleanPref(
     key = "persist.ignoreBatteryOptimization",
     defaultValue = false
 )

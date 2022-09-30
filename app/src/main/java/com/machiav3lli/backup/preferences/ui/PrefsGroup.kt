@@ -1,6 +1,5 @@
 package com.machiav3lli.backup.preferences.ui
 
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -102,7 +102,7 @@ fun PrefsExpandableGroupHeader(
     modifier: Modifier = Modifier,
     @StringRes titleId: Int,
     @StringRes summaryId: Int = -1,
-    @DrawableRes iconId: Int,
+    icon: ImageVector,
     onClick: (() -> Unit)
 ) {
     Divider(thickness = 2.dp)
@@ -123,7 +123,7 @@ fun PrefsExpandableGroupHeader(
                 .padding(horizontal = 8.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            PrefIcon(iconId = iconId, text = stringResource(id = titleId))
+            PrefIcon(icon = icon, text = stringResource(id = titleId))
             Spacer(modifier = Modifier.requiredWidth(8.dp))
             Column(
                 modifier = Modifier.weight(1f)
