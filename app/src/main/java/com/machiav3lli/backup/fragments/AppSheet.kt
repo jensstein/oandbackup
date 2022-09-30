@@ -66,7 +66,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -89,9 +88,16 @@ import com.machiav3lli.backup.preferences.pref_useWorkManagerForSingleManualJob
 import com.machiav3lli.backup.tasks.BackupActionTask
 import com.machiav3lli.backup.tasks.RestoreActionTask
 import com.machiav3lli.backup.ui.compose.icons.Icon
+import com.machiav3lli.backup.ui.compose.icons.icon.IcArrowDown
 import com.machiav3lli.backup.ui.compose.icons.icon.IcBackup
+import com.machiav3lli.backup.ui.compose.icons.icon.IcBatteryOptimization
+import com.machiav3lli.backup.ui.compose.icons.icon.IcBlocklist
 import com.machiav3lli.backup.ui.compose.icons.icon.IcDelete
+import com.machiav3lli.backup.ui.compose.icons.icon.IcExclude
+import com.machiav3lli.backup.ui.compose.icons.icon.IcExodus
 import com.machiav3lli.backup.ui.compose.icons.icon.IcForceKill
+import com.machiav3lli.backup.ui.compose.icons.icon.IcInfo
+import com.machiav3lli.backup.ui.compose.icons.icon.IcLaunchable
 import com.machiav3lli.backup.ui.compose.item.BackupItem
 import com.machiav3lli.backup.ui.compose.item.CardButton
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
@@ -223,7 +229,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                     }
                                     AnimatedVisibility(visible = packageInfo.isInstalled && !packageInfo.isSpecial) {
                                         RoundButton(
-                                            icon = painterResource(id = R.drawable.ic_info),
+                                            icon = Icon.IcInfo,
                                             modifier = Modifier.fillMaxHeight()
                                         ) {
                                             val intent =
@@ -238,7 +244,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                         }
                                     }
                                     RoundButton(
-                                        icon = painterResource(id = R.drawable.ic_arrow_down),
+                                        icon = Icon.IcArrowDown,
                                         modifier = Modifier.fillMaxHeight()
                                     ) {
                                         dismissAllowingStateLoss()
@@ -277,7 +283,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                         modifier = Modifier
                                             .fillMaxHeight()
                                             .weight(1f),
-                                        icon = painterResource(id = R.drawable.ic_exodus),
+                                        icon = Icon.IcExodus,
                                         tint = colorResource(id = R.color.ic_exodus),
                                         description = stringResource(id = R.string.exodus_report)
                                     ) {
@@ -297,7 +303,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                             modifier = Modifier
                                                 .fillMaxHeight()
                                                 .weight(1f),
-                                            icon = painterResource(id = R.drawable.ic_launchable),
+                                            icon = Icon.IcLaunchable,
                                             tint = colorResource(id = R.color.ic_obb),
                                             description = stringResource(id = R.string.launch_app)
                                         ) {
@@ -316,10 +322,8 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                             modifier = Modifier
                                                 .fillMaxHeight()
                                                 .weight(1f),
-                                            icon = painterResource(
-                                                id = if (packageInfo.isDisabled) R.drawable.ic_battery_optimization
-                                                else R.drawable.ic_exclude
-                                            ),
+                                            icon = if (packageInfo.isDisabled) Icon.IcBatteryOptimization
+                                            else Icon.IcExclude,
                                             tint = if (packageInfo.isDisabled) MaterialTheme.colorScheme.primaryContainer
                                             else MaterialTheme.colorScheme.tertiaryContainer,
                                             description = stringResource(
@@ -337,7 +341,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                             modifier = Modifier
                                                 .fillMaxHeight()
                                                 .weight(1f),
-                                            icon = painterResource(id = R.drawable.ic_delete),
+                                            icon = Icon.IcDelete,
                                             tint = MaterialTheme.colorScheme.tertiary,
                                             description = stringResource(id = R.string.uninstall),
                                             onClick = {
@@ -351,7 +355,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                     CardButton(
                                         modifier = Modifier
                                             .weight(1f),
-                                        icon = painterResource(id = R.drawable.ic_blocklist),
+                                        icon = Icon.IcBlocklist,
                                         tint = colorResource(id = R.color.ic_updated),
                                         description = stringResource(id = R.string.global_blocklist_add)
                                     ) {

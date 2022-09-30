@@ -40,7 +40,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.ALT_MODE_APK
@@ -52,6 +51,9 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.ui.compose.icons.Icon
+import com.machiav3lli.backup.ui.compose.icons.icon.IcApk
+import com.machiav3lli.backup.ui.compose.icons.icon.IcData
 import com.machiav3lli.backup.ui.compose.item.ActionButton
 import com.machiav3lli.backup.ui.compose.item.StateChip
 import com.machiav3lli.backup.ui.compose.recycler.BatchPackageRecycler
@@ -183,7 +185,7 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
             ) {
                 StateChip(
                     modifier = Modifier.padding(start = 8.dp, end = 4.dp),
-                    icon = painterResource(id = R.drawable.ic_apk),
+                    icon = Icon.IcApk,
                     text = stringResource(id = R.string.all_apk),
                     checked = allApkChecked,
                     color = ColorAPK
@@ -200,7 +202,7 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                         viewModel.apkCheckedList.clear()
                 }
                 StateChip(
-                    icon = painterResource(id = R.drawable.ic_data),
+                    icon = Icon.IcData,
                     text = stringResource(id = R.string.all_data),
                     checked = allDataChecked,
                     color = ColorData

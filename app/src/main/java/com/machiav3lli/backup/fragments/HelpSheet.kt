@@ -63,6 +63,8 @@ import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.legendList
 import com.machiav3lli.backup.linksList
+import com.machiav3lli.backup.ui.compose.icons.Icon
+import com.machiav3lli.backup.ui.compose.icons.icon.IcArrowDown
 import com.machiav3lli.backup.ui.compose.item.LegendItem
 import com.machiav3lli.backup.ui.compose.item.LinkItem
 import com.machiav3lli.backup.ui.compose.item.RoundButton
@@ -122,7 +124,7 @@ class HelpSheet : BaseSheet() {
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
-                        RoundButton(icon = painterResource(id = R.drawable.ic_arrow_down)) {
+                        RoundButton(icon = Icon.IcArrowDown) {
                             dismissAllowingStateLoss()
                         }
                     }

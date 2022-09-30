@@ -41,7 +41,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.ALT_MODE_APK
@@ -56,7 +55,9 @@ import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.icons.Icon
+import com.machiav3lli.backup.ui.compose.icons.icon.IcArrowDown
 import com.machiav3lli.backup.ui.compose.icons.icon.IcUpdate
+import com.machiav3lli.backup.ui.compose.icons.icon.IcUpdated
 import com.machiav3lli.backup.ui.compose.item.ActionButton
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.recycler.HomePackageRecycler
@@ -156,7 +157,7 @@ fun HomePage(viewModel: HomeViewModel) {
                         ActionButton(
                             modifier = Modifier.weight(1f),
                             text = updatedApps.orEmpty().size.toString(),
-                            icon = painterResource(id = if (updatedVisible) R.drawable.ic_arrow_down else R.drawable.ic_updated)
+                            icon = if (updatedVisible) Icon.IcArrowDown else Icon.IcUpdated
                         ) {
                             updatedVisible = !updatedVisible
                         }

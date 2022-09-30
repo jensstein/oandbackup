@@ -51,7 +51,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -174,7 +173,7 @@ fun ActionButton(
     text: String,
     positive: Boolean = true,
     iconOnSide: Boolean = false,
-    icon: Painter? = null,
+    icon: ImageVector? = null,
     onClick: () -> Unit
 ) {
     TextButton(
@@ -195,7 +194,7 @@ fun ActionButton(
             if (iconOnSide) Spacer(modifier = Modifier.weight(1f))
             Icon(
                 modifier = Modifier.size(24.dp),
-                painter = icon,
+                imageVector = icon,
                 contentDescription = text
             )
         }
@@ -257,7 +256,7 @@ fun TopBarButton(
     modifier: Modifier = Modifier
         .padding(4.dp)
         .size(52.dp),
-    icon: Painter,
+    icon: ImageVector,
     description: String = "",
     onClick: () -> Unit
 ) {
@@ -271,7 +270,7 @@ fun TopBarButton(
         shape = MaterialTheme.shapes.medium,
         onClick = { onClick() }
     ) {
-        Icon(painter = icon, contentDescription = description)
+        Icon(imageVector = icon, contentDescription = description)
     }
 }
 
@@ -279,7 +278,7 @@ fun TopBarButton(
 @Composable
 fun CardButton(
     modifier: Modifier = Modifier,
-    icon: Painter,
+    icon: ImageVector,
     tint: Color,
     description: String,
     enabled: Boolean = true,
@@ -296,7 +295,7 @@ fun CardButton(
         enabled = enabled,
         onClick = { onClick() }
     ) {
-        Icon(painter = icon, contentDescription = description)
+        Icon(imageVector = icon, contentDescription = description)
         /*Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = description,
@@ -312,7 +311,7 @@ fun RoundButton(
     modifier: Modifier = Modifier
         .padding(4.dp)
         .size(52.dp),
-    icon: Painter,
+    icon: ImageVector,
     description: String = "",
     onClick: () -> Unit
 ) {
@@ -320,14 +319,14 @@ fun RoundButton(
         modifier = modifier,
         onClick = { onClick() }
     ) {
-        Icon(painter = icon, contentDescription = description)
+        Icon(imageVector = icon, contentDescription = description)
     }
 }
 
 @Composable
 fun StateChip(
     modifier: Modifier = Modifier,
-    icon: Painter,
+    icon: ImageVector,
     text: String,
     color: Color,
     checked: Boolean,
@@ -346,7 +345,7 @@ fun StateChip(
     ) {
         Icon(
             modifier = Modifier.size(24.dp),
-            painter = icon,
+            imageVector = icon,
             contentDescription = text
         )
     }

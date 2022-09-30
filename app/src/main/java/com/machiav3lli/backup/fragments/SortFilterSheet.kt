@@ -44,7 +44,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.R
@@ -169,7 +168,7 @@ class SortFilterSheet(
                                         bottomText = stringResource(id = R.string.stats_updated),
                                         modifier = Modifier.weight(1f)
                                     )
-                                    RoundButton(icon = painterResource(id = R.drawable.ic_arrow_down)) {
+                                    RoundButton(icon = Icon.IcArrowDown) {
                                         dismissAllowingStateLoss()
                                     }
                                 }

@@ -53,7 +53,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -73,6 +72,7 @@ import com.machiav3lli.backup.schedSpecialFilterChipItems
 import com.machiav3lli.backup.scheduleBackupModeChipItems
 import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.ui.compose.icons.Icon
+import com.machiav3lli.backup.ui.compose.icons.icon.IcArrowDown
 import com.machiav3lli.backup.ui.compose.icons.icon.IcBackup
 import com.machiav3lli.backup.ui.compose.icons.icon.IcBlocklist
 import com.machiav3lli.backup.ui.compose.icons.icon.IcCustomlist
@@ -350,7 +350,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                                     textAlign = TextAlign.Center,
                                 )
                                 RoundButton(
-                                    icon = painterResource(id = R.drawable.ic_arrow_down),
+                                    icon = Icon.IcArrowDown,
                                     description = stringResource(id = R.string.dismiss),
                                     onClick = { dismissAllowingStateLoss() }
                                 )

@@ -53,6 +53,9 @@ import androidx.compose.ui.unit.sp
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.preferences.pref_showInfoLogBar
+import com.machiav3lli.backup.ui.compose.icons.Icon
+import com.machiav3lli.backup.ui.compose.icons.icon.IcRefresh
+import com.machiav3lli.backup.ui.compose.icons.icon.IcSearch
 import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.compose.vertical
 import kotlinx.coroutines.delay
@@ -216,7 +219,7 @@ fun ExpandableSearchAction(
         },
         collapsedView = {
             Row {
-                RoundButton(icon = painterResource(id = R.drawable.ic_refresh)) {
+                RoundButton(icon = Icon.IcRefresh) {
                     OABX.main?.needRefresh = true
                 }
                 CollapsedSearchView(
@@ -234,7 +237,7 @@ fun CollapsedSearchView(
     onExpanded: (Boolean) -> Unit
 ) {
     TopBarButton(
-        icon = painterResource(id = R.drawable.ic_search),
+        icon = Icon.IcSearch,
         description = stringResource(id = R.string.search),
         onClick = { onExpanded(true) }
     )
