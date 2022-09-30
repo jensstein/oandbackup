@@ -167,7 +167,7 @@ fun EnumDialogUI(
                 Spacer(Modifier.weight(1f))
                 ElevatedActionButton(text = stringResource(id = R.string.dialogSave)) {
                     if (pref.value != selected) {
-                        pref.value =selected
+                        pref.value = selected
                         onChanged()
                     }
                     openDialogCustom.value = false
@@ -258,8 +258,8 @@ fun StringDialogUI(
     var savedValueConfirm by remember { mutableStateOf("") }
     var isEdited by remember { mutableStateOf(false) }
 
-    val textColor = if(isPrivate) {
-        if(savedValue != savedValueConfirm)
+    val textColor = if (isPrivate) {
+        if (savedValue != savedValueConfirm)
             Color.Red
         else
             Color.Green
@@ -285,7 +285,7 @@ fun StringDialogUI(
                 modifier = Modifier
                     .fillMaxWidth()
                     .focusRequester(textFieldFocusRequester),
-                value = if(isEdited) savedValue else "",
+                value = if (isEdited) savedValue else "",
                 colors = TextFieldDefaults.textFieldColors(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
@@ -303,7 +303,7 @@ fun StringDialogUI(
                     PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Done,
-                    keyboardType = if(isPrivate) KeyboardType.Password else KeyboardType.Text
+                    keyboardType = if (isPrivate) KeyboardType.Password else KeyboardType.Text
                 ),
                 keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
                 trailingIcon = {
@@ -316,17 +316,15 @@ fun StringDialogUI(
                     }
                 },
                 placeholder = {
-                    if(isPrivate) {
-                        if (pref.value.isNotEmpty() and !isEdited) {
-                            if (isPasswordVisible)
-                                Text(pref.value)
-                            else
-                                Text("**********")
-                        }
+                    if (isPrivate && pref.value.isNotEmpty() and !isEdited) {
+                        if (isPasswordVisible)
+                            Text(pref.value)
+                        else
+                            Text("**********")
                     }
                 }
             )
-            if(isPrivate && confirm) {
+            if (isPrivate && confirm) {
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -348,7 +346,7 @@ fun StringDialogUI(
                         PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Done,
-                        keyboardType = if(isPrivate) KeyboardType.Password else KeyboardType.Text
+                        keyboardType = KeyboardType.Password
                     ),
                     keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
                 )
