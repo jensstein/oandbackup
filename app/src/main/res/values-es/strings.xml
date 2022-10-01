@@ -346,7 +346,7 @@
     <string name="prefs_loadingtoasts_summary">Mostrando las notificaciones del sistema mientras se carga la lista</string>
     <string name="dismiss">Descartar</string>
     <string name="supended_apps_cleanup">limpiar las aplicaciones suspendidas sobrantes</string>
-    <string name="prefs_loadingtoasts">Cargando las notificaciones del sistema</string>
+    <string name="prefs_loadingtoasts">Cargando toasts</string>
     <string name="prefs_theme_dynamic">Tema dinámico (si está disponible)</string>
     <string name="add_tag">Agregar nueva etiqueta</string>
     <string name="edit_note">Editar nota</string>
