@@ -275,12 +275,6 @@ fun ExpandedSearchView(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
             ),
-            leadingIcon = {
-                Icon(
-                    imageVector = Phosphor.MagnifyingGlass,
-                    contentDescription = stringResource(id = R.string.search),
-                )
-            },
             singleLine = true,
             label = { Text(text = stringResource(id = R.string.searchHint)) },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
