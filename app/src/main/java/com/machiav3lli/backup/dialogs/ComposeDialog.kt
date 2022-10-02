@@ -324,6 +324,8 @@ fun StringDialogUI(
                             Text(pref.value)
                         else
                             Text("**********")
+                    } else if (!isPrivate) {
+                        Text(pref.value)
                     }
                 }
             )
