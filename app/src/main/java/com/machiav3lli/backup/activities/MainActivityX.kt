@@ -78,7 +78,6 @@ import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.ExpandableSearchAction
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TopBar
-import com.machiav3lli.backup.ui.compose.item.TopBarButton
 import com.machiav3lli.backup.ui.compose.navigation.BottomNavBar
 import com.machiav3lli.backup.ui.compose.navigation.MainNavHost
 import com.machiav3lli.backup.ui.compose.navigation.NavItem
@@ -196,30 +195,32 @@ class MainActivityX : BaseActivity() {
 
                         if (navController.currentDestination?.route == NavItem.Scheduler.destination)
                             TopBar(title = stringResource(id = pageTitle)) {
-                                TopBarButton(
+                                RoundButton(
+                                    modifier = Modifier
+                                        .padding(horizontal = 4.dp)
+                                        .size(32.dp),
                                     icon = Phosphor.Prohibit,
-                                    description = stringResource(id = R.string.sched_blocklist),
-                                    onClick = {
-                                        GlobalScope.launch(Dispatchers.IO) {
-                                            val blocklistedPackages =
-                                                context.viewModel.blocklist.value
-                                                    ?.mapNotNull { it.packageName }.orEmpty()
+                                    description = stringResource(id = R.string.sched_blocklist)
+                                ) {
+                                    GlobalScope.launch(Dispatchers.IO) {
+                                        val blocklistedPackages =
+                                            context.viewModel.blocklist.value
+                                                ?.mapNotNull { it.packageName }.orEmpty()
 
-                                            PackagesListDialogFragment(
-                                                blocklistedPackages,
-                                                MAIN_FILTER_DEFAULT,
-                                                true
-                                            ) { newList: Set<String> ->
-                                                context.viewModel.updateBlocklist(
-                                                    newList
-                                                )
-                                            }.show(
-                                                context.supportFragmentManager,
-                                                "BLOCKLIST_DIALOG"
+                                        PackagesListDialogFragment(
+                                            blocklistedPackages,
+                                            MAIN_FILTER_DEFAULT,
+                                            true
+                                        ) { newList: Set<String> ->
+                                            context.viewModel.updateBlocklist(
+                                                newList
                                             )
-                                        }
+                                        }.show(
+                                            context.supportFragmentManager,
+                                            "BLOCKLIST_DIALOG"
+                                        )
                                     }
-                                )
+                                }
                             }
                         else Column() {
                             TopBar(title = stringResource(id = pageTitle)) {
