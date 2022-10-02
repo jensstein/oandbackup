@@ -39,7 +39,6 @@ fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
             NavItem.Backup,
             NavItem.Restore,
             NavItem.Scheduler,
-            NavItem.Settings
         )
     }
 
