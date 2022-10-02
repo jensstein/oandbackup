@@ -9,11 +9,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
@@ -435,11 +435,9 @@ fun SeekBarPreference(
         index = index,
         groupSize = groupSize,
         bottomWidget = {
-            Row {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Slider(
-                    modifier = Modifier
-                        .requiredHeight(24.dp)
-                        .weight(1f),
+                    modifier = Modifier.weight(1f, false),
                     value = sliderPosition.toFloat(),
                     valueRange = 0.toFloat()..last.toFloat(),
                     onValueChange = { sliderPosition = it.roundToInt() },
