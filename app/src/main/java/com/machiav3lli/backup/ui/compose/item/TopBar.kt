@@ -52,10 +52,10 @@ import androidx.compose.ui.unit.sp
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.preferences.pref_showInfoLogBar
-import com.machiav3lli.backup.ui.compose.icons.Icon
-import com.machiav3lli.backup.ui.compose.icons.icon.IcClose
-import com.machiav3lli.backup.ui.compose.icons.icon.IcRefresh
-import com.machiav3lli.backup.ui.compose.icons.icon.IcSearch
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowsClockwise
+import com.machiav3lli.backup.ui.compose.icons.phosphor.MagnifyingGlass
+import com.machiav3lli.backup.ui.compose.icons.phosphor.X
 import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.compose.vertical
 import kotlinx.coroutines.delay
@@ -219,7 +219,7 @@ fun ExpandableSearchAction(
         },
         collapsedView = {
             Row {
-                RoundButton(icon = Icon.IcRefresh) {
+                RoundButton(icon = Phosphor.ArrowsClockwise) {
                     OABX.main?.needRefresh = true
                 }
                 CollapsedSearchView(
@@ -237,7 +237,7 @@ fun CollapsedSearchView(
     onExpanded: (Boolean) -> Unit
 ) {
     TopBarButton(
-        icon = Icon.IcSearch,
+        icon = Phosphor.MagnifyingGlass,
         description = stringResource(id = R.string.search),
         onClick = { onExpanded(true) }
     )
@@ -289,7 +289,7 @@ fun ExpandedSearchView(
             ),
             leadingIcon = {
                 Icon(
-                    imageVector = Icon.IcSearch,
+                    imageVector = Phosphor.MagnifyingGlass,
                     contentDescription = stringResource(id = R.string.search),
                 )
             },
@@ -305,7 +305,7 @@ fun ExpandedSearchView(
             onClose()
         }) {
             Icon(
-                imageVector = Icon.IcClose,
+                imageVector = Phosphor.X,
                 contentDescription = stringResource(id = R.string.dialogCancel)
             )
         }

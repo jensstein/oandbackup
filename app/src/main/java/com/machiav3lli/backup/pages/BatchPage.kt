@@ -51,9 +51,9 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.Package
-import com.machiav3lli.backup.ui.compose.icons.Icon
-import com.machiav3lli.backup.ui.compose.icons.icon.IcApk
-import com.machiav3lli.backup.ui.compose.icons.icon.IcData
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.DiamondsFour
+import com.machiav3lli.backup.ui.compose.icons.phosphor.HardDrives
 import com.machiav3lli.backup.ui.compose.item.ActionButton
 import com.machiav3lli.backup.ui.compose.item.StateChip
 import com.machiav3lli.backup.ui.compose.recycler.BatchPackageRecycler
@@ -185,7 +185,7 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
             ) {
                 StateChip(
                     modifier = Modifier.padding(start = 8.dp, end = 4.dp),
-                    icon = Icon.IcApk,
+                    icon = Phosphor.DiamondsFour,
                     text = stringResource(id = R.string.all_apk),
                     checked = allApkChecked,
                     color = ColorAPK
@@ -202,7 +202,7 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                         viewModel.apkCheckedList.clear()
                 }
                 StateChip(
-                    icon = Icon.IcData,
+                    icon = Phosphor.HardDrives,
                     text = stringResource(id = R.string.all_data),
                     checked = allDataChecked,
                     color = ColorData

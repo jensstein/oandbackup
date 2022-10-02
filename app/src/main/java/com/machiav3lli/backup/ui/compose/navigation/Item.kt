@@ -2,65 +2,65 @@ package com.machiav3lli.backup.ui.compose.navigation
 
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.ui.compose.icons.Icon
-import com.machiav3lli.backup.ui.compose.icons.icon.IcBackup
-import com.machiav3lli.backup.ui.compose.icons.icon.IcHome
-import com.machiav3lli.backup.ui.compose.icons.icon.IcIssue
-import com.machiav3lli.backup.ui.compose.icons.icon.IcLog
-import com.machiav3lli.backup.ui.compose.icons.icon.IcPrefsAdvanced
-import com.machiav3lli.backup.ui.compose.icons.icon.IcPrefsService
-import com.machiav3lli.backup.ui.compose.icons.icon.IcPrefsTools
-import com.machiav3lli.backup.ui.compose.icons.icon.IcPrefsUser
-import com.machiav3lli.backup.ui.compose.icons.icon.IcRestore
-import com.machiav3lli.backup.ui.compose.icons.icon.IcScheduler
-import com.machiav3lli.backup.ui.compose.icons.icon.IcSettings
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArchiveTray
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Bug
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CalendarX
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ClockCounterClockwise
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Flask
+import com.machiav3lli.backup.ui.compose.icons.phosphor.GearSix
+import com.machiav3lli.backup.ui.compose.icons.phosphor.House
+import com.machiav3lli.backup.ui.compose.icons.phosphor.SlidersHorizontal
+import com.machiav3lli.backup.ui.compose.icons.phosphor.UserGear
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Warning
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Wrench
 
 sealed class NavItem(var title: Int, var icon: ImageVector, var destination: String) {
     object Welcome :
-        NavItem(R.string.welcome_to_oabx, Icon.IcHome, "intro_welcome")
+        NavItem(R.string.welcome_to_oabx, Phosphor.House, "intro_welcome")
 
     object Permissions :
-        NavItem(R.string.permission_not_granted, Icon.IcIssue, "intro_permissions")
+        NavItem(R.string.permission_not_granted, Phosphor.Warning, "intro_permissions")
 
     object Home :
-        NavItem(R.string.home, Icon.IcHome, "home")
+        NavItem(R.string.home, Phosphor.House, "home")
 
     object Backup :
-        NavItem(R.string.backup, Icon.IcBackup, "batch_backup")
+        NavItem(R.string.backup, Phosphor.ArchiveTray, "batch_backup")
 
     object Restore :
-        NavItem(R.string.restore, Icon.IcRestore, "batch_restore")
+        NavItem(R.string.restore, Phosphor.ClockCounterClockwise, "batch_restore")
 
     object Scheduler :
-        NavItem(R.string.sched_title, Icon.IcScheduler, "scheduler")
+        NavItem(R.string.sched_title, Phosphor.CalendarX, "scheduler")
 
     object Main :
-        NavItem(R.string.main, Icon.IcHome, "main")
+        NavItem(R.string.main, Phosphor.House, "main")
 
     object Settings :
-        NavItem(R.string.prefs_title, Icon.IcSettings, "settings")
+        NavItem(R.string.prefs_title, Phosphor.GearSix, "settings")
 
     object UserPrefs :
-        NavItem(R.string.prefs_user_short, Icon.IcPrefsUser, "prefs_user")
+        NavItem(R.string.prefs_user_short, Phosphor.UserGear, "prefs_user")
 
     object ServicePrefs :
-        NavItem(R.string.prefs_service_short, Icon.IcPrefsService, "prefs_service")
+        NavItem(R.string.prefs_service_short, Phosphor.SlidersHorizontal, "prefs_service")
 
     object AdvancedPrefs :
-        NavItem(R.string.prefs_advanced_short, Icon.IcPrefsAdvanced, "prefs_advanced")
+        NavItem(R.string.prefs_advanced_short, Phosphor.Flask, "prefs_advanced")
 
     object ToolsPrefs :
-        NavItem(R.string.prefs_tools_short, Icon.IcPrefsTools, "prefs_tools")
+        NavItem(R.string.prefs_tools_short, Phosphor.Wrench, "prefs_tools")
 
     object Exports : NavItem(
         R.string.prefs_schedulesexportimport,
-        Icon.IcScheduler,
+        Phosphor.CalendarX,
         "prefs_tools/exports"
     )
 
     object Logs : NavItem(
         R.string.prefs_logviewer,
-        Icon.IcLog,
+        Phosphor.Bug,
         "prefs_tools/logs"
     )
 }

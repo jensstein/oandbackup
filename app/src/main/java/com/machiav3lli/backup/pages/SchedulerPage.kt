@@ -39,8 +39,8 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.fragments.ScheduleSheet
-import com.machiav3lli.backup.ui.compose.icons.Icon
-import com.machiav3lli.backup.ui.compose.icons.icon.IcAddSched
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CalendarPlus
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.recycler.ScheduleRecycler
 import com.machiav3lli.backup.utils.specialBackupsEnabled
@@ -90,7 +90,7 @@ fun SchedulerPage(viewModel: SchedulerViewModel) {
                     text = stringResource(id = R.string.sched_add),
                     modifier = Modifier.fillMaxWidth(),
                     fullWidth = true,
-                    icon = Icon.IcAddSched
+                    icon = Phosphor.CalendarPlus
                 ) {
                     viewModel.addSchedule(context.specialBackupsEnabled)
                 }

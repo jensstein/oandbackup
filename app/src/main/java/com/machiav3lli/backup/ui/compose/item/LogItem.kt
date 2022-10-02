@@ -20,9 +20,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.items.Log
-import com.machiav3lli.backup.ui.compose.icons.Icon
-import com.machiav3lli.backup.ui.compose.icons.icon.IcDelete
-import com.machiav3lli.backup.ui.compose.icons.icon.IcShare
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ShareNetwork
+import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.getFormattedDate
 
@@ -100,14 +100,14 @@ fun LogItem(
                     }
                 }
                 ElevatedActionButton(
-                    icon = Icon.IcShare,
+                    icon = Phosphor.ShareNetwork,
                     text = stringResource(id = R.string.shareTitle),
                     withText = false,
                     positive = true,
                     onClick = { onShare(item) }
                 )
                 ElevatedActionButton(
-                    icon = Icon.IcDelete,
+                    icon = Phosphor.TrashSimple,
                     text = stringResource(id = R.string.delete),
                     withText = false,
                     positive = false,

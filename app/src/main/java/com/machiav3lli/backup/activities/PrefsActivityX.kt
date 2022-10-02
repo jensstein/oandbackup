@@ -39,8 +39,8 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.fragments.HelpSheet
-import com.machiav3lli.backup.ui.compose.icons.Icon
-import com.machiav3lli.backup.ui.compose.icons.icon.IcInfo
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Info
 import com.machiav3lli.backup.ui.compose.item.TopBar
 import com.machiav3lli.backup.ui.compose.item.TopBarButton
 import com.machiav3lli.backup.ui.compose.navigation.BottomNavBar
@@ -85,7 +85,7 @@ class PrefsActivityX : BaseActivity() {
                             title = stringResource(id = pageTitle ?: NavItem.Settings.title)
                         ) {
                             TopBarButton(
-                                icon = Icon.IcInfo,
+                                icon = Phosphor.Info,
                                 description = stringResource(id = R.string.help),
                             ) {
                                 if (helpSheet != null && helpSheet!!.isVisible) helpSheet?.dismissAllowingStateLoss()

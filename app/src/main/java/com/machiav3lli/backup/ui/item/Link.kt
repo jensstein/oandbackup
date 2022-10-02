@@ -8,13 +8,13 @@ import com.machiav3lli.backup.HELP_LICENSE
 import com.machiav3lli.backup.HELP_MATRIX
 import com.machiav3lli.backup.HELP_TELEGRAM
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.ui.compose.icons.Icon
-import com.machiav3lli.backup.ui.compose.icons.icon.IcChangelog
-import com.machiav3lli.backup.ui.compose.icons.icon.IcElement
-import com.machiav3lli.backup.ui.compose.icons.icon.IcFaq
-import com.machiav3lli.backup.ui.compose.icons.icon.IcInfo
-import com.machiav3lli.backup.ui.compose.icons.icon.IcIssue
-import com.machiav3lli.backup.ui.compose.icons.icon.IcTelegram
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowsClockwise
+import com.machiav3lli.backup.ui.compose.icons.phosphor.BracketsSquare
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CircleWavyQuestion
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Info
+import com.machiav3lli.backup.ui.compose.icons.phosphor.TelegramLogo
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Warning
 
 data class Link(
     val nameId: Int,
@@ -26,37 +26,37 @@ data class Link(
     companion object {
         val Changelog = Link(
             R.string.help_changelog,
-            Icon.IcChangelog,
+            Phosphor.ArrowsClockwise,
             R.color.ic_updated,
             HELP_CHANGELOG
         )
         val Telegram = Link(
             R.string.help_group_telegram,
-            Icon.IcTelegram,
+            Phosphor.TelegramLogo,
             R.color.ic_system,
             HELP_TELEGRAM
         )
         val Matrix = Link(
             R.string.help_group_matrix,
-            Icon.IcElement,
+            Phosphor.BracketsSquare,
             R.color.ic_apk,
             HELP_MATRIX
         )
         val License = Link(
             R.string.help_license,
-            Icon.IcInfo,
+            Phosphor.Info,
             R.color.ic_ext_data,
             HELP_LICENSE
         )
         val Issues = Link(
             R.string.help_issues,
-            Icon.IcIssue,
+            Phosphor.Warning,
             R.color.ic_de_data,
             HELP_ISSUES
         )
         val FAQ = Link(
             R.string.help_faq,
-            Icon.IcFaq,
+            Phosphor.CircleWavyQuestion,
             R.color.ic_special,
             HELP_FAQ
         )

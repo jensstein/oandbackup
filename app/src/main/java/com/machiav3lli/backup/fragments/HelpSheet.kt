@@ -62,9 +62,9 @@ import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.legendList
 import com.machiav3lli.backup.linksList
-import com.machiav3lli.backup.ui.compose.icons.Icon
-import com.machiav3lli.backup.ui.compose.icons.icon.IcArrowDown
-import com.machiav3lli.backup.ui.compose.icons.icon.IcArrowUp
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretDown
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretUp
 import com.machiav3lli.backup.ui.compose.item.LegendItem
 import com.machiav3lli.backup.ui.compose.item.LinkItem
 import com.machiav3lli.backup.ui.compose.item.RoundButton
@@ -124,7 +124,7 @@ class HelpSheet : BaseSheet() {
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
-                        RoundButton(icon = Icon.IcArrowDown) {
+                        RoundButton(icon = Phosphor.CaretDown) {
                             dismissAllowingStateLoss()
                         }
                     }
@@ -197,8 +197,8 @@ class HelpSheet : BaseSheet() {
                                     modifier = Modifier.weight(1f)
                                 )
                                 Icon(
-                                    imageVector = if (showNotes) Icon.IcArrowUp
-                                    else Icon.IcArrowDown,
+                                    imageVector = if (showNotes) Phosphor.CaretUp
+                                    else Phosphor.CaretDown,
                                     contentDescription = null
                                 )
                             }

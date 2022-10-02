@@ -27,16 +27,17 @@ import com.machiav3lli.backup.dialogs.ListDialogUI
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
 import com.machiav3lli.backup.secondaryColorItems
 import com.machiav3lli.backup.themeItems
-import com.machiav3lli.backup.ui.compose.icons.Icon
-import com.machiav3lli.backup.ui.compose.icons.icon.IcBiometric
-import com.machiav3lli.backup.ui.compose.icons.icon.IcColorAccent
-import com.machiav3lli.backup.ui.compose.icons.icon.IcColorSecondary
-import com.machiav3lli.backup.ui.compose.icons.icon.IcEncryption
-import com.machiav3lli.backup.ui.compose.icons.icon.IcFilter
-import com.machiav3lli.backup.ui.compose.icons.icon.IcFolder
-import com.machiav3lli.backup.ui.compose.icons.icon.IcLanguages
-import com.machiav3lli.backup.ui.compose.icons.icon.IcOld
-import com.machiav3lli.backup.ui.compose.icons.icon.IcTheme
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowsOutlineVertical
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Clock
+import com.machiav3lli.backup.ui.compose.icons.phosphor.EyedropperSample
+import com.machiav3lli.backup.ui.compose.icons.phosphor.FingerprintSimple
+import com.machiav3lli.backup.ui.compose.icons.phosphor.FolderNotch
+import com.machiav3lli.backup.ui.compose.icons.phosphor.FunnelSimple
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Lock
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Swatches
+import com.machiav3lli.backup.ui.compose.icons.phosphor.TextAa
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Translate
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.ColorDeData
 import com.machiav3lli.backup.ui.compose.theme.ColorExodus
@@ -134,7 +135,7 @@ fun UserPrefsPage() {
 val pref_languages = ListPref(
     key = "user.languages",
     titleId = R.string.prefs_languages,
-    icon = Icon.IcLanguages,
+    icon = Phosphor.Translate,
     iconTint = ColorOBB,
     entries = OABX.context.getLanguageList(),
     defaultValue = PREFS_LANGUAGES_DEFAULT
@@ -143,7 +144,7 @@ val pref_languages = ListPref(
 val pref_appTheme = EnumPref(
     key = "user.appTheme",
     titleId = R.string.prefs_theme,
-    icon = Icon.IcTheme,
+    icon = Phosphor.Swatches,
     iconTint = ColorSpecial,
     entries = themeItems,
     defaultValue = 2
@@ -152,7 +153,7 @@ val pref_appTheme = EnumPref(
 val pref_appAccentColor = EnumPref(
     key = "user.appAccentColor",
     titleId = R.string.prefs_accent_color,
-    icon = Icon.IcColorAccent,
+    icon = Phosphor.EyedropperSample,
     //iconTint = MaterialTheme.colorScheme.primary,
     entries = accentColorItems,
     defaultValue = 0
@@ -161,7 +162,7 @@ val pref_appAccentColor = EnumPref(
 val pref_appSecondaryColor = EnumPref(
     key = "user.appSecondaryColor",
     titleId = R.string.prefs_secondary_color,
-    icon = Icon.IcColorSecondary,
+    icon = Phosphor.EyedropperSample,
     //iconTint = MaterialTheme.colorScheme.secondary,
     entries = secondaryColorItems,
     defaultValue = 0
@@ -170,7 +171,7 @@ val pref_appSecondaryColor = EnumPref(
 val pref_pathBackupFolder = StringPref(
     key = "user.pathBackupFolder",
     titleId = R.string.prefs_pathbackupfolder,
-    icon = Icon.IcFolder,
+    icon = Phosphor.FolderNotch,
     iconTint = ColorExtDATA,
     defaultValue = ""
 )
@@ -179,7 +180,7 @@ val pref_deviceLock = BooleanPref(
     key = "user.deviceLock",
     titleId = R.string.prefs_devicelock,
     summaryId = R.string.prefs_devicelock_summary,
-    icon = Icon.IcEncryption,
+    icon = Phosphor.Lock,
     iconTint = ColorUpdated,
     defaultValue = false
 )
@@ -188,7 +189,7 @@ val pref_biometricLock = BooleanPref(
     key = "user.biometricLock",
     titleId = R.string.prefs_biometriclock,
     summaryId = R.string.prefs_biometriclock_summary,
-    icon = Icon.IcBiometric,
+    icon = Phosphor.FingerprintSimple,
     iconTint = ColorDeData,
     defaultValue = false
 )
@@ -197,6 +198,7 @@ val pref_multilineInfoChips = BooleanPref(
     key = "user.multilineInfoChips",
     titleId = R.string.prefs_multilineinfochips,
     summaryId = R.string.prefs_multilineinfochips_summary,
+    icon = Phosphor.ArrowsOutlineVertical,
     iconTint = ColorSystem,
     defaultValue = false
 )
@@ -205,6 +207,7 @@ val pref_squeezeNavText = BooleanPref(
     key = "user.squeezeNavText",
     titleId = R.string.prefs_squeezenavtext,
     summaryId = R.string.prefs_squeezenavtext_summary,
+    icon = Phosphor.TextAa,
     iconTint = ColorOBB,
     defaultValue = false
 )
@@ -213,7 +216,7 @@ val pref_oldBackups = IntPref(
     key = "user.oldBackups",
     titleId = R.string.prefs_oldbackups,
     summaryId = R.string.prefs_oldbackups_summary,
-    icon = Icon.IcOld,
+    icon = Phosphor.Clock,
     iconTint = ColorExodus,
     entries = (1..30).toList(),
     defaultValue = 2
@@ -223,6 +226,6 @@ val pref_rememberFiltering = BooleanPref(
     key = "user.rememberFiltering",
     titleId = R.string.prefs_rememberfiltering,
     summaryId = R.string.prefs_rememberfiltering_summary,
-    icon = Icon.IcFilter,
+    icon = Phosphor.FunnelSimple,
     defaultValue = false
 )

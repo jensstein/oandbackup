@@ -46,8 +46,8 @@ import com.machiav3lli.backup.classAddress
 import com.machiav3lli.backup.databinding.ActivitySplashBinding
 import com.machiav3lli.backup.preferences.persist_firstLaunch
 import com.machiav3lli.backup.preferences.persist_ignoreBatteryOptimization
-import com.machiav3lli.backup.ui.compose.icons.Icon
-import com.machiav3lli.backup.ui.compose.icons.icon.IcIssue
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Warning
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.checkCallLogsPermission
@@ -102,7 +102,7 @@ fun RootMissing(activity: Activity? = null) {
                 Spacer(modifier = Modifier.height(80.dp))
                 ElevatedActionButton(
                     text = stringResource(id = R.string.dialogOK),
-                    icon = Icon.IcIssue,
+                    icon = Phosphor.Warning,
                     fullWidth = true,
                     modifier = Modifier
                 ) {

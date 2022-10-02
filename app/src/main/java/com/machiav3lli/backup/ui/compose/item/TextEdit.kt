@@ -37,9 +37,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.ui.compose.icons.Icon
-import com.machiav3lli.backup.ui.compose.icons.icon.IcClose
-import com.machiav3lli.backup.ui.compose.icons.icon.IcSaveNote
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CheckCircle
+import com.machiav3lli.backup.ui.compose.icons.phosphor.X
 
 @Composable
 fun MorphableTextField(
@@ -130,7 +130,7 @@ fun TextEditBlock(
             onExpanded(false)
         }) {
             Icon(
-                imageVector = Icon.IcClose,
+                imageVector = Phosphor.X,
                 contentDescription = stringResource(id = R.string.dialogCancel)
             )
         }
@@ -158,7 +158,7 @@ fun TextEditBlock(
             onExpanded(false)
         }) {
             Icon(
-                imageVector = Icon.IcSaveNote,
+                imageVector = Phosphor.CheckCircle,
                 contentDescription = stringResource(id = R.string.dialogSave)
             )
         }

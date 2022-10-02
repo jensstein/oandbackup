@@ -88,16 +88,17 @@ import com.machiav3lli.backup.preferences.pref_useWorkManagerForSingleManualJob
 import com.machiav3lli.backup.tasks.BackupActionTask
 import com.machiav3lli.backup.tasks.RestoreActionTask
 import com.machiav3lli.backup.ui.compose.icons.Icon
-import com.machiav3lli.backup.ui.compose.icons.icon.IcArrowDown
-import com.machiav3lli.backup.ui.compose.icons.icon.IcBackup
-import com.machiav3lli.backup.ui.compose.icons.icon.IcBatteryOptimization
-import com.machiav3lli.backup.ui.compose.icons.icon.IcBlocklist
-import com.machiav3lli.backup.ui.compose.icons.icon.IcDelete
-import com.machiav3lli.backup.ui.compose.icons.icon.IcExclude
-import com.machiav3lli.backup.ui.compose.icons.icon.IcExodus
-import com.machiav3lli.backup.ui.compose.icons.icon.IcForceKill
-import com.machiav3lli.backup.ui.compose.icons.icon.IcInfo
-import com.machiav3lli.backup.ui.compose.icons.icon.IcLaunchable
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.icon.Exodus
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArchiveTray
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowSquareOut
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretDown
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Info
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Leaf
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Prohibit
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ProhibitInset
+import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Warning
 import com.machiav3lli.backup.ui.compose.item.BackupItem
 import com.machiav3lli.backup.ui.compose.item.CardButton
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
@@ -229,7 +230,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                     }
                                     AnimatedVisibility(visible = packageInfo.isInstalled && !packageInfo.isSpecial) {
                                         RoundButton(
-                                            icon = Icon.IcInfo,
+                                            icon = Phosphor.Info,
                                             modifier = Modifier.fillMaxHeight()
                                         ) {
                                             val intent =
@@ -244,7 +245,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                         }
                                     }
                                     RoundButton(
-                                        icon = Icon.IcArrowDown,
+                                        icon = Phosphor.CaretDown,
                                         modifier = Modifier.fillMaxHeight()
                                     ) {
                                         dismissAllowingStateLoss()
@@ -283,7 +284,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                         modifier = Modifier
                                             .fillMaxHeight()
                                             .weight(1f),
-                                        icon = Icon.IcExodus,
+                                        icon = Icon.Exodus,
                                         tint = colorResource(id = R.color.ic_exodus),
                                         description = stringResource(id = R.string.exodus_report)
                                     ) {
@@ -303,7 +304,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                             modifier = Modifier
                                                 .fillMaxHeight()
                                                 .weight(1f),
-                                            icon = Icon.IcLaunchable,
+                                            icon = Phosphor.ArrowSquareOut,
                                             tint = colorResource(id = R.color.ic_obb),
                                             description = stringResource(id = R.string.launch_app)
                                         ) {
@@ -322,8 +323,8 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                             modifier = Modifier
                                                 .fillMaxHeight()
                                                 .weight(1f),
-                                            icon = if (packageInfo.isDisabled) Icon.IcBatteryOptimization
-                                            else Icon.IcExclude,
+                                            icon = if (packageInfo.isDisabled) Phosphor.Leaf
+                                            else Phosphor.ProhibitInset,
                                             tint = if (packageInfo.isDisabled) MaterialTheme.colorScheme.primaryContainer
                                             else MaterialTheme.colorScheme.tertiaryContainer,
                                             description = stringResource(
@@ -341,7 +342,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                             modifier = Modifier
                                                 .fillMaxHeight()
                                                 .weight(1f),
-                                            icon = Icon.IcDelete,
+                                            icon = Phosphor.TrashSimple,
                                             tint = MaterialTheme.colorScheme.tertiary,
                                             description = stringResource(id = R.string.uninstall),
                                             onClick = {
@@ -355,7 +356,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                     CardButton(
                                         modifier = Modifier
                                             .weight(1f),
-                                        icon = Icon.IcBlocklist,
+                                        icon = Phosphor.Prohibit,
                                         tint = colorResource(id = R.color.ic_updated),
                                         description = stringResource(id = R.string.global_blocklist_add)
                                     ) {
@@ -402,7 +403,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                             ) {
                                 AnimatedVisibility(visible = packageInfo.isInstalled || packageInfo.isSpecial) {
                                     ElevatedActionButton(
-                                        icon = Icon.IcBackup,
+                                        icon = Phosphor.ArchiveTray,
                                         text = stringResource(id = R.string.backup),
                                         fullWidth = true,
                                         enabled = snackbarText.isNullOrEmpty(),
@@ -411,7 +412,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                 }
                                 AnimatedVisibility(visible = packageInfo.hasBackups) {
                                     ElevatedActionButton(
-                                        icon = Icon.IcDelete,
+                                        icon = Phosphor.TrashSimple,
                                         text = stringResource(id = R.string.delete_all_backups),
                                         fullWidth = true,
                                         positive = false,
@@ -426,7 +427,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                 }
                                 AnimatedVisibility(visible = packageInfo.isInstalled && !packageInfo.isSpecial) {
                                     ElevatedActionButton(
-                                        icon = Icon.IcForceKill,
+                                        icon = Phosphor.Warning,
                                         text = stringResource(id = R.string.forceKill),
                                         fullWidth = true,
                                         colored = false,
@@ -438,7 +439,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                         ?: 0L) >= 0L)
                                 ) {
                                     ElevatedActionButton(
-                                        icon = Icon.IcDelete,
+                                        icon = Phosphor.TrashSimple,
                                         text = stringResource(id = R.string.clear_cache),
                                         fullWidth = true,
                                         colored = false,

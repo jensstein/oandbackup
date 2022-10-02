@@ -54,8 +54,8 @@ import androidx.lifecycle.LifecycleEventObserver
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.IntroActivityX
 import com.machiav3lli.backup.preferences.persist_ignoreBatteryOptimization
-import com.machiav3lli.backup.ui.compose.icons.Icon
-import com.machiav3lli.backup.ui.compose.icons.icon.IcArrowForward
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowRight
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.PermissionItem
 import com.machiav3lli.backup.ui.item.Permission
@@ -142,7 +142,7 @@ fun PermissionsPage() {
                     ElevatedActionButton(
                         modifier = Modifier.padding(horizontal = 24.dp),
                         text = stringResource(id = R.string.dialog_start),
-                        icon = Icon.IcArrowForward,
+                        icon = Phosphor.ArrowRight,
                     ) {
                         introActivityX.moveTo(3)
                     }

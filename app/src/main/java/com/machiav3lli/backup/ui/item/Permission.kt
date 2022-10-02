@@ -2,13 +2,13 @@ package com.machiav3lli.backup.ui.item
 
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.ui.compose.icons.Icon
-import com.machiav3lli.backup.ui.compose.icons.icon.IcBatteryOptimization
-import com.machiav3lli.backup.ui.compose.icons.icon.IcCalllogs
-import com.machiav3lli.backup.ui.compose.icons.icon.IcContacts
-import com.machiav3lli.backup.ui.compose.icons.icon.IcSmsmms
-import com.machiav3lli.backup.ui.compose.icons.icon.IcStorage
-import com.machiav3lli.backup.ui.compose.icons.icon.IcUsageAccess
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.AddressBook
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ChatDots
+import com.machiav3lli.backup.ui.compose.icons.phosphor.FolderNotch
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Leaf
+import com.machiav3lli.backup.ui.compose.icons.phosphor.PhoneIncoming
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ShieldStar
 
 data class Permission(
     val nameId: Int,
@@ -20,38 +20,38 @@ data class Permission(
     companion object {
         val UsageStats = Permission(
             R.string.grant_usage_access_title,
-            Icon.IcUsageAccess,
+            Phosphor.ShieldStar,
             R.string.intro_permission_usageaccess
         )
         val BatteryOptimization = Permission(
             R.string.ignore_battery_optimization_title,
-            Icon.IcBatteryOptimization,
+            Phosphor.Leaf,
             R.string.intro_permission_batteryoptimization
         )
         val StorageAccess = Permission(
             R.string.storage_access,
-            Icon.IcStorage,
+            Phosphor.FolderNotch,
             R.string.intro_permission_storage
         )
         val StorageLocation = Permission(
             R.string.prefs_pathbackupfolder,
-            Icon.IcStorage,
+            Phosphor.FolderNotch,
             R.string.intro_permission_storage_location,
             R.string.intro_permission_storage_location_warning
         )
         val SMSMMS = Permission(
             R.string.smsmms_permission_title,
-            Icon.IcSmsmms,
+            Phosphor.ChatDots,
             R.string.intro_permission_smsmms
         )
         val CallLogs = Permission(
             R.string.calllogs_permission_title,
-            Icon.IcCalllogs,
+            Phosphor.PhoneIncoming,
             R.string.intro_permission_calllogs
         )
         val Contacts = Permission(
             R.string.contacts_permission_title,
-            Icon.IcContacts,
+            Phosphor.AddressBook,
             R.string.intro_permission_contacts
         )
     }

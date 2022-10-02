@@ -19,12 +19,12 @@ import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.preferences.ui.PrefsExpandableGroupHeader
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
-import com.machiav3lli.backup.ui.compose.icons.Icon
-import com.machiav3lli.backup.ui.compose.icons.icon.IcAndy
-import com.machiav3lli.backup.ui.compose.icons.icon.IcDeData
-import com.machiav3lli.backup.ui.compose.icons.icon.IcForceKill
-import com.machiav3lli.backup.ui.compose.icons.icon.IcRestore
-import com.machiav3lli.backup.ui.compose.icons.icon.IcSpecial
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.AndroidLogo
+import com.machiav3lli.backup.ui.compose.icons.phosphor.AsteriskSimple
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ClockCounterClockwise
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ShieldStar
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Warning
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.ColorDeData
 import com.machiav3lli.backup.ui.compose.theme.ColorSpecial
@@ -63,7 +63,7 @@ fun AdvancedPrefsPage() {
                 PrefsExpandableGroupHeader(
                     titleId = R.string.prefs_dev_settings,
                     summaryId = R.string.prefs_dev_settings_summary,
-                    icon = Icon.IcForceKill
+                    icon = Phosphor.Warning
                 ) {
                     expand(!expanded)
                 }
@@ -85,7 +85,7 @@ val pref_enableSpecialBackups = BooleanPref(
     key = "adv.enableSpecialBackups",
     titleId = R.string.prefs_enablespecial,
     summaryId = R.string.prefs_enablespecial_summary,
-    icon = Icon.IcSpecial,
+    icon = Phosphor.AsteriskSimple,
     iconTint = ColorSpecial,
     defaultValue = false
 )
@@ -94,7 +94,7 @@ val pref_disableVerification = BooleanPref(
     key = "adv.disableVerification",
     titleId = R.string.prefs_disableverification,
     summaryId = R.string.prefs_disableverification_summary,
-    icon = Icon.IcAndy,
+    icon = Phosphor.AndroidLogo,
     iconTint = ColorUpdated,
     defaultValue = true
 )
@@ -103,7 +103,7 @@ val pref_giveAllPermissions = BooleanPref(
     key = "adv.giveAllPermissions",
     titleId = R.string.prefs_restoreallpermissions,
     summaryId = R.string.prefs_restoreallpermissions_summary,
-    icon = Icon.IcDeData,
+    icon = Phosphor.ShieldStar,
     iconTint = ColorDeData,
     defaultValue = false
 )
@@ -112,7 +112,7 @@ val pref_allowDowngrade = BooleanPref(
     key = "adv.allowDowngrade",
     titleId = R.string.prefs_allowdowngrade,
     summaryId = R.string.prefs_allowdowngrade_summary,
-    icon = Icon.IcRestore,
+    icon = Phosphor.ClockCounterClockwise,
     defaultValue = false
 )
 

@@ -30,12 +30,12 @@ import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
-import com.machiav3lli.backup.ui.compose.icons.Icon
-import com.machiav3lli.backup.ui.compose.icons.icon.IcAndy
-import com.machiav3lli.backup.ui.compose.icons.icon.IcDelete
-import com.machiav3lli.backup.ui.compose.icons.icon.IcListOrdered
-import com.machiav3lli.backup.ui.compose.icons.icon.IcLog
-import com.machiav3lli.backup.ui.compose.icons.icon.IcScheduler
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.AndroidLogo
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Bug
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CalendarX
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ListNumbers
+import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
 import com.machiav3lli.backup.ui.compose.item.LaunchPreference
 import com.machiav3lli.backup.ui.compose.navigation.NavItem
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
@@ -121,7 +121,7 @@ val pref_batchDelete = LinkPref(
     key = "tool.batchDelete",
     titleId = R.string.prefs_batchdelete,
     summaryId = R.string.prefs_batchdelete_summary,
-    icon = Icon.IcDelete,
+    icon = Phosphor.TrashSimple,
     //iconTint = MaterialTheme.colorScheme.secondary
 )
 
@@ -194,7 +194,7 @@ val pref_copySelfApk = LinkPref(
     key = "tool.copySelfApk",
     titleId = R.string.prefs_copyselfapk,
     summaryId = R.string.prefs_copyselfapk_summary,
-    icon = Icon.IcAndy,
+    icon = Phosphor.AndroidLogo,
     //iconTint = MaterialTheme.colorScheme.primary
 )
 
@@ -247,7 +247,7 @@ val pref_schedulesExportImport = LinkPref(
     key = "tool.schedulesExportImport",
     titleId = R.string.prefs_schedulesexportimport,
     summaryId = R.string.prefs_schedulesexportimport_summary,
-    icon = Icon.IcScheduler,
+    icon = Phosphor.CalendarX,
     iconTint = ColorExtDATA
 )
 
@@ -255,7 +255,7 @@ val pref_saveAppsList = LinkPref(
     key = "tool.saveAppsList",
     titleId = R.string.prefs_saveappslist,
     summaryId = R.string.prefs_saveappslist_summary,
-    icon = Icon.IcListOrdered,
+    icon = Phosphor.ListNumbers,
     iconTint = ColorExodus
 )
 
@@ -315,6 +315,6 @@ fun Context.writeAppsListFile(appsList: List<String>, filteredBoolean: Boolean) 
 val pref_logViewer = LinkPref(
     key = "tool.logViewer",
     titleId = R.string.prefs_logviewer,
-    icon = Icon.IcLog,
+    icon = Phosphor.Bug,
     iconTint = ColorDeData
 )

@@ -54,10 +54,10 @@ import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.Package
-import com.machiav3lli.backup.ui.compose.icons.Icon
-import com.machiav3lli.backup.ui.compose.icons.icon.IcArrowDown
-import com.machiav3lli.backup.ui.compose.icons.icon.IcUpdate
-import com.machiav3lli.backup.ui.compose.icons.icon.IcUpdated
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretDown
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CircleWavyWarning
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ClockClockwise
 import com.machiav3lli.backup.ui.compose.item.ActionButton
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.recycler.HomePackageRecycler
@@ -157,14 +157,14 @@ fun HomePage(viewModel: HomeViewModel) {
                         ActionButton(
                             modifier = Modifier.weight(1f),
                             text = updatedApps.orEmpty().size.toString(),
-                            icon = if (updatedVisible) Icon.IcArrowDown else Icon.IcUpdated
+                            icon = if (updatedVisible) Phosphor.CaretDown else Phosphor.CircleWavyWarning
                         ) {
                             updatedVisible = !updatedVisible
                         }
                         ElevatedActionButton(
                             modifier = Modifier,
                             text = stringResource(id = R.string.backup_all_updated),
-                            icon = Icon.IcUpdate
+                            icon = Phosphor.ClockClockwise
                         ) {
                             val selectedList = updatedApps.orEmpty()
                                 .map { it.packageInfo }

@@ -32,11 +32,11 @@ import com.machiav3lli.backup.CHIP_VERSION
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.items.Package
-import com.machiav3lli.backup.ui.compose.icons.Icon
-import com.machiav3lli.backup.ui.compose.icons.icon.IcSpecial
-import com.machiav3lli.backup.ui.compose.icons.icon.IcSystem
-import com.machiav3lli.backup.ui.compose.icons.icon.IcUpdated
-import com.machiav3lli.backup.ui.compose.icons.icon.IcUser
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.AsteriskSimple
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CircleWavyWarning
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Spinner
+import com.machiav3lli.backup.ui.compose.icons.phosphor.User
 import com.machiav3lli.backup.ui.compose.navigation.NavItem
 import com.machiav3lli.backup.ui.compose.theme.ColorDisabled
 import com.machiav3lli.backup.ui.compose.theme.ColorNotInstalled
@@ -70,9 +70,9 @@ fun Package.infoChips(): List<InfoChipItem> = listOfNotNull(
         flag = CHIP_TYPE,
         text = stringResource(if (isSpecial) R.string.apptype_special else if (isSystem) R.string.apptype_system else R.string.apptype_user),
         icon = when {
-            isSpecial -> Icon.IcSpecial
-            isSystem -> Icon.IcSystem
-            else -> Icon.IcUser
+            isSpecial -> Phosphor.AsteriskSimple
+            isSystem -> Phosphor.Spinner
+            else -> Phosphor.User
         },
         color = when {
             !isInstalled -> ColorNotInstalled
@@ -85,7 +85,7 @@ fun Package.infoChips(): List<InfoChipItem> = listOfNotNull(
     InfoChipItem(
         flag = CHIP_VERSION,
         text = versionName ?: versionCode.toString(),
-        icon = if (this.isUpdated) Icon.IcUpdated else null,
+        icon = if (this.isUpdated) Phosphor.CircleWavyWarning else null,
         color = if (this.isUpdated) ColorUpdated else null,
     ),
     InfoChipItem(

@@ -68,9 +68,9 @@ import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
 import com.machiav3lli.backup.preferences.pref_catchUncaughtException
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
-import com.machiav3lli.backup.ui.compose.icons.Icon
-import com.machiav3lli.backup.ui.compose.icons.icon.IcBlocklist
-import com.machiav3lli.backup.ui.compose.icons.icon.IcFilter
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.FunnelSimple
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Prohibit
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.ExpandableSearchAction
 import com.machiav3lli.backup.ui.compose.item.TopBar
@@ -193,7 +193,7 @@ class MainActivityX : BaseActivity() {
                         if (navController.currentDestination?.route == NavItem.Scheduler.destination)
                             TopBar(title = stringResource(id = pageTitle)) {
                                 TopBarButton(
-                                    icon = Icon.IcBlocklist,
+                                    icon = Phosphor.Prohibit,
                                     description = stringResource(id = R.string.sched_blocklist),
                                     onClick = {
                                         GlobalScope.launch(Dispatchers.IO) {
@@ -237,7 +237,7 @@ class MainActivityX : BaseActivity() {
                                 horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 ElevatedActionButton(
-                                    icon = Icon.IcBlocklist,
+                                    icon = Phosphor.Prohibit,
                                     text = stringResource(id = R.string.sched_blocklist),
                                     positive = false
                                 ) {
@@ -259,7 +259,7 @@ class MainActivityX : BaseActivity() {
                                 }
                                 Spacer(modifier = Modifier.weight(1f))
                                 ElevatedActionButton(
-                                    icon = Icon.IcFilter,
+                                    icon = Phosphor.FunnelSimple,
                                     text = stringResource(id = R.string.sort_and_filter),
                                     positive = true
                                 ) {

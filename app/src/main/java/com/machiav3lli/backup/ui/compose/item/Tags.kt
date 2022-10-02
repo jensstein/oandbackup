@@ -40,9 +40,10 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowRow
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.ui.compose.icons.Icon
-import com.machiav3lli.backup.ui.compose.icons.icon.IcAddTag
-import com.machiav3lli.backup.ui.compose.icons.icon.IcClose
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.PlusCircle
+import com.machiav3lli.backup.ui.compose.icons.phosphor.X
+import com.machiav3lli.backup.ui.compose.icons.phosphor.XCircle
 
 @Composable
 fun TagsBlock(
@@ -62,7 +63,7 @@ fun TagsBlock(
             tags?.forEach { tag -> TagItem(tag = tag, onClick = onRemove) }
             TagItem(
                 tag = stringResource(id = R.string.add_tag),
-                icon = Icon.IcAddTag,
+                icon = Phosphor.PlusCircle,
                 action = true,
                 onClick = { viewAddTag = true }
             )
@@ -79,7 +80,7 @@ fun TagsBlock(
 fun TagItem(
     modifier: Modifier = Modifier,
     tag: String,
-    icon: ImageVector = Icon.IcClose,
+    icon: ImageVector = Phosphor.XCircle,
     action: Boolean = false,
     onClick: (String) -> Unit
 ) {
@@ -149,7 +150,7 @@ fun AddTagView(
             onCancel()
         }) {
             Icon(
-                imageVector = Icon.IcClose,
+                imageVector = Phosphor.X,
                 contentDescription = stringResource(id = R.string.dialogCancel)
             )
         }
@@ -178,7 +179,7 @@ fun AddTagView(
             tagName = ""
         }) {
             Icon(
-                imageVector = Icon.IcAddTag,
+                imageVector = Phosphor.PlusCircle,
                 contentDescription = stringResource(id = R.string.add_tag)
             )
         }

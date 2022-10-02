@@ -71,12 +71,12 @@ import com.machiav3lli.backup.mainFilterChipItems
 import com.machiav3lli.backup.schedSpecialFilterChipItems
 import com.machiav3lli.backup.scheduleBackupModeChipItems
 import com.machiav3lli.backup.services.ScheduleService
-import com.machiav3lli.backup.ui.compose.icons.Icon
-import com.machiav3lli.backup.ui.compose.icons.icon.IcArrowDown
-import com.machiav3lli.backup.ui.compose.icons.icon.IcBackup
-import com.machiav3lli.backup.ui.compose.icons.icon.IcBlocklist
-import com.machiav3lli.backup.ui.compose.icons.icon.IcCustomlist
-import com.machiav3lli.backup.ui.compose.icons.icon.IcDelete
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArchiveTray
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretDown
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CheckCircle
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Prohibit
+import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
 import com.machiav3lli.backup.ui.compose.item.CheckChip
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.RoundButton
@@ -309,7 +309,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                                 Spacer(modifier = Modifier.weight(1f))
                                 ElevatedActionButton(
                                     text = stringResource(id = R.string.delete),
-                                    icon = Icon.IcDelete,
+                                    icon = Phosphor.TrashSimple,
                                     positive = false,
                                     fullWidth = false
                                 ) {
@@ -320,7 +320,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                             }
                             ElevatedActionButton(
                                 text = stringResource(id = R.string.sched_activateButton),
-                                icon = Icon.IcBackup,
+                                icon = Phosphor.ArchiveTray,
                                 fullWidth = true,
                                 onClick = { startSchedule() }
                             )
@@ -350,7 +350,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                                     textAlign = TextAlign.Center,
                                 )
                                 RoundButton(
-                                    icon = Icon.IcArrowDown,
+                                    icon = Phosphor.CaretDown,
                                     description = stringResource(id = R.string.dismiss),
                                     onClick = { dismissAllowingStateLoss() }
                                 )
@@ -396,7 +396,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                                 horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 ElevatedActionButton(
-                                    icon = Icon.IcCustomlist,
+                                    icon = Phosphor.CheckCircle,
                                     text = stringResource(id = R.string.customListTitle),
                                     positive = it.customList.isNotEmpty(),
                                     fullWidth = true,
@@ -404,7 +404,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                                     onClick = { showCustomListDialog() }
                                 )
                                 ElevatedActionButton(
-                                    icon = Icon.IcBlocklist,
+                                    icon = Phosphor.Prohibit,
                                     text = stringResource(id = R.string.sched_blocklist),
                                     positive = it.blockList.isNotEmpty(),
                                     fullWidth = true,

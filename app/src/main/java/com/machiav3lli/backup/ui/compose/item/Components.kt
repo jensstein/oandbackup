@@ -79,21 +79,21 @@ import com.machiav3lli.backup.SPECIAL_FILTER_OLD
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.Package
-import com.machiav3lli.backup.ui.compose.icons.Icon
-import com.machiav3lli.backup.ui.compose.icons.icon.IcAll
-import com.machiav3lli.backup.ui.compose.icons.icon.IcApk
-import com.machiav3lli.backup.ui.compose.icons.icon.IcData
-import com.machiav3lli.backup.ui.compose.icons.icon.IcDeData
-import com.machiav3lli.backup.ui.compose.icons.icon.IcExclude
-import com.machiav3lli.backup.ui.compose.icons.icon.IcExternalData
-import com.machiav3lli.backup.ui.compose.icons.icon.IcLaunchable
-import com.machiav3lli.backup.ui.compose.icons.icon.IcMediaData
-import com.machiav3lli.backup.ui.compose.icons.icon.IcObbData
-import com.machiav3lli.backup.ui.compose.icons.icon.IcOld
-import com.machiav3lli.backup.ui.compose.icons.icon.IcSpecial
-import com.machiav3lli.backup.ui.compose.icons.icon.IcSystem
-import com.machiav3lli.backup.ui.compose.icons.icon.IcUpdated
-import com.machiav3lli.backup.ui.compose.icons.icon.IcUser
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowSquareOut
+import com.machiav3lli.backup.ui.compose.icons.phosphor.AsteriskSimple
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Checks
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CircleWavyWarning
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Clock
+import com.machiav3lli.backup.ui.compose.icons.phosphor.DiamondsFour
+import com.machiav3lli.backup.ui.compose.icons.phosphor.FloppyDisk
+import com.machiav3lli.backup.ui.compose.icons.phosphor.GameController
+import com.machiav3lli.backup.ui.compose.icons.phosphor.HardDrives
+import com.machiav3lli.backup.ui.compose.icons.phosphor.PlayCircle
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ProhibitInset
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ShieldCheckered
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Spinner
+import com.machiav3lli.backup.ui.compose.icons.phosphor.User
 import com.machiav3lli.backup.ui.compose.theme.ColorAPK
 import com.machiav3lli.backup.ui.compose.theme.ColorData
 import com.machiav3lli.backup.ui.compose.theme.ColorDeData
@@ -374,7 +374,7 @@ fun CheckChip(
             selectedContainerColor = MaterialTheme.colorScheme.primaryContainer
         ),
         leadingIcon = {
-            if (checked) ButtonIcon(Icon.IcAll, R.string.enabled)
+            if (checked) ButtonIcon(Phosphor.Checks, R.string.enabled)
         },
         onClick = {
             onCheckedChange(!checked)
@@ -600,51 +600,51 @@ fun PackageLabels(
 ) {
     AnimatedVisibility(visible = item.isUpdated) {
         ButtonIcon(
-            Icon.IcUpdated, R.string.radio_updated,
+            Phosphor.CircleWavyWarning, R.string.radio_updated,
             tint = ColorUpdated
         )
     }
     AnimatedVisibility(visible = item.hasMediaData) {
         ButtonIcon(
-            Icon.IcMediaData, R.string.radio_mediadata,
+            Phosphor.PlayCircle, R.string.radio_mediadata,
             tint = ColorMedia
         )
     }
     AnimatedVisibility(visible = item.hasObbData) {
         ButtonIcon(
-            Icon.IcObbData, R.string.radio_obbdata,
+            Phosphor.GameController, R.string.radio_obbdata,
             tint = ColorOBB
         )
     }
     AnimatedVisibility(visible = item.hasExternalData) {
         ButtonIcon(
-            Icon.IcExternalData, R.string.radio_externaldata,
+            Phosphor.FloppyDisk, R.string.radio_externaldata,
             tint = ColorExtDATA
         )
     }
     AnimatedVisibility(visible = item.hasDevicesProtectedData) {
         ButtonIcon(
-            Icon.IcDeData, R.string.radio_deviceprotecteddata,
+            Phosphor.ShieldCheckered, R.string.radio_deviceprotecteddata,
             tint = ColorDeData
         )
     }
     AnimatedVisibility(visible = item.hasAppData) {
         ButtonIcon(
-            Icon.IcData, R.string.radio_data,
+            Phosphor.HardDrives, R.string.radio_data,
             tint = ColorData
         )
     }
     AnimatedVisibility(visible = item.hasApk) {
         ButtonIcon(
-            Icon.IcApk, R.string.radio_apk,
+            Phosphor.DiamondsFour, R.string.radio_apk,
             tint = ColorAPK
         )
     }
     ButtonIcon(
         when {
-            item.isSpecial -> Icon.IcSpecial
-            item.isSystem -> Icon.IcSystem
-            else -> Icon.IcUser
+            item.isSpecial -> Phosphor.AsteriskSimple
+            item.isSystem -> Phosphor.Spinner
+            else -> Phosphor.User
         },
         R.string.app_s_type_title,
         tint = when {
@@ -662,37 +662,37 @@ fun BackupLabels(
 ) {
     AnimatedVisibility(visible = item.hasMediaData) {
         ButtonIcon(
-            Icon.IcMediaData, R.string.radio_mediadata,
+            Phosphor.PlayCircle, R.string.radio_mediadata,
             tint = ColorMedia
         )
     }
     AnimatedVisibility(visible = item.hasObbData) {
         ButtonIcon(
-            Icon.IcObbData, R.string.radio_obbdata,
+            Phosphor.GameController, R.string.radio_obbdata,
             tint = ColorOBB
         )
     }
     AnimatedVisibility(visible = item.hasExternalData) {
         ButtonIcon(
-            Icon.IcExternalData, R.string.radio_externaldata,
+            Phosphor.FloppyDisk, R.string.radio_externaldata,
             tint = ColorExtDATA
         )
     }
     AnimatedVisibility(visible = item.hasDevicesProtectedData) {
         ButtonIcon(
-            Icon.IcDeData, R.string.radio_deviceprotecteddata,
+            Phosphor.ShieldCheckered, R.string.radio_deviceprotecteddata,
             tint = ColorDeData
         )
     }
     AnimatedVisibility(visible = item.hasAppData) {
         ButtonIcon(
-            Icon.IcData, R.string.radio_data,
+            Phosphor.HardDrives, R.string.radio_data,
             tint = ColorData
         )
     }
     AnimatedVisibility(visible = item.hasApk) {
         ButtonIcon(
-            Icon.IcApk, R.string.radio_apk,
+            Phosphor.DiamondsFour, R.string.radio_apk,
             tint = ColorAPK
         )
     }
@@ -703,37 +703,37 @@ fun BackupLabels(
 fun ScheduleTypes(item: Schedule) {
     AnimatedVisibility(visible = item.mode and MODE_DATA_MEDIA == MODE_DATA_MEDIA) {
         ButtonIcon(
-            Icon.IcMediaData, R.string.radio_mediadata,
+            Phosphor.PlayCircle, R.string.radio_mediadata,
             tint = ColorMedia
         )
     }
     AnimatedVisibility(visible = item.mode and MODE_DATA_OBB == MODE_DATA_OBB) {
         ButtonIcon(
-            Icon.IcObbData, R.string.radio_obbdata,
+            Phosphor.GameController, R.string.radio_obbdata,
             tint = ColorOBB
         )
     }
     AnimatedVisibility(visible = item.mode and MODE_DATA_EXT == MODE_DATA_EXT) {
         ButtonIcon(
-            Icon.IcExternalData, R.string.radio_externaldata,
+            Phosphor.FloppyDisk, R.string.radio_externaldata,
             tint = ColorExtDATA
         )
     }
     AnimatedVisibility(visible = item.mode and MODE_DATA_DE == MODE_DATA_DE) {
         ButtonIcon(
-            Icon.IcDeData, R.string.radio_deviceprotecteddata,
+            Phosphor.ShieldCheckered, R.string.radio_deviceprotecteddata,
             tint = ColorDeData
         )
     }
     AnimatedVisibility(visible = item.mode and MODE_DATA == MODE_DATA) {
         ButtonIcon(
-            Icon.IcData, R.string.radio_data,
+            Phosphor.HardDrives, R.string.radio_data,
             tint = ColorData
         )
     }
     AnimatedVisibility(visible = item.mode and MODE_APK == MODE_APK) {
         ButtonIcon(
-            Icon.IcApk, R.string.radio_apk,
+            Phosphor.DiamondsFour, R.string.radio_apk,
             tint = ColorAPK
         )
     }
@@ -746,29 +746,29 @@ fun ScheduleFilters(
 ) {
     AnimatedVisibility(visible = item.filter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM) {
         ButtonIcon(
-            Icon.IcSystem, R.string.radio_system,
+            Phosphor.Spinner, R.string.radio_system,
             tint = ColorSystem
         )
     }
     AnimatedVisibility(visible = item.filter and MAIN_FILTER_USER == MAIN_FILTER_USER) {
         ButtonIcon(
-            Icon.IcUser, R.string.radio_user,
+            Phosphor.User, R.string.radio_user,
             tint = ColorUser
         )
     }
     AnimatedVisibility(visible = item.filter and MAIN_FILTER_SPECIAL == MAIN_FILTER_SPECIAL) {
         ButtonIcon(
-            Icon.IcSpecial, R.string.radio_special,
+            Phosphor.AsteriskSimple, R.string.radio_special,
             tint = ColorSpecial
         )
     }
     AnimatedVisibility(visible = item.specialFilter != SPECIAL_FILTER_ALL) {
         ButtonIcon(
             when (item.specialFilter) {
-                SPECIAL_FILTER_DISABLED -> Icon.IcExclude
-                SPECIAL_FILTER_LAUNCHABLE -> Icon.IcLaunchable
-                SPECIAL_FILTER_OLD -> Icon.IcOld
-                else -> Icon.IcUpdated
+                SPECIAL_FILTER_DISABLED -> Phosphor.ProhibitInset
+                SPECIAL_FILTER_LAUNCHABLE -> Phosphor.ArrowSquareOut
+                SPECIAL_FILTER_OLD -> Phosphor.Clock
+                else -> Phosphor.CircleWavyWarning
             },
             R.string.app_s_type_title,
             tint = when (item.specialFilter) {

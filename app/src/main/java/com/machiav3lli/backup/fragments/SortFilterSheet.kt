@@ -52,11 +52,12 @@ import com.machiav3lli.backup.mainBackupModeChipItems
 import com.machiav3lli.backup.mainFilterChipItems
 import com.machiav3lli.backup.mainSpecialFilterChipItems
 import com.machiav3lli.backup.sortChipItems
-import com.machiav3lli.backup.ui.compose.icons.Icon
-import com.machiav3lli.backup.ui.compose.icons.icon.IcApply
-import com.machiav3lli.backup.ui.compose.icons.icon.IcArrowDown
-import com.machiav3lli.backup.ui.compose.icons.icon.IcArrowUp
-import com.machiav3lli.backup.ui.compose.icons.icon.IcReset
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowUUpLeft
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretDown
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Check
+import com.machiav3lli.backup.ui.compose.icons.phosphor.SortAscending
+import com.machiav3lli.backup.ui.compose.icons.phosphor.SortDescending
 import com.machiav3lli.backup.ui.compose.item.DoubleVerticalText
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.RoundButton
@@ -107,7 +108,7 @@ class SortFilterSheet(
                         ) {
                             ElevatedActionButton(
                                 text = stringResource(id = R.string.resetFilter),
-                                icon = Icon.IcReset,
+                                icon = Phosphor.ArrowUUpLeft,
                                 modifier = Modifier.weight(1f),
                                 fullWidth = true,
                                 positive = false,
@@ -119,7 +120,7 @@ class SortFilterSheet(
                             )
                             ElevatedActionButton(
                                 text = stringResource(id = R.string.applyFilter),
-                                icon = Icon.IcApply,
+                                icon = Phosphor.Check,
                                 modifier = Modifier.weight(1f),
                                 fullWidth = true,
                                 positive = true,
@@ -168,7 +169,7 @@ class SortFilterSheet(
                                         bottomText = stringResource(id = R.string.stats_updated),
                                         modifier = Modifier.weight(1f)
                                     )
-                                    RoundButton(icon = Icon.IcArrowDown) {
+                                    RoundButton(icon = Phosphor.CaretDown) {
                                         dismissAllowingStateLoss()
                                     }
                                 }
@@ -184,9 +185,9 @@ class SortFilterSheet(
                             }
                             SwitchChip(
                                 firstTextId = R.string.sortAsc,
-                                firstIcon = Icon.IcArrowUp,
+                                firstIcon = Phosphor.SortAscending,
                                 secondTextId = R.string.sortDesc,
-                                secondIcon = Icon.IcArrowDown,
+                                secondIcon = Phosphor.SortDescending,
                                 firstSelected = it.sortAsc,
                                 onCheckedChange = { checked -> it.sortAsc = checked }
                             )

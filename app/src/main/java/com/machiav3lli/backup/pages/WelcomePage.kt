@@ -40,8 +40,8 @@ import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.IntroActivityX
 import com.machiav3lli.backup.linksList
-import com.machiav3lli.backup.ui.compose.icons.Icon
-import com.machiav3lli.backup.ui.compose.icons.icon.IcArrowForward
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowRight
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.LinkItem
 
@@ -61,7 +61,7 @@ fun WelcomePage() {
                 ElevatedActionButton(
                     modifier = Modifier.padding(horizontal = 24.dp),
                     text = stringResource(id = R.string.dialog_start),
-                    icon = Icon.IcArrowForward,
+                    icon = Phosphor.ArrowRight,
                 ) {
                     (context as IntroActivityX).moveTo(2)
                 }
