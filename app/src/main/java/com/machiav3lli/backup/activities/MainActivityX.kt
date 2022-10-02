@@ -32,6 +32,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -69,10 +70,13 @@ import com.machiav3lli.backup.preferences.pref_catchUncaughtException
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowsClockwise
 import com.machiav3lli.backup.ui.compose.icons.phosphor.FunnelSimple
+import com.machiav3lli.backup.ui.compose.icons.phosphor.GearSix
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Prohibit
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.ExpandableSearchAction
+import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TopBar
 import com.machiav3lli.backup.ui.compose.item.TopBarButton
 import com.machiav3lli.backup.ui.compose.navigation.BottomNavBar
@@ -229,6 +233,18 @@ class MainActivityX : BaseActivity() {
                                         crScope.launch { _searchQuery.emit("") }
                                     }
                                 )
+                                RoundButton(
+                                    modifier = Modifier
+                                        .padding(horizontal = 4.dp)
+                                        .size(32.dp),
+                                    icon = Phosphor.ArrowsClockwise
+                                ) { OABX.main?.needRefresh = true }
+                                RoundButton(
+                                    modifier = Modifier
+                                        .padding(horizontal = 4.dp)
+                                        .size(32.dp),
+                                    icon = Phosphor.GearSix
+                                ) { navController.navigate(NavItem.Settings.destination) }
                             }
                             Row(
                                 modifier = Modifier

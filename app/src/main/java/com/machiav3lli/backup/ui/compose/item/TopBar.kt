@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardActions
@@ -53,7 +54,6 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.preferences.pref_showInfoLogBar
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
-import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowsClockwise
 import com.machiav3lli.backup.ui.compose.icons.phosphor.MagnifyingGlass
 import com.machiav3lli.backup.ui.compose.icons.phosphor.X
 import com.machiav3lli.backup.ui.compose.ifThen
@@ -218,28 +218,15 @@ fun ExpandableSearchAction(
             )
         },
         collapsedView = {
-            Row {
-                RoundButton(icon = Phosphor.ArrowsClockwise) {
-                    OABX.main?.needRefresh = true
-                }
-                CollapsedSearchView(
-                    modifier = modifier,
-                    onExpanded = onExpanded
-                )
-            }
+            RoundButton(
+                modifier = modifier
+                    .padding(horizontal = 4.dp)
+                    .size(32.dp),
+                icon = Phosphor.MagnifyingGlass,
+                description = stringResource(id = R.string.search),
+                onClick = { onExpanded(true) }
+            )
         }
-    )
-}
-
-@Composable
-fun CollapsedSearchView(
-    modifier: Modifier = Modifier,
-    onExpanded: (Boolean) -> Unit
-) {
-    TopBarButton(
-        icon = Phosphor.MagnifyingGlass,
-        description = stringResource(id = R.string.search),
-        onClick = { onExpanded(true) }
     )
 }
 
