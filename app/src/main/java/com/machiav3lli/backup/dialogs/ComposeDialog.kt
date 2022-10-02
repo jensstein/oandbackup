@@ -287,7 +287,7 @@ fun StringDialogUI(
                 modifier = Modifier
                     .fillMaxWidth()
                     .focusRequester(textFieldFocusRequester),
-                value = if (isEdited) savedValue else "",
+                value = if (isEdited || !isPrivate) savedValue else "",
                 colors = TextFieldDefaults.textFieldColors(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
