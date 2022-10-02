@@ -309,13 +309,14 @@ fun StringDialogUI(
                 ),
                 keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
                 trailingIcon = {
-                    IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
-                        Icon(
-                            imageVector = if (isPasswordVisible) Phosphor.EyeSlash else Phosphor.Eye,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurface,
-                        )
-                    }
+                    if (isPrivate)
+                        IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                            Icon(
+                                imageVector = if (isPasswordVisible) Phosphor.EyeSlash else Phosphor.Eye,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurface,
+                            )
+                        }
                 },
                 placeholder = {
                     if (isPrivate && pref.value.isNotEmpty() and !isEdited) {
