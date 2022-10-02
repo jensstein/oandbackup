@@ -225,7 +225,7 @@ class MainActivityX : BaseActivity() {
                                     modifier = Modifier
                                         .padding(horizontal = 4.dp)
                                         .size(32.dp),
-                                    description = stringResource(id = R.string.prefs_dev_settings),
+                                    description = stringResource(id = R.string.prefs_title),
                                     icon = Phosphor.GearSix
                                 ) { navController.navigate(NavItem.Settings.destination) }
                             }
@@ -245,12 +245,14 @@ class MainActivityX : BaseActivity() {
                                     modifier = Modifier
                                         .padding(horizontal = 4.dp)
                                         .size(32.dp),
+                                    description = stringResource(id = R.string.refresh),
                                     icon = Phosphor.ArrowsClockwise
                                 ) { OABX.main?.needRefresh = true }
                                 RoundButton(
                                     modifier = Modifier
                                         .padding(horizontal = 4.dp)
                                         .size(32.dp),
+                                    description = stringResource(id = R.string.prefs_title),
                                     icon = Phosphor.GearSix
                                 ) { navController.navigate(NavItem.Settings.destination) }
                             }

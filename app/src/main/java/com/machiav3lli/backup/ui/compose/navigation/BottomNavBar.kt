@@ -32,7 +32,7 @@ fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
             NavItem.UserPrefs,
             NavItem.ServicePrefs,
             NavItem.AdvancedPrefs,
-            NavItem.ToolsPrefs
+            NavItem.ToolsPrefs,
         )
         else -> listOf(
             NavItem.Home,
