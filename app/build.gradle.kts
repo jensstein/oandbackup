@@ -25,10 +25,10 @@ plugins {
 }
 val vKotlin = "1.7.10"
 val vComposeCompiler = "1.3.1"
-val vCompose = "1.3.0-beta02"
+val vCompose = "1.3.0-beta03"
 val vRoom = "2.5.0-alpha03"
 val vNavigation = "2.5.2"
-val vAccompanist = "0.26.3-beta"
+val vAccompanist = "0.26.4-beta"
 val vLibsu = "3.2.1"
 
 android {
@@ -147,13 +147,11 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:$vNavigation")
     implementation("androidx.navigation:navigation-ui-ktx:$vNavigation")
     implementation("io.coil-kt:coil-compose:2.2.1")
-    implementation("br.com.devsrsouza.compose.icons.android:line-awesome:1.0.0")
 
     // Compose
     implementation("androidx.compose.runtime:runtime:$vCompose")
     implementation("androidx.compose.ui:ui:$vCompose")
     implementation("androidx.compose.ui:ui-tooling:$vCompose")
-    implementation("androidx.compose.ui:ui-tooling-preview:$vCompose")
     implementation("androidx.compose.foundation:foundation:$vCompose")
     implementation("androidx.compose.runtime:runtime-livedata:$vCompose")
     implementation("androidx.navigation:navigation-compose:$vNavigation")
@@ -165,7 +163,7 @@ dependencies {
 
     // Testing
     implementation("androidx.test.ext:junit-ktx:1.1.3")
-    androidTestImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
+    androidTestImplementation("org.junit.jupiter:junit-jupiter:5.9.1")
     val androidxTest = "1.4.0"
     implementation("androidx.test:rules:$androidxTest")
     androidTestImplementation("androidx.test:runner:$androidxTest")
