@@ -221,6 +221,13 @@ class MainActivityX : BaseActivity() {
                                         )
                                     }
                                 }
+                                RoundButton(
+                                    modifier = Modifier
+                                        .padding(horizontal = 4.dp)
+                                        .size(32.dp),
+                                    description = stringResource(id = R.string.prefs_dev_settings),
+                                    icon = Phosphor.GearSix
+                                ) { navController.navigate(NavItem.Settings.destination) }
                             }
                         else Column() {
                             TopBar(title = stringResource(id = pageTitle)) {
