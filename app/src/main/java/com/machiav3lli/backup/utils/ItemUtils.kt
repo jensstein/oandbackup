@@ -124,5 +124,7 @@ fun NavDestination.destinationToItem(): NavItem? = listOf(
     NavItem.Backup,
     NavItem.Restore,
     NavItem.Scheduler,
-    NavItem.Settings
+    NavItem.Settings,
+    NavItem.Exports,
+    NavItem.Logs,
 ).find { this.route == it.destination }
