@@ -1,5 +1,6 @@
 package com.machiav3lli.backup.dialogs
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -257,6 +258,7 @@ fun StringDialogUI(
     var savedValue by remember { mutableStateOf(pref.value) }
     var savedValueConfirm by remember { mutableStateOf("") }
     var isEdited by remember { mutableStateOf(false) }
+    var notMatching by remember { mutableStateOf(false) }
 
     val textColor = if (isPrivate) {
         if (savedValue != savedValueConfirm)
@@ -351,7 +353,12 @@ fun StringDialogUI(
                     keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
                 )
             }
-
+            AnimatedVisibility(visible = notMatching) {
+                Text(
+                    text = stringResource(id = R.string.prefs_password_match_false),
+                    color = MaterialTheme.colorScheme.tertiary
+                )
+            }
             Row(
                 Modifier.fillMaxWidth()
             ) {
@@ -360,11 +367,15 @@ fun StringDialogUI(
                 }
                 Spacer(Modifier.weight(1f))
                 ElevatedActionButton(text = stringResource(id = R.string.dialogSave)) {
-                    if ((pref.value != savedValue) and (!confirm or (savedValue == savedValueConfirm))) {
-                        pref.value = savedValue
-                        onChanged()
+                    if (!confirm or (savedValue == savedValueConfirm)) {
+                        if (pref.value != savedValue) {
+                            pref.value = savedValue
+                            onChanged()
+                        }
+                        openDialogCustom.value = false
+                    } else {
+                        notMatching = true
                     }
-                    openDialogCustom.value = false
                 }
             }
         }
