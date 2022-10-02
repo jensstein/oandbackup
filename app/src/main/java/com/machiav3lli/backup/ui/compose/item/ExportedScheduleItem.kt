@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -32,7 +31,6 @@ import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import java.time.LocalTime
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExportedScheduleItem(
     item: Schedule,
