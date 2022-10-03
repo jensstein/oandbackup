@@ -28,6 +28,7 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.Key
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Password
 import com.machiav3lli.backup.ui.compose.icons.phosphor.PlayCircle
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Prohibit
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ProhibitInset
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ShieldCheckered
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ShieldStar
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TagSimple
@@ -35,6 +36,7 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.Textbox
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.ColorAPK
+import com.machiav3lli.backup.ui.compose.theme.ColorData
 import com.machiav3lli.backup.ui.compose.theme.ColorDeData
 import com.machiav3lli.backup.ui.compose.theme.ColorExodus
 import com.machiav3lli.backup.ui.compose.theme.ColorExtDATA
@@ -146,6 +148,15 @@ val pref_backupMediaData = BooleanPref(
     icon = Phosphor.PlayCircle,
     iconTint = ColorMedia,
     defaultValue = true
+)
+
+val pref_backupNoBackupData = BooleanPref(
+    key = "srv.backupNoBackupData",
+    titleId = R.string.prefs_nobackupdata,
+    summaryId = R.string.prefs_nobackupdata_summary,
+    icon = Phosphor.ProhibitInset,
+    iconTint = ColorData,
+    defaultValue = false
 )
 
 val pref_restorePermissions = BooleanPref(

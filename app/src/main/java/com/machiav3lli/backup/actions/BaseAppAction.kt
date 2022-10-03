@@ -19,16 +19,15 @@ package com.machiav3lli.backup.actions
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
 import com.machiav3lli.backup.BuildConfig
-import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.preferences.pref_pmSuspend
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
+import com.machiav3lli.backup.preferences.pref_backupNoBackupData
+import com.machiav3lli.backup.preferences.pref_pmSuspend
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.ShellUtils
@@ -137,9 +136,9 @@ abstract class BaseAppAction protected constructor(
             "cache",
             "code_cache"
         )
-        val DATA_EXCLUDED_BASENAMES = listOf(
+        val DATA_EXCLUDED_BASENAMES = listOfNotNull(
             "lib",      //TODO hg42 what about architecture dependent names? or may be application specific? lib* ???
-            "no_backup" //TODO hg42 use Context.getNoBackupFilesDir() ??? tricky, because it's an absolute path (remove common part...)
+            if (!pref_backupNoBackupData.value) "no_backup" else null //TODO hg42 use Context.getNoBackupFilesDir() ??? tricky, because it's an absolute path (remove common part...)
         )
         val DATA_EXCLUDED_NAMES = listOfNotNull(
             "com.google.android.gms.appid.xml",
