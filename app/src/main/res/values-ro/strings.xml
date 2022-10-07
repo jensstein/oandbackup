@@ -208,7 +208,7 @@
     <string name="prefs_compression_level_summary">O valoare mai mică comprimă mai repede, însă are ca rezultat fișiere mai mari. O valoare mai mare comprimă mai bine, însă necesită mai mult timp.</string>
     <string name="prefs_allowdowngrade">Permite revenirea la versiuni anterioare</string>
     <string name="prefs_enablespecial_summary">Necesită încă testare intensivă, încearcă cunoscând pericolul că poate provoca bootloopuri. Feedbackul este mereu binevenit.</string>
-    <string name="prefs_allowdowngrade_summary">Permite restaurarea unor versiuni mai vechi a aplicațiilor instalate.</string>
+    <string name="prefs_allowdowngrade_summary">Permite restaurarea unor versiuni mai vechi a aplicațiilor instalate (se aplică numai versiunilor depanabile).</string>
     <string name="disablePackageTitle">Dezactivează aplicația pentru utilizatori</string>
     <string name="prefs_schedulesexportimport_summary">Exportă sau importă lista de planificări pe care le-ai creat.</string>
     <string name="copyOwnApkSuccess">APK-ul aplicației a fost copiat în directorul pentru backupuri</string>
@@ -270,4 +270,5 @@
     <string name="prefs_installerpackagename">Numele pachetului installerului:</string>
     <string name="prefs_sessionIinstaller">Folosește installerul sesiunii</string>
     <string name="prefs_sessionIinstaller_summary">Folosește installerul sesiunii în locul installerului de bază. Mai lent, însă evită problemele cu Android 13+</string>
+    <string name="prefs_squeezenavtext_summary">Permite redimensionarea textului de sub elementele din bara de navigare pentru a se potrivi lățimii disponibile.</string>
 </resources>
