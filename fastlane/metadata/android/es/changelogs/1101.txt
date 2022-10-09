@@ -1,0 +1,7 @@
+**OndBackupX 1.1.1**
+* Añadido: acceso directo al informe de Exodus en la AppSheet
+* Corregido: no se lanza si hay una aplicación con dimensiones de icono <= 0
+* Cambiado: por defecto se establece ahora para copiar OAndBackupX a la carpeta de copia de seguridad de los padres
+* Añadido: Griego (Créditos @tsiflimagas)
+* Actualizado: Mayúsculas y cadenas en inglés (Créditos: @atrate)
+* Actualizado: generalizar chino, holandés, polaco y sueco
