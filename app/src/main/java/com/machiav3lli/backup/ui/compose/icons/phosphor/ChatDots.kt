@@ -17,8 +17,11 @@ val Phosphor.ChatDots: ImageVector
             return _chat_dots!!
         }
         _chat_dots = Builder(
-            name = "Chat-dots", defaultWidth = 256.0.dp, defaultHeight =
-            256.0.dp, viewportWidth = 256.0f, viewportHeight = 256.0f
+            name = "Chat-dots",
+            defaultWidth = 32.0.dp,
+            defaultHeight = 32.0.dp,
+            viewportWidth = 256.0f,
+            viewportHeight = 256.0f,
         ).apply {
             path(
                 fill = SolidColor(Color(0xFF000000)), stroke = null, strokeLineWidth = 0.0f,
