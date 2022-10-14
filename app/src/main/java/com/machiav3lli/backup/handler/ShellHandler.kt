@@ -22,6 +22,8 @@ import android.os.Environment.DIRECTORY_DOCUMENTS
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.preferences.pref_useFindLs
+import com.machiav3lli.backup.preferences.pref_useMountMaster
+import com.machiav3lli.backup.preferences.pref_useSu0
 import com.machiav3lli.backup.utils.BUFFER_SIZE
 import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
 import com.topjohnwu.superuser.Shell
@@ -669,6 +671,14 @@ class ShellHandler {
             val err = ex.shellResult.err
             return err.isNotEmpty() && err[0].contains("no such file or directory", true)
         }
+
+        val suMountOptions get() =
+            if (pref_useMountMaster.value && ShellHandler.isMountMaster)
+                "--mount-master"
+            else if (pref_useSu0.value)
+                "0"
+            else
+                ""
 
         @Throws(IOException::class)
         fun quirkLibsuReadFileWorkaround(inputFile: FileInfo, output: OutputStream) {

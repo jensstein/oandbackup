@@ -116,7 +116,20 @@ val pref_allowDowngrade = BooleanPref(
     defaultValue = false
 )
 
-// dev settings
+
+//---------------------------------------- developer settings
+
+val pref_useMountMaster = BooleanPref(
+    key = "dev.useMountMaster",
+    summary = "use 'su --mount-master' if available",
+    defaultValue = true
+)
+
+val pref_useSu0 = BooleanPref(
+    key = "dev.useSu0",
+    summary = "if --mount-master not available, use 'su 0' instead, otherwise simply 'su'",
+    defaultValue = true
+)
 
 val pref_tapToSelect = BooleanPref(
     key = "dev.tapToSelect",
@@ -183,8 +196,6 @@ val pref_pmSuspend = BooleanPref(
     summaryId = R.string.prefs_pmsuspend_summary,
     defaultValue = false
 )
-
-//val pref_pmSuspend_init = run { pref_pmSuspend.isEnabled = { pref_pauseApps.value } }
 
 val pref_backupTarCmd = BooleanPref(
     key = "dev.backupTarCmd",
@@ -318,6 +329,9 @@ val pref_forceCrash = LaunchPref(
     throw Exception("forceCrash")
 }
 
+
+
+//---------------------------------------- values that should persist for internal purposes (no UI)
 
 val persist_firstLaunch = BooleanPref(
     key = "persist.firstLaunch",

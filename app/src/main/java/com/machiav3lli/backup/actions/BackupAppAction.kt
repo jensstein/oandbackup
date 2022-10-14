@@ -29,20 +29,21 @@ import com.machiav3lli.backup.MODE_DATA_MEDIA
 import com.machiav3lli.backup.MODE_DATA_OBB
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.app
-import com.machiav3lli.backup.preferences.pref_backupTarCmd
-import com.machiav3lli.backup.preferences.pref_excludeCache
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.BackupBuilder
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.isFileNotFoundException
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
+import com.machiav3lli.backup.handler.ShellHandler.Companion.suMountOptions
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.RootFile
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.preferences.pref_backupTarCmd
+import com.machiav3lli.backup.preferences.pref_excludeCache
 import com.machiav3lli.backup.preferences.pref_fakeBackupSeconds
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.CIPHER_ALGORITHM
@@ -470,7 +471,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             if (pref_excludeCache.value) {
                 options += " --exclude ${quote(excludeCache)}"
             }
-            var suOptions = if (ShellHandler.isMountMaster) "--mount-master" else ""
+            var suOptions = suMountOptions
 
             val cmd = "su $suOptions -c sh ${quote(tarScript)} create $utilBoxQ $options ${
                 quote(sourcePath)

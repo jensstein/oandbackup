@@ -25,14 +25,6 @@ import com.machiav3lli.backup.MODE_DATA_EXT
 import com.machiav3lli.backup.MODE_DATA_MEDIA
 import com.machiav3lli.backup.MODE_DATA_OBB
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.preferences.pref_enableSessionInstaller
-import com.machiav3lli.backup.preferences.pref_excludeCache
-import com.machiav3lli.backup.preferences.pref_installationPackage
-import com.machiav3lli.backup.preferences.pref_delayBeforeRefreshAppInfo
-import com.machiav3lli.backup.preferences.pref_refreshAppInfoTimeout
-import com.machiav3lli.backup.preferences.pref_restoreAvoidTemporaryCopy
-import com.machiav3lli.backup.preferences.pref_restorePermissions
-import com.machiav3lli.backup.preferences.pref_restoreTarCmd
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.LogsHandler
@@ -41,6 +33,7 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.findAssetFile
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quoteMultiple
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
+import com.machiav3lli.backup.handler.ShellHandler.Companion.suMountOptions
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.handler.ShellHandler.UnexpectedCommandResult
@@ -48,6 +41,14 @@ import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.RootFile
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.preferences.pref_delayBeforeRefreshAppInfo
+import com.machiav3lli.backup.preferences.pref_enableSessionInstaller
+import com.machiav3lli.backup.preferences.pref_excludeCache
+import com.machiav3lli.backup.preferences.pref_installationPackage
+import com.machiav3lli.backup.preferences.pref_refreshAppInfoTimeout
+import com.machiav3lli.backup.preferences.pref_restoreAvoidTemporaryCopy
+import com.machiav3lli.backup.preferences.pref_restorePermissions
+import com.machiav3lli.backup.preferences.pref_restoreTarCmd
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.CryptoSetupException
 import com.machiav3lli.backup.utils.decryptStream
@@ -557,7 +558,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                     if (pref_excludeCache.value) {
                         options += " --exclude " + quote(excludeCache)
                     }
-                    var suOptions = "--mount-master"
+                    var suOptions = suMountOptions
 
                     val cmd =
                         "su $suOptions -c sh $qTarScript extract $utilBoxQ $options ${
