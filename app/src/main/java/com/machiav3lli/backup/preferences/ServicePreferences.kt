@@ -17,7 +17,6 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dialogs.BaseDialog
 import com.machiav3lli.backup.dialogs.EnumDialogUI
 import com.machiav3lli.backup.dialogs.StringDialogUI
-import com.machiav3lli.backup.housekeepingOptions
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.FileZip
@@ -33,7 +32,6 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.ShieldCheckered
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ShieldStar
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TagSimple
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Textbox
-import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.ColorAPK
 import com.machiav3lli.backup.ui.compose.theme.ColorData
@@ -210,14 +208,4 @@ val pref_excludeCache = BooleanPref(
     summaryId = R.string.prefs_excludecache_summary,
     icon = Phosphor.Prohibit,
     defaultValue = false
-)
-
-val pref_housekeepingMoment = EnumPref(
-    key = "srv.housekeepingMoment",
-    titleId = R.string.prefs_housekeepingmoment,
-    summaryId = R.string.prefs_housekeepingmoment_summary,
-    icon = Phosphor.TrashSimple,
-    //iconTint = MaterialTheme.colorScheme.secondary,
-    entries = housekeepingOptions,
-    defaultValue = 0
 )

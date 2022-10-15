@@ -76,8 +76,6 @@
     <string name="prefs_advanced">उन्नत प्राथमिकताएँ</string>
     <string name="prefs_tools">उपकरण</string>
     <string name="prefs_theme_light">प्रकाश</string>
-    <string name="prefs_housekeepingmoment_after">बैकअप के बाद</string>
-    <string name="prefs_housekeepingmoment_before">बैकअप से पहले</string>
     <string name="prefs_theme_system">सिस्टम की थीम</string>
     <string name="prefs_languages">भाषा</string>
     <string name="prefs_language_system">सिस्टम डिफ़ॉल्ट</string>

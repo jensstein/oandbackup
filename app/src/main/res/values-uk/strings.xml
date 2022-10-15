@@ -3,7 +3,6 @@
     <string name="forceKill">Форсуюче закриття</string>
     <string name="intro_permission_storage">Додаток використовує дозвіл на читання/запис до сховища, щоб мати можливість отримати доступ до зовнішнього сховища та забезпечити можливість резервного копіювання зовнішніх даних/obb інших програм.</string>
     <string name="grant_usage_access_message">Це важливо для отримання інформації про розміри файлів додатку</string>
-    <string name="prefs_housekeepingmoment_summary">Налаштування, для видалення найстарішої редакції до або після створення нової резервної копії, щоб звільнити місце на диску, що використовується резервною копією.</string>
     <string name="showSplitAPKs">Спліт-APK</string>
     <string name="no_file_manager_message">Немає файлового менеджера для управління SAF. Можливо, ви відключили вбудований менеджер файлів. Будь ласка, відновіть його або ввімкніть знову.</string>
     <string name="intro_welcome_message">Neo Backup (раніше OAndBackupX) - це розгалуження сумнозвісного OAndBackup з метою довести його до 2020 року і далі. Наразі більшість функціональних можливостей та інтерфейсу користувача переписано, а деякі додано.
@@ -143,7 +142,6 @@
     <string name="prefs_disableverification">Вимкніть перевірку програм через USB</string>
     <string name="prefs_acquirewakelock_summary">Під час пакетних операцій придбайте будильник для запобігання сну. Значно пришвидшує резервне копіювання та відновлення, але споживає більше енергії.</string>
     <string name="prefs_acquirewakelock">Запобігання сну</string>
-    <string name="prefs_housekeepingmoment">Час очищення версій</string>
     <string name="prefs_numBackupRevisions_summary">Найстаріша версія буде видалена після створення нової резервної копії, якщо кількість перевищена. Встановіть його на нуль, щоб зберегти всі версії.</string>
     <string name="prefs_numBackupRevisions">Кількість версій резервних копій</string>
     <string name="prefs_deviceprotecteddata_summary">Резервне копіювання та відновлення даних, розміщених у data/user_de</string>
@@ -174,8 +172,6 @@
     <string name="prefs_language_system">Система за замовчуванням</string>
     <string name="prefs_languages">Мова</string>
     <string name="prefs_theme_system">Тема системи</string>
-    <string name="prefs_housekeepingmoment_before">Перед резервним копіюванням</string>
-    <string name="prefs_housekeepingmoment_after">Після резервного копіювання</string>
     <string name="prefs_theme_dark">Темна</string>
     <string name="prefs_theme_light">Світла</string>
     <string name="prefs_theme">Тема</string>

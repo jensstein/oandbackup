@@ -201,10 +201,6 @@
     <string name="prefs_stopcont_summary">Για εξειδικευμένους μόνο: Αυτό μπορεί να βοηθήσει, εάν η εφαρμογή μεταβάλλει αρχεία κατά τη δημιουργία αντιγράφου και η δημιουργία αντιγράφου αποτυγχάνει.</string>
     <string name="prefs_stopcont">Αναγκαστικός-τερματισμός διεργασίας εφαρμογής πριν από δημιουργία αντιγράφου/επαναφορά</string>
     <string name="prefs_advanced">Προηγμένες προτιμήσεις</string>
-    <string name="prefs_housekeepingmoment_summary">Ρυθμίζει εάν η παλαιότερη εκδοχή διαγράφεται πριν ή μετά τη δημιουργία ενός νέου αντιγράφου ώστε να ελευθερώσει το χώρο του δίσκου που χρησιμοποιείται από το αντίγραφο.</string>
-    <string name="prefs_housekeepingmoment">Χρόνος Καθαρισμού Εκδοχών</string>
-    <string name="prefs_housekeepingmoment_before">Πριν τη δημιουργία Αντιγράφου ασφαλείας</string>
-    <string name="prefs_housekeepingmoment_after">Μετά τη δημιουργία Αντιγράφου ασφαλείας</string>
     <string name="radio_obbdata">Δεδομένα OBB</string>
     <string name="radio_deviceprotecteddata">Προστατευμένα από τη Συσκευή Δεδομένα</string>
     <string name="radio_externaldata">Εξωτερικά Δεδομένα</string>

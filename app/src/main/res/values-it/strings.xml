@@ -197,12 +197,8 @@
     <string name="prefs_stopcont_summary">Solo per esperti: questo può aiutare, se l\'app sta modificando i file durante il backup e il backup non riesce.</string>
     <string name="prefs_disableverification_summary">Disabilita questa opzione sviluppatore durante il ripristino degli APK e la riattiva in seguito. Risolve l\'errore: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
     <string name="prefs_disableverification">Disabilita verifica app via USB</string>
-    <string name="prefs_housekeepingmoment_summary">Configura se la revisione meno recente viene eliminata prima o dopo la creazione di un nuovo backup per liberare lo spazio su disco utilizzato dal backup.</string>
-    <string name="prefs_housekeepingmoment">Tempo di pulizia della revisione</string>
     <string name="prefs_numBackupRevisions_summary">La revisione più vecchia verrà eliminata alla creazione di un nuovo backup se il numero viene superato. Impostalo su zero per mantenere tutte le revisioni.</string>
     <string name="prefs_numBackupRevisions">Numero di revisioni del backup</string>
-    <string name="prefs_housekeepingmoment_before">Prima del backup</string>
-    <string name="prefs_housekeepingmoment_after">Dopo il backup</string>
     <string name="radio_obbdata">Dati OBB</string>
     <string name="radio_deviceprotecteddata">Dati protetti del dispositivo</string>
     <string name="radio_externaldata">Dati esterni</string>

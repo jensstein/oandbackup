@@ -247,27 +247,3 @@ val BACKUP_DIRECTORY_INTENT = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
 fun classAddress(address: String): String = PREFS_SHARED_PRIVATE + address
 
 fun exodusUrl(app: String): String = "https://reports.exodus-privacy.eu.org/reports/$app/latest"
-
-
-const val HOUSEKEEPING_BEFORE = 0
-const val HOUSEKEEPING_AFTER = 1
-
-val housekeepingOptions = mapOf(
-    HOUSEKEEPING_BEFORE to R.string.prefs_housekeepingmoment_before,
-    HOUSEKEEPING_AFTER to R.string.prefs_housekeepingmoment_after
-)
-
-enum class HousekeepingMoment(val value: String) {
-    BEFORE("before"), AFTER("after");
-
-    companion object {
-        fun fromString(value: String): HousekeepingMoment {
-            for (enumValue in values()) {
-                if (enumValue.value == value) {
-                    return enumValue
-                }
-            }
-            throw IllegalArgumentException("No constant with value '$value'")
-        }
-    }
-}

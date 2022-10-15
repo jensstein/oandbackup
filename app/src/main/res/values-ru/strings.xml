@@ -216,8 +216,6 @@
     <string name="help_issues">Известные проблемы</string>
     <string name="prefs_obbdata_summary">Создаёт резервную копию и восстанавливает obb-файлы приложения, которые размещаются во внешнем хранилище (например, /storage/emulated/0/Android/obb/)</string>
     <string name="prefs_obbdata">Резервное копирование obb файлов</string>
-    <string name="prefs_housekeepingmoment_before">До резервирования</string>
-    <string name="prefs_housekeepingmoment_after">После резервирования</string>
     <string name="radio_obbdata">OBB-данные</string>
     <plurals name="updated_apps">
         <item quantity="one">%d обновлённое</item>
@@ -251,8 +249,6 @@
     <string name="prefs_restoreallpermissions">Восстановить со всеми разрешениями</string>
     <string name="prefs_restoreallpermissions_summary">Выдать восстановленным приложениям все запрашиваемые ими разрешения.</string>
     <string name="prefs_disableverification_summary">Отключает эту опцию разработчика во время восстановления APK-файлов и включает её снова после. Это исключает ошибку: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
-    <string name="prefs_housekeepingmoment_summary">Укажите будут ли старые версии удалены перед или после создания новой р.к., чтобы освободить дисковое пространство, используемое для резервирования.</string>
-    <string name="prefs_housekeepingmoment">Порядок удаления старых р.к.</string>
     <string name="prefs_enablespecial_summary">Нуждается в интенсивном тестировании, может привести к циклической перезагрузке. Ваши отзывы всегда приветствуются.</string>
     <string name="prefs_devicelock_summary">Обезопасьте приложение с помощью учётных данных устройства</string>
     <string name="prefs_devicelock">Блокировка</string>

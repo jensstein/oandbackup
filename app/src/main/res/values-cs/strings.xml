@@ -27,7 +27,6 @@
     <string name="radio_system">Systémové aplikace</string>
     <string name="radio_both">APK a data</string>
     <string name="radio_data">Data</string>
-    <string name="prefs_housekeepingmoment_after">Po záloze</string>
     <string name="restoreSuccess">Obnovení dokončeno</string>
     <string name="prefs_advanced">Pokročilé předvolby</string>
     <string name="prefs_enablespecial">Povolit speciální zálohy</string>
@@ -92,7 +91,6 @@
     <string name="prefs_user">Uživatelské předvolby</string>
     <string name="prefs_user_short">Osobní</string>
     <string name="prefs_service">Předvolby služeb</string>
-    <string name="prefs_housekeepingmoment_before">Před zálohou</string>
     <string name="prefs_theme_system">Motiv systému</string>
     <string name="prefs_theme_dynamic">Dynamický motiv (pokud je dostupný)</string>
     <string name="prefs_languages">Jazyk</string>
@@ -123,7 +121,6 @@
     <string name="prefs_mediadata">Zálohovat média</string>
     <string name="prefs_mediadata_summary">Zálohuje a obnoví média aplikací, které jsou uloženy na externím úložišti (např. /storage/emulated/0/Android/media/)</string>
     <string name="prefs_installerpackagename">Název balíčku instalátoru:</string>
-    <string name="prefs_housekeepingmoment_summary">Nastavuje, zda se nejstarší revize odstraní před nebo po vytvoření nové zálohy, aby se uvolnilo místo na disku, které záloha využívá.</string>
     <string name="prefs_compression_level">Úroveň komprese</string>
     <string name="prefs_compression_level_summary">Nižší hodnota se zkomprimuje rychleji, ale výsledkem jsou větší soubory. Vyšší hodnota komprimuje lépe, ale trvá to déle.</string>
     <string name="prefs_disableverification_summary">Zakáže tuto vývojářskou možnost při obnovování souborů APK a poté ji znovu povolí. Vyřeší chybu: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
@@ -195,7 +192,6 @@
     <string name="prefs_deviceprotecteddata_summary">Zálohuje a obnoví data umístěná v adresáři data/user_de</string>
     <string name="prefs_numBackupRevisions">Počet revizí zálohy</string>
     <string name="prefs_numBackupRevisions_summary">Nejstarší revize bude odstraněna po vytvoření nové zálohy, pokud bude počet překročen. Nastavte na nulu pro ponechání všech revizí.</string>
-    <string name="prefs_housekeepingmoment">Revize času čištění</string>
     <string name="prefs_disableverification">Zakázat Ověřovat aplikace přes USB</string>
     <string name="prefs_allowdowngrade_summary">Umožnit obnovení starší verze nainstalované aplikace.</string>
     <string name="prefs_allowdowngrade">Povolit snížení verze</string>
