@@ -63,7 +63,6 @@ import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.fragments.SortFilterSheet
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
-import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
 import com.machiav3lli.backup.preferences.pref_catchUncaughtException
@@ -105,8 +104,6 @@ class MainActivityX : BaseActivity() {
 
     private lateinit var prefs: SharedPreferences
     private val crScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
-    private lateinit var refreshViewController: RefreshViewController // TODO replace
-    private lateinit var progressViewController: ProgressViewController // TODO replace
 
     val viewModel by viewModels<MainViewModel> {
         MainViewModel.Factory(ODatabase.getInstance(OABX.context), application)
@@ -304,8 +301,11 @@ class MainActivityX : BaseActivity() {
                             }
                         }
                     },
-                    bottomBar = { BottomNavBar(page = NAV_MAIN, navController = navController) }
+                    bottomBar = {
+                        BottomNavBar(page = NAV_MAIN, navController = navController)
+                    }
                 ) { paddingValues ->
+
                     MainNavHost(
                         modifier = Modifier.padding(paddingValues),
                         navController = navController,
@@ -330,6 +330,7 @@ class MainActivityX : BaseActivity() {
         super.onDestroy()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         finishAffinity()
     }
@@ -378,27 +379,16 @@ class MainActivityX : BaseActivity() {
         viewModel.updatePackage(packageName)
     }
 
-    fun setRefreshViewController(refreshViewController: RefreshViewController) {
-        this.refreshViewController = refreshViewController
-    }
-
     fun refreshView() {
         crScope.launch { _modelSortFilter.emit(sortFilterModel) }
-        if (::refreshViewController.isInitialized) refreshViewController.refreshView(viewModel.packageList.value)
-    }
-
-    fun setProgressViewController(progressViewController: ProgressViewController) {
-        this.progressViewController = progressViewController
     }
 
     fun updateProgress(progress: Int, max: Int) {
-        if (::progressViewController.isInitialized)
-            this.progressViewController.updateProgress(progress, max)
+        viewModel.progress.value = Pair(true, 1f*progress/max)
     }
 
     fun hideProgress() {
-        if (::progressViewController.isInitialized)
-            this.progressViewController.hideProgress()
+        viewModel.progress.value = Pair(false, 0f)
     }
 
     fun showSnackBar(message: String) {
@@ -494,13 +484,4 @@ class MainActivityX : BaseActivity() {
                 .enqueue()
         }
     }
-}
-
-interface RefreshViewController {
-    fun refreshView(list: MutableList<Package>?)
-}
-
-interface ProgressViewController {
-    fun updateProgress(progress: Int, max: Int)
-    fun hideProgress()
 }

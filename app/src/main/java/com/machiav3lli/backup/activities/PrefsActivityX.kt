@@ -21,6 +21,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -82,22 +83,24 @@ class PrefsActivityX : BaseActivity() {
                     containerColor = Color.Transparent,
                     contentColor = MaterialTheme.colorScheme.onBackground,
                     topBar = {
-                        TopBar(
-                            title = stringResource(id = pageTitle ?: NavItem.Settings.title)
-                        ) {
-                            RoundButton(
-                                modifier = Modifier
-                                    .padding(horizontal = 4.dp)
-                                    .size(32.dp),
-                                icon = Phosphor.Info,
-                                description = stringResource(id = R.string.help),
-                            ) {
-                                if (helpSheet != null && helpSheet!!.isVisible) helpSheet?.dismissAllowingStateLoss()
-                                helpSheet = HelpSheet()
-                                helpSheet!!.showNow(supportFragmentManager, "HELPSHEET")
+                            Column {
+                                TopBar(
+                                    title = stringResource(id = pageTitle ?: NavItem.Settings.title)
+                                ) {
+                                    RoundButton(
+                                        modifier = Modifier
+                                            .padding(horizontal = 4.dp)
+                                            .size(32.dp),
+                                        icon = Phosphor.Info,
+                                        description = stringResource(id = R.string.help),
+                                    ) {
+                                        if (helpSheet != null && helpSheet!!.isVisible) helpSheet?.dismissAllowingStateLoss()
+                                        helpSheet = HelpSheet()
+                                        helpSheet!!.showNow(supportFragmentManager, "HELPSHEET")
+                                    }
+                                }
                             }
-                        }
-                    },
+                        },
                     bottomBar = { BottomNavBar(page = NAV_PREFS, navController = navController) }
                 ) { paddingValues ->
                     PrefsNavHost(

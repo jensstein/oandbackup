@@ -82,17 +82,12 @@ fun HomePage(viewModel: HomeViewModel) {
     val query by mainActivityX.searchQuery.collectAsState(initial = "")
     val updatedApps = filteredList?.filter { it.isUpdated }
     var updatedVisible by remember(viewModel.filteredList.value) { mutableStateOf(false) }
-    OABX.main?.viewModel?.isNeedRefresh?.observeForever {
-        viewModel.refreshing.postValue(it)
-    }
 
     val filterPredicate = { item: Package ->
         query.isEmpty() || listOf(item.packageName, item.packageLabel)
             .find { it.contains(query, true) } != null
     }
     val queriedList = filteredList?.filter(filterPredicate)
-    val refreshing by viewModel.refreshing.observeAsState()
-    val progress by viewModel.progress.observeAsState(Pair(false, 0f))
 
     val batchConfirmListener = object : BatchDialogFragment.ConfirmListener {
         override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {
@@ -120,15 +115,6 @@ fun HomePage(viewModel: HomeViewModel) {
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
-            AnimatedVisibility(visible = refreshing ?: false) {
-                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-            }
-            AnimatedVisibility(visible = progress?.first == true) {
-                LinearProgressIndicator(
-                    modifier = Modifier.fillMaxWidth(),
-                    progress = progress.second
-                )
-            }
             HomePackageRecycler(
                 modifier = Modifier
                     .weight(1f)
