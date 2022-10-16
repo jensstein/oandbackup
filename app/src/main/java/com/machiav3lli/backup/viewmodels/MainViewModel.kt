@@ -50,14 +50,15 @@ class MainViewModel(
     private val appContext: Application
 ) : AndroidViewModel(appContext) {
 
-    var packageList = MediatorLiveData<MutableList<Package>>()
+    var packageList = MediatorLiveData<MutableList<Package>?>()
     var backupsMap = MediatorLiveData<Map<String, List<Backup>>>()
     var blocklist = MediatorLiveData<List<Blocklist>>()
     var appExtrasMap = MediatorLiveData<Map<String, AppExtras>>()
 
     // TODO fix force refresh on changing backup directory or change method
     val isNeedRefresh = MutableLiveData(false)
-    var refreshing = mutableStateOf(0)
+    val progress = mutableStateOf(Pair(false, 0f))
+    val refreshing = mutableStateOf(0)
 
     init {
         blocklist.addSource(db.blocklistDao.liveAll, blocklist::setValue)
@@ -109,13 +110,13 @@ class MainViewModel(
 
     private suspend fun recreateAppInfoList() {
         withContext(Dispatchers.IO) {
-            refreshing.value++;
+            refreshing.value = refreshing.value.inc()
             val time = measureTimeMillis {
                 packageList.postValue(null)
                 appContext.updateAppTables(db.appInfoDao, db.backupDao)
             }
             OABX.addInfoText("recreateAppInfoList: ${(time / 1000 + 0.5).toInt()} sec")
-            refreshing.value--;
+            refreshing.value = refreshing.value.dec()
         }
     }
 
@@ -129,7 +130,7 @@ class MainViewModel(
 
     private suspend fun updateDataOf(packageName: String) =
         withContext(Dispatchers.IO) {
-            refreshing.value++;
+            refreshing.value = refreshing.value.inc()
             invalidateCacheForPackage(packageName)
             val appPackage = packageList.value?.find { it.packageName == packageName }
             try {
@@ -153,7 +154,7 @@ class MainViewModel(
             } catch (e: AssertionError) {
                 Timber.w(e.message ?: "")
             }
-            refreshing.value--;
+            refreshing.value = refreshing.value.dec()
         }
 
     fun updateExtras(appExtras: AppExtras) {

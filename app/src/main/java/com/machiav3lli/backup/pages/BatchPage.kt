@@ -17,7 +17,6 @@
  */
 package com.machiav3lli.backup.pages
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,7 +25,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -105,8 +103,6 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
         )
     }
 
-    val refreshing by viewModel.refreshing.observeAsState()
-    val progress by viewModel.progress.observeAsState(Pair(false, 0f))
     val batchConfirmListener = object : BatchDialogFragment.ConfirmListener {
         override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {
             mainActivityX.startBatchAction(backupBoolean, selectedPackages, selectedModes) {
@@ -133,15 +129,6 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
-            AnimatedVisibility(visible = refreshing ?: false) {
-                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-            }
-            AnimatedVisibility(visible = progress?.first == true) {
-                LinearProgressIndicator(
-                    modifier = Modifier.fillMaxWidth(),
-                    progress = progress.second
-                )
-            }
             BatchPackageRecycler(
                 modifier = Modifier
                     .weight(1f)

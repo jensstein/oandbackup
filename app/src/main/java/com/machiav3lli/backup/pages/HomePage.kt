@@ -27,7 +27,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -47,7 +46,6 @@ import com.machiav3lli.backup.ALT_MODE_APK
 import com.machiav3lli.backup.ALT_MODE_BOTH
 import com.machiav3lli.backup.ALT_MODE_DATA
 import com.machiav3lli.backup.ALT_MODE_UNSET
-import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
@@ -82,17 +80,12 @@ fun HomePage(viewModel: HomeViewModel) {
     val query by mainActivityX.searchQuery.collectAsState(initial = "")
     val updatedApps = filteredList?.filter { it.isUpdated }
     var updatedVisible by remember(viewModel.filteredList.value) { mutableStateOf(false) }
-    OABX.main?.viewModel?.isNeedRefresh?.observeForever {
-        viewModel.refreshing.postValue(it)
-    }
 
     val filterPredicate = { item: Package ->
         query.isEmpty() || listOf(item.packageName, item.packageLabel)
             .find { it.contains(query, true) } != null
     }
     val queriedList = filteredList?.filter(filterPredicate)
-    val refreshing by viewModel.refreshing.observeAsState()
-    val progress by viewModel.progress.observeAsState(Pair(false, 0f))
 
     val batchConfirmListener = object : BatchDialogFragment.ConfirmListener {
         override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {
@@ -120,15 +113,6 @@ fun HomePage(viewModel: HomeViewModel) {
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
-            AnimatedVisibility(visible = refreshing ?: false) {
-                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-            }
-            AnimatedVisibility(visible = progress?.first == true) {
-                LinearProgressIndicator(
-                    modifier = Modifier.fillMaxWidth(),
-                    progress = progress.second
-                )
-            }
             HomePackageRecycler(
                 modifier = Modifier
                     .weight(1f)
