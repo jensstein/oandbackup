@@ -115,16 +115,4 @@ fun Package.infoChips(): List<InfoChipItem> = listOfNotNull(
     ) else null
 )
 
-fun NavDestination.destinationToItem(): NavItem? = listOf(
-    NavItem.UserPrefs,
-    NavItem.ServicePrefs,
-    NavItem.AdvancedPrefs,
-    NavItem.ToolsPrefs,
-    NavItem.Home,
-    NavItem.Backup,
-    NavItem.Restore,
-    NavItem.Scheduler,
-    NavItem.Settings,
-    NavItem.Exports,
-    NavItem.Logs,
-).find { this.route == it.destination }
+fun NavDestination.destinationToItem() = NavItem.navItems[this.route]
