@@ -108,10 +108,16 @@ fun Activity.showActionResult(result: ActionResult, saveMethod: DialogInterface.
 
 
 fun Activity.showError(message: String?) = runOnUiThread {
-    AlertDialog.Builder(this)
-        .setTitle(R.string.errorDialogTitle)
-        .setMessage(message)
-        .setPositiveButton(R.string.dialogOK, null).show()
+    runOnUiThread {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.errorDialogTitle)
+            .setMessage(message)
+            .setPositiveButton(R.string.dialogOK, null)
+            .setNegativeButton(R.string.dialogSave) { _: DialogInterface?, _: Int ->
+                LogsHandler.logErrors(message ?: "ERROR")
+            }
+            .show()
+    }
 }
 
 fun Activity.showFatalUiWarning(message: String) = showWarning(
