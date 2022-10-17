@@ -61,6 +61,9 @@ sealed class NavItem(var title: Int, var icon: ImageVector, var destination: Str
     object ToolsPrefs :
         NavItem(R.string.prefs_tools_short, Phosphor.Wrench, "prefs_tools")
 
+    object Terminal :
+        NavItem(R.string.prefs_tools_terminal, Phosphor.Bug, "prefs_tools/terminal")
+
     object Exports : NavItem(
         R.string.prefs_schedulesexportimport,
         Phosphor.CalendarX,
