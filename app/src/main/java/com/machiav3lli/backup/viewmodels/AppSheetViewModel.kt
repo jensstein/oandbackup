@@ -94,7 +94,7 @@ class AppSheetViewModel(
                         appContext.getString(com.machiav3lli.backup.R.string.uninstallFailure),
                         true
                     )
-                    e.message?.let { message -> LogsHandler.logErrors(appContext, message) }
+                    e.message?.let { message -> LogsHandler.logErrors(message) }
                 }
             }
         }

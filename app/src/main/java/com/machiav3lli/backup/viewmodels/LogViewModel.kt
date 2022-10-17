@@ -24,10 +24,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.machiav3lli.backup.R
-import com.machiav3lli.backup.activities.PrefsActivityX
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -44,7 +41,7 @@ class LogViewModel(private val appContext: Application) : AndroidViewModel(appCo
     }
 
     private suspend fun recreateLogsList(): MutableList<Log> = withContext(Dispatchers.IO) {
-        LogsHandler(appContext).readLogs()
+        LogsHandler.readLogs()
     }
 
     fun shareLog(log: Log) {
@@ -56,21 +53,14 @@ class LogViewModel(private val appContext: Application) : AndroidViewModel(appCo
     private suspend fun share(log: Log) {
         withContext(Dispatchers.IO) {
             val shareFileIntent: Intent
-            LogsHandler(appContext).getLogFile(log.logDate)?.let {
-                if (it.exists()) {
-                    shareFileIntent = Intent().apply {
-                        action = Intent.ACTION_SEND
-                        putExtra(Intent.EXTRA_STREAM, it.uri)
-                        type = "text/plain"
-                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    }
-                    appContext.startActivity(shareFileIntent)
-                } else {
-                    showNotification(
-                        appContext, PrefsActivityX::class.java, System.currentTimeMillis().toInt(),
-                        appContext.getString(R.string.logs_share_failed), "", false
-                    )
+            LogsHandler.getLogFile(log.logDate)?.let {
+                shareFileIntent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_STREAM, it.uri)
+                    type = "text/plain"
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
+                appContext.startActivity(shareFileIntent)
             }
         }
     }
@@ -84,7 +74,7 @@ class LogViewModel(private val appContext: Application) : AndroidViewModel(appCo
 
     private suspend fun delete(log: Log) {
         withContext(Dispatchers.IO) {
-            log.delete(appContext)
+            log.delete()
         }
     }
 

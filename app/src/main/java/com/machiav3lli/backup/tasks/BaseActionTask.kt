@@ -68,7 +68,7 @@ abstract class BaseActionTask(
             )
             mainActivityX.showActionResult(this.result!!) { _: DialogInterface?, _: Int ->
                 logErrors(
-                    mainActivityX, LogsHandler.handleErrorMessages(mainActivityX, result?.message)
+                    LogsHandler.handleErrorMessages(mainActivityX, result?.message)
                         ?: ""
                 )
             }

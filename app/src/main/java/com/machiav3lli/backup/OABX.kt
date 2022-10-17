@@ -36,7 +36,7 @@ import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.preferences.pref_cancelOnStart
-import com.machiav3lli.backup.preferences.pref_maxCrashLines
+import com.machiav3lli.backup.preferences.pref_maxLogCatMinutes
 import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
@@ -47,7 +47,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.lang.ref.WeakReference
-import java.time.LocalDateTime
+import java.text.SimpleDateFormat
+import java.util.*
 
 class OABX : Application() {
 
@@ -77,10 +78,13 @@ class OABX : Application() {
                             android.util.Log.WARN -> "W"
                             else                  -> "?"
                         }
-                val date = LocalDateTime.now()
+                val now = System.currentTimeMillis()
+                val timeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                val date = timeFormat.format(now)
                 lastLogMessages.add("$date $prio $tag : $message")
                 try {
-                    while (lastLogMessages.size > pref_maxCrashLines.value)
+                    val since = timeFormat.format(now - pref_maxLogCatMinutes.value*60*1000)
+                    while (lastLogMessages[0] < since)
                         lastLogMessages.removeAt(0)
                 } catch(e: Throwable) {
                     // ignore

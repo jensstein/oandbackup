@@ -23,7 +23,6 @@ import com.machiav3lli.backup.MAIN_FILTER_SPECIAL
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
 import com.machiav3lli.backup.MODE_UNSET
-import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
 import com.machiav3lli.backup.preferences.pref_oldBackups
 import com.machiav3lli.backup.SPECIAL_FILTER_DISABLED
@@ -65,14 +64,12 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         } catch (e: FileUtils.BackupLocationInAccessibleException) {
             Timber.e("Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
             LogsHandler.logErrors(
-                context,
                 "Scheduled backup failed due to ${e.javaClass.simpleName}: $e"
             )
             return Triple(name, listOf(), MODE_UNSET)
         } catch (e: StorageLocationNotConfiguredException) {
             Timber.e("Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
             LogsHandler.logErrors(
-                context,
                 "Scheduled backup failed due to ${e.javaClass.simpleName}: $e"
             )
             return Triple(name, listOf(), MODE_UNSET)

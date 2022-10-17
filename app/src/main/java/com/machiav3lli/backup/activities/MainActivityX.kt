@@ -136,7 +136,7 @@ class MainActivityX : BaseActivity() {
                 try {
                     Timber.i("\n\n" + "=".repeat(60))
                     LogsHandler.unhandledException(e)
-                    LogsHandler(context).writeToLogFile("uncaught: ${e.message}")
+                    LogsHandler.logErrors("uncaught: ${e.message}")
                     object : Thread() {
                         override fun run() {
                             Looper.prepare()

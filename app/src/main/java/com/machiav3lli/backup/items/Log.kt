@@ -17,7 +17,6 @@
  */
 package com.machiav3lli.backup.items
 
-import android.content.Context
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.utils.LocalDateTimeSerializer
@@ -88,8 +87,8 @@ open class Log {
                 '}'
     }
 
-    fun delete(context: Context): Boolean? {
-        val logFile = LogsHandler(context).getLogFile(this.logDate)
+    fun delete(): Boolean? {
+        val logFile = LogsHandler.getLogFile(this.logDate)
         return logFile?.delete()
     }
 

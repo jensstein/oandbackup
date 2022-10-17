@@ -178,7 +178,7 @@
     <string name="prefs_usefindls_summary" translatable="false">use \'find \.\.\. | xargs \.\.\. ls \.\.\.\' for recursive FileInfo collection</string>
     <string name="prefs_assemblefilelistonestep_summary" translatable="false">(tarapi) collect whole tree in one step</string>
     <string name="prefs_catchuncaughtexception_summary" translatable="false">unexpected exceptions are caught and output to logcat and app is restarted [needs reboot]</string>
-    <string name="prefs_maxcrashlines_summary" translatable="false">maximum number of lines to be saved from the logcat on an uncaughtException</string>
+    <string name="prefs_maxlogcatminutes_summary" translatable="false">maximum number of lines to be saved from the logcat on an uncaughtException</string>
     <string name="prefs_invalidateselective_summary" translatable="false">only invalidate cache for specific package</string>
     <string name="prefs_cacheuris_summary" translatable="false">cache StorageFile per URI</string>
     <string name="prefs_cachefilelists_summary" translatable="false">cache file lists per directory</string>
@@ -392,4 +392,5 @@
     <string name="see_faq">See FAQ!</string>
     <string name="add_tag">Add new tag</string>
     <string name="edit_note">Edit note</string>
+    <string name="prefs_tools_terminal">Terminal</string>
 </resources>

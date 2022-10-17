@@ -240,11 +240,11 @@ val pref_useLogCat = BooleanPref(
     defaultValue = false
 )
 
-val pref_maxCrashLines = IntPref(
-    key = "dev.maxCrashLines",
-    summaryId = R.string.prefs_maxcrashlines_summary,
-    entries = (10..200 step 10).toList(),
-    defaultValue = 50
+val pref_maxLogCatMinutes = IntPref(
+    key = "dev.maxLogCatMinutes",
+    summary = "maximum logcat history time [minutes]",
+    entries = ((1..9 step 1) + (10..50 step 10) + (60..120 step 30)).toList(),
+    defaultValue = 5
 )
 
 val pref_invalidateSelective = BooleanPref(
