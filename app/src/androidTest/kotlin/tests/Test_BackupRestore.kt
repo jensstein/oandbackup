@@ -10,7 +10,6 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.items.RootFile
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.preferences.pref_encryption
-import com.machiav3lli.backup.utils.getPrivateSharedPrefs
 import com.topjohnwu.superuser.ShellUtils.fastCmd
 import org.junit.After
 import org.junit.AfterClass
@@ -215,7 +214,7 @@ class Test_BackupRestore {
 
     fun backup(compress: Boolean) {
         if(!backupCreated) {
-            context.applicationContext.getPrivateSharedPrefs().edit().putBoolean(pref_encryption.key, false)
+            pref_encryption.value = false
             val iv = null     //initIv(CIPHER_ALGORITHM)
             val backupAction = BackupAppAction(context, null, shellHandler)
             val fromDir = StorageFile(testDir)
