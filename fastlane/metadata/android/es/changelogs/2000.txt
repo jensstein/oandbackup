@@ -1,0 +1,9 @@
+**OndBackupX 2.0.0**
+* Cambiado a sulib (Créditos @Tiefkuehlpizze)
+* Eliminado oab-utils para siempre (Créditos @Tiefkuehlpizze)
+* Nuevos elementos de la interfaz de usuario para App-, Filter- y ScheduleSheet
+* Corregidos los backups programados para los datos (solo)
+* Arreglado el zipping de los datos externos/deData/obb de acuerdo a las preferencias
+* Arreglado: comprimir carpetas externas/deData/obb vacías
+* Actualización de la función de limpieza de la caché
+* Algunos otros ajustes de la interfaz de usuario y del rendimiento
