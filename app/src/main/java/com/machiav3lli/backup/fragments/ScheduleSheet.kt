@@ -58,6 +58,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
+import com.machiav3lli.backup.EXTRA_SCHEDULE_ID
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.R
@@ -98,9 +99,18 @@ import java.time.LocalTime
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
-class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
+class ScheduleSheet() : BaseSheet() {
     private lateinit var viewModel: ScheduleViewModel
     private lateinit var database: ODatabase
+
+    constructor(scheduleId: Long) : this() {
+        arguments = Bundle().apply {
+            putLong(EXTRA_SCHEDULE_ID, scheduleId)
+        }
+    }
+
+    private val scheduleId: Long
+        get() = requireArguments().getLong(EXTRA_SCHEDULE_ID)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
