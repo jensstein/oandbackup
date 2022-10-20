@@ -74,6 +74,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import com.machiav3lli.backup.ActionListener
 import com.machiav3lli.backup.BUNDLE_USERS
+import com.machiav3lli.backup.EXTRA_PACKAGE_NAME
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.ODatabase
@@ -118,26 +119,40 @@ import com.machiav3lli.backup.viewmodels.AppSheetViewModel
 import kotlinx.coroutines.CoroutineScope
 import timber.log.Timber
 
-class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
+class AppSheet() : BaseSheet(), ActionListener {
+
     private lateinit var viewModel: AppSheetViewModel
+
+    constructor(packageName: String) : this() {
+        arguments = Bundle().apply {
+            putString(EXTRA_PACKAGE_NAME, packageName)
+        }
+    }
+
+    val packageName: String
+        get() = requireArguments().getString(EXTRA_PACKAGE_NAME)!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val mPackage =
+            requireMainActivity().viewModel.packageList.value?.find { it.packageName == packageName }
+
         val database = ODatabase.getInstance(requireContext())
         val users =
             if (savedInstanceState != null) savedInstanceState.getStringArrayList(BUNDLE_USERS) else ArrayList()
         val shellCommands = ShellCommands(users)
-        val viewModelFactory =
-            AppSheetViewModel.Factory(
-                appInfo,
+        mPackage?.let {
+            val viewModelFactory = AppSheetViewModel.Factory(
+                it,
                 database,
                 shellCommands,
                 requireActivity().application
             )
-        viewModel = ViewModelProvider(this, viewModelFactory)[AppSheetViewModel::class.java]
+            viewModel = ViewModelProvider(this, viewModelFactory)[AppSheetViewModel::class.java]
+        }
 
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -518,7 +533,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                     if (pref_useWorkManagerForSingleManualJob.value) {
                         OABX.main?.startBatchAction(
                             true,
-                            listOf(this.appInfo.packageName),
+                            listOf(packageName),
                             listOf(mode)
                         ) {
                             //viewModel.refreshNow.value = true
@@ -536,7 +551,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                     if (pref_useWorkManagerForSingleManualJob.value) {
                         OABX.main?.startBatchAction(
                             false,
-                            listOf(this.appInfo.packageName),
+                            listOf(packageName),
                             listOf(mode)
                         ) {
                             //viewModel.refreshNow.value = true

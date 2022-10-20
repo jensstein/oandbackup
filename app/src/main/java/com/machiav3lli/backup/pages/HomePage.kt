@@ -120,7 +120,7 @@ fun HomePage(viewModel: HomeViewModel) {
                 productsList = queriedList ?: listOf(),
                 onClick = { item ->
                     if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                    appSheet = AppSheet(item)
+                    appSheet = AppSheet(item.packageName)
                     appSheet?.showNow(
                         mainActivityX.supportFragmentManager,
                         "Package ${item.packageName}"
@@ -184,7 +184,7 @@ fun HomePage(viewModel: HomeViewModel) {
                             productsList = updatedApps,
                             onClick = { item ->
                                 if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                                appSheet = AppSheet(item)
+                                appSheet = AppSheet(item.packageName)
                                 appSheet?.showNow(
                                     mainActivityX.supportFragmentManager,
                                     "Package ${item.packageName}"
