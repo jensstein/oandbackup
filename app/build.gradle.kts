@@ -25,10 +25,10 @@ plugins {
 }
 val vKotlin = "1.7.20"
 val vComposeCompiler = "1.3.1"
-val vCompose = "1.3.0-beta03"
-val vRoom = "2.5.0-alpha03"
+val vCompose = "1.3.0-rc01"
+val vRoom = "2.5.0-beta01"
 val vNavigation = "2.5.2"
-val vAccompanist = "0.26.4-beta"
+val vAccompanist = "0.26.5-rc"
 val vLibsu = "3.2.1"
 
 android {
@@ -129,8 +129,8 @@ dependencies {
     implementation("androidx.room:room-runtime:$vRoom")
     implementation("androidx.room:room-ktx:$vRoom")
     kapt("androidx.room:room-compiler:$vRoom")
-    implementation("androidx.work:work-runtime-ktx:2.8.0-alpha04")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
+    implementation("androidx.work:work-runtime-ktx:2.8.0-beta01")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
     implementation("androidx.security:security-crypto-ktx:1.1.0-alpha03")
     implementation("androidx.biometric:biometric:1.2.0-alpha05")
@@ -149,7 +149,7 @@ dependencies {
     implementation("androidx.preference:preference-ktx:1.2.0")
     implementation("androidx.navigation:navigation-fragment-ktx:$vNavigation")
     implementation("androidx.navigation:navigation-ui-ktx:$vNavigation")
-    implementation("io.coil-kt:coil-compose:2.2.1")
+    implementation("io.coil-kt:coil-compose:2.2.2")
 
     // Compose
     implementation("androidx.compose.runtime:runtime:$vCompose")
@@ -158,8 +158,8 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:$vCompose")
     implementation("androidx.compose.runtime:runtime-livedata:$vCompose")
     implementation("androidx.navigation:navigation-compose:$vNavigation")
-    implementation("com.google.android.material:compose-theme-adapter-3:1.0.19")
-    implementation("androidx.compose.material3:material3:1.0.0-beta03")
+    implementation("com.google.android.material:compose-theme-adapter-3:1.0.20")
+    implementation("androidx.compose.material3:material3:1.0.0-rc01")
     implementation("com.google.accompanist:accompanist-flowlayout:$vAccompanist")
     implementation("com.google.accompanist:accompanist-systemuicontroller:$vAccompanist")
     implementation("com.google.accompanist:accompanist-navigation-animation:$vAccompanist")
