@@ -97,7 +97,7 @@
     <string name="apptype_system">Sistemos programėlė</string>
     <string name="other_filters_options">Specialūs filtrai:</string>
     <string name="deleted_backup">Ištrinta atsarginė kopija</string>
-    <string name="split_apks">Perskirti APK:</string>
+    <string name="split_apks">Perskirti APK</string>
     <string name="ignore_battery_optimization_message">Atsarginės kopijos kartais gali sustoti. Kad to išvengtumėte, turėtumėte išjungti baterijos optimizaciją</string>
     <string name="backup_filters">Atsarginės kopijos filtrai:</string>
     <string name="grant_usage_access_message">Tai labai svarbu norint gauti informaciją apie programėlės failų dydžius</string>
@@ -106,7 +106,7 @@
     <string name="enable_encryption_title">Duomenų šifravimas</string>
     <string name="sort_and_filter">Rikiuoti ir filtruoti</string>
     <string name="storage_access">Prieiga prie saugyklos</string>
-    <string name="welcome_to_oabx">Sveiki atvykę į OABX!</string>
+    <string name="welcome_to_oabx">Sveiki atvykę į Neo Backup!</string>
     <string name="delete_all_backups">Ištrinti visas atsargines kopijas</string>
     <string name="radio_launchable">Paleidžiamos programos</string>
     <string name="usage_notes_title">Naudojimo pastabos</string>
@@ -269,7 +269,7 @@
     <string name="empty_filtered_list">Filtruotas sąrašas tuščias.</string>
     <string name="intro_permission_batteryoptimization">Programėlei gali susidurti su tam tikromis problemomis atliekant suplanuotas atsargines kopijas kai kuriose ROM, kuriose naudojama agresyvi baterijos optimizacija, pvz., MIUI, tačiau net ir standartinėje AOSP versijoje gali kilti tokių problemų.</string>
     <string name="prefs_restoreallpermissions">Atkurti su visais leidimais</string>
-    <string name="prefs_allowdowngrade_summary">Leiskite atkurti senesnę įdiegtos programėlės versiją.</string>
+    <string name="prefs_allowdowngrade_summary">Leisti atkurti senesnę įdiegtos programėlės versiją (taikoma tik derinamoms versijoms).</string>
     <string name="prefs_saveappslist_summary">Įrašo programėlių sąrašą į vartotojo atsarginių kopijų kataloge esantį txt failą</string>
     <string name="sched_excludeSystemCheckBox">Neįtraukti sistemos programėlių</string>
     <string name="spec_data">Duomenų naudojimas ir politika</string>
@@ -280,7 +280,7 @@
     <string name="prefs_disableverification">Išjungti „Patvirtinti programėles per USB“</string>
     <string name="prefs_stopcont">STOP-CONT išankstinis ir vėlesnis programėlių apdorojimas atsarginės kopijos kūrimo/atkūrimo metu</string>
     <string name="prefs_copyselfapk">Kopijuoti savo APK</string>
-    <string name="prefs_copyselfapk_summary">Padėkite OAndBackupX kopiją į viršutinį atsarginių kopijų aplanko lygį</string>
+    <string name="prefs_copyselfapk_summary">Padėkite Neo Backup kopiją į viršutinį atsarginių kopijų aplanko lygį</string>
     <string name="prefs_saveappslist">Išsaugoti programėlių sąrašą</string>
     <string name="sched_interval">Intervalas dienomis:</string>
     <string name="sched_timeLeft">Likęs laikas:</string>
@@ -306,4 +306,21 @@
     <string name="prefs_compression_level">Glaudinimo lygis</string>
     <string name="error_pmDataIncompleteException_dataRestoreFailed">Programėlės duomenys nebuvo atkurti.</string>
     <string name="prefs_compression_level_summary">Mažesnė reikšmė glaudina greičiau, bet padaro failus didesniais. Didesnė vertė suglaudina geriau, bet tai užima daugiau laiko.</string>
+    <string name="sortAppSize">Programėlės dydis</string>
+    <string name="sortAppDataSize">Programėlės duomenų dydis</string>
+    <string name="sortBackupSize">Atsarginės kopijos dydis</string>
+    <string name="smsmms_permission_title">SMS / MMS leidimai</string>
+    <string name="prefs_installerpackagename">Diegiklio paketo pavadinimas:</string>
+    <string name="prefs_restorepermissions_summary">Atkurkite leidimus, kurie buvo suteikti programai atsarginės kopijos kūrimo metu. Atminkite, kad kai kurie leidimai negali būti suteikti programiškai, todėl nepavyksta atkurti viso paketo, o „Neo Backup“ tada apima paketo atkūrimą be leidimų.</string>
+    <string name="prefs_dev_settings">Kūrėjo nustatymai</string>
+    <string name="prefs_dev_settings_summary">Nekeiskite, nebent kūrėjas lieptų!</string>
+    <string name="spec_smsmmsjson">SMS / MMS JSON</string>
+    <string name="spec_calllogsjson">Skambučių žurnalai JSON</string>
+    <string name="grant_smsmms_message">Tai būtina, kad galėtumėte sukurti atsarginę kopiją / atkurti SMS / MMS.</string>
+    <string name="spec_fingerprint">Pirštų atspaudai</string>
+    <string name="grant_calllogs_message">Tai būtina norint sukurti atsarginę kopiją / atkurti skambučių žurnalus.</string>
+    <string name="contacts_permission_title">Kontaktų leidimai</string>
+    <string name="calllogs_permission_title">Skambučių žurnalų leidimai</string>
+    <string name="prefs_restorepermissions">Atkurti leidimus</string>
+    <string name="grant_contacts_message">Tai labai svarbu, kad būtų galima susieti kontaktą su SMS/MMS žinute.</string>
 </resources>
