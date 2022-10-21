@@ -119,18 +119,6 @@ val pref_allowDowngrade = BooleanPref(
 
 //---------------------------------------- developer settings
 
-val pref_useMountMaster = BooleanPref(
-    key = "dev.useMountMaster",
-    summary = "use 'su --mount-master' if available",
-    defaultValue = true
-)
-
-val pref_useSu0 = BooleanPref(
-    key = "dev.useSu0",
-    summary = "if --mount-master not available, use 'su 0' instead, otherwise simply 'su'",
-    defaultValue = true
-)
-
 val pref_tapToSelect = BooleanPref(
     key = "dev.tapToSelect",
     summary = "a short tap selects, otherwise a long tap starts selection mode [switch tabs to activate]",

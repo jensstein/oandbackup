@@ -33,7 +33,8 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.findAssetFile
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quoteMultiple
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
-import com.machiav3lli.backup.handler.ShellHandler.Companion.suMountOptions
+import com.machiav3lli.backup.handler.ShellHandler.Companion.suCOption
+import com.machiav3lli.backup.handler.ShellHandler.Companion.suAccessOptions
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.handler.ShellHandler.UnexpectedCommandResult
@@ -558,10 +559,9 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                     if (pref_excludeCache.value) {
                         options += " --exclude " + quote(excludeCache)
                     }
-                    var suOptions = suMountOptions
 
                     val cmd =
-                        "su $suOptions -c sh $qTarScript extract $utilBoxQ $options ${
+                        "su $suAccessOptions $suCOption sh $qTarScript extract $utilBoxQ $options ${
                             quote(
                                 targetDir
                             )

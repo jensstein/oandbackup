@@ -17,15 +17,14 @@
  */
 package com.machiav3lli.backup.utils
 
-import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.preferences.pref_strictHardLinks
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.DATA_EXCLUDED_BASENAMES
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.DATA_EXCLUDED_CACHE_DIRS
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
-import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
+import com.machiav3lli.backup.handler.ShellHandler.FileType
 import com.machiav3lli.backup.items.RootFile
+import com.machiav3lli.backup.preferences.pref_strictHardLinks
 import com.topjohnwu.superuser.io.SuFileOutputStream
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream

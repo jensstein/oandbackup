@@ -35,7 +35,8 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.isFileNotFoundException
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
-import com.machiav3lli.backup.handler.ShellHandler.Companion.suMountOptions
+import com.machiav3lli.backup.handler.ShellHandler.Companion.suCOption
+import com.machiav3lli.backup.handler.ShellHandler.Companion.suAccessOptions
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.ActionResult
@@ -471,9 +472,8 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             if (pref_excludeCache.value) {
                 options += " --exclude ${quote(excludeCache)}"
             }
-            var suOptions = suMountOptions
 
-            val cmd = "su $suOptions -c sh ${quote(tarScript)} create $utilBoxQ $options ${
+            val cmd = "su $suAccessOptions $suCOption sh ${quote(tarScript)} create $utilBoxQ $options ${
                 quote(sourcePath)
             }"
             Timber.i("SHELL: $cmd")

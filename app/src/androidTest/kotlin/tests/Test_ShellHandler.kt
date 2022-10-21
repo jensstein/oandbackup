@@ -27,7 +27,7 @@ class Test_ShellHandler {
                 fileInfo.fileSize
         )
         assertEquals(
-				ShellHandler.FileInfo.FileType.REGULAR_FILE,
+				ShellHandler.FileType.REGULAR_FILE,
                 fileInfo.fileType
         )
     }
@@ -68,7 +68,7 @@ class Test_ShellHandler {
                 fileInfo.fileMode
         )
         assertEquals(
-				ShellHandler.FileInfo.FileType.REGULAR_FILE,
+				ShellHandler.FileType.REGULAR_FILE,
                 fileInfo.fileType
         )
     }
@@ -109,7 +109,7 @@ class Test_ShellHandler {
                 fileInfo.fileMode
         )
         assertEquals(
-				ShellHandler.FileInfo.FileType.REGULAR_FILE,
+				ShellHandler.FileType.REGULAR_FILE,
                 fileInfo.fileType
         )
     }
@@ -134,7 +134,7 @@ class Test_ShellHandler {
                 fileInfo.fileSize
         )
         assertEquals(
-				ShellHandler.FileInfo.FileType.REGULAR_FILE,
+				ShellHandler.FileType.REGULAR_FILE,
                 fileInfo.fileType
         )
     }

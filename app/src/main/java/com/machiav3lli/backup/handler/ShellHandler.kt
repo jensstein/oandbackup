@@ -22,8 +22,6 @@ import android.os.Environment.DIRECTORY_DOCUMENTS
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.preferences.pref_useFindLs
-import com.machiav3lli.backup.preferences.pref_useMountMaster
-import com.machiav3lli.backup.preferences.pref_useSu0
 import com.machiav3lli.backup.utils.BUFFER_SIZE
 import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
 import com.topjohnwu.superuser.Shell
@@ -242,7 +240,7 @@ class ShellHandler {
             .toMutableList()
         if (recursive && !useFindLs) {
             val directories = result
-                .filter { it.fileType == FileInfo.FileType.DIRECTORY }
+                .filter { it.fileType == FileType.DIRECTORY }
                 .toTypedArray()
             directories.forEach { dir ->
                 result.addAll(
@@ -286,8 +284,9 @@ class ShellHandler {
     class UnexpectedCommandResult(message: String, val shellResult: Shell.Result?) :
         Exception(message)
 
-    class UtilboxNotAvailableException(reasons: String) :
-        Exception(reasons)
+    enum class FileType {
+        REGULAR_FILE, BLOCK_DEVICE, CHAR_DEVICE, DIRECTORY, SYMBOLIC_LINK, NAMED_PIPE, SOCKET
+    }
 
     class FileInfo(
         /**
@@ -304,10 +303,6 @@ class ShellHandler {
         var fileSize: Long,
         var fileModTime: Date
     ) {
-        enum class FileType {
-            REGULAR_FILE, BLOCK_DEVICE, CHAR_DEVICE, DIRECTORY, SYMBOLIC_LINK, NAMED_PIPE, SOCKET
-        }
-
         val absolutePath: String = "$absoluteParent/$filePath"
 
         //val fileMode = fileMode
@@ -672,11 +667,15 @@ class ShellHandler {
             return err.isNotEmpty() && err[0].contains("no such file or directory", true)
         }
 
-        val suMountOptions get() =
-            if (pref_useMountMaster.value && ShellHandler.isMountMaster)
+        val suAccessOptions get() =
+            if (ShellHandler.isMountMaster)
                 "--mount-master"
-            else if (pref_useSu0.value)
+            else
                 "0"
+
+        val suCOption get() =
+            if (ShellHandler.isMountMaster)
+                "-c"
             else
                 ""
 

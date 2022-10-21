@@ -6,7 +6,7 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
-import com.machiav3lli.backup.handler.ShellHandler.FileInfo.FileType
+import com.machiav3lli.backup.handler.ShellHandler.FileType
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.RootFile
 import com.machiav3lli.backup.items.StorageFile
@@ -38,10 +38,9 @@ fun suRecursiveCopyFilesToDocument(
                 .build()
             val parentFile = StorageFile.fromUri(context, parentUri)
             when (file.fileType) {
-                FileType.REGULAR_FILE ->
-                    suCopyFileToDocument(file, parentFile)
-                FileType.DIRECTORY -> parentFile.createDirectory(file.filename)
-                else -> Timber.e("SAF does not support ${file.fileType} for ${file.filePath}")
+                FileType.REGULAR_FILE -> suCopyFileToDocument(file, parentFile)
+                FileType.DIRECTORY    -> parentFile.createDirectory(file.filename)
+                else                  -> Timber.e("SAF does not support ${file.fileType} for ${file.filePath}")
             }
         } catch (e: Throwable) {
             LogsHandler.logException(e)
