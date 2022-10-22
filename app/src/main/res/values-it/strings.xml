@@ -2,8 +2,8 @@
 <resources>
     <string name="backup">Backup</string>
     <string name="restore">Ripristino</string>
-    <string name="backupConfirmation">Eseguo backup\?</string>
-    <string name="restoreConfirmation">Eseguo ripristino\?</string>
+    <string name="backupConfirmation">Eseguo il backup\?</string>
+    <string name="restoreConfirmation">Eseguo il ripristino\?</string>
     <string name="handleApk">APK</string>
     <string name="handleData">Dati</string>
     <string name="handleBoth">Entrambi</string>
@@ -32,8 +32,8 @@
     <string name="sortByLabel">Ordina per etichetta</string>
     <string name="sortByPackageName">Ordina per nome</string>
     <string name="sort">Ordina e filtra</string>
-    <string name="uninstallDialogMessage">Disinstallo questa app\?</string>
-    <string name="deleteBackupDialogMessage">Elimino i file di backup\?</string>
+    <string name="uninstallDialogMessage">Disinstallare questa app\?</string>
+    <string name="deleteBackupDialogMessage">Eliminare i file di backup\?</string>
     <string name="dialogOK">OK</string>
     <string name="dialogCancel">Annulla</string>
     <string name="dialogYes">Sì</string>
@@ -63,7 +63,7 @@
     <string name="notInstalledModeDataWarning">L\'app non può essere ripristinata da un backup senza APK</string>
     <string name="shareTitle">Condividi</string>
     <string name="prefs_tools">Strumenti</string>
-    <string name="prefs_batchdelete">Elimino i backup\?</string>
+    <string name="prefs_batchdelete">Eliminare i backup\?</string>
     <string name="batchDeleteMessage">Eliminazione dei backup…</string>
     <string name="batchDeleteNotificationTitle">Elimina i backup</string>
     <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
@@ -155,9 +155,9 @@
     <string name="ignore_battery_optimization_not_supported">Questo dispositivo non supporta l\'opzione per ignorare l\'ottimizzazione della batteria!</string>
     <string name="failed_unzipping">Errore durante la decompressione dei dati, controlla la password di crittografia!</string>
     <string name="help_license">Licenza</string>
-    <string name="split_apks">Split APKs:</string>
+    <string name="split_apks">Split-APK</string>
     <string name="sort_and_filter">Ordina e filtra</string>
-    <string name="enable_encryption_message">Non è sicuro mantenere i tuoi dati sul tuo dispositivo non crittografati. Per la sicurezza dei tuoi dati abilita la crittografia e imposta una password.</string>
+    <string name="enable_encryption_message">Non è sicuro mantenere i tuoi dati non crittografati sul tuo dispositivo. Per la sicurezza dei tuoi dati abilita la crittografia e imposta una password.</string>
     <string name="enable_encryption_title">Crittografia dati</string>
     <string name="cache_size">Dimensione cache:</string>
     <string name="data_size">Dimensione dati:</string>
@@ -170,7 +170,7 @@
     <string name="sortDataSize">Dimensione dati</string>
     <string name="error_updating_schedule_mode">Errore durante l\'aggiornamento %1$s della pianificazione %2$d</string>
     <string name="sched_add">Aggiungi pianificazione</string>
-    <string name="showSplitAPKs">Split-APK</string>
+    <string name="showSplitAPKs">APK diviso</string>
     <string name="prefs_biometriclock_summary">Proteggi l\'app con il blocco biometrico del dispositivo (ad es. impronta digitale, sblocco facciale)</string>
     <string name="prefs_biometriclock">Blocco biometrico</string>
     <string name="dialogSave">Salva</string>
@@ -208,8 +208,9 @@
     <string name="radio_externaldata">Dati esterni</string>
     <string name="fetching_action_list">Recupero elenco delle app per %1$s …</string>
     <plurals name="days_left">
-        <item quantity="one">%d giorno</item>
-        <item quantity="other">%d giorni</item>
+        <item quantity="one">%d giorno,</item>
+        <item quantity="many">%d giorni,</item>
+        <item quantity="other">%d giorni,</item>
     </plurals>
     <string name="intro_permission_batteryoptimization">L\'app può avere alcuni problemi eseguendo backup programmati su alcune ROM che adottano ottimizzazioni della batteria aggressive, ad es. MIUI, ma anche su vanilla AOSP può capitare un problema del genere.</string>
     <string name="help_issues">Problemi noti</string>
@@ -227,7 +228,7 @@
     <string name="stats_updated">Aggiornato</string>
     <string name="radio_launchable">App avviabili</string>
     <string name="prefs_allowdowngrade">Consenti l\'installazione di una versione anteriore</string>
-    <string name="prefs_allowdowngrade_summary">Consenti il ripristino di una versione precedente dell\'app installata.</string>
+    <string name="prefs_allowdowngrade_summary">Consenti il ripristino di una versione precedente dell\'app installata (si applica solo alle versioni di cui è possibile eseguire il debug).</string>
     <string name="prefs_restoreallpermissions">Ripristina con tutte le autorizzazioni</string>
     <string name="prefs_restoreallpermissions_summary">Assegna all\'app ripristinata tutte le autorizzazioni richieste.</string>
     <string name="help_faq">Domande frequenti</string>
@@ -236,6 +237,7 @@
     <string name="help">Aiuto</string>
     <plurals name="updated_apps">
         <item quantity="one">%d app aggiornata</item>
+        <item quantity="many">%d app aggiornate</item>
         <item quantity="other">%d app aggiornate</item>
     </plurals>
     <string name="forceKillMessage">Sei sicuro di voler forzare la chiusura dell\'app\?</string>
@@ -255,6 +257,7 @@
     <string name="filtered_list">Elenco filtrato</string>
     <plurals name="sched_interval_formal">
         <item quantity="one">ogni giorno</item>
+        <item quantity="many">ogni %d giorni</item>
         <item quantity="other">ogni %d giorni</item>
     </plurals>
     <string name="intro_permission_storage_location_warning">Non selezionare la directory di archiviazione principale o la cartella Download, crea una cartella solo per i tuoi backup. Maggiori informazioni su questo nelle FAQ</string>
@@ -359,4 +362,8 @@
     <string name="prefs_user_short">Personale</string>
     <string name="prefs_service_short">Servizio</string>
     <string name="prefs_advanced_short">Avanzate</string>
+    <string name="prefs_squeezenavtext_summary">Consenti il ridimensionamento del testo sotto gli elementi della barra di navigazione per adattarlo alla larghezza disponibile.</string>
+    <string name="prefs_multilineinfochips">Chip informativi multilinea</string>
+    <string name="prefs_multilineinfochips_summary">Consenti ai chip informativi nel foglio dell\'app di estendersi su più righe.</string>
+    <string name="prefs_squeezenavtext">Comprimi testo elemento navigazione</string>
 </resources>

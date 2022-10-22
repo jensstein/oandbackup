@@ -195,7 +195,7 @@
 \n • Восстановление системных приложений должно быть возможно без перезагрузки.
 \n • Создание резервной копии может быть отложено с неограниченным количеством отдельных расписаний, также есть возможность создания настраиваемых уникальных списков, используя список установленных приложений.</string>
     <string name="grant_usage_access_title">Разрешить доступ к использованию</string>
-    <string name="split_apks">Разделенные APK файлы:</string>
+    <string name="split_apks">Разделённые APK файлы</string>
     <string name="prefs_numBackupRevisions_summary">Самая старая версия резервной копии будет удалена при создании новой резервной копии, если их количество превышено. Установите нулевое значение, чтобы сохранить все изменения.</string>
     <string name="prefs_numBackupRevisions">Количество резервных копий</string>
     <string name="prefs_stopcont_summary">Только для экспертов: Это может помочь, если приложение меняет файлы во время резервного копирования и резервное копирование не выполняется.</string>
@@ -247,7 +247,7 @@
     <string name="prefs_saveappslist_summary">Выводит список приложений в текстовый файл в папке с р.к.</string>
     <string name="prefs_saveappslist">Сохранить список приложений</string>
     <string name="prefs_allowdowngrade">Разрешить даунгрейд</string>
-    <string name="prefs_allowdowngrade_summary">Позволить восстановление более старой версии приложения.</string>
+    <string name="prefs_allowdowngrade_summary">Позволить восстановление более старой версии приложения (применимо только к версиям для отладки).</string>
     <string name="prefs_restoreallpermissions">Восстановить со всеми разрешениями</string>
     <string name="prefs_restoreallpermissions_summary">Выдать восстановленным приложениям все запрашиваемые ими разрешения.</string>
     <string name="prefs_disableverification_summary">Отключает эту опцию разработчика во время восстановления APK-файлов и включает её снова после. Это исключает ошибку: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
@@ -364,4 +364,8 @@
     <string name="prefs_advanced_short">Расширенный</string>
     <string name="prefs_tools_short">Инструменты</string>
     <string name="dialog_export_schedules">Экспорт моих расписаний</string>
+    <string name="prefs_multilineinfochips">Многострочные информационные фишки</string>
+    <string name="prefs_multilineinfochips_summary">Разрешить информационным фишкам в листе приложений занимать несколько строк.</string>
+    <string name="prefs_squeezenavtext">Сжать текст элемента навигации</string>
+    <string name="prefs_squeezenavtext_summary">Позволить менять размер текста под элементами панели навигации, чтобы заполнить доступную ширину.</string>
 </resources>

@@ -197,7 +197,7 @@
     <string name="prefs_numBackupRevisions_summary">Nejstarší revize bude odstraněna po vytvoření nové zálohy, pokud bude počet překročen. Nastavte na nulu pro ponechání všech revizí.</string>
     <string name="prefs_housekeepingmoment">Revize času čištění</string>
     <string name="prefs_disableverification">Zakázat Ověřovat aplikace přes USB</string>
-    <string name="prefs_allowdowngrade_summary">Umožnit obnovení starší verze nainstalované aplikace.</string>
+    <string name="prefs_allowdowngrade_summary">Umožnit obnovení starší verze nainstalované aplikace (platí pouze pro ladicí verze).</string>
     <string name="prefs_allowdowngrade">Povolit snížení verze</string>
     <string name="prefs_stopcont">STOP-CONT (před)zpracování aplikací při zálohování/obnově</string>
     <string name="prefs_stopcont_summary">Pouze pro experty: Toto může pomoct, když aplikace mění soubory při záloze a záloha selže.</string>
@@ -242,7 +242,7 @@
     <string name="encrypted_data_title">Šifrovaná data:</string>
     <string name="ignore_battery_optimization_title">Optimalizace baterie</string>
     <string name="ignore_battery_optimization_message">Zálohy se někdy mohou zastavit. Pro zabránění byste měli vypnout optimalizaci baterie</string>
-    <string name="split_apks">Rozdělená APK:</string>
+    <string name="split_apks">Rozdělená APK</string>
     <string name="backup_filters">Filtry záloh:</string>
     <string name="smsmms_permission_title">Oprávnění SMS/MMS</string>
     <string name="grant_smsmms_message">To je nezbytné pro zálohování/obnovu SMS/MMS.</string>
@@ -355,4 +355,8 @@
     <string name="root_is_mandatory">Vzhledem k tomu, že jsou aplikace navzájem izolovány, je pro zálohování a obnovu jejich dat nutný přístup superuser.</string>
     <string name="see_faq">Viz často kladené dotazy!</string>
     <string name="edit_note">Upravit poznámku</string>
+    <string name="prefs_multilineinfochips">Víceřádkové informační karty</string>
+    <string name="prefs_multilineinfochips_summary">Umožnit, aby informační karty v seznamu aplikací přesahovaly více řádků.</string>
+    <string name="prefs_squeezenavtext">Smrsknout text navigačních položek</string>
+    <string name="prefs_squeezenavtext_summary">Umožnit změnu velikosti textu pod položkami navigačního panelu tak, aby se přizpůsobil dostupné šířce.</string>
 </resources>

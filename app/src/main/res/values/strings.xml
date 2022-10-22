@@ -279,7 +279,7 @@
     <string name="help_legend">Legend:</string>
     <string name="help_appTypeHint">* App type\'s icon would be gray if the app is uninstalled and dark gray if the app is disabled.</string>
     <string name="enable_encryption_title">Data Encryption</string>
-    <string name="enable_encryption_message">It\'s not safe to keep your data on your device not encrypted. For the safety of your data enable encryption and set a password.</string>
+    <string name="enable_encryption_message">It\'s not safe to keep your data on your device not encrypted. For the safety of your data, enable encryption and set a password.</string>
     <string name="sort_and_filter"><![CDATA[Sort & Filter]]></string>
     <string name="storage_access">Storage Access</string>
     <string name="welcome_to_oabx">Welcome to Neo Backup!</string>
@@ -332,7 +332,7 @@
     <string name="dialog_export_schedules">Export my schedules</string>
     <string name="dialog_import">Import</string>
     <string name="error_datachanged">The app\'s data has been actively changed while doing the backup. Try killing its process before doing backup</string>
-    <string name="sched_exported">Schedules were exported sucessfully</string>
+    <string name="sched_exported">Schedules were exported successfully</string>
     <string name="sched_imported">Schedule imported successfully</string>
     <string name="logs_share_failed">Log file not found</string>
     <string name="sortAscDesc">Ascending-Descending</string>

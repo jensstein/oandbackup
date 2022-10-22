@@ -168,7 +168,7 @@
     <string name="ignore_battery_optimization_message">Los respaldos podrían detenerse algunas veces. Para evitarlo, deberías desactivar la optimización de batería</string>
     <string name="ignore_battery_optimization_not_supported">Desafortunadamente, ¡este dispositivo no soporta desactivar la optimización de bateria!</string>
     <string name="failed_unzipping">Error descomprimiendo los datos, ¡revisa la contraseña de cifrado!</string>
-    <string name="split_apks">Dividir APKs:</string>
+    <string name="split_apks">Dividir los APKs</string>
     <string name="backup_filters">Filtros de respaldo:</string>
     <string name="grant_usage_access_title">Garantizar acceso al uso</string>
     <string name="grant_usage_access_message">Es esencial para obtener la información de los tamaños de los archivos de las aplicaciones</string>
@@ -180,7 +180,7 @@
     <string name="help_legend">Leyenda:</string>
     <string name="help_appTypeHint">* El icono de tipo de aplicación es gris si la aplicación está desinstalada o gris oscuro si está desactivada.</string>
     <string name="enable_encryption_title">Cifrado de datos</string>
-    <string name="enable_encryption_message">No es seguro guardar las copias de datos sin cifrar. Por su seguridad, activa el cifrado de datos e indica una contraseña.</string>
+    <string name="enable_encryption_message">No es seguro mantener sus datos en su dispositivo sin cifrar. Para la seguridad de sus datos, habilite el cifrado y establezca una contraseña.</string>
     <string name="sort_and_filter">Ordenar y filtrar</string>
     <string name="storage_access">Acceso al almacenamiento</string>
     <string name="welcome_to_oabx">¡Bienvenido a Neo Backup!</string>
@@ -216,6 +216,7 @@
     <string name="prefs_disableverification_summary">Desactiva esta opción de desarrolladores mientras se restauran APKs y lo reactiva al acabar. Soluciona el error: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
     <plurals name="days_left">
         <item quantity="one">%d día,</item>
+        <item quantity="many">%d días,</item>
         <item quantity="other">%d días,</item>
     </plurals>
     <string name="help_issues">Errores conocidos</string>
@@ -226,7 +227,7 @@
     <string name="stats_updated">Actualizado</string>
     <string name="radio_launchable">Aplicaciones lanzables</string>
     <string name="prefs_allowdowngrade">Permitir volver a una versión anterior</string>
-    <string name="prefs_allowdowngrade_summary">Permitir restaurar una versión anterior a la de la aplicación instalada.</string>
+    <string name="prefs_allowdowngrade_summary">Permitir restaurar una versión anterior de la aplicación que tenga instalada (se aplica solo a las versiones depurables).</string>
     <string name="prefs_restoreallpermissions">Restaurar con todos los permisos</string>
     <string name="prefs_restoreallpermissions_summary">Dar a la aplicación restaurada todos los permisos que solicite.</string>
     <string name="help_faq">Preguntas frecuentes</string>
@@ -236,6 +237,7 @@
     <string name="exodus_report">Reporte del Éxodo</string>
     <plurals name="updated_apps">
         <item quantity="one">%d aplicación actualizada</item>
+        <item quantity="many">%d aplicaciones actualizadas</item>
         <item quantity="other">%d aplicaciones actualizadas</item>
     </plurals>
     <string name="app_info">Info-App</string>
@@ -254,6 +256,7 @@
     <string name="prefs_devicelock">Bloqueo del dispositivo</string>
     <plurals name="sched_interval_formal">
         <item quantity="one">cada día</item>
+        <item quantity="many">cada %d días</item>
         <item quantity="other">cada %d días</item>
     </plurals>
     <string name="intro_permission_storage_location_warning">No elegir el directorio principal de almacenamiento o la carpeta Downloads, crear una carpeta solo para tus respaldos. Más sobre esto en el FAQ</string>
@@ -262,7 +265,7 @@
     <string name="sortAscDesc">Ascendente-Descendente</string>
     <string name="logs_share_failed">Archivo de registro no encontrado</string>
     <string name="sched_imported">Las acciones programadas han sido importadas satisfactoriamente</string>
-    <string name="sched_exported">Las acciones programadas han sido exportadas satisfactoriamente</string>
+    <string name="sched_exported">Los horarios se exportaron con éxito</string>
     <string name="error_datachanged">Los datos de la aplicación han sido activamente cambiados mientras se hacía el respaldo. Prueba a detener su proceso antes de hacer el respaldo</string>
     <string name="dialog_import">Importar</string>
     <string name="dialog_export">Exportar</string>
@@ -346,16 +349,20 @@
     <string name="sortDesc">Descendente</string>
     <string name="prefs_loadingtoasts_summary">Mostrando las notificaciones del sistema mientras se carga la lista</string>
     <string name="dismiss">Descartar</string>
-    <string name="supended_apps_cleanup">Limpiar residuos de aplicaciones suspendidas</string>
+    <string name="supended_apps_cleanup">limpiar las aplicaciones suspendidas sobrantes</string>
     <string name="prefs_loadingtoasts">Cargando las notificaciones del sistema</string>
     <string name="prefs_theme_dynamic">Tema dinámico (si está disponible)</string>
     <string name="add_tag">Agregar nueva etiqueta</string>
     <string name="edit_note">Editar nota</string>
-    <string name="root_is_mandatory">Debido a que las aplicaciones están aisladas entre sí, el acceso de superusuario es obligatorio para poder realizar copias de seguridad y restaurar sus datos.</string>
-    <string name="enabled">Habilitado</string>
-    <string name="see_faq">¡Ver la Lista de Preguntas Frecuentes!</string>
+    <string name="root_is_mandatory">Dado que las aplicaciones están aisladas unas de otras, el acceso de superusuario es obligatorio para poder hacer copias de seguridad y restaurar sus datos.</string>
+    <string name="enabled">Activado</string>
+    <string name="see_faq">¡Consulte las preguntas frecuentes!</string>
     <string name="sortAppDataSize">Tamaño de los datos de la aplicación</string>
     <string name="dialog_export_schedules">Exportar mis horarios</string>
-    <string name="delete">Borrar</string>
+    <string name="delete">Eliminar</string>
     <string name="root_missing">¡Falta ROOT!</string>
+    <string name="prefs_multilineinfochips_summary">Permitir que las fichas de información en la hoja de aplicación se extiendan por varias líneas.</string>
+    <string name="prefs_squeezenavtext">Comprimir el texto del elemento de la navegación</string>
+    <string name="prefs_squeezenavtext_summary">Permita que el texto debajo de los elementos de la barra de navegación cambie de tamaño para ajustarse al ancho disponible.</string>
+    <string name="prefs_multilineinfochips">Las fichas con información ocupan varias lineas</string>
 </resources>
