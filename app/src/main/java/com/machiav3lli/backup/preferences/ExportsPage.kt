@@ -29,9 +29,10 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CalendarPlus
 import com.machiav3lli.backup.ui.compose.recycler.ExportedScheduleRecycler
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.viewmodels.ExportsViewModel
@@ -50,7 +51,7 @@ fun ExportsPage(viewModel: ExportsViewModel) {
             floatingActionButton = {
                 ExtendedFloatingActionButton(onClick = viewModel::exportSchedules) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_add_sched),
+                        imageVector = Phosphor.CalendarPlus,
                         contentDescription = stringResource(id = R.string.dialog_export_schedules)
                     )
                     Text(text = stringResource(id = R.string.dialog_export_schedules))

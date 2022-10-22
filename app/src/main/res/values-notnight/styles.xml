@@ -31,7 +31,7 @@
         <item name="colorBackgroundFloating">@color/app_primary_base</item>
         <item name="android:statusBarColor">?colorSurface</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="dialogCornerRadius">@dimen/cards_spacing</item>
+        <item name="dialogCornerRadius">8dp</item>
         <item name="colorControlNormal">@android:color/black</item>
         <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_vv</item>
     </style>

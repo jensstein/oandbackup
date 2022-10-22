@@ -6,7 +6,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.machiav3lli.backup.ui.item.Legend
 
@@ -14,7 +13,7 @@ import com.machiav3lli.backup.ui.item.Legend
 fun LegendItem(item: Legend) {
     CardSubRow(
         text = stringResource(id = item.nameId),
-        icon = painterResource(id = item.iconId),
+        icon = item.icon,
         iconColor = if (item.iconColorId != -1) colorResource(id = item.iconColorId)
         else MaterialTheme.colorScheme.onBackground,
         modifier = Modifier

@@ -112,7 +112,7 @@ object BackupRestoreHelper {
             val apkFile = backupRoot.findFile(filename)
             apkFile?.delete()
             try {
-                val myInfo = context.packageManager.getPackageInfo(BuildConfig.APPLICATION_ID, 0)
+                val myInfo = context.packageManager.getPackageInfo(BuildConfig.APPLICATION_ID, 0) // TODO
                 val fileInfos =
                     shell.suGetDetailedDirectoryContents(myInfo.applicationInfo.sourceDir, false)
                 if (fileInfos.size != 1) {

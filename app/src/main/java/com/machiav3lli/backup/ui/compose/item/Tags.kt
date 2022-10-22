@@ -31,8 +31,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
@@ -40,6 +40,10 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowRow
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.PlusCircle
+import com.machiav3lli.backup.ui.compose.icons.phosphor.X
+import com.machiav3lli.backup.ui.compose.icons.phosphor.XCircle
 
 @Composable
 fun TagsBlock(
@@ -59,7 +63,7 @@ fun TagsBlock(
             tags?.forEach { tag -> TagItem(tag = tag, onClick = onRemove) }
             TagItem(
                 tag = stringResource(id = R.string.add_tag),
-                iconId = R.drawable.ic_add_tag,
+                icon = Phosphor.PlusCircle,
                 action = true,
                 onClick = { viewAddTag = true }
             )
@@ -76,7 +80,7 @@ fun TagsBlock(
 fun TagItem(
     modifier: Modifier = Modifier,
     tag: String,
-    iconId: Int = R.drawable.ic_close,
+    icon: ImageVector = Phosphor.XCircle,
     action: Boolean = false,
     onClick: (String) -> Unit
 ) {
@@ -94,7 +98,7 @@ fun TagItem(
         ),
         trailingIcon = {
             Icon(
-                painter = painterResource(id = iconId),
+                imageVector = icon,
                 contentDescription = stringResource(id = R.string.dialogCancel),
                 modifier = Modifier.size(24.dp)
             )
@@ -146,7 +150,7 @@ fun AddTagView(
             onCancel()
         }) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_close),
+                imageVector = Phosphor.X,
                 contentDescription = stringResource(id = R.string.dialogCancel)
             )
         }
@@ -175,7 +179,7 @@ fun AddTagView(
             tagName = ""
         }) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_add_tag),
+                imageVector = Phosphor.PlusCircle,
                 contentDescription = stringResource(id = R.string.add_tag)
             )
         }

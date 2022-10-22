@@ -212,7 +212,7 @@ fun MainPackageItem(
 
     val menuExpanded = remember { mutableStateOf(false) }
 
-    Timber.i("recompose MainPackageItem ${packageItem.packageName}")
+    //Timber.i("recompose MainPackageItem ${packageItem.packageName}")
 
     OutlinedCard(
         modifier = Modifier,

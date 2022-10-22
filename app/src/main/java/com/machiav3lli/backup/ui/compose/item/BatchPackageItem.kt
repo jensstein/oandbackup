@@ -61,7 +61,7 @@ fun BatchPackageItem(
             }
         )
     }
-    Timber.i("recompose BatchPackageItem ${packageItem.packageName}")
+    //Timber.i("recompose BatchPackageItem ${packageItem.packageName}")
 
     OutlinedCard(
         modifier = Modifier,

@@ -39,8 +39,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.ColorUtils
-import androidx.navigation.NavController
-import androidx.navigation.NavOptions
 import com.google.android.material.color.DynamicColors
 import com.machiav3lli.backup.PREFS_LANGUAGES_DEFAULT
 import com.machiav3lli.backup.R
@@ -193,26 +191,6 @@ val secondaryColor
         8 -> Mint
         else -> ArcticCyan
     }
-
-fun NavController.navigateRight(itemId: Int) = this.navigate(
-    itemId,
-    null,
-    NavOptions.Builder()
-        .setLaunchSingleTop(true)
-        .setExitAnim(R.anim.slide_out_left)
-        .setEnterAnim(R.anim.slide_in_right)
-        .build()
-)
-
-fun NavController.navigateLeft(itemId: Int) = this.navigate(
-    itemId,
-    null,
-    NavOptions.Builder()
-        .setLaunchSingleTop(true)
-        .setExitAnim(R.anim.slide_out_right)
-        .setEnterAnim(R.anim.slide_in_left)
-        .build()
-)
 
 fun Context.restartApp() = startActivity(
     Intent.makeRestartActivityTask(

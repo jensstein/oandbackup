@@ -1,14 +1,24 @@
 package com.machiav3lli.backup.ui.compose.navigation
 
 import android.app.Application
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
@@ -16,14 +26,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.activity
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.PrefsActivityX
 import com.machiav3lli.backup.dbs.ODatabase
-import com.machiav3lli.backup.pages.PermissionsPage
-import com.machiav3lli.backup.pages.WelcomePage
 import com.machiav3lli.backup.pages.BatchPage
 import com.machiav3lli.backup.pages.HomePage
+import com.machiav3lli.backup.pages.PermissionsPage
 import com.machiav3lli.backup.pages.SchedulerPage
+import com.machiav3lli.backup.pages.WelcomePage
 import com.machiav3lli.backup.preferences.AdvancedPrefsPage
 import com.machiav3lli.backup.preferences.ExportsPage
 import com.machiav3lli.backup.preferences.LogsPage
@@ -42,38 +53,44 @@ fun MainNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     application: Application
-) =
-    AnimatedNavHost(
-        modifier = modifier,
-        navController = navController,
-        startDestination = NavItem.Home.destination
-    ) {
-        slideUpComposable(NavItem.Home.destination) {
-            val viewModel = viewModel<HomeViewModel>(factory = HomeViewModel.Factory(application))
-            HomePage(viewModel)
-        }
-        slideUpComposable(route = NavItem.Backup.destination) {
-            val viewModel = viewModel<BatchViewModel>(factory = BatchViewModel.Factory(application))
-            BatchPage(viewModel, true)
-        }
-        slideUpComposable(NavItem.Restore.destination) {
-            val viewModel = viewModel<BatchViewModel>(factory = BatchViewModel.Factory(application))
-            BatchPage(viewModel, false)
-        }
-        slideUpComposable(NavItem.Scheduler.destination) {
-            val viewModel = viewModel<SchedulerViewModel>(
-                factory =
-                SchedulerViewModel.Factory(
-                    ODatabase.getInstance(navController.context).scheduleDao,
-                    application
+) {
+    Column {
+        AnimatedNavHost(
+            modifier = modifier,
+            navController = navController,
+            startDestination = NavItem.Home.destination
+        ) {
+            slideUpComposable(NavItem.Home.destination) {
+                val viewModel =
+                    viewModel<HomeViewModel>(factory = HomeViewModel.Factory(application))
+                HomePage(viewModel)
+            }
+            slideUpComposable(route = NavItem.Backup.destination) {
+                val viewModel =
+                    viewModel<BatchViewModel>(factory = BatchViewModel.Factory(application))
+                BatchPage(viewModel, true)
+            }
+            slideUpComposable(NavItem.Restore.destination) {
+                val viewModel =
+                    viewModel<BatchViewModel>(factory = BatchViewModel.Factory(application))
+                BatchPage(viewModel, false)
+            }
+            slideUpComposable(NavItem.Scheduler.destination) {
+                val viewModel = viewModel<SchedulerViewModel>(
+                    factory =
+                    SchedulerViewModel.Factory(
+                        ODatabase.getInstance(navController.context).scheduleDao,
+                        application
+                    )
                 )
-            )
-            SchedulerPage(viewModel)
-        }
-        activity(NavItem.Settings.destination) {
-            this.activityClass = PrefsActivityX::class
+                SchedulerPage(viewModel)
+            }
+            activity(NavItem.Settings.destination) {
+                this.activityClass = PrefsActivityX::class
+            }
         }
     }
+}
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -81,7 +98,7 @@ fun PrefsNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     application: Application
-) =
+) {
     AnimatedNavHost(
         modifier = modifier,
         navController = navController,
@@ -117,6 +134,7 @@ fun PrefsNavHost(
             LogsPage(viewModel)
         }
     }
+}
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -124,7 +142,7 @@ fun IntroNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     beenWelcomed: Boolean,
-) =
+) {
     AnimatedNavHost(
         modifier = modifier,
         navController = navController,
@@ -141,6 +159,7 @@ fun IntroNavHost(
             this.activityClass = MainActivityX::class
         }
     }
+}
 
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.slideUpComposable(
@@ -169,3 +188,5 @@ fun NavGraphBuilder.fadeComposable(
         composable(it)
     }
 }
+
+

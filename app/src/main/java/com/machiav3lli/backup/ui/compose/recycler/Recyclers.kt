@@ -17,17 +17,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
-import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.preferences.pref_multilineInfoChips
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.preferences.pref_multilineInfoChips
 import com.machiav3lli.backup.ui.compose.item.BackupItem
 import com.machiav3lli.backup.ui.compose.item.BatchPackageItem
 import com.machiav3lli.backup.ui.compose.item.ExportedScheduleItem
@@ -153,8 +151,8 @@ fun InfoChipsBlock(
             list.forEach { chip ->
                 SuggestionChip(
                     icon = {
-                        if (chip.iconId != -1) Icon(
-                            painter = painterResource(id = chip.iconId),
+                        if (chip.icon != null) Icon(
+                            imageVector = chip.icon,
                             contentDescription = chip.text,
                             modifier = Modifier.size(24.dp)
                         )
@@ -185,8 +183,8 @@ fun InfoChipsBlock(
         items(list) { chip ->
             SuggestionChip(
                 icon = {
-                    if (chip.iconId != -1) Icon(
-                        painter = painterResource(id = chip.iconId),
+                    if (chip.icon != null) Icon(
+                        imageVector = chip.icon,
                         contentDescription = chip.text,
                         modifier = Modifier.size(24.dp)
                     )

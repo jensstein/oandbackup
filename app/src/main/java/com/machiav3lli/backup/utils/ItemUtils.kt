@@ -32,6 +32,11 @@ import com.machiav3lli.backup.CHIP_VERSION
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.AsteriskSimple
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CircleWavyWarning
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Spinner
+import com.machiav3lli.backup.ui.compose.icons.phosphor.User
 import com.machiav3lli.backup.ui.compose.navigation.NavItem
 import com.machiav3lli.backup.ui.compose.theme.ColorDisabled
 import com.machiav3lli.backup.ui.compose.theme.ColorNotInstalled
@@ -64,10 +69,10 @@ fun Package.infoChips(): List<InfoChipItem> = listOfNotNull(
     InfoChipItem(
         flag = CHIP_TYPE,
         text = stringResource(if (isSpecial) R.string.apptype_special else if (isSystem) R.string.apptype_system else R.string.apptype_user),
-        iconId = when {
-            isSpecial -> R.drawable.ic_special
-            isSystem -> R.drawable.ic_system
-            else -> R.drawable.ic_user
+        icon = when {
+            isSpecial -> Phosphor.AsteriskSimple
+            isSystem -> Phosphor.Spinner
+            else -> Phosphor.User
         },
         color = when {
             !isInstalled -> ColorNotInstalled
@@ -80,7 +85,7 @@ fun Package.infoChips(): List<InfoChipItem> = listOfNotNull(
     InfoChipItem(
         flag = CHIP_VERSION,
         text = versionName ?: versionCode.toString(),
-        iconId = if (this.isUpdated) R.drawable.ic_updated else -1,
+        icon = if (this.isUpdated) Phosphor.CircleWavyWarning else null,
         color = if (this.isUpdated) ColorUpdated else null,
     ),
     InfoChipItem(
@@ -119,5 +124,7 @@ fun NavDestination.destinationToItem(): NavItem? = listOf(
     NavItem.Backup,
     NavItem.Restore,
     NavItem.Scheduler,
-    NavItem.Settings
+    NavItem.Settings,
+    NavItem.Exports,
+    NavItem.Logs,
 ).find { this.route == it.destination }

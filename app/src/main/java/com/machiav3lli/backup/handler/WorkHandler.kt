@@ -7,6 +7,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.text.Html
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.WorkInfo
@@ -128,13 +132,13 @@ class WorkHandler(appContext: Context) {
         batchesStarted++
         if (batchesStarted == 1)     // first batch in a series
             beginBatches()
-        Timber.d("%%%%% $batchName begin, $batchesStarted batches, thread ${Thread.currentThread().id}")
+        Timber.d("%%%%% $batchName begin, ${batchesStarted} batches, thread ${Thread.currentThread().id}")
         batchesKnown.put(batchName, BatchState())
     }
 
     fun endBatch(batchName: String) {
         batchesStarted--
-        Timber.d("%%%%% $batchName end, $batchesStarted batches, thread ${Thread.currentThread().id}")
+        Timber.d("%%%%% $batchName end, ${batchesStarted} batches, thread ${Thread.currentThread().id}")
         OABX.wakelock(false)
     }
 
@@ -258,7 +262,8 @@ class WorkHandler(appContext: Context) {
         )
 
         val batchesKnown = mutableMapOf<String, BatchState>()
-        var batchesStarted = -1
+        var batchesStarted by mutableStateOf(-1)
+        var packagesState = mutableStateMapOf<String, String>()
 
         var lockProgress = object {}
 
@@ -332,25 +337,31 @@ class WorkHandler(appContext: Context) {
                         WorkInfo.State.SUCCEEDED -> {
                             succeeded++
                             workFinished++
+                            packageName?.let { packagesState.put(it, "OK ") }
                         }
                         WorkInfo.State.FAILED -> {
                             failed++
                             workFinished++
+                            packageName?.let { packagesState.put(it, "BAD") }
                         }
                         WorkInfo.State.CANCELLED -> {
                             canceled++
                             workFinished++
+                            packageName?.let { packagesState.put(it, "STP") }
                         }
                         WorkInfo.State.ENQUEUED -> {
                             queued++
                             workEnqueued++
+                            packageName?.let { packagesState.put(it, "...") }
                         }
                         WorkInfo.State.BLOCKED -> {
                             queued++
                             workBlocked++
+                            packageName?.let { packagesState.put(it, "...") }
                         }
                         WorkInfo.State.RUNNING -> {
                             workRunning++
+                            packageName?.let { packagesState.put(it, operation ?: "...") }
                             when (operation) {
                                 "..." -> queued++
                                 else -> {
@@ -535,6 +546,8 @@ class WorkHandler(appContext: Context) {
                     )
                 }
             } else {
+                packagesState.clear()
+
                 OABX.main?.runOnUiThread {
                     OABX.main?.hideProgress()
                 }
