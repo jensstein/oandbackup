@@ -22,7 +22,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.PowerManager
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,8 +37,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,7 +48,6 @@ import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.classAddress
-import com.machiav3lli.backup.databinding.ActivitySplashBinding
 import com.machiav3lli.backup.preferences.persist_firstLaunch
 import com.machiav3lli.backup.preferences.persist_ignoreBatteryOptimization
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
@@ -116,15 +120,14 @@ fun RootMissing(activity: Activity? = null) {
 
 
 class SplashActivity : BaseActivity() {
-    private lateinit var binding: ActivitySplashBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         OABX.activity = this
         setCustomTheme()
         super.onCreate(savedInstanceState)
         Shell.getShell()
-        binding = ActivitySplashBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContent { SplashPage() }
+
         val powerManager = this.getSystemService(POWER_SERVICE) as PowerManager
 
         if (!checkRootAccess()) {
@@ -159,5 +162,30 @@ class SplashActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         OABX.activity = this
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun SplashPage() {
+        AppTheme {
+            Scaffold(
+                containerColor = MaterialTheme.colorScheme.background
+            ) { paddingValues ->
+                Box(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(
+                            id = if (isSystemInDarkTheme()) R.drawable.ic_launcher_foreground_vv
+                            else R.drawable.ic_launcher_foreground
+                        ),
+                        contentDescription = stringResource(id = R.string.app_name)
+                    )
+                }
+            }
+        }
     }
 }
