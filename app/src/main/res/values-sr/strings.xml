@@ -143,8 +143,6 @@
     <string name="sortDataSize">Величина података</string>
     <string name="prefs_theme">Изглед</string>
     <string name="prefs_theme_light">Светла</string>
-    <string name="prefs_housekeepingmoment_after">Након израде резервне копије</string>
-    <string name="prefs_housekeepingmoment_before">Пре израде резервне копије</string>
     <string name="prefs_encryption">Шифровање</string>
     <string name="sched_add">Закажи</string>
     <string name="app_s_type_title">Тип апликације:</string>
@@ -186,7 +184,6 @@
     <string name="prefs_mediadata">Направи резервну копију фајлова медија</string>
     <string name="prefs_deviceprotecteddata">Направи резервну копију заштићених података уређаја</string>
     <string name="prefs_restorepermissions">Поврати дозволе</string>
-    <string name="prefs_housekeepingmoment">Време трајања чишћења ревизије</string>
     <string name="prefs_disableverification_summary">Онемогућује програмерске опције док се врши повратак АПК-ова и поново омогућује након. Решава грешку: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
     <string name="prefs_allowdowngrade">Дозволи деградирање</string>
     <string name="prefs_stopcont_summary">Само за експерте: Ово може помоћи, ако апликација мења фајлове приликом прављења резервне копије и резервна копија не успе.</string>
@@ -253,7 +250,6 @@
     <string name="launch_app">Покрени апликацију</string>
     <string name="app_info">Информације о апликацији</string>
     <string name="copyOwnApkFailed">Неуспешно копирање АПК-а апликације у директоријум резервних копија</string>
-    <string name="prefs_housekeepingmoment_summary">Конфигурисање да ли се најстарија ревизија брише пре или након израде нове резервне копије како би се ослободио простор који ће користити резервна копија.</string>
     <string name="intro_permission_usageaccess">Апликацији је потребна ова дозвола како би могла да провери статистику и величину података и кеша твојих апликација.</string>
     <string name="intro_permission_batteryoptimization">Апликација можда наиђе на неки проблем приликом обављања заказане израде резервне копије на неким РОМ-овима који поседују агресивну оптимизацију батерије пр. МИУИ, али чак и на фабричким АОСП-овима може доћи до таквог проблема.</string>
     <string name="msg_appkill_warning">Изабраној(ним) апликацији(јама) ће бити дат сигнал за гашење, и наставиће након одрађеног задатка. Провери твоје обрађене апликације након (и избегни њихово покретање док је процес још увек у току).</string>

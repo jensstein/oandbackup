@@ -52,8 +52,8 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -63,6 +63,9 @@ import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.legendList
 import com.machiav3lli.backup.linksList
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretDown
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretUp
 import com.machiav3lli.backup.ui.compose.item.LegendItem
 import com.machiav3lli.backup.ui.compose.item.LinkItem
 import com.machiav3lli.backup.ui.compose.item.RoundButton
@@ -82,7 +85,10 @@ class HelpSheet : BaseSheet() {
     ): View {
         super.onCreate(savedInstanceState)
         return ComposeView(requireContext()).apply {
-            setContent { HelpPage() }
+            setContent {
+                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                HelpPage()
+            }
         }
     }
 
@@ -105,7 +111,7 @@ class HelpSheet : BaseSheet() {
                             .fillMaxWidth()
                             .height(IntrinsicSize.Min)
                             .padding(horizontal = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.Bottom
                     ) {
                         Text(
                             text = stringResource(id = R.string.app_name),
@@ -114,7 +120,7 @@ class HelpSheet : BaseSheet() {
                         )
                         Text(
                             text = BuildConfig.VERSION_NAME,
-                            style = MaterialTheme.typography.titleLarge,
+                            style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier
                                 .padding(start = 8.dp)
@@ -122,7 +128,7 @@ class HelpSheet : BaseSheet() {
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
-                        RoundButton(icon = painterResource(id = R.drawable.ic_arrow_down)) {
+                        RoundButton(icon = Phosphor.CaretDown) {
                             dismissAllowingStateLoss()
                         }
                     }
@@ -195,10 +201,8 @@ class HelpSheet : BaseSheet() {
                                     modifier = Modifier.weight(1f)
                                 )
                                 Icon(
-                                    painter = painterResource(
-                                        id = if (showNotes) R.drawable.ic_arrow_up
-                                        else R.drawable.ic_arrow_down
-                                    ),
+                                    imageVector = if (showNotes) Phosphor.CaretUp
+                                    else Phosphor.CaretDown,
                                     contentDescription = null
                                 )
                             }

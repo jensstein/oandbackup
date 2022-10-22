@@ -60,8 +60,6 @@
     <string name="prefs_user">Käyttäjän asetukset</string>
     <string name="prefs_theme_light">Vaalea</string>
     <string name="prefs_theme_dark">Tumma</string>
-    <string name="prefs_housekeepingmoment_after">Varmuuskopioinnin jälkeen</string>
-    <string name="prefs_housekeepingmoment_before">Ennen varmuuskopiointia</string>
     <string name="prefs_theme_system">Järjestelmän teema</string>
     <string name="prefs_languages">Kieli</string>
     <string name="prefs_language_system">Järjestelmän oletus</string>
@@ -87,7 +85,6 @@
     <string name="prefs_deviceprotecteddata">Varmuuskopioi laitteen suojaama data</string>
     <string name="prefs_deviceprotecteddata_summary">Varmuuskopioi ja palauttaa datan, joka on sijoitettuna kohteessa data/user_de</string>
     <string name="prefs_numBackupRevisions">Varmuuskopioiden versioiden määrä</string>
-    <string name="prefs_housekeepingmoment">Varmuuskopioiden poistamisen ajankohta</string>
     <string name="prefs_compression_level">Pakkaamisen taso</string>
     <string name="prefs_compression_level_summary">Matalampi arvo pakkaa nopeammin, mutta tuottaa suurempia tiedostoja. Suurempi arvo pakkaa tiedostot pienemmäksi, mutta vie enemmän aikaa.</string>
     <string name="prefs_acquirewakelock">Estä laitteen nukahtaminen</string>
@@ -188,7 +185,7 @@
     <string name="copyOwnApkSuccess">Sovelluksen APK kopioitu varmuuskopiokansioon</string>
     <string name="copyOwnApkFailed">Sovellulsen APK:n kopiointi varmuuskopiokansioon epäonnistui</string>
     <string name="filtered_list">Suodatettu lista</string>
-    <string name="write_apps_list_filtered">Kirjoita suodatettu lista sovelluksista tiedostoon</string>
+    <string name="write_apps_list_filtered">Kirjoitti suodatettujen sovellusten listan tiedostoon</string>
     <string name="schedule_failed">Ajastuksen suoritus epäonnistui</string>
     <string name="error_datachanged">Sovelluksen data on muuttunut varmuuskopioinnin aikana. Yritä sovelluksen prosessin lopettamista ennen varmuuskopiointia</string>
     <string name="sched_exported">Ajastusten vienti onnistui</string>
@@ -262,7 +259,6 @@
     <string name="spec_calllogsjson">Puheluhistoria JSON</string>
     <string name="spec_appwidgets">Pienoissovellukset</string>
     <string name="prefs_numBackupRevisions_summary">Vanhin varmuuskopio poistetaan uuden varmuuskopion luomisen yhteydessä, mikäli määrä ylittyy. Aseta arvoksi 0 säilyttääksesi kaikki versiot.</string>
-    <string name="prefs_housekeepingmoment_summary">Valitse, poistetaanko vanhin varmuuskopio ennen vai jälkeen uuden varmuuskopion luomisen, vapauttaaksesi tallennustilaa.</string>
     <string name="prefs_batchdelete_summary">Poista niiden sovellusten varmuuskopiot, jotka eivät ole juuri nyt asennettuna.</string>
     <string name="prefs_copyselfapk_summary">Kopioi Neo Backupin asennustiedosto varmuuskopiointikansion juureen</string>
     <string name="prefs_saveappslist">Tallenna sovelluslista</string>
@@ -273,7 +269,7 @@
     <string name="grant_calllogs_message">Tämä edellytetään, jotta puheluhistorian varmuuskopiointi ja palautus ovat mahdollisia.</string>
     <string name="grant_smsmms_message">Tämä edellytetään, jotta SMS/MMS varmuuskopiointi ja palautus ovat mahdollisia.</string>
     <string name="calllogs_permission_title">Puheluhistorian käyttöoikeus</string>
-    <string name="write_apps_list_all">Kirjoita lista kaikista sovelluksista tiedostoon</string>
+    <string name="write_apps_list_all">Kirjoitti listan kaikista sovelluksista tiedostoon</string>
     <string name="prefs_schedulesexportimport">Vie/tuo ajastuksia</string>
     <string name="prefs_schedulesexportimport_summary">Vie tai tuo listan luomistasi ajastuksista.</string>
     <string name="exodus_report">Exodus-raportti</string>
@@ -328,7 +324,7 @@
     <string name="see_faq">Katso FAQ!</string>
     <string name="prefs_sessionIinstaller">Käytä sessioasentajaa</string>
     <string name="prefs_installerpackagename">Asennuspakkauksen nimi:</string>
-    <string name="intro_welcome_message">Neo Backup (aikaisemmin OAndBackupX) perustuu nimekkääseen OAndBackupiin tavoitteena tuoda OAndBackup vuoteen 202X ja osaksi Neo Applications-kokoelmaa. Sovellus on täysin kokonaan ohjelmoitu, tavoitteena on tehdä siitä vankka kaikkien laitteiden varmuuskopiointityökalu pitkään suunnitteilla olleilla, käyttöä helpottavilla ominaisuuksilla.
+    <string name="intro_welcome_message">Neo Backup (aikaisemmin OAndBackupX) perustuu nimekkääseen OAndBackupiin tavoitteena tuoda OAndBackup vuoteen 202X ja osaksi Neo Applications-kokoelmaa. Sovellus on kokonaan uudelleenohjelmoitu, tavoitteena on tehdä siitä vankka kaikkien laitteiden varmuuskopiointityökalu pitkään suunnitteilla olleilla, käyttöä helpottavilla ominaisuuksilla.
 \nYhteistyö ja kontribuutiot on aina tervetullutta.
 \n
 \n Tämänhetkinen toiminnallisuus:

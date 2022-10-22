@@ -1,5 +1,6 @@
 package com.machiav3lli.backup.dialogs
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -38,19 +41,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Eye
+import com.machiav3lli.backup.ui.compose.icons.phosphor.EyeSlash
 import com.machiav3lli.backup.ui.compose.item.ActionButton
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.SelectableRow
 import com.machiav3lli.backup.ui.item.EnumPref
 import com.machiav3lli.backup.ui.item.ListPref
-import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.ui.item.StringPref
 import kotlinx.coroutines.delay
 
@@ -122,7 +127,7 @@ fun EnumDialogUI(
     onChanged: (() -> Unit) = {}
 ) {
     val context = LocalContext.current
-    var selected by remember { mutableStateOf(OABX.prefInt(pref.key, pref.defaultValue)) }
+    var selected by remember { mutableStateOf(pref.value) }
     val entryPairs = pref.entries.toList()
 
     Card(
@@ -162,8 +167,8 @@ fun EnumDialogUI(
                 }
                 Spacer(Modifier.weight(1f))
                 ElevatedActionButton(text = stringResource(id = R.string.dialogSave)) {
-                    if (OABX.prefInt(pref.key, pref.defaultValue) != selected) {
-                        OABX.setPrefInt(pref.key, selected)
+                    if (pref.value != selected) {
+                        pref.value = selected
                         onChanged()
                     }
                     openDialogCustom.value = false
@@ -180,7 +185,7 @@ fun ListDialogUI(
     onChanged: (() -> Unit) = {}
 ) {
     val context = LocalContext.current
-    var selected by remember { mutableStateOf(OABX.prefString(pref.key, pref.defaultValue)) }
+    var selected by remember { mutableStateOf(pref.value) }
     val entryPairs = pref.entries.toList()
 
     Card(
@@ -222,8 +227,8 @@ fun ListDialogUI(
                 }
                 Spacer(Modifier.weight(1f))
                 ElevatedActionButton(text = stringResource(id = R.string.dialogSave)) {
-                    if (OABX.prefString(pref.key, pref.defaultValue) != selected) {
-                        OABX.setPrefString(pref.key, selected)
+                    if (pref.value != selected) {
+                        pref.value = selected
                         onChanged()
                     }
                     openDialogCustom.value = false
@@ -238,6 +243,7 @@ fun ListDialogUI(
 fun StringDialogUI(
     pref: StringPref,
     isPrivate: Boolean = false,
+    confirm: Boolean = false,
     openDialogCustom: MutableState<Boolean>,
     onChanged: (() -> Unit) = {}
 ) {
@@ -249,12 +255,18 @@ fun StringDialogUI(
         delay(100)
         textFieldFocusRequester.requestFocus()
     }
-    var savedValue by remember {
-        mutableStateOf(
-            if (isPrivate) OABX.prefPrivateString(pref.key, pref.defaultValue)
-            else OABX.prefString(pref.key, pref.defaultValue)
-        )
-    }
+    var savedValue by remember { mutableStateOf(pref.value) }
+    var savedValueConfirm by remember { mutableStateOf("") }
+    var isEdited by remember { mutableStateOf(false) }
+    var notMatching by remember { mutableStateOf(false) }
+
+    val textColor = if (isPrivate) {
+        if (savedValue != savedValueConfirm)
+            Color.Red
+        else
+            Color.Green
+    } else
+        MaterialTheme.colorScheme.onBackground
 
     Card(
         shape = RoundedCornerShape(8.dp),
@@ -262,6 +274,9 @@ fun StringDialogUI(
         elevation = CardDefaults.elevatedCardElevation(8.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background)
     ) {
+        // from https://stackoverflow.com/questions/65304229/toggle-password-field-jetpack-compose
+        var isPasswordVisible by remember { mutableStateOf(!isPrivate) }  // rememberSavable?
+
         Column(
             modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -272,19 +287,81 @@ fun StringDialogUI(
                 modifier = Modifier
                     .fillMaxWidth()
                     .focusRequester(textFieldFocusRequester),
-                value = savedValue,
+                value = if (isEdited || !isPrivate) savedValue else "",
                 colors = TextFieldDefaults.textFieldColors(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
+                    textColor = textColor
                 ),
                 shape = MaterialTheme.shapes.medium,
                 singleLine = true,
-                onValueChange = { savedValue = it },
-                visualTransformation = if (isPrivate) PasswordVisualTransformation() else VisualTransformation.None,
-                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                onValueChange = {
+                    isEdited = true
+                    savedValue = it
+                },
+                visualTransformation = if (isPasswordVisible)
+                    VisualTransformation.None
+                else
+                    PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done,
+                    keyboardType = if (isPrivate) KeyboardType.Password else KeyboardType.Text
+                ),
                 keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+                trailingIcon = {
+                    if (isPrivate)
+                        IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                            Icon(
+                                imageVector = if (isPasswordVisible) Phosphor.EyeSlash else Phosphor.Eye,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurface,
+                            )
+                        }
+                },
+                placeholder = {
+                    if (isPrivate && pref.value.isNotEmpty() and !isEdited) {
+                        if (isPasswordVisible)
+                            Text(pref.value)
+                        else
+                            Text("**********")
+                    } else if (!isPrivate) {
+                        Text(pref.value)
+                    }
+                }
             )
-
+            if (isPrivate && confirm) {
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    value = savedValueConfirm,
+                    colors = TextFieldDefaults.textFieldColors(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        textColor = textColor
+                    ),
+                    shape = MaterialTheme.shapes.medium,
+                    singleLine = true,
+                    onValueChange = {
+                        isEdited = true
+                        savedValueConfirm = it
+                    },
+                    visualTransformation = if (isPasswordVisible)
+                        VisualTransformation.None
+                    else
+                        PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Done,
+                        keyboardType = KeyboardType.Password
+                    ),
+                    keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+                )
+            }
+            AnimatedVisibility(visible = notMatching) {
+                Text(
+                    text = stringResource(id = R.string.prefs_password_match_false),
+                    color = MaterialTheme.colorScheme.tertiary
+                )
+            }
             Row(
                 Modifier.fillMaxWidth()
             ) {
@@ -293,15 +370,15 @@ fun StringDialogUI(
                 }
                 Spacer(Modifier.weight(1f))
                 ElevatedActionButton(text = stringResource(id = R.string.dialogSave)) {
-                    if ((isPrivate &&
-                                OABX.prefPrivateString(pref.key, pref.defaultValue) != savedValue)
-                        || OABX.prefString(pref.key, pref.defaultValue) != savedValue
-                    ) {
-                        if (isPrivate) OABX.setPrefPrivateString(pref.key, savedValue)
-                        else OABX.setPrefString(pref.key, savedValue)
-                        onChanged()
+                    if (!confirm or (savedValue == savedValueConfirm)) {
+                        if (pref.value != savedValue) {
+                            pref.value = savedValue
+                            onChanged()
+                        }
+                        openDialogCustom.value = false
+                    } else {
+                        notMatching = true
                     }
-                    openDialogCustom.value = false
                 }
             }
         }

@@ -28,7 +28,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.MODE_ALL
@@ -160,7 +159,7 @@ fun MainPackageContextMenu(
                 expanded.value = false
                 val packages = selectedWithBackups
                 packages.onEach {
-                    BackupRestoreHelper.housekeepingPackageBackups(it, false)
+                    BackupRestoreHelper.housekeepingPackageBackups(it)
                     selection[it] = false
                 }
             }
@@ -212,7 +211,7 @@ fun MainPackageItem(
 
     val menuExpanded = remember { mutableStateOf(false) }
 
-    Timber.i("recompose MainPackageItem ${packageItem.packageName}")
+    //Timber.i("recompose MainPackageItem ${packageItem.packageName}")
 
     OutlinedCard(
         modifier = Modifier,

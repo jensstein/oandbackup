@@ -25,7 +25,6 @@ import com.machiav3lli.backup.preferences.pref_biometricLock
 import com.machiav3lli.backup.preferences.pref_deviceLock
 import com.machiav3lli.backup.preferences.pref_encryption
 import com.machiav3lli.backup.preferences.pref_password
-import com.machiav3lli.backup.preferences.pref_passwordConfirmation
 import com.machiav3lli.backup.preferences.pref_pauseApps
 import com.machiav3lli.backup.preferences.pref_pmSuspend
 import com.machiav3lli.backup.preferences.pref_shadowRootFile
@@ -59,13 +58,15 @@ const val NAV_MAIN = 0
 const val NAV_PREFS = 1
 
 const val PREFS_LANGUAGES_DEFAULT = "system"
+const val EXTRA_PACKAGE_NAME = "packageName"
+const val EXTRA_SCHEDULE_ID = "scheduleId"
+const val EXTRA_STATS = "stats"
 
 val Context.PrefsDependencies: Map<Pref, Boolean>
     get() = mutableMapOf(
         pref_biometricLock to (isBiometricLockAvailable() && isDeviceLockEnabled()),
         pref_deviceLock to isDeviceLockAvailable(),
         pref_password to pref_encryption.value,
-        pref_passwordConfirmation to pref_encryption.value,
         pref_pmSuspend to pref_pauseApps.value,
         pref_shadowRootFile to pref_allowShadowingDefault.value
     )
@@ -249,27 +250,3 @@ val BACKUP_DIRECTORY_INTENT = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
 fun classAddress(address: String): String = PREFS_SHARED_PRIVATE + address
 
 fun exodusUrl(app: String): String = "https://reports.exodus-privacy.eu.org/reports/$app/latest"
-
-
-const val HOUSEKEEPING_BEFORE = 0
-const val HOUSEKEEPING_AFTER = 1
-
-val housekeepingOptions = mapOf(
-    HOUSEKEEPING_BEFORE to R.string.prefs_housekeepingmoment_before,
-    HOUSEKEEPING_AFTER to R.string.prefs_housekeepingmoment_after
-)
-
-enum class HousekeepingMoment(val value: String) {
-    BEFORE("before"), AFTER("after");
-
-    companion object {
-        fun fromString(value: String): HousekeepingMoment {
-            for (enumValue in values()) {
-                if (enumValue.value == value) {
-                    return enumValue
-                }
-            }
-            throw IllegalArgumentException("No constant with value '$value'")
-        }
-    }
-}

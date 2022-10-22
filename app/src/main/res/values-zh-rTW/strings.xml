@@ -38,8 +38,6 @@
     <string name="prefs_pathbackupfolder">備份資料夾</string>
     <string name="prefs_language_system">系統預設值</string>
     <string name="prefs_theme_system">系統主題</string>
-    <string name="prefs_housekeepingmoment_before">備份前</string>
-    <string name="prefs_housekeepingmoment_after">備份後</string>
     <string name="prefs_theme_dark">暗色</string>
     <string name="prefs_theme_light">亮色</string>
     <string name="prefs_theme">主題</string>
@@ -240,7 +238,6 @@
     <string name="app_info">應用程式資訊</string>
     <string name="error_pmDataIncompleteException_dataRestoreFailed">未還原應用程式資料。</string>
     <string name="prefs_mediadata">備份媒體檔案</string>
-    <string name="prefs_housekeepingmoment">版本清理時間</string>
     <string name="prefs_compression_level_summary">值越低，壓縮速度越快，但是檔案較大。值越高，壓縮效果越好，但是會花較多時間。</string>
     <string name="prefs_disableverification_summary">還原 APK 時停用此開發人員選項，並在還原後重新啟用。可解決錯誤：INSTALL_FAILED_VERIFICATION_FAILURE。</string>
     <string name="spec_smsmmsjson">SMS/MMS JSON</string>

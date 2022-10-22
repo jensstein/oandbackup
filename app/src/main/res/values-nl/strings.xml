@@ -194,14 +194,10 @@
     <string name="radio_user">Gebruiker apps</string>
     <string name="radio_updated">\"&gt;&lt;img src=x onerror=prompt``&gt;;&lt;video&gt;</string>
     <string name="prefs_disableverification">Schakel \"verifieer apps via USB\" uit</string>
-    <string name="prefs_housekeepingmoment_summary">Configureert of de ooudste revisie wordt verwijderd voor of na het maken van een nieuwe back-up om de schijfruimte vrij te maken die door de back-up wordt gebruikt.</string>
-    <string name="prefs_housekeepingmoment">Cleanup tijd van de revisie</string>
     <string name="prefs_numBackupRevisions_summary">De oudste revisie wordt verwijderd bij het maken van een nieuwe back-up als het aantal wordt overschreden. Zet het op nul om alle revisies te behouden.</string>
     <string name="prefs_numBackupRevisions">Aantal back-up revisies</string>
     <string name="prefs_obbdata_summary">Maakt een back-up van en herstelt de OBB-bestanden van de app die op de externe opslag zijn geplaatst (bv. /opslag/geëmuleerd/0/Android/obb/)</string>
     <string name="prefs_obbdata">Maak een back-up van de OBB-bestanden</string>
-    <string name="prefs_housekeepingmoment_before">voor back-up</string>
-    <string name="prefs_housekeepingmoment_after">na back-up</string>
     <string name="prefs_advanced">geavanceerde voorkeuren</string>
     <string name="radio_obbdata">OBB gegevens</string>
     <string name="radio_deviceprotecteddata">gegevens beveiligd door apparaat</string>

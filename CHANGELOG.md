@@ -1,5 +1,39 @@
 CHANGELOG
 =========
+8.2.0 (22.10.2022) +150 Commits
+------------------
+- Add: Support for themed icon on A13
+- Add: Option to backup no_backup files
+- Add: Option for multiline InfoChips Pref
+- Add: Option to Squeeze NavItems' text instead of ellipsis
+- Add: Note about downgrading being only supported by debuggable packages
+- Add: Selectable Home items with context menu (needs heavy testing)
+- Update: New icons (Phosphor icons)
+- Update: Allow to backup the app
+- Update: TopBar layout
+- Update: Set better fitting view composition strategy for Sheets
+- Update: Make progress bars global
+- Update: Migrate SplashActivity to compose
+- Update: BackupItem's layout to better fit low dpi and huge fonts
+- Update: Improve error messages to include a log
+- Update: Revamp password dialog
+- Update: Show error message when passwords don't match
+- Fix: Handling when apk is not called base.apk
+- Fix: Auto updating AppSheet after uninstall/enable/disable/restore
+- Fix: Crash on recreating app with a Sheet initiated
+- Fix: Crash on prefs having wrong data
+- Fix: Forwarding to Main directly from Intro
+- Fix: Tonal surface follows set accent color
+- Fix: Not respecting default Backup prefs
+- Fix: StringPref value not shown
+- Fix: Password field not being marked as password
+- Fix: Device/biometric lock prompt throwing exception
+- Fix: SeekBar's layout
+- Fix: TopBar title for Exports & Logs
+- Fix: Version name alignment in HelpSheet
+- Remove: Tint for Prefs' icons
+- Remove: Xml-based unused resources (replaced with compose-based)
+
 8.1.3 (20.09.2022) +50 Commits
 ------------------
 - Update: Migrate navigation fully to Compose

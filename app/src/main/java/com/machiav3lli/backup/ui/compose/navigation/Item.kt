@@ -1,53 +1,66 @@
 package com.machiav3lli.backup.ui.compose.navigation
 
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArchiveTray
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Bug
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CalendarX
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ClockCounterClockwise
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Flask
+import com.machiav3lli.backup.ui.compose.icons.phosphor.GearSix
+import com.machiav3lli.backup.ui.compose.icons.phosphor.House
+import com.machiav3lli.backup.ui.compose.icons.phosphor.SlidersHorizontal
+import com.machiav3lli.backup.ui.compose.icons.phosphor.UserGear
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Warning
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Wrench
 
-sealed class NavItem(var title: Int, var icon: Int, var destination: String) {
+sealed class NavItem(var title: Int, var icon: ImageVector, var destination: String) {
     object Welcome :
-        NavItem(R.string.welcome_to_oabx, R.drawable.ic_home, "intro_welcome")
+        NavItem(R.string.welcome_to_oabx, Phosphor.House, "intro_welcome")
 
     object Permissions :
-        NavItem(R.string.permission_not_granted, R.drawable.ic_issue, "intro_permissions")
+        NavItem(R.string.permission_not_granted, Phosphor.Warning, "intro_permissions")
 
     object Home :
-        NavItem(R.string.home, R.drawable.ic_home, "home")
+        NavItem(R.string.home, Phosphor.House, "home")
 
     object Backup :
-        NavItem(R.string.backup, R.drawable.ic_backup, "batch_backup")
+        NavItem(R.string.backup, Phosphor.ArchiveTray, "batch_backup")
 
     object Restore :
-        NavItem(R.string.restore, R.drawable.ic_restore, "batch_restore")
+        NavItem(R.string.restore, Phosphor.ClockCounterClockwise, "batch_restore")
 
     object Scheduler :
-        NavItem(R.string.sched_title, R.drawable.ic_scheduler, "scheduler")
+        NavItem(R.string.sched_title, Phosphor.CalendarX, "scheduler")
 
     object Main :
-        NavItem(R.string.main, R.drawable.ic_home, "main")
+        NavItem(R.string.main, Phosphor.House, "main")
 
     object Settings :
-        NavItem(R.string.prefs_title, R.drawable.ic_settings, "settings")
+        NavItem(R.string.prefs_title, Phosphor.GearSix, "settings")
 
     object UserPrefs :
-        NavItem(R.string.prefs_user_short, R.drawable.ic_prefs_user, "prefs_user")
+        NavItem(R.string.prefs_user_short, Phosphor.UserGear, "prefs_user")
 
     object ServicePrefs :
-        NavItem(R.string.prefs_service_short, R.drawable.ic_prefs_service, "prefs_service")
+        NavItem(R.string.prefs_service_short, Phosphor.SlidersHorizontal, "prefs_service")
 
     object AdvancedPrefs :
-        NavItem(R.string.prefs_advanced_short, R.drawable.ic_prefs_advanced, "prefs_advanced")
+        NavItem(R.string.prefs_advanced_short, Phosphor.Flask, "prefs_advanced")
 
     object ToolsPrefs :
-        NavItem(R.string.prefs_tools_short, R.drawable.ic_prefs_tools, "prefs_tools")
+        NavItem(R.string.prefs_tools_short, Phosphor.Wrench, "prefs_tools")
 
     object Exports : NavItem(
         R.string.prefs_schedulesexportimport,
-        R.drawable.ic_scheduler,
+        Phosphor.CalendarX,
         "prefs_tools/exports"
     )
 
     object Logs : NavItem(
         R.string.prefs_logviewer,
-        R.drawable.ic_log,
+        Phosphor.Bug,
         "prefs_tools/logs"
     )
 }

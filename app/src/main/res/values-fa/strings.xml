@@ -64,8 +64,6 @@
     <string name="prefs_theme">پوسته</string>
     <string name="prefs_theme_light">روشن</string>
     <string name="prefs_theme_dark">تیره</string>
-    <string name="prefs_housekeepingmoment_after">پس از پشتیبان‌گیری</string>
-    <string name="prefs_housekeepingmoment_before">پیش از پشتیبان‌گیری</string>
     <string name="prefs_theme_system">پوسته سیستم</string>
     <string name="prefs_languages">زبان</string>
     <string name="prefs_language_system">پیشفرض سیستم</string>

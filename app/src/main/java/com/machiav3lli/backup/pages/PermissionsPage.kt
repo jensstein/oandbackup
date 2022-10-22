@@ -47,14 +47,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import com.machiav3lli.backup.preferences.persist_ignoreBatteryOptimization
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.IntroActivityX
+import com.machiav3lli.backup.preferences.persist_ignoreBatteryOptimization
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowRight
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.PermissionItem
 import com.machiav3lli.backup.ui.item.Permission
@@ -141,7 +142,7 @@ fun PermissionsPage() {
                     ElevatedActionButton(
                         modifier = Modifier.padding(horizontal = 24.dp),
                         text = stringResource(id = R.string.dialog_start),
-                        icon = painterResource(id = R.drawable.ic_arrow_forward),
+                        icon = Phosphor.ArrowRight,
                     ) {
                         introActivityX.moveTo(3)
                     }

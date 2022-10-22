@@ -183,7 +183,7 @@
     <string name="welcome_to_oabx">Selamat datang di Neo Backup!</string>
     <string name="storage_access">Akses Penyimpanan</string>
     <string name="sort_and_filter">Urutkan &amp; Saring</string>
-    <string name="enable_encryption_message">Tidak aman menyimpan data Anda di perangkat Anda yang tidak dienkripsi. Untuk keamanan data Anda, aktifkan enkripsi dan setel kata sandi.</string>
+    <string name="enable_encryption_message">Tidak aman untuk menyimpan data anda di perangkat anda yang tidak dienkripsi. Untuk keamanan data anda, aktifkan enkripsi dan setel kata sandi.</string>
     <string name="enable_encryption_title">Enkripsi data</string>
     <string name="help_appTypeHint">* Ikon jenis aplikasi akan berwarna abu-abu jika aplikasi dicopot dan abu-abu tua jika aplikasi dinonaktifkan.</string>
     <string name="help_legend">Legenda:</string>
@@ -198,14 +198,10 @@
     <string name="prefs_stopcont_summary">Hanya ahli: Ini dapat membantu, jika aplikasi mengubah file selama pencadangan dan pencadangan gagal.</string>
     <string name="prefs_disableverification_summary">Menonaktifkan opsi pengembang ini saat memulihkan APK dan mengaktifkannya kembali setelahnya. Memecahkan kesalahan: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
     <string name="prefs_disableverification">Nonaktifkan Verifikasi aplikasi melalui USB</string>
-    <string name="prefs_housekeepingmoment_summary">Mengkonfigurasi apakah revisi terlama dihapus sebelum atau setelah membuat cadangan baru untuk mengosongkan ruang penyimpanan yang digunakan oleh cadangan.</string>
-    <string name="prefs_housekeepingmoment">Waktu pembersihan revisi</string>
     <string name="prefs_numBackupRevisions_summary">Revisi terlama akan dihapus saat membuat cadangan baru jika jumlahnya terlampaui. Setel ke nol untuk menyimpan semua revisi.</string>
     <string name="prefs_numBackupRevisions">Jumlah revisi cadangan</string>
     <string name="prefs_biometriclock_summary">Amankan aplikasi dengan kunci biometrik perangkat (misalnya sidik jari, buka kunci wajah)</string>
     <string name="prefs_biometriclock">Kunci biometrik</string>
-    <string name="prefs_housekeepingmoment_before">Sebelum Pencadangan</string>
-    <string name="prefs_housekeepingmoment_after">Setelah Pencadangan</string>
     <string name="prefs_advanced">Preferensi lanjutan</string>
     <string name="radio_obbdata">Data OBB</string>
     <string name="radio_deviceprotecteddata">Data yang Dilindungi Perangkat</string>

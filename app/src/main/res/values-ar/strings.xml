@@ -49,7 +49,6 @@
     <string name="batchrestore">استعادة متعددة</string>
     <string name="batchbackup">نسخ احتياطي متعدد</string>
     <string name="refresh">تحديث</string>
-    <string name="prefs_housekeepingmoment">وقت تنظيف النسخ</string>
     <string name="prefs_numBackupRevisions_summary">سيتم حذف النسخة الأقدم عند إنشاء نسخة احتياطية جديدة إذا تم تجاوز الرقم. اضبطه على صفر للاحتفاظ بجميع المراجعات.</string>
     <string name="prefs_numBackupRevisions">عدد النسخ الاحتياطية</string>
     <string name="prefs_deviceprotecteddata_summary">النسخ الاحتياطي واستعادة البيانات التي يتم وضعها في data / user_de</string>
@@ -78,8 +77,6 @@
     <string name="prefs_language_system">افتراضي النظام</string>
     <string name="prefs_languages">اللغة</string>
     <string name="prefs_theme_system">ثيم النظام</string>
-    <string name="prefs_housekeepingmoment_before">قبل النسخ الاحتياطي</string>
-    <string name="prefs_housekeepingmoment_after">بعد النسخ الاحتياطي</string>
     <string name="prefs_theme_dark">داكن</string>
     <string name="prefs_theme_light">فاتح</string>
     <string name="prefs_theme">الثيم</string>
@@ -175,13 +172,12 @@
     <string name="prefs_stopcont_summary">الخبراء فقط: هذا يمكن أن يساعد ، إذا كان التطبيق يقوم بتغيير الملفات أثناء النسخ الاحتياطي وفشل النسخ الاحتياطي.</string>
     <string name="prefs_stopcont">STOP-CONT قبل وما بعد معالجة التطبيقات على النسخ الاحتياطي / استعادة</string>
     <string name="prefs_allowdowngrade">السماح بخفض النسخة</string>
-    <string name="prefs_allowdowngrade_summary">السماح باستعادة إصدار أقدم من التطبيق المثبت.</string>
+    <string name="prefs_allowdowngrade_summary">السماح باستعادة إصدار قديم من التطبيق المثبت (ينطبق فقط على الإصدارات القابلة للتصحيح).</string>
     <string name="prefs_restoreallpermissions">الاستعادة مع كافة الأذونات</string>
     <string name="prefs_restoreallpermissions_summary">امنح التطبيق المستعاد جميع الأذونات التي يطلبها.</string>
     <string name="prefs_disableverification_summary">تعطيل خيار المطور هذا أثناء استعادة ملفات APK وإعادة تمكينه بعد ذلك. حل للخطأ: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
     <string name="prefs_disableverification">تعطيل التحقق من التطبيقات عبر USB</string>
     <string name="prefs_acquirewakelock">منع النوم</string>
-    <string name="prefs_housekeepingmoment_summary">تحديد إن وجب حذف أقدم نسخة احتياطية قبل أو بعد إنشاء نسخة احتياطية جديدة لتحرير مساحة القرص التي تستخدمها النسخة الاحتياطية.</string>
     <string name="prefs_enablespecial_summary">لا تزال بحاجة إلى اختبار مكثف، حاول مع أخذ الأعتبار بالخطورة بانه قد يتسبب في حدوث اعادة اقلاع متكرر(بوتلوب). الردود دائمًا موضع ترحيب.</string>
     <string name="prefs_devicelock_summary">تأمين التطبيق باستخدام القفل الخاص بالجهاز</string>
     <string name="prefs_devicelock">قفل الجهاز</string>
@@ -238,7 +234,7 @@
     <string name="welcome_to_oabx">مرحبا بك في Neo Backup!</string>
     <string name="storage_access">الوصول إلى التخزين</string>
     <string name="sort_and_filter">فرز &amp; وتصفية</string>
-    <string name="enable_encryption_message">ليس من الآمن إبقاء بياناتك على جهازك غير مشفرة. لسلامة البيانات الخاصة بك تمكين التشفير وتعيين كلمة مرور.</string>
+    <string name="enable_encryption_message">ليس من الآمن عدم تشفير بياناتك على جهازك. من أجل سلامة بياناتك، قم بتمكين التشفير وتعيين كلمة مرور.</string>
     <string name="enable_encryption_title">تشفير البيانات</string>
     <string name="help_legend">اسطوره:</string>
     <string name="help_faq">الأسئلة المتداولة</string>
@@ -249,7 +245,7 @@
     <string name="grant_usage_access_message">هذا أمر ضروري للحصول على معلومات حول أحجام ملفات التطبيق</string>
     <string name="grant_usage_access_title">منح الوصول إلى الاستخدام</string>
     <string name="backup_filters">مرشحات النسخ الاحتياطي:</string>
-    <string name="split_apks">التطبيقات المقسمة APKs:</string>
+    <string name="split_apks">التطبيقات المقسمة APKs</string>
     <string name="ignore_battery_optimization_message">النسخ الاحتياطي قد تتوقف أحياناً لمنع ذلك، يجب إيقاف تشغيل تحسين البطارية</string>
     <string name="ignore_battery_optimization_title">تحسين البطارية</string>
     <string name="spec_appwidgets">التطبيقات المصغرة</string>
@@ -364,4 +360,8 @@
     <string name="prefs_advanced_short">متقدم</string>
     <string name="prefs_tools_short">الأدوات</string>
     <string name="prefs_service_short">خدمة</string>
+    <string name="prefs_squeezenavtext">الضغط على نص عنصر التنقل</string>
+    <string name="prefs_multilineinfochips_summary">اسمح لمقتطفات المعلومات في ورقة التطبيق بالامتداد عبر أسطر متعددة.</string>
+    <string name="prefs_squeezenavtext_summary">السماح بتغيير حجم النص ضمن عناصر شريط التنقل ليتناسب مع العرض المتوفر.</string>
+    <string name="prefs_multilineinfochips">مقتطفات موسعة متعددة الاسطر</string>
 </resources>

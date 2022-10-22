@@ -155,7 +155,7 @@
     <string name="ignore_battery_optimization_message">备份有时会意外停止。为避免这种情况，请关闭电池优化</string>
     <string name="ignore_battery_optimization_not_supported">此设备不支持忽略电池优化！</string>
     <string name="failed_unzipping">解压数据时出错，请检查加密密码是否正确！</string>
-    <string name="split_apks">拆分的APKs：</string>
+    <string name="split_apks">拆分的 APK</string>
     <string name="backup_filters">备份筛选：</string>
     <string name="grant_usage_access_title">允许查看使用情况</string>
     <string name="grant_usage_access_message">这用于获取有关应用程序文件大小的相关信息</string>
@@ -200,10 +200,6 @@
     <string name="prefs_stopcont_summary">仅供专家使用: 如果应用程序在备份过程中更改文件，且备份失败，这可能会有所帮助。</string>
     <string name="prefs_stopcont">在备份或还原之前强制停止应用程序进程</string>
     <string name="prefs_advanced">高级设置</string>
-    <string name="prefs_housekeepingmoment_summary">在创建新备份之前或之后删除最早的备份以释放所使用的磁盘空间。</string>
-    <string name="prefs_housekeepingmoment">自动清理备份的时间</string>
-    <string name="prefs_housekeepingmoment_before">备份前</string>
-    <string name="prefs_housekeepingmoment_after">备份后</string>
     <string name="radio_obbdata">OBB 数据</string>
     <string name="radio_deviceprotecteddata">受保护的设备数据</string>
     <string name="radio_externaldata">外部数据</string>
@@ -223,7 +219,7 @@
     <string name="stats_updated">已更新</string>
     <string name="radio_launchable">可启动的应用</string>
     <string name="prefs_allowdowngrade">允许降级还原</string>
-    <string name="prefs_allowdowngrade_summary">允许还原的应用程序版本比已安装应用程序的版本更旧。</string>
+    <string name="prefs_allowdowngrade_summary">允许还原到比已安装版本要老的版本（仅适用于可调试版本）。</string>
     <string name="prefs_restoreallpermissions">全权限还原</string>
     <string name="prefs_restoreallpermissions_summary">还原应用程序时授予应用所需的全部权限。</string>
     <string name="help_faq">常见问题</string>

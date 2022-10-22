@@ -152,7 +152,6 @@
     <string name="prefs_biometriclock_summary">Apsaugokite programėlę naudodami prietaiso biometrinį užraktą (pvz., piršto atspaudą, veido atrakinimą)</string>
     <string name="prefs_password">Šifravimo slaptažodis</string>
     <string name="prefs_numBackupRevisions_summary">Jei šis skaičius viršijamas, kuriant naują atsarginę kopiją bus ištrinta seniausia versija. Nustatykite nulį, kad būtų išsaugotos visos peržiūros.</string>
-    <string name="prefs_housekeepingmoment">Peržiūros valymo laikas</string>
     <string name="showNewAndUpdated">Naujas ir atnaujintas programėles</string>
     <string name="showSplitAPKs">Perskirti-APK</string>
     <string name="showOnlyApkBackedUp">Programėlės tik su APK atsargine kopija</string>
@@ -175,8 +174,6 @@
     <string name="batchDeleteNothingToDelete">Nėra šalintinų atsarginių kopijų</string>
     <string name="enablePackage">Įjungti programėlę</string>
     <string name="enablePackageTitle">Įgalinti programėlę vartotojams</string>
-    <string name="prefs_housekeepingmoment_after">Po atsarginės kopijos sukūrimo</string>
-    <string name="prefs_housekeepingmoment_before">Prieš darant atsarginę kopiją</string>
     <string name="prefs_theme_system">Sistemos tema</string>
     <string name="prefs_pathbackupfolder">Atsarginių kopijų aplankas</string>
     <string name="prefs_rememberfiltering">Įsiminti rikiavimą ir filtravimą</string>
@@ -257,7 +254,6 @@
     <string name="prefs_externaldata_summary">Atkuria atsargines kopijas ir atkuria duomenis, kurie yra išorinėje saugykloje (pvz., /storage/emulated/0/Android/data/)</string>
     <string name="prefs_deviceprotecteddata_summary">Kuria atsarginę kopiją ir atkuria duomenis, įrašytus į data/user_de</string>
     <string name="intro_permission_usageaccess">Programėlei reikia šio leidimo, kad ji galėtų patikrinti jūsų programėlių statistiką ir duomenų dydį bei talpyklą.</string>
-    <string name="prefs_housekeepingmoment_summary">Nustato, ar seniausia versija bus ištrinta prieš kuriant naują atsarginę kopiją, ar po to, kai ji bus sukurta, kad būtų atlaisvinta atsarginės kopijos naudojama vieta diske.</string>
     <string name="prefs_batchdelete_summary">Ištrina visų šiuo metu neįdiegtų programėlių atsargines kopijas.</string>
     <string name="sched_hourOfDay">Dienos metas:</string>
     <string name="sched_mode">Atsarginio kopijavimo režimas:</string>

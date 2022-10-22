@@ -1,20 +1,20 @@
 <html>
     <body>
-        <p><strong>Backup modes</strong>: An app can be backed up with only its apk, only its data or both. An app not currently installed can only be restored if the apk is present.
+        <p><strong>Modos de copia de seguridad</strong>: se puede hacer una copia de seguridad de una aplicación solo con su apk, solo con sus datos o con ambos. Una aplicación que no está instalada actualmente solo se puede restaurar si el apk está presente. Se admiten tres tipos especiales de datos adicionales a los datos principales: datos protegidos del dispositivo, datos externos y datos obb.
         </p>
-        <p><strong>Borrar respaldo</strong>: Elimina los archivos del respaldo de una instancia específica. Mientras que "eliminar respaldos" elimina todos los respaldos de la aplicación elegida.
+        <p><strong>Eliminar copia de seguridad</strong>: elimina los archivos de copia de seguridad de una instancia de copia de seguridad específica. Mientras que "eliminar copias de seguridad", elimine todas las copias de seguridad de la aplicación elegida.
         </p>
-        <p><strong>Desinstalar</strong>: Algo más agresivo que una desinstalación normal. Además de hacer una desinstalación normal a través de los comandos de Android, la desinstalación desde OAndBackupX elimina los archivos que la aplicación pueda haber dejado en /data/app-lib/.
+        <p><strong>Desinstalación</strong>: Algo más agresiva que una desinstalación normal. Además de realizar una desinstalación normal a través de los comandos de Android, la desinstalación desde OAndBackupX elimina los archivos que la aplicación pueda haber dejado en /data/app-lib/.
         </p>
-        <p><strong>Habilitar / deshabilitar</strong>: Utiliza el script de Android `pm` para habilitar o deshabilitar una aplicación. Deshabilitar una aplicación la elimina de la interfaz usual de usuario sin desinstalarla. Se puede utilizar para habilitar o deshabilitar una aplicación para varios usuarios a la vez (si el dispositivo tiene varios usuarios). Los usuarios se identifican con un ID, por ejemplo, 0 es el primer usuario (propietario), 10 suele ser el perfil de trabajo.
+        <p><strong>Habilitar / deshabilitar</strong>: Utiliza el script de Android " pm " para habilitar o deshabilitar una aplicación. Desactivar una aplicación la elimina de la interfaz de usuario normal sin desinstalarla. Se puede utilizar para habilitar o deshabilitar una aplicación para varios usuarios a la vez (si el dispositivo tiene varios usuarios). Los usuarios se identifican con un ID, por ejemplo, 0 es el primer usuario (propietario) 10 suele ser el perfil de trabajo.
         </p>
-        <p><strong>Múltiples usuarios</strong>: El multiusuario es todavía algo experimental pero debería funcionar. Habilitar y deshabilitar sólo funciona después de una instalación inicial (no necesariamente desde OAndBackupx) o la restauración de la aplicación.
+        <p><strong>Usuarios Múltiples</strong>: El modo multiusuario es todavía algo experimental pero debería funcionar. Habilitarlo y deshabilitarlo sólo funciona después de una instalación inicial (no necesariamente desde OAndBackupx) o restaurando la aplicación.
         </p>
-        <p><strong>Aplicaciones sin sistema</strong>: el respaldo y la restauración de las aplicaciones sin sistema instaladas como módulos Magisk no es compatible y el intento podría conducir a un fallo del sistema y obligar a formatear y flashear de nuevo.
+        <p><strong>Aplicaciones System-less</strong>: el respaldo y la restauración de las aplicaciones System-less como los módulos de Magisk , no es compatible y el intento podría conducir a un fallo del sistema y obligar a formatear y flashear de nuevo.
         </p>
-        <p><strong>Navegación</strong>: La barra de navegación tiene "Configuración", "Inicio", "Respaldo por lotes", "Restauración por lotes" y "Programar respaldos" (en ese orden). El número de aplicaciones actualizadas después de su último respaldo se presentará como una notificación en el botón "Inicio".
+        <p><strong>Navegación</strong>: la barra de navegación tiene "Configuración", "Inicio", "Copia de seguridad por lotes", "Restauración por lotes" y "Programar copias de seguridad" (en ese orden). El número de aplicaciones actualizadas después de su última copia de seguridad se presentará como una notificación en el botón "Inicio".
         </p>
-        <p><strong>Aplicaciones que utilizan almacén de claves</strong>: Android tiene un almacenamiento cifrado para los datos sensibles. Las aplicaciones que hacen uso de esto para almacenar datos de acceso o algunas claves para su funcionamiento no pueden ser restauradas con éxito. Dos ejemplos de estas aplicaciones son Signal y Element(Riot).
+        <p><strong>Aplicaciones que usan Keystore</strong>: Android tiene un almacenamiento encriptado para datos confidenciales. Las aplicaciones que hacen uso de esto para almacenar datos de inicio de sesión o algunas claves para su función no se pueden restaurar con éxito. Dos ejemplos de tales aplicaciones son Signal y Element (Riot).
         </p>
     </body>
 </html>

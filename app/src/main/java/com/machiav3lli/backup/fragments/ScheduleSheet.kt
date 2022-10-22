@@ -52,12 +52,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
+import com.machiav3lli.backup.EXTRA_SCHEDULE_ID
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.R
@@ -72,6 +73,12 @@ import com.machiav3lli.backup.mainFilterChipItems
 import com.machiav3lli.backup.schedSpecialFilterChipItems
 import com.machiav3lli.backup.scheduleBackupModeChipItems
 import com.machiav3lli.backup.services.ScheduleService
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArchiveTray
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretDown
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CheckCircle
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Prohibit
+import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
 import com.machiav3lli.backup.ui.compose.item.CheckChip
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.RoundButton
@@ -92,9 +99,18 @@ import java.time.LocalTime
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
-class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
+class ScheduleSheet() : BaseSheet() {
     private lateinit var viewModel: ScheduleViewModel
     private lateinit var database: ODatabase
+
+    constructor(scheduleId: Long) : this() {
+        arguments = Bundle().apply {
+            putLong(EXTRA_SCHEDULE_ID, scheduleId)
+        }
+    }
+
+    private val scheduleId: Long
+        get() = requireArguments().getLong(EXTRA_SCHEDULE_ID)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -109,6 +125,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
         viewModel = ViewModelProvider(this, viewModelFactory)[ScheduleViewModel::class.java]
 
         return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent { SchedulePage() }
         }
     }
@@ -304,7 +321,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                                 Spacer(modifier = Modifier.weight(1f))
                                 ElevatedActionButton(
                                     text = stringResource(id = R.string.delete),
-                                    icon = painterResource(id = R.drawable.ic_delete),
+                                    icon = Phosphor.TrashSimple,
                                     positive = false,
                                     fullWidth = false
                                 ) {
@@ -315,7 +332,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                             }
                             ElevatedActionButton(
                                 text = stringResource(id = R.string.sched_activateButton),
-                                icon = painterResource(id = R.drawable.ic_backup),
+                                icon = Phosphor.ArchiveTray,
                                 fullWidth = true,
                                 onClick = { startSchedule() }
                             )
@@ -345,7 +362,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                                     textAlign = TextAlign.Center,
                                 )
                                 RoundButton(
-                                    icon = painterResource(id = R.drawable.ic_arrow_down),
+                                    icon = Phosphor.CaretDown,
                                     description = stringResource(id = R.string.dismiss),
                                     onClick = { dismissAllowingStateLoss() }
                                 )
@@ -391,7 +408,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                                 horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 ElevatedActionButton(
-                                    icon = painterResource(id = R.drawable.ic_customlist),
+                                    icon = Phosphor.CheckCircle,
                                     text = stringResource(id = R.string.customListTitle),
                                     positive = it.customList.isNotEmpty(),
                                     fullWidth = true,
@@ -399,7 +416,7 @@ class ScheduleSheet(private val scheduleId: Long) : BaseSheet() {
                                     onClick = { showCustomListDialog() }
                                 )
                                 ElevatedActionButton(
-                                    icon = painterResource(id = R.drawable.ic_blocklist),
+                                    icon = Phosphor.Prohibit,
                                     text = stringResource(id = R.string.sched_blocklist),
                                     positive = it.blockList.isNotEmpty(),
                                     fullWidth = true,

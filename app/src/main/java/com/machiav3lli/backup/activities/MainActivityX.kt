@@ -22,8 +22,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Looper
-import android.os.Process
-import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -34,6 +32,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -46,7 +45,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
@@ -55,30 +53,30 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.NAV_MAIN
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.addInfoText
-import com.machiav3lli.backup.preferences.pref_catchUncaughtException
-import com.machiav3lli.backup.preferences.pref_maxCrashLines
-import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.fragments.SortFilterSheet
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.WorkHandler
-import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.SortFilterModel
-import com.machiav3lli.backup.preferences.pref_useLogCat
+import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
+import com.machiav3lli.backup.preferences.pref_catchUncaughtException
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowsClockwise
+import com.machiav3lli.backup.ui.compose.icons.phosphor.FunnelSimple
+import com.machiav3lli.backup.ui.compose.icons.phosphor.GearSix
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Prohibit
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.ExpandableSearchAction
+import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TopBar
-import com.machiav3lli.backup.ui.compose.item.TopBarButton
 import com.machiav3lli.backup.ui.compose.navigation.BottomNavBar
 import com.machiav3lli.backup.ui.compose.navigation.MainNavHost
 import com.machiav3lli.backup.ui.compose.navigation.NavItem
@@ -106,8 +104,6 @@ class MainActivityX : BaseActivity() {
 
     private lateinit var prefs: SharedPreferences
     private val crScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
-    private lateinit var refreshViewController: RefreshViewController // TODO replace
-    private lateinit var progressViewController: ProgressViewController // TODO replace
 
     val viewModel by viewModels<MainViewModel> {
         MainViewModel.Factory(ODatabase.getInstance(OABX.context), application)
@@ -196,30 +192,39 @@ class MainActivityX : BaseActivity() {
 
                         if (navController.currentDestination?.route == NavItem.Scheduler.destination)
                             TopBar(title = stringResource(id = pageTitle)) {
-                                TopBarButton(
-                                    icon = painterResource(id = R.drawable.ic_blocklist),
-                                    description = stringResource(id = R.string.sched_blocklist),
-                                    onClick = {
-                                        GlobalScope.launch(Dispatchers.IO) {
-                                            val blocklistedPackages =
-                                                context.viewModel.blocklist.value
-                                                    ?.mapNotNull { it.packageName }.orEmpty()
+                                RoundButton(
+                                    modifier = Modifier
+                                        .padding(horizontal = 4.dp)
+                                        .size(32.dp),
+                                    icon = Phosphor.Prohibit,
+                                    description = stringResource(id = R.string.sched_blocklist)
+                                ) {
+                                    GlobalScope.launch(Dispatchers.IO) {
+                                        val blocklistedPackages =
+                                            context.viewModel.blocklist.value
+                                                ?.mapNotNull { it.packageName }.orEmpty()
 
-                                            PackagesListDialogFragment(
-                                                blocklistedPackages,
-                                                MAIN_FILTER_DEFAULT,
-                                                true
-                                            ) { newList: Set<String> ->
-                                                context.viewModel.updateBlocklist(
-                                                    newList
-                                                )
-                                            }.show(
-                                                context.supportFragmentManager,
-                                                "BLOCKLIST_DIALOG"
+                                        PackagesListDialogFragment(
+                                            blocklistedPackages,
+                                            MAIN_FILTER_DEFAULT,
+                                            true
+                                        ) { newList: Set<String> ->
+                                            context.viewModel.updateBlocklist(
+                                                newList
                                             )
-                                        }
+                                        }.show(
+                                            context.supportFragmentManager,
+                                            "BLOCKLIST_DIALOG"
+                                        )
                                     }
-                                )
+                                }
+                                RoundButton(
+                                    modifier = Modifier
+                                        .padding(horizontal = 4.dp)
+                                        .size(32.dp),
+                                    description = stringResource(id = R.string.prefs_title),
+                                    icon = Phosphor.GearSix
+                                ) { navController.navigate(NavItem.Settings.destination) }
                             }
                         else Column() {
                             TopBar(title = stringResource(id = pageTitle)) {
@@ -233,6 +238,20 @@ class MainActivityX : BaseActivity() {
                                         crScope.launch { _searchQuery.emit("") }
                                     }
                                 )
+                                RoundButton(
+                                    modifier = Modifier
+                                        .padding(horizontal = 4.dp)
+                                        .size(32.dp),
+                                    description = stringResource(id = R.string.refresh),
+                                    icon = Phosphor.ArrowsClockwise
+                                ) { OABX.main?.needRefresh = true }
+                                RoundButton(
+                                    modifier = Modifier
+                                        .padding(horizontal = 4.dp)
+                                        .size(32.dp),
+                                    description = stringResource(id = R.string.prefs_title),
+                                    icon = Phosphor.GearSix
+                                ) { navController.navigate(NavItem.Settings.destination) }
                             }
                             Row(
                                 modifier = Modifier
@@ -241,7 +260,7 @@ class MainActivityX : BaseActivity() {
                                 horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 ElevatedActionButton(
-                                    icon = painterResource(id = R.drawable.ic_blocklist),
+                                    icon = Phosphor.Prohibit,
                                     text = stringResource(id = R.string.sched_blocklist),
                                     positive = false
                                 ) {
@@ -263,12 +282,11 @@ class MainActivityX : BaseActivity() {
                                 }
                                 Spacer(modifier = Modifier.weight(1f))
                                 ElevatedActionButton(
-                                    icon = painterResource(id = R.drawable.ic_filter),
+                                    icon = Phosphor.FunnelSimple,
                                     text = stringResource(id = R.string.sort_and_filter),
                                     positive = true
                                 ) {
                                     sheetSortFilter = SortFilterSheet(
-                                        sortFilterModel,
                                         getStats(
                                             list?.applyFilter(sortFilterModel, context)
                                                 ?: emptyList()
@@ -282,8 +300,11 @@ class MainActivityX : BaseActivity() {
                             }
                         }
                     },
-                    bottomBar = { BottomNavBar(page = NAV_MAIN, navController = navController) }
+                    bottomBar = {
+                        BottomNavBar(page = NAV_MAIN, navController = navController)
+                    }
                 ) { paddingValues ->
+
                     MainNavHost(
                         modifier = Modifier.padding(paddingValues),
                         navController = navController,
@@ -308,6 +329,7 @@ class MainActivityX : BaseActivity() {
         super.onDestroy()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         finishAffinity()
     }
@@ -356,27 +378,16 @@ class MainActivityX : BaseActivity() {
         viewModel.updatePackage(packageName)
     }
 
-    fun setRefreshViewController(refreshViewController: RefreshViewController) {
-        this.refreshViewController = refreshViewController
-    }
-
     fun refreshView() {
         crScope.launch { _modelSortFilter.emit(sortFilterModel) }
-        if (::refreshViewController.isInitialized) refreshViewController.refreshView(viewModel.packageList.value)
-    }
-
-    fun setProgressViewController(progressViewController: ProgressViewController) {
-        this.progressViewController = progressViewController
     }
 
     fun updateProgress(progress: Int, max: Int) {
-        if (::progressViewController.isInitialized)
-            this.progressViewController.updateProgress(progress, max)
+        viewModel.progress.value = Pair(true, 1f * progress / max)
     }
 
     fun hideProgress() {
-        if (::progressViewController.isInitialized)
-            this.progressViewController.hideProgress()
+        viewModel.progress.value = Pair(false, 0f)
     }
 
     fun showSnackBar(message: String) {
@@ -421,7 +432,14 @@ class MainActivityX : BaseActivity() {
         selectedItems.forEach { (packageName, mode) ->
 
             val oneTimeWorkRequest =
-                AppActionWork.Request(packageName, mode, backupBoolean, notificationId, batchName, true)
+                AppActionWork.Request(
+                    packageName,
+                    mode,
+                    backupBoolean,
+                    notificationId,
+                    batchName,
+                    true
+                )
             worksList.add(oneTimeWorkRequest)
 
             val oneTimeWorkLiveData = WorkManager.getInstance(OABX.context)
@@ -465,13 +483,4 @@ class MainActivityX : BaseActivity() {
                 .enqueue()
         }
     }
-}
-
-interface RefreshViewController {
-    fun refreshView(list: MutableList<Package>?)
-}
-
-interface ProgressViewController {
-    fun updateProgress(progress: Int, max: Int)
-    fun hideProgress()
 }
