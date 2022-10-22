@@ -64,15 +64,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import com.machiav3lli.backup.ActionListener
 import com.machiav3lli.backup.BUNDLE_USERS
+import com.machiav3lli.backup.EXTRA_PACKAGE_NAME
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.ODatabase
@@ -117,42 +119,51 @@ import com.machiav3lli.backup.viewmodels.AppSheetViewModel
 import kotlinx.coroutines.CoroutineScope
 import timber.log.Timber
 
-class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
-    private lateinit var viewModel: AppSheetViewModel
+class AppSheet() : BaseSheet(), ActionListener {
+
+    val viewModel: AppSheetViewModel by viewModels {
+        AppSheetViewModel.Factory(
+            mPackage,
+            ODatabase.getInstance(requireContext()),
+            ShellCommands(users),
+            requireActivity().application
+        )
+    }
+
+    constructor(packageName: String) : this() {
+        arguments = Bundle().apply {
+            putString(EXTRA_PACKAGE_NAME, packageName)
+        }
+    }
+
+    val packageName: String
+        get() = requireArguments().getString(EXTRA_PACKAGE_NAME)!!
+    var users: ArrayList<String> = ArrayList()
+    private var mPackage: Package? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val database = ODatabase.getInstance(requireContext())
-        val users =
-            if (savedInstanceState != null) savedInstanceState.getStringArrayList(BUNDLE_USERS) else ArrayList()
-        val shellCommands = ShellCommands(users)
-        val viewModelFactory =
-            AppSheetViewModel.Factory(
-                appInfo,
-                database,
-                shellCommands,
-                requireActivity().application
-            )
-        viewModel = ViewModelProvider(this, viewModelFactory)[AppSheetViewModel::class.java]
+        mPackage =
+            requireMainActivity().viewModel.packageList.value?.find { it.packageName == packageName }
+        users = savedInstanceState?.getStringArrayList(BUNDLE_USERS) ?: ArrayList()
 
         return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent { AppPage() }
         }
-    }
-
-    fun updateApp(app: Package) {
-        viewModel.thePackage.value = app
     }
 
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
     @Composable
     fun AppPage() {
-        val thePackage by viewModel.thePackage.observeAsState()
+        val thePackages by requireMainActivity().viewModel.packageList.observeAsState()
+        val thePackage: Package? = thePackages?.find { it.packageName == packageName }
         val snackbarText by viewModel.snackbarText.observeAsState()
         val appExtras by viewModel.appExtras.observeAsState()
+        val refreshNow by viewModel.refreshNow
         val snackbarHostState = remember { SnackbarHostState() }
         val nestedScrollConnection = rememberNestedScrollInteropConnection()
         val coroutineScope = rememberCoroutineScope()
@@ -164,9 +175,9 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                     else "android.resource://${packageInfo.packageName}/${packageInfo.packageInfo.icon}"
                 )
             }
-            if (viewModel.refreshNow) {
-                requireMainActivity().updatePackage(packageInfo.packageName ?: "")
-                viewModel.refreshNow = false
+            if (refreshNow) {
+                requireMainActivity().updatePackage(packageInfo.packageName)
+                viewModel.refreshNow.value = false
             }
 
 
@@ -516,11 +527,9 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                     if (pref_useWorkManagerForSingleManualJob.value) {
                         OABX.main?.startBatchAction(
                             true,
-                            listOf(this.appInfo.packageName),
+                            listOf(packageName),
                             listOf(mode)
                         ) {
-                            //viewModel.refreshNow.value = true
-                            // TODO refresh only the influenced packages
                             it.removeObserver(this)
                         }
                     } else {
@@ -534,11 +543,9 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                     if (pref_useWorkManagerForSingleManualJob.value) {
                         OABX.main?.startBatchAction(
                             false,
-                            listOf(this.appInfo.packageName),
+                            listOf(packageName),
                             listOf(mode)
                         ) {
-                            //viewModel.refreshNow.value = true
-                            // TODO refresh only the influenced packages
                             it.removeObserver(this)
                         }
                     } else {
@@ -652,7 +659,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
         try {
             Timber.i("${app.packageLabel}: Wiping cache")
             ShellCommands.wipeCache(requireContext(), app)
-            viewModel.refreshNow = true
+            viewModel.refreshNow.value = true
         } catch (e: ShellCommands.ShellActionFailedException) {
             // Not a critical issue
             val errorMessage: String =

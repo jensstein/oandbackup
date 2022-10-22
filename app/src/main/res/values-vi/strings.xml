@@ -63,7 +63,7 @@
     <string name="welcome_to_oabx">Chào mừng đến Neo Backup!</string>
     <string name="storage_access">Quyền truy cập bộ nhớ</string>
     <string name="sort_and_filter">Sắp xếp &amp; Lọc</string>
-    <string name="enable_encryption_message">Việc giữ cho dữ liệu của bạn trên thiết bị không được mã hoá là không an toàn. Để dữ liệu của bạn được an toàn, hãy bật mã hoá và đặt một mật khẩu.</string>
+    <string name="enable_encryption_message">Việc giữ cho dữ liệu của bạn trên thiết bị không được mã hoá là không an toàn. Vì sự an toàn dữ liệu của bạn, hãy bật mã hoá và đặt một mật khẩu.</string>
     <string name="enable_encryption_title">Mã hoá dữ liệu</string>
     <string name="help_appTypeHint">* Biểu tượng loại ứng dụng sẽ là xám nếu ứng dụng bị gỡ cài đặt và xám đậm nếu ứng dụng bị tắt.</string>
     <string name="help_legend">Chú giải:</string>
@@ -77,7 +77,7 @@
     <string name="grant_usage_access_message">Việc này là cần thiết để lấy thông tin về kích cỡ các tệp của các ứng dụng</string>
     <string name="grant_usage_access_title">Cấp quyền truy cập dữ liệu sử dụng</string>
     <string name="backup_filters">Bộ lọc sao lưu:</string>
-    <string name="split_apks">APK tách:</string>
+    <string name="split_apks">Tách rời APKs</string>
     <string name="failed_unzipping">Lỗi khi giải nén zip dữ liệu, hãy kiểm tra mật khẩu mã hoá!</string>
     <string name="ignore_battery_optimization_not_supported">Không may mắn là thiết bị này không hỗ trợ bỏ qua tối ưu hoá pin!</string>
     <string name="ignore_battery_optimization_message">Các bản sao lưu đôi khi có thể dừng. Để ngăn chặn điều này, bạn nên tắt tối ưu hoá pin</string>
@@ -146,7 +146,7 @@
     <string name="prefs_stopcont_summary">Chỉ dành cho chuyên gia: Việc này có thể giúp, nếu ứng dụng đang thay đổi các tệp trong khi sao lưu và việc sao lưu thất bại.</string>
     <string name="prefs_stopcont">Dừng-tiếp tục xử lý trước và sau các ứng dụng khi sao lưu/khôi phục</string>
     <string name="prefs_allowdowngrade">Cho phép hạ cấp</string>
-    <string name="prefs_allowdowngrade_summary">Cho phép khôi phục một phiên bản cũ hơn của ứng dụng đã cài đặt.</string>
+    <string name="prefs_allowdowngrade_summary">Cho phép khôi phục một phiên bản cũ hơn của ứng dụng đã cài đặt (chỉ áp dụng cho các phiên bản có thể vá lỗi).</string>
     <string name="prefs_restoreallpermissions">Khôi phục với tất cả quyền</string>
     <string name="prefs_restoreallpermissions_summary">Cho ứng dụng được khôi phục tất cả quyền mà nó hỏi.</string>
     <string name="prefs_disableverification_summary">Tắt tuỳ chọn cho nhà phát triển này trong khi khôi phục các tệp APK và bật lại nó sau đó. Giải quyết lỗi: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
@@ -345,4 +345,8 @@
     <string name="prefs_advanced_short">Nâng cao</string>
     <string name="prefs_dev_settings">Cài đặt nhà phát triển</string>
     <string name="prefs_dev_settings_summary">Đừng thay đổi trừ khi nhà phát triển bảo thế!</string>
+    <string name="prefs_multilineinfochips">Chip thông tin nhiều dòng</string>
+    <string name="prefs_squeezenavtext">Bó gọn chữ ở mục điều hướng</string>
+    <string name="prefs_multilineinfochips_summary">Cho phép chip trong nơi chứa thông tin ứng dụng hiển thị nhiều dòng.</string>
+    <string name="prefs_squeezenavtext_summary">Cho phép chữ dưới mục thanh điều hướng được thay đổi kích thước để vừa với độ rộng có sẵn.</string>
 </resources>

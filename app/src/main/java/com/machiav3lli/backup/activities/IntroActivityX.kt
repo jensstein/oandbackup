@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.core.content.ContextCompat
@@ -37,6 +38,7 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.classAddress
 import com.machiav3lli.backup.preferences.persist_beenWelcomed
 import com.machiav3lli.backup.ui.compose.navigation.IntroNavHost
 import com.machiav3lli.backup.ui.compose.navigation.NavItem
@@ -64,6 +66,15 @@ class IntroActivityX : BaseActivity() {
                     containerColor = Color.Transparent,
                     contentColor = MaterialTheme.colorScheme.onBackground
                 ) { paddingValues ->
+
+                    SideEffect {
+                        if (intent.extras != null) {
+                            val fragmentNumber =
+                                intent.extras!!.getInt(classAddress(".fragmentNumber"))
+                            moveTo(fragmentNumber)
+                        }
+                    }
+
                     IntroNavHost(
                         modifier = Modifier.padding(paddingValues),
                         navController = navController,
@@ -107,7 +118,7 @@ class IntroActivityX : BaseActivity() {
                 .setAllowedAuthenticators(DEVICE_CREDENTIAL or (if (withBiometric) BIOMETRIC_WEAK else 0))
                 .build()
             biometricPrompt.authenticate(promptInfo)
-        } catch(e: Throwable) {
+        } catch (e: Throwable) {
             startActivity(Intent(this, MainActivityX::class.java))
         }
     }

@@ -58,6 +58,9 @@ const val NAV_MAIN = 0
 const val NAV_PREFS = 1
 
 const val PREFS_LANGUAGES_DEFAULT = "system"
+const val EXTRA_PACKAGE_NAME = "packageName"
+const val EXTRA_SCHEDULE_ID = "scheduleId"
+const val EXTRA_STATS = "stats"
 
 val Context.PrefsDependencies: Map<Pref, Boolean>
     get() = mutableMapOf(

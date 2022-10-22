@@ -142,6 +142,7 @@ abstract class BaseAppAction protected constructor(
         )
         val DATA_EXCLUDED_NAMES = listOfNotNull(
             "com.google.android.gms.appid.xml",
+            "com.machiav3lli.backup.xml", // encrypted prefs file
             "cache",
             "trash",
             ".thumbnails",
@@ -158,7 +159,6 @@ abstract class BaseAppAction protected constructor(
             | ^com\.(google\.)?android\.gms
             | ^com\.(google\.)?android\.gsf
             | ^com\.(google\.)?android\.providers\.media\b.*
-            | """ + Regex.escape(BuildConfig.APPLICATION_ID) + """
             """).toRegex()
 
         val doNotStop = ("""(?x)

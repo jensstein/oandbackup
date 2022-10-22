@@ -52,6 +52,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -84,7 +85,10 @@ class HelpSheet : BaseSheet() {
     ): View {
         super.onCreate(savedInstanceState)
         return ComposeView(requireContext()).apply {
-            setContent { HelpPage() }
+            setContent {
+                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                HelpPage()
+            }
         }
     }
 
@@ -107,7 +111,7 @@ class HelpSheet : BaseSheet() {
                             .fillMaxWidth()
                             .height(IntrinsicSize.Min)
                             .padding(horizontal = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.Bottom
                     ) {
                         Text(
                             text = stringResource(id = R.string.app_name),
@@ -116,7 +120,7 @@ class HelpSheet : BaseSheet() {
                         )
                         Text(
                             text = BuildConfig.VERSION_NAME,
-                            style = MaterialTheme.typography.titleLarge,
+                            style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier
                                 .padding(start = 8.dp)

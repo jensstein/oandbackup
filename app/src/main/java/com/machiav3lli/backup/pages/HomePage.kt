@@ -27,7 +27,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -47,7 +46,6 @@ import com.machiav3lli.backup.ALT_MODE_APK
 import com.machiav3lli.backup.ALT_MODE_BOTH
 import com.machiav3lli.backup.ALT_MODE_DATA
 import com.machiav3lli.backup.ALT_MODE_UNSET
-import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
@@ -122,7 +120,7 @@ fun HomePage(viewModel: HomeViewModel) {
                 productsList = queriedList ?: listOf(),
                 onClick = { item ->
                     if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                    appSheet = AppSheet(item)
+                    appSheet = AppSheet(item.packageName)
                     appSheet?.showNow(
                         mainActivityX.supportFragmentManager,
                         "Package ${item.packageName}"
@@ -186,7 +184,7 @@ fun HomePage(viewModel: HomeViewModel) {
                             productsList = updatedApps,
                             onClick = { item ->
                                 if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                                appSheet = AppSheet(item)
+                                appSheet = AppSheet(item.packageName)
                                 appSheet?.showNow(
                                     mainActivityX.supportFragmentManager,
                                     "Package ${item.packageName}"

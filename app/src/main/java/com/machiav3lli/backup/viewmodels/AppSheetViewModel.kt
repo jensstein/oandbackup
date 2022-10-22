@@ -41,7 +41,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class AppSheetViewModel(
-    app: Package,
+    app: Package?,
     private val database: ODatabase,
     private var shellCommands: ShellCommands,
     private val appContext: Application
@@ -53,18 +53,18 @@ class AppSheetViewModel(
     var snackbarText = MutableLiveData("")
 
     private var notificationId: Int = System.currentTimeMillis().toInt()
-    var refreshNow by mutableStateOf(false)
+    val refreshNow = mutableStateOf(false)
 
     init {
-        appExtras.addSource(database.appExtrasDao.getLive(app.packageName)) {
-            appExtras.value = it ?: AppExtras(app.packageName)
+        appExtras.addSource(database.appExtrasDao.getLive(app?.packageName ?: "")) {
+            appExtras.value = it ?: AppExtras(app?.packageName ?: "")
         }
     }
 
     fun uninstallApp() {
         viewModelScope.launch {
             uninstall()
-            refreshNow = true
+            refreshNow.value = true
         }
     }
 
@@ -103,7 +103,7 @@ class AppSheetViewModel(
     fun enableDisableApp(users: MutableList<String>, enable: Boolean) {
         viewModelScope.launch {
             enableDisable(users, enable)
-            refreshNow = true
+            refreshNow.value = true
         }
     }
 
@@ -121,7 +121,7 @@ class AppSheetViewModel(
     fun deleteBackup(backup: Backup) {
         viewModelScope.launch {
             delete(backup)
-            refreshNow = true
+            refreshNow.value = true
         }
     }
 
@@ -134,7 +134,7 @@ class AppSheetViewModel(
     fun deleteAllBackups() {
         viewModelScope.launch {
             deleteAll()
-            refreshNow = true
+            refreshNow.value = true
         }
     }
 
@@ -147,7 +147,7 @@ class AppSheetViewModel(
     fun setExtras(appExtras: AppExtras?) {
         viewModelScope.launch {
             replaceExtras(appExtras)
-            refreshNow = true
+            refreshNow.value = true
         }
     }
 
@@ -161,7 +161,7 @@ class AppSheetViewModel(
     }
 
     class Factory(
-        private val packageInfo: Package,
+        private val packageInfo: Package?,
         private val database: ODatabase,
         private val shellCommands: ShellCommands,
         private val application: Application

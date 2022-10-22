@@ -17,14 +17,12 @@
  */
 package com.machiav3lli.backup.pages
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -52,16 +50,9 @@ fun SchedulerPage(viewModel: SchedulerViewModel) {
     val context = LocalContext.current
     var sheetSchedule: ScheduleSheet? = null
     val schedules by viewModel.schedules.observeAsState(null)
-    val progress by viewModel.progress.observeAsState(Pair(false, 0f))
 
     Scaffold(containerColor = Color.Transparent) { paddingValues ->
         Column {
-            AnimatedVisibility(visible = progress?.first == true) {
-                LinearProgressIndicator(
-                    modifier = Modifier.fillMaxWidth(),
-                    progress = progress.second
-                )
-            }
             ScheduleRecycler(
                 modifier = Modifier
                     .padding(paddingValues)

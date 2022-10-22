@@ -287,7 +287,6 @@ class MainActivityX : BaseActivity() {
                                     positive = true
                                 ) {
                                     sheetSortFilter = SortFilterSheet(
-                                        sortFilterModel,
                                         getStats(
                                             list?.applyFilter(sortFilterModel, context)
                                                 ?: emptyList()
@@ -384,7 +383,7 @@ class MainActivityX : BaseActivity() {
     }
 
     fun updateProgress(progress: Int, max: Int) {
-        viewModel.progress.value = Pair(true, 1f*progress/max)
+        viewModel.progress.value = Pair(true, 1f * progress / max)
     }
 
     fun hideProgress() {

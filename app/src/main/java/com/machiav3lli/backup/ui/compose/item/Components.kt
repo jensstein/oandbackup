@@ -308,18 +308,20 @@ fun CardButton(
 
 @Composable
 fun RoundButton(
-    modifier: Modifier = Modifier
-        .padding(4.dp)
-        .size(52.dp),
+    modifier: Modifier = Modifier,
     icon: ImageVector,
     description: String = "",
     onClick: () -> Unit
 ) {
     IconButton(
         modifier = modifier,
-        onClick = { onClick() }
+        onClick = onClick
     ) {
-        Icon(imageVector = icon, contentDescription = description)
+        Icon(
+            modifier = Modifier.size(24.dp),
+            imageVector = icon,
+            contentDescription = description
+        )
     }
 }
 

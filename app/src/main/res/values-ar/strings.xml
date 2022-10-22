@@ -172,7 +172,7 @@
     <string name="prefs_stopcont_summary">الخبراء فقط: هذا يمكن أن يساعد ، إذا كان التطبيق يقوم بتغيير الملفات أثناء النسخ الاحتياطي وفشل النسخ الاحتياطي.</string>
     <string name="prefs_stopcont">STOP-CONT قبل وما بعد معالجة التطبيقات على النسخ الاحتياطي / استعادة</string>
     <string name="prefs_allowdowngrade">السماح بخفض النسخة</string>
-    <string name="prefs_allowdowngrade_summary">السماح باستعادة إصدار أقدم من التطبيق المثبت.</string>
+    <string name="prefs_allowdowngrade_summary">السماح باستعادة إصدار قديم من التطبيق المثبت (ينطبق فقط على الإصدارات القابلة للتصحيح).</string>
     <string name="prefs_restoreallpermissions">الاستعادة مع كافة الأذونات</string>
     <string name="prefs_restoreallpermissions_summary">امنح التطبيق المستعاد جميع الأذونات التي يطلبها.</string>
     <string name="prefs_disableverification_summary">تعطيل خيار المطور هذا أثناء استعادة ملفات APK وإعادة تمكينه بعد ذلك. حل للخطأ: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
@@ -234,7 +234,7 @@
     <string name="welcome_to_oabx">مرحبا بك في Neo Backup!</string>
     <string name="storage_access">الوصول إلى التخزين</string>
     <string name="sort_and_filter">فرز &amp; وتصفية</string>
-    <string name="enable_encryption_message">ليس من الآمن إبقاء بياناتك على جهازك غير مشفرة. لسلامة البيانات الخاصة بك تمكين التشفير وتعيين كلمة مرور.</string>
+    <string name="enable_encryption_message">ليس من الآمن عدم تشفير بياناتك على جهازك. من أجل سلامة بياناتك، قم بتمكين التشفير وتعيين كلمة مرور.</string>
     <string name="enable_encryption_title">تشفير البيانات</string>
     <string name="help_legend">اسطوره:</string>
     <string name="help_faq">الأسئلة المتداولة</string>
@@ -245,7 +245,7 @@
     <string name="grant_usage_access_message">هذا أمر ضروري للحصول على معلومات حول أحجام ملفات التطبيق</string>
     <string name="grant_usage_access_title">منح الوصول إلى الاستخدام</string>
     <string name="backup_filters">مرشحات النسخ الاحتياطي:</string>
-    <string name="split_apks">التطبيقات المقسمة APKs:</string>
+    <string name="split_apks">التطبيقات المقسمة APKs</string>
     <string name="ignore_battery_optimization_message">النسخ الاحتياطي قد تتوقف أحياناً لمنع ذلك، يجب إيقاف تشغيل تحسين البطارية</string>
     <string name="ignore_battery_optimization_title">تحسين البطارية</string>
     <string name="spec_appwidgets">التطبيقات المصغرة</string>
@@ -360,4 +360,8 @@
     <string name="prefs_advanced_short">متقدم</string>
     <string name="prefs_tools_short">الأدوات</string>
     <string name="prefs_service_short">خدمة</string>
+    <string name="prefs_squeezenavtext">الضغط على نص عنصر التنقل</string>
+    <string name="prefs_multilineinfochips_summary">اسمح لمقتطفات المعلومات في ورقة التطبيق بالامتداد عبر أسطر متعددة.</string>
+    <string name="prefs_squeezenavtext_summary">السماح بتغيير حجم النص ضمن عناصر شريط التنقل ليتناسب مع العرض المتوفر.</string>
+    <string name="prefs_multilineinfochips">مقتطفات موسعة متعددة الاسطر</string>
 </resources>
