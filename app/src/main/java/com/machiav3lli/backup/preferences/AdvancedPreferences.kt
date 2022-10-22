@@ -329,7 +329,6 @@ val persist_beenWelcomed = BooleanPref(
     defaultValue = false
 )
 
-
 val persist_ignoreBatteryOptimization = BooleanPref(
     key = "persist.ignoreBatteryOptimization",
     defaultValue = false
