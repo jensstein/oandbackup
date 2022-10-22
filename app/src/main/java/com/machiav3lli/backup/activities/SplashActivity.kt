@@ -48,7 +48,7 @@ import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.classAddress
-import com.machiav3lli.backup.preferences.persist_firstLaunch
+import com.machiav3lli.backup.preferences.persist_beenWelcomed
 import com.machiav3lli.backup.preferences.persist_ignoreBatteryOptimization
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Warning
@@ -138,7 +138,7 @@ class SplashActivity : BaseActivity() {
         }
 
         val introIntent = Intent(applicationContext, IntroActivityX::class.java)
-        if (persist_firstLaunch.value) {
+        if (!persist_beenWelcomed.value) {
             startActivity(introIntent)
         } else if (hasStoragePermissions &&
             isStorageDirSetAndOk &&
