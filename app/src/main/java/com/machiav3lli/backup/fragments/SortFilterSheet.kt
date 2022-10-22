@@ -47,6 +47,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.machiav3lli.backup.EXTRA_STATS
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.mainBackupModeChipItems
@@ -71,17 +72,22 @@ import com.machiav3lli.backup.ui.item.ChipItem
 import com.machiav3lli.backup.utils.sortFilterModel
 import com.machiav3lli.backup.utils.specialBackupsEnabled
 
-class SortFilterSheet(
-    private var mSortFilterModel: SortFilterModel = SortFilterModel(),
-    private val stats: Triple<Int, Int, Int> = Triple(0, 0, 0)
-) : BaseSheet() {
+class SortFilterSheet() : BaseSheet() {
+    constructor(stats: Triple<Int, Int, Int> = Triple(0, 0, 0)) : this() {
+        arguments = Bundle().apply {
+            putIntArray(EXTRA_STATS, stats.toList().toIntArray())
+        }
+    }
+
+    private val stats: Triple<Int, Int, Int>
+        get() = requireArguments().getIntArray(EXTRA_STATS)?.let { Triple(it[0], it[1], it[2]) }
+            ?: Triple(0, 0, 0)
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        mSortFilterModel = requireContext().sortFilterModel
 
         return ComposeView(requireContext()).apply {
             setContent {
@@ -94,6 +100,7 @@ class SortFilterSheet(
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
     @Composable
     fun SortFilterPage() {
+        val mSortFilterModel = requireContext().sortFilterModel
         val nestedScrollConnection = rememberNestedScrollInteropConnection()
 
         AppTheme {
@@ -129,7 +136,7 @@ class SortFilterSheet(
                                 fullWidth = true,
                                 positive = true,
                                 onClick = {
-                                    requireContext().sortFilterModel = mSortFilterModel
+                                    requireContext().sortFilterModel = it
                                     requireMainActivity().refreshView()
                                     dismissAllowingStateLoss()
                                 }

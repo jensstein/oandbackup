@@ -287,7 +287,6 @@ class MainActivityX : BaseActivity() {
                                     positive = true
                                 ) {
                                     sheetSortFilter = SortFilterSheet(
-                                        sortFilterModel,
                                         getStats(
                                             list?.applyFilter(sortFilterModel, context)
                                                 ?: emptyList()
