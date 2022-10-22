@@ -203,12 +203,8 @@
     <string name="delete_all_backups">Borrar todos los respaldos</string>
     <string name="prefs_stopcont_summary">Solo expertos: esto puede ayudar si la aplicación está cambiando archivos durante el respaldo y el respaldo falla.</string>
     <string name="prefs_disableverification">Desactivar la verificación de aplicaciones por USB</string>
-    <string name="prefs_housekeepingmoment_summary">Configura si la revisión más antigua es eliminada antes o después de crear un nuevo respaldo para liberar espacio de disco usado por el respaldo.</string>
-    <string name="prefs_housekeepingmoment">Tiempo para la limpieza de revisiones</string>
     <string name="prefs_numBackupRevisions_summary">La revisión más antigua será borrada tras la creación de un nuevo respaldo si el número es excedido. Déjalo en cero para mantener todas las revisiones.</string>
     <string name="prefs_numBackupRevisions">Número de revisiones del respaldo</string>
-    <string name="prefs_housekeepingmoment_before">Antes del respaldo</string>
-    <string name="prefs_housekeepingmoment_after">Después del respaldo</string>
     <string name="prefs_advanced">Preferencias avanzadas</string>
     <string name="radio_obbdata">Datos OBB</string>
     <string name="radio_deviceprotecteddata">Datos protegidos del dispositivo</string>

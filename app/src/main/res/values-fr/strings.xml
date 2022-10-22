@@ -174,7 +174,6 @@
     <string name="radio_special">Sauvegardes spéciales</string>
     <string name="radio_system">Applis système</string>
     <string name="radio_user">Applis utilisateur</string>
-    <string name="prefs_housekeepingmoment">Temps de nettoyage des révisions</string>
     <string name="msg_appkill_warning">La ou les applications sélectionnées recevront le signal d\'arrêt et continueront après la fin de la tâche. Vérifiez ensuite les applications traitées (et évitez de les lancer alors que le processus est toujours en cours).</string>
     <string name="intro_permission_batteryoptimization">L\'application peut rencontrer des problèmes pour effectuer des sauvegardes programmées sur certaines ROM qui adoptent une optimisation agressive de la batterie, par exemple MIUI, mais même sur AOSP vanilla un tel problème peut se produire.</string>
     <string name="intro_permission_usageaccess">L\'application a besoin de cette autorisation pour pouvoir vérifier les statistiques, la taille des données et du cache de vos applications.</string>
@@ -190,9 +189,7 @@
 \n - Les sauvegardes peuvent être planifiées sans limite du nombre de planifications individuelles et il y a la possibilité de créer des listes personnalisées à partir de la liste des applications installées.</string>
     <string name="help_appTypeHint">* L\'icône du type d\'application sera grise si l\'application est désinstallée et gris foncé si l\'application est désactivée.</string>
     <string name="help_legend">Légende :</string>
-    <string name="prefs_housekeepingmoment_summary">Configure si la révision la plus ancienne est supprimée avant ou après la création d\'une nouvelle sauvegarde afin de libérer l\'espace disque utilisé par la sauvegarde.</string>
     <string name="prefs_stopcont_summary">Experts uniquement : Cela peut être utile si l\'application modifie des fichiers pendant la sauvegarde et que celle-ci échoue.</string>
-    <string name="prefs_housekeepingmoment_after">Après la sauvegarde</string>
     <string name="prefs_password_match_false">Les mots de passe ne correspondent pas</string>
     <string name="prefs_password_match_true">Les mots de passe correspondent</string>
     <string name="prefs_passwordconfirmation">Confirmation du mot de passe du chiffrement</string>
@@ -204,7 +201,6 @@
     <string name="prefs_numBackupRevisions_summary">La dernière version sera supprimée après la création d\'une nouvelle sauvegarde si le nombre est dépassé. Mettez le à zéro pour garder toutes les versions.</string>
     <string name="prefs_numBackupRevisions">Nombres de versions de la sauvegarde</string>
     <string name="prefs_stopcont">Forcer l\'arrêt du processus de l\'appli avant la sauvegarde/restauration</string>
-    <string name="prefs_housekeepingmoment_before">Avant la sauvegarde</string>
     <string name="prefs_advanced">Préférences avancées</string>
     <string name="radio_updated">Mis à jour</string>
     <string name="radio_obbdata">Données OBB</string>

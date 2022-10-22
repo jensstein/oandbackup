@@ -86,7 +86,6 @@
     <string name="prefs_disableverification_summary">Desativa esta opção de desenvolvedor enquanto restaura APKs e a reativa depois. Resolve o erro: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
     <string name="prefs_disableverification">Desativar Verificação de apps via USB</string>
     <string name="prefs_acquirewakelock_summary">Obter wakelock durante operações em lote para impedir a suspensão. Acelera o backup e restauração consideravelmente, mas consome mais energia.</string>
-    <string name="prefs_housekeepingmoment_summary">Configure se a revisão mais antiga é eliminada antes ou após criar um novo backup para liberar o espaço de disco usado pelo backup.</string>
     <string name="prefs_deviceprotecteddata_summary">Faz backup e restaura os dados que são colocados em data/user_de</string>
     <string name="prefs_deviceprotecteddata">Fazer backup de dados protegidos do dispositivo</string>
     <string name="prefs_externaldata_summary">Faz o backup e restaura os dados que são colocados no armazenamento externo (Ex.: /storage/emulated/0/Android/data/)</string>
@@ -106,8 +105,6 @@
     <string name="prefs_rememberfiltering">Lembrar ordem e filtros</string>
     <string name="prefs_biometriclock_summary">Proteja o app com o bloqueio biométrico do dispositivo (ex.: impressão digital, desbloqueio facial)</string>
     <string name="prefs_language_system">Padrão do sistema</string>
-    <string name="prefs_housekeepingmoment_before">Antes do Backup</string>
-    <string name="prefs_housekeepingmoment_after">Após o Backup</string>
     <string name="prefs_theme_dark">Escuro</string>
     <string name="prefs_user">Preferências do Usuário</string>
     <string name="disablePackage">Desativar app</string>
@@ -193,7 +190,6 @@
     <string name="prefs_allowdowngrade">Permitir versões anteriores</string>
     <string name="prefs_restoreallpermissions">Restaurar com todas as permissões</string>
     <string name="prefs_acquirewakelock">Impedir suspensão</string>
-    <string name="prefs_housekeepingmoment">Tempo de limpeza da revisão</string>
     <string name="prefs_numBackupRevisions_summary">A revisão mais antiga será apagada após a criação de um novo backup se o número for excedido. Defina-o como zero para manter todas as revisões.</string>
     <string name="prefs_numBackupRevisions">Número de revisões de backup</string>
     <string name="prefs_externaldata">Fazer backup de dados externos</string>

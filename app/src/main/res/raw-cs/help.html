@@ -1,20 +1,20 @@
 <html>
     <body>
-        <p><strong>Backup modes</strong>: An app can be backed up with only its apk, only its data or both. An app not currently installed can only be restored if the apk is present. Three special types of data is supported extra to the main data: device protected data, external data and obb data.
+        <p><strong>Režimy zálohování</strong>: Aplikace může být zálohována pouze se svým souborem apk, pouze se svými daty nebo s oběma. Aplikaci, která není aktuálně nainstalována, lze obnovit pouze v případě, že je přítomen soubor apk. Kromě hlavních dat jsou podporovány tři speciální typy dat: data chráněná zařízením, externí data a data obb.
         </p>
-        <p><strong>Delete backup</strong>: Deletes the backup files for a specific backup instance. While "delete backups" delete all of the backups of the chosen app.
+        <p><strong>Odstranit zálohu</strong>: Odstraní záložní soubory pro konkrétní instanci zálohy. Zatímco „odstranit zálohy“ odstraní všechny zálohy vybrané aplikace.
         </p>
-        <p><strong>Uninstall</strong>: Somewhat more aggressive than a normal uninstall. In addition to doing a normal uninstall via Android commands, uninstalling from OAndBackupX deletes files the app might have left over in /data/app-lib/.
+        <p><strong>Odinstalovat</strong>: Poněkud agresivnější než normální odinstalace. Kromě normální odinstalace pomocí příkazů systému Android odstraní odinstalace z OAndBackupX soubory, které aplikace mohla zanechat v /data/app-lib/.
         </p>
-        <p><strong>Enable / disable</strong>: Uses the Android `pm` script to enable or disable an app. Disabling an app removes it from the normal user interface without uninstalling it. This can be used for enabling or disabling an app for multiple users at a time (if the device has multiple users). Users are identified with an ID e.g. 0 is the first user (owner) 10 is usually the work profile.
+        <p><strong>Povolit / zakázat</strong>: Používá skript Android `pm` k povolení nebo zakázání aplikace. Zakázáním aplikace ji odstraníte z běžného uživatelského rozhraní, aniž byste ji odinstalovali. To lze použít pro povolení nebo zakázání aplikace pro více uživatelů najednou (pokud má zařízení více uživatelů). Uživatelé jsou identifikováni pomocí ID, např. 0 je první uživatel (vlastník) 10 je obvykle pracovní profil.
         </p>
-        <p><strong>Multiple users</strong>: Multi-user is still somewhat experimental but should work. Enabling and disabling only works after an initial install (not necessarily from OAndBackupx) or restore of the app.
+        <p><strong>Více uživatelů</strong>: Funkce více uživatelů je stále experimentální, ale měla by fungovat. Povolení a zakázání funguje pouze po první instalaci (ne nutně z OAndBackupx) nebo obnovení aplikace.
         </p>
-        <p><strong>System-less apps</strong>: Backup and restore of system-less apps installed as Magisk modules is not supported and trying it could lead to system failure and forcing you to format and flash it anew.
+        <p><strong>Bezsystémová aplikace</strong>: Zálohování a obnovení bezsystémových aplikací nainstalovaných jako moduly Magisk není podporováno a pokusy o něj by mohly vést k selhání systému a nutnosti jeho nového formátování a flashování.
         </p>
-        <p><strong>Navigation</strong>: The navigation bar has "Settings", "Home", "Batch backup", "Batch restore" and "Schedule backups" (in that order). The number of apps upgraded after their last backup will be presented as a notification on "Home" button.
+        <p><strong>Navigace</strong>: V navigační liště se nachází „Nastavení“, "„Domů“, „Dávkové zálohování“, „Dávkové obnovení“ a „Plánování zálohování“ (v tomto pořadí). Počet aktualizovaných aplikací po jejich posledním zálohování se zobrazí jako oznámení na tlačítku „Domů“.
         </p>
-        <p><strong>Apps using Keystore</strong>: Android has an encrypted storage for sensitive data. Apps that make use of this to store login data or some keys for its function can't be restored successfully. Two examples of such apps are Signal and Element(Riot).
+        <p><strong>Aplikace používající úložiště klíčů</strong>: Android má šifrované úložiště pro citlivá data. Aplikace, které jej využívají k ukládání přihlašovacích údajů nebo některých klíčů pro svou funkci, nelze úspěšně obnovit. Dva příklady takových aplikací jsou Signal a Element(Riot).
         </p>
     </body>
 </html>

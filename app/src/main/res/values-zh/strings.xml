@@ -200,10 +200,6 @@
     <string name="prefs_stopcont_summary">仅供专家使用: 如果应用程序在备份过程中更改文件，且备份失败，这可能会有所帮助。</string>
     <string name="prefs_stopcont">在备份或还原之前强制停止应用程序进程</string>
     <string name="prefs_advanced">高级设置</string>
-    <string name="prefs_housekeepingmoment_summary">在创建新备份之前或之后删除最早的备份以释放所使用的磁盘空间。</string>
-    <string name="prefs_housekeepingmoment">自动清理备份的时间</string>
-    <string name="prefs_housekeepingmoment_before">备份前</string>
-    <string name="prefs_housekeepingmoment_after">备份后</string>
     <string name="radio_obbdata">OBB 数据</string>
     <string name="radio_deviceprotecteddata">受保护的设备数据</string>
     <string name="radio_externaldata">外部数据</string>

@@ -155,8 +155,6 @@
     <string name="prefs_disableverification">Desactiva la verificació d\'aplicacions mitjançant USB</string>
     <string name="prefs_acquirewakelock_summary">Adquiriu un \"manteniu despert\" durant les operacions per lots per evitar el son. Accelera considerablement les còpies de seguretat i les restauracions, però consumeix més energia.</string>
     <string name="prefs_acquirewakelock">Prevenir el son</string>
-    <string name="prefs_housekeepingmoment_summary">Configura si la revisió més antiga se suprimeix abans o després de crear una còpia de seguretat nova per alliberar l\'espai en disc utilitzat per la còpia de seguretat.</string>
-    <string name="prefs_housekeepingmoment">Temps de neteja de la revisió</string>
     <string name="prefs_numBackupRevisions_summary">La revisió més antiga se suprimirà quan es creï una nova còpia de seguretat si se supera el nombre. Establiu-lo a zero per mantenir totes les revisions.</string>
     <string name="prefs_numBackupRevisions">Nombre de revisions de còpia de seguretat</string>
     <string name="prefs_deviceprotecteddata_summary">Fa una còpia de seguretat i restaura les dades que es col·loquen a data/user_de</string>
@@ -188,8 +186,6 @@
     <string name="prefs_language_system">Sistema per defecte</string>
     <string name="prefs_languages">Idioma</string>
     <string name="prefs_theme_system">Tema del sistema</string>
-    <string name="prefs_housekeepingmoment_before">Abans de la còpia de seguretat</string>
-    <string name="prefs_housekeepingmoment_after">Després de la còpia de seguretat</string>
     <string name="prefs_theme_dark">Fosc</string>
     <string name="prefs_theme_light">Clar</string>
     <string name="prefs_theme">Tema</string>

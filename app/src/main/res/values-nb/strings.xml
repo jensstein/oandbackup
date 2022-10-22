@@ -197,8 +197,6 @@
     <string name="prefs_stopcont_summary">Kun for eksperter: Dette kan hjelpe, hvis programmet endrer filer under sikkerhetskopier og sikkerhetskopien feiler.</string>
     <string name="prefs_stopcont">Drep prosesser med tvang før sikkerhetskopiering/gjenoppretting</string>
     <string name="prefs_advanced">Avanserte innstillinger</string>
-    <string name="prefs_housekeepingmoment_after">Etter sikkerhetskopiering</string>
-    <string name="prefs_housekeepingmoment_before">Før sikkerhetskopiering</string>
     <string name="delete_all_backups">Slett alle sikkerhetskopier</string>
     <string name="fetching_action_list">Henter programliste for %1$s…</string>
     <string name="logs_text_empty">Ingenting å vise.</string>
@@ -211,9 +209,7 @@
     <string name="help_appTypeHint">* Programmets typeikon ville vært grått hvis programmet er avinstallert og mørkegrått hvis avskrudd.</string>
     <string name="prefs_unset">Usatt</string>
     <string name="prefs_disableverification_summary">Skrur av utviklervalget under gjenoppretting av APK-er, og skrur dem på igjen etterpå. Fikser problemet: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
-    <string name="prefs_housekeepingmoment_summary">Setter opp hvorvidt eldste revisjon slettes før eller etter opprettelse av ny sikkerhetskopi for å frigjøre plass brukt av sikkerhetskopien.</string>
     <string name="prefs_disableverification">Skru av «Bekreft programmer over USB»</string>
-    <string name="prefs_housekeepingmoment">Revisjonstømmingstid</string>
     <string name="prefs_numBackupRevisions_summary">Den eldste revisjonen vil bli slettet når en ny opprettes, sett at nummeret overstiges. Sett det til null for å beholde alle.</string>
     <string name="prefs_numBackupRevisions">Antall sikkeretskopi-revisjoner</string>
     <plurals name="days_left">

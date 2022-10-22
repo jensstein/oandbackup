@@ -150,8 +150,6 @@
     <string name="prefs_biometriclock">Biometriskt lås</string>
     <string name="prefs_devicelock_summary">Säkra appen med enhetens uppgifter</string>
     <string name="prefs_theme_system">Systemets tema</string>
-    <string name="prefs_housekeepingmoment_before">Före säkerhetskopiering</string>
-    <string name="prefs_housekeepingmoment_after">Efter säkerhetskopiering</string>
     <string name="prefs_theme_dark">Mörk</string>
     <string name="prefs_theme_light">Ljus</string>
     <string name="prefs_theme">Tema</string>

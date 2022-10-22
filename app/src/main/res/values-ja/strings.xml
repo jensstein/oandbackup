@@ -118,8 +118,6 @@
     <string name="prefs_biometriclock_summary">生態認証装置によるアプリで安全にしてください（例：指紋、顔認証）</string>
     <string name="prefs_biometriclock">生態認証ロック</string>
     <string name="prefs_theme_system">システムテーマ</string>
-    <string name="prefs_housekeepingmoment_before">バックアップ前</string>
-    <string name="prefs_housekeepingmoment_after">バックアップ後</string>
     <string name="prefs_theme_dark">暗い</string>
     <string name="prefs_theme_light">明るい</string>
     <string name="radio_obbdata">OBB データ</string>
@@ -149,11 +147,9 @@
     <string name="prefs_mediadata_summary">外部ストレージ（例: /storage/emulated/0/Android/media/）に置かれているアプリのメディアファイルをバックアップ、リストアします。</string>
     <string name="prefs_numBackupRevisions">バックアップの改訂数</string>
     <string name="prefs_numBackupRevisions_summary">この数値を超えると、新しいバックアップを作成する際に最も古い改訂点が削除されます。ゼロに設定すると、全ての改訂点を保持します。</string>
-    <string name="prefs_housekeepingmoment">改訂点のクリーンアップ時間</string>
     <string name="prefs_disableverification">USB経由のアプリの検証を無効化</string>
     <string name="prefs_batchdelete_summary">現在インストールされていない全てのアプリのバックアップを削除する。</string>
     <string name="prefs_saveappslist">アプリリストを保存</string>
-    <string name="prefs_housekeepingmoment_summary">バックアップのディスク容量を解放するため、最も古いバージョンを削除するタイミングを新しいバックアップの作成前、作成後のいずれかに設定します。</string>
     <string name="prefs_compression_level_summary">小さい値は高速ですがサイズが大きくなります。大きい値は圧縮率が上がりますが時間がかかります。</string>
     <string name="prefs_compression_level">圧縮レベル</string>
     <string name="prefs_disableverification_summary">APKのリストア時にこの開発者向けオプションを無効化し、後で有効化してください。INSTALL_FAILED_VERIFICATION_FAILUREエラーを解決します。</string>

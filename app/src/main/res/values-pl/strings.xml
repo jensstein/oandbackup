@@ -197,13 +197,9 @@
     <string name="msg_appkill_warning">Wybrane aplikacje zostaną zatrzymane oraz kontynuowane po tym jak zadania zostaną zakończone. Postaraj się nie uruchamiać aplikacji podczas trwania tego procesu.</string>
     <string name="intro_permission_storage_location">Aplikacja potrzebuje miejsca do przechowywania kopii zapasowej. Może potrzebować kilku gigabajtów pamięci na wykonanie pełnej kopii zapasowej i często wykonuje odczyt, i zapis. Należy o tym pamiętać przy wyborze do tego lokalizacji sieciowej.</string>
     <string name="prefs_unset">Wymaż</string>
-    <string name="prefs_housekeepingmoment_summary">Konfiguruje, czy najstarsza wersja zostanie usunięta przed czy po utworzeniu nowej kopii zapasowej, aby zwolnić miejsce na dysku używane przez kopię zapasową.</string>
-    <string name="prefs_housekeepingmoment">Czas czyszczenia wersji</string>
     <string name="prefs_numBackupRevisions_summary">Najstarsza wersja zostanie usunięta po utworzeniu nowej kopii zapasowej, jeśli liczba zostanie przekroczona. Ustaw na zero, aby zachować wszystkie wersje.</string>
     <string name="prefs_numBackupRevisions">Liczba wersji kopii zapasowych</string>
     <string name="prefs_stopcont">Wymuś zatrzymanie aplikacji przed tworzeniem/przywracaniem kopii zapasowych</string>
-    <string name="prefs_housekeepingmoment_before">Przed wykonaniem kopii zapasowej</string>
-    <string name="prefs_housekeepingmoment_after">Po wykonaniu kopii zapasowej</string>
     <string name="prefs_advanced">Ustawienia zaawansowane</string>
     <string name="radio_obbdata">Dane OBB</string>
     <string name="radio_externaldata">Dane zewnętrzne</string>

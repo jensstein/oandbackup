@@ -20,7 +20,6 @@ package com.machiav3lli.backup.handler
 import android.content.Context
 import android.content.pm.PackageManager
 import com.machiav3lli.backup.BuildConfig
-import com.machiav3lli.backup.HousekeepingMoment
 import com.machiav3lli.backup.MODE_APK
 import com.machiav3lli.backup.MODE_DATA
 import com.machiav3lli.backup.actions.BackupAppAction
@@ -34,7 +33,6 @@ import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
-import com.machiav3lli.backup.preferences.pref_housekeepingMoment
 import com.machiav3lli.backup.preferences.pref_numBackupRevisions
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
@@ -55,10 +53,7 @@ object BackupRestoreHelper {
         backupMode: Int
     ): ActionResult {
         var reBackupMode = backupMode
-        val housekeepingWhen = pref_housekeepingMoment.value
-        if (housekeepingWhen == HousekeepingMoment.BEFORE.ordinal) {
-            housekeepingPackageBackups(packageItem, true)
-        }
+
         // Select and prepare the action to use
         val action: BackupAppAction = when {
             packageItem.isSpecial -> {
@@ -84,9 +79,8 @@ object BackupRestoreHelper {
             Timber.i("[${packageItem.packageName}] Backup FAILED: ${result.succeeded} ${result.message}")
         }
 
-        if (housekeepingWhen == HousekeepingMoment.AFTER.ordinal) {
-            housekeepingPackageBackups(packageItem, false)
-        }
+        housekeepingPackageBackups(packageItem)
+
         return result
     }
 
@@ -145,19 +139,13 @@ object BackupRestoreHelper {
         return true
     }
 
-    fun housekeepingPackageBackups(app: Package, before: Boolean) {
+    fun housekeepingPackageBackups(app: Package) {
         var numBackupRevisions =
             pref_numBackupRevisions.value
         if (numBackupRevisions == 0) {
             Timber.i("[${app.packageName}] Infinite backup revisions configured. Not deleting any backup.")
             return
         }
-
-        // If the backup is going to be created, reduce the number of backup revisions by one.
-        // It's expected that the additional deleted backup will be created in the next moments.
-        // HousekeepingMoment.AFTER does not need to change anything. If 2 backups are the limit,
-        // 3 should exist and housekeeping will work fine without adjustments
-        if (before) numBackupRevisions--
 
         app.deleteOldestBackups(numBackupRevisions)
     }

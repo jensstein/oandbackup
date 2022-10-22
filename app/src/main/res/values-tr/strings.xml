@@ -202,10 +202,6 @@
     <string name="prefs_stopcont_summary">Yalnızca uzmanlar: Uygulama yedekleme sırasında dosyaları değiştirirse ve yedekleme başarısız olursa bu yardımcı olabilir.</string>
     <string name="prefs_stopcont">Yedeklemeden/geri yüklemeden önce uygulama işlemini zorla sonlandır</string>
     <string name="prefs_advanced">Gelişmiş tercihler</string>
-    <string name="prefs_housekeepingmoment_summary">Yedekleme tarafından kullanılan disk alanını boşaltmak için en eski düzeltmenin yeni bir yedekleme oluşturmadan önce mi yoksa sonra mı silineceğini yapılandırır.</string>
-    <string name="prefs_housekeepingmoment">Düzeltme temizleme zamanı</string>
-    <string name="prefs_housekeepingmoment_before">Yedeklemeden Önce</string>
-    <string name="prefs_housekeepingmoment_after">Yedeklemeden Sonra</string>
     <string name="radio_obbdata">OBB Verisi</string>
     <string name="radio_deviceprotecteddata">Cihaz Korumalı Veri</string>
     <string name="radio_externaldata">Harici Veri</string>

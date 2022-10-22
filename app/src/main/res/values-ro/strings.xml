@@ -197,19 +197,15 @@
         <item quantity="few">%d zile,</item>
         <item quantity="other">%d de zile,</item>
     </plurals>
-    <string name="prefs_housekeepingmoment_after">După backup</string>
     <string name="disablePackage">Dezactivează aplicația</string>
     <string name="prefs_mediadata">Fă backup fișierelor media</string>
     <string name="prefs_obbdata">Fă backup fișierelor obb</string>
     <string name="prefs_compression_level">Nivel de comprimare</string>
-    <string name="prefs_housekeepingmoment">Momentul ștergerii reviziilor</string>
-    <string name="prefs_housekeepingmoment_summary">Configurează dacă cea mai veche revizie este ștearsă înainte sau după crearea unui nou backup pentru a elibera spațiul pe disc folosit de backup.</string>
     <string name="prefs_disableverification">Dezactivează Verificați aplicațiile prin USB</string>
     <string name="prefs_disableverification_summary">Dezactivează această opțiune pentru dezvoltatori în timpul restaurării APK-urilor și o reactivează ulterior. Rezolvă eroarea: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
     <string name="sched_timeLeft">Timp rămas:</string>
     <string name="prefs_deviceprotecteddata">Fă backup datelor protejate ale dispozitivului</string>
     <string name="prefs_compression_level_summary">O valoare mai mică comprimă mai repede, însă are ca rezultat fișiere mai mari. O valoare mai mare comprimă mai bine, însă necesită mai mult timp.</string>
-    <string name="prefs_housekeepingmoment_before">Înainte de backup</string>
     <string name="prefs_allowdowngrade">Permite revenirea la versiuni anterioare</string>
     <string name="prefs_enablespecial_summary">Necesită încă testare intensivă, încearcă cunoscând pericolul că poate provoca bootloopuri. Feedbackul este mereu binevenit.</string>
     <string name="prefs_allowdowngrade_summary">Permite restaurarea unor versiuni mai vechi a aplicațiilor instalate.</string>

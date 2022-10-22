@@ -64,8 +64,6 @@
     <string name="prefs_theme">테마</string>
     <string name="prefs_theme_light">라이트</string>
     <string name="prefs_theme_dark">다크</string>
-    <string name="prefs_housekeepingmoment_after">백업 후</string>
-    <string name="prefs_housekeepingmoment_before">백업 전</string>
     <string name="prefs_theme_system">시스템 테마</string>
     <string name="prefs_language_system">시스템 기본</string>
     <string name="prefs_pathbackupfolder">백업 폴더</string>
@@ -265,8 +263,6 @@
     <string name="prefs_obbdata">obb 파일 백업</string>
     <string name="prefs_sessionIinstaller_summary">기본 인스톨러 대신 세션 인스톨러를 사용합니다. 더 느리지만 Android 13+ 에서 발생하는 문제를 방지합니다</string>
     <string name="prefs_restorepermissions">권한 복원</string>
-    <string name="prefs_housekeepingmoment">리비전 정리 시간</string>
-    <string name="prefs_housekeepingmoment_summary">백업에 사용한 디스크 공간을 확보하기 위해 새 백업을 생성하기 전 또는 후에 가장 오래된 리비전을 삭제할지 여부를 설정합니다.</string>
     <string name="prefs_copyselfapk_summary">백업 폴더의 최상위에 Neo Backup의 복사본을 둡니다</string>
     <string name="sched_mode">백업 모드:</string>
     <string name="spec_wallpaper">배경화면</string>

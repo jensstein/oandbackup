@@ -60,8 +60,6 @@
     <string name="prefs_user">Käyttäjän asetukset</string>
     <string name="prefs_theme_light">Vaalea</string>
     <string name="prefs_theme_dark">Tumma</string>
-    <string name="prefs_housekeepingmoment_after">Varmuuskopioinnin jälkeen</string>
-    <string name="prefs_housekeepingmoment_before">Ennen varmuuskopiointia</string>
     <string name="prefs_theme_system">Järjestelmän teema</string>
     <string name="prefs_languages">Kieli</string>
     <string name="prefs_language_system">Järjestelmän oletus</string>
@@ -87,7 +85,6 @@
     <string name="prefs_deviceprotecteddata">Varmuuskopioi laitteen suojaama data</string>
     <string name="prefs_deviceprotecteddata_summary">Varmuuskopioi ja palauttaa datan, joka on sijoitettuna kohteessa data/user_de</string>
     <string name="prefs_numBackupRevisions">Varmuuskopioiden versioiden määrä</string>
-    <string name="prefs_housekeepingmoment">Varmuuskopioiden poistamisen ajankohta</string>
     <string name="prefs_compression_level">Pakkaamisen taso</string>
     <string name="prefs_compression_level_summary">Matalampi arvo pakkaa nopeammin, mutta tuottaa suurempia tiedostoja. Suurempi arvo pakkaa tiedostot pienemmäksi, mutta vie enemmän aikaa.</string>
     <string name="prefs_acquirewakelock">Estä laitteen nukahtaminen</string>
@@ -262,7 +259,6 @@
     <string name="spec_calllogsjson">Puheluhistoria JSON</string>
     <string name="spec_appwidgets">Pienoissovellukset</string>
     <string name="prefs_numBackupRevisions_summary">Vanhin varmuuskopio poistetaan uuden varmuuskopion luomisen yhteydessä, mikäli määrä ylittyy. Aseta arvoksi 0 säilyttääksesi kaikki versiot.</string>
-    <string name="prefs_housekeepingmoment_summary">Valitse, poistetaanko vanhin varmuuskopio ennen vai jälkeen uuden varmuuskopion luomisen, vapauttaaksesi tallennustilaa.</string>
     <string name="prefs_batchdelete_summary">Poista niiden sovellusten varmuuskopiot, jotka eivät ole juuri nyt asennettuna.</string>
     <string name="prefs_copyselfapk_summary">Kopioi Neo Backupin asennustiedosto varmuuskopiointikansion juureen</string>
     <string name="prefs_saveappslist">Tallenna sovelluslista</string>
