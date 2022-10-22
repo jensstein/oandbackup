@@ -383,7 +383,7 @@ class MainActivityX : BaseActivity() {
     }
 
     fun updateProgress(progress: Int, max: Int) {
-        viewModel.progress.value = Pair(true, 1f*progress/max)
+        viewModel.progress.value = Pair(true, 1f * progress / max)
     }
 
     fun hideProgress() {

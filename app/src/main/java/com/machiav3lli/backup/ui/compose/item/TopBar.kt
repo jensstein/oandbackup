@@ -108,18 +108,20 @@ fun GlobalIndicators() {
 
     Column(verticalArrangement = Arrangement.SpaceEvenly) {
         AnimatedVisibility(visible = progress.first) {
-            LinearProgressIndicator(modifier = Modifier
-                .fillMaxWidth()
-                .height(5.dp),
+            LinearProgressIndicator(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(5.dp),
                 trackColor = MaterialTheme.colorScheme.surfaceColorAtElevation(10.dp),
                 color = MaterialTheme.colorScheme.primary,
                 progress = max(0.02f, progress.second)
             )
         }
         AnimatedVisibility(visible = refreshing > 0) {
-            LinearProgressIndicator(modifier = Modifier
-                .fillMaxWidth()
-                .height(5.dp),
+            LinearProgressIndicator(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(5.dp),
                 trackColor = MaterialTheme.colorScheme.surfaceColorAtElevation(10.dp),
                 color = MaterialTheme.colorScheme.secondary,
             )

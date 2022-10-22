@@ -41,7 +41,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class AppSheetViewModel(
-    app: Package,
+    app: Package?,
     private val database: ODatabase,
     private var shellCommands: ShellCommands,
     private val appContext: Application
@@ -56,8 +56,8 @@ class AppSheetViewModel(
     var refreshNow by mutableStateOf(false)
 
     init {
-        appExtras.addSource(database.appExtrasDao.getLive(app.packageName)) {
-            appExtras.value = it ?: AppExtras(app.packageName)
+        appExtras.addSource(database.appExtrasDao.getLive(app?.packageName ?: "")) {
+            appExtras.value = it ?: AppExtras(app?.packageName ?: "")
         }
     }
 
@@ -161,7 +161,7 @@ class AppSheetViewModel(
     }
 
     class Factory(
-        private val packageInfo: Package,
+        private val packageInfo: Package?,
         private val database: ODatabase,
         private val shellCommands: ShellCommands,
         private val application: Application
