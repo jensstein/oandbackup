@@ -156,16 +156,14 @@ class AppSheet() : BaseSheet(), ActionListener {
         }
     }
 
-    fun updateApp(app: Package) {
-        viewModel.thePackage.value = app
-    }
-
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
     @Composable
     fun AppPage() {
-        val thePackage by viewModel.thePackage.observeAsState()
+        val thePackages by requireMainActivity().viewModel.packageList.observeAsState()
+        val thePackage: Package? = thePackages?.find { it.packageName == packageName }
         val snackbarText by viewModel.snackbarText.observeAsState()
         val appExtras by viewModel.appExtras.observeAsState()
+        val refreshNow by viewModel.refreshNow
         val snackbarHostState = remember { SnackbarHostState() }
         val nestedScrollConnection = rememberNestedScrollInteropConnection()
         val coroutineScope = rememberCoroutineScope()
@@ -177,9 +175,9 @@ class AppSheet() : BaseSheet(), ActionListener {
                     else "android.resource://${packageInfo.packageName}/${packageInfo.packageInfo.icon}"
                 )
             }
-            if (viewModel.refreshNow) {
-                requireMainActivity().updatePackage(packageInfo.packageName ?: "")
-                viewModel.refreshNow = false
+            if (refreshNow) {
+                requireMainActivity().updatePackage(packageInfo.packageName)
+                viewModel.refreshNow.value = false
             }
 
 
@@ -532,8 +530,6 @@ class AppSheet() : BaseSheet(), ActionListener {
                             listOf(packageName),
                             listOf(mode)
                         ) {
-                            //viewModel.refreshNow.value = true
-                            // TODO refresh only the influenced packages
                             it.removeObserver(this)
                         }
                     } else {
@@ -550,8 +546,6 @@ class AppSheet() : BaseSheet(), ActionListener {
                             listOf(packageName),
                             listOf(mode)
                         ) {
-                            //viewModel.refreshNow.value = true
-                            // TODO refresh only the influenced packages
                             it.removeObserver(this)
                         }
                     } else {
@@ -665,7 +659,7 @@ class AppSheet() : BaseSheet(), ActionListener {
         try {
             Timber.i("${app.packageLabel}: Wiping cache")
             ShellCommands.wipeCache(requireContext(), app)
-            viewModel.refreshNow = true
+            viewModel.refreshNow.value = true
         } catch (e: ShellCommands.ShellActionFailedException) {
             // Not a critical issue
             val errorMessage: String =
