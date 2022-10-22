@@ -1,6 +1,7 @@
 package com.machiav3lli.backup.ui.compose.item
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,10 +10,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -21,6 +25,8 @@ import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretDown
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretUp
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ShareNetwork
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
@@ -32,8 +38,9 @@ fun LogItem(
     onShare: (Log) -> Unit = {},
     onDelete: (Log) -> Unit = {}
 ) {
+    val expanded = remember { mutableStateOf(false) }
     OutlinedCard(
-        modifier = Modifier,
+        modifier = Modifier.clickable { expanded.value = ! expanded.value },
         shape = RoundedCornerShape(LocalShapes.current.medium),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface),
         colors = CardDefaults.outlinedCardColors(
@@ -114,9 +121,20 @@ fun LogItem(
                     onClick = { onDelete(item) }
                 )
             }
+            var text = item.logText ?: ""
+            if ( ! expanded.value )
+                text = text.substringBefore("\n\n===========").lines().subList(0, 10).joinToString("\n")
             Text(
-                text = item.logText ?: "",
+                text = text,
                 style = MaterialTheme.typography.bodySmall
+            )
+            Icon(
+                modifier = Modifier.fillMaxWidth(),
+                imageVector = if (expanded.value)
+                    Phosphor.CaretUp
+                else
+                    Phosphor.CaretDown,
+                contentDescription = null
             )
         }
     }
