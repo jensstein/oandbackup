@@ -111,7 +111,7 @@ class HelpSheet : BaseSheet() {
                             .fillMaxWidth()
                             .height(IntrinsicSize.Min)
                             .padding(horizontal = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.Bottom
                     ) {
                         Text(
                             text = stringResource(id = R.string.app_name),
@@ -120,7 +120,7 @@ class HelpSheet : BaseSheet() {
                         )
                         Text(
                             text = BuildConfig.VERSION_NAME,
-                            style = MaterialTheme.typography.titleLarge,
+                            style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier
                                 .padding(start = 8.dp)
