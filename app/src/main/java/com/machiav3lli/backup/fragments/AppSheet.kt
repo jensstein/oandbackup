@@ -71,7 +71,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import com.machiav3lli.backup.ActionListener
 import com.machiav3lli.backup.BUNDLE_USERS
 import com.machiav3lli.backup.EXTRA_PACKAGE_NAME
@@ -121,7 +121,14 @@ import timber.log.Timber
 
 class AppSheet() : BaseSheet(), ActionListener {
 
-    private lateinit var viewModel: AppSheetViewModel
+    val viewModel: AppSheetViewModel by viewModels {
+        AppSheetViewModel.Factory(
+            mPackage,
+            ODatabase.getInstance(requireContext()),
+            ShellCommands(users),
+            requireActivity().application
+        )
+    }
 
     constructor(packageName: String) : this() {
         arguments = Bundle().apply {
@@ -131,28 +138,17 @@ class AppSheet() : BaseSheet(), ActionListener {
 
     val packageName: String
         get() = requireArguments().getString(EXTRA_PACKAGE_NAME)!!
+    var users: ArrayList<String> = ArrayList()
+    private var mPackage: Package? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val mPackage =
+        mPackage =
             requireMainActivity().viewModel.packageList.value?.find { it.packageName == packageName }
-
-        val database = ODatabase.getInstance(requireContext())
-        val users =
-            if (savedInstanceState != null) savedInstanceState.getStringArrayList(BUNDLE_USERS) else ArrayList()
-        val shellCommands = ShellCommands(users)
-        mPackage?.let {
-            val viewModelFactory = AppSheetViewModel.Factory(
-                it,
-                database,
-                shellCommands,
-                requireActivity().application
-            )
-            viewModel = ViewModelProvider(this, viewModelFactory)[AppSheetViewModel::class.java]
-        }
+        users = savedInstanceState?.getStringArrayList(BUNDLE_USERS) ?: ArrayList()
 
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
