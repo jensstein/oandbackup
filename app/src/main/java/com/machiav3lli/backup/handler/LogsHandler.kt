@@ -73,16 +73,11 @@ class LogsHandler {
                 logsDirectory.listFiles().forEach {
                     if (it.isFile) try {
                         logs.add(Log(it))
-                    } catch (e: NullPointerException) {
-                        val message =
-                            "(Null) Incomplete log or wrong structure found in $it."
-                        Timber.w(message)
-                        logErrors(message)
                     } catch (e: Throwable) {
                         val message =
                             "(catchall) Incomplete log or wrong structure found in $it."
                         unhandledException(e, it)
-                        logErrors(message)
+                        //no, recursion! logErrors(message)
                     }
                 }
             }
