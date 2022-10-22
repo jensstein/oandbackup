@@ -1,0 +1,7 @@
+**OndBackupX 1.1.1**
+* Přidáno: Zástupce sestavy Exodus na AppSheet
+* Opraveno: nespuštění aplikace, pokud má ikona rozměry <= 0.
+* Změněno: ve výchozím nastavení je nyní nastaveno kopírování OAndBackupX do nadřazené složky záloh.
+* Přidáno: řečtina (Credits @tsiflimagas)
+* Aktualizováno: Velké písmeno a anglické řetězce (Credits: @atrate)
+* Aktualizováno: zobecnění čínštiny, nizozemštiny, polštiny a švédštiny

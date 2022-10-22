@@ -1,0 +1,6 @@
+* Aktualizováno: Přepracování UI/UX (ve spolupráci s @opepp)
+* Přidáno: Nástroj pro uložení seznamu aplikací do souboru
+* Přidáno: Příliš mnoho nových funkcí
+* Opraveno: Plánování zálohování
+* Aktualizováno: Překlady
+* Mezi spoustou dalších vylepšení

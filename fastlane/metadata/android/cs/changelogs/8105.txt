@@ -1,0 +1,6 @@
+Oprava: Chybné výchozí nastavení pro pmSuspend
+Oprava: Barva textu zakázané aplikace v listu aplikace
+Oprava: Výběr položky seznamu
+Oprava: Barva textu posuvníku předvolby
+Přidáno: Adaptivní kroky posuvníku předvoleb
+Aktualizace: Uživatelské rozhraní spodního navigačního panelu předvoleb

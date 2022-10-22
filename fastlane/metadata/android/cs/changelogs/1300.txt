@@ -1,0 +1,8 @@
+**OndBackupX 1.3.0**
+* Aktualizováno: nový systém filtrů
+* Aktualizováno: zkrácena čekací doba na Splash
+* Přidáno: podpora Split-APK (potřebuje další testování, zásluhy @Tiefkuehlpizze)
+* Aktualizováno: Vyhledávání podporuje název balíčku
+* Opraveno: nenalezena mezipaměť/chybné odkazy na symboly
+* Přidáno: Podpora OBB (potřebuje další testování)
+* Přidány jazyky: Přidány nové jazyky: italština, čínština, turečtina, polština (Credits @Urnyx05 @tuchit @scrubjay55 @Antyradek)

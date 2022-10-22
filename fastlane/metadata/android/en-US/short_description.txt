@@ -1,1 +1,1 @@
-Your open-source tool to backup your apps … and their data
+The open-source tool to backup your apps and data

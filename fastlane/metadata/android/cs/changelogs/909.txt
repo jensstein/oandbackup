@@ -1,0 +1,2 @@
+**OndBackupX 0.9.9**
+* Odstraněno: kontrola aktualizace (příprava na vydání F-Droid)

@@ -1,1 +1,4 @@
- 
+* Solucionado: Excluir la casilla de verificación de aplicaciones del sistema en la hoja de programación 
+* Corregido: importar el valor de excluir aplicaciones del sistema al importar horarios 
+* Agregado: vietnamita, hindi y ucraniano 
+* Traducciones actualizadas: árabe, español, italiano, portugués, ruso, catalán, turco, indonesio

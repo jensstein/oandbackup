@@ -1,0 +1,5 @@
+**OndBackupX 0.9.10**
+* Napsáno: Plánovač (nutno důkladně otestovat)
+* Opraveno: odkazy v nápovědě
+* Vyčištění kódu
+* Tu a tam úpravy uživatelského rozhraní

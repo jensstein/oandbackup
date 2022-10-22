@@ -1,19 +1,10 @@
-**OAndBackupX 3.0.0**
-
 ##### THIS RELEASE ISN'T COMPATIBLE WITH THE VERSIONS BEFORE
-* Changed: default backup directory to /OABX
-* Rewritten Encryption Solution (Credits @Pizze)
-* Added: sort by Data Size
-* Added: Alert Dialog about enabling Encrylption
-* Updated: revamped Help UI
-* Added: tooltips for all Buttons' Icons
-* Updated: AppSheet adaptive UI
-* Added: wipe Cache button to AppSheet
-* Changed: clearCache preference to excludeCache
-* Fixed: edge cases for all Adapters
-* Fixed: fluid Checked in Batch
-* Fixed: not connected Prefs
-* Fixed: some Filters not working
+* Update: default backup directory to /OABX
+* Update: Rewritten Encryption Solution (Credits @Pizze)
+* Update: revamped Help and AppSheet UI
+* Update: clearCache preference to excludeCache
 * Update: rewritten the whole shell commands functions (Credits @Pizze)
-* Updated: German (Credits @elea11)
-* a lot of performance and UI tweaks
+* Add: Sort by Data Size
+* Add: Tooltips for all Icons
+* Add: wipe Cache button to AppSheet
+* Add: Alert Dialog about enabling Encrylption

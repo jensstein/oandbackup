@@ -1,0 +1,4 @@
+* Opraveno: Zaškrtávací políčko Vyloučit systémové aplikace v listu plánu
+* Opraveno: Import hodnoty vyloučení systémových aplikací při importu rozvrhů
+* Přidáno: vietnamština, hindština a ukrajinština
+* Aktualizovány překlady: arabština, španělština, italština, portugalština, ruština, katalánština, turečtina, indonéština

@@ -1,11 +1,7 @@
-**NEW MAJOR VERSION**: incompatible with the old releases.
-**MIRGATED TO KOTLIN**
-SCHEDULED ACTIONS CAN ONLY LAST 10 MINUTES (SYSTEM CONSTRAINT): so partition your group of apps.
-
-* Added: Individual modes for apps in batch action dialog
-* Updated: Choosing a backup directory doesn't create a child folder anymore
-* Updated: Far less unneeded refreshing
-* Fixed: APK/data not found error
+**NEW MAJOR VERSION**: INCOMPATIBLE WITH OLD RELEASES
+**First KOTLIN release**
+SCHEDULED ACTIONS CAN ONLY LAST 10 MINUTES (SYSTEM CONSTRAINT)
+* Added: Specify modes for apps in Batch dialog
 * Fixed: Persistant storage permission
 * Fixed: A11 support
-* Far too many other improvements, fixes and cleanups (in the full changelog)
+* Far too many other improvements, fixes and cleanups
