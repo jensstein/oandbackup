@@ -19,8 +19,24 @@ import com.machiav3lli.backup.dialogs.EnumDialogUI
 import com.machiav3lli.backup.dialogs.StringDialogUI
 import com.machiav3lli.backup.housekeepingOptions
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.FileZip
+import com.machiav3lli.backup.ui.compose.icons.phosphor.FloppyDisk
+import com.machiav3lli.backup.ui.compose.icons.phosphor.GameController
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Hash
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Key
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Password
+import com.machiav3lli.backup.ui.compose.icons.phosphor.PlayCircle
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Prohibit
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ProhibitInset
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ShieldCheckered
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ShieldStar
+import com.machiav3lli.backup.ui.compose.icons.phosphor.TagSimple
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Textbox
+import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.ColorAPK
+import com.machiav3lli.backup.ui.compose.theme.ColorData
 import com.machiav3lli.backup.ui.compose.theme.ColorDeData
 import com.machiav3lli.backup.ui.compose.theme.ColorExodus
 import com.machiav3lli.backup.ui.compose.theme.ColorExtDATA
@@ -63,13 +79,14 @@ fun ServicePrefsPage() {
                     is PasswordPref -> StringDialogUI(
                         pref = dialogsPref as PasswordPref,
                         isPrivate = true,
+                        confirm = true,
                         openDialogCustom = openDialog
                     )
-                    is StringPref   -> StringDialogUI(
+                    is StringPref -> StringDialogUI(
                         pref = dialogsPref as StringPref,
                         openDialogCustom = openDialog
                     )
-                    is EnumPref     -> EnumDialogUI(
+                    is EnumPref -> EnumDialogUI(
                         pref = dialogsPref as EnumPref,
                         openDialogCustom = openDialog
                     )
@@ -83,7 +100,7 @@ val pref_encryption = BooleanPref(
     key = "srv.encryption",
     titleId = R.string.prefs_encryption,
     summaryId = R.string.prefs_encryption_summary,
-    iconId = R.drawable.ic_encryption,
+    icon = Phosphor.Key,
     iconTint = ColorUpdated,
     defaultValue = false
 )
@@ -92,15 +109,8 @@ val pref_password = PasswordPref(
     key = "srv.password",
     titleId = R.string.prefs_password,
     summaryId = R.string.prefs_password_summary,
-    iconId = R.drawable.ic_password,
+    icon = Phosphor.Password,
     iconTint = ColorUpdated,
-    defaultValue = ""
-)
-
-val pref_passwordConfirmation = PasswordPref( // TODO smart summary
-    key = "srv.passwordConfirmation",
-    titleId = R.string.prefs_passwordconfirmation,
-    iconId = R.drawable.ic_password,
     defaultValue = ""
 )
 
@@ -108,7 +118,7 @@ val pref_backupDeviceProtectedData = BooleanPref(
     key = "srv.backupDeviceProtectedData",
     titleId = R.string.prefs_deviceprotecteddata,
     summaryId = R.string.prefs_deviceprotecteddata_summary,
-    iconId = R.drawable.ic_de_data,
+    icon = Phosphor.ShieldCheckered,
     iconTint = ColorDeData,
     defaultValue = true
 )
@@ -117,7 +127,7 @@ val pref_backupExternalData = BooleanPref(
     key = "srv.backupExternalData",
     titleId = R.string.prefs_externaldata,
     summaryId = R.string.prefs_externaldata_summary,
-    iconId = R.drawable.ic_external_data,
+    icon = Phosphor.FloppyDisk,
     iconTint = ColorExtDATA,
     defaultValue = true
 )
@@ -126,7 +136,7 @@ val pref_backupObbData = BooleanPref(
     key = "srv.backupObbData",
     titleId = R.string.prefs_obbdata,
     summaryId = R.string.prefs_obbdata_summary,
-    iconId = R.drawable.ic_obb_data,
+    icon = Phosphor.GameController,
     iconTint = ColorOBB,
     defaultValue = true
 )
@@ -135,16 +145,25 @@ val pref_backupMediaData = BooleanPref(
     key = "srv.backupMediaData",
     titleId = R.string.prefs_mediadata,
     summaryId = R.string.prefs_mediadata_summary,
-    iconId = R.drawable.ic_media_data,
+    icon = Phosphor.PlayCircle,
     iconTint = ColorMedia,
     defaultValue = true
+)
+
+val pref_backupNoBackupData = BooleanPref(
+    key = "srv.backupNoBackupData",
+    titleId = R.string.prefs_nobackupdata,
+    summaryId = R.string.prefs_nobackupdata_summary,
+    icon = Phosphor.ProhibitInset,
+    iconTint = ColorData,
+    defaultValue = false
 )
 
 val pref_restorePermissions = BooleanPref(
     key = "srv.restorePermissions",
     titleId = R.string.prefs_restorepermissions,
     summaryId = R.string.prefs_restorepermissions_summary,
-    iconId = R.drawable.ic_sizes,
+    icon = Phosphor.ShieldStar,
     iconTint = ColorAPK,
     defaultValue = true
 )
@@ -153,7 +172,7 @@ val pref_numBackupRevisions = IntPref(
     key = "srv.numBackupRevisions",
     titleId = R.string.prefs_numBackupRevisions,
     summaryId = R.string.prefs_numBackupRevisions_summary,
-    iconId = R.drawable.ic_revisions,
+    icon = Phosphor.Hash,
     iconTint = ColorSpecial,
     entries = ((0..9) + (10..20 step 2) + (50..200 step 50)).toList(),
     defaultValue = 2
@@ -163,7 +182,7 @@ val pref_compressionLevel = IntPref(
     key = "srv.compressionLevel",
     titleId = R.string.prefs_compression_level,
     summaryId = R.string.prefs_compression_level_summary,
-    iconId = R.drawable.ic_compression_level,
+    icon = Phosphor.FileZip,
     iconTint = ColorExodus,
     entries = (0..9).toList(),
     defaultValue = 2
@@ -173,14 +192,14 @@ val pref_enableSessionInstaller = BooleanPref(
     key = "srv.enableSessionInstaller",
     titleId = R.string.prefs_sessionIinstaller,
     summaryId = R.string.prefs_sessionIinstaller_summary,
-    iconId = R.drawable.ic_label,
+    icon = Phosphor.TagSimple,
     defaultValue = true
 )
 
 val pref_installationPackage = StringPref(
     key = "srv.installationPackage",
     titleId = R.string.prefs_installerpackagename,
-    iconId = R.drawable.ic_launchable,
+    icon = Phosphor.Textbox,
     iconTint = ColorOBB,
     defaultValue = BuildConfig.APPLICATION_ID
 )
@@ -189,7 +208,7 @@ val pref_excludeCache = BooleanPref(
     key = "srv.excludeCache",
     titleId = R.string.prefs_excludecache,
     summaryId = R.string.prefs_excludecache_summary,
-    iconId = R.drawable.ic_exclude,
+    icon = Phosphor.Prohibit,
     defaultValue = false
 )
 
@@ -197,7 +216,7 @@ val pref_housekeepingMoment = EnumPref(
     key = "srv.housekeepingMoment",
     titleId = R.string.prefs_housekeepingmoment,
     summaryId = R.string.prefs_housekeepingmoment_summary,
-    iconId = R.drawable.ic_delete,
+    icon = Phosphor.TrashSimple,
     //iconTint = MaterialTheme.colorScheme.secondary,
     entries = housekeepingOptions,
     defaultValue = 0

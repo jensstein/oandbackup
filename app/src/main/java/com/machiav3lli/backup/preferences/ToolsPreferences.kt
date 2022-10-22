@@ -30,6 +30,12 @@ import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.AndroidLogo
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Bug
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CalendarX
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ListNumbers
+import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
 import com.machiav3lli.backup.ui.compose.item.LaunchPreference
 import com.machiav3lli.backup.ui.compose.navigation.NavItem
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
@@ -86,20 +92,20 @@ fun ToolsPrefsPage(navController: NavHostController) {
                             ) {
                                 when (pref) {
                                     // TODO use only compose dialogs
-                                    pref_batchDelete            -> context.onClickUninstalledBackupsDelete(
+                                    pref_batchDelete -> context.onClickUninstalledBackupsDelete(
                                         snackbarHostState,
                                         coroutineScope
                                     )
-                                    pref_copySelfApk            -> context.onClickCopySelf(
+                                    pref_copySelfApk -> context.onClickCopySelf(
                                         snackbarHostState,
                                         coroutineScope
                                     )
-                                    pref_schedulesExportImport  -> navController.navigate(NavItem.Exports.destination)
-                                    pref_saveAppsList           -> context.onClickSaveAppsList(
+                                    pref_schedulesExportImport -> navController.navigate(NavItem.Exports.destination)
+                                    pref_saveAppsList -> context.onClickSaveAppsList(
                                         snackbarHostState,
                                         coroutineScope
                                     )
-                                    pref_logViewer              -> navController.navigate(NavItem.Logs.destination)
+                                    pref_logViewer -> navController.navigate(NavItem.Logs.destination)
                                 }
                             }
                             if (index < size - 1) Spacer(modifier = Modifier.height(4.dp))
@@ -115,7 +121,7 @@ val pref_batchDelete = LinkPref(
     key = "tool.batchDelete",
     titleId = R.string.prefs_batchdelete,
     summaryId = R.string.prefs_batchdelete_summary,
-    iconId = R.drawable.ic_delete,
+    icon = Phosphor.TrashSimple,
     //iconTint = MaterialTheme.colorScheme.secondary
 )
 
@@ -188,7 +194,7 @@ val pref_copySelfApk = LinkPref(
     key = "tool.copySelfApk",
     titleId = R.string.prefs_copyselfapk,
     summaryId = R.string.prefs_copyselfapk_summary,
-    iconId = R.drawable.ic_andy,
+    icon = Phosphor.AndroidLogo,
     //iconTint = MaterialTheme.colorScheme.primary
 )
 
@@ -241,7 +247,7 @@ val pref_schedulesExportImport = LinkPref(
     key = "tool.schedulesExportImport",
     titleId = R.string.prefs_schedulesexportimport,
     summaryId = R.string.prefs_schedulesexportimport_summary,
-    iconId = R.drawable.ic_scheduler,
+    icon = Phosphor.CalendarX,
     iconTint = ColorExtDATA
 )
 
@@ -249,7 +255,7 @@ val pref_saveAppsList = LinkPref(
     key = "tool.saveAppsList",
     titleId = R.string.prefs_saveappslist,
     summaryId = R.string.prefs_saveappslist_summary,
-    iconId = R.drawable.ic_list_ordered,
+    icon = Phosphor.ListNumbers,
     iconTint = ColorExodus
 )
 
@@ -309,6 +315,6 @@ fun Context.writeAppsListFile(appsList: List<String>, filteredBoolean: Boolean) 
 val pref_logViewer = LinkPref(
     key = "tool.logViewer",
     titleId = R.string.prefs_logviewer,
-    iconId = R.drawable.ic_log,
+    icon = Phosphor.Bug,
     iconTint = ColorDeData
 )

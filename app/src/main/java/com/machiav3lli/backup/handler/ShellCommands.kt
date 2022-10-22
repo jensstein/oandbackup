@@ -29,14 +29,14 @@ import com.machiav3lli.backup.utils.FileUtils
 import timber.log.Timber
 import java.io.File
 
-class ShellCommands(private var users: List<String>?) {
+class ShellCommands(private var users: List<String>) {
     var multiuserEnabled: Boolean
 
     init {
         try {
             users = getUsers()
         } catch (e: ShellActionFailedException) {
-            users = null
+            users = arrayListOf()
             var error =
                 when (val cause = e.cause) {
                     is ShellCommandFailedException ->
@@ -45,7 +45,7 @@ class ShellCommands(private var users: List<String>?) {
                 }
             Timber.e("Could not load list of users: ${e}$error")
         }
-        multiuserEnabled = !users.isNullOrEmpty() && users?.size ?: 1 > 1
+        multiuserEnabled = users.isNotEmpty() && users.size > 1
     }
 
     @Throws(ShellActionFailedException::class)
@@ -135,8 +135,8 @@ class ShellCommands(private var users: List<String>?) {
     }
 
     @Throws(ShellActionFailedException::class)
-    fun getUsers(): List<String>? {
-        if (!users.isNullOrEmpty()) {
+    fun getUsers(): List<String> {
+        if (users.isNotEmpty()) {
             return users
         }
         val command = "pm list users | $utilBoxQ sed -nr 's/.*\\{([0-9]+):.*/\\1/p'"

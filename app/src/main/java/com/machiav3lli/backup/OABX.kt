@@ -196,29 +196,49 @@ class OABX : Application() {
 
         fun getString(resId: Int) = context.getString(resId)
 
-        fun prefFlag(name: String, default: Boolean) = context.getDefaultSharedPreferences()
-            .getBoolean(name, default)
+        fun prefFlag(name: String, default: Boolean) =
+            try {
+                context.getDefaultSharedPreferences()
+                    .getBoolean(name, default)
+            } catch(e: Throwable) {
+                default
+            }
 
         fun setPrefFlag(name: String, value: Boolean) = context.getDefaultSharedPreferences()
             .edit()
             .putBoolean(name, value).apply()
 
-        fun prefString(name: String, default: String) = context.getDefaultSharedPreferences()
-            .getString(name, default) ?: default
+        fun prefString(name: String, default: String) =
+            try {
+                context.getDefaultSharedPreferences()
+                    .getString(name, default) ?: default
+            } catch(e: Throwable) {
+                default
+            }
 
         fun setPrefString(name: String, value: String) = context.getDefaultSharedPreferences()
             .edit()
             .putString(name, value).apply()
 
-        fun prefPrivateString(name: String, default: String) = context.getPrivateSharedPrefs()
-            .getString(name, default) ?: default
+        fun prefPrivateString(name: String, default: String) =
+            try {
+                context.getPrivateSharedPrefs()
+                    .getString(name, default) ?: default
+            } catch(e: Throwable) {
+                default
+            }
 
         fun setPrefPrivateString(name: String, value: String) = context.getPrivateSharedPrefs()
             .edit()
             .putString(name, value).apply()
 
-        fun prefInt(name: String, default: Int) = context.getDefaultSharedPreferences()
-            .getInt(name, default)
+        fun prefInt(name: String, default: Int) =
+            try {
+                context.getDefaultSharedPreferences()
+                    .getInt(name, default)
+            } catch(e: Throwable) {
+                default
+            }
 
         fun setPrefInt(name: String, value: Int) = context.getDefaultSharedPreferences()
             .edit()

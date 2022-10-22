@@ -64,16 +64,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import com.machiav3lli.backup.ActionListener
 import com.machiav3lli.backup.BUNDLE_USERS
+import com.machiav3lli.backup.EXTRA_PACKAGE_NAME
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.ODatabase
@@ -88,6 +89,18 @@ import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.preferences.pref_useWorkManagerForSingleManualJob
 import com.machiav3lli.backup.tasks.BackupActionTask
 import com.machiav3lli.backup.tasks.RestoreActionTask
+import com.machiav3lli.backup.ui.compose.icons.Icon
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.icon.Exodus
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArchiveTray
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowSquareOut
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretDown
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Info
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Leaf
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Prohibit
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ProhibitInset
+import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Warning
 import com.machiav3lli.backup.ui.compose.item.BackupItem
 import com.machiav3lli.backup.ui.compose.item.CardButton
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
@@ -106,42 +119,51 @@ import com.machiav3lli.backup.viewmodels.AppSheetViewModel
 import kotlinx.coroutines.CoroutineScope
 import timber.log.Timber
 
-class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
-    private lateinit var viewModel: AppSheetViewModel
+class AppSheet() : BaseSheet(), ActionListener {
+
+    val viewModel: AppSheetViewModel by viewModels {
+        AppSheetViewModel.Factory(
+            mPackage,
+            ODatabase.getInstance(requireContext()),
+            ShellCommands(users),
+            requireActivity().application
+        )
+    }
+
+    constructor(packageName: String) : this() {
+        arguments = Bundle().apply {
+            putString(EXTRA_PACKAGE_NAME, packageName)
+        }
+    }
+
+    val packageName: String
+        get() = requireArguments().getString(EXTRA_PACKAGE_NAME)!!
+    var users: ArrayList<String> = ArrayList()
+    private var mPackage: Package? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val database = ODatabase.getInstance(requireContext())
-        val users =
-            if (savedInstanceState != null) savedInstanceState.getStringArrayList(BUNDLE_USERS) else ArrayList()
-        val shellCommands = ShellCommands(users)
-        val viewModelFactory =
-            AppSheetViewModel.Factory(
-                appInfo,
-                database,
-                shellCommands,
-                requireActivity().application
-            )
-        viewModel = ViewModelProvider(this, viewModelFactory)[AppSheetViewModel::class.java]
+        mPackage =
+            requireMainActivity().viewModel.packageList.value?.find { it.packageName == packageName }
+        users = savedInstanceState?.getStringArrayList(BUNDLE_USERS) ?: ArrayList()
 
         return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent { AppPage() }
         }
-    }
-
-    fun updateApp(app: Package) {
-        viewModel.thePackage.value = app
     }
 
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
     @Composable
     fun AppPage() {
-        val thePackage by viewModel.thePackage.observeAsState()
+        val thePackages by requireMainActivity().viewModel.packageList.observeAsState()
+        val thePackage: Package? = thePackages?.find { it.packageName == packageName }
         val snackbarText by viewModel.snackbarText.observeAsState()
         val appExtras by viewModel.appExtras.observeAsState()
+        val refreshNow by viewModel.refreshNow
         val snackbarHostState = remember { SnackbarHostState() }
         val nestedScrollConnection = rememberNestedScrollInteropConnection()
         val coroutineScope = rememberCoroutineScope()
@@ -153,9 +175,9 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                     else "android.resource://${packageInfo.packageName}/${packageInfo.packageInfo.icon}"
                 )
             }
-            if (viewModel.refreshNow) {
-                requireMainActivity().updatePackage(packageInfo.packageName ?: "")
-                viewModel.refreshNow = false
+            if (refreshNow) {
+                requireMainActivity().updatePackage(packageInfo.packageName)
+                viewModel.refreshNow.value = false
             }
 
 
@@ -219,7 +241,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                     }
                                     AnimatedVisibility(visible = packageInfo.isInstalled && !packageInfo.isSpecial) {
                                         RoundButton(
-                                            icon = painterResource(id = R.drawable.ic_info),
+                                            icon = Phosphor.Info,
                                             modifier = Modifier.fillMaxHeight()
                                         ) {
                                             val intent =
@@ -234,7 +256,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                         }
                                     }
                                     RoundButton(
-                                        icon = painterResource(id = R.drawable.ic_arrow_down),
+                                        icon = Phosphor.CaretDown,
                                         modifier = Modifier.fillMaxHeight()
                                     ) {
                                         dismissAllowingStateLoss()
@@ -273,7 +295,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                         modifier = Modifier
                                             .fillMaxHeight()
                                             .weight(1f),
-                                        icon = painterResource(id = R.drawable.ic_exodus),
+                                        icon = Icon.Exodus,
                                         tint = colorResource(id = R.color.ic_exodus),
                                         description = stringResource(id = R.string.exodus_report)
                                     ) {
@@ -293,7 +315,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                             modifier = Modifier
                                                 .fillMaxHeight()
                                                 .weight(1f),
-                                            icon = painterResource(id = R.drawable.ic_launchable),
+                                            icon = Phosphor.ArrowSquareOut,
                                             tint = colorResource(id = R.color.ic_obb),
                                             description = stringResource(id = R.string.launch_app)
                                         ) {
@@ -312,10 +334,8 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                             modifier = Modifier
                                                 .fillMaxHeight()
                                                 .weight(1f),
-                                            icon = painterResource(
-                                                id = if (packageInfo.isDisabled) R.drawable.ic_battery_optimization
-                                                else R.drawable.ic_exclude
-                                            ),
+                                            icon = if (packageInfo.isDisabled) Phosphor.Leaf
+                                            else Phosphor.ProhibitInset,
                                             tint = if (packageInfo.isDisabled) MaterialTheme.colorScheme.primaryContainer
                                             else MaterialTheme.colorScheme.tertiaryContainer,
                                             description = stringResource(
@@ -333,7 +353,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                             modifier = Modifier
                                                 .fillMaxHeight()
                                                 .weight(1f),
-                                            icon = painterResource(id = R.drawable.ic_delete),
+                                            icon = Phosphor.TrashSimple,
                                             tint = MaterialTheme.colorScheme.tertiary,
                                             description = stringResource(id = R.string.uninstall),
                                             onClick = {
@@ -347,7 +367,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                     CardButton(
                                         modifier = Modifier
                                             .weight(1f),
-                                        icon = painterResource(id = R.drawable.ic_blocklist),
+                                        icon = Phosphor.Prohibit,
                                         tint = colorResource(id = R.color.ic_updated),
                                         description = stringResource(id = R.string.global_blocklist_add)
                                     ) {
@@ -394,7 +414,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                             ) {
                                 AnimatedVisibility(visible = packageInfo.isInstalled || packageInfo.isSpecial) {
                                     ElevatedActionButton(
-                                        icon = painterResource(id = R.drawable.ic_backup),
+                                        icon = Phosphor.ArchiveTray,
                                         text = stringResource(id = R.string.backup),
                                         fullWidth = true,
                                         enabled = snackbarText.isNullOrEmpty(),
@@ -403,7 +423,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                 }
                                 AnimatedVisibility(visible = packageInfo.hasBackups) {
                                     ElevatedActionButton(
-                                        icon = painterResource(id = R.drawable.ic_delete),
+                                        icon = Phosphor.TrashSimple,
                                         text = stringResource(id = R.string.delete_all_backups),
                                         fullWidth = true,
                                         positive = false,
@@ -418,7 +438,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                 }
                                 AnimatedVisibility(visible = packageInfo.isInstalled && !packageInfo.isSpecial) {
                                     ElevatedActionButton(
-                                        icon = painterResource(id = R.drawable.ic_force_kill),
+                                        icon = Phosphor.Warning,
                                         text = stringResource(id = R.string.forceKill),
                                         fullWidth = true,
                                         colored = false,
@@ -430,7 +450,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                                         ?: 0L) >= 0L)
                                 ) {
                                     ElevatedActionButton(
-                                        icon = painterResource(id = R.drawable.ic_delete),
+                                        icon = Phosphor.TrashSimple,
                                         text = stringResource(id = R.string.clear_cache),
                                         fullWidth = true,
                                         colored = false,
@@ -504,14 +524,12 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
         viewModel.thePackage.value?.let { p ->
             when {
                 actionType === ActionType.BACKUP -> {
-                    if(pref_useWorkManagerForSingleManualJob.value) {
+                    if (pref_useWorkManagerForSingleManualJob.value) {
                         OABX.main?.startBatchAction(
                             true,
-                            listOf(this.appInfo.packageName),
+                            listOf(packageName),
                             listOf(mode)
                         ) {
-                            //viewModel.refreshNow.value = true
-                            // TODO refresh only the influenced packages
                             it.removeObserver(this)
                         }
                     } else {
@@ -522,14 +540,12 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
                     }
                 }
                 actionType === ActionType.RESTORE -> {
-                    if(pref_useWorkManagerForSingleManualJob.value) {
+                    if (pref_useWorkManagerForSingleManualJob.value) {
                         OABX.main?.startBatchAction(
                             false,
-                            listOf(this.appInfo.packageName),
+                            listOf(packageName),
                             listOf(mode)
                         ) {
-                            //viewModel.refreshNow.value = true
-                            // TODO refresh only the influenced packages
                             it.removeObserver(this)
                         }
                     } else {
@@ -643,7 +659,7 @@ class AppSheet(val appInfo: Package) : BaseSheet(), ActionListener {
         try {
             Timber.i("${app.packageLabel}: Wiping cache")
             ShellCommands.wipeCache(requireContext(), app)
-            viewModel.refreshNow = true
+            viewModel.refreshNow.value = true
         } catch (e: ShellCommands.ShellActionFailedException) {
             // Not a critical issue
             val errorMessage: String =

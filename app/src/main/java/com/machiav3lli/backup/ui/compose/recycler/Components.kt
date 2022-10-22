@@ -167,7 +167,7 @@ fun SelectableChipGroup(
                 ),
                 selected = it.flag == selectedFlag,
                 leadingIcon = {
-                    ButtonIcon(it.iconId, it.textId)
+                    ButtonIcon(it.icon, it.textId)
                 },
                 onClick = {
                     setFlag(it.flag)
@@ -221,7 +221,7 @@ fun MultiSelectableChipGroup(
                 ),
                 selected = it.flag and selectedFlags != 0,
                 leadingIcon = {
-                    ButtonIcon(it.iconId, it.textId)
+                    ButtonIcon(it.icon, it.textId)
                 },
                 onClick = {
                     onClick(it.flag)

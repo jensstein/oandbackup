@@ -45,7 +45,7 @@ fun PermissionItem(
             modifier = Modifier.wrapContentHeight(),
         ) {
             Icon(
-                painter = painterResource(id = item.iconId),
+                imageVector = item.icon,
                 contentDescription = stringResource(id = item.nameId),
                 modifier = Modifier.padding(8.dp)
             )

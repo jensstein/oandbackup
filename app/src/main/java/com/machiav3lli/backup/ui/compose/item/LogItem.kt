@@ -9,23 +9,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.items.Log
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ShareNetwork
+import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.getFormattedDate
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LogItem(
     item: Log,
@@ -100,14 +100,14 @@ fun LogItem(
                     }
                 }
                 ElevatedActionButton(
-                    icon = painterResource(id = R.drawable.ic_share),
+                    icon = Phosphor.ShareNetwork,
                     text = stringResource(id = R.string.shareTitle),
                     withText = false,
                     positive = true,
                     onClick = { onShare(item) }
                 )
                 ElevatedActionButton(
-                    icon = painterResource(id = R.drawable.ic_delete),
+                    icon = Phosphor.TrashSimple,
                     text = stringResource(id = R.string.delete),
                     withText = false,
                     positive = false,

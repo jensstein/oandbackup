@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,7 +32,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PrefsDependencies
 import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.item.BooleanPref
@@ -104,8 +102,8 @@ fun BasePreference(
                     style = MaterialTheme.typography.titleMedium,
                     fontSize = 16.sp
                 )
-                var summaryText= if (summaryId != -1) stringResource(id = summaryId) else ""
-                if (summaryText.isNotEmpty() && ! summary.isNullOrEmpty())
+                var summaryText = if (summaryId != -1) stringResource(id = summaryId) else ""
+                if (summaryText.isNotEmpty() && !summary.isNullOrEmpty())
                     summaryText += " : "
                 summaryText += summary ?: ""
                 Text(
@@ -156,8 +154,8 @@ fun LaunchPreference(
         titleId = pref.titleId,
         summaryId = pref.summaryId,
         icon = {
-            if (pref.iconId != -1) PrefIcon(
-                iconId = pref.iconId,
+            if (pref.icon != null) PrefIcon(
+                icon = pref.icon,
                 text = stringResource(id = pref.titleId),
             )
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
@@ -195,10 +193,10 @@ fun EnumPreference(
         modifier = modifier,
         key = pref.key,
         titleId = pref.titleId,
-        summaryId = pref.entries[OABX.prefInt(pref.key, pref.defaultValue)] ?: pref.summaryId,
+        summaryId = pref.entries[pref.value] ?: pref.summaryId,
         icon = {
-            if (pref.iconId != -1) PrefIcon(
-                iconId = pref.iconId,
+            if (pref.icon != null) PrefIcon(
+                icon = pref.icon,
                 text = stringResource(id = pref.titleId),
             )
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
@@ -237,10 +235,10 @@ fun ListPreference(
         key = pref.key,
         titleId = pref.titleId,
         summaryId = pref.summaryId,
-        summary = pref.entries[OABX.prefString(pref.key, pref.defaultValue)],
+        summary = pref.entries[pref.value],
         icon = {
-            if (pref.iconId != -1) PrefIcon(
-                iconId = pref.iconId,
+            if (pref.icon != null) PrefIcon(
+                icon = pref.icon,
                 text = stringResource(id = pref.titleId),
             )
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
@@ -264,11 +262,9 @@ fun SwitchPreference(
     var isEnabled by remember(context.PrefsDependencies[pref]) {
         mutableStateOf(context.PrefsDependencies[pref] ?: true)
     }
-    var checked by remember(OABX.prefFlag(pref.key, pref.defaultValue)) {
-        mutableStateOf(OABX.prefFlag(pref.key, pref.defaultValue))
-    }
+    var checked by remember(pref.value) { mutableStateOf(pref.value) }
     val check = { value: Boolean ->
-        OABX.setPrefFlag(pref.key, value)
+        pref.value = value
         checked = value
     }
     SideEffect {
@@ -287,8 +283,8 @@ fun SwitchPreference(
         titleId = pref.titleId,
         summaryId = pref.summaryId,
         icon = {
-            if (pref.iconId != -1) PrefIcon(
-                iconId = pref.iconId,
+            if (pref.icon != null) PrefIcon(
+                icon = pref.icon,
                 text = stringResource(id = pref.titleId),
             )
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
@@ -327,12 +323,10 @@ fun CheckboxPreference(
     var isEnabled by remember(context.PrefsDependencies[pref]) {
         mutableStateOf(context.PrefsDependencies[pref] ?: true)
     }
-    var checked by remember(OABX.prefFlag(pref.key, pref.defaultValue)) {
-        mutableStateOf(OABX.prefFlag(pref.key, pref.defaultValue))
-    }
-    val check = { checks: Boolean ->
-        OABX.setPrefFlag(pref.key, checks)
-        checked = checks
+    var checked by remember(pref.value) { mutableStateOf(pref.value) }
+    val check = { value: Boolean ->
+        pref.value = value
+        checked = value
     }
 
     SideEffect {
@@ -351,8 +345,8 @@ fun CheckboxPreference(
         titleId = pref.titleId,
         summaryId = pref.summaryId,
         icon = {
-            if (pref.iconId != -1) PrefIcon(
-                iconId = pref.iconId,
+            if (pref.icon != null) PrefIcon(
+                icon = pref.icon,
                 text = stringResource(id = pref.titleId),
             )
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
@@ -391,7 +385,7 @@ fun SeekBarPreference(
     var isEnabled by remember(context.PrefsDependencies[pref]) {
         mutableStateOf(context.PrefsDependencies[pref] ?: true)
     }
-    val currentValue = OABX.prefInt(pref.key, pref.defaultValue)
+    val currentValue = pref.value
     var sliderPosition by remember {
         mutableStateOf(
             pref.entries.indexOfFirst { it == currentValue }.let {
@@ -409,7 +403,7 @@ fun SeekBarPreference(
     }
     val savePosition = { pos: Int ->
         val value = pref.entries[pos]
-        OABX.setPrefInt(pref.key, value)
+        pref.value = value
         sliderPosition = pos
     }
     val last = pref.entries.size - 1
@@ -430,8 +424,8 @@ fun SeekBarPreference(
         titleId = pref.titleId,
         summaryId = pref.summaryId,
         icon = {
-            if (pref.iconId != -1) PrefIcon(
-                iconId = pref.iconId,
+            if (pref.icon != null) PrefIcon(
+                icon = pref.icon,
                 text = stringResource(id = pref.titleId),
             )
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
@@ -440,11 +434,9 @@ fun SeekBarPreference(
         index = index,
         groupSize = groupSize,
         bottomWidget = {
-            Row {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Slider(
-                    modifier = Modifier
-                        .requiredHeight(24.dp)
-                        .weight(1f),
+                    modifier = Modifier.weight(1f, false),
                     value = sliderPosition.toFloat(),
                     valueRange = 0.toFloat()..last.toFloat(),
                     onValueChange = { sliderPosition = it.roundToInt() },
