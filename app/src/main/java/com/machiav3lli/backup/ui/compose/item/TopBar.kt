@@ -1,9 +1,7 @@
 package com.machiav3lli.backup.ui.compose.item
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,9 +23,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.surfaceColorAtElevation
@@ -282,21 +279,11 @@ fun ExpandedSearchView(
     }
 
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 6.dp)
-            .background(
-                color = Color.Transparent,
-                shape = MaterialTheme.shapes.medium
-            )
-            .border(
-                BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                shape = MaterialTheme.shapes.medium
-            ),
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        TextField(
+        OutlinedTextField(
             value = textFieldValue,
             onValueChange = {
                 textFieldValue = it
@@ -305,25 +292,23 @@ fun ExpandedSearchView(
             modifier = Modifier
                 .weight(1f)
                 .focusRequester(textFieldFocusRequester),
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-            ),
             singleLine = true,
+            trailingIcon = {
+                IconButton(onClick = {
+                    onExpanded(false)
+                    textFieldValue = TextFieldValue("")
+                    onQueryChanged("")
+                    onClose()
+                }) {
+                    Icon(
+                        imageVector = Phosphor.X,
+                        contentDescription = stringResource(id = R.string.dialogCancel)
+                    )
+                }
+            },
             label = { Text(text = stringResource(id = R.string.searchHint)) },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
         )
-        IconButton(onClick = {
-            onExpanded(false)
-            textFieldValue = TextFieldValue("")
-            onQueryChanged("")
-            onClose()
-        }) {
-            Icon(
-                imageVector = Phosphor.X,
-                contentDescription = stringResource(id = R.string.dialogCancel)
-            )
-        }
     }
 }
