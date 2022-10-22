@@ -318,6 +318,7 @@ val pref_forceCrash = LaunchPref(
     throw Exception("forceCrash")
 }
 
+
 val persist_firstLaunch = BooleanPref(
     key = "persist.firstLaunch",
     defaultValue = false
