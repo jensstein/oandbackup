@@ -24,7 +24,7 @@ plugins {
     kotlin("plugin.serialization").version("1.7.20")
 }
 val vKotlin = "1.7.20"
-val vComposeCompiler = "1.3.1"
+val vComposeCompiler = "1.3.2"
 val vCompose = "1.3.0-rc01"
 val vRoom = "2.5.0-beta01"
 val vNavigation = "2.5.2"
