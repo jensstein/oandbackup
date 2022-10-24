@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.flowlayout.FlowRow
 import com.machiav3lli.backup.BuildConfig
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
@@ -84,7 +85,8 @@ fun info(): List<String> {
 
 fun shell(command: String): List<String> {
     try {
-        val result = runAsRoot(command)
+        val env = "EPKG=${OABX.lastErrorPackage}"
+        val result = runAsRoot("$env $command")
         return listOf(
             "",
             "---------- # $command -> ${result.code}"
@@ -187,6 +189,10 @@ fun TerminalPage() {
                 Spacer(Modifier.width(5.dp))
                 TerminalButton("info") {
                     add(info())
+                    run("su --help")
+                    run("echo ${utilBox.name}")
+                    run("${utilBox.name} --version")
+                    run("${utilBox.name} --help")
                 }
                 TerminalButton("log/app") {
                     run("logcat -d -t ${5 * 60 /* sec */}.0 --pid=${Process.myPid()}")
@@ -194,22 +200,15 @@ fun TerminalPage() {
                 TerminalButton("log/all") {
                     run("logcat -d -t ${5 * 60 /* sec */}.0")
                 }
-                TerminalButton("toolbox") {
-                    run("echo ${utilBox.name}")
-                    run("${utilBox.name} --version")
-                    run("${utilBox.name} --help")
+                TerminalButton("access") {
+                    run("echo \"\$(ls /data/user/0/ | wc -l) apks\"")
+                    run("echo \"$(ls /data/user/0/ | wc -l) package data\"")
+                    run("ls -l /data/misc/")
                 }
-                TerminalButton("su") {
-                    run("su --help")
-                }
-                TerminalButton("ls/data") {
-                    run("ls /data/user/0/")
-                }
-                TerminalButton("ls/apk") {
-                    run("ls /data/app/")
-                }
-                TerminalButton("ls/misc") {
-                    run("ls /data/misc/")
+                TerminalButton("epkg") {
+                    run("ls -l /data/user/0/\$EPKG")
+                    run("ls -l /data/user/0/\$EPKG")
+                    run("ls -l /sdcard/Android/*/\$EPKG")
                 }
             }
         }

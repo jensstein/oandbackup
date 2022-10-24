@@ -19,6 +19,7 @@ package com.machiav3lli.backup.tasks
 
 import android.content.Context
 import android.content.DialogInterface
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.fragments.AppSheet
@@ -72,6 +73,8 @@ abstract class BaseActionTask(
                         ?: ""
                 )
             }
+            if (! (result?.succeeded ?: false))
+                OABX.lastErrorPackage = app.packageName
             mainActivityX.updatePackage(app.packageName)
             mainActivityX.dismissSnackBar()
             if (appSheet.isVisible) appSheet.dismissSnackBar()
