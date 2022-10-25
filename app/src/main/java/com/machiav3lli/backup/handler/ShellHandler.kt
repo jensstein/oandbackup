@@ -28,12 +28,17 @@ import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.Shell.ROOT_MOUNT_MASTER
 import com.topjohnwu.superuser.io.SuRandomAccessFile
 import de.voize.semver4k.Semver
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
+import java.io.InputStream
 import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 const val testedVersions = "0.8.0 - 0.8.7"
@@ -278,7 +283,7 @@ class ShellHandler {
 
     class ShellCommandFailedException(
         @field:Transient val shellResult: Shell.Result,
-        val commands: Array<out String>
+        val command: String
     ) : Exception()
 
     class UnexpectedCommandResult(message: String, val shellResult: Shell.Result?) :
@@ -593,49 +598,121 @@ class ShellHandler {
         val EXCLUDE_FILE = "tar_EXCLUDE"
 
         interface RunnableShellCommand {
-            fun runCommand(vararg commands: String?): Shell.Job
+            fun runCommand(command: String): Shell.Job
         }
 
         class ShRunnableShellCommand : RunnableShellCommand {
-            override fun runCommand(vararg commands: String?): Shell.Job {
-                return Shell.sh(*commands)
+            override fun runCommand(command: String): Shell.Job {
+                return Shell.sh(command)
             }
         }
 
         class SuRunnableShellCommand : RunnableShellCommand {
-            override fun runCommand(vararg commands: String?): Shell.Job {
-                return Shell.su(*commands)
+            override fun runCommand(command: String): Shell.Job {
+                return Shell.su(command)
             }
         }
 
         @Throws(ShellCommandFailedException::class)
         private fun runShellCommand(
             shell: RunnableShellCommand,
-            vararg commands: String
+            command: String
         ): Shell.Result {
             // defining stdout and stderr on our own
             // otherwise we would have to set set the flag redirect stderr to stdout:
             // Shell.Config.setFlags(Shell.FLAG_REDIRECT_STDERR);
             // stderr is used for logging, so it's better not to call an application that does that
             // and keeps quiet
-            Timber.d("Running Command: ${commands.joinToString(" ; ")}")
+            Timber.d("Running Command: $command")
             val stdout: List<String> = arrayListOf()
             val stderr: List<String> = arrayListOf()
-            val result = shell.runCommand(*commands).to(stdout, stderr).exec()
-            Timber.d("Command(s) ${commands.joinToString(" ; ")} ended with ${result.code}")
-            if (!result.isSuccess)
-                throw ShellCommandFailedException(result, commands)
+            val result = shell.runCommand(command).to(stdout, stderr).exec()
+            Timber.d("Command(s) $command ended with ${result.code}")
+            if (!result.isSuccess) {
+                OABX.lastErrorCommand = command
+                throw ShellCommandFailedException(result, command)
+            }
             return result
         }
 
         @Throws(ShellCommandFailedException::class)
-        fun runAsUser(vararg commands: String): Shell.Result {
-            return runShellCommand(ShRunnableShellCommand(), *commands)
+        fun runAsUser(command: String): Shell.Result {
+            return runShellCommand(ShRunnableShellCommand(), command)
         }
 
         @Throws(ShellCommandFailedException::class)
-        fun runAsRoot(vararg commands: String): Shell.Result {
-            return runShellCommand(SuRunnableShellCommand(), *commands)
+        fun runAsRoot(command: String): Shell.Result {
+            return runShellCommand(SuRunnableShellCommand(), command)
+        }
+
+        suspend
+        fun runAsRootPipeInCollectErr(
+            inStream: InputStream,
+            command: String
+        ) : Pair<Int, String> {
+            Timber.i("SHELL: $command")
+
+            return withContext(Dispatchers.IO) {
+
+                val process = Runtime.getRuntime().exec(command)
+
+                val shellIn = process.outputStream
+                //val shellOut = process.inputStream
+                val shellErr = process.errorStream
+
+                val errAsync = async(Dispatchers.IO) {
+                    shellErr.readBytes().decodeToString()
+                }
+
+                inStream.copyTo(shellIn, 65536)
+                shellIn.close()
+
+                val err = errAsync.await()
+                withContext(Dispatchers.IO) { process.waitFor(10, TimeUnit.SECONDS) }
+                if (process.isAlive)
+                    process.destroyForcibly()
+                val code = process.exitValue()
+
+                if (code != 0)
+                    OABX.lastErrorCommand = command
+
+                (code to err)
+            }
+        }
+
+        suspend
+        fun runAsRootPipeOutCollectErr(
+                outStream: OutputStream,
+                command: String
+        ) : Pair<Int, String> {
+            Timber.i("SHELL: $command")
+
+            return withContext(Dispatchers.IO) {
+
+                val process = Runtime.getRuntime().exec(command)
+
+                //val shellIn = process.outputStream
+                val shellOut = process.inputStream
+                val shellErr = process.errorStream
+
+                val errAsync = async(Dispatchers.IO) {
+                    shellErr.readBytes().decodeToString()
+                }
+
+                shellOut.copyTo(outStream, 65536)
+                outStream.flush()
+
+                val err = errAsync.await()
+                withContext(Dispatchers.IO) { process.waitFor(10, TimeUnit.SECONDS) }
+                if (process.isAlive)
+                    process.destroyForcibly()
+                val code = process.exitValue()
+
+                if (code != 0)
+                    OABX.lastErrorCommand = command
+
+                (code to err)
+            }
         }
 
         // the Android command line shell is mksh

@@ -33,8 +33,9 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.findAssetFile
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quoteMultiple
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
-import com.machiav3lli.backup.handler.ShellHandler.Companion.suCOption
+import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRootPipeInCollectErr
 import com.machiav3lli.backup.handler.ShellHandler.Companion.suAccessOptions
+import com.machiav3lli.backup.handler.ShellHandler.Companion.suCOption
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.handler.ShellHandler.UnexpectedCommandResult
@@ -76,6 +77,7 @@ import java.util.regex.Pattern
 
 open class RestoreAppAction(context: Context, work: AppActionWork?, shell: ShellHandler) :
     BaseAppAction(context, work, shell) {
+    suspend
     fun run(
         app: Package,
         backup: Backup,
@@ -118,8 +120,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                 val message =
                     when (val cause = e.cause) {
                         is ShellCommandFailedException -> {
-                            val commandList = cause.commands.joinToString("; ")
-                            "Shell command failed: ${commandList}\n${
+                            "Shell command failed: ${cause.command}\n${
                                 extractErrorMessage(cause.shellResult)
                             }"
                         }
@@ -146,6 +147,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     }
 
     @Throws(CryptoSetupException::class, RestoreFailedException::class)
+    suspend
     protected open fun restoreAllData(
         work: AppActionWork?,
         app: Package,
@@ -425,7 +427,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         } catch (e: ShellCommandFailedException) {
             val error = extractErrorMessage(e.shellResult)
             throw RestoreFailedException(
-                "Shell command failed: ${e.commands.joinToString { "; " }}\n$error",
+                "Shell command failed: ${e.command}\n$error",
                 e
             )
         }
@@ -526,6 +528,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class, NotImplementedError::class)
+    suspend
     fun genericRestoreFromArchiveTarCmd(
         dataType: String,
         archive: StorageFile,
@@ -568,27 +571,12 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                         }"
                     Timber.i("SHELL: $cmd")
 
-                    val process = Runtime.getRuntime().exec(cmd)
+                    val (code, err) = runAsRootPipeInCollectErr(archiveStream, cmd)
 
-                    val shellIn = process.outputStream
-                    val shellOut = process.inputStream
-                    val shellErr = process.errorStream
-
-                    archiveStream.copyTo(shellIn, 65536)
-
-                    shellIn.close()
-
-                    val err = shellErr.readBytes().decodeToString()
-                    val errLines = err
-                        .split("\n")
-                        .filterNot { line ->
-                            line.isBlank()
-                                    || line.contains("tar: unknown file type") // e.g. socket 140000
-                        }
-                    if (errLines.isNotEmpty()) {
-                        val errFiltered = errLines.joinToString("\n")
-                        Timber.i(errFiltered)
-                        throw ScriptException(errFiltered)
+                    if (err != "") {
+                        Timber.i(err)
+                        if (code != 0)
+                            throw ScriptException(err)
                     }
                 }
             } catch (e: FileNotFoundException) {
@@ -615,6 +603,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
+    suspend
     private fun genericRestoreFromArchive(
         dataType: String,
         archive: StorageFile,
@@ -723,6 +712,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
+    suspend
     open fun restoreData(
         app: Package,
         backup: Backup,
@@ -772,6 +762,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
+    suspend
     open fun restoreDeviceProtectedData(
         app: Package,
         backup: Backup,
@@ -821,6 +812,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
+    suspend
     open fun restoreExternalData(
         app: Package,
         backup: Backup,
@@ -866,6 +858,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     }
 
     @Throws(RestoreFailedException::class)
+    suspend
     open fun restoreObbData(
         app: Package,
         backup: Backup,
@@ -922,6 +915,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     }
 
     @Throws(RestoreFailedException::class)
+    suspend
     open fun restoreMediaData(
         app: Package,
         backup: Backup,

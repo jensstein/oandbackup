@@ -35,8 +35,9 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.isFileNotFoundException
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
-import com.machiav3lli.backup.handler.ShellHandler.Companion.suCOption
+import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRootPipeOutCollectErr
 import com.machiav3lli.backup.handler.ShellHandler.Companion.suAccessOptions
+import com.machiav3lli.backup.handler.ShellHandler.Companion.suCOption
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.ActionResult
@@ -62,6 +63,7 @@ import com.machiav3lli.backup.utils.isPauseApps
 import com.machiav3lli.backup.utils.suAddFiles
 import com.machiav3lli.backup.utils.suCopyFileToDocument
 import com.topjohnwu.superuser.ShellUtils
+import kotlinx.coroutines.delay
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
 import org.apache.commons.compress.compressors.gzip.GzipParameters
@@ -75,6 +77,7 @@ const val COMPRESSION_ALGORITHM = "gz"
 open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellHandler) :
     BaseAppAction(context, work, shell) {
 
+    suspend
     open fun run(app: Package, backupMode: Int): ActionResult {
         var backup: Backup? = null
         var ok = false
@@ -138,7 +141,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                         val now = System.currentTimeMillis()
                         val seconds = (now - startTime) / 1000.0
                         work?.setOperation((seconds/10).toInt().toString().padStart(3, '0'))
-                        Thread.sleep(step)
+                        delay(step)
                     } while (seconds < fakeSeconds)
 
                     val succeeded = true // random() < 0.75
@@ -422,6 +425,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
 
     @SuppressLint("RestrictedApi")
     @Throws(BackupFailedException::class, CryptoSetupException::class)
+    suspend
     fun genericBackupDataTarCmd(
         dataType: String,
         backupInstanceDir: StorageFile,
@@ -476,29 +480,13 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             val cmd = "su $suAccessOptions $suCOption sh ${quote(tarScript)} create $utilBoxQ $options ${
                 quote(sourcePath)
             }"
-            Timber.i("SHELL: $cmd")
 
-            val process = Runtime.getRuntime().exec(cmd)
+            val (code, err) = runAsRootPipeOutCollectErr(outStream, cmd)
 
-            val shellIn = process.outputStream
-            val shellOut = process.inputStream
-            val shellErr = process.errorStream
-
-            shellOut.copyTo(outStream, 65536)
-
-            outStream.flush()
-
-            val err = shellErr.readBytes().decodeToString()
-            val errLines = err
-                .split("\n")
-                .filterNot { line ->
-                    line.isBlank()
-                            || line.contains("tar: unknown file type") // e.g. socket 140000
-                }
-            if (errLines.isNotEmpty()) {
-                val errFiltered = errLines.joinToString("\n")
-                Timber.i(errFiltered)
-                throw ScriptException(errFiltered)
+            if (err != "") {
+                Timber.i(err)
+                if (code != 0)
+                    throw ScriptException(err)
             }
             result = true
         } catch (e: Throwable) {
@@ -524,6 +512,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
+    suspend
     protected fun genericBackupData(
         dataType: String,
         backupInstanceDir: StorageFile,
@@ -552,6 +541,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
+    suspend
     protected open fun backupData(
         app: Package,
         backupInstanceDir: StorageFile,
@@ -569,6 +559,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
+    suspend
     protected open fun backupExternalData(
         app: Package,
         backupInstanceDir: StorageFile,
@@ -585,11 +576,13 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 iv
             )
         } catch (ex: BackupFailedException) {
-            (ex.cause as ShellCommandFailedException).let {
-                if (isFileNotFoundException(it)) {
-                    // no such data found
-                    Timber.i(LOG_NO_THING_TO_BACKUP, dataType, app.packageName)
-                    return false
+            when(ex.cause) {
+                is ShellCommandFailedException -> {
+                    if (isFileNotFoundException(ex.cause as ShellCommandFailedException)) {
+                        // no such data found
+                        Timber.i(LOG_NO_THING_TO_BACKUP, dataType, app.packageName)
+                        return false
+                    }
                 }
             }
             throw ex
@@ -597,6 +590,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
+    suspend
     protected open fun backupObbData(
         app: Package,
         backupInstanceDir: StorageFile,
@@ -613,11 +607,13 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 iv
             )
         } catch (ex: BackupFailedException) {
-            (ex.cause as ShellCommandFailedException).let {
-                if (isFileNotFoundException(it)) {
-                    // no such data found
-                    Timber.i(LOG_NO_THING_TO_BACKUP, dataType, app.packageName)
-                    return false
+            when(ex.cause) {
+                is ShellCommandFailedException -> {
+                    if (isFileNotFoundException(ex.cause as ShellCommandFailedException)) {
+                        // no such data found
+                        Timber.i(LOG_NO_THING_TO_BACKUP, dataType, app.packageName)
+                        return false
+                    }
                 }
             }
             throw ex
@@ -625,6 +621,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
+    suspend
     protected open fun backupMediaData(
         app: Package,
         backupInstanceDir: StorageFile,
@@ -641,11 +638,13 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 iv
             )
         } catch (ex: BackupFailedException) {
-            (ex.cause as ShellCommandFailedException).let {
-                if (isFileNotFoundException(it)) {
-                    // no such data found
-                    Timber.i(LOG_NO_THING_TO_BACKUP, dataType, app.packageName)
-                    return false
+            when(ex.cause) {
+                is ShellCommandFailedException -> {
+                    if (isFileNotFoundException(ex.cause as ShellCommandFailedException)) {
+                        // no such data found
+                        Timber.i(LOG_NO_THING_TO_BACKUP, dataType, app.packageName)
+                        return false
+                    }
                 }
             }
             throw ex
@@ -653,6 +652,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
+    suspend
     protected open fun backupDeviceProtectedData(
         app: Package,
         backupInstanceDir: StorageFile,
@@ -669,11 +669,13 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 iv
             )
         } catch (ex: BackupFailedException) {
-            (ex.cause as ShellCommandFailedException).let {
-                if (isFileNotFoundException(it)) {
-                    // no such data found
-                    Timber.i(LOG_NO_THING_TO_BACKUP, dataType, app.packageName)
-                    return false
+            when(ex.cause) {
+                is ShellCommandFailedException -> {
+                    if (isFileNotFoundException(ex.cause as ShellCommandFailedException)) {
+                        // no such data found
+                        Timber.i(LOG_NO_THING_TO_BACKUP, dataType, app.packageName)
+                        return false
+                    }
                 }
             }
             throw ex

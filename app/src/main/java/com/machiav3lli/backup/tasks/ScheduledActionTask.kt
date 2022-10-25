@@ -24,7 +24,6 @@ import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
-import com.machiav3lli.backup.preferences.pref_oldBackups
 import com.machiav3lli.backup.SPECIAL_FILTER_DISABLED
 import com.machiav3lli.backup.SPECIAL_FILTER_LAUNCHABLE
 import com.machiav3lli.backup.SPECIAL_FILTER_NEW_UPDATED
@@ -33,6 +32,7 @@ import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.getInstalledPackageList
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.preferences.pref_oldBackups
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import timber.log.Timber
@@ -42,7 +42,7 @@ import java.time.temporal.ChronoUnit
 open class ScheduledActionTask(val context: Context, private val scheduleId: Long) :
     CoroutinesAsyncTask<Void?, String, Triple<String, List<String>, Int>>() {
 
-    override fun doInBackground(vararg params: Void?): Triple<String, List<String>, Int>? {
+    override suspend fun doInBackground(vararg params: Void?): Triple<String, List<String>, Int>? {
 
         val database = ODatabase.getInstance(context)
         val scheduleDao = database.scheduleDao

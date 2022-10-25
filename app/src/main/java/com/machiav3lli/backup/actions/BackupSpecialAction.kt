@@ -34,6 +34,7 @@ import java.io.File
 
 class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHandler) :
     BackupAppAction(context, work, shell) {
+    suspend
     override fun run(app: Package, backupMode: Int): ActionResult {
         if (backupMode and MODE_APK == MODE_APK) {
             Timber.e("Special contents don't have APKs to backup. Ignoring")
@@ -48,6 +49,7 @@ class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHa
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
+    suspend
     override fun backupData(
         app: Package,
         backupInstanceDir: StorageFile,
@@ -127,6 +129,7 @@ class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHa
         // stub
     }
 
+    suspend
     override fun backupDeviceProtectedData(
         app: Package,
         backupInstanceDir: StorageFile,
@@ -134,6 +137,7 @@ class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHa
     ): Boolean = // stub
         false
 
+    suspend
     override fun backupExternalData(
         app: Package,
         backupInstanceDir: StorageFile,
@@ -141,6 +145,7 @@ class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHa
     ): Boolean = // stub
         false
 
+    suspend
     override fun backupObbData(
         app: Package,
         backupInstanceDir: StorageFile,
