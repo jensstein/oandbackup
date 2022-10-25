@@ -147,6 +147,7 @@ class OABX : Application() {
 
         val lastLogMessages = mutableListOf<String>()
         var lastErrorPackage = ""
+        var lastErrorCommand = ""
 
         // app should always be created
         var appRef: WeakReference<OABX> = WeakReference(null)

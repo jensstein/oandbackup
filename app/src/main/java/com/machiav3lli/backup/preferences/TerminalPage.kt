@@ -31,7 +31,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -49,7 +48,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -85,7 +83,7 @@ fun info(): List<String> {
 
 fun shell(command: String): List<String> {
     try {
-        val env = "EPKG=${OABX.lastErrorPackage}"
+        val env = "EPKG=\"${OABX.lastErrorPackage}\" ECMD=\"${OABX.lastErrorCommand}\""
         val result = runAsRoot("$env $command")
         return listOf(
             "",
@@ -158,20 +156,20 @@ fun TerminalPage() {
                 placeholder = { Text(text = "shell command") },
                 keyboardOptions = KeyboardOptions(
                     autoCorrect = false,
-                    imeAction = ImeAction.Done
+                    //imeAction = ImeAction.Done
                 ),
-                keyboardActions = KeyboardActions(
-                    onDone = {
+                //keyboardActions = KeyboardActions(
+                //    onDone = {
+                //        run(command)
+                //        command = ""
+                //    }
+                //),
+                onValueChange = {
+                    if (it.endsWith("\n")){
                         run(command)
                         command = ""
-                    }
-                ),
-                onValueChange = {
-                    //if (it.endsWith("\n")){
-                    //    run(command)
-                    //    //command = ""
-                    //} else
-                    //    command = it
+                    } else
+                    command = it
                 }
             )
             FlowRow(modifier = Modifier
@@ -201,14 +199,27 @@ fun TerminalPage() {
                     run("logcat -d -t ${5 * 60 /* sec */}.0")
                 }
                 TerminalButton("access") {
-                    run("echo \"\$(ls /data/user/0/ | wc -l) apks\"")
-                    run("echo \"$(ls /data/user/0/ | wc -l) package data\"")
-                    run("ls -l /data/misc/")
+                    run("echo \"\$(ls /data/user/0/ | wc -l) packages (apk)\"")
+                    run("echo \"$(ls /data/user/0/ | wc -l) packages (data)\"")
+                    run("echo \"\$(ls -l /data/misc/ | wc -l) misc data\"")
                 }
                 TerminalButton("epkg") {
-                    run("ls -l /data/user/0/\$EPKG")
-                    run("ls -l /data/user/0/\$EPKG")
-                    run("ls -l /sdcard/Android/*/\$EPKG")
+                    val pkg = OABX.lastErrorPackage
+                    if (pkg != "") {
+                        run("ls -l /data/user/0/$pkg")
+                        run("ls -l /data/user/0/$pkg")
+                        run("ls -l /sdcard/Android/*/$pkg")
+                    } else {
+                        add(listOf("--- no last error package"))
+                    }
+                }
+                TerminalButton("ecmd") {
+                    val cmd = OABX.lastErrorCommand
+                    if (cmd != "") {
+                        run(cmd)
+                    } else {
+                        add(listOf("--- no last error command"))
+                    }
                 }
             }
         }
