@@ -31,6 +31,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,8 +47,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -83,8 +86,9 @@ fun info(): List<String> {
 
 fun shell(command: String): List<String> {
     try {
-        val env = "EPKG=\"${OABX.lastErrorPackage}\" ECMD=\"${OABX.lastErrorCommand}\""
-        val result = runAsRoot("$env $command")
+        //val env = "EPKG=\"${OABX.lastErrorPackage}\" ECMD=\"${OABX.lastErrorCommand}\""
+        //val result = runAsRoot("$env $command")
+        val result = runAsRoot(command)
         return listOf(
             "",
             "---------- # $command -> ${result.code}"
@@ -93,7 +97,7 @@ fun shell(command: String): List<String> {
         return listOf(
             "",
             "---------- # $command -> ERROR",
-            e.message, e.cause?.message, e::class.simpleName
+            e::class.simpleName, e.message, e.cause?.message
         ).filterNotNull()
     }
 }
@@ -153,23 +157,23 @@ fun TerminalPage() {
                 .fillMaxWidth(),
                 value = command,
                 singleLine = true,
-                placeholder = { Text(text = "shell command") },
+                placeholder = { Text(text = "shell command", color = Color.Gray) },
                 keyboardOptions = KeyboardOptions(
                     autoCorrect = false,
-                    //imeAction = ImeAction.Done
+                    imeAction = ImeAction.Done
                 ),
-                //keyboardActions = KeyboardActions(
-                //    onDone = {
-                //        run(command)
-                //        command = ""
-                //    }
-                //),
-                onValueChange = {
-                    if (it.endsWith("\n")){
+                keyboardActions = KeyboardActions(
+                    onDone = {
                         run(command)
                         command = ""
-                    } else
-                    command = it
+                    }
+                ),
+                onValueChange = {
+                    //if (it.endsWith("\n")) {
+                    //    run(command)
+                    //    command = ""
+                    //} else
+                        command = it
                 }
             )
             FlowRow(modifier = Modifier
@@ -193,10 +197,10 @@ fun TerminalPage() {
                     run("${utilBox.name} --help")
                 }
                 TerminalButton("log/app") {
-                    run("logcat -d -t ${5 * 60 /* sec */}.0 --pid=${Process.myPid()}")
+                    run("logcat -d -t ${2 * 60 /* sec */}.0 --pid=${Process.myPid()}")
                 }
                 TerminalButton("log/all") {
-                    run("logcat -d -t ${5 * 60 /* sec */}.0")
+                    run("logcat -d -t ${2 * 60 /* sec */}.0")
                 }
                 TerminalButton("access") {
                     run("echo \"\$(ls /data/user/0/ | wc -l) packages (apk)\"")
@@ -214,29 +218,39 @@ fun TerminalPage() {
                     }
                 }
                 TerminalButton("ecmd") {
-                    val cmd = OABX.lastErrorCommand
-                    if (cmd != "") {
-                        run(cmd)
-                    } else {
-                        add(listOf("--- no last error command"))
-                    }
+                    command = OABX.lastErrorCommand
                 }
             }
         }
         Box(modifier = Modifier
-            .padding(padding)
+            .padding(0.dp)
             .weight(1f, true)
+            .background(color = Color.Black)
         ) {
-            SelectionContainer {
-                LazyColumn(modifier = Modifier
-                    .fillMaxSize(),
-                    state = listState
-                ) {
-                    items(output) {
-                        Text(it,
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 10.sp
-                        )
+            Box(modifier = Modifier
+                .padding(10.dp)
+                .fillMaxSize()
+                .background(color = Color.Transparent)
+            ) {
+                SelectionContainer {
+                    LazyColumn(modifier = Modifier
+                        .fillMaxSize(),
+                        state = listState
+                    ) {
+                        items(output) {
+                            if (it.startsWith("===") or it.startsWith("---"))
+                                Text(it,
+                                    fontFamily = FontFamily.Monospace,
+                                    fontSize = 10.sp,
+                                    color = Color.Yellow
+                                )
+                            else
+                                Text(it,
+                                    fontFamily = FontFamily.Monospace,
+                                    fontSize = 10.sp,
+                                    color = Color.White
+                                )
+                        }
                     }
                 }
             }
