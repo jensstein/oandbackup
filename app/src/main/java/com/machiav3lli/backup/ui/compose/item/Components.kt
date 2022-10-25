@@ -139,11 +139,12 @@ fun PrefIcon(
 
 @Composable
 fun PackageIcon(
+    modifier: Modifier = Modifier,
     item: Package?,
     imageData: Any
 ) {
     AsyncImage(
-        modifier = Modifier
+        modifier = modifier
             .size(48.dp)
             .clip(RoundedCornerShape(LocalShapes.current.medium)),
         model = ImageRequest.Builder(LocalContext.current)

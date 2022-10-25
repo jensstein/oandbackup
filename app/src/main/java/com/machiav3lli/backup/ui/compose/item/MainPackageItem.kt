@@ -35,11 +35,11 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.items.Package
-import com.machiav3lli.backup.preferences.pref_tapToSelect
 import com.machiav3lli.backup.preferences.pref_useBackupRestoreWithSelection
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.getFormattedDate
-import timber.log.Timber
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun MainPackageContextMenu(
@@ -57,6 +57,25 @@ fun MainPackageContextMenu(
         expanded = expanded.value,
         onDismissRequest = { expanded.value = false }
     ) {
+
+        fun launch(todo: () -> Unit) {
+            MainScope().launch {
+                todo()
+            }
+        }
+
+        fun launchEachPackage(packages: List<Package>, select: Boolean = true, todo: (p: Package) -> Unit) {
+            launch {
+                OABX.main?.viewModel?.refreshing?.value?.inc()
+                packages.forEach {
+                    if (select != false) selection[it] = false
+                    todo(it)
+                    selection[it] = select
+                }
+                OABX.main?.viewModel?.refreshing?.value?.dec()
+            }
+        }
+
         DropdownMenuItem(
             enabled = false, onClick = {},
             text = { Text(packageItem.packageName) }
@@ -89,7 +108,7 @@ fun MainPackageContextMenu(
                         packages.map { MODE_ALL }
                     ) {
                         it.removeObserver(this)
-                        packages.onEach {
+                        launchEachPackage(packages) {
                             selection[it] = false
                         }
                     }
@@ -107,7 +126,7 @@ fun MainPackageContextMenu(
                         packages.map { MODE_ALL }
                     ) {
                         it.removeObserver(this)
-                        packages.onEach {
+                        launchEachPackage(packages) {
                             selection[it] = false
                         }
                     }
@@ -119,10 +138,8 @@ fun MainPackageContextMenu(
             text = { Text("Add to Blocklist") },
             onClick = {
                 expanded.value = false
-                val packages = selectedWithBackups
-                packages.onEach {
+                launchEachPackage(selectedAndVisible) {
                     OABX.main?.viewModel?.addToBlocklist(it.packageName)
-                    selection[it] = false
                 }
             }
         )
@@ -131,10 +148,8 @@ fun MainPackageContextMenu(
         //    text = { Text("Remove from Blocklist") },
         //    onClick = {
         //        expanded.value = false
-        //        val packages = selectedWithBackups
-        //        packages.onEach {
+        //        forEachPackage(selectedAndVisible) {
         //            OABX.main?.viewModel?.removeFromBlocklist(it.packageName)
-        //            selection[it] = false
         //        }
         //    }
         //)
@@ -145,10 +160,8 @@ fun MainPackageContextMenu(
             text = { Text("Delete All Backups") },
             onClick = {
                 expanded.value = false
-                val packages = selectedWithBackups
-                packages.onEach {
+                launchEachPackage(selectedWithBackups) {
                     it.deleteAllBackups()
-                    selection[it] = false
                 }
             }
         )
@@ -157,10 +170,8 @@ fun MainPackageContextMenu(
             text = { Text("Limit Backups") },
             onClick = {
                 expanded.value = false
-                val packages = selectedWithBackups
-                packages.onEach {
+                launchEachPackage(selectedWithBackups) {
                     BackupRestoreHelper.housekeepingPackageBackups(it)
-                    selection[it] = false
                 }
             }
         )
@@ -171,9 +182,7 @@ fun MainPackageContextMenu(
             text = { Text("Select All Visible") },
             onClick = {
                 expanded.value = false
-                val packages = visible
-                packages.forEach {
-                    selection[it] = true
+                launchEachPackage(visible, select = true) {
                 }
             }
         )
@@ -182,9 +191,7 @@ fun MainPackageContextMenu(
             text = { Text("DeSelect All Visible") },
             onClick = {
                 expanded.value = false
-                val packages = visible
-                packages.forEach {
-                    selection[it] = false
+                launchEachPackage(visible, select = false) {
                 }
             }
         )
@@ -223,43 +230,31 @@ fun MainPackageItem(
         elevation = CardDefaults.cardElevation(4.dp),
     ) {
         MainPackageContextMenu(expanded = menuExpanded, packageItem = item, productsList = productsList, selection = selection, onAction = onAction)
-        val modifier =
-            if(pref_tapToSelect.value)
+
+        val iconSelector =
                 Modifier
                     .combinedClickable(
                         onClick = {
-                            selection[packageItem] = ! (selection[packageItem] == true)
+                            selection[packageItem] = !(selection[packageItem] == true)
                         },
                         onLongClick = {
-                            if(selectedAndVisible.count() == 0) {
-                                onAction(packageItem)
-                            } else {
-                                if (selection[packageItem] == true)
-                                    menuExpanded.value = true
-                                else {
-                                    onAction(packageItem)
-                                    //selection[packageItem] = true
-                                    // select from - to ? but the map is not sorted
-                                    //selection.entries.forEach {
-                                    //
-                                    //}
-                                }
-                            }
+                            selection[packageItem] = true
+                            menuExpanded.value = true
                         }
                     )
-            else
+        val rowSelector =
                 Modifier
                     .combinedClickable(
                         onClick = {
-                            if(selectedAndVisible.count() == 0) {
+                            if (selectedAndVisible.count() == 0) {
                                 onAction(packageItem)
                             } else {
-                                selection[packageItem] = ! (selection[packageItem] == true)
+                                selection[packageItem] = !(selection[packageItem] == true)
                             }
                         },
                         onLongClick = {
-                            if(selectedAndVisible.count() == 0) {
-                                selection[packageItem] = ! (selection[packageItem] == true)
+                            if (selectedAndVisible.count() == 0) {
+                                selection[packageItem] = !(selection[packageItem] == true)
                             } else {
                                 if (selection[packageItem] == true)
                                     menuExpanded.value = true
@@ -273,15 +268,16 @@ fun MainPackageItem(
                             }
                         }
                     )
+
         Row(
-            modifier = modifier
+            modifier = rowSelector
                 .background(color = if (selection[packageItem] == true) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.background)
                 .fillMaxWidth()
                 .padding(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            PackageIcon(item = packageItem, imageData = imageData)
+            PackageIcon(modifier = iconSelector, item = packageItem, imageData = imageData)
 
             Column(
                 modifier = Modifier.wrapContentHeight()
