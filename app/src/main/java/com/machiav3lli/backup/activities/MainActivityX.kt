@@ -357,8 +357,9 @@ class MainActivityX : BaseActivity() {
         val dontShowAgain = isEncryptionEnabled()
         if (dontShowAgain) return
         val dontShowCounter = persist_skippedEncryptionCounter.value
+        if (dontShowCounter > 30) return    // don't increment further (useless touching file)
         persist_skippedEncryptionCounter.value = dontShowCounter + 1
-        if (dontShowCounter % 10 == 0 && dontShowCounter <= 30) {
+        if (dontShowCounter % 10 == 0) {
             AlertDialog.Builder(this)
                 .setTitle(R.string.enable_encryption_title)
                 .setMessage(R.string.enable_encryption_message)
