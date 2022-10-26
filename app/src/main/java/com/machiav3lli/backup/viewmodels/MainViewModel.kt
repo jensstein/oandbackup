@@ -18,7 +18,6 @@
 package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -26,9 +25,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.OABX.Companion.beginBusy
 import com.machiav3lli.backup.OABX.Companion.context
+import com.machiav3lli.backup.OABX.Companion.endBusy
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
-import com.machiav3lli.backup.preferences.pref_usePackageCacheOnUpdate
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dbs.entity.AppInfo
@@ -39,6 +39,7 @@ import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.Package.Companion.invalidateCacheForPackage
+import com.machiav3lli.backup.preferences.pref_usePackageCacheOnUpdate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -57,8 +58,6 @@ class MainViewModel(
 
     // TODO fix force refresh on changing backup directory or change method
     val isNeedRefresh = MutableLiveData(false)
-    val progress = mutableStateOf(Pair(false, 0f))
-    val refreshing = mutableStateOf(0)
 
     init {
         blocklist.addSource(db.blocklistDao.liveAll, blocklist::setValue)
@@ -110,13 +109,13 @@ class MainViewModel(
 
     private suspend fun recreateAppInfoList() {
         withContext(Dispatchers.IO) {
-            refreshing.value = refreshing.value.inc()
+            beginBusy()
             val time = measureTimeMillis {
                 packageList.postValue(null)
                 appContext.updateAppTables(db.appInfoDao, db.backupDao)
             }
             OABX.addInfoText("recreateAppInfoList: ${(time / 1000 + 0.5).toInt()} sec")
-            refreshing.value = refreshing.value.dec()
+            endBusy()
         }
     }
 
@@ -130,7 +129,7 @@ class MainViewModel(
 
     private suspend fun updateDataOf(packageName: String) =
         withContext(Dispatchers.IO) {
-            refreshing.value = refreshing.value.inc()
+            beginBusy()
             invalidateCacheForPackage(packageName)
             val appPackage = packageList.value?.find { it.packageName == packageName }
             try {
@@ -154,7 +153,7 @@ class MainViewModel(
             } catch (e: AssertionError) {
                 Timber.w(e.message ?: "")
             }
-            refreshing.value = refreshing.value.dec()
+            endBusy()
         }
 
     fun updateExtras(appExtras: AppExtras) {

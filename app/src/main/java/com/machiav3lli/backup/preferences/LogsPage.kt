@@ -26,6 +26,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import com.machiav3lli.backup.OABX.Companion.withProgress
 import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.ui.compose.recycler.LogRecycler
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
@@ -37,7 +38,9 @@ fun LogsPage(viewModel: LogViewModel) {
     val logs by viewModel.logsList.observeAsState()
 
     SideEffect {
-        viewModel.refreshList()
+        withProgress {
+            viewModel.refreshList()
+        }
     }
 
     AppTheme {

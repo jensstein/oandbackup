@@ -57,6 +57,7 @@ import androidx.compose.ui.unit.sp
 import com.google.accompanist.flowlayout.FlowRow
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.OABX.Companion.withProgress
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
@@ -197,10 +198,14 @@ fun TerminalPage() {
                     run("${utilBox.name} --help")
                 }
                 TerminalButton("log/app") {
-                    run("logcat -d -t ${2 * 60 /* sec */}.0 --pid=${Process.myPid()}")
+                    withProgress {
+                        run("logcat -d -t ${2 * 60 /* sec */}.0 --pid=${Process.myPid()}")
+                    }
                 }
                 TerminalButton("log/all") {
-                    run("logcat -d -t ${2 * 60 /* sec */}.0")
+                    withProgress {
+                        run("logcat -d -t ${2 * 60 /* sec */}.0")
+                    }
                 }
                 TerminalButton("access") {
                     run("echo \"\$(ls /data/user/0/ | wc -l) packages (apk)\"")

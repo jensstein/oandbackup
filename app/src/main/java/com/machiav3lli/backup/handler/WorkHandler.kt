@@ -17,10 +17,10 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.preferences.pref_maxRetriesPerPackage
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.classAddress
+import com.machiav3lli.backup.preferences.pref_maxRetriesPerPackage
 import com.machiav3lli.backup.services.CommandReceiver
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
@@ -110,9 +110,7 @@ class WorkHandler(appContext: Context) {
 
             Thread.sleep(delay)
 
-            OABX.main?.runOnUiThread {
-                OABX.main?.hideProgress()
-            }
+            OABX.setProgress()
 
             Timber.d("%%%%% ALL DONE")
             OABX.wakelock(false) // now everything is done
@@ -539,18 +537,10 @@ class WorkHandler(appContext: Context) {
 
             if (allRemaining > 0) {
                 Timber.d("%%%%% ALL finished=$allProcessed <-- remain=$allRemaining <-- total=$allCount")
-                OABX.main?.runOnUiThread {
-                    OABX.main?.updateProgress(
-                        allProcessed,
-                        allCount
-                    )
-                }
+                OABX.setProgress(allProcessed, allCount)
             } else {
                 packagesState.clear()
-
-                OABX.main?.runOnUiThread {
-                    OABX.main?.hideProgress()
-                }
+                OABX.setProgress()
                 if (OABX.work.justFinishedAll()) {
                     Timber.d("%%%%% ALL $batchesStarted batches, thread ${Thread.currentThread().id}")
                     OABX.work.endBatches()

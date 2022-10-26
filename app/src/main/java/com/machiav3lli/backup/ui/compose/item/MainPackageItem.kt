@@ -66,13 +66,13 @@ fun MainPackageContextMenu(
 
         fun launchEachPackage(packages: List<Package>, select: Boolean = true, todo: (p: Package) -> Unit) {
             launch {
-                OABX.main?.viewModel?.refreshing?.value?.inc()
+                OABX.beginBusy()
                 packages.forEach {
                     if (select != false) selection[it] = false
                     todo(it)
                     selection[it] = select
                 }
-                OABX.main?.viewModel?.refreshing?.value?.dec()
+                OABX.endBusy()
             }
         }
 

@@ -161,7 +161,7 @@ class MainActivityX : BaseActivity() {
         viewModel.packageList.observe(this) { }
         viewModel.backupsMap.observe(this) { }
         viewModel.isNeedRefresh.observe(this) {
-            if (it && viewModel.refreshing.value == 0)
+            if (it && OABX.busy.value == 0)
                 invalidateBackupLocation()
         }
 
@@ -381,14 +381,6 @@ class MainActivityX : BaseActivity() {
 
     fun refreshView() {
         crScope.launch { _modelSortFilter.emit(sortFilterModel) }
-    }
-
-    fun updateProgress(progress: Int, max: Int) {
-        viewModel.progress.value = Pair(true, 1f * progress / max)
-    }
-
-    fun hideProgress() {
-        viewModel.progress.value = Pair(false, 0f)
     }
 
     fun showSnackBar(message: String) {

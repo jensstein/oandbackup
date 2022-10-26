@@ -303,5 +303,26 @@ class OABX : Application() {
         fun minSDK(sdk: Int): Boolean {
             return Build.VERSION.SDK_INT >= sdk
         }
+
+        val progress = mutableStateOf(Pair(false, 0f))
+
+        fun setProgress(now: Int = 0, max: Int = 0) {
+            if (max > now)
+                progress.value = Pair(true, 1f * now / max)
+            else
+                progress.value = Pair(false, 0f)
+        }
+
+        var busy = mutableStateOf(0)
+        private var lockBusy = Object()
+
+        fun beginBusy() { synchronized(lockBusy) { busy.value = busy.value.inc() } }
+        fun endBusy()   { synchronized(lockBusy) { busy.value = busy.value.dec() } }
+
+        fun withProgress(todo: () -> Unit) {
+            beginBusy()
+            todo()
+            endBusy()
+        }
     }
 }

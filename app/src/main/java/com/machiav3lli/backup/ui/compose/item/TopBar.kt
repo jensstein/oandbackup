@@ -71,6 +71,8 @@ fun DefaultPreview() {
 
     OABX.addInfoText("xxxxxxxxxxxxxxxxx")
     OABX.clearInfoText()
+    OABX.setProgress(0, 100)
+    OABX.beginBusy()
 
     TopBar(title = "Progress", modifier = Modifier.background(color = Color.LightGray)) {
         Button(
@@ -103,8 +105,8 @@ fun TestPreview() {
 
 @Composable
 fun GlobalIndicators() {
-    val refreshing by remember { OABX.main?.viewModel?.refreshing ?: mutableStateOf(1) }
-    val progress by remember { OABX.main?.viewModel?.progress ?: mutableStateOf(Pair(true, 0.0f)) }
+    val busy by remember { OABX.busy }
+    val progress by remember { OABX.progress }
 
     Column(verticalArrangement = Arrangement.SpaceEvenly) {
         AnimatedVisibility(visible = progress.first) {
@@ -117,7 +119,7 @@ fun GlobalIndicators() {
                 progress = max(0.02f, progress.second)
             )
         }
-        AnimatedVisibility(visible = refreshing > 0) {
+        AnimatedVisibility(visible = busy > 0) {
             LinearProgressIndicator(
                 modifier = Modifier
                     .fillMaxWidth()
