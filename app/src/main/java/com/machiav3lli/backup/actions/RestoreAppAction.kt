@@ -34,8 +34,6 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quoteMultiple
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRootPipeInCollectErr
-import com.machiav3lli.backup.handler.ShellHandler.Companion.suAccessOptions
-import com.machiav3lli.backup.handler.ShellHandler.Companion.suCOption
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.handler.ShellHandler.UnexpectedCommandResult
@@ -77,7 +75,6 @@ import java.util.regex.Pattern
 
 open class RestoreAppAction(context: Context, work: AppActionWork?, shell: ShellHandler) :
     BaseAppAction(context, work, shell) {
-    suspend
     fun run(
         app: Package,
         backup: Backup,
@@ -147,7 +144,6 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     }
 
     @Throws(CryptoSetupException::class, RestoreFailedException::class)
-    suspend
     protected open fun restoreAllData(
         work: AppActionWork?,
         app: Package,
@@ -528,7 +524,6 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class, NotImplementedError::class)
-    suspend
     fun genericRestoreFromArchiveTarCmd(
         dataType: String,
         archive: StorageFile,
@@ -563,12 +558,8 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                         options += " --exclude " + quote(excludeCache)
                     }
 
-                    val cmd =
-                        "su $suAccessOptions $suCOption sh $qTarScript extract $utilBoxQ $options ${
-                            quote(
-                                targetDir
-                            )
-                        }"
+                    val cmd = "sh $qTarScript extract $utilBoxQ $options ${quote(targetDir)}"
+
                     Timber.i("SHELL: $cmd")
 
                     val (code, err) = runAsRootPipeInCollectErr(archiveStream, cmd)
@@ -603,7 +594,6 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
-    suspend
     private fun genericRestoreFromArchive(
         dataType: String,
         archive: StorageFile,
@@ -712,7 +702,6 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
-    suspend
     open fun restoreData(
         app: Package,
         backup: Backup,
@@ -762,7 +751,6 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
-    suspend
     open fun restoreDeviceProtectedData(
         app: Package,
         backup: Backup,
@@ -812,7 +800,6 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
-    suspend
     open fun restoreExternalData(
         app: Package,
         backup: Backup,
@@ -858,7 +845,6 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     }
 
     @Throws(RestoreFailedException::class)
-    suspend
     open fun restoreObbData(
         app: Package,
         backup: Backup,
@@ -915,7 +901,6 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     }
 
     @Throws(RestoreFailedException::class)
-    suspend
     open fun restoreMediaData(
         app: Package,
         backup: Backup,

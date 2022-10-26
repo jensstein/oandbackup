@@ -11,6 +11,7 @@ import com.machiav3lli.backup.items.RootFile
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.preferences.pref_encryption
 import com.topjohnwu.superuser.ShellUtils.fastCmd
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.AfterClass
 import org.junit.Assert.assertEquals
@@ -258,16 +259,18 @@ class Test_BackupRestore {
         val restoreAction = RestoreAppAction(context, null, shellHandler)
         val restoreDir = RootFile(tempDir, "restore_" + toType)
         restoreDir.mkdirs()
-        if(toType == "tarapi")
-            restoreAction.genericRestoreFromArchiveTarApi(
-                "data", archive, restoreDir.toString(),
-                compress, false, null, restoreCache
-            )
-        else
-            restoreAction.genericRestoreFromArchiveTarCmd(
-                "data", archive, restoreDir.toString(),
-                compress, false, null
-            )
+        runBlocking {
+            if (toType == "tarapi")
+                restoreAction.genericRestoreFromArchiveTarApi(
+                    "data", archive, restoreDir.toString(),
+                    compress, false, null, restoreCache
+                )
+            else
+                restoreAction.genericRestoreFromArchiveTarCmd(
+                    "data", archive, restoreDir.toString(),
+                    compress, false, null
+                )
+        }
         checkDirectory(restoreDir)
     }
 

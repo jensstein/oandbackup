@@ -36,8 +36,6 @@ import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.isFileNotFoundException
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRootPipeOutCollectErr
-import com.machiav3lli.backup.handler.ShellHandler.Companion.suAccessOptions
-import com.machiav3lli.backup.handler.ShellHandler.Companion.suCOption
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.ActionResult
@@ -63,7 +61,6 @@ import com.machiav3lli.backup.utils.isPauseApps
 import com.machiav3lli.backup.utils.suAddFiles
 import com.machiav3lli.backup.utils.suCopyFileToDocument
 import com.topjohnwu.superuser.ShellUtils
-import kotlinx.coroutines.delay
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
 import org.apache.commons.compress.compressors.gzip.GzipParameters
@@ -77,7 +74,6 @@ const val COMPRESSION_ALGORITHM = "gz"
 open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellHandler) :
     BaseAppAction(context, work, shell) {
 
-    suspend
     open fun run(app: Package, backupMode: Int): ActionResult {
         var backup: Backup? = null
         var ok = false
@@ -133,15 +129,13 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 val fakeSeconds = pref_fakeBackupSeconds.value
                 if (fakeSeconds > 0) {
 
-                    val actionResult: ActionResult? = null
-
                     val step = 1000L * 1
                     val startTime = System.currentTimeMillis()
                     do {
                         val now = System.currentTimeMillis()
                         val seconds = (now - startTime) / 1000.0
                         work?.setOperation((seconds/10).toInt().toString().padStart(3, '0'))
-                        delay(step)
+                        Thread.sleep(step)
                     } while (seconds < fakeSeconds)
 
                     val succeeded = true // random() < 0.75
@@ -425,7 +419,6 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
 
     @SuppressLint("RestrictedApi")
     @Throws(BackupFailedException::class, CryptoSetupException::class)
-    suspend
     fun genericBackupDataTarCmd(
         dataType: String,
         backupInstanceDir: StorageFile,
@@ -477,9 +470,9 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 options += " --exclude ${quote(excludeCache)}"
             }
 
-            val cmd = "su $suAccessOptions $suCOption sh ${quote(tarScript)} create $utilBoxQ $options ${
-                quote(sourcePath)
-            }"
+            val cmd = "sh ${quote(tarScript)} create $utilBoxQ $options ${ quote(sourcePath) }"
+
+            Timber.i("SHELL: $cmd")
 
             val (code, err) = runAsRootPipeOutCollectErr(outStream, cmd)
 
@@ -512,7 +505,6 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
-    suspend
     protected fun genericBackupData(
         dataType: String,
         backupInstanceDir: StorageFile,
@@ -541,7 +533,6 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
-    suspend
     protected open fun backupData(
         app: Package,
         backupInstanceDir: StorageFile,
@@ -559,7 +550,6 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
-    suspend
     protected open fun backupExternalData(
         app: Package,
         backupInstanceDir: StorageFile,
@@ -590,7 +580,6 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
-    suspend
     protected open fun backupObbData(
         app: Package,
         backupInstanceDir: StorageFile,
@@ -621,7 +610,6 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
-    suspend
     protected open fun backupMediaData(
         app: Package,
         backupInstanceDir: StorageFile,
@@ -652,7 +640,6 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     }
 
     @Throws(BackupFailedException::class, CryptoSetupException::class)
-    suspend
     protected open fun backupDeviceProtectedData(
         app: Package,
         backupInstanceDir: StorageFile,

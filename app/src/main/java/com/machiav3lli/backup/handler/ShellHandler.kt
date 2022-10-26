@@ -30,6 +30,7 @@ import com.topjohnwu.superuser.io.SuRandomAccessFile
 import de.voize.semver4k.Semver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
@@ -647,16 +648,15 @@ class ShellHandler {
             return runShellCommand(SuRunnableShellCommand(), command)
         }
 
-        suspend
         fun runAsRootPipeInCollectErr(
             inStream: InputStream,
             command: String
         ) : Pair<Int, String> {
             Timber.i("SHELL: $command")
 
-            return withContext(Dispatchers.IO) {
+            return runBlocking(Dispatchers.IO) {
 
-                val process = Runtime.getRuntime().exec(command)
+                val process = Runtime.getRuntime().exec(suCommand)
 
                 val shellIn = process.outputStream
                 //val shellOut = process.inputStream
@@ -665,6 +665,8 @@ class ShellHandler {
                 val errAsync = async(Dispatchers.IO) {
                     shellErr.readBytes().decodeToString()
                 }
+
+                shellIn.write("$command\n".encodeToByteArray())
 
                 inStream.copyTo(shellIn, 65536)
                 shellIn.close()
@@ -682,18 +684,17 @@ class ShellHandler {
             }
         }
 
-        suspend
         fun runAsRootPipeOutCollectErr(
                 outStream: OutputStream,
                 command: String
         ) : Pair<Int, String> {
             Timber.i("SHELL: $command")
 
-            return withContext(Dispatchers.IO) {
+            return runBlocking(Dispatchers.IO) {
 
-                val process = Runtime.getRuntime().exec(command)
+                val process = Runtime.getRuntime().exec(suCommand)
 
-                //val shellIn = process.outputStream
+                val shellIn  = process.outputStream
                 val shellOut = process.inputStream
                 val shellErr = process.errorStream
 
@@ -701,11 +702,16 @@ class ShellHandler {
                     shellErr.readBytes().decodeToString()
                 }
 
+                shellIn.write(command.encodeToByteArray())
+                shellIn.close()
+
                 shellOut.copyTo(outStream, 65536)
                 outStream.flush()
 
                 val err = errAsync.await()
-                withContext(Dispatchers.IO) { process.waitFor(10, TimeUnit.SECONDS) }
+                withContext(Dispatchers.IO) {
+                    process.waitFor(10, TimeUnit.SECONDS)
+                }
                 if (process.isAlive)
                     process.destroyForcibly()
                 val code = process.exitValue()
@@ -746,17 +752,11 @@ class ShellHandler {
             return err.isNotEmpty() && err[0].contains("no such file or directory", true)
         }
 
-        val suAccessOptions get() =
-            if (ShellHandler.isMountMaster)
-                "--mount-master"
+        val suCommand get() =
+            if (isMountMaster)
+                "su --mount-master 0"
             else
-                "0"
-
-        val suCOption get() =
-            if (ShellHandler.isMountMaster)
-                "-c"
-            else
-                ""
+                "su 0"
 
         @Throws(IOException::class)
         fun quirkLibsuReadFileWorkaround(inputFile: FileInfo, output: OutputStream) {

@@ -42,7 +42,6 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
     RestoreAppAction(context, work, shell) {
 
     @Throws(CryptoSetupException::class, RestoreFailedException::class)
-    suspend
     override fun restoreAllData(
         work: AppActionWork?,
         app: Package,
@@ -55,7 +54,6 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
-    suspend
     override fun restoreData(
         app: Package,
         backup: Backup,
@@ -162,7 +160,6 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
         // stub
     }
 
-    suspend
     override fun restoreDeviceProtectedData(
         app: Package,
         backup: Backup,
@@ -172,7 +169,6 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
         // stub
     }
 
-    suspend
     override fun restoreExternalData(
         app: Package,
         backup: Backup,
@@ -182,7 +178,6 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
         // stub
     }
 
-    suspend
     override fun restoreObbData(
         app: Package,
         backup: Backup,
