@@ -154,6 +154,8 @@ class ShellHandler {
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, "utilBox detection failed miserable")
         }
+        OABX.lastErrorCommand = ""  // ignore fails while searching for utilBox
+
         boxes.sortByDescending { it.score }
         boxes.forEach { box ->
             Timber.i(
