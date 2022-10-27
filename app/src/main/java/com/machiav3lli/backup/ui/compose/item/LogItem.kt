@@ -119,7 +119,7 @@ fun LogItem(
 
             val lines = remember { mutableStateOf(item.logText?.lines() ?: listOf()) }
             SelectionContainer {
-                Card {
+                Card(modifier = Modifier.fillMaxWidth()) {
                     val maxLines = 20
                     val typo = MaterialTheme.typography.bodySmall
                     if (lines.value.size < maxLines) {
