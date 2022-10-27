@@ -233,11 +233,11 @@ val pref_useLogCat = BooleanPref(
     defaultValue = false
 )
 
-val pref_maxLogCatMinutes = IntPref(
-    key = "dev.maxLogCatMinutes",
-    summary = "maximum logcat history time [minutes]",
-    entries = ((1..9 step 1) + (10..30 step 5)).toList(),
-    defaultValue = 3
+val pref_maxLogLines = IntPref(
+    key = "dev.maxLogLines",
+    summary = "maximum lines in the log (logcat or internal)",
+    entries = ((10..90 step 10) + (100..500 step 50)).toList(),
+    defaultValue = 50
 )
 
 val pref_invalidateSelective = BooleanPref(

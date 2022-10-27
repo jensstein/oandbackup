@@ -36,7 +36,7 @@ import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.preferences.pref_cancelOnStart
-import com.machiav3lli.backup.preferences.pref_maxLogCatMinutes
+import com.machiav3lli.backup.preferences.pref_maxLogLines
 import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
@@ -83,8 +83,7 @@ class OABX : Application() {
                 val date = timeFormat.format(now)
                 lastLogMessages.add("$date $prio $tag : $message")
                 try {
-                    val since = timeFormat.format(now - pref_maxLogCatMinutes.value*60*1000)
-                    while (lastLogMessages[0] < since)
+                    while (lastLogMessages.size > pref_maxLogLines.value)
                         lastLogMessages.removeAt(0)
                 } catch(e: Throwable) {
                     // ignore

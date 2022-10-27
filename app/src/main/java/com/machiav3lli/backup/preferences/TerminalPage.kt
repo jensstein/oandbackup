@@ -199,10 +199,10 @@ fun TerminalPage() {
                     run("${utilBox.name} --help")
                 }
                 TerminalButton("log/app") {
-                    run("logcat -d -t ${2 * 60 /* sec */}.0 --pid=${Process.myPid()}")
+                    run("logcat -d -t ${pref_maxLogLines.value} --pid=${Process.myPid()}")
                 }
                 TerminalButton("log/all") {
-                    run("logcat -d -t ${2 * 60 /* sec */}.0")
+                    run("logcat -d -t ${pref_maxLogLines.value}")
                 }
                 TerminalButton("access") {
                     run("echo \"\$(ls /data/user/0/ | wc -l) packages (apk)\"")

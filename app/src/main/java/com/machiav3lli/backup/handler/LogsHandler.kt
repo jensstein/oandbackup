@@ -28,7 +28,7 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.preferences.pref_maxLogCatMinutes
+import com.machiav3lli.backup.preferences.pref_maxLogLines
 import com.machiav3lli.backup.preferences.pref_useLogCat
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
@@ -113,7 +113,7 @@ class LogsHandler {
                         "\n\n========== logcat\n\n" +
                         ShellHandler.runAsRoot(
                             "logcat -d -t ${
-                                pref_maxLogCatMinutes.value
+                                pref_maxLogLines.value
                             } --pid=${
                                 Process.myPid()
                             }"  // -d = dump and exit
