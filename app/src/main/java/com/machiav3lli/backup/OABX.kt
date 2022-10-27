@@ -318,11 +318,5 @@ class OABX : Application() {
 
         fun beginBusy() { synchronized(lockBusy) { busy.value = busy.value.inc() } }
         fun endBusy()   { synchronized(lockBusy) { busy.value = busy.value.dec() } }
-
-        fun withProgress(todo: () -> Unit) {
-            beginBusy()
-            todo()
-            endBusy()
-        }
     }
 }
