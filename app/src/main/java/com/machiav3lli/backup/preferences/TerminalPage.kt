@@ -31,7 +31,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -50,14 +49,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.flowlayout.FlowRow
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.OABX.Companion.withProgress
+import com.machiav3lli.backup.OABX.Companion.beginBusy
+import com.machiav3lli.backup.OABX.Companion.endBusy
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
@@ -145,7 +144,9 @@ fun TerminalPage() {
 
     fun run(command: String) {
         scope.launch {
+            beginBusy()
             add(shell(command))
+            endBusy()
         }
     }
 
@@ -157,23 +158,23 @@ fun TerminalPage() {
                 .padding(padding)
                 .fillMaxWidth(),
                 value = command,
-                singleLine = true,
+                singleLine = false,
                 placeholder = { Text(text = "shell command", color = Color.Gray) },
                 keyboardOptions = KeyboardOptions(
                     autoCorrect = false,
-                    imeAction = ImeAction.Done
+                    //imeAction = ImeAction.Done
                 ),
-                keyboardActions = KeyboardActions(
-                    onDone = {
+                //keyboardActions = KeyboardActions(
+                //    onDone = {
+                //        run(command)
+                //        command = ""
+                //    }
+                //),
+                onValueChange = {
+                    if (it.endsWith("\n")) {
                         run(command)
                         command = ""
-                    }
-                ),
-                onValueChange = {
-                    //if (it.endsWith("\n")) {
-                    //    run(command)
-                    //    command = ""
-                    //} else
+                    } else
                         command = it
                 }
             )
@@ -198,14 +199,10 @@ fun TerminalPage() {
                     run("${utilBox.name} --help")
                 }
                 TerminalButton("log/app") {
-                    withProgress {
-                        run("logcat -d -t ${2 * 60 /* sec */}.0 --pid=${Process.myPid()}")
-                    }
+                    run("logcat -d -t ${2 * 60 /* sec */}.0 --pid=${Process.myPid()}")
                 }
                 TerminalButton("log/all") {
-                    withProgress {
-                        run("logcat -d -t ${2 * 60 /* sec */}.0")
-                    }
+                    run("logcat -d -t ${2 * 60 /* sec */}.0")
                 }
                 TerminalButton("access") {
                     run("echo \"\$(ls /data/user/0/ | wc -l) packages (apk)\"")
