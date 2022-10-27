@@ -476,10 +476,27 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
 
             val (code, err) = runAsRootPipeOutCollectErr(outStream, cmd)
 
-            if (err != "") {
-                Timber.i(err)
+            //---------- ignore error code, because sockets may trigger it
+            // if (err != "") {
+            //     Timber.i(err)
+            //     if (code != 0)
+            //         throw ScriptException(err)
+            // }
+            //---------- instead look at error output and ignore some of the messages
+            if (code != 0)
+                Timber.i("tar returns: code $code: " + err) // at least log the full error
+            val errLines = err
+                .split("\n")
+                .filterNot { line ->
+                    line.isBlank()
+                            || line.contains("tar: unknown file type") // e.g. socket 140000
+                            || line.contains("tar: had errors") // summary at the end
+                }
+            if (errLines.isNotEmpty()) {
+                val errFiltered = errLines.joinToString("\n")
+                Timber.i(errFiltered)
                 if (code != 0)
-                    throw ScriptException(err)
+                    throw ScriptException(errFiltered)
             }
             result = true
         } catch (e: Throwable) {
