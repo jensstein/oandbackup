@@ -109,7 +109,8 @@ val pref_password = PasswordPref(
     summaryId = R.string.prefs_password_summary,
     icon = Phosphor.Password,
     iconTint = ColorUpdated,
-    defaultValue = ""
+    defaultValue = "",
+    enableIf = { pref_encryption.value }
 )
 
 val pref_backupDeviceProtectedData = BooleanPref(

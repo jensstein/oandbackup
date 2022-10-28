@@ -176,7 +176,8 @@ val pref_pauseApps = BooleanPref(
 val pref_pmSuspend = BooleanPref(
     key = "dev.pmSuspend",
     summaryId = R.string.prefs_pmsuspend_summary,
-    defaultValue = false
+    defaultValue = false,
+    enableIf = { pref_pauseApps.value }
 )
 
 val pref_backupTarCmd = BooleanPref(
@@ -212,7 +213,8 @@ val pref_allowShadowingDefault = BooleanPref(
 val pref_shadowRootFile = BooleanPref(
     key = "dev.shadowRootFile",
     summaryId = R.string.prefs_shadowrootfile_summary,
-    defaultValue = false
+    defaultValue = false,
+    enableIf = { pref_allowShadowingDefault.value }
 )
 
 val pref_useFindLs = BooleanPref(

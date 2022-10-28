@@ -55,6 +55,9 @@ import com.machiav3lli.backup.ui.item.StringPref
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.backupDirConfigured
 import com.machiav3lli.backup.utils.getLanguageList
+import com.machiav3lli.backup.utils.isBiometricLockAvailable
+import com.machiav3lli.backup.utils.isDeviceLockAvailable
+import com.machiav3lli.backup.utils.isDeviceLockEnabled
 import com.machiav3lli.backup.utils.restartApp
 import com.machiav3lli.backup.utils.setBackupDir
 import com.machiav3lli.backup.utils.setCustomTheme
@@ -182,7 +185,8 @@ val pref_deviceLock = BooleanPref(
     summaryId = R.string.prefs_devicelock_summary,
     icon = Phosphor.Lock,
     iconTint = ColorUpdated,
-    defaultValue = false
+    defaultValue = false,
+    enableIf = { OABX.context.isDeviceLockAvailable() }
 )
 
 val pref_biometricLock = BooleanPref(
@@ -191,7 +195,8 @@ val pref_biometricLock = BooleanPref(
     summaryId = R.string.prefs_biometriclock_summary,
     icon = Phosphor.FingerprintSimple,
     iconTint = ColorDeData,
-    defaultValue = false
+    defaultValue = false,
+    enableIf = { OABX.context.isBiometricLockAvailable() && OABX.context.isDeviceLockEnabled() }
 )
 
 val pref_multilineInfoChips = BooleanPref(

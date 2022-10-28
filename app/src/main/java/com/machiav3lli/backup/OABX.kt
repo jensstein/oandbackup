@@ -201,42 +201,6 @@ class OABX : Application() {
 
         fun getString(resId: Int) = context.getString(resId)
 
-        fun getPrefs(private: Boolean = false) =
-                if (private)
-                    context.getPrivateSharedPrefs()
-                else
-                    context.getDefaultSharedPreferences()
-
-        fun prefFlag(name: String, default: Boolean, private: Boolean = false) =
-                try {
-                    getPrefs(private).getBoolean(name, default)
-                } catch(e: Throwable) {
-                    default
-                }
-
-        fun setPrefFlag(name: String, value: Boolean, private: Boolean = false) =
-                getPrefs(private).edit().putBoolean(name, value).apply()
-
-        fun prefString(name: String, default: String, private: Boolean = false) =
-                try {
-                    getPrefs(private).getString(name, default) ?: default
-                } catch(e: Throwable) {
-                    default
-                }
-
-        fun setPrefString(name: String, value: String, private: Boolean = false) =
-                getPrefs(private).edit().putString(name, value).apply()
-
-        fun prefInt(name: String, default: Int, private: Boolean = false) =
-                try {
-                    getPrefs(private).getInt(name, default)
-                } catch(e: Throwable) {
-                    default
-                }
-
-        fun setPrefInt(name: String, value: Int, private: Boolean = false) =
-                getPrefs(private).edit().putInt(name, value).apply()
-
         var infoLines = mutableStateListOf<String>()
 
         val nInfoLines = 100
