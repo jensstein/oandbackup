@@ -398,4 +398,5 @@
     <string name="prefs_pauseapps_summary" translatable="false"/>
     <string name="prefs_nobackupdata">النسخ الاحتياطي no_backup الملفات</string>
     <string name="prefs_nobackupdata_summary">النسخ الاحتياطي للملفات في البيانات التي تم تصنيفها على أنها لايمكن نسخها</string>
+    <string name="prefs_tools_terminal">الطرفية</string>
 </resources>
