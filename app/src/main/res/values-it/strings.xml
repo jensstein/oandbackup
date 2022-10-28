@@ -395,4 +395,5 @@
     <string name="prefs_showinfologbar_summary" translatable="false"/>
     <string name="prefs_nobackupdata">Esegui il backup dei file no_backup</string>
     <string name="prefs_nobackupdata_summary">Esegui il backup dei file nei dati etichettati per non essere sottoposti a backup</string>
+    <string name="prefs_tools_terminal">Terminale</string>
 </resources>
