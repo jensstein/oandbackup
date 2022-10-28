@@ -701,8 +701,8 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                 command += " ; $utilBoxQ chown -R $uid:$gidCache ${
                     quoteMultiple(cacheTargets)
                 }"
-            command += if (con == "?") //TODO hg42: when does it happen?
-                " ; restorecon -RF -v ${quote(targetPath)}"
+            command += if (con == "?") //TODO hg42: when does it happen? maybe if selinux not supported on storage?
+                "" // "" ; restorecon -RF -v ${quote(targetPath)}"  //TODO hg42 doesn't seem to work
             else
                 " ; chcon -R -h -v '$con' ${quote(targetPath)}"
             runAsRoot(command)
