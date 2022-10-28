@@ -389,4 +389,5 @@
     <string name="prefs_allowshadowingdefault_summary" translatable="false"/>
     <string name="prefs_nobackupdata">Zálohovat soubory se značkou no_backup</string>
     <string name="prefs_nobackupdata_summary">Zálohovat soubory v datech, které jsou označeny štítkem nezálohovat</string>
+    <string name="prefs_tools_terminal">Terminál</string>
 </resources>
