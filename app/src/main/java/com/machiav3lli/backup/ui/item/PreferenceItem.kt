@@ -8,6 +8,7 @@ import timber.log.Timber
 
 open class Pref(
     var key: String,
+    val private: Boolean = false,
     val summary: String? = null,
     @StringRes val titleId: Int,
     @StringRes val summaryId: Int,
@@ -36,20 +37,22 @@ open class Pref(
 
 class BooleanPref(
     key: String,
+    private: Boolean = false,
     summary: String? = null,
     @StringRes titleId: Int = -1,
     @StringRes summaryId: Int = -1,
     icon: ImageVector? = null,
     iconTint: Color? = null,
     val defaultValue: Boolean
-) : Pref(key, summary, titleId, summaryId, icon, iconTint) {
+) : Pref(key, private, summary, titleId, summaryId, icon, iconTint) {
     var value
-        get() = OABX.prefFlag(key, defaultValue)
-        set(value) = OABX.setPrefFlag(key, value)
+        get() = OABX.prefFlag(key, defaultValue, private)
+        set(value) = OABX.setPrefFlag(key, value, private)
 }
 
 class IntPref(
     key: String,
+    private: Boolean = false,
     summary: String? = null,
     @StringRes titleId: Int = -1,
     @StringRes summaryId: Int = -1,
@@ -57,42 +60,45 @@ class IntPref(
     iconTint: Color? = null,
     val entries: List<Int>,
     val defaultValue: Int
-) : Pref(key, summary, titleId, summaryId, icon, iconTint) {
+) : Pref(key, private, summary, titleId, summaryId, icon, iconTint) {
     var value
-        get() = OABX.prefInt(key, defaultValue)
-        set(value) = OABX.setPrefInt(key, value)
+        get() = OABX.prefInt(key, defaultValue, private)
+        set(value) = OABX.setPrefInt(key, value, private)
 }
 
 open class StringPref(
     key: String,
+    private: Boolean = false,
     summary: String? = null,
     @StringRes titleId: Int = -1,
     @StringRes summaryId: Int = -1,
     icon: ImageVector? = null,
     iconTint: Color? = null,
     val defaultValue: String
-) : Pref(key, summary, titleId, summaryId, icon, iconTint) {
+) : Pref(key, private, summary, titleId, summaryId, icon, iconTint) {
     open var value
-        get() = OABX.prefString(key, defaultValue)
-        set(value) = OABX.setPrefString(key, value)
+        get() = OABX.prefString(key, defaultValue, private)
+        set(value) = OABX.setPrefString(key, value, private)
 }
 
 class PasswordPref(
     key: String,
+    private: Boolean = true,
     summary: String? = null,
     titleId: Int = -1,
     summaryId: Int = -1,
     icon: ImageVector? = null,
     iconTint: Color? = null,
     defaultValue: String
-) : StringPref(key, summary, titleId, summaryId, icon, iconTint, defaultValue) {
+) : StringPref(key, private, summary, titleId, summaryId, icon, iconTint, defaultValue) {
     override var value
-        get() = OABX.prefPrivateString(key, defaultValue)
-        set(value) = OABX.setPrefPrivateString(key, value)
+        get() = OABX.prefString(key, defaultValue, private)
+        set(value) = OABX.setPrefString(key, value, private)
 }
 
 class ListPref(
     key: String,
+    private: Boolean = false,
     summary: String? = null,
     @StringRes titleId: Int = -1,
     @StringRes summaryId: Int = -1,
@@ -100,14 +106,15 @@ class ListPref(
     iconTint: Color? = null,
     val entries: Map<String, String>,
     val defaultValue: String
-) : Pref(key, summary, titleId, summaryId, icon, iconTint) {
+) : Pref(key, private, summary, titleId, summaryId, icon, iconTint) {
     var value
-        get() = OABX.prefString(key, defaultValue)
-        set(value) = OABX.setPrefString(key, value)
+        get() = OABX.prefString(key, defaultValue, private)
+        set(value) = OABX.setPrefString(key, value, private)
 }
 
 class EnumPref(
     key: String,
+    private: Boolean = false,
     summary: String? = null,
     @StringRes titleId: Int = -1,
     @StringRes summaryId: Int = -1,
@@ -115,27 +122,29 @@ class EnumPref(
     iconTint: Color? = null,
     val entries: Map<Int, Int>,
     val defaultValue: Int
-) : Pref(key, summary, titleId, summaryId, icon, iconTint) {
+) : Pref(key, private, summary, titleId, summaryId, icon, iconTint) {
     var value
-        get() = OABX.prefInt(key, defaultValue)
-        set(value) = OABX.setPrefInt(key, value)
+        get() = OABX.prefInt(key, defaultValue, private)
+        set(value) = OABX.setPrefInt(key, value, private)
 }
 
 class LinkPref(
     key: String,
+    private: Boolean = false,
     summary: String? = null,
     @StringRes titleId: Int = -1,
     @StringRes summaryId: Int = -1,
     icon: ImageVector? = null,
     iconTint: Color? = null
-) : Pref(key, summary, titleId, summaryId, icon, iconTint)
+) : Pref(key, private, summary, titleId, summaryId, icon, iconTint)
 
 class LaunchPref(
     key: String,
+    private: Boolean = false,
     summary: String? = null,
     @StringRes titleId: Int = -1,
     @StringRes summaryId: Int = -1,
     icon: ImageVector? = null,
     iconTint: Color? = null,
     val onClick: (() -> Unit) = {}
-) : Pref(key, summary, titleId, summaryId, icon, iconTint)
+) : Pref(key, private, summary, titleId, summaryId, icon, iconTint)
