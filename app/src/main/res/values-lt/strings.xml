@@ -389,4 +389,5 @@
     <string name="prefs_theme_dynamic">Dinaminė tema (jei yra)</string>
     <string name="prefs_nobackupdata">Kurti atsargines no_backup failų kopijas</string>
     <string name="prefs_nobackupdata_summary">Kuria atsargines failų kopijas duomenims, kuriems pažymėta nekurti atsarginių kopijų</string>
+    <string name="prefs_tools_terminal">Terminalas</string>
 </resources>
