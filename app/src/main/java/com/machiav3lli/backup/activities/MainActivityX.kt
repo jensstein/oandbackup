@@ -136,7 +136,7 @@ class MainActivityX : BaseActivity() {
                 try {
                     Timber.i("\n\n" + "=".repeat(60))
                     LogsHandler.unhandledException(e)
-                    LogsHandler(context).writeToLogFile("uncaught: ${e.message}")
+                    LogsHandler.logErrors("uncaught: ${e.message}")
                     object : Thread() {
                         override fun run() {
                             Looper.prepare()
@@ -161,7 +161,7 @@ class MainActivityX : BaseActivity() {
         viewModel.packageList.observe(this) { }
         viewModel.backupsMap.observe(this) { }
         viewModel.isNeedRefresh.observe(this) {
-            if (it && viewModel.refreshing.value == 0)
+            if (it && OABX.busy.value == 0)
                 invalidateBackupLocation()
         }
 
@@ -357,8 +357,9 @@ class MainActivityX : BaseActivity() {
         val dontShowAgain = isEncryptionEnabled()
         if (dontShowAgain) return
         val dontShowCounter = persist_skippedEncryptionCounter.value
+        if (dontShowCounter > 30) return    // don't increment further (useless touching file)
         persist_skippedEncryptionCounter.value = dontShowCounter + 1
-        if (dontShowCounter % 10 == 0 && dontShowCounter <= 30) {
+        if (dontShowCounter % 10 == 0) {
             AlertDialog.Builder(this)
                 .setTitle(R.string.enable_encryption_title)
                 .setMessage(R.string.enable_encryption_message)
@@ -380,14 +381,6 @@ class MainActivityX : BaseActivity() {
 
     fun refreshView() {
         crScope.launch { _modelSortFilter.emit(sortFilterModel) }
-    }
-
-    fun updateProgress(progress: Int, max: Int) {
-        viewModel.progress.value = Pair(true, 1f * progress / max)
-    }
-
-    fun hideProgress() {
-        viewModel.progress.value = Pair(false, 0f)
     }
 
     fun showSnackBar(message: String) {

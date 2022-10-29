@@ -32,34 +32,39 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.machiav3lli.backup.PrefsDependencies
 import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.item.BooleanPref
 import com.machiav3lli.backup.ui.item.EnumPref
 import com.machiav3lli.backup.ui.item.IntPref
 import com.machiav3lli.backup.ui.item.ListPref
 import com.machiav3lli.backup.ui.item.Pref
-import com.machiav3lli.backup.utils.getDefaultSharedPreferences
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.machiav3lli.backup.ui.item.Pref.Companion.prefChangeListeners
 import kotlin.math.roundToInt
 
 @Composable
 fun BasePreference(
     modifier: Modifier = Modifier,
-    key: String,
+    pref: Pref,
     summary: String? = null,
     @StringRes titleId: Int = -1,
     @StringRes summaryId: Int = -1,
-    isEnabled: Boolean = true,
     index: Int = 0,
     groupSize: Int = 1,
     icon: (@Composable () -> Unit)? = null,
-    endWidget: (@Composable () -> Unit)? = null,
-    bottomWidget: (@Composable () -> Unit)? = null,
+    endWidget: (@Composable (isEnabled: Boolean) -> Unit)? = null,
+    bottomWidget: (@Composable (isEnabled: Boolean) -> Unit)? = null,
     onClick: (() -> Unit)? = null
 ) {
+    var isEnabled by remember { mutableStateOf(pref.enableIf?.invoke() ?: true) }
+
+    SideEffect {
+        pref.enableIf?.run {
+            prefChangeListeners.put(pref) {
+                isEnabled = pref.enableIf.invoke() ?: true
+            }
+        }
+    }
+
     val base = index.toFloat() / groupSize
     val rank = (index + 1f) / groupSize
 
@@ -97,7 +102,7 @@ fun BasePreference(
                     }
             ) {
                 Text(
-                    text = if (titleId != -1) stringResource(id = titleId) else key,
+                    text = if (titleId != -1) stringResource(id = titleId) else pref.key,
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.titleMedium,
                     fontSize = 16.sp
@@ -111,14 +116,14 @@ fun BasePreference(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodyMedium,
                 )
-                bottomWidget?.let {
+                bottomWidget?.let { widget ->
                     Spacer(modifier = Modifier.requiredWidth(8.dp))
-                    bottomWidget()
+                    widget(isEnabled)
                 }
             }
-            endWidget?.let {
+            endWidget?.let { widget ->
                 Spacer(modifier = Modifier.requiredWidth(8.dp))
-                endWidget()
+                widget(isEnabled)
             }
         }
     }
@@ -133,34 +138,22 @@ fun LaunchPreference(
     summary: String? = null,
     onClick: (() -> Unit) = {},
 ) {
-    val context = LocalContext.current
-    var isEnabled by remember(context.PrefsDependencies[pref]) {
-        mutableStateOf(context.PrefsDependencies[pref] ?: true)
-    }
-
-    SideEffect {
-        CoroutineScope(Dispatchers.Default).launch {
-            context.getDefaultSharedPreferences()
-                .registerOnSharedPreferenceChangeListener { _, _ ->
-                    isEnabled = context.PrefsDependencies[pref] ?: true
-                }
-        }
-    }
-
     BasePreference(
         modifier = modifier,
-        key = pref.key,
+        pref = pref,
         summary = summary,
         titleId = pref.titleId,
         summaryId = pref.summaryId,
         icon = {
-            if (pref.icon != null) PrefIcon(
-                icon = pref.icon,
-                text = stringResource(id = pref.titleId),
-            )
-            else Spacer(modifier = Modifier.requiredWidth(36.dp))
+            pref.icon?.let { icon ->
+                PrefIcon(
+                    icon = icon,
+                    text = stringResource(id = pref.titleId),
+                )
+            } ?: run {
+                Spacer(modifier = Modifier.requiredWidth(36.dp))
+            }
         },
-        isEnabled = isEnabled,
         index = index,
         groupSize = groupSize,
         onClick = onClick
@@ -175,23 +168,9 @@ fun EnumPreference(
     groupSize: Int = 1,
     onClick: (() -> Unit) = {},
 ) {
-    val context = LocalContext.current
-    var isEnabled by remember(context.PrefsDependencies[pref]) {
-        mutableStateOf(context.PrefsDependencies[pref] ?: true)
-    }
-
-    SideEffect {
-        CoroutineScope(Dispatchers.Default).launch {
-            context.getDefaultSharedPreferences()
-                .registerOnSharedPreferenceChangeListener { _, _ ->
-                    isEnabled = context.PrefsDependencies[pref] ?: true
-                }
-        }
-    }
-
     BasePreference(
         modifier = modifier,
-        key = pref.key,
+        pref = pref,
         titleId = pref.titleId,
         summaryId = pref.entries[pref.value] ?: pref.summaryId,
         icon = {
@@ -201,7 +180,6 @@ fun EnumPreference(
             )
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
-        isEnabled = isEnabled,
         index = index,
         groupSize = groupSize,
         onClick = onClick
@@ -216,23 +194,9 @@ fun ListPreference(
     groupSize: Int = 1,
     onClick: (() -> Unit) = {},
 ) {
-    val context = LocalContext.current
-    var isEnabled by remember(context.PrefsDependencies[pref]) {
-        mutableStateOf(context.PrefsDependencies[pref] ?: true)
-    }
-
-    SideEffect {
-        CoroutineScope(Dispatchers.Default).launch {
-            context.getDefaultSharedPreferences()
-                .registerOnSharedPreferenceChangeListener { _, _ ->
-                    isEnabled = context.PrefsDependencies[pref] ?: true
-                }
-        }
-    }
-
     BasePreference(
         modifier = modifier,
-        key = pref.key,
+        pref = pref,
         titleId = pref.titleId,
         summaryId = pref.summaryId,
         summary = pref.entries[pref.value],
@@ -243,7 +207,6 @@ fun ListPreference(
             )
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
-        isEnabled = isEnabled,
         index = index,
         groupSize = groupSize,
         onClick = onClick
@@ -259,26 +222,15 @@ fun SwitchPreference(
     onCheckedChange: ((Boolean) -> Unit) = {},
 ) {
     val context = LocalContext.current
-    var isEnabled by remember(context.PrefsDependencies[pref]) {
-        mutableStateOf(context.PrefsDependencies[pref] ?: true)
-    }
     var checked by remember(pref.value) { mutableStateOf(pref.value) }
     val check = { value: Boolean ->
         pref.value = value
         checked = value
     }
-    SideEffect {
-        CoroutineScope(Dispatchers.Default).launch {
-            context.getDefaultSharedPreferences()
-                .registerOnSharedPreferenceChangeListener { _, _ ->
-                    isEnabled = context.PrefsDependencies[pref] ?: true
-                }
-        }
-    }
 
     BasePreference(
         modifier = modifier,
-        key = pref.key,
+        pref = pref,
         summary = pref.summary,
         titleId = pref.titleId,
         summaryId = pref.summaryId,
@@ -289,14 +241,13 @@ fun SwitchPreference(
             )
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
-        isEnabled = isEnabled,
         index = index,
         groupSize = groupSize,
         onClick = {
             onCheckedChange(!checked)
             check(!checked)
         },
-        endWidget = {
+        endWidget = { isEnabled ->
             Switch(
                 modifier = Modifier
                     .height(24.dp),
@@ -319,28 +270,15 @@ fun CheckboxPreference(
     groupSize: Int = 1,
     onCheckedChange: ((Boolean) -> Unit) = {},
 ) {
-    val context = LocalContext.current
-    var isEnabled by remember(context.PrefsDependencies[pref]) {
-        mutableStateOf(context.PrefsDependencies[pref] ?: true)
-    }
     var checked by remember(pref.value) { mutableStateOf(pref.value) }
     val check = { value: Boolean ->
         pref.value = value
         checked = value
     }
 
-    SideEffect {
-        CoroutineScope(Dispatchers.Default).launch {
-            context.getDefaultSharedPreferences()
-                .registerOnSharedPreferenceChangeListener { _, _ ->
-                    isEnabled = context.PrefsDependencies[pref] ?: true
-                }
-        }
-    }
-
     BasePreference(
         modifier = modifier,
-        key = pref.key,
+        pref = pref,
         summary = pref.summary,
         titleId = pref.titleId,
         summaryId = pref.summaryId,
@@ -351,14 +289,13 @@ fun CheckboxPreference(
             )
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
-        isEnabled = isEnabled,
         index = index,
         groupSize = groupSize,
         onClick = {
             onCheckedChange(!checked)
             check(!checked)
         },
-        endWidget = {
+        endWidget = { isEnabled ->
             Checkbox(
                 modifier = Modifier
                     .height(24.dp),
@@ -381,10 +318,6 @@ fun SeekBarPreference(
     groupSize: Int = 1,
     onValueChange: ((Int) -> Unit) = {},
 ) {
-    val context = LocalContext.current
-    var isEnabled by remember(context.PrefsDependencies[pref]) {
-        mutableStateOf(context.PrefsDependencies[pref] ?: true)
-    }
     val currentValue = pref.value
     var sliderPosition by remember {
         mutableStateOf(
@@ -408,18 +341,9 @@ fun SeekBarPreference(
     }
     val last = pref.entries.size - 1
 
-    SideEffect {
-        CoroutineScope(Dispatchers.Default).launch {
-            context.getDefaultSharedPreferences()
-                .registerOnSharedPreferenceChangeListener { _, _ ->
-                    isEnabled = context.PrefsDependencies[pref] ?: true
-                }
-        }
-    }
-
     BasePreference(
         modifier = modifier,
-        key = pref.key,
+        pref = pref,
         summary = pref.summary,
         titleId = pref.titleId,
         summaryId = pref.summaryId,
@@ -430,10 +354,9 @@ fun SeekBarPreference(
             )
             else Spacer(modifier = Modifier.requiredWidth(36.dp))
         },
-        isEnabled = isEnabled,
         index = index,
         groupSize = groupSize,
-        bottomWidget = {
+        bottomWidget = { isEnabled ->
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Slider(
                     modifier = Modifier.weight(1f, false),

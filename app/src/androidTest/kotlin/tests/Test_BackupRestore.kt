@@ -6,15 +6,15 @@ import com.machiav3lli.backup.actions.BackupAppAction
 import com.machiav3lli.backup.actions.RestoreAppAction
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
+import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.items.RootFile
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.preferences.pref_encryption
-import com.machiav3lli.backup.utils.getPrivateSharedPrefs
 import com.topjohnwu.superuser.ShellUtils.fastCmd
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.AfterClass
-import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.BeforeClass
@@ -22,6 +22,9 @@ import org.junit.Test
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+
+//val timeCompareFormat = "yyyy-MM-dd'T'HH:mm:ss"
+val timeCompareFormat = "yyyy-MM-dd'T'HH:mm"
 
 class Test_BackupRestore {
 
@@ -55,15 +58,20 @@ class Test_BackupRestore {
         fun listContent(dir: RootFile): List<String> {
             //return runAsRoot("ls -bAlZ ${dir.quoted} | grep -v total | sort").out.joinToString("\n")
             return runAsRoot(
-                        "cd ${dir.quoted} ; stat -c '%y %A %f %F %U %G %s %n' .* * | grep -v '\\.$'"
+                        "cd ${dir.quoted} ; stat -c '%-20n %y %A %f %-15U %-15G %8s %F' .* * | grep -v '\\.$'"
             ).out
                 .filterNotNull()
-                .map { it.replace(Regex(""":\d\d\.\d{9}\b"""), "") }
-                .map { it.replace(Regex(""" link +\w+ +\w+"""), " link") }
+                .map { it.replace(Regex(""":\d\d\.\d{9}\b"""), "") } // :seconds.millis
+                .map { it.replace(Regex(""" link +\w+ +\w+"""), " link") } // to target
                 .sorted()
         }
 
         var checks = mutableMapOf<String, (file: RootFile) -> Boolean>()
+        fun compareTime(want: String, real: Long) =
+            want.startsWith(SimpleDateFormat(
+                timeCompareFormat,
+                Locale.getDefault()
+                ).format(real))
 
         private fun prepareDirectory(): RootFile {
 
@@ -81,74 +89,86 @@ class Test_BackupRestore {
             }
 
             run {
-                val name = "files"
-                files = RootFile(dir, name)
-                files.mkdirs()
+                val name = "dir"
+                val fileTime = "2000-11-22T12:34:01"
+                val file = RootFile(dir, name)
+                files = file
+                file.mkdirs()
+                fastCmd("$utilBoxQ touch -d $fileTime ${file.quoted}")
                 checks["$name/type"] = { it.isDirectory }
+                checks["#off#$name/time"] = { compareTime(fileTime, it.lastModified()) }
                 contentCount++
             }
 
             run {
                 val name = "regular"
-                val regularContent = "TEST"
-                val regularTime = "2013-12-21T12:34:56"
-                val regular = RootFile(dir, name)
-                fastCmd("$utilBoxQ echo -n '$regularContent' >${regular.quoted}")
-                fastCmd("$utilBoxQ touch -d $regularTime ${regular.quoted}")
+                val fileContent = "TEST"
+                val fileTime = "2000-11-22T12:34:01"
+                val file = RootFile(dir, name)
+                fastCmd("$utilBoxQ echo -n '$fileContent' >${file.quoted}")
+                fastCmd("$utilBoxQ touch -d $fileTime ${file.quoted}")
                 checks["$name/type"] = { it.isFile }
-                checks["$name/content"] = { it.readText() == regularContent }
-                checks["#$name/time"] = {
-                    SimpleDateFormat(
-                        "yyyy-MM-dd'T'HH:mm:ss",
-                        Locale.getDefault()
-                    ).format(it.lastModified()) == regularTime
-                }
+                checks["$name/content"] = { it.readText() == fileContent }
+                checks["$name/time"] = { compareTime(fileTime, it.lastModified()) }
                 contentCount++
             }
 
             run {
                 val name = "regular_system"
-                val systemContent = "SYSTEM"
-                val system = RootFile(dir, name)
-                fastCmd("$utilBoxQ echo -n '$systemContent' >${system.quoted}")
-                fastCmd("$utilBoxQ chown system:system ${system.quoted}")
+                val fileContent = "SYSTEM"
+                val fileTime = "2000-11-22T12:34:02"
+                val fileOwner = "system:system"
+                val file = RootFile(dir, name)
+                fastCmd("$utilBoxQ echo -n '$fileContent' >${file.quoted}")
+                fastCmd("$utilBoxQ chown $fileOwner ${file.quoted}")
+                fastCmd("$utilBoxQ touch -d $fileTime ${file.quoted}")
                 checks["$name/type"] = { it.isFile }
-                checks["$name/content"] = { it.readText() == systemContent }
+                checks["$name/content"] = { it.readText() == fileContent }
+                checks["$name/time"] = { compareTime(fileTime, it.lastModified()) }
                 contentCount++
             }
 
             run {
                 val name = "fifo"
-                val fifo = RootFile(dir, name)
-                fastCmd("$utilBoxQ mkfifo ${fifo.quoted}")
+                val file = RootFile(dir, name)
+                val fileTime = "2000-11-22T12:34:03"
+                fastCmd("$utilBoxQ mkfifo ${file.quoted}")
+                fastCmd("$utilBoxQ touch -d $fileTime ${file.quoted}")
+                checks["#off#$name/time"] = { compareTime(fileTime, it.lastModified()) }
+                contentCount++
+            }
+
+            run {
+                val name = "socket"
+                val file = RootFile(dir, name)
+                fastCmd("$utilBoxQ rm ${file.quoted} ; ($utilBoxQ nc -U -q 1 -W 1 -l -s ${file.quoted} & exit) ")
+                checks["#off#$name/notexist"] = { !it.exists() }
                 contentCount++
             }
 
             run {
                 val name = "link_sym_dir_rel"
-                val symLinkDirRel = RootFile(dir, name)
-                fastCmd("cd ${dir.quoted} && $utilBoxQ ln -s ${files.name} ${symLinkDirRel.name}")
+                val file = RootFile(dir, name)
+                fastCmd("cd ${dir.quoted} && $utilBoxQ ln -s ${files.name} ${file.name}")
                 checks["$name/type"] = { it.isSymlink() }
                 contentCount++
             }
 
             run {
                 val name = "link_sym_dir_abs"
-                val symLinkDirAbs = RootFile(dir, name)
-                fastCmd("$utilBoxQ ln -s ${files.absolutePath} ${symLinkDirAbs.quoted}")
+                val file = RootFile(dir, name)
+                fastCmd("$utilBoxQ ln -s ${files.absolutePath} ${file.quoted}")
                 checks["$name/type"] = { it.isSymlink() }
                 contentCount++
             }
 
-            /*
             run {
                 val name = "..dir"
-                val dotdotdir = RootFile(dir, name)
-                fastCmd("$utilBoxQ mkdir -p ${dotdotdir.quoted}")
-                checks["$name/type"] = { it.isDirectory }
+                val file = RootFile(dir, name)
+                fastCmd("$utilBoxQ mkdir -p ${file.quoted}")
+                checks["$name/type"] = { if (utilBox.hasBugDotDotDir) true else it.isDirectory }
                 contentCount++
             }
-            */
 
             contentLs = listContent(dir)
 
@@ -167,8 +187,6 @@ class Test_BackupRestore {
     lateinit var shellHandler : ShellHandler
     lateinit var backupDirTarApi : StorageFile
     lateinit var backupDirTarCmd : StorageFile
-    lateinit var archiveTarApi : StorageFile
-    lateinit var archiveTarCmd : StorageFile
     lateinit var restoreCache : File
 
     fun archiveTarApi(compress: Boolean) = StorageFile(backupDirTarApi, "data.tar${if (compress) ".gz" else ""}")
@@ -197,14 +215,18 @@ class Test_BackupRestore {
         assertTrue(real.isNotEmpty())
         checks.forEach { (name, check) ->
             if(name.startsWith("#"))
-                return
-            val fileName = name.split("/")[0]
+                return@forEach
+            val fileName = name.split("/").first()
             val result = check(RootFile(dir, fileName))
             if(!result)
-                Log.w("checkDirectory", name)
+                Log.w("checkDirectory", "FAILED: $name")
+            else
+                Log.w("checkDirectory", "OK:     $name")
+            Log.w("checkDirectory/want", want.firstOrNull { it.substringBefore(" ") == fileName } ?: "<missing>")
+            Log.w("checkDirectory/real", real.firstOrNull { it.substringBefore(" ") == fileName } ?: "<missing>")
             assertTrue("check failed for $name", result)
         }
-        assertEquals(want, real)
+        //assertEquals(want, real)
     }
 
     @Test
@@ -215,7 +237,7 @@ class Test_BackupRestore {
 
     fun backup(compress: Boolean) {
         if(!backupCreated) {
-            context.applicationContext.getPrivateSharedPrefs().edit().putBoolean(pref_encryption.key, false)
+            pref_encryption.value = false
             val iv = null     //initIv(CIPHER_ALGORITHM)
             val backupAction = BackupAppAction(context, null, shellHandler)
             val fromDir = StorageFile(testDir)
@@ -259,16 +281,18 @@ class Test_BackupRestore {
         val restoreAction = RestoreAppAction(context, null, shellHandler)
         val restoreDir = RootFile(tempDir, "restore_" + toType)
         restoreDir.mkdirs()
-        if(toType == "tarapi")
-            restoreAction.genericRestoreFromArchiveTarApi(
-                "data", archive, restoreDir.toString(),
-                compress, false, null, restoreCache
-            )
-        else
-            restoreAction.genericRestoreFromArchiveTarCmd(
-                "data", archive, restoreDir.toString(),
-                compress, false, null
-            )
+        runBlocking {
+            if (toType == "tarapi")
+                restoreAction.genericRestoreFromArchiveTarApi(
+                    "data", archive, restoreDir.toString(),
+                    compress, false, null, restoreCache
+                )
+            else
+                restoreAction.genericRestoreFromArchiveTarCmd(
+                    "data", archive, restoreDir.toString(),
+                    compress, false, null
+                )
+        }
         checkDirectory(restoreDir)
     }
 

@@ -19,15 +19,15 @@ package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
 import android.content.Intent
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.machiav3lli.backup.R
-import com.machiav3lli.backup.activities.PrefsActivityX
+import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.OABX.Companion.beginBusy
+import com.machiav3lli.backup.OABX.Companion.endBusy
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,42 +35,55 @@ import kotlinx.coroutines.withContext
 
 class LogViewModel(private val appContext: Application) : AndroidViewModel(appContext) {
 
-    var logsList = MediatorLiveData<MutableList<Log>>()
+    var logsList = mutableStateListOf<Log>()
+
+    init {
+        refreshList()
+    }
 
     fun refreshList() {
         viewModelScope.launch {
-            logsList.value = recreateLogsList()
+            beginBusy()
+            logsList.apply {
+                clear()
+                addAll(recreateLogsList())
+            }
+            endBusy()
         }
     }
 
     private suspend fun recreateLogsList(): MutableList<Log> = withContext(Dispatchers.IO) {
-        LogsHandler(appContext).readLogs()
+        LogsHandler.readLogs()
     }
 
-    fun shareLog(log: Log) {
+    fun shareLog(log: Log, asFile: Boolean = true) {
         viewModelScope.launch {
-            share(log)
+            share(log, asFile)
         }
     }
 
-    private suspend fun share(log: Log) {
+    private suspend fun share(log: Log, asFile: Boolean = true) {
         withContext(Dispatchers.IO) {
-            val shareFileIntent: Intent
-            LogsHandler(appContext).getLogFile(log.logDate)?.let {
-                if (it.exists()) {
-                    shareFileIntent = Intent().apply {
+            try {
+                LogsHandler.getLogFile(log.logDate)?.let { log ->
+                    val text = if (!asFile) log.readText() else ""
+                    if (!asFile and text.isEmpty())
+                        throw Exception("${log.name} is empty or cannot be read")
+                    val sendIntent = Intent().apply {
                         action = Intent.ACTION_SEND
-                        putExtra(Intent.EXTRA_STREAM, it.uri)
-                        type = "text/plain"
-                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        type = "text/*"
+                        flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        putExtra(Intent.EXTRA_SUBJECT, log.name)
+                        if (asFile)
+                            putExtra(Intent.EXTRA_STREAM, log.uri)  // send as file
+                        else
+                            putExtra(Intent.EXTRA_TEXT, text)       // send as text
                     }
-                    appContext.startActivity(shareFileIntent)
-                } else {
-                    showNotification(
-                        appContext, PrefsActivityX::class.java, System.currentTimeMillis().toInt(),
-                        appContext.getString(R.string.logs_share_failed), "", false
-                    )
+                    val shareIntent = Intent.createChooser(sendIntent, log.name)
+                    OABX.activity?.startActivity(shareIntent)
                 }
+            } catch (e: Throwable) {
+                LogsHandler.unhandledException(e)
             }
         }
     }
@@ -84,7 +97,7 @@ class LogViewModel(private val appContext: Application) : AndroidViewModel(appCo
 
     private suspend fun delete(log: Log) {
         withContext(Dispatchers.IO) {
-            log.delete(appContext)
+            log.delete()
         }
     }
 

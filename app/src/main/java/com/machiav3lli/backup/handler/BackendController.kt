@@ -30,7 +30,6 @@ import com.machiav3lli.backup.LOG_FOLDER_NAME
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.preferences.pref_pmSuspend
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.ignoredPackages
 import com.machiav3lli.backup.dbs.dao.AppInfoDao
@@ -42,6 +41,7 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.StorageFile.Companion.cacheInvalidate
+import com.machiav3lli.backup.preferences.pref_pmSuspend
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupDir
@@ -212,7 +212,7 @@ fun List<AppInfo>.toPackageList(
 
 fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
 
-    OABX.main?.viewModel?.refreshing?.value?.inc()
+    OABX.beginBusy()
 
     val pm = packageManager
     val installedPackages = pm.getInstalledPackagesWithPermissions()
@@ -278,7 +278,7 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
     appInfoDao.updateList(*appInfoList.toTypedArray())
     backupDao.updateList(*backups.toTypedArray())
 
-    OABX.main?.viewModel?.refreshing?.value?.dec()
+    OABX.endBusy()
 }
 
 @Throws(

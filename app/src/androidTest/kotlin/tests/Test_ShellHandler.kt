@@ -1,9 +1,15 @@
 package tests
 
 import com.machiav3lli.backup.handler.ShellHandler
+import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
+import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRootPipeInCollectErr
+import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRootPipeOutCollectErr
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 
 class Test_ShellHandler {
 
@@ -27,7 +33,7 @@ class Test_ShellHandler {
                 fileInfo.fileSize
         )
         assertEquals(
-				ShellHandler.FileInfo.FileType.REGULAR_FILE,
+				ShellHandler.FileType.REGULAR_FILE,
                 fileInfo.fileType
         )
     }
@@ -68,7 +74,7 @@ class Test_ShellHandler {
                 fileInfo.fileMode
         )
         assertEquals(
-				ShellHandler.FileInfo.FileType.REGULAR_FILE,
+				ShellHandler.FileType.REGULAR_FILE,
                 fileInfo.fileType
         )
     }
@@ -109,7 +115,7 @@ class Test_ShellHandler {
                 fileInfo.fileMode
         )
         assertEquals(
-				ShellHandler.FileInfo.FileType.REGULAR_FILE,
+				ShellHandler.FileType.REGULAR_FILE,
                 fileInfo.fileType
         )
     }
@@ -134,7 +140,7 @@ class Test_ShellHandler {
                 fileInfo.fileSize
         )
         assertEquals(
-				ShellHandler.FileInfo.FileType.REGULAR_FILE,
+				ShellHandler.FileType.REGULAR_FILE,
                 fileInfo.fileType
         )
     }
@@ -191,6 +197,59 @@ class Test_ShellHandler {
         assertEquals(
 				"""${'"'}My\\|\$&\"'\`[](){}   =:;?<~>-+!%^#*,.file${'"'}""",
                 ShellHandler.quote("""My\|$&"'`[](){}   =:;?<~>-+!%^#*,.file""")
+        )
+    }
+
+    @Test
+    fun test_shell() {
+        val result = runAsRoot("echo -n 1234567890 ; echo -n ERROR 1>&2")
+        assertEquals(
+            0,
+            result.code
+        )
+        assertEquals(
+            "1234567890",
+            result.out.joinToString("\n")
+        )
+        assertEquals(
+            "ERROR",
+            result.err.joinToString("\n")
+        )
+    }
+
+    @Test
+    fun test_pipe_out() {
+        val outStream = ByteArrayOutputStream()
+        val (code, err) = runBlocking {
+            runAsRootPipeOutCollectErr(outStream, "echo -n 1234567890 ; echo -n ERROR 1>&2")
+        }
+        assertEquals(
+            "1234567890",
+            outStream.toString()
+        )
+        assertEquals(
+            "ERROR",
+            err
+        )
+        assertEquals(
+            0,
+            code
+        )
+    }
+
+    @Test
+    fun test_pipe_in() {
+        val inStream = ByteArrayInputStream("1234567890".encodeToByteArray())
+        val (code, err) = runBlocking {
+            runAsRootPipeInCollectErr(inStream, "md5sum 1>&2")
+        }
+        assertEquals(
+            "e807f1fcf82d132f9bb018ca6738a19f  -\n",
+            err
+        )
+        assertEquals(
+            0,
+            code
         )
     }
 }

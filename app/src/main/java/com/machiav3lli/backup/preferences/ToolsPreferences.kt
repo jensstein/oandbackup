@@ -106,6 +106,7 @@ fun ToolsPrefsPage(navController: NavHostController) {
                                         coroutineScope
                                     )
                                     pref_logViewer -> navController.navigate(NavItem.Logs.destination)
+                                    pref_terminal -> navController.navigate(NavItem.Terminal.destination)
                                 }
                             }
                             if (index < size - 1) Spacer(modifier = Modifier.height(4.dp))
@@ -315,6 +316,13 @@ fun Context.writeAppsListFile(appsList: List<String>, filteredBoolean: Boolean) 
 val pref_logViewer = LinkPref(
     key = "tool.logViewer",
     titleId = R.string.prefs_logviewer,
+    icon = Phosphor.Bug,
+    iconTint = ColorDeData
+)
+
+val pref_terminal = LinkPref(
+    key = "tool.terminal",
+    titleId = R.string.prefs_tools_terminal,
     icon = Phosphor.Bug,
     iconTint = ColorDeData
 )

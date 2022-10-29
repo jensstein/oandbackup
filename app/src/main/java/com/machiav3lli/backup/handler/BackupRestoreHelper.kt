@@ -45,6 +45,7 @@ import java.io.IOException
 
 object BackupRestoreHelper {
 
+    suspend
     fun backup(
         context: Context,
         work: AppActionWork?,
@@ -84,6 +85,7 @@ object BackupRestoreHelper {
         return result
     }
 
+    suspend
     fun restore(
         context: Context, work: AppActionWork?, shellHandler: ShellHandler, appInfo: Package,
         mode: Int, backupProperties: Backup, backupDir: StorageFile?

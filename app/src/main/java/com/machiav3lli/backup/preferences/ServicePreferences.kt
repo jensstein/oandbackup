@@ -109,8 +109,16 @@ val pref_password = PasswordPref(
     summaryId = R.string.prefs_password_summary,
     icon = Phosphor.Password,
     iconTint = ColorUpdated,
+    defaultValue = "",
+    enableIf = { pref_encryption.value }
+)
+
+val kill_password = PasswordPref(   // make sure password is never saved in non-encrypted prefs
+    key = "kill.password",
+    private = false,
     defaultValue = ""
 )
+val kill_password_set = run  { kill_password.value = "" }
 
 val pref_backupDeviceProtectedData = BooleanPref(
     key = "srv.backupDeviceProtectedData",

@@ -34,7 +34,7 @@ class BackupActionTask(
     BackupRestoreHelper.ActionType.BACKUP, appSheet
 ) {
 
-    override fun doInBackground(vararg params: Void?): ActionResult? {
+    override suspend fun doInBackground(vararg params: Void?): ActionResult? {
 
         val mainActivityX = mainActivityXReference.get()
         if (mainActivityX == null || mainActivityX.isFinishing) {
@@ -52,6 +52,7 @@ class BackupActionTask(
         OABX.addInfoText(
             "backup: ${app.packageName}: ${(time / 1000 + 0.5).toInt()} sec"
         )
+
         return result
     }
 }

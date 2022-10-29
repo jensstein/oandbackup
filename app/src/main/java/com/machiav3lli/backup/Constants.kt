@@ -62,15 +62,6 @@ const val EXTRA_PACKAGE_NAME = "packageName"
 const val EXTRA_SCHEDULE_ID = "scheduleId"
 const val EXTRA_STATS = "stats"
 
-val Context.PrefsDependencies: Map<Pref, Boolean>
-    get() = mutableMapOf(
-        pref_biometricLock to (isBiometricLockAvailable() && isDeviceLockEnabled()),
-        pref_deviceLock to isDeviceLockAvailable(),
-        pref_password to pref_encryption.value,
-        pref_pmSuspend to pref_pauseApps.value,
-        pref_shadowRootFile to pref_allowShadowingDefault.value
-    )
-
 const val THEME_LIGHT = 0
 const val THEME_DARK = 1
 const val THEME_SYSTEM = 2

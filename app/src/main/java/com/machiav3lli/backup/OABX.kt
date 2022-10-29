@@ -36,7 +36,7 @@ import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.preferences.pref_cancelOnStart
-import com.machiav3lli.backup.preferences.pref_maxCrashLines
+import com.machiav3lli.backup.preferences.pref_maxLogLines
 import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
@@ -47,7 +47,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.lang.ref.WeakReference
-import java.time.LocalDateTime
+import java.text.SimpleDateFormat
+import java.util.*
 
 class OABX : Application() {
 
@@ -77,10 +78,12 @@ class OABX : Application() {
                             android.util.Log.WARN -> "W"
                             else                  -> "?"
                         }
-                val date = LocalDateTime.now()
+                val now = System.currentTimeMillis()
+                val timeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                val date = timeFormat.format(now)
                 lastLogMessages.add("$date $prio $tag : $message")
                 try {
-                    while (lastLogMessages.size > pref_maxCrashLines.value)
+                    while (lastLogMessages.size > pref_maxLogLines.value)
                         lastLogMessages.removeAt(0)
                 } catch(e: Throwable) {
                     // ignore
@@ -142,6 +145,8 @@ class OABX : Application() {
     companion object {
 
         val lastLogMessages = mutableListOf<String>()
+        var lastErrorPackage = ""
+        var lastErrorCommand = ""
 
         // app should always be created
         var appRef: WeakReference<OABX> = WeakReference(null)
@@ -196,54 +201,6 @@ class OABX : Application() {
 
         fun getString(resId: Int) = context.getString(resId)
 
-        fun prefFlag(name: String, default: Boolean) =
-            try {
-                context.getDefaultSharedPreferences()
-                    .getBoolean(name, default)
-            } catch(e: Throwable) {
-                default
-            }
-
-        fun setPrefFlag(name: String, value: Boolean) = context.getDefaultSharedPreferences()
-            .edit()
-            .putBoolean(name, value).apply()
-
-        fun prefString(name: String, default: String) =
-            try {
-                context.getDefaultSharedPreferences()
-                    .getString(name, default) ?: default
-            } catch(e: Throwable) {
-                default
-            }
-
-        fun setPrefString(name: String, value: String) = context.getDefaultSharedPreferences()
-            .edit()
-            .putString(name, value).apply()
-
-        fun prefPrivateString(name: String, default: String) =
-            try {
-                context.getPrivateSharedPrefs()
-                    .getString(name, default) ?: default
-            } catch(e: Throwable) {
-                default
-            }
-
-        fun setPrefPrivateString(name: String, value: String) = context.getPrivateSharedPrefs()
-            .edit()
-            .putString(name, value).apply()
-
-        fun prefInt(name: String, default: Int) =
-            try {
-                context.getDefaultSharedPreferences()
-                    .getInt(name, default)
-            } catch(e: Throwable) {
-                default
-            }
-
-        fun setPrefInt(name: String, value: Int) = context.getDefaultSharedPreferences()
-            .edit()
-            .putInt(name, value).apply()
-
         var infoLines = mutableStateListOf<String>()
 
         val nInfoLines = 100
@@ -297,5 +254,20 @@ class OABX : Application() {
         fun minSDK(sdk: Int): Boolean {
             return Build.VERSION.SDK_INT >= sdk
         }
+
+        val progress = mutableStateOf(Pair(false, 0f))
+
+        fun setProgress(now: Int = 0, max: Int = 0) {
+            if (max > now)
+                progress.value = Pair(true, 1f * now / max)
+            else
+                progress.value = Pair(false, 0f)
+        }
+
+        var busy = mutableStateOf(0)
+        private var lockBusy = Object()
+
+        fun beginBusy() { synchronized(lockBusy) { busy.value = busy.value.inc() } }
+        fun endBusy()   { synchronized(lockBusy) { busy.value = busy.value.dec() } }
     }
 }

@@ -16,6 +16,15 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.Warning
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Wrench
 
 sealed class NavItem(var title: Int, var icon: ImageVector, var destination: String) {
+
+    init {
+        navItems[destination] = this
+    }
+
+    companion object {
+        val navItems = mutableMapOf<String, NavItem>()
+    }
+
     object Welcome :
         NavItem(R.string.welcome_to_oabx, Phosphor.House, "intro_welcome")
 
@@ -51,6 +60,9 @@ sealed class NavItem(var title: Int, var icon: ImageVector, var destination: Str
 
     object ToolsPrefs :
         NavItem(R.string.prefs_tools_short, Phosphor.Wrench, "prefs_tools")
+
+    object Terminal :
+        NavItem(R.string.prefs_tools_terminal, Phosphor.Bug, "prefs_tools/terminal")
 
     object Exports : NavItem(
         R.string.prefs_schedulesexportimport,

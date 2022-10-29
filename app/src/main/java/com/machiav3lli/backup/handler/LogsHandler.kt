@@ -28,7 +28,7 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.preferences.pref_maxCrashLines
+import com.machiav3lli.backup.preferences.pref_maxLogLines
 import com.machiav3lli.backup.preferences.pref_useLogCat
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
@@ -39,88 +39,92 @@ import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 
-class LogsHandler(var context: Context) {
-    private var logsDirectory: StorageFile?
-
-    init {
-        val backupRootFolder = context.getBackupDir()
-        logsDirectory = backupRootFolder.ensureDirectory(LOG_FOLDER_NAME)
-    }
-
-    @Throws(IOException::class)
-    fun writeToLogFile(logText: String) {
-        val date = LocalDateTime.now()
-        val logItem = Log(
-            logText +
-            "\n\n" +
-            "${BuildConfig.APPLICATION_ID} ${BuildConfig.VERSION_NAME}\n" +
-            "${utilBox.name} ${utilBox.version} ${utilBox.score} ${
-                if (utilBox.isTestedVersion) "tested" else "untested"
-            }${
-                if (utilBox.hasBugDotDotDir) " bugDotDotDir" else ""
-            }\n" +
-            "\n" +
-            if (pref_useLogCat.value)
-                ShellHandler.runAsRoot(
-                    "logcat -d -t ${
-                        pref_maxCrashLines.value
-                    } --pid=${
-                        Process.myPid()
-                    }"  // -d = dump and exit
-                ).out.joinToString("\n")
-            else
-                OABX.lastLogMessages.joinToString("\n"),
-            date
-        )
-        val logFileName = String.format(
-            LOG_INSTANCE,
-            BACKUP_DATE_TIME_FORMATTER.format(date)
-        )
-        logsDirectory?.createFile("application/octet-stream", logFileName)?.let { logFile ->
-            BufferedOutputStream(logFile.outputStream()).use { logOut ->
-                logOut.write(
-                    logItem.toJSON().toByteArray(StandardCharsets.UTF_8)
-                )
-                Timber.i("Wrote $logFile file for $logItem")
-            }
-        }
-    }
-
-    @Throws(IOException::class)
-    fun readLogs(): MutableList<Log> {
-        val logs = mutableListOf<Log>()
-        StorageFile.invalidateCache { it.contains(LOG_FOLDER_NAME) }
-        logsDirectory?.listFiles()?.forEach {
-            if (it.isFile) try {
-                logs.add(Log(it))
-            } catch (e: NullPointerException) {
-                val message =
-                    "(Null) Incomplete log or wrong structure found in $it."
-                Timber.w(message)
-                logErrors(context, message)
-            } catch (e: Throwable) {
-                val message =
-                    "(catchall) Incomplete log or wrong structure found in $it."
-                unhandledException(e, it)
-                logErrors(context, message)
-            }
-        }
-        return logs
-    }
-
-    fun getLogFile(date: LocalDateTime): StorageFile? {
-        val logFileName = String.format(
-            LOG_INSTANCE,
-            BACKUP_DATE_TIME_FORMATTER.format(date)
-        )
-        return logsDirectory?.findFile(logFileName)
-    }
+class LogsHandler {
 
     companion object {
-        fun logErrors(context: Context, errors: String) {
+
+        @Throws(IOException::class)
+        fun writeToLogFile(logText: String) {
+            val backupRootFolder = OABX.context.getBackupDir()
+            val logsDirectory = backupRootFolder.ensureDirectory(LOG_FOLDER_NAME)
+            val date = LocalDateTime.now()
+            val logItem = Log(logText, date)
+            val logFileName = String.format(
+                LOG_INSTANCE,
+                BACKUP_DATE_TIME_FORMATTER.format(date)
+            )
+            logsDirectory.createFile("application/octet-stream", logFileName).let { logFile ->
+                BufferedOutputStream(logFile.outputStream()).use { logOut ->
+                    logOut.write(
+                        logItem.toJSON().toByteArray(StandardCharsets.UTF_8)
+                    )
+                    Timber.i("Wrote $logFile file for $logItem")
+                }
+            }
+        }
+
+        @Throws(IOException::class)
+        fun readLogs(): MutableList<Log> {
+            val logs = mutableListOf<Log>()
+            val backupRootFolder = OABX.context.getBackupDir()
+            StorageFile.invalidateCache { it.contains(LOG_FOLDER_NAME) }
+            //val logsDirectory = StorageFile(backupRootFolder, LOG_FOLDER_NAME)
+            backupRootFolder.findFile(LOG_FOLDER_NAME)?.let { logsDir ->
+                if (logsDir.isDirectory) {
+                    logsDir.listFiles().forEach {
+                        if (it.isFile) try {
+                            logs.add(Log(it))
+                        } catch (e: Throwable) {
+                            val message =
+                                "(catchall) Incomplete log or wrong structure found in $it."
+                            unhandledException(e, it)
+                            //no, recursion! logErrors(message)
+                        }
+                    }
+                }
+            }
+            return logs
+        }
+
+        fun getLogFile(date: LocalDateTime): StorageFile? {
+            val backupRootFolder = OABX.context.getBackupDir()
+            backupRootFolder.findFile(LOG_FOLDER_NAME)?.let { logsDir ->
+                val logFileName = String.format(
+                    LOG_INSTANCE,
+                    BACKUP_DATE_TIME_FORMATTER.format(date)
+                )
+                val file = logsDir.findFile(logFileName)
+                return if (file?.exists() == true) file else null
+            }
+            return null
+        }
+
+        fun logErrors(errors: String) {
             try {
-                val logUtils = LogsHandler(context)
-                logUtils.writeToLogFile(errors)
+                val logText =
+                    errors +
+                    "\n\n" +
+                    "${BuildConfig.APPLICATION_ID} ${BuildConfig.VERSION_NAME}\n" +
+                    "${utilBox.name} ${utilBox.version} ${
+                        if (utilBox.isTestedVersion) "tested" else "untested"
+                    }${
+                        if (utilBox.hasBugDotDotDir) " bugDotDotDir" else ""
+                    } -> score ${utilBox.score}" +
+                    "\n\n========== collected messages\n\n" +
+                    OABX.lastLogMessages.joinToString("\n") +
+                    "\n" +
+                    if (pref_useLogCat.value)
+                        "\n\n========== logcat\n\n" +
+                        ShellHandler.runAsRoot(
+                            "logcat -d -t ${
+                                pref_maxLogLines.value
+                            } --pid=${
+                                Process.myPid()
+                            }"  // -d = dump and exit
+                        ).out.joinToString("\n")
+                    else
+                        ""
+                writeToLogFile(logText)
             } catch (e: IOException) {
                 e.printStackTrace()
             } catch (e: StorageLocationNotConfiguredException) {

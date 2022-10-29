@@ -75,11 +75,11 @@ class ExportsHandler(var context: Context) {
             } catch (e: NullPointerException) {
                 val message = "(Null) Incomplete schedule or wrong structure found in ${it}."
                 Timber.w(message)
-                logErrors(context, message)
+                logErrors(message)
             } catch (e: Throwable) {
                 val message = "(catchall) Incomplete schedule or wrong structure found in ${it}."
                 unhandledException(e, it)
-                logErrors(context, message)
+                logErrors(message)
             }
         }
         return exports

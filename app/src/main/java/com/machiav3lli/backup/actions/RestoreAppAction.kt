@@ -25,14 +25,6 @@ import com.machiav3lli.backup.MODE_DATA_EXT
 import com.machiav3lli.backup.MODE_DATA_MEDIA
 import com.machiav3lli.backup.MODE_DATA_OBB
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.preferences.pref_enableSessionInstaller
-import com.machiav3lli.backup.preferences.pref_excludeCache
-import com.machiav3lli.backup.preferences.pref_installationPackage
-import com.machiav3lli.backup.preferences.pref_delayBeforeRefreshAppInfo
-import com.machiav3lli.backup.preferences.pref_refreshAppInfoTimeout
-import com.machiav3lli.backup.preferences.pref_restoreAvoidTemporaryCopy
-import com.machiav3lli.backup.preferences.pref_restorePermissions
-import com.machiav3lli.backup.preferences.pref_restoreTarCmd
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.LogsHandler
@@ -41,6 +33,7 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.findAssetFile
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quoteMultiple
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
+import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRootPipeInCollectErr
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.handler.ShellHandler.UnexpectedCommandResult
@@ -48,6 +41,14 @@ import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.RootFile
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.preferences.pref_delayBeforeRefreshAppInfo
+import com.machiav3lli.backup.preferences.pref_enableSessionInstaller
+import com.machiav3lli.backup.preferences.pref_excludeCache
+import com.machiav3lli.backup.preferences.pref_installationPackage
+import com.machiav3lli.backup.preferences.pref_refreshAppInfoTimeout
+import com.machiav3lli.backup.preferences.pref_restoreAvoidTemporaryCopy
+import com.machiav3lli.backup.preferences.pref_restorePermissions
+import com.machiav3lli.backup.preferences.pref_restoreTarCmd
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.CryptoSetupException
 import com.machiav3lli.backup.utils.decryptStream
@@ -116,8 +117,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                 val message =
                     when (val cause = e.cause) {
                         is ShellCommandFailedException -> {
-                            val commandList = cause.commands.joinToString("; ")
-                            "Shell command failed: ${commandList}\n${
+                            "Shell command failed: ${cause.command}\n${
                                 extractErrorMessage(cause.shellResult)
                             }"
                         }
@@ -423,7 +423,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         } catch (e: ShellCommandFailedException) {
             val error = extractErrorMessage(e.shellResult)
             throw RestoreFailedException(
-                "Shell command failed: ${e.commands.joinToString { "; " }}\n$error",
+                "Shell command failed: ${e.command}\n$error",
                 e
             )
         }
@@ -557,37 +557,34 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                     if (pref_excludeCache.value) {
                         options += " --exclude " + quote(excludeCache)
                     }
-                    var suOptions = "--mount-master"
 
-                    val cmd =
-                        "su $suOptions -c sh $qTarScript extract $utilBoxQ $options ${
-                            quote(
-                                targetDir
-                            )
-                        }"
+                    val cmd = "sh $qTarScript extract $utilBoxQ $options ${quote(targetDir)}"
+
                     Timber.i("SHELL: $cmd")
 
-                    val process = Runtime.getRuntime().exec(cmd)
+                    val (code, err) = runAsRootPipeInCollectErr(archiveStream, cmd)
 
-                    val shellIn = process.outputStream
-                    val shellOut = process.inputStream
-                    val shellErr = process.errorStream
-
-                    archiveStream.copyTo(shellIn, 65536)
-
-                    shellIn.close()
-
-                    val err = shellErr.readBytes().decodeToString()
+                    //---------- ignore error code, because sockets may trigger it
+                    // if (err != "") {
+                    //     Timber.i(err)
+                    //     if (code != 0)
+                    //         throw ScriptException(err)
+                    // }
+                    //---------- instead look at error output and ignore some of the messages
+                    if (code != 0)
+                        Timber.i("tar returns: code $code: " + err) // at least log the full error
                     val errLines = err
                         .split("\n")
                         .filterNot { line ->
                             line.isBlank()
                                     || line.contains("tar: unknown file type") // e.g. socket 140000
+                                    || line.contains("tar: had errors") // summary at the end
                         }
                     if (errLines.isNotEmpty()) {
                         val errFiltered = errLines.joinToString("\n")
                         Timber.i(errFiltered)
-                        throw ScriptException(errFiltered)
+                        if (code != 0)
+                            throw ScriptException(errFiltered)
                     }
                 }
             } catch (e: FileNotFoundException) {
@@ -704,8 +701,8 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                 command += " ; $utilBoxQ chown -R $uid:$gidCache ${
                     quoteMultiple(cacheTargets)
                 }"
-            command += if (con == "?") //TODO hg42: when does it happen?
-                " ; restorecon -RF -v ${quote(targetPath)}"
+            command += if (con == "?") //TODO hg42: when does it happen? maybe if selinux not supported on storage?
+                "" // "" ; restorecon -RF -v ${quote(targetPath)}"  //TODO hg42 doesn't seem to work
             else
                 " ; chcon -R -h -v '$con' ${quote(targetPath)}"
             runAsRoot(command)

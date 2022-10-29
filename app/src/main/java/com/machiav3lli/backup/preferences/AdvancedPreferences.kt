@@ -116,13 +116,8 @@ val pref_allowDowngrade = BooleanPref(
     defaultValue = false
 )
 
-// dev settings
 
-val pref_tapToSelect = BooleanPref(
-    key = "dev.tapToSelect",
-    summary = "a short tap selects, otherwise a long tap starts selection mode [switch tabs to activate]",
-    defaultValue = false
-)
+//---------------------------------------- developer settings
 
 val pref_useBackupRestoreWithSelection = BooleanPref(
     key = "dev.useBackupRestoreWithSelection",
@@ -181,10 +176,9 @@ val pref_pauseApps = BooleanPref(
 val pref_pmSuspend = BooleanPref(
     key = "dev.pmSuspend",
     summaryId = R.string.prefs_pmsuspend_summary,
-    defaultValue = false
+    defaultValue = false,
+    enableIf = { pref_pauseApps.value }
 )
-
-//val pref_pmSuspend_init = run { pref_pmSuspend.isEnabled = { pref_pauseApps.value } }
 
 val pref_backupTarCmd = BooleanPref(
     key = "dev.backupTarCmd",
@@ -219,7 +213,8 @@ val pref_allowShadowingDefault = BooleanPref(
 val pref_shadowRootFile = BooleanPref(
     key = "dev.shadowRootFile",
     summaryId = R.string.prefs_shadowrootfile_summary,
-    defaultValue = false
+    defaultValue = false,
+    enableIf = { pref_allowShadowingDefault.value }
 )
 
 val pref_useFindLs = BooleanPref(
@@ -240,11 +235,17 @@ val pref_useLogCat = BooleanPref(
     defaultValue = false
 )
 
-val pref_maxCrashLines = IntPref(
-    key = "dev.maxCrashLines",
-    summaryId = R.string.prefs_maxcrashlines_summary,
-    entries = (10..200 step 10).toList(),
+val pref_maxLogLines = IntPref(
+    key = "dev.maxLogLines",
+    summary = "maximum lines in the log (logcat or internal)",
+    entries = ((10..90 step 10) + (100..500 step 50)).toList(),
     defaultValue = 50
+)
+
+val pref_shareAsFile = BooleanPref(
+    key = "dev.shareAsFile",
+    summary = "share logs as file, otherwise as text",
+    defaultValue = true
 )
 
 val pref_invalidateSelective = BooleanPref(
@@ -318,6 +319,9 @@ val pref_forceCrash = LaunchPref(
     throw Exception("forceCrash")
 }
 
+
+
+//---------------------------------------- values that should persist for internal purposes (no UI)
 
 val persist_firstLaunch = BooleanPref(
     key = "persist.firstLaunch",

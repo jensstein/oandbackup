@@ -9,16 +9,16 @@ import androidx.core.database.getIntOrNull
 import androidx.core.database.getLongOrNull
 import androidx.core.database.getStringOrNull
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.preferences.pref_cacheFileLists
-import com.machiav3lli.backup.preferences.pref_cacheUris
-import com.machiav3lli.backup.preferences.pref_useColumnNameSAF
-import com.machiav3lli.backup.preferences.pref_invalidateSelective
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
 import com.machiav3lli.backup.handler.LogsHandler.Companion.unhandledException
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.preferences.pref_allowShadowingDefault
+import com.machiav3lli.backup.preferences.pref_cacheFileLists
+import com.machiav3lli.backup.preferences.pref_cacheUris
+import com.machiav3lli.backup.preferences.pref_invalidateSelective
 import com.machiav3lli.backup.preferences.pref_shadowRootFile
+import com.machiav3lli.backup.preferences.pref_useColumnNameSAF
 import com.machiav3lli.backup.utils.suRecursiveCopyFilesToDocument
 import timber.log.Timber
 import java.io.File
@@ -154,18 +154,24 @@ open class StorageFile {
 
     var parent: StorageFile? = null
     var context: Context? = null
+            get() = field ?: OABX.context
+            set(value: Context?) { field = value }
 
+    private var file: RootFile? = null
     private var _uri: Uri? = null
     val uri: Uri?
-        get() = _uri ?: file?.let { file ->
-            context?.let {
-                FileProvider.getUriForFile(
-                    it, "${it.applicationContext.packageName}.provider", file
-                )
-            }
-        } ?: Uri.fromFile(file?.absoluteFile)
-    private var file: RootFile? = null
-    private var parentFile: RootFile? = null
+        get() = _uri ?: file?.let { f ->
+            parent?.let { p ->
+                name?.let { n ->
+                    _uri = p.findUri(n)
+                    _uri
+                }
+            } ?: context?.let {
+                    FileProvider.getUriForFile(
+                        it, "${it.applicationContext.packageName}.provider", f
+                    )
+                }
+            } ?: Uri.fromFile(file?.absoluteFile)
 
     data class DocumentInfo(
         val id: String,
@@ -330,14 +336,14 @@ open class StorageFile {
         this.file = RootFile(file)
     }
 
-    constructor(parent: StorageFile, file: RootFile) {
+    constructor(parent: StorageFile, file: RootFile) {  //TODO hg42 a weird mix of uri and RootFile
         this.parent = parent
         this.file = file
     }
 
-    constructor(parent: StorageFile, path: String) {
+    constructor(parent: StorageFile, path: String) {    //TODO hg42 where is this used?
         this.parent = parent
-        file = RootFile(parent.file, path)
+        file = RootFile(parent.file, path)  //TODO hg42 what if it's not a RootFile
     }
 
     var name: String? = null
@@ -489,15 +495,18 @@ open class StorageFile {
     }
 
     fun findUri(displayName: String): Uri? {
-        try {
-            for (file in listFiles()) {
-                if (displayName == file.name) {
-                    return file._uri
+        // recurse down, uri?.run { ... } prevents optimizing-away (and null test makes sense anyway)
+        uri?.run {
+            try {
+                for (file in listFiles(forceUri = true)) {
+                    if (displayName == file.name) {
+                        return file._uri
+                    }
                 }
+            } catch (e: FileNotFoundException) {
+            } catch (e: Throwable) {
+                unhandledException(e, _uri)
             }
-        } catch (e: FileNotFoundException) {
-        } catch (e: Throwable) {
-            unhandledException(e, _uri)
         }
         return null
     }
@@ -514,6 +523,7 @@ open class StorageFile {
                 }
             }
         } catch (e: FileNotFoundException) {
+            // ignore
         } catch (e: Throwable) {
             unhandledException(e, _uri)
         }
@@ -525,7 +535,7 @@ open class StorageFile {
     }
 
     @Throws(FileNotFoundException::class)
-    fun listFiles(): List<StorageFile> {
+    fun listFiles(forceUri: Boolean = false): List<StorageFile> {
 
         try {
             exists()
@@ -537,11 +547,11 @@ open class StorageFile {
 
             val files = cacheGetFiles(path) ?: run {
                 val results = mutableListOf<StorageFile>()
-                file?.let { dir ->
-                    dir.listFiles()?.forEach { child ->
+                if ((file != null) and !forceUri) {
+                    file!!.listFiles()?.forEach { child ->
                         results.add(StorageFile(this, child))
                     }
-                } ?: run {
+                } else {
                     context?.contentResolver?.let { resolver ->
                         val childrenUri = try {
                             DocumentsContract.buildChildDocumentsUriUsingTree(
