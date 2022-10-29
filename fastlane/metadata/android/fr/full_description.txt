@@ -1,4 +1,5 @@
 <p>Effectuez et restaurez des sauvegardes des applications sur votre appareil et enregistrez les données des applications dans un emplacement accessible par l'utilisateur. Prend en charge la sauvegarde et la restauration d'une ou plusieurs applications.</p>
+<p>Composant de NeoApplications.</p>
 <p>Fork d'OAndBackup apportant la prise en charge des nouvelles versions d'Android et des apparences mises à jour.</p>
 <p><br><b>Aidez-nous à traduire sur Weblate : </b>https://hosted.weblate.org/engage/oandbackupx/</p>
 <p> <br> <b>Nécessite root :</b>Parce qu'il copie les fichiers de /data/data, /data/app et /system/app. </p>
