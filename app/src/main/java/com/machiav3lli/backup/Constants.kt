@@ -18,23 +18,10 @@
 package com.machiav3lli.backup
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
-import com.machiav3lli.backup.preferences.pref_allowShadowingDefault
-import com.machiav3lli.backup.preferences.pref_biometricLock
-import com.machiav3lli.backup.preferences.pref_deviceLock
-import com.machiav3lli.backup.preferences.pref_encryption
-import com.machiav3lli.backup.preferences.pref_password
-import com.machiav3lli.backup.preferences.pref_pauseApps
-import com.machiav3lli.backup.preferences.pref_pmSuspend
-import com.machiav3lli.backup.preferences.pref_shadowRootFile
 import com.machiav3lli.backup.ui.item.ChipItem
 import com.machiav3lli.backup.ui.item.Legend
 import com.machiav3lli.backup.ui.item.Link
-import com.machiav3lli.backup.ui.item.Pref
-import com.machiav3lli.backup.utils.isBiometricLockAvailable
-import com.machiav3lli.backup.utils.isDeviceLockAvailable
-import com.machiav3lli.backup.utils.isDeviceLockEnabled
 import java.time.format.DateTimeFormatter
 
 const val PREFS_SHARED_PRIVATE = "com.machiav3lli.backup"
