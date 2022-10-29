@@ -99,7 +99,7 @@
     <string name="apptype_special">Sauvegarde spéciale</string>
     <string name="sched_add">Ajouter une sauvegarde planifiée</string>
     <string name="sort_and_filter">Trier et filtrer</string>
-    <string name="enable_encryption_message">Ce n\'est pas sûr de garder vos données sur votre appareil non chiffrées. Pour la sécurité de vos données, activez le chiffrement et définissez un mot de passe.</string>
+    <string name="enable_encryption_message">Ce n\'est pas sécurisé de laisser vos données non chiffrées sur votre appareil. Pour la sécurité de vos données, activez le chiffrement et définissez un mot de passe.</string>
     <string name="enable_encryption_title">Chiffrement des données</string>
     <string name="help_license">Licence</string>
     <string name="cache_size">Taille du cache :</string>
@@ -108,7 +108,7 @@
     <string name="grant_usage_access_message">Ceci est essentiel pour obtenir les informations sur la taille des fichiers de l\'application</string>
     <string name="grant_usage_access_title">Accorder l\'accès à l\'utilisation</string>
     <string name="backup_filters">Filtres de sauvegarde :</string>
-    <string name="split_apks">Split-APK :</string>
+    <string name="split_apks">Split-APKs</string>
     <string name="failed_unzipping">Erreur lors du dézippage des données, vérifiez le mot de passe de chiffrement !</string>
     <string name="ignore_battery_optimization_not_supported">Cet appareil ne prend pas en charge « Ignorer les optimisations de la batterie » malheureusement !</string>
     <string name="ignore_battery_optimization_message">Les sauvegardes peuvent parfois s’arrêter. Pour éviter ceci, vous devez désactiver l’optimisation de la batterie</string>
@@ -208,7 +208,7 @@
     <string name="radio_externaldata">Données externes</string>
     <plurals name="days_left">
         <item quantity="one">%d jour,</item>
-        <item quantity="many"></item>
+        <item quantity="many"/>
         <item quantity="other">%d jours,</item>
     </plurals>
     <string name="logs_text_empty">Il n\'y a rien à afficher !</string>
@@ -224,7 +224,7 @@
     <string name="radio_launchable">Apps lançables</string>
     <string name="prefs_obbdata">Sauvegarde des fichiers obb</string>
     <string name="prefs_allowdowngrade">Autoriser le retour à une version antérieure</string>
-    <string name="prefs_allowdowngrade_summary">Autoriser la restauration d\'une version antérieure à l\'app installée.</string>
+    <string name="prefs_allowdowngrade_summary">Autoriser la restauration d\'une version antérieure à l\'application installée (s\'applique seulement aux versions debuggables).</string>
     <string name="prefs_restoreallpermissions">Restaurer avec toutes les permissions</string>
     <string name="prefs_restoreallpermissions_summary">Donner à l\'app restaurée toutes les permissions qu\'elle demande.</string>
     <string name="help_faq">Questions fréquemment posées</string>
@@ -234,7 +234,7 @@
     <string name="forceKillMessage">Êtes-vous sûr·e de vouloir forcer l\'arrêt de l\'application \?</string>
     <plurals name="updated_apps">
         <item quantity="one">%d application mise à jour</item>
-        <item quantity="many"></item>
+        <item quantity="many"/>
         <item quantity="other">%d applications mises à jour</item>
     </plurals>
     <string name="app_info">Infos sur l\'appli</string>
@@ -253,7 +253,7 @@
     <string name="prefs_devicelock">Verrouillage de l\'appareil</string>
     <plurals name="sched_interval_formal">
         <item quantity="one">chaque jour</item>
-        <item quantity="many"></item>
+        <item quantity="many"/>
         <item quantity="other">tous les %d jours</item>
     </plurals>
     <string name="global_blocklist_add">Ajouter à la liste de blocage globale</string>
@@ -358,39 +358,42 @@
     <string name="prefs_advanced_short">Avancé</string>
     <string name="prefs_tools_short">Outils</string>
     <string name="dialog_export_schedules">Exporter mon planning</string>
-    <string name="prefs_usecolumnnamesaf_summary" translatable="false"></string>
-    <string name="prefs_cancelonstart_summary" translatable="false"></string>
-    <string name="prefs_maxcrashlines_summary" translatable="false"></string>
-    <string name="prefs_invalidateselective_summary" translatable="false"></string>
-    <string name="prefs_delaybeforerefreshappinfo_summary" translatable="false"></string>
-    <string name="prefs_stricthardlinks_summary" translatable="false"></string>
-    <string name="prefs_multilineinfochips_summary"></string>
-    <string name="prefs_squeezenavtext"></string>
-    <string name="place_holder" translatable="false"></string>
-    <string name="prefs_backuptarcmd_summary" translatable="false"></string>
-    <string name="prefs_squeezenavtext_summary"></string>
-    <string name="logfileSavedAt" translatable="false"></string>
-    <string name="prefs_multilineinfochips"></string>
-    <string name="prefs_showinfologbar_summary" translatable="false"></string>
-    <string name="prefs_cachepackages_summary" translatable="false"></string>
-    <string name="prefs_usepackagecacheonupdate_summary" translatable="false"></string>
-    <string name="prefs_usealarmclock_summary" translatable="false"></string>
-    <string name="prefs_useexactalarm_summary" translatable="false"></string>
-    <string name="prefs_pauseapps_summary" translatable="false"></string>
-    <string name="prefs_pmsuspend_summary" translatable="false"></string>
-    <string name="prefs_restoretarcmd_summary" translatable="false"></string>
-    <string name="prefs_restoreavoidtempcopy_summary" translatable="false"></string>
-    <string name="prefs_shadowrootfile_summary" translatable="false"></string>
-    <string name="prefs_allowshadowingdefault_summary" translatable="false"></string>
-    <string name="prefs_usefindls_summary" translatable="false"></string>
-    <string name="prefs_assemblefilelistonestep_summary" translatable="false"></string>
-    <string name="prefs_catchuncaughtexception_summary" translatable="false"></string>
-    <string name="prefs_cacheuris_summary" translatable="false"></string>
-    <string name="prefs_cachefilelists_summary" translatable="false"></string>
-    <string name="prefs_maxretriesperpackage_summary" translatable="false"></string>
-    <string name="prefs_fakebackupseconds_summary" translatable="false"></string>
-    <string name="app_name" translatable="false"></string>
-    <string name="prefs_refreshappinfotimeout_summary" translatable="false"></string>
-    <string name="prefs_useforeground_summary" translatable="false"></string>
-    <string name="prefs_useexpedited_summary" translatable="false"></string>
+    <string name="prefs_usecolumnnamesaf_summary" translatable="false"/>
+    <string name="prefs_cancelonstart_summary" translatable="false"/>
+    <string name="prefs_maxcrashlines_summary" translatable="false"/>
+    <string name="prefs_invalidateselective_summary" translatable="false"/>
+    <string name="prefs_delaybeforerefreshappinfo_summary" translatable="false"/>
+    <string name="prefs_stricthardlinks_summary" translatable="false"/>
+    <string name="prefs_multilineinfochips_summary"/>
+    <string name="prefs_squeezenavtext">Resserrer le texte de l\'élément de navigation</string>
+    <string name="place_holder" translatable="false"/>
+    <string name="prefs_backuptarcmd_summary" translatable="false"/>
+    <string name="prefs_squeezenavtext_summary">Permettre au texte sous les éléments de la barre de navigation d\'être redimensionné pour s\'adapter à la largeur disponible.</string>
+    <string name="logfileSavedAt" translatable="false"/>
+    <string name="prefs_multilineinfochips"/>
+    <string name="prefs_showinfologbar_summary" translatable="false"/>
+    <string name="prefs_cachepackages_summary" translatable="false"/>
+    <string name="prefs_usepackagecacheonupdate_summary" translatable="false"/>
+    <string name="prefs_usealarmclock_summary" translatable="false"/>
+    <string name="prefs_useexactalarm_summary" translatable="false"/>
+    <string name="prefs_pauseapps_summary" translatable="false"/>
+    <string name="prefs_pmsuspend_summary" translatable="false"/>
+    <string name="prefs_restoretarcmd_summary" translatable="false"/>
+    <string name="prefs_restoreavoidtempcopy_summary" translatable="false"/>
+    <string name="prefs_shadowrootfile_summary" translatable="false"/>
+    <string name="prefs_allowshadowingdefault_summary" translatable="false"/>
+    <string name="prefs_usefindls_summary" translatable="false"/>
+    <string name="prefs_assemblefilelistonestep_summary" translatable="false"/>
+    <string name="prefs_catchuncaughtexception_summary" translatable="false"/>
+    <string name="prefs_cacheuris_summary" translatable="false"/>
+    <string name="prefs_cachefilelists_summary" translatable="false"/>
+    <string name="prefs_maxretriesperpackage_summary" translatable="false"/>
+    <string name="prefs_fakebackupseconds_summary" translatable="false"/>
+    <string name="app_name" translatable="false"/>
+    <string name="prefs_refreshappinfotimeout_summary" translatable="false"/>
+    <string name="prefs_useforeground_summary" translatable="false"/>
+    <string name="prefs_useexpedited_summary" translatable="false"/>
+    <string name="prefs_nobackupdata">Sauvegarder les fichiers no_backup</string>
+    <string name="prefs_nobackupdata_summary">Sauvegarder les fichiers dans les données qui sont labellisés comme ne devant pas être sauvegardés</string>
+    <string name="prefs_tools_terminal">Terminal</string>
 </resources>
