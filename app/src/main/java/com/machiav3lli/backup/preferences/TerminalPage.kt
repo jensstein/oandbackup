@@ -58,6 +58,7 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.beginBusy
 import com.machiav3lli.backup.OABX.Companion.endBusy
 import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import kotlinx.coroutines.launch
@@ -74,14 +75,20 @@ fun DefaultPreview() {
 fun info(): List<String> {
     return listOf(
         "",
-        "---------- > info",
-        "${ BuildConfig.APPLICATION_ID} ${ BuildConfig.VERSION_NAME}",
-        "${utilBox.name} ${utilBox.version} ${
-            if (utilBox.isTestedVersion) "tested" else "untested"
-        }${
-            if (utilBox.hasBugDotDotDir) " bugDotDotDir" else ""
-        } -> score ${utilBox.score}",
-    )
+        "--- > info",
+        "${ BuildConfig.APPLICATION_ID} ${ BuildConfig.VERSION_NAME}"
+    ) + ShellHandler.utilBoxes.map { box ->
+            "${box.name}: ${
+                    if (box.version.isNotEmpty() and (box.version != "0.0.0"))
+                        "${box.version} -> ${box.score}${
+                            if (utilBox.isTestedVersion) " tested" else " untested"
+                        }${
+                            if (utilBox.hasBugDotDotDir) " bugDotDotDir" else ""
+                        }"
+                    else
+                        box.reason
+                }"
+        }
 }
 
 fun shell(command: String): List<String> {
@@ -91,12 +98,12 @@ fun shell(command: String): List<String> {
         val result = runAsRoot(command)
         return listOf(
             "",
-            "---------- # $command -> ${result.code}"
+            "--- # $command -> ${result.code}"
         ) + result.err.map { "? $it" } + result.out
     } catch(e: Throwable) {
         return listOf(
             "",
-            "---------- # $command -> ERROR",
+            "--- # $command -> ERROR",
             e::class.simpleName, e.message, e.cause?.message
         ).filterNotNull()
     }
@@ -198,6 +205,10 @@ fun TerminalPage() {
                     run("${utilBox.name} --version")
                     run("${utilBox.name} --help")
                 }
+                TerminalButton("log/int") {
+                    add(listOf("--- > last internal log messages"))
+                    add(OABX.lastLogMessages)
+                }
                 TerminalButton("log/app") {
                     run("logcat -d -t ${pref_maxLogLines.value} --pid=${Process.myPid()}")
                 }
@@ -216,7 +227,7 @@ fun TerminalPage() {
                         run("ls -l /data/user/0/$pkg")
                         run("ls -l /sdcard/Android/*/$pkg")
                     } else {
-                        add(listOf("--- no last error package"))
+                        add(listOf("--- ? no last error package"))
                     }
                 }
                 TerminalButton("ecmd") {

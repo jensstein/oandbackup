@@ -113,7 +113,7 @@ class ShellHandler {
         Timber.i("is root         = ${Shell.rootAccess()}")
         Timber.i("is mount-master = $isMountMaster")
 
-        val boxes = mutableListOf<UtilBox>()
+        utilBoxes = mutableListOf<UtilBox>()
         try {
             UTILBOX_NAMES.forEach { box ->
                 var boxVersion = ""
@@ -127,7 +127,7 @@ class ShellHandler {
                         } else {
                             ""
                         }
-                        boxes.add(UtilBox(name = box, version = boxVersion))
+                        utilBoxes.add(UtilBox(name = box, version = boxVersion))
                     } else {
                         throw Exception() // goto catch
                     }
@@ -142,13 +142,13 @@ class ShellHandler {
                             } else {
                                 ""
                             }
-                            boxes.add(UtilBox(name = box, version = boxVersion))
+                            utilBoxes.add(UtilBox(name = box, version = boxVersion))
                         } else {
                             throw Exception("failed") // goto catch
                         }
                     } catch (e: Throwable) {
                         LogsHandler.unhandledException(e, "utilBox $box failed")
-                        boxes.add(UtilBox(name = box, reason = LogsHandler.message(e)))
+                        utilBoxes.add(UtilBox(name = box, reason = LogsHandler.message(e)))
                     }
                 }
             }
@@ -157,8 +157,8 @@ class ShellHandler {
         }
         OABX.lastErrorCommand = ""  // ignore fails while searching for utilBox
 
-        boxes.sortByDescending { it.score }
-        boxes.forEach { box ->
+        utilBoxes.sortByDescending { it.score }
+        utilBoxes.forEach { box ->
             Timber.i(
                 "utilBox: ${box.name}: ${
                     if (box.version.isNotEmpty())
@@ -168,11 +168,11 @@ class ShellHandler {
                 }"
             )
         }
-        utilBox = boxes.first()
+        utilBox = utilBoxes.first()
         if (utilBox.score <= 0) {
             Timber.d("No good utilbox found")
             val message =
-                boxes.map { box ->
+                utilBoxes.map { box ->
                     "${box.name}: ${
                         if (box.version.isNotEmpty())
                             "${box.version} -> ${box.score}"
@@ -182,7 +182,7 @@ class ShellHandler {
                 }.joinToString("\n")
             OABX.addInfoText(
                 "No good utilbox found, tried these:\n${
-                    boxes.map { box ->
+                    utilBoxes.map { box ->
                         if (box.version.isNotEmpty()) "${box.version} -> ${box.score}" else ""
                     }.joinToString("\n")
                 }${
@@ -589,6 +589,7 @@ class ShellHandler {
 
         val isMountMaster get() = Shell.getShell().status >= ROOT_MOUNT_MASTER
 
+        var utilBoxes = mutableListOf<UtilBox>()
         var utilBox: UtilBox = UtilBox()
         val utilBoxQ get() = utilBox.quote()
 
