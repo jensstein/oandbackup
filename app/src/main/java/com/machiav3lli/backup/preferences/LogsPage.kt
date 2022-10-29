@@ -22,12 +22,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import com.machiav3lli.backup.OABX.Companion.beginBusy
-import com.machiav3lli.backup.OABX.Companion.endBusy
 import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.ui.compose.recycler.LogRecycler
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
@@ -36,13 +32,8 @@ import com.machiav3lli.backup.viewmodels.LogViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LogsPage(viewModel: LogViewModel) {
-    val logs by viewModel.logsList.observeAsState()
 
-    SideEffect {
-        beginBusy()
-        viewModel.refreshList()
-        endBusy()
-    }
+    val logs = remember { viewModel.logsList }
 
     AppTheme {
         Scaffold { paddingValues ->
@@ -50,9 +41,9 @@ fun LogsPage(viewModel: LogViewModel) {
                 modifier = Modifier
                     .padding(paddingValues)
                     .fillMaxSize(),
-                productsList = logs?.sortedByDescending(Log::logDate),
-                onShare = { viewModel.shareLog(it) },
-                onDelete = { viewModel.deleteLog(it) }
+                productsList = logs.sortedByDescending(Log::logDate),
+                onShare  = {  viewModel.shareLog(it, pref_shareAsFile.value) },
+                onDelete = {  viewModel.deleteLog(it) }
             )
         }
     }
