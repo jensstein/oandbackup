@@ -68,16 +68,18 @@ class LogsHandler {
             val logs = mutableListOf<Log>()
             val backupRootFolder = OABX.context.getBackupDir()
             StorageFile.invalidateCache { it.contains(LOG_FOLDER_NAME) }
-            val logsDirectory = StorageFile(backupRootFolder, LOG_FOLDER_NAME)
-            if (logsDirectory.isDirectory) {
-                logsDirectory.listFiles().forEach {
-                    if (it.isFile) try {
-                        logs.add(Log(it))
-                    } catch (e: Throwable) {
-                        val message =
-                            "(catchall) Incomplete log or wrong structure found in $it."
-                        unhandledException(e, it)
-                        //no, recursion! logErrors(message)
+            //val logsDirectory = StorageFile(backupRootFolder, LOG_FOLDER_NAME)
+            backupRootFolder.findFile(LOG_FOLDER_NAME)?.let { logsDir ->
+                if (logsDir.isDirectory) {
+                    logsDir.listFiles().forEach {
+                        if (it.isFile) try {
+                            logs.add(Log(it))
+                        } catch (e: Throwable) {
+                            val message =
+                                "(catchall) Incomplete log or wrong structure found in $it."
+                            unhandledException(e, it)
+                            //no, recursion! logErrors(message)
+                        }
                     }
                 }
             }
@@ -86,13 +88,15 @@ class LogsHandler {
 
         fun getLogFile(date: LocalDateTime): StorageFile? {
             val backupRootFolder = OABX.context.getBackupDir()
-            val logsDirectory = StorageFile(backupRootFolder, LOG_FOLDER_NAME)
-            val logFileName = String.format(
-                LOG_INSTANCE,
-                BACKUP_DATE_TIME_FORMATTER.format(date)
-            )
-            val file = StorageFile(logsDirectory, logFileName)
-            return if(file.exists()) file else null
+            backupRootFolder.findFile(LOG_FOLDER_NAME)?.let { logsDir ->
+                val logFileName = String.format(
+                    LOG_INSTANCE,
+                    BACKUP_DATE_TIME_FORMATTER.format(date)
+                )
+                val file = logsDir.findFile(logFileName)
+                return if (file?.exists() == true) file else null
+            }
+            return null
         }
 
         fun logErrors(errors: String) {
