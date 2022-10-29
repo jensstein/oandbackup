@@ -1,16 +1,16 @@
 <html>
     <body>
-        <p><strong>Backup modes</strong>: An app can be backed up with only its apk, only its data or both. An app not currently installed can only be restored if the apk is present. Three special types of data is supported extra to the main data: device protected data, external data and obb data.
+        <p><strong>백업 모드</strong>: 앱은 APK만 사용하거나 데이터만 사용하거나 둘 다 사용하여 백업할 수 있습니다. 현재 설치되지 않은 앱은 APK가 있는 경우에만 복원할 수 있습니다. 기본 데이터에 추가로 세 가지 특수 유형의 데이터가 지원됩니다: 장치 보호 데이터, 외부 데이터 및 obb 데이터.
         </p>
-        <p><strong>Delete backup</strong>: Deletes the backup files for a specific backup instance. While "delete backups" delete all of the backups of the chosen app.
+        <p><strong>백업 삭제</strong>: 특정 백업 인스턴스에 대한 백업 파일을 삭제합니다. "백업 삭제"는 선택한 앱의 모든 백업을 삭제합니다.
         </p>
-        <p><strong>Uninstall</strong>: Somewhat more aggressive than a normal uninstall. In addition to doing a normal uninstall via Android commands, uninstalling from OAndBackupX deletes files the app might have left over in /data/app-lib/.
+        <p><strong>설치 제거</strong>: 일반적인 제거보다 다소 공격적입니다. Android 명령을 통해 일반적인 제거를 수행하는 것 외에도 OAndBackupX에서 제거하면 앱이 /data/app-lib/에 남길 수 있는 파일이 삭제됩니다.
         </p>
-        <p><strong>Enable / disable</strong>: Uses the Android `pm` script to enable or disable an app. Disabling an app removes it from the normal user interface without uninstalling it. This can be used for enabling or disabling an app for multiple users at a time (if the device has multiple users). Users are identified with an ID e.g. 0 is the first user (owner) 10 is usually the work profile.
+        <p><strong>활성화/비활성화</strong>: Android `pm` 스크립트를 사용하여 앱을 활성화하거나 비활성화합니다. 앱을 비활성화하면 제거하지 않고 일반 사용자 인터페이스에서 제거됩니다. 이것은 한 번에 여러 사용자에 대해 앱을 활성화 또는 비활성화하는 데 사용할 수 있습니다(기기에 여러 사용자가 있는 경우). 사용자는 ID로 식별됩니다. 0은 첫 번째 사용자(소유자)이고 10은 일반적으로 작업 프로필입니다.
         </p>
-        <p><strong>Multiple users</strong>: Multi-user is still somewhat experimental but should work. Enabling and disabling only works after an initial install (not necessarily from OAndBackupx) or restore of the app.
+        <p><strong>다중 사용자</strong>: 다중 사용자는 아직 실험 단계이지만, 작동해야 합니다. 활성화 및 비활성화는 초기 설치(OAndBackupx에서 반드시 필요한 것은 아님) 또는 앱 복원 후에만 작동합니다.
         </p>
-        <p><strong>System-less apps</strong>: Backup and restore of system-less apps installed as Magisk modules is not supported and trying it could lead to system failure and forcing you to format and flash it anew.
+        <p><strong>시스템에 없는 앱</strong>: Magisk 모듈로 설치된 시스템에 없는 앱의 백업 및 복원은 지원되지 않으며 시도하면 시스템 오류가 발생하여 강제로 포맷하고 플래시해야 할 수 있습니다.
         </p>
         <p><strong>Navigation</strong>: The navigation bar has "Settings", "Home", "Batch backup", "Batch restore" and "Schedule backups" (in that order). The number of apps upgraded after their last backup will be presented as a notification on "Home" button.
         </p>
