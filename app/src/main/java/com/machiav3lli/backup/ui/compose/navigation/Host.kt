@@ -107,17 +107,16 @@ fun PrefsNavHost(
         slideUpComposable(NavItem.Exports.destination) {
             val viewModel = viewModel<ExportsViewModel>(
                 factory =
-                ExportsViewModel.Factory(
-                    ODatabase.getInstance(navController.context).scheduleDao,
-                    application
-                )
+                    ExportsViewModel.Factory(
+                        ODatabase.getInstance(navController.context).scheduleDao,
+                        application
+                    )
             )
             ExportsPage(viewModel)
         }
         slideUpComposable(NavItem.Logs.destination) {
             val viewModel = viewModel<LogViewModel>(
-                factory =
-                LogViewModel.Factory(application)
+                factory = LogViewModel.Factory(application)
             )
             LogsPage(viewModel)
         }
