@@ -242,6 +242,12 @@ val pref_maxLogLines = IntPref(
     defaultValue = 50
 )
 
+val pref_shareAsFile = BooleanPref(
+    key = "dev.shareAsFile",
+    summary = "share logs as file, otherwise as text",
+    defaultValue = true
+)
+
 val pref_invalidateSelective = BooleanPref(
     key = "dev.invalidateSelective",
     summaryId = R.string.prefs_invalidateselective_summary,

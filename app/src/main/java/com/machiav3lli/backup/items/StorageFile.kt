@@ -498,7 +498,7 @@ open class StorageFile {
         // recurse down, uri?.run { ... } prevents optimizing-away (and null test makes sense anyway)
         uri?.run {
             try {
-                for (file in listFiles(forceUri = true)) {
+                for (file in listFiles(forceUri = true, noCache = true)) {
                     if (displayName == file.name) {
                         return file._uri
                     }
@@ -535,7 +535,7 @@ open class StorageFile {
     }
 
     @Throws(FileNotFoundException::class)
-    fun listFiles(forceUri: Boolean = false): List<StorageFile> {
+    fun listFiles(forceUri: Boolean = false, noCache: Boolean = false): List<StorageFile> {
 
         try {
             exists()
@@ -545,7 +545,7 @@ open class StorageFile {
 
         path?.let { path ->
 
-            val files = cacheGetFiles(path) ?: run {
+            val files = (if (noCache) null else cacheGetFiles(path)) ?: run {
                 val results = mutableListOf<StorageFile>()
                 if ((file != null) and !forceUri) {
                     file!!.listFiles()?.forEach { child ->
