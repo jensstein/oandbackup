@@ -38,8 +38,8 @@ import com.machiav3lli.backup.utils.isDeviceLockEnabled
 import java.time.format.DateTimeFormatter
 
 const val PREFS_SHARED_PRIVATE = "com.machiav3lli.backup"
-const val EXPORTS_FOLDER_NAME = "EXPORTS"
-const val LOG_FOLDER_NAME = "LOGS"
+const val EXPORTS_FOLDER_NAME = "!-EXPORTS"
+const val LOG_FOLDER_NAME = "!-LOGS"
 
 const val LOG_INSTANCE = "%s.log"
 const val BACKUP_INSTANCE_PROPERTIES = "%s-user_%s.properties"
