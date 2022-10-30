@@ -393,4 +393,5 @@
     <string name="app_name" translatable="false"/>
     <string name="prefs_nobackupdata">Copia de seguridad sin archivos</string>
     <string name="prefs_nobackupdata_summary">Hacer una copia de seguridad de los archivos en los datos que están etiquetados para no ser respaldados</string>
+    <string name="prefs_tools_terminal">Terminal</string>
 </resources>
