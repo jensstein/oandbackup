@@ -34,6 +34,7 @@ import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Blocklist
+import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.toAppInfoList
 import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.handler.updateAppTables
@@ -57,7 +58,7 @@ class MainViewModel(
     var appExtrasMap = MediatorLiveData<Map<String, AppExtras>>()
 
     // TODO fix force refresh on changing backup directory or change method
-    val isNeedRefresh = MutableLiveData(false)
+    val isNeedRefresh = MutableLiveData(false)  //TODO using mutable state may be more light weight
 
     init {
         blocklist.addSource(db.blocklistDao.liveAll, blocklist::setValue)
@@ -71,13 +72,17 @@ class MainViewModel(
         packageList.addSource(db.appInfoDao.allLive) {
             viewModelScope.launch {
                 withContext(Dispatchers.IO) {
-                    packageList.postValue(
-                        it.toPackageList(
-                            appContext,
-                            blocklist.value.orEmpty().mapNotNull(Blocklist::packageName),
-                            backupsMap.value.orEmpty()
+                    try {
+                        packageList.postValue(
+                            it.toPackageList(
+                                appContext,
+                                blocklist.value.orEmpty().mapNotNull(Blocklist::packageName),
+                                backupsMap.value.orEmpty()
+                            )
                         )
-                    )
+                    } catch (e: Throwable) {
+                        LogsHandler.unhandledException(e)
+                    }
                 }
             }
         }

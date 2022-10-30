@@ -42,35 +42,34 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.preferences.pref_appTheme
-import com.machiav3lli.backup.preferences.pref_appAccentColor
-import com.machiav3lli.backup.preferences.pref_appSecondaryColor
-import com.machiav3lli.backup.preferences.pref_allowDowngrade
-import com.machiav3lli.backup.preferences.pref_backupDeviceProtectedData
-import com.machiav3lli.backup.preferences.pref_disableVerification
-import com.machiav3lli.backup.preferences.pref_backupExternalData
-import com.machiav3lli.backup.preferences.pref_backupMediaData
-import com.machiav3lli.backup.preferences.pref_backupObbData
-import com.machiav3lli.backup.preferences.pref_pauseApps
-import com.machiav3lli.backup.preferences.pref_giveAllPermissions
-import com.machiav3lli.backup.preferences.pref_biometricLock
-import com.machiav3lli.backup.preferences.pref_compressionLevel
-import com.machiav3lli.backup.preferences.pref_enableSpecialBackups
-import com.machiav3lli.backup.preferences.pref_encryption
-import com.machiav3lli.backup.preferences.pref_languages
-import com.machiav3lli.backup.preferences.pref_password
-import com.machiav3lli.backup.preferences.pref_rememberFiltering
-import com.machiav3lli.backup.preferences.pref_deviceLock
-import com.machiav3lli.backup.preferences.pref_pathBackupFolder
-import com.machiav3lli.backup.preferences.persist_ignoreBatteryOptimization
-import com.machiav3lli.backup.preferences.persist_salt
-import com.machiav3lli.backup.PREFS_SHARED_PRIVATE
 import com.machiav3lli.backup.PREFS_LANGUAGES_DEFAULT
-import com.machiav3lli.backup.preferences.persist_sortFilter
+import com.machiav3lli.backup.PREFS_SHARED_PRIVATE
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.SortFilterModel
-import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.preferences.persist_ignoreBatteryOptimization
+import com.machiav3lli.backup.preferences.persist_salt
+import com.machiav3lli.backup.preferences.persist_sortFilter
+import com.machiav3lli.backup.preferences.pref_allowDowngrade
+import com.machiav3lli.backup.preferences.pref_appAccentColor
+import com.machiav3lli.backup.preferences.pref_appSecondaryColor
+import com.machiav3lli.backup.preferences.pref_appTheme
+import com.machiav3lli.backup.preferences.pref_backupDeviceProtectedData
+import com.machiav3lli.backup.preferences.pref_backupExternalData
+import com.machiav3lli.backup.preferences.pref_backupMediaData
+import com.machiav3lli.backup.preferences.pref_backupObbData
+import com.machiav3lli.backup.preferences.pref_biometricLock
+import com.machiav3lli.backup.preferences.pref_compressionLevel
+import com.machiav3lli.backup.preferences.pref_deviceLock
+import com.machiav3lli.backup.preferences.pref_disableVerification
+import com.machiav3lli.backup.preferences.pref_enableSpecialBackups
+import com.machiav3lli.backup.preferences.pref_encryption
+import com.machiav3lli.backup.preferences.pref_giveAllPermissions
+import com.machiav3lli.backup.preferences.pref_languages
+import com.machiav3lli.backup.preferences.pref_password
+import com.machiav3lli.backup.preferences.pref_pathBackupFolder
+import com.machiav3lli.backup.preferences.pref_pauseApps
+import com.machiav3lli.backup.preferences.pref_rememberFiltering
 import com.topjohnwu.superuser.Shell
 import java.nio.charset.StandardCharsets
 import java.util.*
@@ -154,9 +153,10 @@ val Context.isStorageDirSetAndOk: Boolean
             if (storageDirPath.isEmpty()) {
                 return false
             }
-            val storageDir = StorageFile.fromUri(this, Uri.parse(storageDirPath))
-            storageDir.exists()
-        } catch (e: StorageLocationNotConfiguredException) {
+            //val storageDir = StorageFile.fromUri(this, Uri.parse(storageDirPath))
+            //storageDir.exists()
+            getBackupDir().exists()  //TODO kind of similar, but throws an exception "root not accessible" in some cases
+        } catch (e: Throwable) {
             false
         }
     }

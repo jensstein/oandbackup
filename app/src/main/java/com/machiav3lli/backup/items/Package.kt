@@ -27,13 +27,14 @@ import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER_OLD
 import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.preferences.pref_cachePackages
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
+import com.machiav3lli.backup.handler.LogsHandler.Companion.unhandledException
 import com.machiav3lli.backup.handler.getPackageStorageStats
+import com.machiav3lli.backup.preferences.pref_cachePackages
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupDir
@@ -216,17 +217,24 @@ class Package {
     fun getAppBackupRoot(
         create: Boolean = false,
         packageName: String = this.packageName
-    ): StorageFile? = when {
-        packageBackupDir != null && packageBackupDir?.exists() == true -> {
-            packageBackupDir
-        }
-        create -> {
-            packageBackupDir = OABX.context.getBackupDir().ensureDirectory(packageName)
-            packageBackupDir
-        }
-        else -> {
-            packageBackupDir = OABX.context.getBackupDir().findFile(packageName)
-            packageBackupDir
+    ): StorageFile? {
+        return try {
+            when {
+                packageBackupDir != null && packageBackupDir?.exists() == true -> {
+                    packageBackupDir
+                }
+                create -> {
+                    packageBackupDir = OABX.context.getBackupDir().ensureDirectory(packageName)
+                    packageBackupDir
+                }
+                else -> {
+                    packageBackupDir = OABX.context.getBackupDir().findFile(packageName)
+                    packageBackupDir
+                }
+            }
+        } catch(e: Throwable) {
+            unhandledException(e)
+            null
         }
     }
 

@@ -48,7 +48,6 @@ import com.machiav3lli.backup.utils.getBackupDir
 import com.machiav3lli.backup.utils.getInstalledPackagesWithPermissions
 import com.machiav3lli.backup.utils.specialBackupsEnabled
 import timber.log.Timber
-import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.*
 import kotlin.system.measureTimeMillis
@@ -286,10 +285,10 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
     StorageLocationNotConfiguredException::class
 )
 fun Context.getBackupPackageDirectories(): List<StorageFile> {
-    //StorageFile.invalidateCache()     // no -> only invalidate the backups
-    val backupRoot = getBackupDir()
-    cacheInvalidate(backupRoot)         // only invalidate the backups (TODO but forcing it should probably be somewhere else, e.g. button action)
     try {
+        //StorageFile.invalidateCache()     // no -> only invalidate the backups
+        val backupRoot = getBackupDir()
+        cacheInvalidate(backupRoot)         // only invalidate the backups (TODO but forcing it should probably be somewhere else, e.g. button action)
         return backupRoot.listFiles()
             .filter {
                 it.isDirectory &&
@@ -298,8 +297,6 @@ fun Context.getBackupPackageDirectories(): List<StorageFile> {
                         !(it.name?.startsWith('.') ?: false)
             }
             .toList()
-    } catch (e: FileNotFoundException) {
-        Timber.e("${e.javaClass.simpleName}: ${e.message}")
     } catch (e: Throwable) {
         LogsHandler.unhandledException(e)
     }
