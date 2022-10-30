@@ -106,9 +106,9 @@ class LogsHandler {
                     "\n\n" +
                     "${BuildConfig.APPLICATION_ID} ${BuildConfig.VERSION_NAME}\n" +
                     "${utilBox.name} ${utilBox.version} ${
-                        if (utilBox.isTestedVersion) "tested" else "untested"
+                        if (utilBox.isKnownVersion) "tested" else "untested"
                     }${
-                        if (utilBox.hasBugDotDotDir) " bugDotDotDir" else ""
+                        if (utilBox.hasBug("DotDotDir")) " bugDotDotDir" else ""
                     } -> score ${utilBox.score}" +
                     "\n\n========== collected messages\n\n" +
                     OABX.lastLogMessages.joinToString("\n") +

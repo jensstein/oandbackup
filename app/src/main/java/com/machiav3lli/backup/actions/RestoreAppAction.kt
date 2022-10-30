@@ -51,6 +51,7 @@ import com.machiav3lli.backup.preferences.pref_restorePermissions
 import com.machiav3lli.backup.preferences.pref_restoreTarCmd
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.CryptoSetupException
+import com.machiav3lli.backup.utils.Dirty
 import com.machiav3lli.backup.utils.decryptStream
 import com.machiav3lli.backup.utils.getCryptoSalt
 import com.machiav3lli.backup.utils.getEncryptionPassword
@@ -673,38 +674,69 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     ) {
         try {
             val (uid, gid, con) = uidgidcon
-            val gidCache = "${gid}_cache"
+            val gidCache = Dirty.appGidToCacheGid(gid)
             Timber.i("Getting user/group info and apply it recursively on $targetPath")
             // get the contents. lib for example must be owned by root
             //TODO hg42 I think, lib is always a link
             //TODO hg42 directories we exclude would keep their uidgidcon from before
             //TODO hg42 this doesn't seem to be correct, unless the apk install would manage updating uidgidcon
-            val dataContents: MutableList<String> =
+            val topLevelFiles: MutableList<String> =
                 mutableListOf(*shell.suGetDirectoryContents(RootFile(targetPath)))
             // Don't exclude any files from chown, as this may cause SELINUX issues (lost of data on restart)
-            // dataContents.removeAll(DATA_EXCLUDED_BASENAMES)
-            dataContents.removeAll(DATA_EXCLUDED_CACHE_DIRS)    // these are not excluded but processed differently! -> cacheTargets
+            // calculate a list of what must be updated inside the directory
 
-            // calculate a list what must be updated inside the directory
-            val chownTargets = dataContents.map { s -> RootFile(targetPath, s).absolutePath }
-            val cacheTargets = DATA_EXCLUDED_CACHE_DIRS.map { s -> RootFile(targetPath, s).absolutePath }
-            Timber.d("Changing owner and group of '$targetPath' to $uid:$gid and selinux context to $con")
-            var command =
-                "$utilBoxQ chown $uid:$gid ${
-                    quote(RootFile(targetPath).absolutePath)
-                }"
-            if (chownTargets.isNotEmpty())
-                command += " ; $utilBoxQ chown -R $uid:$gid ${
-                    quoteMultiple(chownTargets)
-                }"
-            if (cacheTargets.isNotEmpty())
-                command += " ; $utilBoxQ chown -R $uid:$gidCache ${
-                    quoteMultiple(cacheTargets)
-                }"
-            command += if (con == "?") //TODO hg42: when does it happen? maybe if selinux not supported on storage?
-                "" // "" ; restorecon -RF -v ${quote(targetPath)}"  //TODO hg42 doesn't seem to work
-            else
-                " ; chcon -R -h -v '$con' ${quote(targetPath)}"
+            // assuming target exists, otherwise we should not enter this function, it's guarded outside
+            val target = RootFile(targetPath).absolutePath
+            val chownTargets = topLevelFiles
+                    .filterNot { it in DATA_EXCLUDED_CACHE_DIRS }
+                    .map { s -> RootFile(targetPath, s).absolutePath }
+            val cacheTargets = topLevelFiles
+                    .filter { it in DATA_EXCLUDED_CACHE_DIRS }
+                    .map { s -> RootFile(targetPath, s).absolutePath }
+            Timber.d("Changing owner and group to $uid:$gid for $target and recursive for $chownTargets")
+            Timber.d("Changing owner and group to $uid:$gidCache for cache $cacheTargets")
+            Timber.d("Changing selinux context to $con for $target")
+            // we filter targets from existing files, so we don't need these currently:
+            //fun commandCheckedChown(uid: String, gid: String, target: String): String {
+            //    return "! $utilBoxQ test -d ${
+            //                quote(target)
+            //            } || $utilBoxQ chown $uid:$gid ${
+            //                quote(target)
+            //            }"
+            //}
+            //fun commandCheckedChownMultiRec(uid: String, gid: String, targets: List<String>): String? {
+            //    return if (targets.isNotEmpty())
+            //        "for t in ${
+            //            quoteMultiple(targets)
+            //        }; do ! $utilBoxQ test -e \$t || $utilBoxQ chown -R $uid:$gid \$t; done"
+            //    else
+            //        null
+            //}
+            fun commandChown(uid: String, gid: String, target: String): String {
+                return "$utilBoxQ chown $uid:$gid ${
+                            quote(target)
+                        }"
+            }
+            fun commandChownMultiRec(uid: String, gid: String, targets: List<String>): String? {
+                return if (targets.isNotEmpty())
+                    "$utilBoxQ chown -R $uid:$gid ${
+                        quoteMultiple(targets)
+                    }"
+                else
+                    null
+            }
+            fun commandChcon(con: String, target: String): String? {
+                return if (con == "?") //TODO hg42: when does it happen? maybe if selinux not supported on storage?
+                    null // "" ; restorecon -RF -v ${quote(target)}"  //TODO hg42 doesn't seem to work, because unsupported in this case
+                else
+                    "chcon -R -h -v '$con' ${quote(target)}"
+            }
+            val command = listOf(
+                commandChown(uid, gid, target),
+                commandChownMultiRec(uid, gid, chownTargets),
+                commandChownMultiRec(uid, gidCache, cacheTargets),
+                commandChcon(con, target),
+            ).filterNotNull().joinToString(" ; ")
             runAsRoot(command)
         } catch (e: ShellCommandFailedException) {
             val errorMessage = "Could not update permissions for $dataType"

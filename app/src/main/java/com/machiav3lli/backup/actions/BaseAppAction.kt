@@ -146,7 +146,7 @@ abstract class BaseAppAction protected constructor(
             "cache",
             "trash",
             ".thumbnails",
-            if (utilBox.hasBugDotDotDir) "..*" else null
+            if (utilBox.hasBug("DotDotDir")) "..*" else null
         )
 
         val ignoredPackages = ("""(?x)

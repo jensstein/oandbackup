@@ -80,10 +80,13 @@ fun info(): List<String> {
     ) + ShellHandler.utilBoxes.map { box ->
             "${box.name}: ${
                     if (box.version.isNotEmpty() and (box.version != "0.0.0"))
-                        "${box.version} -> ${box.score}${
-                            if (utilBox.isTestedVersion) " tested" else " untested"
-                        }${
-                            if (utilBox.hasBugDotDotDir) " bugDotDotDir" else ""
+                        "${box.version}${
+                            if (utilBox.isKnownVersion) "" else " (unknown)"
+                        } -> ${box.score}${
+                            if (box.hasBugs())
+                                " bugs: " + box.bugs.keys.joinToString(",")
+                            else
+                                " good, no known bugs"
                         }"
                     else
                         box.reason
@@ -104,7 +107,9 @@ fun shell(command: String): List<String> {
         return listOf(
             "",
             "--- # $command -> ERROR",
-            e::class.simpleName, e.message, e.cause?.message
+            e::class.simpleName,
+            e.message,
+            e.cause?.message
         ).filterNotNull()
     }
 }
