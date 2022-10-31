@@ -32,7 +32,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -61,6 +60,7 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
+import com.machiav3lli.backup.ui.compose.SelectionContainerX
 import kotlinx.coroutines.launch
 
 
@@ -250,7 +250,7 @@ fun TerminalPage() {
                 .fillMaxSize()
                 .background(color = Color.Transparent)
             ) {
-                SelectionContainer {
+                SelectionContainerX {
                     LazyColumn(modifier = Modifier
                         .fillMaxSize(),
                         state = listState

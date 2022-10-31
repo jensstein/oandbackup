@@ -119,6 +119,12 @@ val pref_allowDowngrade = BooleanPref(
 
 //---------------------------------------- developer settings
 
+val pref_useSelectableText = BooleanPref(
+    key = "dev.useSelectableText",
+    summary = "enable text selection (currently unusable, crashes most of the time)",
+    defaultValue = false
+)
+
 val pref_useBackupRestoreWithSelection = BooleanPref(
     key = "dev.useBackupRestoreWithSelection",
     summary = "selection context menu shows allows 'Backup' and 'Restore' (both work on apk and data)",
