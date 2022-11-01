@@ -257,13 +257,13 @@ fun TerminalPage() {
                     ) {
                         items(output) {
                             if (it.startsWith("===") or it.startsWith("---"))
-                                Text(it,
+                                Text(if (it == "") " " else it,     //TODO hg42 workaround
                                     fontFamily = FontFamily.Monospace,
                                     fontSize = 10.sp,
                                     color = Color.Yellow
                                 )
                             else
-                                Text(it,
+                                Text(if (it == "") " " else it,     //TODO hg42 workaround
                                     fontFamily = FontFamily.Monospace,
                                     fontSize = 10.sp,
                                     color = Color.White

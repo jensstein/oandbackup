@@ -125,7 +125,7 @@ fun LogItem(
                     if (lines.value.size < maxLines) {
                         Column {
                             lines.value.forEach {
-                                Text(text = it, style = typo)
+                                Text(text = if (it == "") " " else it, style = typo)    //TODO hg42 workaround
                             }
                         }
                     } else {
@@ -139,7 +139,7 @@ fun LogItem(
                                 state = listState
                             ) {
                                 items(lines.value) {
-                                    Text(text = it, style = typo)
+                                    Text(text = if (it == "") " " else it, style = typo)    //TODO hg42 workaround
                                 }
                             }
                         }
