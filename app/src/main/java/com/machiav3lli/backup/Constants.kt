@@ -202,6 +202,8 @@ val legendList = listOf(
     Legend.Launch,
     Legend.Disable,
     Legend.Enable,
+    Legend.Uninstall,
+    Legend.Block,
     Legend.System,
     Legend.User,
     Legend.Special,
@@ -211,7 +213,7 @@ val legendList = listOf(
     Legend.External,
     Legend.OBB,
     Legend.Media,
-    Legend.Updated
+    Legend.Updated,
 )
 
 val BACKUP_DATE_TIME_FORMATTER_OLD: DateTimeFormatter =

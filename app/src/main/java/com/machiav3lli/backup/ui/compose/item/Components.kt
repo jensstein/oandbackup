@@ -843,7 +843,8 @@ fun CardSubRow(
             Icon(imageVector = icon, contentDescription = text, tint = iconColor)
             Text(
                 text = text,
-                maxLines = 1,
+                maxLines = 2,
+                //TODO style = MaterialTheme.typography.bodyMedium,
                 overflow = TextOverflow.Ellipsis
             )
         }
