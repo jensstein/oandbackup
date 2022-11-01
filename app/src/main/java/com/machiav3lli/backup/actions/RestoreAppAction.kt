@@ -47,6 +47,7 @@ import com.machiav3lli.backup.preferences.pref_excludeCache
 import com.machiav3lli.backup.preferences.pref_installationPackage
 import com.machiav3lli.backup.preferences.pref_refreshAppInfoTimeout
 import com.machiav3lli.backup.preferences.pref_restoreAvoidTemporaryCopy
+import com.machiav3lli.backup.preferences.pref_restoreKillApps
 import com.machiav3lli.backup.preferences.pref_restorePermissions
 import com.machiav3lli.backup.preferences.pref_restoreTarCmd
 import com.machiav3lli.backup.tasks.AppActionWork
@@ -58,7 +59,6 @@ import com.machiav3lli.backup.utils.getEncryptionPassword
 import com.machiav3lli.backup.utils.isAllowDowngrade
 import com.machiav3lli.backup.utils.isDisableVerification
 import com.machiav3lli.backup.utils.isEncryptionEnabled
-import com.machiav3lli.backup.utils.isPauseApps
 import com.machiav3lli.backup.utils.isRestoreAllPermissions
 import com.machiav3lli.backup.utils.suCopyFileFromDocument
 import com.machiav3lli.backup.utils.suRecursiveCopyFileFromDocument
@@ -85,10 +85,10 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         try {
             Timber.i("Restoring: ${app.packageName} [${app.packageLabel}]")
             work?.setOperation("pre")
-            val pauseApp = context.isPauseApps
-            if (pauseApp) {
-                Timber.d("pre-process package (to avoid file inconsistencies during backup etc.)")
-                preprocessPackage(app.packageName)
+            val killApp = pref_restoreKillApps.value
+            if (killApp) {
+                Timber.d("pre-process package")
+                preprocessPackage(type = "restore", packageName = app.packageName)
             }
             try {
                 if (backupDir != null) {
@@ -131,10 +131,9 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                 return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
             } finally {
                 work?.setOperation("fin")
-                if (pauseApp) {
+                if (killApp) {
                     Timber.d("post-process package (to set it back to normal operation)")
-                    postprocessPackage(app.packageName)
-                    //markerFile?.delete()
+                    postprocessPackage(type = "restore", packageName = app.packageName)
                 }
             }
         } finally {

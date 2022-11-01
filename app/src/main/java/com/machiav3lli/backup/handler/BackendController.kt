@@ -41,7 +41,7 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.StorageFile.Companion.cacheInvalidate
-import com.machiav3lli.backup.preferences.pref_pmSuspend
+import com.machiav3lli.backup.preferences.pref_backupSuspendApps
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupDir
@@ -220,7 +220,7 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
     val specialNames = specialPackages.map { it.packageName }
     val backups = mutableListOf<Backup>()
 
-    if (!OABX.appsSuspendedChecked && pref_pmSuspend.value) {
+    if (!OABX.appsSuspendedChecked && pref_backupSuspendApps.value) {
         installedNames.filter { packageName ->
             0 != (OABX.activity?.packageManager
                 ?.getPackageInfo(packageName, 0)

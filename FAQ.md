@@ -379,19 +379,21 @@ In newer Android versions every app directory is mounted and usually only visibl
 NB is using
 
 `kill -STOP PID` </br>
+before and
 `kill -CONT PID`
-
-and
-
+after backups if backupPauseApps is enabled in developer settings.
+It also uses
 `pm suspend the.package.name` </br>
 `pm unsuspend the.package.name`
 
-`kill -STOP` </br>
-is used per default
-
-when pauseApps is enabled in developer settings
-pmSuspend is additional (only active if pauseApps is also enabled)
+if backupSuspendApps is also set (only active if backupPauseApps is also enabled)
    
+NB uses
+
+`am stop-app the.package.name || am force-stop the.package-name`
+
+before a restore if restoreKillApps is enabled.
+
 ### How can I backup SMS & Call log?
 
 Generally please see [What are Special Backups?](#what-are-special-backups) first.

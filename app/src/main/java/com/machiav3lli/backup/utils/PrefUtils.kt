@@ -68,8 +68,6 @@ import com.machiav3lli.backup.preferences.pref_giveAllPermissions
 import com.machiav3lli.backup.preferences.pref_languages
 import com.machiav3lli.backup.preferences.pref_password
 import com.machiav3lli.backup.preferences.pref_pathBackupFolder
-import com.machiav3lli.backup.preferences.pref_pauseApps
-import com.machiav3lli.backup.preferences.pref_rememberFiltering
 import com.topjohnwu.superuser.Shell
 import java.nio.charset.StandardCharsets
 import java.util.*
@@ -429,9 +427,6 @@ val Context.isBackupObbData: Boolean
 val Context.isBackupMediaData: Boolean
     get() = pref_backupMediaData.value
 
-val Context.isPauseApps: Boolean
-    get() = pref_pauseApps.value
-
 val Context.isDisableVerification: Boolean
     get() = pref_disableVerification.value
 
@@ -451,9 +446,6 @@ var Context.sortFilterModel: SortFilterModel
         return sortFilterModel
     }
     set(value) { persist_sortFilter.value = value.toString() }
-
-val Context.isRememberFiltering: Boolean
-    get() = pref_rememberFiltering.value
 
 class StorageLocationNotConfiguredException : Exception("Storage Location has not been configured")
 

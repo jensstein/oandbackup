@@ -17,8 +17,6 @@
  */
 package com.machiav3lli.backup.fragments
 
-import android.app.ActivityManager
-import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
@@ -85,6 +83,7 @@ import com.machiav3lli.backup.exodusUrl
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
+import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.preferences.pref_useWorkManagerForSingleManualJob
 import com.machiav3lli.backup.tasks.BackupActionTask
@@ -642,14 +641,17 @@ class AppSheet() : BaseSheet(), ActionListener {
             .show()
     }
 
-    // TODO hg42 force-stop, force-close, ... ? I think these are different ones, and I don't know which
+    //TODO hg42 force-stop, force-close, ... ? I think these are different ones, and I don't know which
+    //TODO hg42 killBackgroundProcesses seems to be am kill
+    //TODO in api33 A13 there is am stop-app which doesn't kill alarms and
     private fun showForceKillDialog(app: Package) {
         AlertDialog.Builder(requireContext())
             .setTitle(app.packageLabel)
             .setMessage(R.string.forceKillMessage)
             .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
-                (requireContext().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
-                    .killBackgroundProcesses(app.packageName)
+                //(requireContext().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
+                //    .killBackgroundProcesses(app.packageName)
+                runAsRoot("am stop-app ${app.packageName} || am force-stop ${app.packageName}")
             }
             .setNegativeButton(R.string.dialogNo, null)
             .show()
