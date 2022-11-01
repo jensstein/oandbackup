@@ -392,4 +392,5 @@
     <string name="prefs_usepackagecacheonupdate_summary" translatable="false"/>
     <string name="prefs_nobackupdata">Резервне копіювання файлів no_backup</string>
     <string name="prefs_nobackupdata_summary">Резервне копіювання файлів у даних, які позначені як такі, що не підлягають резервному копіюванню</string>
+    <string name="prefs_tools_terminal">Термінал</string>
 </resources>
