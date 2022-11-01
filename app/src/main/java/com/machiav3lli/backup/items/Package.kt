@@ -112,13 +112,12 @@ class Package {
                     .packageInfo
             } catch (e: Throwable) {
                 Timber.i("$packageName is not installed")
-                if (this.backupList.isEmpty()) {
+                this.packageInfo = latestBackup?.toAppInfo() ?: run {
                     throw AssertionError(
                         "Backup History is empty and package is not installed. The package is completely unknown?",
                         e
                     )
                 }
-                this.packageInfo = latestBackup!!.toAppInfo()
             }
         }
         OABX.app.packageCache.put(packageName, this)
@@ -324,7 +323,7 @@ class Package {
         get() = (packageInfo as SpecialInfo).specialFiles
 
     val packageLabel: String
-        get() = if (packageInfo.packageLabel != null) packageInfo.packageLabel!! else packageName
+        get() = packageInfo.packageLabel ?: packageName
 
     val versionCode: Int
         get() = packageInfo.versionCode
@@ -356,7 +355,7 @@ class Package {
         // e.g. /storage/emulated/0/Android/data
         // Add the package name to the path assuming that if the name of dataDir does not equal the
         // package name and has a prefix or a suffix to use it.
-        return "${context.getExternalFilesDir(null)!!.parentFile!!.parentFile!!.absolutePath}${File.separator}$packageName"
+        return context.getExternalFilesDir(null)?.parentFile?.parentFile?.absolutePath?.plus("${File.separator}$packageName") ?: ""
     }
 
     // Uses the context to get own obb data directory
@@ -370,7 +369,7 @@ class Package {
         // e.g. /storage/emulated/0/Android/obb
         // Add the package name to the path assuming that if the name of dataDir does not equal the
         // package name and has a prefix or a suffix to use it.
-        return "${context.obbDir.parentFile!!.absolutePath}${File.separator}$packageName"
+        return context.obbDir.parentFile?.absolutePath?.plus("${File.separator}$packageName") ?: ""
     }
 
     // Uses the context to get own media directory
@@ -386,7 +385,7 @@ class Package {
         // e.g. /storage/emulated/0/Android/media
         // Add the package name to the path assuming that if the name of dataDir does not equal the
         // package name and has a prefix or a suffix to use it.
-        return "${context.obbDir.parentFile!!.parentFile!!.absolutePath}${File.separator}media${File.separator}$packageName"
+        return context.obbDir.parentFile?.parentFile?.absolutePath?.plus("${File.separator}media${File.separator}$packageName") ?: ""
     }
 
     /**
