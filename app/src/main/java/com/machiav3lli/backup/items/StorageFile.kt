@@ -494,6 +494,18 @@ open class StorageFile {
         }
     }
 
+    fun writeText(text: String) : Boolean {
+        return try {
+            parent?.createFile("application/octet-stream", name!!)?.outputStream()?.writer()?.use {
+                it.write(text)
+                true
+            } ?: false
+        } catch (e: Throwable) {
+            unhandledException(e, _uri)
+            false
+        }
+    }
+
     fun findUri(displayName: String): Uri? {
         // recurse down, uri?.run { ... } prevents optimizing-away (and null test makes sense anyway)
         uri?.run {
