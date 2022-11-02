@@ -67,7 +67,7 @@ import timber.log.Timber
 @Composable
 fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
     val context = LocalContext.current
-    val mainActivityX = context as MainActivityX
+    val mainActivityX = context as MainActivityX  //TODO is context always a MainActivityX? OABx.main seems to be more available
     // TODO include tags in search
     val list by mainActivityX.viewModel.packageList.observeAsState(null)
     val modelSortFilter by mainActivityX.modelSortFilter.collectAsState(context.sortFilterModel)
