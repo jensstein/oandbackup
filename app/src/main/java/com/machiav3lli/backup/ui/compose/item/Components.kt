@@ -14,11 +14,13 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -108,6 +110,7 @@ import com.machiav3lli.backup.ui.compose.theme.ColorUpdated
 import com.machiav3lli.backup.ui.compose.theme.ColorUser
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.brighter
+import com.machiav3lli.backup.utils.darker
 
 @Composable
 fun ButtonIcon(
@@ -286,9 +289,12 @@ fun CardButton(
     onClick: () -> Unit
 ) {
     ElevatedButton(
-        modifier = modifier.padding(4.dp),
+        modifier = modifier.aspectRatio(1f),
         colors = ButtonDefaults.elevatedButtonColors(
-            containerColor = tint.brighter(0.2f),
+            containerColor = tint.let {
+                if (isSystemInDarkTheme()) it.brighter(0.2f)
+                else it.darker(0.2f)
+            },
             contentColor = MaterialTheme.colorScheme.background
         ),
         contentPadding = PaddingValues(12.dp),
@@ -296,14 +302,19 @@ fun CardButton(
         enabled = enabled,
         onClick = { onClick() }
     ) {
-        Icon(imageVector = icon, contentDescription = description)
-        /*Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceAround
+        ) {
+            Icon(imageVector = icon, contentDescription = description)
             Text(
+                modifier = modifier.weight(1f),
                 text = description,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+                textAlign = TextAlign.Center,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.titleSmall
             )
-        }*/
+        }
     }
 }
 
