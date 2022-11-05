@@ -6,10 +6,12 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.expandIn
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.shrinkOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -604,6 +606,21 @@ fun VerticalFadingVisibility(
     exitPositive = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Bottom),
     enterNegative = fadeIn() + expandVertically(expandFrom = Alignment.Top),
     exitNegative = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
+    collapsedView = collapsedView,
+    expandedView = expandedView
+)
+
+@Composable
+fun ExpandingFadingVisibility(
+    expanded: Boolean = false,
+    expandedView: @Composable (AnimatedVisibilityScope.() -> Unit),
+    collapsedView: @Composable (AnimatedVisibilityScope.() -> Unit)
+) = StatefulAnimatedVisibility(
+    currentState = expanded,
+    enterPositive = fadeIn() + expandIn(),
+    exitPositive = fadeOut() + shrinkOut(),
+    enterNegative = fadeIn() + expandIn(),
+    exitNegative = fadeOut() + shrinkOut(),
     collapsedView = collapsedView,
     expandedView = expandedView
 )
