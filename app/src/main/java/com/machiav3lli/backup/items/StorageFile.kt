@@ -433,7 +433,8 @@ open class StorageFile {
             } ?: run {
                 StorageFile(
                     this, context,
-                    createFile(context!!, _uri!!, mimeType, displayName)
+                    createFile(context!!, _uri!!, mimeType, displayName),
+                    displayName
                 )
             }
         path?.let { cacheFilesAdd(it, newFile) }
@@ -498,6 +499,7 @@ open class StorageFile {
         return try {
             parent?.createFile("application/octet-stream", name!!)?.outputStream()?.writer()?.use {
                 it.write(text)
+                parent?.path?.let { cacheFilesAdd(it, this) }
                 true
             } ?: false
         } catch (e: Throwable) {
