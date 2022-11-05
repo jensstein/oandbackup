@@ -855,7 +855,7 @@ fun CardSubRow(
             Text(
                 text = text,
                 maxLines = 2,
-                //TODO style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyMedium,
                 overflow = TextOverflow.Ellipsis
             )
         }
