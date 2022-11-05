@@ -384,19 +384,29 @@ In newer Android versions every app directory is mounted and usually only visibl
 
 NB is using
 
-`kill -STOP PID` </br>
+```
+   kill -STOP PID
+```
 before and
-`kill -CONT PID`
+```
+   kill -CONT PID
+```
 after backups if backupPauseApps is enabled in developer settings.
 It also uses
-`pm suspend the.package.name` </br>
-`pm unsuspend the.package.name`
+```
+   pm suspend the.package.name
+```
+```
+   pm unsuspend the.package.name
+```
 
 if backupSuspendApps is also set (only active if backupPauseApps is also enabled)
    
 NB uses
 
-`am stop-app the.package.name || am force-stop the.package-name`
+```
+   am stop-app the.package.name || am force-stop the.package-name
+```
 
 before a restore if restoreKillApps is enabled.
 
