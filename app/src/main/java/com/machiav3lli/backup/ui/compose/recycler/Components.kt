@@ -107,7 +107,7 @@ fun <T> HorizontalItemList(
     itemContent: @Composable LazyItemScope.(T) -> Unit
 ) {
     Box(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier,
         contentAlignment = if (list.isNullOrEmpty()) Alignment.Center else Alignment.CenterStart
     ) {
         when {

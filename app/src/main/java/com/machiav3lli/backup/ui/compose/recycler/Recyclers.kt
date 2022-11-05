@@ -52,10 +52,14 @@ fun HomePackageRecycler(
 
 @Composable
 fun UpdatedPackageRecycler(
+    modifier: Modifier = Modifier,
     productsList: List<Package>?,
     onClick: (Package) -> Unit = {}
 ) {
-    HorizontalItemList(list = productsList) {
+    HorizontalItemList(
+        modifier = modifier,
+        list = productsList
+    ) {
         UpdatedPackageItem(it, onClick)
     }
 }
