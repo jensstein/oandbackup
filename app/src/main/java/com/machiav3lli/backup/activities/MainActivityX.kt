@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -112,7 +113,7 @@ class MainActivityX : BaseActivity() {
         get() = viewModel.isNeedRefresh.value ?: false
         set(value) = viewModel.isNeedRefresh.postValue(value)
 
-    private val _searchQuery = MutableSharedFlow<String>()
+    private val _searchQuery = MutableSharedFlow<String>(replay = 1)
     val searchQuery = _searchQuery.asSharedFlow()
 
     private lateinit var sheetSortFilter: SortFilterSheet
@@ -155,7 +156,8 @@ class MainActivityX : BaseActivity() {
         prefs = getPrivateSharedPrefs()
 
         viewModel.blocklist.observe(this) {
-            needRefresh = true
+            //needRefresh = true
+            OABX.main?.viewModel?.packageList?.postValue(OABX.main?.viewModel?.packageList?.value)
         }
         viewModel.packageList.observe(this) { }
         viewModel.backupsMap.observe(this) { }
@@ -182,9 +184,11 @@ class MainActivityX : BaseActivity() {
                 SideEffect {
                     crScope.launch { _searchQuery.emit("") }
                     crScope.launch { _modelSortFilter.emit(sortFilterModel) }
+                    needRefresh = true
                 }
 
                 Scaffold(
+                    modifier = Modifier.imePadding(),
                     containerColor = Color.Transparent,
                     contentColor = MaterialTheme.colorScheme.onBackground,
                     topBar = {
