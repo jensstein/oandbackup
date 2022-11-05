@@ -36,6 +36,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
@@ -117,6 +118,7 @@ fun SelectionSaveMenu(
             text = {
                 OutlinedTextField(
                     modifier = Modifier
+                        .testTag("input")
                         .focusRequester(textFieldFocusRequester),
                     value = name.value,
                     placeholder = { Text(text = "selection name", color = Color.Gray) },
@@ -126,6 +128,7 @@ fun SelectionSaveMenu(
                     ),
                     onValueChange = {
                         if (it.endsWith("\n")) {
+                            name.value = it.dropLast(1)
                             focusManager.clearFocus()
                             val backupDir = OABX.context.getBackupDir()
                             val selectionsDir = backupDir.findFile(SELECTIONS_FOLDER_NAME) ?: backupDir.createDirectory(SELECTIONS_FOLDER_NAME)
