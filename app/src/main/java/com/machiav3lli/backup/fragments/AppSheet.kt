@@ -33,14 +33,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -189,15 +192,17 @@ class AppSheet() : BaseSheet(), ActionListener {
                     },
                     snackbarHost = { SnackbarHost(snackbarHostState) }
                 ) { paddingValues ->
-                    LazyColumn(
+                    LazyVerticalGrid(
                         modifier = Modifier
                             .padding(paddingValues)
                             .nestedScroll(nestedScrollConnection)
                             .fillMaxSize(),
+                        columns = GridCells.Fixed(3),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
                         contentPadding = PaddingValues(8.dp)
                     ) {
-                        item {
+                        item(span = { GridItemSpan(3) }) {
                             OutlinedCard(
                                 modifier = Modifier.padding(top = 8.dp),
                                 shape = RoundedCornerShape(LocalShapes.current.medium),
@@ -263,7 +268,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                                 }
                             }
                         }
-                        item {
+                        item(span = { GridItemSpan(3) }) {
                             AnimatedVisibility(visible = !snackbarText.isNullOrEmpty()) {
                                 Text(
                                     text = snackbarText.toString(),
@@ -274,191 +279,191 @@ class AppSheet() : BaseSheet(), ActionListener {
                                 )
                             }
                         }
-                        item {
+                        item(span = { GridItemSpan(3) }) {
                             InfoChipsBlock(list = packageInfo.infoChips())
                         }
                         item {
-                            AnimatedVisibility(
-                                modifier = Modifier.fillMaxWidth(),
-                                visible = !packageInfo.isSpecial
+                            CardButton(
+                                modifier = Modifier,
+                                icon = Phosphor.Prohibit,
+                                tint = MaterialTheme.colorScheme.tertiary,
+                                description = stringResource(id = R.string.global_blocklist_add)
                             ) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(IntrinsicSize.Min),
-                                    horizontalArrangement = Arrangement.spacedBy(2.dp),
-                                    verticalAlignment = Alignment.CenterVertically
+                                requireMainActivity().viewModel.addToBlocklist(
+                                    packageInfo.packageName
+                                )
+                            }
+                        }
+                        item {
+                            AnimatedVisibility(
+                                visible = true, //appInfo.isInstalled && ! appInfo.isDisabled,
+                            ) {
+                                CardButton(
+                                    enabled = packageInfo.isInstalled && !packageInfo.isDisabled,
+                                    modifier = Modifier.fillMaxHeight(),
+                                    icon = Phosphor.ArrowSquareOut,
+                                    tint = colorResource(id = R.color.ic_obb),
+                                    description = stringResource(id = R.string.launch_app)
                                 ) {
-                                    // TODO Add enabled state
-                                    CardButton(
-                                        modifier = Modifier
-                                            .fillMaxHeight()
-                                            .weight(1f),
-                                        icon = Icon.Exodus,
-                                        tint = colorResource(id = R.color.ic_exodus),
-                                        description = stringResource(id = R.string.exodus_report)
-                                    ) {
-                                        requireContext().startActivity(
-                                            Intent(
-                                                Intent.ACTION_VIEW,
-                                                Uri.parse(exodusUrl(packageInfo.packageName))
-                                            )
+                                    requireContext().packageManager.getLaunchIntentForPackage(
+                                        packageInfo.packageName
+                                    )?.let {
+                                        startActivity(it)
+                                    }
+                                }
+                            }
+                        }
+                        item {
+                            CardButton(
+                                modifier = Modifier.fillMaxHeight(),
+                                icon = Icon.Exodus,
+                                tint = colorResource(id = R.color.ic_exodus),
+                                description = stringResource(id = R.string.exodus_report)
+                            ) {
+                                requireContext().startActivity(
+                                    Intent(
+                                        Intent.ACTION_VIEW,
+                                        Uri.parse(exodusUrl(packageInfo.packageName))
+                                    )
+                                )
+                            }
+                        }
+                        item {
+                            AnimatedVisibility(
+                                visible = packageInfo.isInstalled && !packageInfo.isSpecial
+                            ) {
+                                CardButton(
+                                    modifier = Modifier,
+                                    icon = Phosphor.Warning,
+                                    tint = colorResource(id = R.color.ic_updated),
+                                    description = stringResource(id = R.string.forceKill)
+                                ) {
+                                    showForceKillDialog(packageInfo)
+                                }
+                            }
+                        }
+                        item {
+                            AnimatedVisibility(
+                                visible = packageInfo.isInstalled
+                            ) {
+                                CardButton(
+                                    modifier = Modifier.fillMaxHeight(),
+                                    icon = if (packageInfo.isDisabled) Phosphor.Leaf
+                                    else Phosphor.ProhibitInset,
+                                    tint = if (packageInfo.isDisabled) MaterialTheme.colorScheme.primaryContainer
+                                    else MaterialTheme.colorScheme.tertiaryContainer,
+                                    description = stringResource(
+                                        id = if (packageInfo.isDisabled) R.string.enablePackage
+                                        else R.string.disablePackage
+                                    ),
+                                    onClick = { showEnableDisableDialog(packageInfo.isDisabled) }
+                                )
+                            }
+                        }
+                        item {
+                            AnimatedVisibility(
+                                visible = packageInfo.isInstalled && !packageInfo.isSystem,
+                            ) {
+                                CardButton(
+                                    modifier = Modifier.fillMaxHeight(),
+                                    icon = Phosphor.TrashSimple,
+                                    tint = MaterialTheme.colorScheme.tertiary,
+                                    description = stringResource(id = R.string.uninstall),
+                                    onClick = {
+                                        snackbarHostState.showUninstallDialog(
+                                            packageInfo,
+                                            coroutineScope
                                         )
                                     }
-                                    AnimatedVisibility(
-                                        visible = true, //appInfo.isInstalled && ! appInfo.isDisabled,
-                                        modifier = Modifier.weight(1f)
-                                    ) {
-                                        CardButton(
-                                            enabled = packageInfo.isInstalled && !packageInfo.isDisabled,
-                                            modifier = Modifier
-                                                .fillMaxHeight()
-                                                .weight(1f),
-                                            icon = Phosphor.ArrowSquareOut,
-                                            tint = colorResource(id = R.color.ic_obb),
-                                            description = stringResource(id = R.string.launch_app)
-                                        ) {
-                                            requireContext().packageManager.getLaunchIntentForPackage(
-                                                packageInfo.packageName
-                                            )?.let {
-                                                startActivity(it)
-                                            }
-                                        }
+                                )
+                            }
+                        }
+                        item(span = { GridItemSpan(3) }) {
+                            Column {
+                                TitleText(textId = R.string.title_tags)
+                                Spacer(modifier = Modifier.height(8.dp))
+                                TagsBlock(
+                                    tags = appExtras?.customTags ?: mutableSetOf(),
+                                    onRemove = {
+                                        viewModel.setExtras(appExtras?.apply {
+                                            customTags.remove(it)
+                                        })
+                                    },
+                                    onAdd = {
+                                        viewModel.setExtras(appExtras?.apply {
+                                            if (customTags.isNotEmpty())
+                                                customTags.add(it)
+                                            else
+                                                customTags = mutableSetOf(it)
+                                        })
                                     }
-                                    AnimatedVisibility(
-                                        visible = packageInfo.isInstalled,
-                                        modifier = Modifier.weight(1f)
-                                    ) {
-                                        CardButton(
-                                            modifier = Modifier
-                                                .fillMaxHeight()
-                                                .weight(1f),
-                                            icon = if (packageInfo.isDisabled) Phosphor.Leaf
-                                            else Phosphor.ProhibitInset,
-                                            tint = if (packageInfo.isDisabled) MaterialTheme.colorScheme.primaryContainer
-                                            else MaterialTheme.colorScheme.tertiaryContainer,
-                                            description = stringResource(
-                                                id = if (packageInfo.isDisabled) R.string.enablePackage
-                                                else R.string.disablePackage
-                                            ),
-                                            onClick = { showEnableDisableDialog(packageInfo.isDisabled) }
+                                )
+                            }
+                        }
+                        item(span = { GridItemSpan(3) }) {
+                            Column {
+                                TitleText(textId = R.string.title_note)
+                                Spacer(modifier = Modifier.height(8.dp))
+                                MorphableTextField(
+                                    text = appExtras?.note,
+                                    onCancel = {
+                                    },
+                                    onSave = {
+                                        viewModel.setExtras(appExtras?.apply { note = it })
+                                    }
+                                )
+                            }
+                        }
+                        item(span = { GridItemSpan(3) }) {
+                            Column {
+                                TitleText(textId = R.string.available_actions)
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                                ) {
+                                    AnimatedVisibility(visible = packageInfo.isInstalled || packageInfo.isSpecial) {
+                                        ElevatedActionButton(
+                                            icon = Phosphor.ArchiveTray,
+                                            text = stringResource(id = R.string.backup),
+                                            fullWidth = true,
+                                            enabled = snackbarText.isNullOrEmpty(),
+                                            onClick = { showBackupDialog(packageInfo) }
                                         )
                                     }
-                                    AnimatedVisibility(
-                                        visible = packageInfo.isInstalled && !packageInfo.isSystem,
-                                        modifier = Modifier.weight(1f)
-                                    ) {
-                                        CardButton(
-                                            modifier = Modifier
-                                                .fillMaxHeight()
-                                                .weight(1f),
+                                    AnimatedVisibility(visible = packageInfo.hasBackups) {
+                                        ElevatedActionButton(
                                             icon = Phosphor.TrashSimple,
-                                            tint = MaterialTheme.colorScheme.tertiary,
-                                            description = stringResource(id = R.string.uninstall),
+                                            text = stringResource(id = R.string.delete_all_backups),
+                                            fullWidth = true,
+                                            positive = false,
+                                            enabled = snackbarText.isNullOrEmpty(),
                                             onClick = {
-                                                snackbarHostState.showUninstallDialog(
+                                                snackbarHostState.showDeleteAllBackupsDialog(
                                                     packageInfo,
                                                     coroutineScope
                                                 )
                                             }
                                         )
                                     }
-                                    CardButton(
-                                        modifier = Modifier
-                                            .weight(1f),
-                                        icon = Phosphor.Prohibit,
-                                        tint = colorResource(id = R.color.ic_updated),
-                                        description = stringResource(id = R.string.global_blocklist_add)
+                                    AnimatedVisibility(
+                                        visible = packageInfo.isInstalled && !packageInfo.isSpecial && ((packageInfo.storageStats?.dataBytes
+                                            ?: 0L) >= 0L)
                                     ) {
-                                        requireMainActivity().viewModel.addToBlocklist(packageInfo.packageName)
+                                        ElevatedActionButton(
+                                            icon = Phosphor.TrashSimple,
+                                            text = stringResource(id = R.string.clear_cache),
+                                            fullWidth = true,
+                                            colored = false,
+                                            onClick = { showClearCacheDialog(packageInfo) }
+                                        )
                                     }
                                 }
                             }
                         }
-                        item {
-                            TitleText(textId = R.string.title_tags)
-                            TagsBlock(
-                                tags = appExtras?.customTags ?: mutableSetOf(),
-                                onRemove = {
-                                    viewModel.setExtras(appExtras?.apply {
-                                        customTags.remove(it)
-                                    })
-                                },
-                                onAdd = {
-                                    viewModel.setExtras(appExtras?.apply {
-                                        if (customTags.isNotEmpty())
-                                            customTags.add(it)
-                                        else
-                                            customTags = mutableSetOf(it)
-                                    })
-                                }
-                            )
-                        }
-                        item {
-                            TitleText(textId = R.string.title_note)
-                            MorphableTextField(
-                                text = appExtras?.note,
-                                onCancel = {
-                                },
-                                onSave = {
-                                    viewModel.setExtras(appExtras?.apply { note = it })
-                                }
-                            )
-                        }
-                        item {
-                            TitleText(textId = R.string.available_actions)
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                AnimatedVisibility(visible = packageInfo.isInstalled || packageInfo.isSpecial) {
-                                    ElevatedActionButton(
-                                        icon = Phosphor.ArchiveTray,
-                                        text = stringResource(id = R.string.backup),
-                                        fullWidth = true,
-                                        enabled = snackbarText.isNullOrEmpty(),
-                                        onClick = { showBackupDialog(packageInfo) }
-                                    )
-                                }
-                                AnimatedVisibility(visible = packageInfo.hasBackups) {
-                                    ElevatedActionButton(
-                                        icon = Phosphor.TrashSimple,
-                                        text = stringResource(id = R.string.delete_all_backups),
-                                        fullWidth = true,
-                                        positive = false,
-                                        enabled = snackbarText.isNullOrEmpty(),
-                                        onClick = {
-                                            snackbarHostState.showDeleteAllBackupsDialog(
-                                                packageInfo,
-                                                coroutineScope
-                                            )
-                                        }
-                                    )
-                                }
-                                AnimatedVisibility(visible = packageInfo.isInstalled && !packageInfo.isSpecial) {
-                                    ElevatedActionButton(
-                                        icon = Phosphor.Warning,
-                                        text = stringResource(id = R.string.forceKill),
-                                        fullWidth = true,
-                                        colored = false,
-                                        onClick = { showForceKillDialog(packageInfo) }
-                                    )
-                                }
-                                AnimatedVisibility(
-                                    visible = packageInfo.isInstalled && !packageInfo.isSpecial && ((packageInfo.storageStats?.dataBytes
-                                        ?: 0L) >= 0L)
-                                ) {
-                                    ElevatedActionButton(
-                                        icon = Phosphor.TrashSimple,
-                                        text = stringResource(id = R.string.clear_cache),
-                                        fullWidth = true,
-                                        colored = false,
-                                        onClick = { showClearCacheDialog(packageInfo) }
-                                    )
-                                }
-                            }
-                        }
-                        items(items = packageInfo.backupsNewestFirst) {
+                        this.items(
+                            items = packageInfo.backupsNewestFirst,
+                            span = { GridItemSpan(3) }) {
                             BackupItem(
                                 it,
                                 onRestore = { item ->
