@@ -68,6 +68,7 @@ class PrefsActivityX : BaseActivity() {
         OABX.activity = this
         setCustomTheme()
         super.onCreate(savedInstanceState)
+
         setContent {
             AppTheme {
                 val navController = rememberAnimatedNavController()
