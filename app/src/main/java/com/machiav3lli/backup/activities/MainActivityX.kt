@@ -26,7 +26,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -254,15 +253,14 @@ class MainActivityX : BaseActivity() {
                                 ) { navController.navigate(NavItem.Settings.destination) }
                             }
                             Row(
-                                modifier = Modifier
-                                    .background(MaterialTheme.colorScheme.surface)
-                                    .padding(horizontal = 8.dp),
+                                modifier = Modifier.padding(horizontal = 8.dp),
                                 horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 ElevatedActionButton(
                                     icon = Phosphor.Prohibit,
                                     text = stringResource(id = R.string.sched_blocklist),
-                                    positive = false
+                                    withText = false,
+                                    positive = false,
                                 ) {
                                     GlobalScope.launch(Dispatchers.IO) {
                                         val blocklistedPackages = viewModel.blocklist.value
@@ -284,7 +282,8 @@ class MainActivityX : BaseActivity() {
                                 ElevatedActionButton(
                                     icon = Phosphor.FunnelSimple,
                                     text = stringResource(id = R.string.sort_and_filter),
-                                    positive = true
+                                    withText = false,
+                                    positive = true,
                                 ) {
                                     sheetSortFilter = SortFilterSheet(
                                         getStats(
