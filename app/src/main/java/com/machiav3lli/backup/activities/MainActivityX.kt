@@ -19,7 +19,6 @@ package com.machiav3lli.backup.activities
 
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Looper
 import androidx.activity.compose.setContent
@@ -84,7 +83,6 @@ import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.FileUtils.invalidateBackupLocation
 import com.machiav3lli.backup.utils.applyFilter
 import com.machiav3lli.backup.utils.destinationToItem
-import com.machiav3lli.backup.utils.getPrivateSharedPrefs
 import com.machiav3lli.backup.utils.getStats
 import com.machiav3lli.backup.utils.isEncryptionEnabled
 import com.machiav3lli.backup.utils.setCustomTheme
@@ -102,7 +100,6 @@ import kotlin.system.exitProcess
 
 class MainActivityX : BaseActivity() {
 
-    private lateinit var prefs: SharedPreferences
     private val crScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 
     val viewModel by viewModels<MainViewModel> {
@@ -152,8 +149,6 @@ class MainActivityX : BaseActivity() {
         }
 
         Shell.getShell()
-
-        prefs = getPrivateSharedPrefs()
 
         viewModel.blocklist.observe(this) {
             //needRefresh = true
