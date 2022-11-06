@@ -169,6 +169,7 @@ class AppSheet() : BaseSheet(), ActionListener {
         val snackbarHostState = remember { SnackbarHostState() }
         val nestedScrollConnection = rememberNestedScrollInteropConnection()
         val coroutineScope = rememberCoroutineScope()
+        val columns = 4
 
         thePackage?.let { packageInfo ->
             val imageData by remember(packageInfo) {
@@ -197,12 +198,12 @@ class AppSheet() : BaseSheet(), ActionListener {
                             .padding(paddingValues)
                             .nestedScroll(nestedScrollConnection)
                             .fillMaxSize(),
-                        columns = GridCells.Fixed(3),
+                        columns = GridCells.Fixed(columns),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         contentPadding = PaddingValues(8.dp)
                     ) {
-                        item(span = { GridItemSpan(3) }) {
+                        item(span = { GridItemSpan(columns) }) {
                             OutlinedCard(
                                 modifier = Modifier.padding(top = 8.dp),
                                 shape = RoundedCornerShape(LocalShapes.current.medium),
@@ -268,7 +269,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                                 }
                             }
                         }
-                        item(span = { GridItemSpan(3) }) {
+                        item(span = { GridItemSpan(columns) }) {
                             AnimatedVisibility(visible = !snackbarText.isNullOrEmpty()) {
                                 Text(
                                     text = snackbarText.toString(),
@@ -279,7 +280,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                                 )
                             }
                         }
-                        item(span = { GridItemSpan(3) }) {
+                        item(span = { GridItemSpan(columns) }) {
                             InfoChipsBlock(list = packageInfo.infoChips())
                         }
                         item {
@@ -378,7 +379,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                                 )
                             }
                         }
-                        item(span = { GridItemSpan(3) }) {
+                        item(span = { GridItemSpan(columns) }) {
                             Column {
                                 TitleText(textId = R.string.title_tags)
                                 Spacer(modifier = Modifier.height(8.dp))
@@ -400,7 +401,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                                 )
                             }
                         }
-                        item(span = { GridItemSpan(3) }) {
+                        item(span = { GridItemSpan(columns) }) {
                             Column {
                                 TitleText(textId = R.string.title_note)
                                 Spacer(modifier = Modifier.height(8.dp))
@@ -414,7 +415,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                                 )
                             }
                         }
-                        item(span = { GridItemSpan(3) }) {
+                        item(span = { GridItemSpan(columns) }) {
                             Column {
                                 TitleText(textId = R.string.available_actions)
                                 Spacer(modifier = Modifier.height(8.dp))
@@ -463,7 +464,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                         }
                         this.items(
                             items = packageInfo.backupsNewestFirst,
-                            span = { GridItemSpan(3) }) {
+                            span = { GridItemSpan(columns) }) {
                             BackupItem(
                                 it,
                                 onRestore = { item ->

@@ -300,7 +300,7 @@ fun CardButton(
             contentColor = MaterialTheme.colorScheme.background
         ),
         contentPadding = PaddingValues(12.dp),
-        shape = MaterialTheme.shapes.medium,
+        shape = MaterialTheme.shapes.small,
         enabled = enabled,
         onClick = { onClick() }
     ) {
