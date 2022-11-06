@@ -702,7 +702,7 @@ open class StorageFile {
             if (pref_invalidateSelective.value) {
                 try {
                     invalidateFilters.add(filter)
-                } catch (e: ArrayIndexOutOfBoundsException) {
+                } catch(e: ArrayIndexOutOfBoundsException) {
                 }
                 cacheCheck() //TODO
             } else {
@@ -742,6 +742,8 @@ open class StorageFile {
 
         fun cacheFilesAdd(path: String, file: StorageFile) {
             fileListCache[path]?.run {
+                //removeAll { it.name == file.name }
+                find { it.name == file.name }?.let { remove(it) }
                 add(file)
             } ?: run {
                 fileListCache[path] = mutableListOf(file)
@@ -751,7 +753,7 @@ open class StorageFile {
         fun cacheFilesRemove(path: String, file: StorageFile?) {
             file?.let {
                 fileListCache[path]?.run {
-                    remove(file)
+                    removeAll { it.name == file.name }
                 } ?: run {
                     fileListCache.remove(path)
                 }
