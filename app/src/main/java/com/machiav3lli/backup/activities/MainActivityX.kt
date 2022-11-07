@@ -178,7 +178,8 @@ class MainActivityX : BaseActivity() {
                 SideEffect {
                     crScope.launch { _searchQuery.emit("") }
                     crScope.launch { _modelSortFilter.emit(sortFilterModel) }
-                    needRefresh = true
+                    if (OABX.main?.viewModel?.packageList?.value.isNullOrEmpty())
+                        needRefresh = true
                 }
 
                 Scaffold(
