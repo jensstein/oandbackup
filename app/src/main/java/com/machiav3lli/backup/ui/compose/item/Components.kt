@@ -14,8 +14,10 @@ import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,7 +25,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -48,6 +49,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.SelectableChipColors
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -288,43 +290,50 @@ fun TopBarButton(
 }
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CardButton(
     modifier: Modifier = Modifier,
     icon: ImageVector,
     tint: Color,
     description: String,
-    enabled: Boolean = true,
     onClick: () -> Unit
 ) {
-    ElevatedButton(
-        modifier = modifier.aspectRatio(1f),
-        colors = ButtonDefaults.elevatedButtonColors(
-            containerColor = tint.let {
-                if (isSystemInDarkTheme()) it.brighter(0.2f)
-                else it.darker(0.2f)
-            },
-            contentColor = MaterialTheme.colorScheme.background
-        ),
-        contentPadding = PaddingValues(12.dp),
-        shape = MaterialTheme.shapes.small,
-        enabled = enabled,
-        onClick = { onClick() }
+    val openPopup = remember { mutableStateOf(false) }
+
+    Surface(
+        modifier = modifier
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = { openPopup.value = true }
+            ),
+        color = tint.let {
+            if (isSystemInDarkTheme()) it.brighter(0.2f)
+            else it.darker(0.2f)
+        },
+        contentColor = MaterialTheme.colorScheme.background,
+        shape = MaterialTheme.shapes.medium,
     ) {
         Column(
+            modifier = modifier.padding(PaddingValues(12.dp)),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround
         ) {
             Icon(imageVector = icon, contentDescription = description)
-            Text(
+            /*Text(
                 modifier = modifier.weight(1f),
                 text = description,
                 textAlign = TextAlign.Center,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleSmall
-            )
+            )*/
+        }
+
+        if (openPopup.value) {
+            Tooltip(description, openPopup)
         }
     }
+
 }
 
 @Composable
