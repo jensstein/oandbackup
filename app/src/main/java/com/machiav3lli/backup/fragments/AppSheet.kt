@@ -27,7 +27,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -44,11 +43,10 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -113,7 +111,6 @@ import com.machiav3lli.backup.ui.compose.item.TagsBlock
 import com.machiav3lli.backup.ui.compose.item.TitleText
 import com.machiav3lli.backup.ui.compose.recycler.InfoChipsBlock
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
-import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.infoChips
 import com.machiav3lli.backup.utils.show
 import com.machiav3lli.backup.utils.showError
@@ -169,7 +166,7 @@ class AppSheet() : BaseSheet(), ActionListener {
         val snackbarHostState = remember { SnackbarHostState() }
         val nestedScrollConnection = rememberNestedScrollInteropConnection()
         val coroutineScope = rememberCoroutineScope()
-        val columns = 4
+        val columns = 3
 
         thePackage?.let { packageInfo ->
             val imageData by remember(packageInfo) {
@@ -188,88 +185,69 @@ class AppSheet() : BaseSheet(), ActionListener {
                 Scaffold(
                     containerColor = Color.Transparent,
                     contentColor = MaterialTheme.colorScheme.onBackground,
-                    bottomBar = {
-
-                    },
-                    snackbarHost = { SnackbarHost(snackbarHostState) }
-                ) { paddingValues ->
-                    LazyVerticalGrid(
-                        modifier = Modifier
-                            .padding(paddingValues)
-                            .nestedScroll(nestedScrollConnection)
-                            .fillMaxSize(),
-                        columns = GridCells.Fixed(columns),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        contentPadding = PaddingValues(8.dp)
-                    ) {
-                        item(span = { GridItemSpan(columns) }) {
-                            OutlinedCard(
-                                modifier = Modifier.padding(top = 8.dp),
-                                shape = RoundedCornerShape(LocalShapes.current.medium),
-                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface),
-                                colors = CardDefaults.outlinedCardColors(
-                                    containerColor = MaterialTheme.colorScheme.background
-                                )
+                    topBar = {
+                        Column(
+                            modifier = Modifier.padding(
+                                start = 8.dp,
+                                end = 8.dp,
+                                top = 8.dp,
+                            )
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(IntrinsicSize.Min)
+                                    .padding(8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(IntrinsicSize.Min)
-                                        .padding(8.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    PackageIcon(item = packageInfo, imageData = imageData)
+                                PackageIcon(item = packageInfo, imageData = imageData)
 
-                                    Column(
-                                        modifier = Modifier
-                                            .wrapContentHeight()
-                                            .weight(1f),
-                                        verticalArrangement = Arrangement.Center
-                                    ) {
-                                        Text(
-                                            text = packageInfo.packageLabel,
-                                            softWrap = true,
-                                            overflow = TextOverflow.Ellipsis,
-                                            maxLines = 1,
-                                            style = MaterialTheme.typography.titleMedium
-                                        )
-                                        Text(
-                                            text = packageInfo.packageName,
-                                            softWrap = true,
-                                            overflow = TextOverflow.Ellipsis,
-                                            maxLines = 1,
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                    }
-                                    AnimatedVisibility(visible = packageInfo.isInstalled && !packageInfo.isSpecial) {
-                                        RoundButton(
-                                            icon = Phosphor.Info,
-                                            modifier = Modifier.fillMaxHeight()
-                                        ) {
-                                            val intent =
-                                                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                                            intent.data =
-                                                Uri.fromParts(
-                                                    "package",
-                                                    packageInfo.packageName,
-                                                    null
-                                                )
-                                            startActivity(intent)
-                                        }
-                                    }
+                                Column(
+                                    modifier = Modifier
+                                        .wrapContentHeight()
+                                        .weight(1f),
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = packageInfo.packageLabel,
+                                        softWrap = true,
+                                        overflow = TextOverflow.Ellipsis,
+                                        maxLines = 1,
+                                        style = MaterialTheme.typography.titleMedium
+                                    )
+                                    Text(
+                                        text = packageInfo.packageName,
+                                        softWrap = true,
+                                        overflow = TextOverflow.Ellipsis,
+                                        maxLines = 1,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                                AnimatedVisibility(visible = packageInfo.isInstalled && !packageInfo.isSpecial) {
                                     RoundButton(
-                                        icon = Phosphor.CaretDown,
+                                        icon = Phosphor.Info,
                                         modifier = Modifier.fillMaxHeight()
                                     ) {
-                                        dismissAllowingStateLoss()
+                                        val intent =
+                                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                        intent.data =
+                                            Uri.fromParts(
+                                                "package",
+                                                packageInfo.packageName,
+                                                null
+                                            )
+                                        startActivity(intent)
                                     }
                                 }
+                                RoundButton(
+                                    icon = Phosphor.CaretDown,
+                                    modifier = Modifier.fillMaxHeight()
+                                ) {
+                                    dismissAllowingStateLoss()
+                                }
                             }
-                        }
-                        item(span = { GridItemSpan(columns) }) {
                             AnimatedVisibility(visible = !snackbarText.isNullOrEmpty()) {
                                 Text(
                                     text = snackbarText.toString(),
@@ -279,7 +257,29 @@ class AppSheet() : BaseSheet(), ActionListener {
                                     modifier = Modifier.fillMaxWidth()
                                 )
                             }
+                            Spacer(Modifier.height(8.dp))
+                            if (snackbarText.isNullOrEmpty()) Divider(thickness = 2.dp)
+                            else LinearProgressIndicator(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(5.dp),
+                                trackColor = MaterialTheme.colorScheme.surface,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
                         }
+                    },
+                    snackbarHost = { SnackbarHost(snackbarHostState) }
+                ) { paddingValues ->
+                    LazyVerticalGrid(
+                        modifier = Modifier
+                            .padding(paddingValues)
+                            .nestedScroll(nestedScrollConnection)
+                            .fillMaxSize(),
+                        columns = GridCells.Fixed(3),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(8.dp)
+                    ) {
                         item(span = { GridItemSpan(columns) }) {
                             InfoChipsBlock(list = packageInfo.infoChips())
                         }
@@ -297,10 +297,9 @@ class AppSheet() : BaseSheet(), ActionListener {
                         }
                         item {
                             AnimatedVisibility(
-                                visible = true, //appInfo.isInstalled && ! appInfo.isDisabled,
+                                visible = packageInfo.isInstalled && !packageInfo.isDisabled,
                             ) {
                                 CardButton(
-                                    enabled = packageInfo.isInstalled && !packageInfo.isDisabled,
                                     modifier = Modifier.fillMaxHeight(),
                                     icon = Phosphor.ArrowSquareOut,
                                     tint = colorResource(id = R.color.ic_obb),
