@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.machiav3lli.backup.BASIC_BUTTON_SIZE
 import com.machiav3lli.backup.ui.compose.item.PrefIcon
 import com.machiav3lli.backup.ui.item.Pref
 
@@ -82,7 +83,7 @@ fun PrefsGroupHeading(
     Column(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .height(48.dp)
+            .height(BASIC_BUTTON_SIZE)
             .padding(horizontal = 32.dp)
             .fillMaxWidth(),
     ) {
