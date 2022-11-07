@@ -18,6 +18,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -27,6 +28,8 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -48,6 +51,7 @@ import androidx.compose.material3.SelectableChipColors
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,7 +67,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.machiav3lli.backup.MAIN_FILTER_SPECIAL
@@ -113,6 +119,7 @@ import com.machiav3lli.backup.ui.compose.theme.ColorUser
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.brighter
 import com.machiav3lli.backup.utils.darker
+import kotlinx.coroutines.delay
 
 @Composable
 fun ButtonIcon(
@@ -316,6 +323,43 @@ fun CardButton(
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleSmall
             )
+        }
+    }
+}
+
+@Composable
+fun Tooltip(
+    text: String,
+    openPopup: MutableState<Boolean>,
+) {
+    Popup(
+        alignment = Alignment.TopCenter,
+        offset = IntOffset(0, 100),
+    ) {
+        LaunchedEffect(key1 = Unit) {
+            delay(3000)
+            openPopup.value = false
+        }
+
+        Box {
+            Row(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .widthIn(max = 120.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.surface,
+                        shape = MaterialTheme.shapes.medium
+                    )
+            ) {
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = text,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+            }
         }
     }
 }
