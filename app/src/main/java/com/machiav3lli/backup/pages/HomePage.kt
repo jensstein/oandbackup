@@ -22,10 +22,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -117,8 +115,8 @@ fun HomePage(viewModel: HomeViewModel) {
         containerColor = Color.Transparent,
         floatingActionButton = {
             AnimatedVisibility(
-                modifier = Modifier.padding(start = 26.dp),
-                visible = !updatedApps.isNullOrEmpty()
+                modifier = Modifier.padding(start = 28.dp),
+                visible = updatedApps?.isNotEmpty() ?: true
             ) {
                 ExpandingFadingVisibility(
                     expanded = updatedVisible,
@@ -192,21 +190,22 @@ fun HomePage(viewModel: HomeViewModel) {
                         }
                     },
                     collapsedView = {
-                        ExtendedFloatingActionButton(onClick = {
-                            updatedVisible = !updatedVisible
-                        }) {
-                            val text = pluralStringResource(
-                                id = R.plurals.updated_apps,
-                                count = updatedApps.orEmpty().size,
-                                updatedApps.orEmpty().size
-                            )
-                            Icon(
-                                imageVector = if (updatedVisible) Phosphor.CaretDown else Phosphor.CircleWavyWarning,
-                                contentDescription = text
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(text = text)
-                        }
+                        val text = pluralStringResource(
+                            id = R.plurals.updated_apps,
+                            count = updatedApps.orEmpty().size,
+                            updatedApps.orEmpty().size
+                        )
+
+                        ExtendedFloatingActionButton(
+                            text = { Text(text = text) },
+                            icon = {
+                                Icon(
+                                    imageVector = if (updatedVisible) Phosphor.CaretDown else Phosphor.CircleWavyWarning,
+                                    contentDescription = text
+                                )
+                            },
+                            onClick = { updatedVisible = !updatedVisible }
+                        )
                     }
                 )
             }
