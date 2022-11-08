@@ -63,10 +63,10 @@ val themeItems = mutableMapOf(
     if (OABX.minSDK(31)) set(THEME_DYNAMIC, R.string.prefs_theme_dynamic)
 }
 
-val BASIC_BUTTON_SIZE = 48.dp
-val BUTTON_ICON_SIZE = 24.dp
-val STANDALONE_ICON_SIZE = 48.dp
-val SMALL_ICON_SIZE = 32.dp
+val BUTTON_SIZE_MEDIUM = 48.dp
+val ICON_SIZE_SMALL = 24.dp
+val ICON_SIZE_MEDIUM = 32.dp
+val ICON_SIZE_LARGE = 48.dp
 
 val accentColorItems = mapOf(
     0 to R.string.prefs_accent_0,
@@ -97,16 +97,16 @@ const val ALT_MODE_APK = 1
 const val ALT_MODE_DATA = 2
 const val ALT_MODE_BOTH = 3
 
-const val MODE_UNSET            = 0b0000000
-const val MODE_NONE             = 0b0100000
-const val MODE_APK              = 0b0010000
-const val MODE_DATA             = 0b0001000
-const val MODE_DATA_DE          = 0b0000100
-const val MODE_DATA_EXT         = 0b0000010
-const val MODE_DATA_OBB         = 0b0000001
-const val MODE_DATA_MEDIA       = 0b1000000
+const val MODE_UNSET = 0b0000000
+const val MODE_NONE = 0b0100000
+const val MODE_APK = 0b0010000
+const val MODE_DATA = 0b0001000
+const val MODE_DATA_DE = 0b0000100
+const val MODE_DATA_EXT = 0b0000010
+const val MODE_DATA_OBB = 0b0000001
+const val MODE_DATA_MEDIA = 0b1000000
 const val BACKUP_FILTER_DEFAULT = 0b1111111
-val possibleSchedModes  =
+val possibleSchedModes =
     listOf(MODE_APK, MODE_DATA, MODE_DATA_DE, MODE_DATA_EXT, MODE_DATA_OBB, MODE_DATA_MEDIA)
 val MODE_ALL = possibleSchedModes.reduce { a, b -> a.or(b) }
 

@@ -32,7 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import com.machiav3lli.backup.BUTTON_ICON_SIZE
+import com.machiav3lli.backup.ICON_SIZE_SMALL
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dbs.entity.Schedule
@@ -57,7 +57,7 @@ fun SchedulerPage(viewModel: SchedulerViewModel) {
                 text = { Text(stringResource(id = R.string.sched_add)) },
                 icon = {
                     Icon(
-                        modifier = Modifier.size(BUTTON_ICON_SIZE),
+                        modifier = Modifier.size(ICON_SIZE_SMALL),
                         imageVector = Phosphor.CalendarPlus,
                         contentDescription = stringResource(id = R.string.sched_add)
                     )

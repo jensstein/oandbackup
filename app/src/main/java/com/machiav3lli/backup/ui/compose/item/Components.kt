@@ -75,7 +75,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.machiav3lli.backup.BUTTON_ICON_SIZE
+import com.machiav3lli.backup.ICON_SIZE_SMALL
 import com.machiav3lli.backup.MAIN_FILTER_SPECIAL
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
@@ -86,12 +86,12 @@ import com.machiav3lli.backup.MODE_DATA_EXT
 import com.machiav3lli.backup.MODE_DATA_MEDIA
 import com.machiav3lli.backup.MODE_DATA_OBB
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.SMALL_ICON_SIZE
+import com.machiav3lli.backup.ICON_SIZE_MEDIUM
 import com.machiav3lli.backup.SPECIAL_FILTER_ALL
 import com.machiav3lli.backup.SPECIAL_FILTER_DISABLED
 import com.machiav3lli.backup.SPECIAL_FILTER_LAUNCHABLE
 import com.machiav3lli.backup.SPECIAL_FILTER_OLD
-import com.machiav3lli.backup.STANDALONE_ICON_SIZE
+import com.machiav3lli.backup.ICON_SIZE_LARGE
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.Package
@@ -136,7 +136,7 @@ fun ButtonIcon(
     Icon(
         imageVector = icon,
         contentDescription = stringResource(id = textId),
-        modifier = Modifier.size(BUTTON_ICON_SIZE),
+        modifier = Modifier.size(ICON_SIZE_SMALL),
         tint = tint ?: LocalContentColor.current
     )
 }
@@ -150,7 +150,7 @@ fun PrefIcon(
     Icon(
         imageVector = icon,
         contentDescription = text,
-        modifier = Modifier.size(SMALL_ICON_SIZE),   //TODO BUTTON_ICON_SIZE?
+        modifier = Modifier.size(ICON_SIZE_MEDIUM),   //TODO BUTTON_ICON_SIZE?
         tint = tint ?: MaterialTheme.colorScheme.onBackground
     )
 }
@@ -163,7 +163,7 @@ fun PackageIcon(
 ) {
     AsyncImage(
         modifier = modifier
-            .size(STANDALONE_ICON_SIZE)
+            .size(ICON_SIZE_LARGE)
             .clip(RoundedCornerShape(LocalShapes.current.medium)),
         model = ImageRequest.Builder(LocalContext.current)
             .crossfade(true)
@@ -212,7 +212,7 @@ fun ActionButton(
         if (icon != null) {
             if (iconOnSide) Spacer(modifier = Modifier.weight(1f))
             Icon(
-                modifier = Modifier.size(BUTTON_ICON_SIZE),
+                modifier = Modifier.size(ICON_SIZE_SMALL),
                 imageVector = icon,
                 contentDescription = text
             )
@@ -251,7 +251,7 @@ fun ElevatedActionButton(
     ) {
         if (icon != null) {
             Icon(
-                modifier = Modifier.size(BUTTON_ICON_SIZE),
+                modifier = Modifier.size(ICON_SIZE_SMALL),
                 imageVector = icon,
                 contentDescription = text
             )
@@ -417,7 +417,7 @@ fun StateChip(
         onClick = onClick,
     ) {
         Icon(
-            modifier = Modifier.size(BUTTON_ICON_SIZE),
+            modifier = Modifier.size(ICON_SIZE_SMALL),
             imageVector = icon,
             contentDescription = text
         )
@@ -443,7 +443,7 @@ fun CheckChip(
             selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
             iconColor = MaterialTheme.colorScheme.onBackground,
             selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            containerColor = MaterialTheme.colorScheme.background,
+            containerColor = Color.Transparent,
             selectedContainerColor = MaterialTheme.colorScheme.primaryContainer
         ),
         leadingIcon = {

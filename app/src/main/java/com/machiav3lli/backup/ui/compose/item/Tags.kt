@@ -39,7 +39,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowRow
-import com.machiav3lli.backup.BUTTON_ICON_SIZE
+import com.machiav3lli.backup.ICON_SIZE_SMALL
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.PlusCircle
@@ -101,7 +101,7 @@ fun TagItem(
             Icon(
                 imageVector = icon,
                 contentDescription = stringResource(id = R.string.dialogCancel),
-                modifier = Modifier.size(BUTTON_ICON_SIZE)
+                modifier = Modifier.size(ICON_SIZE_SMALL)
             )
         },
         onClick = {

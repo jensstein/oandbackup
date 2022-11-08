@@ -36,7 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import com.machiav3lli.backup.BASIC_BUTTON_SIZE
+import com.machiav3lli.backup.BUTTON_SIZE_MEDIUM
 import com.machiav3lli.backup.NAV_PREFS
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
@@ -92,7 +92,7 @@ class PrefsActivityX : BaseActivity() {
                                     RoundButton(
                                         modifier = Modifier
                                             .padding(horizontal = 4.dp)
-                                            .size(BASIC_BUTTON_SIZE),
+                                            .size(BUTTON_SIZE_MEDIUM),
                                         icon = Phosphor.Info,
                                         description = stringResource(id = R.string.help),
                                     ) {
