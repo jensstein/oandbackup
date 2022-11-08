@@ -375,7 +375,6 @@
     <string name="utilboxCheck" translatable="false"/>
     <string name="prefs_cancelonstart_summary" translatable="false"/>
     <string name="logfileSavedAt" translatable="false"/>
-    <string name="app_name" translatable="false"/>
     <string name="prefs_maxcrashlines_summary" translatable="false"/>
     <string name="prefs_showinfologbar_summary" translatable="false"/>
     <string name="prefs_cachepackages_summary" translatable="false"/>

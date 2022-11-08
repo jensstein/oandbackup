@@ -388,7 +388,6 @@
     <string name="prefs_allowshadowingdefault_summary" translatable="false"/>
     <string name="prefs_usefindls_summary" translatable="false"/>
     <string name="prefs_assemblefilelistonestep_summary" translatable="false"/>
-    <string name="app_name" translatable="false"/>
     <string name="prefs_invalidateselective_summary" translatable="false"/>
     <string name="prefs_nobackupdata">Sichern von no_backup-Dateien</string>
     <string name="prefs_nobackupdata_summary">Sichern von Dateien in Daten, die als nicht zu sichern gekennzeichnet sind</string>

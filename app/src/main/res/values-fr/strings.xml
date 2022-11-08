@@ -234,7 +234,6 @@
     <string name="forceKillMessage">Êtes-vous sûr·e de vouloir forcer l\'arrêt de l\'application \?</string>
     <plurals name="updated_apps">
         <item quantity="one">%d application mise à jour</item>
-        <item quantity="many"></item>
         <item quantity="other">%d applications mises à jour</item>
     </plurals>
     <string name="app_info">Infos sur l\'appli</string>
@@ -253,7 +252,6 @@
     <string name="prefs_devicelock">Verrouillage de l\'appareil</string>
     <plurals name="sched_interval_formal">
         <item quantity="one">chaque jour</item>
-        <item quantity="many"></item>
         <item quantity="other">tous les %d jours</item>
     </plurals>
     <string name="global_blocklist_add">Ajouter à la liste de blocage globale</string>
@@ -358,39 +356,4 @@
     <string name="prefs_advanced_short">Avancé</string>
     <string name="prefs_tools_short">Outils</string>
     <string name="dialog_export_schedules">Exporter mon planning</string>
-    <string name="prefs_usecolumnnamesaf_summary" translatable="false"></string>
-    <string name="prefs_cancelonstart_summary" translatable="false"></string>
-    <string name="prefs_maxcrashlines_summary" translatable="false"></string>
-    <string name="prefs_invalidateselective_summary" translatable="false"></string>
-    <string name="prefs_delaybeforerefreshappinfo_summary" translatable="false"></string>
-    <string name="prefs_stricthardlinks_summary" translatable="false"></string>
-    <string name="prefs_multilineinfochips_summary"></string>
-    <string name="prefs_squeezenavtext"></string>
-    <string name="place_holder" translatable="false"></string>
-    <string name="prefs_backuptarcmd_summary" translatable="false"></string>
-    <string name="prefs_squeezenavtext_summary"></string>
-    <string name="logfileSavedAt" translatable="false"></string>
-    <string name="prefs_multilineinfochips"></string>
-    <string name="prefs_showinfologbar_summary" translatable="false"></string>
-    <string name="prefs_cachepackages_summary" translatable="false"></string>
-    <string name="prefs_usepackagecacheonupdate_summary" translatable="false"></string>
-    <string name="prefs_usealarmclock_summary" translatable="false"></string>
-    <string name="prefs_useexactalarm_summary" translatable="false"></string>
-    <string name="prefs_pauseapps_summary" translatable="false"></string>
-    <string name="prefs_pmsuspend_summary" translatable="false"></string>
-    <string name="prefs_restoretarcmd_summary" translatable="false"></string>
-    <string name="prefs_restoreavoidtempcopy_summary" translatable="false"></string>
-    <string name="prefs_shadowrootfile_summary" translatable="false"></string>
-    <string name="prefs_allowshadowingdefault_summary" translatable="false"></string>
-    <string name="prefs_usefindls_summary" translatable="false"></string>
-    <string name="prefs_assemblefilelistonestep_summary" translatable="false"></string>
-    <string name="prefs_catchuncaughtexception_summary" translatable="false"></string>
-    <string name="prefs_cacheuris_summary" translatable="false"></string>
-    <string name="prefs_cachefilelists_summary" translatable="false"></string>
-    <string name="prefs_maxretriesperpackage_summary" translatable="false"></string>
-    <string name="prefs_fakebackupseconds_summary" translatable="false"></string>
-    <string name="app_name" translatable="false"></string>
-    <string name="prefs_refreshappinfotimeout_summary" translatable="false"></string>
-    <string name="prefs_useforeground_summary" translatable="false"></string>
-    <string name="prefs_useexpedited_summary" translatable="false"></string>
 </resources>

@@ -362,7 +362,6 @@
     <string name="prefs_delaybeforerefreshappinfo_summary" translatable="false"/>
     <string name="prefs_maxcrashlines_summary" translatable="false"/>
     <string name="prefs_useexpedited_summary" translatable="false"/>
-    <string name="app_name" translatable="false"/>
     <string name="prefs_pmsuspend_summary" translatable="false"/>
     <string name="prefs_restoretarcmd_summary" translatable="false"/>
     <string name="prefs_cacheuris_summary" translatable="false"/>

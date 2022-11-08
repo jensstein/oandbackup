@@ -389,8 +389,6 @@
     <string name="prefs_maxretriesperpackage_summary" translatable="false"/>
     <string name="prefs_delaybeforerefreshappinfo_summary" translatable="false"/>
     <string name="prefs_refreshappinfotimeout_summary" translatable="false"/>
-    <string name="place_holder" translatable="false"/>
-    <string name="app_name" translatable="false"/>
     <string name="prefs_nobackupdata">Copia de seguridad sin archivos</string>
     <string name="prefs_nobackupdata_summary">Hacer una copia de seguridad de los archivos en los datos que están etiquetados para no ser respaldados</string>
 </resources>
