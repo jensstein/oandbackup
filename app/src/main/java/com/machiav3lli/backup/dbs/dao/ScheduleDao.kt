@@ -20,7 +20,11 @@ package com.machiav3lli.backup.dbs.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
+import com.machiav3lli.backup.dbs.Converters
 import com.machiav3lli.backup.dbs.entity.Schedule
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.mapLatest
 
 @Dao
 interface ScheduleDao : BaseDao<Schedule> {
@@ -34,7 +38,24 @@ interface ScheduleDao : BaseDao<Schedule> {
     fun getSchedule(name: String): Schedule?
 
     @Query("SELECT * FROM schedule WHERE id = :id")
+    fun getScheduleFlow(id: Long): Flow<Schedule>
+
+    @Query("SELECT * FROM schedule WHERE id = :id")
     fun getLiveSchedule(id: Long): LiveData<Schedule?>
+
+    @Query("SELECT customList FROM schedule WHERE id = :id")
+    fun _getCustomListFlow(id: Long): Flow<String>
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun getCustomListFlow(id: Long): Flow<Set<String>> =
+        _getCustomListFlow(id).mapLatest { Converters().toStringSet(it) }
+
+    @Query("SELECT blockList FROM schedule WHERE id = :id")
+    fun _getBlockListFlow(id: Long): Flow<String>
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun getBlockListFlow(id: Long): Flow<Set<String>> =
+        _getBlockListFlow(id).mapLatest { Converters().toStringSet(it) }
 
     @get:Query("SELECT * FROM schedule ORDER BY id ASC")
     val all: List<Schedule>
