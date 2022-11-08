@@ -16,6 +16,7 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -75,6 +76,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.machiav3lli.backup.ICON_SIZE_LARGE
+import com.machiav3lli.backup.ICON_SIZE_MEDIUM
 import com.machiav3lli.backup.ICON_SIZE_SMALL
 import com.machiav3lli.backup.MAIN_FILTER_SPECIAL
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
@@ -86,12 +89,10 @@ import com.machiav3lli.backup.MODE_DATA_EXT
 import com.machiav3lli.backup.MODE_DATA_MEDIA
 import com.machiav3lli.backup.MODE_DATA_OBB
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.ICON_SIZE_MEDIUM
 import com.machiav3lli.backup.SPECIAL_FILTER_ALL
 import com.machiav3lli.backup.SPECIAL_FILTER_DISABLED
 import com.machiav3lli.backup.SPECIAL_FILTER_LAUNCHABLE
 import com.machiav3lli.backup.SPECIAL_FILTER_OLD
-import com.machiav3lli.backup.ICON_SIZE_LARGE
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.Package
@@ -389,7 +390,9 @@ fun RoundButton(
         onClick = onClick
     ) {
         Icon(
-            modifier = Modifier.padding(8.dp).fillMaxSize(),
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxSize(),
             imageVector = icon,
             contentDescription = description
         )
@@ -474,17 +477,14 @@ fun SwitchChip(
         selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
         iconColor = MaterialTheme.colorScheme.onSurface,
         selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = Color.Transparent,
         selectedContainerColor = MaterialTheme.colorScheme.primaryContainer
     ),
     onCheckedChange: (Boolean) -> Unit
 ) {
     Row(
         modifier = Modifier
-            .background(
-                MaterialTheme.colorScheme.surface,
-                MaterialTheme.shapes.small
-            )
+            .border(1.dp, MaterialTheme.colorScheme.outline, MaterialTheme.shapes.medium)
             .padding(horizontal = 6.dp)
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
