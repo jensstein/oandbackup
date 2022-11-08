@@ -62,10 +62,6 @@ import timber.log.Timber
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
-    val context = LocalContext.current
-    val mainActivityX =
-        context as MainActivityX  //TODO is context always a MainActivityX? OABx.main seems to be more available
-    // TODO include tags in search
     val main = OABX.main!!
     val list by main.viewModel.packageList.observeAsState(null)
     val modelSortFilter by main.viewModel.modelSortFilter.collectAsState(main.sortFilterModel)
@@ -108,7 +104,7 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
     LaunchedEffect(list, modelSortFilter) {
         try {
             //viewModel.filteredList.value = list?.applyFilter(modelSortFilter, main)
-            OABX.main?.viewModel?.triggerPackageListConsumers()
+            main.viewModel.triggerPackageListConsumers()
         } catch (e: FileUtils.BackupLocationInAccessibleException) {
             Timber.e("Could not update application list: $e")
         } catch (e: StorageLocationNotConfiguredException) {
