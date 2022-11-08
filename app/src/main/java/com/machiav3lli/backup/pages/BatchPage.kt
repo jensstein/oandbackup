@@ -35,14 +35,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.ALT_MODE_APK
 import com.machiav3lli.backup.ALT_MODE_BOTH
 import com.machiav3lli.backup.ALT_MODE_DATA
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.Package
@@ -56,7 +55,6 @@ import com.machiav3lli.backup.ui.compose.theme.ColorAPK
 import com.machiav3lli.backup.ui.compose.theme.ColorData
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.applyFilter
 import com.machiav3lli.backup.utils.sortFilterModel
 import com.machiav3lli.backup.viewmodels.BatchViewModel
 import timber.log.Timber
@@ -68,10 +66,11 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
     val mainActivityX =
         context as MainActivityX  //TODO is context always a MainActivityX? OABx.main seems to be more available
     // TODO include tags in search
-    val list by mainActivityX.viewModel.packageList.observeAsState(null)
-    val modelSortFilter by mainActivityX.modelSortFilter.collectAsState(context.sortFilterModel)
-    val filteredList by viewModel.filteredList.observeAsState(null)
-    val query by mainActivityX.searchQuery.collectAsState(initial = "")
+    val main = OABX.main!!
+    val list by main.viewModel.packageList.observeAsState(null)
+    val modelSortFilter by main.viewModel.modelSortFilter.collectAsState(main.sortFilterModel)
+    val filteredList by main.viewModel.filteredList.observeAsState(null)
+    val query by main.viewModel.searchQuery.collectAsState(initial = "")
 
     val filterPredicate = { item: Package ->
         val includedBoolean = if (backupBoolean) item.isInstalled else item.hasBackups
@@ -100,7 +99,7 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
 
     val batchConfirmListener = object : BatchDialogFragment.ConfirmListener {
         override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {
-            mainActivityX.startBatchAction(backupBoolean, selectedPackages, selectedModes) {
+            main.startBatchAction(backupBoolean, selectedPackages, selectedModes) {
                 it.removeObserver(this)
             }
         }
@@ -108,7 +107,8 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
 
     LaunchedEffect(list, modelSortFilter) {
         try {
-            viewModel.filteredList.value = list?.applyFilter(modelSortFilter, context)
+            //viewModel.filteredList.value = list?.applyFilter(modelSortFilter, main)
+            OABX.main?.viewModel?.triggerPackageListConsumers()
         } catch (e: FileUtils.BackupLocationInAccessibleException) {
             Timber.e("Could not update application list: $e")
         } catch (e: StorageLocationNotConfiguredException) {
@@ -225,7 +225,7 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                             batchConfirmListener
                         )
                             .show(
-                                mainActivityX.supportFragmentManager,
+                                main.supportFragmentManager,
                                 "DialogFragment"
                             )
                     }
