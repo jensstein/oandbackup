@@ -17,7 +17,6 @@
  */
 package com.machiav3lli.backup.pages
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -42,7 +41,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -50,8 +48,8 @@ import com.machiav3lli.backup.ALT_MODE_APK
 import com.machiav3lli.backup.ALT_MODE_BOTH
 import com.machiav3lli.backup.ALT_MODE_DATA
 import com.machiav3lli.backup.ALT_MODE_UNSET
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.handler.LogsHandler
@@ -66,7 +64,6 @@ import com.machiav3lli.backup.ui.compose.recycler.HomePackageRecycler
 import com.machiav3lli.backup.ui.compose.recycler.UpdatedPackageRecycler
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.applyFilter
 import com.machiav3lli.backup.utils.sortFilterModel
 import com.machiav3lli.backup.viewmodels.HomeViewModel
 import timber.log.Timber
@@ -75,15 +72,15 @@ import timber.log.Timber
 @Composable
 fun HomePage(viewModel: HomeViewModel) {
     // TODO include tags in search
-    val context = LocalContext.current
-    val mainActivityX = context as MainActivityX
+    val main = OABX.main!!
     var appSheet: AppSheet? = null
-    val list by mainActivityX.viewModel.packageList.observeAsState(null)
-    val modelSortFilter by mainActivityX.modelSortFilter.collectAsState(context.sortFilterModel)
-    val filteredList by viewModel.filteredList.observeAsState(null)
-    val query by mainActivityX.searchQuery.collectAsState(initial = "")
-    val updatedApps = filteredList?.filter { it.isUpdated }
-    var updatedVisible by remember(viewModel.filteredList.value) { mutableStateOf(false) }
+
+    val list by main.viewModel.packageList.observeAsState(null)
+    val modelSortFilter by main.viewModel.modelSortFilter.collectAsState(main.sortFilterModel)
+    val filteredList by  main.viewModel.filteredList.observeAsState(null)
+    val updatedPackages by main.viewModel.updatedPackages.observeAsState(null)
+    val query by main.viewModel.searchQuery.collectAsState(initial = "")
+    var updaterExpanded by remember { mutableStateOf(false) }
 
     val filterPredicate = { item: Package ->
         query.isEmpty() || listOf(item.packageName, item.packageLabel)
@@ -93,7 +90,7 @@ fun HomePage(viewModel: HomeViewModel) {
 
     val batchConfirmListener = object : BatchDialogFragment.ConfirmListener {
         override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {
-            mainActivityX.startBatchAction(true, selectedPackages, selectedModes) {
+            main.startBatchAction(true, selectedPackages, selectedModes) {
                 it.removeObserver(this)
             }
         }
@@ -101,7 +98,8 @@ fun HomePage(viewModel: HomeViewModel) {
 
     LaunchedEffect(list, modelSortFilter) {
         try {
-            viewModel.filteredList.value = list?.applyFilter(modelSortFilter, context)
+            //main.viewModel.filteredList.value = list?.applyFilter(modelSortFilter, main)
+            //main.viewModel.triggerPackageListConsumers()
         } catch (e: FileUtils.BackupLocationInAccessibleException) {
             Timber.e("Could not update application list: $e")
         } catch (e: StorageLocationNotConfiguredException) {
@@ -114,12 +112,23 @@ fun HomePage(viewModel: HomeViewModel) {
     Scaffold(
         containerColor = Color.Transparent,
         floatingActionButton = {
-            AnimatedVisibility(
-                modifier = Modifier.padding(start = 28.dp),
-                visible = updatedApps?.isNotEmpty() ?: true
-            ) {
+            //AnimatedVisibility(
+            //    modifier = Modifier.padding(start = 28.dp),
+            //    visible = updatedApps?.isNotEmpty() ?: true
+            //) {
+            // AnimatedVisibility doesn't work, it hides the button and shows it when clicking refresh button
+            // none of the "visible" expressions work (hg42)
+            //AnimatedVisibility(
+            //    modifier = Modifier.padding(start = 26.dp),
+            //    //visible = !mainActivityX.viewModel.updatedPackages.value.isNullOrEmpty()
+            //    //visible = !updatedPackages.isNullOrEmpty()
+            //    visible = (updatedPackages?.size ?: 0) > 0
+            //)
+            if (!updatedPackages.isNullOrEmpty())
+            //if ((updatedPackages?.size ?: 0) > 0)
+            {
                 ExpandingFadingVisibility(
-                    expanded = updatedVisible,
+                    expanded = updaterExpanded,
                     expandedView = {
                         Column(
                             modifier = Modifier
@@ -140,10 +149,10 @@ fun HomePage(viewModel: HomeViewModel) {
                                     modifier = Modifier.weight(1f),
                                     text = stringResource(id = R.string.backup_all_updated),
                                 ) {
-                                    val selectedList = updatedApps.orEmpty()
+                                    val selectedList = updatedPackages.orEmpty()
                                         .map { it.packageInfo }
                                         .toCollection(ArrayList())
-                                    val selectedListModes = updatedApps.orEmpty()
+                                    val selectedListModes = updatedPackages.orEmpty()
                                         .mapNotNull {
                                             it.latestBackup?.let { bp ->
                                                 when {
@@ -163,7 +172,7 @@ fun HomePage(viewModel: HomeViewModel) {
                                             batchConfirmListener
                                         )
                                             .show(
-                                                mainActivityX.supportFragmentManager,
+                                                main.supportFragmentManager,
                                                 "DialogFragment"
                                             )
                                     }
@@ -173,16 +182,16 @@ fun HomePage(viewModel: HomeViewModel) {
                                     icon = Phosphor.CaretDown,
                                     withText = false
                                 ) {
-                                    updatedVisible = !updatedVisible
+                                    updaterExpanded = !updaterExpanded
                                 }
                             }
                             UpdatedPackageRecycler(
-                                productsList = updatedApps,
+                                productsList = updatedPackages,
                                 onClick = { item ->
                                     if (appSheet != null) appSheet?.dismissAllowingStateLoss()
                                     appSheet = AppSheet(item.packageName)
                                     appSheet?.showNow(
-                                        mainActivityX.supportFragmentManager,
+                                        main.supportFragmentManager,
                                         "Package ${item.packageName}"
                                     )
                                 }
@@ -192,19 +201,18 @@ fun HomePage(viewModel: HomeViewModel) {
                     collapsedView = {
                         val text = pluralStringResource(
                             id = R.plurals.updated_apps,
-                            count = updatedApps.orEmpty().size,
-                            updatedApps.orEmpty().size
+                            count = updatedPackages.orEmpty().size,
+                            updatedPackages.orEmpty().size
                         )
-
                         ExtendedFloatingActionButton(
                             text = { Text(text = text) },
                             icon = {
                                 Icon(
-                                    imageVector = if (updatedVisible) Phosphor.CaretDown else Phosphor.CircleWavyWarning,
+                                    imageVector = if (updaterExpanded) Phosphor.CaretDown else Phosphor.CircleWavyWarning,
                                     contentDescription = text
                                 )
                             },
-                            onClick = { updatedVisible = !updatedVisible }
+                            onClick = { updaterExpanded = !updaterExpanded }
                         )
                     }
                 )
@@ -220,7 +228,7 @@ fun HomePage(viewModel: HomeViewModel) {
                 if (appSheet != null) appSheet?.dismissAllowingStateLoss()
                 appSheet = AppSheet(item.packageName)
                 appSheet?.showNow(
-                    mainActivityX.supportFragmentManager,
+                    main.supportFragmentManager,
                     "Package ${item.packageName}"
                 )
             }

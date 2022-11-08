@@ -62,7 +62,6 @@ import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.fragments.SortFilterSheet
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
-import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
 import com.machiav3lli.backup.preferences.pref_catchUncaughtException
 import com.machiav3lli.backup.tasks.AppActionWork
@@ -92,8 +91,6 @@ import com.topjohnwu.superuser.Shell
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.system.exitProcess
@@ -110,16 +107,14 @@ class MainActivityX : BaseActivity() {
         get() = viewModel.isNeedRefresh.value ?: false
         set(value) = viewModel.isNeedRefresh.postValue(value)
 
-    private val _searchQuery = MutableSharedFlow<String>(replay = 1)
-    val searchQuery = _searchQuery.asSharedFlow()
-
     private lateinit var sheetSortFilter: SortFilterSheet
-    private val _modelSortFilter = MutableSharedFlow<SortFilterModel>()
-    val modelSortFilter = _modelSortFilter.asSharedFlow()
 
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         val context = this
+        //val freshStart = (OABX.main?.viewModel?.packageList?.value.isNullOrEmpty())
+        val freshStart = (savedInstanceState == null)
+        Timber.i("==================== activity ${this.localClassName} ${if (freshStart) "fresh started" else "already initialized"} (${OABX.main} vs $this)")
         OABX.activity = this
         OABX.main = this
 
@@ -151,22 +146,34 @@ class MainActivityX : BaseActivity() {
         Shell.getShell()
 
         viewModel.blocklist.observe(this) {
-            //needRefresh = true
-            OABX.main?.viewModel?.packageList?.postValue(OABX.main?.viewModel?.packageList?.value)
+            viewModel.triggerPackageListConsumers()
         }
-        viewModel.packageList.observe(this) { }
+        viewModel.filteredList.observe(this) { }
+        viewModel.packageList.observe(this) { pkgs ->
+            //crScope.launch {
+            //    try {
+            //        // throws: "pkgs must not be null"
+            //        viewModel.modelSortFilter.collectLatest { filter ->
+            //            viewModel.filteredList.postValue(pkgs.applyFilter(filter, OABX.main!!))
+            //        }
+            //    } catch(e: Throwable) {
+            //        LogsHandler.unhandledException(e)
+            //    }
+            //}
+        }
         viewModel.backupsMap.observe(this) { }
         viewModel.isNeedRefresh.observe(this) {
             if (it && OABX.busy.value == 0)
                 invalidateBackupLocation()
         }
 
-        runOnUiThread { showEncryptionDialog() }
+        if (freshStart)
+            runOnUiThread { showEncryptionDialog() }
 
         setContent {
             AppTheme {
                 val navController = rememberAnimatedNavController()
-                val query by searchQuery.collectAsState(initial = "")
+                val query by viewModel.searchQuery.collectAsState(initial = "")
                 val list by viewModel.packageList.observeAsState(null)
                 var pageTitle by remember {
                     mutableStateOf(NavItem.Home.title)
@@ -177,9 +184,9 @@ class MainActivityX : BaseActivity() {
                 }
 
                 SideEffect {
-                    crScope.launch { _searchQuery.emit("") }
-                    crScope.launch { _modelSortFilter.emit(sortFilterModel) }
-                    if (OABX.main?.viewModel?.packageList?.value.isNullOrEmpty())
+                    //crScope.launch { viewModel.searchQueryFlow.emit("") }  // don't clear the search box (e.g. on screen rotation)
+                    crScope.launch { viewModel.modelSortFilterFlow.emit(sortFilterModel) }
+                    if (freshStart)
                         needRefresh = true
                 }
 
@@ -230,13 +237,14 @@ class MainActivityX : BaseActivity() {
                         else Column() {
                             TopBar(title = stringResource(id = pageTitle)) {
                                 ExpandableSearchAction(
+                                    expanded = (query.length > 0),
                                     query = query,
                                     onQueryChanged = { newQuery ->
                                         if (newQuery != query)
-                                            crScope.launch { _searchQuery.emit(newQuery) }
+                                            crScope.launch { viewModel.searchQueryFlow.emit(newQuery) }
                                     },
                                     onClose = {
-                                        crScope.launch { _searchQuery.emit("") }
+                                        crScope.launch { viewModel.searchQueryFlow.emit("") }
                                     }
                                 )
                                 RoundButton(
@@ -381,7 +389,7 @@ class MainActivityX : BaseActivity() {
     }
 
     fun refreshView() {
-        crScope.launch { _modelSortFilter.emit(sortFilterModel) }
+        crScope.launch { viewModel.modelSortFilterFlow.emit(sortFilterModel) }
     }
 
     fun showSnackBar(message: String) {
