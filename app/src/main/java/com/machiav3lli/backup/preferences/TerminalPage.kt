@@ -32,7 +32,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -58,8 +57,10 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.beginBusy
 import com.machiav3lli.backup.OABX.Companion.endBusy
 import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
+import com.machiav3lli.backup.ui.compose.SelectionContainerX
 import kotlinx.coroutines.launch
 
 
@@ -74,14 +75,23 @@ fun DefaultPreview() {
 fun info(): List<String> {
     return listOf(
         "",
-        "---------- > info",
-        "${ BuildConfig.APPLICATION_ID} ${ BuildConfig.VERSION_NAME}",
-        "${utilBox.name} ${utilBox.version} ${
-            if (utilBox.isTestedVersion) "tested" else "untested"
-        }${
-            if (utilBox.hasBugDotDotDir) " bugDotDotDir" else ""
-        } -> score ${utilBox.score}",
-    )
+        "--- > info",
+        "${ BuildConfig.APPLICATION_ID} ${ BuildConfig.VERSION_NAME}"
+    ) + ShellHandler.utilBoxes.map { box ->
+            "${box.name}: ${
+                    if (box.version.isNotEmpty() and (box.version != "0.0.0"))
+                        "${box.version}${
+                            if (utilBox.isKnownVersion) "" else " (unknown)"
+                        } -> ${box.score}${
+                            if (box.hasBugs())
+                                " bugs: " + box.bugs.keys.joinToString(",")
+                            else
+                                " good, no known bugs"
+                        }"
+                    else
+                        box.reason
+                }"
+        }
 }
 
 fun shell(command: String): List<String> {
@@ -91,13 +101,15 @@ fun shell(command: String): List<String> {
         val result = runAsRoot(command)
         return listOf(
             "",
-            "---------- # $command -> ${result.code}"
+            "--- # $command -> ${result.code}"
         ) + result.err.map { "? $it" } + result.out
     } catch(e: Throwable) {
         return listOf(
             "",
-            "---------- # $command -> ERROR",
-            e::class.simpleName, e.message, e.cause?.message
+            "--- # $command -> ERROR",
+            e::class.simpleName,
+            e.message,
+            e.cause?.message
         ).filterNotNull()
     }
 }
@@ -198,6 +210,10 @@ fun TerminalPage() {
                     run("${utilBox.name} --version")
                     run("${utilBox.name} --help")
                 }
+                TerminalButton("log/int") {
+                    add(listOf("--- > last internal log messages"))
+                    add(OABX.lastLogMessages)
+                }
                 TerminalButton("log/app") {
                     run("logcat -d -t ${pref_maxLogLines.value} --pid=${Process.myPid()}")
                 }
@@ -216,7 +232,7 @@ fun TerminalPage() {
                         run("ls -l /data/user/0/$pkg")
                         run("ls -l /sdcard/Android/*/$pkg")
                     } else {
-                        add(listOf("--- no last error package"))
+                        add(listOf("--- ? no last error package"))
                     }
                 }
                 TerminalButton("ecmd") {
@@ -234,20 +250,20 @@ fun TerminalPage() {
                 .fillMaxSize()
                 .background(color = Color.Transparent)
             ) {
-                SelectionContainer {
+                SelectionContainerX {
                     LazyColumn(modifier = Modifier
                         .fillMaxSize(),
                         state = listState
                     ) {
                         items(output) {
                             if (it.startsWith("===") or it.startsWith("---"))
-                                Text(it,
+                                Text(if (it == "") " " else it,     //TODO hg42 workaround
                                     fontFamily = FontFamily.Monospace,
                                     fontSize = 10.sp,
                                     color = Color.Yellow
                                 )
                             else
-                                Text(it,
+                                Text(if (it == "") " " else it,     //TODO hg42 workaround
                                     fontFamily = FontFamily.Monospace,
                                     fontSize = 10.sp,
                                     color = Color.White

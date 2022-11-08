@@ -170,6 +170,14 @@ dependencies {
     val androidxTest = "1.4.0"
     implementation("androidx.test:rules:$androidxTest")
     androidTestImplementation("androidx.test:runner:$androidxTest")
+
+    // compose testing
+    //androidTestImplementation("androidx.ui:ui-test:$vCompose")
+    // Test rules and transitive dependencies:
+    androidTestImplementation("androidx.compose.ui:ui-test:$vCompose")
+    //androidTestImplementation("androidx.compose.ui:ui-test-junit4:$vCompose")
+    // Needed for createComposeRule, but not createAndroidComposeRule:
+    debugImplementation("androidx.compose.ui:ui-test-manifest:$vCompose")
 }
 
 // using a task as a preBuild dependency instead of a function that takes some time insures that it runs

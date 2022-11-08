@@ -1,3 +1,5 @@
+#!/system/bin/sh
+
 command=$1
 shift
 

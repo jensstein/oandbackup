@@ -18,28 +18,16 @@
 package com.machiav3lli.backup
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
-import com.machiav3lli.backup.preferences.pref_allowShadowingDefault
-import com.machiav3lli.backup.preferences.pref_biometricLock
-import com.machiav3lli.backup.preferences.pref_deviceLock
-import com.machiav3lli.backup.preferences.pref_encryption
-import com.machiav3lli.backup.preferences.pref_password
-import com.machiav3lli.backup.preferences.pref_pauseApps
-import com.machiav3lli.backup.preferences.pref_pmSuspend
-import com.machiav3lli.backup.preferences.pref_shadowRootFile
+import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.ui.item.ChipItem
 import com.machiav3lli.backup.ui.item.Legend
 import com.machiav3lli.backup.ui.item.Link
-import com.machiav3lli.backup.ui.item.Pref
-import com.machiav3lli.backup.utils.isBiometricLockAvailable
-import com.machiav3lli.backup.utils.isDeviceLockAvailable
-import com.machiav3lli.backup.utils.isDeviceLockEnabled
 import java.time.format.DateTimeFormatter
 
 const val PREFS_SHARED_PRIVATE = "com.machiav3lli.backup"
-const val EXPORTS_FOLDER_NAME = "EXPORTS"
-const val LOG_FOLDER_NAME = "LOGS"
+const val EXPORTS_FOLDER_NAME = "!-EXPORTS"
+const val LOG_FOLDER_NAME = "!-LOGS"
 
 const val LOG_INSTANCE = "%s.log"
 const val BACKUP_INSTANCE_PROPERTIES = "%s-user_%s.properties"
@@ -74,6 +62,11 @@ val themeItems = mutableMapOf(
 ).apply {
     if (OABX.minSDK(31)) set(THEME_DYNAMIC, R.string.prefs_theme_dynamic)
 }
+
+val BASIC_BUTTON_SIZE = 48.dp
+val BUTTON_ICON_SIZE = 24.dp
+val STANDALONE_ICON_SIZE = 48.dp
+val SMALL_ICON_SIZE = 32.dp
 
 val accentColorItems = mapOf(
     0 to R.string.prefs_accent_0,
@@ -215,6 +208,8 @@ val legendList = listOf(
     Legend.Launch,
     Legend.Disable,
     Legend.Enable,
+    Legend.Uninstall,
+    Legend.Block,
     Legend.System,
     Legend.User,
     Legend.Special,
@@ -224,7 +219,7 @@ val legendList = listOf(
     Legend.External,
     Legend.OBB,
     Legend.Media,
-    Legend.Updated
+    Legend.Updated,
 )
 
 val BACKUP_DATE_TIME_FORMATTER_OLD: DateTimeFormatter =

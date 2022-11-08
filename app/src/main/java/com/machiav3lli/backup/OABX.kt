@@ -39,8 +39,6 @@ import com.machiav3lli.backup.preferences.pref_cancelOnStart
 import com.machiav3lli.backup.preferences.pref_maxLogLines
 import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
-import com.machiav3lli.backup.utils.getDefaultSharedPreferences
-import com.machiav3lli.backup.utils.getPrivateSharedPrefs
 import com.machiav3lli.backup.utils.styleTheme
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -258,10 +256,10 @@ class OABX : Application() {
         val progress = mutableStateOf(Pair(false, 0f))
 
         fun setProgress(now: Int = 0, max: Int = 0) {
-            if (max > now)
+            if (max > now)  // not ">=", because max can be zero
                 progress.value = Pair(true, 1f * now / max)
             else
-                progress.value = Pair(false, 0f)
+                progress.value = Pair(false, 1f)
         }
 
         var busy = mutableStateOf(0)

@@ -29,7 +29,7 @@
         <item name="android:windowBackground">@android:color/white</item>
         <item name="backgroundColor">@android:color/white</item>
         <item name="colorBackgroundFloating">@color/app_primary_base</item>
-        <item name="android:statusBarColor">?colorSurface</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="dialogCornerRadius">8dp</item>
         <item name="colorControlNormal">@android:color/black</item>

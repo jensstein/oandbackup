@@ -148,11 +148,11 @@ class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHa
     ): Boolean = // stub
         false
 
-    override fun preprocessPackage(packageName: String) {
+    override fun preprocessPackage(type: String, packageName: String) {
         // stub
     }
 
-    override fun postprocessPackage(packageName: String) {
+    override fun postprocessPackage(type: String, packageName: String) {
         // stub
     }
 }

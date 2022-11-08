@@ -86,11 +86,11 @@ class RestoreSystemAppAction(context: Context, work: AppActionWork?, shell: Shel
         } ?: throw RestoreFailedException("Could not find apk location in backup")
     }
 
-    override fun preprocessPackage(packageName: String) {
+    override fun preprocessPackage(type: String, packageName: String) {
         // stub
     }
 
-    override fun postprocessPackage(packageName: String) {
+    override fun postprocessPackage(type: String, packageName: String) {
         // stub
     }
 }
