@@ -17,14 +17,14 @@
  */
 package com.machiav3lli.backup.pages
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -32,14 +32,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import com.machiav3lli.backup.BUTTON_ICON_SIZE
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.fragments.ScheduleSheet
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CalendarPlus
-import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.recycler.ScheduleRecycler
 import com.machiav3lli.backup.utils.specialBackupsEnabled
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
@@ -51,41 +50,39 @@ fun SchedulerPage(viewModel: SchedulerViewModel) {
     var sheetSchedule: ScheduleSheet? = null
     val schedules by viewModel.schedules.observeAsState(null)
 
-    Scaffold(containerColor = Color.Transparent) { paddingValues ->
-        Column {
-            ScheduleRecycler(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .weight(1f)
-                    .fillMaxWidth(),
-                productsList = schedules,
-                onClick = { item ->
-                    if (sheetSchedule != null) sheetSchedule?.dismissAllowingStateLoss()
-                    sheetSchedule = ScheduleSheet(item.id)
-                    sheetSchedule?.showNow(
-                        (context as MainActivityX).supportFragmentManager,
-                        "Schedule ${item.id}"
+    Scaffold(
+        containerColor = Color.Transparent,
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                text = { Text(stringResource(id = R.string.sched_add)) },
+                icon = {
+                    Icon(
+                        modifier = Modifier.size(BUTTON_ICON_SIZE),
+                        imageVector = Phosphor.CalendarPlus,
+                        contentDescription = stringResource(id = R.string.sched_add)
                     )
                 },
-                onCheckChanged = { item: Schedule, b: Boolean ->
-                    item.enabled = b
-                    viewModel.updateSchedule(item, true)
-                }
+                onClick = { viewModel.addSchedule(context.specialBackupsEnabled) }
             )
-            Row(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(horizontal = 8.dp)
-            ) {
-                ElevatedActionButton(
-                    text = stringResource(id = R.string.sched_add),
-                    modifier = Modifier.fillMaxWidth(),
-                    fullWidth = true,
-                    icon = Phosphor.CalendarPlus
-                ) {
-                    viewModel.addSchedule(context.specialBackupsEnabled)
-                }
-            }
         }
+    ) { paddingValues ->
+        ScheduleRecycler(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize(),
+            productsList = schedules,
+            onClick = { item ->
+                if (sheetSchedule != null) sheetSchedule?.dismissAllowingStateLoss()
+                sheetSchedule = ScheduleSheet(item.id)
+                sheetSchedule?.showNow(
+                    (context as MainActivityX).supportFragmentManager,
+                    "Schedule ${item.id}"
+                )
+            },
+            onCheckChanged = { item: Schedule, b: Boolean ->
+                item.enabled = b
+                viewModel.updateSchedule(item, true)
+            }
+        )
     }
 }

@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.items.Log
+import com.machiav3lli.backup.ui.compose.SelectionContainerX
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ShareNetwork
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
@@ -118,14 +118,14 @@ fun LogItem(
             }
 
             val lines = remember { mutableStateOf(item.logText?.lines() ?: listOf()) }
-            SelectionContainer {
-                Card(modifier = Modifier.fillMaxWidth()) {
-                    val maxLines = 20
-                    val typo = MaterialTheme.typography.bodySmall
+            Card(modifier = Modifier.fillMaxWidth()) {
+                val maxLines = 20
+                val typo = MaterialTheme.typography.bodySmall
+                SelectionContainerX {
                     if (lines.value.size < maxLines) {
                         Column {
                             lines.value.forEach {
-                                Text(text = it, style = typo)
+                                Text(text = if (it == "") " " else it, style = typo)    //TODO hg42 workaround
                             }
                         }
                     } else {
@@ -139,7 +139,7 @@ fun LogItem(
                                 state = listState
                             ) {
                                 items(lines.value) {
-                                    Text(text = it, style = typo)
+                                    Text(text = if (it == "") " " else it, style = typo)    //TODO hg42 workaround
                                 }
                             }
                         }

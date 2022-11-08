@@ -29,7 +29,6 @@ class BatchViewModel(appContext: Application) : AndroidViewModel(appContext) {
     val apkCheckedList = mutableSetOf<String>()
     val dataCheckedList = mutableSetOf<String>()
     val progress = MutableLiveData<Pair<Boolean, Float>>()
-    val refreshing = MutableLiveData<Boolean>()
 
     class Factory(
         private val application: Application

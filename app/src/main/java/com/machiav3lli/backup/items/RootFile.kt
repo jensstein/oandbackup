@@ -351,7 +351,19 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
     }
 
     fun readText(): String {
-        return runAsRoot("$utilBoxQ cat $quoted").out.joinToString("\n")
+        return runAsRoot("$utilBoxQ cat $quoted").out.joinToString("\n")    // 18 sec (same directory content)
+        //return inputStream().reader().readText()                                              // 37 sec
+    }
+
+    fun writeText(text: String) : Boolean {
+        return try {
+            outputStream().writer().use {
+                it.write(text)
+                true
+            }
+        } catch (e: Throwable) {
+            false
+        }
     }
 
     /**

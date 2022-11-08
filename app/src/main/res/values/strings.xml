@@ -167,8 +167,6 @@
     <string name="prefs_cancelonstart_summary" translatable="false">cancel all remaining jobs on OAndBackupX start [needs reboot]</string>
     <string name="prefs_usealarmclock_summary" translatable="false">use the alarm clock to schedule backups, this shows an alarm icon in the notification bar [needs reboot]</string>
     <string name="prefs_useexactalarm_summary" translatable="false">if not using useAlarmClock, then use exact alarms, otherwise use inexact alarms which may be better for battery [needs reboot]</string>
-    <string name="prefs_pauseapps_summary" translatable="false">pause apps during backups and restores to avoid inconsistent backups caused by ongoing file changes or other conflicts</string>
-    <string name="prefs_pmsuspend_summary" translatable="false">additionally use pm suspend command to pause apps</string>
     <string name="prefs_backuptarcmd_summary" translatable="false">use tar shell command for backup</string>
     <string name="prefs_restoretarcmd_summary" translatable="false">use tar shell command for restore</string>
     <string name="prefs_stricthardlinks_summary" translatable="false">for API tar only: unpack hard links as hard links (otherwise they become symlinks)</string>

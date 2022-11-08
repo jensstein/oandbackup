@@ -1,7 +1,6 @@
 package com.machiav3lli.backup.ui.compose.item
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.items.Package
@@ -43,7 +43,7 @@ fun UpdatedPackageItem(
         border = BorderStroke(0.dp, MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(LocalShapes.current.medium),
         colors = CardDefaults.outlinedCardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = Color.Transparent
         ),
         onClick = { onClick(item) },
     ) {
@@ -51,8 +51,7 @@ fun UpdatedPackageItem(
             modifier = Modifier
                 .padding(4.dp)
                 .requiredWidth(64.dp)
-                .clip(shape = RoundedCornerShape(8.dp))
-                .background(color = MaterialTheme.colorScheme.surface),
+                .clip(shape = RoundedCornerShape(8.dp)),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {

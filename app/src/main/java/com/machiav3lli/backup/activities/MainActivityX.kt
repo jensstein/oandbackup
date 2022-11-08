@@ -19,14 +19,12 @@ package com.machiav3lli.backup.activities
 
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Looper
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -53,6 +51,7 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.machiav3lli.backup.BASIC_BUTTON_SIZE
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.NAV_MAIN
 import com.machiav3lli.backup.OABX
@@ -84,7 +83,6 @@ import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.FileUtils.invalidateBackupLocation
 import com.machiav3lli.backup.utils.applyFilter
 import com.machiav3lli.backup.utils.destinationToItem
-import com.machiav3lli.backup.utils.getPrivateSharedPrefs
 import com.machiav3lli.backup.utils.getStats
 import com.machiav3lli.backup.utils.isEncryptionEnabled
 import com.machiav3lli.backup.utils.setCustomTheme
@@ -102,7 +100,6 @@ import kotlin.system.exitProcess
 
 class MainActivityX : BaseActivity() {
 
-    private lateinit var prefs: SharedPreferences
     private val crScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 
     val viewModel by viewModels<MainViewModel> {
@@ -113,7 +110,7 @@ class MainActivityX : BaseActivity() {
         get() = viewModel.isNeedRefresh.value ?: false
         set(value) = viewModel.isNeedRefresh.postValue(value)
 
-    private val _searchQuery = MutableSharedFlow<String>()
+    private val _searchQuery = MutableSharedFlow<String>(replay = 1)
     val searchQuery = _searchQuery.asSharedFlow()
 
     private lateinit var sheetSortFilter: SortFilterSheet
@@ -153,10 +150,9 @@ class MainActivityX : BaseActivity() {
 
         Shell.getShell()
 
-        prefs = getPrivateSharedPrefs()
-
         viewModel.blocklist.observe(this) {
-            needRefresh = true
+            //needRefresh = true
+            OABX.main?.viewModel?.packageList?.postValue(OABX.main?.viewModel?.packageList?.value)
         }
         viewModel.packageList.observe(this) { }
         viewModel.backupsMap.observe(this) { }
@@ -183,6 +179,8 @@ class MainActivityX : BaseActivity() {
                 SideEffect {
                     crScope.launch { _searchQuery.emit("") }
                     crScope.launch { _modelSortFilter.emit(sortFilterModel) }
+                    if (OABX.main?.viewModel?.packageList?.value.isNullOrEmpty())
+                        needRefresh = true
                 }
 
                 Scaffold(
@@ -191,11 +189,14 @@ class MainActivityX : BaseActivity() {
                     topBar = {
 
                         if (navController.currentDestination?.route == NavItem.Scheduler.destination)
-                            TopBar(title = stringResource(id = pageTitle)) {
+                            TopBar(
+                                title = stringResource(id = pageTitle)
+                            ) {
+
                                 RoundButton(
                                     modifier = Modifier
                                         .padding(horizontal = 4.dp)
-                                        .size(32.dp),
+                                        .size(BASIC_BUTTON_SIZE),
                                     icon = Phosphor.Prohibit,
                                     description = stringResource(id = R.string.sched_blocklist)
                                 ) {
@@ -221,7 +222,7 @@ class MainActivityX : BaseActivity() {
                                 RoundButton(
                                     modifier = Modifier
                                         .padding(horizontal = 4.dp)
-                                        .size(32.dp),
+                                        .size(BASIC_BUTTON_SIZE),
                                     description = stringResource(id = R.string.prefs_title),
                                     icon = Phosphor.GearSix
                                 ) { navController.navigate(NavItem.Settings.destination) }
@@ -241,28 +242,27 @@ class MainActivityX : BaseActivity() {
                                 RoundButton(
                                     modifier = Modifier
                                         .padding(horizontal = 4.dp)
-                                        .size(32.dp),
+                                        .size(BASIC_BUTTON_SIZE),
                                     description = stringResource(id = R.string.refresh),
                                     icon = Phosphor.ArrowsClockwise
                                 ) { OABX.main?.needRefresh = true }
                                 RoundButton(
                                     modifier = Modifier
                                         .padding(horizontal = 4.dp)
-                                        .size(32.dp),
+                                        .size(BASIC_BUTTON_SIZE),
                                     description = stringResource(id = R.string.prefs_title),
                                     icon = Phosphor.GearSix
                                 ) { navController.navigate(NavItem.Settings.destination) }
                             }
                             Row(
-                                modifier = Modifier
-                                    .background(MaterialTheme.colorScheme.surface)
-                                    .padding(horizontal = 8.dp),
+                                modifier = Modifier.padding(horizontal = 8.dp),
                                 horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 ElevatedActionButton(
                                     icon = Phosphor.Prohibit,
                                     text = stringResource(id = R.string.sched_blocklist),
-                                    positive = false
+                                    withText = false,
+                                    positive = false,
                                 ) {
                                     GlobalScope.launch(Dispatchers.IO) {
                                         val blocklistedPackages = viewModel.blocklist.value
@@ -284,7 +284,8 @@ class MainActivityX : BaseActivity() {
                                 ElevatedActionButton(
                                     icon = Phosphor.FunnelSimple,
                                     text = stringResource(id = R.string.sort_and_filter),
-                                    positive = true
+                                    withText = false,
+                                    positive = true,
                                 ) {
                                     sheetSortFilter = SortFilterSheet(
                                         getStats(

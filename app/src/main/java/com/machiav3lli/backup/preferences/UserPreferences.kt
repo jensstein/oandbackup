@@ -226,11 +226,3 @@ val pref_oldBackups = IntPref(
     entries = (1..30).toList(),
     defaultValue = 2
 )
-
-val pref_rememberFiltering = BooleanPref(
-    key = "user.rememberFiltering",
-    titleId = R.string.prefs_rememberfiltering,
-    summaryId = R.string.prefs_rememberfiltering_summary,
-    icon = Phosphor.FunnelSimple,
-    defaultValue = false
-)

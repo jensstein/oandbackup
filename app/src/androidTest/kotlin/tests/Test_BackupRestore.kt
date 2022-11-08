@@ -166,7 +166,7 @@ class Test_BackupRestore {
                 val name = "..dir"
                 val file = RootFile(dir, name)
                 fastCmd("$utilBoxQ mkdir -p ${file.quoted}")
-                checks["$name/type"] = { if (utilBox.hasBugDotDotDir) true else it.isDirectory }
+                checks["$name/type"] = { if (utilBox.hasBug("DotDotDir")) true else it.isDirectory }
                 contentCount++
             }
 

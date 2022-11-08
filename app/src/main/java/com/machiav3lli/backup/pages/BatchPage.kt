@@ -43,7 +43,6 @@ import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.ALT_MODE_APK
 import com.machiav3lli.backup.ALT_MODE_BOTH
 import com.machiav3lli.backup.ALT_MODE_DATA
-import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
@@ -68,15 +67,12 @@ import timber.log.Timber
 @Composable
 fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
     val context = LocalContext.current
-    val mainActivityX = context as MainActivityX
+    val mainActivityX = context as MainActivityX  //TODO is context always a MainActivityX? OABx.main seems to be more available
     // TODO include tags in search
     val list by mainActivityX.viewModel.packageList.observeAsState(null)
     val modelSortFilter by mainActivityX.modelSortFilter.collectAsState(context.sortFilterModel)
     val filteredList by viewModel.filteredList.observeAsState(null)
     val query by mainActivityX.searchQuery.collectAsState(initial = "")
-    OABX.main?.viewModel?.isNeedRefresh?.observeForever {
-        viewModel.refreshing.postValue(it)
-    }
 
     val filterPredicate = { item: Package ->
         val includedBoolean = if (backupBoolean) item.isInstalled else item.hasBackups
