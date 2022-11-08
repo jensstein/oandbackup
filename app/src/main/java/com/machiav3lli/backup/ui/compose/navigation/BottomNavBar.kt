@@ -43,9 +43,9 @@ fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
     }
 
     NavigationBar(
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = Color.Transparent,
         tonalElevation = 0.dp,
-        contentColor = MaterialTheme.colorScheme.onSurface
+        contentColor = MaterialTheme.colorScheme.onBackground
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination?.route
@@ -61,7 +61,8 @@ fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
                         contentDescription = stringResource(id = item.title),
                         modifier = Modifier
                             .background(
-                                if (selected) MaterialTheme.colorScheme.surfaceColorAtElevation(48.dp)
+                                if (selected) MaterialTheme.colorScheme
+                                    .surfaceColorAtElevation(48.dp)
                                 else Color.Transparent,
                                 CircleShape
                             )
@@ -85,7 +86,7 @@ fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
                         )
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    indicatorColor = MaterialTheme.colorScheme.surface,
+                    indicatorColor = MaterialTheme.colorScheme.background,
                     selectedIconColor = MaterialTheme.colorScheme.primary,
                     unselectedIconColor = MaterialTheme.colorScheme.onSurface,
                     unselectedTextColor = MaterialTheme.colorScheme.onSurface,

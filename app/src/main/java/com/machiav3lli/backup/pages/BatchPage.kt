@@ -17,7 +17,6 @@
  */
 package com.machiav3lli.backup.pages
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,7 +24,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -67,7 +65,8 @@ import timber.log.Timber
 @Composable
 fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
     val context = LocalContext.current
-    val mainActivityX = context as MainActivityX  //TODO is context always a MainActivityX? OABx.main seems to be more available
+    val mainActivityX =
+        context as MainActivityX  //TODO is context always a MainActivityX? OABx.main seems to be more available
     // TODO include tags in search
     val list by mainActivityX.viewModel.packageList.observeAsState(null)
     val modelSortFilter by mainActivityX.modelSortFilter.collectAsState(context.sortFilterModel)
@@ -161,9 +160,7 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                         ?.filter { ai -> backupBoolean || ai.hasData }?.size
             }
             Row(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(horizontal = 8.dp),
+                modifier = Modifier.padding(horizontal = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 StateChip(
