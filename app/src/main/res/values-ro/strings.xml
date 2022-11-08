@@ -208,7 +208,7 @@
     <string name="prefs_compression_level_summary">O valoare mai mică comprimă mai repede, însă are ca rezultat fișiere mai mari. O valoare mai mare comprimă mai bine, însă necesită mai mult timp.</string>
     <string name="prefs_allowdowngrade">Permite revenirea la versiuni anterioare</string>
     <string name="prefs_enablespecial_summary">Necesită încă testare intensivă, încearcă cunoscând pericolul că poate provoca bootloopuri. Feedbackul este mereu binevenit.</string>
-    <string name="prefs_allowdowngrade_summary">Permite restaurarea unor versiuni mai vechi a aplicațiilor instalate.</string>
+    <string name="prefs_allowdowngrade_summary">Permite restaurarea unor versiuni mai vechi a aplicațiilor instalate (se aplică numai versiunilor depanabile).</string>
     <string name="disablePackageTitle">Dezactivează aplicația pentru utilizatori</string>
     <string name="prefs_schedulesexportimport_summary">Exportă sau importă lista de planificări pe care le-ai creat.</string>
     <string name="copyOwnApkSuccess">APK-ul aplicației a fost copiat în directorul pentru backupuri</string>
@@ -270,4 +270,123 @@
     <string name="prefs_installerpackagename">Numele pachetului installerului:</string>
     <string name="prefs_sessionIinstaller">Folosește installerul sesiunii</string>
     <string name="prefs_sessionIinstaller_summary">Folosește installerul sesiunii în locul installerului de bază. Mai lent, însă evită problemele cu Android 13+</string>
+    <string name="prefs_squeezenavtext_summary">Permite redimensionarea textului de sub elementele din bara de navigare pentru a se potrivi lățimii disponibile.</string>
+    <string name="app_info"/>
+    <string name="wait_noappslist"/>
+    <string name="prefs_accent_2"/>
+    <string name="prefs_accent_3"/>
+    <string name="prefs_secondary_4"/>
+    <string name="root_is_mandatory"/>
+    <string name="prefs_accent_4"/>
+    <string name="prefs_restoreavoidtempcopy_summary" translatable="false"/>
+    <string name="prefs_maxcrashlines_summary" translatable="false"/>
+    <string name="prefs_cachefilelists_summary" translatable="false"/>
+    <string name="prefs_maxretriesperpackage_summary" translatable="false"/>
+    <string name="all"/>
+    <string name="batch"/>
+    <string name="dismiss"/>
+    <string name="enabled"/>
+    <string name="root_missing"/>
+    <string name="prefs_refreshappinfotimeout_summary" translatable="false"/>
+    <string name="prefs_usefindls_summary" translatable="false"/>
+    <string name="prefs_allowshadowingdefault_summary" translatable="false"/>
+    <string name="prefs_user_short"/>
+    <string name="error_creating_notification_channel"/>
+    <string name="spec_appwidgets"/>
+    <string name="spec_smsmmsjson"/>
+    <string name="app_s_icon"/>
+    <string name="prefs_usecolumnnamesaf_summary" translatable="false"/>
+    <string name="noSu"/>
+    <string name="prefs_useforeground_summary" translatable="false"/>
+    <string name="encrypted_data_title"/>
+    <string name="bothBackedUp"/>
+    <string name="prefs_secondary_6"/>
+    <string name="smsmms_permission_title"/>
+    <string name="finished"/>
+    <string name="prefs_delaybeforerefreshappinfo_summary" translatable="false"/>
+    <string name="dialog_export_schedules"/>
+    <string name="prefs_service_short">Serviciu</string>
+    <string name="prefs_advanced_short">Avansate</string>
+    <string name="prefs_tools_short">Instrumente</string>
+    <string name="shellReturnError"/>
+    <string name="apptype_special"/>
+    <string name="spec_fingerprint"/>
+    <string name="contacts_permission_title"/>
+    <string name="prefs_secondary_8"/>
+    <string name="dialogCancelAll"/>
+    <string name="shellReturnSuccess"/>
+    <string name="prefs_secondary_3"/>
+    <string name="calllogs_permission_title"/>
+    <string name="prefs_unset"/>
+    <string name="deleted_backup"/>
+    <string name="prefs_useexpedited_summary" translatable="false"/>
+    <string name="shareTitle"/>
+    <string name="last_backup_title"/>
+    <string name="supended_apps_cleanup"/>
+    <string name="restart_dialog"/>
+    <string name="dialogSave"/>
+    <string name="grant_contacts_message"/>
+    <string name="no_file_manager_title"/>
+    <string name="error_datachanged"/>
+    <string name="home">Pagină de start</string>
+    <string name="app_name" translatable="false"/>
+    <string name="utilboxCheck" translatable="false"/>
+    <string name="mkfileError"/>
+    <string name="fallbackToDefault"/>
+    <string name="backupFailure"/>
+    <string name="uninstallFailure"/>
+    <string name="errorDialogTitle"/>
+    <string name="prefs_accent_7"/>
+    <string name="prefs_accent_8"/>
+    <string name="prefs_secondary_0"/>
+    <string name="prefs_secondary_1"/>
+    <string name="prefs_secondary_2"/>
+    <string name="spec_calllogsjson"/>
+    <string name="spec_bluetooth"/>
+    <string name="spec_data"/>
+    <string name="spec_wallpaper"/>
+    <string name="logfileSavedAt" translatable="false"/>
+    <string name="see_faq"/>
+    <string name="prefs_multilineinfochips">Cipuri informative pe mai multe linii</string>
+    <string name="prefs_multilineinfochips_summary">Permite cipuri informative în secțiunea aplicației să se întindă pe mai multe rânduri.</string>
+    <string name="prefs_squeezenavtext">Strânge textul elementului de navigare</string>
+    <string name="prefs_showinfologbar_summary" translatable="false"/>
+    <string name="prefs_stopcont"/>
+    <string name="prefs_usepackagecacheonupdate_summary" translatable="false"/>
+    <string name="prefs_cancelonstart_summary" translatable="false"/>
+    <string name="prefs_usealarmclock_summary" translatable="false"/>
+    <string name="prefs_useexactalarm_summary" translatable="false"/>
+    <string name="prefs_pauseapps_summary" translatable="false"/>
+    <string name="prefs_pmsuspend_summary" translatable="false"/>
+    <string name="prefs_backuptarcmd_summary" translatable="false"/>
+    <string name="prefs_stricthardlinks_summary" translatable="false"/>
+    <string name="prefs_shadowrootfile_summary" translatable="false"/>
+    <string name="prefs_catchuncaughtexception_summary" translatable="false"/>
+    <string name="prefs_invalidateselective_summary" translatable="false"/>
+    <string name="prefs_cacheuris_summary" translatable="false"/>
+    <string name="prefs_fakebackupseconds_summary" translatable="false"/>
+    <string name="shell_initproblem"/>
+    <string name="prefs_accent_0"/>
+    <string name="prefs_accent_1"/>
+    <string name="prefs_cachepackages_summary" translatable="false"/>
+    <string name="prefs_restoretarcmd_summary" translatable="false"/>
+    <string name="prefs_assemblefilelistonestep_summary" translatable="false"/>
+    <string name="spec_accounts"/>
+    <string name="spec_wifiAccessPoints"/>
+    <string name="place_holder" translatable="false"/>
+    <string name="write_apps_list_filtered"/>
+    <string name="write_apps_list_all"/>
+    <string name="logs_share_failed"/>
+    <string name="prefs_accent_5"/>
+    <string name="prefs_accent_6"/>
+    <string name="prefs_secondary_5"/>
+    <string name="prefs_stopcont_summary"/>
+    <string name="prefs_secondary_7"/>
+    <string name="prefs_theme_dynamic"/>
+    <string name="prefs_acquirewakelock_summary"/>
+    <string name="logs_text_empty"/>
+    <string name="prefs_dev_settings"/>
+    <string name="prefs_dev_settings_summary"/>
+    <string name="prefs_nobackupdata_summary">Fă backup fișierelor din datele care sunt etichetate ca nefiind destinate backupurilor</string>
+    <string name="prefs_nobackupdata">Fă backup fișierelor no_backup</string>
 </resources>
