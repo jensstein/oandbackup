@@ -73,7 +73,7 @@ class LogViewModel(private val appContext: Application) : AndroidViewModel(appCo
                         action = Intent.ACTION_SEND
                         type = "text/*"
                         flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                        putExtra(Intent.EXTRA_SUBJECT, log.name)
+                        putExtra(Intent.EXTRA_SUBJECT, "[NeoBackup] ${log.name}")
                         if (asFile)
                             putExtra(Intent.EXTRA_STREAM, log.uri)  // send as file
                         else
@@ -91,7 +91,8 @@ class LogViewModel(private val appContext: Application) : AndroidViewModel(appCo
     fun deleteLog(log: Log) {
         viewModelScope.launch {
             delete(log)
-            refreshList()
+            logsList.remove(log)
+            //refreshList()
         }
     }
 

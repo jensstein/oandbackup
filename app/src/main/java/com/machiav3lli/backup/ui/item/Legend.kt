@@ -14,9 +14,11 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.GameController
 import com.machiav3lli.backup.ui.compose.icons.phosphor.HardDrives
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Leaf
 import com.machiav3lli.backup.ui.compose.icons.phosphor.PlayCircle
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Prohibit
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ProhibitInset
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ShieldCheckered
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Spinner
+import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
 import com.machiav3lli.backup.ui.compose.icons.phosphor.User
 
 data class Legend(
@@ -43,6 +45,14 @@ data class Legend(
         val Enable = Legend(
             R.string.enablePackage,
             Phosphor.Leaf
+        )
+        val Uninstall = Legend(
+            R.string.uninstall,
+            Phosphor.TrashSimple
+        )
+        val Block = Legend(
+            R.string.global_blocklist_add,
+            Phosphor.Prohibit
         )
         val System = Legend(
             R.string.radio_system,

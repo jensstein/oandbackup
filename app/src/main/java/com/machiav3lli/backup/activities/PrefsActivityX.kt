@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.machiav3lli.backup.BASIC_BUTTON_SIZE
 import com.machiav3lli.backup.NAV_PREFS
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
@@ -68,6 +69,7 @@ class PrefsActivityX : BaseActivity() {
         OABX.activity = this
         setCustomTheme()
         super.onCreate(savedInstanceState)
+
         setContent {
             AppTheme {
                 val navController = rememberAnimatedNavController()
@@ -90,7 +92,7 @@ class PrefsActivityX : BaseActivity() {
                                     RoundButton(
                                         modifier = Modifier
                                             .padding(horizontal = 4.dp)
-                                            .size(32.dp),
+                                            .size(BASIC_BUTTON_SIZE),
                                         icon = Phosphor.Info,
                                         description = stringResource(id = R.string.help),
                                     ) {

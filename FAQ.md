@@ -17,20 +17,22 @@
 * [At restore the data directory of the app does not exist.](#at-restore-the-data-directory-of-the-app-does-not-exist)
 * [How can I backup SMS &amp; Call log?](#how-can-i-backup-sms--call-log)
 * [Are you going to support older Android versions?](#are-you-going-to-support-older-android-versions)
+* [Can I use NB to switch to a new device / new OS / new Custom ROM / new major release of my ROM?](#can-i-use-nb-to-switch-to-a-new-device--new-os--new-custom-rom--new-major-release-of-my-rom)
 * [Why do I have to login/register to app x y z again after restore?](#why-do-i-have-to-loginregister-to-app-x-y-z-again-after-restore)
 * [Why is it not recommended to backup system apps?](#why-is-it-not-recommended-to-backup-system-apps)
+* [Can I backup and restore the settings of NB?](#can-i-backup-and-restore-the-settings-of-nb)
 * [Is there a roadmap / an overview of features planned to be implemented?](#is-there-a-roadmap--an-overview-of-features-planned-to-be-implemented)
 * [What is the difference to implementations like Seedvault?](#what-is-the-difference-to-implementations-like-seedvault)
 * [What is the difference to the famous Titanium Backup?](#what-is-the-difference-to-the-famous-titanium-backup)
 * [How can I open encrypted backups on my computer?](#how-can-i-open-encrypted-backups-on-my-computer)
 * [What does the notification of schedules and batch jobs tell me?](#what-does-the-notification-of-schedules-and-batch-jobs-tell-me)
-* [Does NB support multi-user setups / work-profile?](#does-nb-support-multi-user-setups--work-profile) 
+* [Does NB support multi-user setups / work-profile?](#does-nb-support-multi-user-setups--work-profile)
 
 ### What is Neo Backup?
 
-Neo Backup (short NB) is a fork of [OAndBackup](https://gitlab.com/jensstein/oandbackup) (which is inactive) with the aim to keep such a great and useful FOSS backup and recovery tool alive beyond 202x. 
+Neo Backup (short NB) is a fork of [OAndBackup](https://gitlab.com/jensstein/oandbackup) (which is inactive) with the aim to keep such a great and useful FOSS backup and recovery tool alive beyond 202x.
 
-Most of the functionality and UI of the app was rewritten und now it shoud get more stable. It is also a goal to add features which could ease the backup/restore workflow with any device.
+Most of the functionality and UI of the app was rewritten and it already got more stable. It is also a goal to add features which could ease the backup/restore workflow with any device.
 
 NB requires root and allows you to backup individual apps and their data. Both backup and restore of individual programs one at a time, batch backup and restore of multiple programs, as well as scheduled backups are supported.
 
@@ -43,7 +45,7 @@ OAndBackupX (short OABX) was the former name of the project. You may find some r
 ### Which Android Versions are supported?
 
 Oldest supported version: Android  8 - "Oreo" </br>
-Newest supported version: Android 12 - "Snow Cone"
+Newest supported version: Android 13 - "Tiramisu"
 
 See also - [Are you going to support older Android versions?](#are-you-going-to-support-older-android-versions)
 
@@ -59,7 +61,8 @@ There are 4 screens/tabs:<br/>
 3. Batch - Restore
 4. Scheduled backups
 
-The fifth and very right icon of the menu-bar will open the preferences.
+The preferences can opened via button in the upper right corner (fifth and very right icon of the menu-bar until v8.2.0).
+
 A safe way to start is to do some backup and restore tests of an uncritical app via AppSheet.
 Go forward and backup multiple apps via Batch and finally define schedules e.g. with Custom lists.
 
@@ -74,15 +77,15 @@ Each backup basically consists of the two different parts:
 2. its **data** (created while using an app, settings, etc.)
    The data can be split again into several data types:
 
-   2.1. ***"normal" data*** 
-   
+   2.1. ***"normal" data***
+
       <details><summary>Show details ...</summary>
-   
+
         - Stored usually in /data/data
         - Default is set to include it in the backup
-   
+
       </details>     
-   
+
    2.2. ***external*** data
 
       <details><summary>Show details ...</summary>
@@ -91,16 +94,16 @@ Each backup basically consists of the two different parts:
        - Default is set to not include it in the backup (possibility to enable in prefs)
 
       </details>        
-   
+
    2.3. ***obb*** files
 
       <details><summary>Show details ...</summary>
-   
+
         - Stored usually in /Android/obb/ in the external storage (internal storage in android current terminology)
         - Default is set to not include it in the backup (possibility to enable in prefs)
 
       </details>     
-   
+
    2.4. ***device protected*** data
 
       <details><summary>Show details ...</summary>
@@ -113,7 +116,7 @@ Each backup basically consists of the two different parts:
         - It is also called Device Encrypted (user_*DE*) Data because it is encrypted by a key which is tied to the physical device
         - there are a lot of articles our there which explains it more in detail and the difference to credential encrypted storage (CES)
           e.g. this one: https://lampham.medium.com/device-encrypted-storage-and-direct-boot-mode-in-android-6e5e25d173f3
-        - if apps store importend data in this area depends on how the developer in charge has implemented it 
+        - if apps store importend data in this area depends on how the developer in charge has implemented it
         - Default is set to include it in the backup
 
       </details>     
@@ -121,7 +124,7 @@ Each backup basically consists of the two different parts:
    2.5. ***media***
 
       <details><summary>Show details ...</summary>   
-   
+
         - this type is related to a controversial change that originally was slated for Android 10
           it is mandatory for all new apps since August 2020 and/or every app targeting Android 11 (SDK 30)
         - the main thing here is called "Scoped Storage"
@@ -142,22 +145,25 @@ Each backup basically consists of the two different parts:
       <details><summary>Show details ...</summary>   
 
         - Default is set to not include it in backups
-   
+
       </details>     
-   
-   
+
+
 You can individually choose which parts you want to include in the backup --> as global setting in preferences, (beginning with version NB [OABX] 6.x) per schedule or even per App.
 
 ### What are Special Backups?
 
 Special backups describes system data that's bound to the user and not to certain apps. </br>***Enable special backups in advanced prefs to see them.***</br>
 
-Beginning with version 8 some of them are supported. 
+Beginning with version 8 some of them are supported.
 * SMS/MMS
 * Call-logs
-* Wifi Access Points
+* Wifi Access Points (user reported differently, but should work -> reboot after restore)
+* Bluetooth (also reported working by some user)
 
+Enable them in the preferences. NB will ask for the needed privileges for SMS and Call-Logs after a restart (of NB).<br/>
 See also [How can I backup SMS &amp; Call log?](#how-can-i-backup-sms--call-log)
+
 For all the others NB does not provide full support right now, try with your own responsibility.
 
 ### Do I need a rooted phone?
@@ -212,7 +218,7 @@ Users tend to ask for use RootFile access instead. It is about toybox capabiliti
 If you want to try what's there, you need to enable allowShadowingDefault at first and then you can switch RootFile on with shadowRootFileForSAF.
 This works by searching for parts of the shitty uri scheme (you see it in the setting for the backup directory) in certain places. If it is found, then it's used, otherwise it falls back to SAF.
 
-</details> 
+</details>
 
 ### So why use SAF then?
 
@@ -322,7 +328,7 @@ The time difference (for most of the test-tasks shown here) is due to:
 - (no external sd-card support )
 
 </details>   
-   
+
 ### I do not see any apps in the list. What can be the reason?
 
 In most cases the you choose a special Android folder for your backups. (e.g. common mistake is root '/storage/emulated/0' or the "Downloads" folder)
@@ -337,12 +343,12 @@ Another mistake, which might happen is, that you set a filters, which lead to an
 
 > "There's no file manager to manage SAF. Maybe you've disabled the built-in file manager. Please restore it or re-enable it."
 
-You may wanna read about [SAF](#why-is-nb-so-slow) first. 
+You may wanna read about [SAF](#why-is-nb-so-slow) first.
 
-   This message and the details already tell you what's wrong. You have to have the default file manager app (normally called "Files") installed, which is an integral part of the system and is not supposed to be removed nor disabled. It's not just an app to read, copy, move files. SAF framework uses it as a provider e.g. for the file selection dialog (which is also needed by other apps, not only for NB). Afawk other file managers can't do that. 
+   This message and the details already tell you what's wrong. You have to have the default file manager app (normally called "Files", package name: `com.android.documentsui`) installed, which is an integral part of the system and is not supposed to be removed nor disabled. It's not just an app to read, copy, move files. SAF framework uses it as a provider e.g. for the file selection dialog (which is also needed by other apps, not only for NB). Afawk other file managers can't do that.
 
-   It is not yet known if other SAF supporting file manager can take over that job, e.g. if they are installed as system app, or if there's more to it (feel free to report if you find a way to replace the default file manager). 
-A lot of users (including some contributors to NB) use e.g. MiXplorer for file management too, as it is much more advanced than the stock one, but still the default one stays. It doesn't hurt anyway.
+   It is not yet known if other SAF supporting file manager can take over that job, e.g. if they are installed as system app, or if there's more to it (feel free to report if you find a way to replace the default file manager).
+A lot of users (including some contributors to NB) use e.g. MiXplorer (see also https://github.com/Magisk-Modules-Alt-Repo/MiXplorer/issues/11 ) for file management too, as it is much more advanced than the stock one, but still the default one stays. It doesn't hurt anyway.
 
    The "Files" app doesn't take any resources that would be freed by disabling it. So it's not worth to even think about it.
 When weighing the risk of damaging something vs. the expected gain (~zero) it should be very clear.
@@ -354,7 +360,7 @@ When weighing the risk of damaging something vs. the expected gain (~zero) it sh
 ### I do not see the app which is currently backed up in the notification during batch or scheduled backups.
 
 *obsolate beginning with version 8* - see also [What does the notification of schedules and batch jobs tell me?](#what-does-the-notification-of-schedules-and-batch-jobs-tell-me)
-   
+
 To optimize the performance of scheduled and batch backups, these tasks are executed in parallel, based on the amount of cores, your SOC's CPU contains.
 So notification always shows the last app backup, which was started on whatever free core of your SOC's CPU.
 
@@ -378,20 +384,32 @@ In newer Android versions every app directory is mounted and usually only visibl
 
 NB is using
 
-`kill -STOP PID` </br>
-`kill -CONT PID`
+```
+   kill -STOP PID
+```
+before and
+```
+   kill -CONT PID
+```
+after backups if backupPauseApps is enabled in developer settings.
+It also uses
+```
+   pm suspend the.package.name
+```
+```
+   pm unsuspend the.package.name
+```
 
-and
-
-`pm suspend the.package.name` </br>
-`pm unsuspend the.package.name`
-
-`kill -STOP` </br>
-is used per default
-
-when pauseApps is enabled in developer settings
-pmSuspend is additional (only active if pauseApps is also enabled)
+if backupSuspendApps is also set (only active if backupPauseApps is also enabled)
    
+NB uses
+
+```
+   am stop-app the.package.name || am force-stop the.package-name
+```
+
+before a restore if restoreKillApps is enabled.
+
 ### How can I backup SMS & Call log?
 
 Generally please see [What are Special Backups?](#what-are-special-backups) first.
@@ -399,24 +417,38 @@ Generally please see [What are Special Backups?](#what-are-special-backups) firs
 **SMS/MMS and Call-logs** </br>
 NB starts supporting backup SMS/MMS and Call logs beginning with version 8. The current implementation (of [DL](https://github.com/dl200010)) writes all the details into a JSON format.
 
-The Call-Logs are saved in data providers like some other special data (com.android.providers.telephony). Sometimes you would need to restart after restoring its data. 
+The Call-Logs are saved in data providers like some other special data (`com.android.providers.telephony`). Sometimes you would need to restart after restoring its data.
 
-Next to this users asked quite often about **contacts, calendar** and todo-lists: 
+Next to this users asked quite often about **contacts, calendar** and todo-lists:
 We advice to use [DecSync](https://github.com/39aldo39/DecSync) with its diverse apps.
 Alternatively use a CalDAV/CardDAV management app (like DavX5) and sync them with a trustworthy mail provider account (or your private Mailserver, a Nextcloud, etc. etc.).
 
-For contacts it should also work to back up the data of "Contacts Storage" (package com.android.providers.contacts) system app. 
+For contacts it should also work to back up the data of "Contacts Storage" (package `com.android.providers.contacts`) system app.
 Restoring it later on should restore contacts fine, but it's not guaranteed. Up to now it's not implemented as a [special backup](#what-are-special-backups) by NB.
 
 ### Are you going to support older Android versions?
 
-No, Non, No, No, Nein, Nej, Niet, La... in seeable future, maybe this would change in the far future... 
+No, Non, No, No, Nein, Nej, Niet, La... in see-able future, maybe this would change in the far future... 
 Android 7 "Nougat" and older Android version support dropped in NB (OABX) v3.1.0.
+Last v7 supporting release: https://github.com/NeoApplications/Neo-Backup/releases/tag/3.0.0
+Still the minimum SDK in that Version might be an issue (to install it on a newer Android Version), so probably not really helpful.
+
 See also - [Which Android Versions are supported?](#which-android-versions-are-supported)
+
+### Can I use NB to switch to a new device / new OS / new Custom ROM / new major release of my ROM?
+
+If you're trying to backup, flash, restore and go on with the new installation (more or less exactly) as you left your previous setup, then there is bad news for you:
+- The system configuration is not only done with apps and app's data. [NB can only backup apps+related data](#what-is-neo-backup) and certain system files, via [special backups](#what-are-special-backups).
+- for system apps and their configuration, also see the chapter: [Why is it not recommended to backup system apps?](#why-is-it-not-recommended-to-backup-system-apps)
+
+So the best you can do, is backing up all your user apps + all data types and also try the special backups (see the related chapter what is currently supported) and start flashing.
+Note: If you're using banking apps, TAN generators etc., the [app may use Android Keystore](#why-do-i-have-to-loginregister-to-app-x-y-z-again-after-restore) and won't launch once /data partition was deleted because they won't get their secret keys anymore. So be prepared, that you might have to link and login apps again.
+
+More detailed articles about - how to properly backup your device - would be great, but it comes with lots of caveats due to variety of devices and versions. So it is a challenge to keep/word this as general as possible, as well as keeping it up to date (which is also true for this FAQ itself). If you have the knowledge and time to prepare such guidance for anyone, who's really interested in doing it right, we are happy about any participation.
 
 ### Why do I have to login/register to app x y z again after restore?
 
-All apps which use the Android keystore can basically not be backup up, as the keystore is encrypted. Data restore might work but login have to be performed again (same for phone number registration for messengers)
+All apps which use the Android Keystore can basically not be backup up, as the Keystore is encrypted. Data restore might work but login have to be performed again (same for phone number registration for messengers)
 Here are several examples - e.g.:
 
 - Nextcloud
@@ -431,6 +463,36 @@ Here are several examples - e.g.:
 - ... as they change over the android version and restore might un-stabilize the system
 - You've done your backup on 4.0.0, then you should place the data you want to restore at the same directory as when they got backed up.
   - --> In 5.0.0 this is already fixed. 
+
+### Can I backup and restore the settings of NB?
+
+It's somewhere on the [todo list](#is-there-a-roadmap--an-overview-of-features-planned-to-be-implemented) ...
+
+Up to now you only have the possibility to (all the options are in preferences -> Tools):
+- Copy the APK of NB into the backup folder (useful to ramp up a new device)
+- Export/Import the schedules
+- Save a list of your apps
+
+A workaround for the settings for now (you're all root users, so capable of copying root files, right? [you should be]):
+
+Let's comment on some of the files:
+`/data/user/0/com.machiav3lli.backup/no_backup/androidx.work.workdb-shm`
+`/data/user/0/com.machiav3lli.backup/no_backup/androidx.work.workdb-wal`
+`/data/user/0/com.machiav3lli.backup/no_backup/androidx.work.workdb`
+this is the queue that is persistent through boot
+
+`/data/user/0/com.machiav3lli.backup/shared_prefs/com.machiav3lli.backup_preferences.xml`
+all preferences excluding the password
+
+`/data/user/0/com.machiav3lli.backup/shared_prefs/com.machiav3lli.backup.xml`
+This contains the password (in case you use encryption) and it's encrypted by a key stored in Keystore, so no backup possible, you need to enter it again
+
+`/data/user/0/com.machiav3lli.backup/databases/main.db`
+`/data/user/0/com.machiav3lli.backup/databases/main.db-shm`
+`/data/user/0/com.machiav3lli.backup/databases/main.db-wal`
+should includes the blocklist and schedules etc. ()"should" ... there were individual databases at some point...)
+
+You can look into the database with an SQLite editor app, e.g. MixPlorer can do it or you may use the app "SQLite Editor" (com.speedsoftware.sqleditor) or any other sqlite app.
 
 ### Is there a roadmap / an overview of features planned to be implemented?
 
@@ -449,7 +511,7 @@ Seedvault repo can be found here: https://github.com/seedvault-app/seedvault - c
 | root necessary? | [yes](#do-i-need-a-rooted-phone) | no |
 | encrypted backup | yes (optional) | yes |
 | automatic backup | yes (individual schedules) | yes (daily) |
-| usable For | [A8-A12](#which-android-versions-are-supported) | A11; but branches for from A9 to A12; also integrated into known Custom ROMs CalyxOS, GrapheneOS, [LOS](https://www.xda-developers.com/lineageos-seedvault-open-source-backup-solution/) |
+| usable For | [A8-A13](#which-android-versions-are-supported) | A13; but branches for from A9 to A12; also integrated into known Custom ROMs CalyxOS, GrapheneOS, [LOS](https://www.xda-developers.com/lineageos-seedvault-open-source-backup-solution/) |
 | Considers 'allowbackup' flag of apps? | no | yes |
 | OS-/Rom integrated | no (dedicated app) | yes |
 | Choose backup location possibility? | yes | yes |
@@ -477,7 +539,7 @@ Here is a quick status overview, what NB is capable of - to be edited.
 | Backup/restore regular apps + their settings | YES |
 | Backup/restore protected apps + their settings | PROBABLY (what is it exactly? - maybe device protected data? -> YES) |
 | Backup/restore system apps + their settings (incl. Wi-Fi AP list) | YES (some system data, called special backups, "package" names special.*, label starts with $) |
-| Backup/restore external app data | YES (external_data, obb, media) | 
+| Backup/restore external app data | YES (external_data, obb, media) |
 | Restores the Market links when restoring apps | NO |
 | Zero-click background batch backup | YES (batch backup, but what is zero click?) |
 | Interactive batch restore | NO |
@@ -489,7 +551,7 @@ Here is a quick status overview, what NB is capable of - to be edited.
 | Desktop widgets | YES (but I guess it only works for stock (like) launchers) |
 | A single weekly or biweekly scheduled backup | YES (any schedules) |
 | User-defined apps lists with filtering, coloring and scheduling support | TB has better filtering support...e.g. tags |
-| Built-in Android Market information viewer (Android 2.0+) | ??? | 
+| Built-in Android Market information viewer (Android 2.0+) | ??? |
 | Ability to remove orphan app data | NO (at least not as a batch, can TB do this? don't remember) |
 | Multiple backups per app (history length can be chosen) | YES (TB can also throw backups for a filtered list) |
 | Zero-click background batch restore | YES (but again, what is zero click?) |
@@ -502,8 +564,8 @@ Here is a quick status overview, what NB is capable of - to be edited.
 | Convert users apps to system apps | NO |
 | Ultra fast HyperShell (much faster for almost everything) | NO (not sure how fast this is, NB currently uses toybox, which might also be fast) |
 | App freezer can disable an app (and make it invisible) without un-installing it | YES |
-| Batch app freezing/defrosting | NO (TB can do many operations in batch mode with all it's power of filtering. NB can't yet) | 
-| Full support for paid apps that must normally be installed through the Market! | not sure, what is necessary for that? | 
+| Batch app freezing/defrosting | NO (TB can do many operations in batch mode with all it's power of filtering. NB can't yet) |
+| Full support for paid apps that must normally be installed through the Market! | not sure, what is necessary for that? |
 | Market “auto updating” manager, to easily verify, enable or disable auto updates on several apps at once! | don't remember what this is |
 | Unlimited, independent scheduled backups (each of which can run 1 to 7 times a week) | YES (TB is more flexible with it's filtering) |
 | Market Doctor can retrieve or re-create any broken Market links (for your updates to appear in Market again) | NO |
@@ -512,11 +574,11 @@ Here is a quick status overview, what NB is capable of - to be edited.
 | Synchronize all (or some of) your backups to Dropbox, Box and Google Drive | NO (only via external methods like rclone and SAF providers) |
 | Retrieve all your backups from Dropbox, Box and Google Drive (in case of lost phone or SD card failure) | NO (only via external methods like rclone and SAF providers) |
 | TB Web Server: download/upload all your backups as a single ZIP file on your computer through a Web interface | NO |
-| Load/Save a Filter (from the Filters screen) and use it in Widgets/Schedules | NO | 
+| Load/Save a Filter (from the Filters screen) and use it in Widgets/Schedules | NO |
 | Change the device’s Android ID, restore it from a backup or after a factory reset | NO |
 | Protect backup against deletion | NO |
 | Send backup (by e-mail / Google Drive / Dropbox) which can be imported/restored very easily | NO (useful) |
-| CSV data export from any app’s DB, to e-mail or Google Docs | NO (very useful) | 
+| CSV data export from any app’s DB, to e-mail or Google Docs | NO (very useful) |
 | Convert app data to/from Gingerbread’s faster WAL DB format | NO (as far as I know, WAL was also used as a portable format) |
 | Brand the app with your name | NO |
 
@@ -526,7 +588,7 @@ Here is a quick status overview, what NB is capable of - to be edited.
 
 You can find the encryption algorithm and setup in this class: [Neo-Backup - Crypto.kt · GitHub](https://github.com/NeoApplications/Neo-Backup/blob/main/app/src/main/java/com/machiav3lli/backup/utils/CryptoUtils.kt) . The rest depends on the version you used.
 
-One of the contriburs ([Pizze](https://github.com/Tiefkuehlpizze)) took the last Java version this Crypto class and built a wrapper around it. <br/> 
+One of the contriburs ([Pizze](https://github.com/Tiefkuehlpizze)) took the last Java version this Crypto class and built a wrapper around it. <br/>
 --> https://github.com/Tiefkuehlpizze/OABXDecrypt <br/>
 So for those who really want to decryp the backups on their PCs, this might be a good start and a helpful tool.
 
@@ -539,27 +601,40 @@ So for those who really want to decryp the backups on their PCs, this might be a
   - The NB-Logo followed by "Neo-Backup"
   - :runner: - app-backups currently running
   - :people_holding_hands: - app-backups queued/outstanding/not yet started
-- below the notification headline you will see 
+- below the notification headline you will see
   - the name (in case it is a schedule) and the start-time
 - when you expand the notification you will see more details of the parallel tasks which will run (parallelism is based on the amount of cores of the devices SoCs CPU)
   - the first 3 characters show what NB is currently working on (**pre**paration, **apk**, **ext**ernal data, **obb**, **med**ia, etc.)
-  - after the dot you will see the package name 
+  - after the dot you will see the package name
 
 ***When it's finished...***
 - heading:
-  - green NB-Icon in case there were no error 
+  - green NB-Icon in case there were no error
   - red NB-Icon in case some backups failed
   - count of processed apps and overall apps in the job
 - below it will show
-  - the name again (in case it is a schedule) 
+  - the name again (in case it is a schedule)
   - start-time
   - "OK" (in case no errors)
 - below that the overall time it took
 
+**Details regarding start-time:**
+Time after the name tells when the schedule was really started (or more precise, when the jobs were queued). It does not necessarily tell when the Android WorkManager starts the queued jobs. In "most" cases it start immediately.
+
+The current defaults are "non-exact timing" and we think it's exact enough (with priority battery life), but feel free to report your timing experiences in the channel.
+
+If you want it more exact, you can enable useExactAlarm or may be even more exact useAlarmClock (not sure if this makes a difference) in the developer settings (under Advanced preferences).
+
+If anyone experiences jobs that are not finishing, please report.
+
+However up to now, they were broken in some other way, e.g. tar hanging on dot-dot-names or exceptions. But if you think the old behavior could have been better, you can enable useForeground, which then has both methods to keep the service running, the foreground notification and a wake lock (the new way to do it, copied from the official AOSP clock app, which we think is a good reference).
+
 ### Does NB support multi-user setups / work-profile?
 
 Disabled / not support for now as it led to strange behavior that apk and/or data was overwritten in both profiles.
-For now NB will only handle the main profile / user and ignore the others. 
+For now NB will only handle the main profile / user and ignore the others.
 
 So this also answers if it works together with Apps which utilize the work profile (like Shelter or Island).
 You can try to clone NB into it, but it is not recommended.
+
+Root should be enable in work-profile by setting - Superuser "Multi-User Mode" to "Device Owner Managed" or "User-Independent" in Magisk App settings.

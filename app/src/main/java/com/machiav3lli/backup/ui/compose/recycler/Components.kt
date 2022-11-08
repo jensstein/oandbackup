@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -38,7 +39,8 @@ fun <T> VerticalItemList(
     itemContent: @Composable LazyItemScope.(T) -> Unit
 ) {
     Box(
-        modifier = modifier,
+        modifier = modifier
+            .testTag("VerticalItemList"),
         contentAlignment = if (list.isNullOrEmpty()) Alignment.Center else Alignment.TopStart
     ) {
         when {
@@ -53,6 +55,8 @@ fun <T> VerticalItemList(
             else -> {
                 // TODO add scrollbars
                 LazyColumn(
+                    modifier = modifier
+                        .testTag("VerticalItemList.Column"),
                     verticalArrangement = Arrangement.Absolute.spacedBy(8.dp),
                     contentPadding = PaddingValues(vertical = 8.dp, horizontal = 8.dp),
                 ) {
@@ -107,7 +111,7 @@ fun <T> HorizontalItemList(
     itemContent: @Composable LazyItemScope.(T) -> Unit
 ) {
     Box(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier,
         contentAlignment = if (list.isNullOrEmpty()) Alignment.Center else Alignment.CenterStart
     ) {
         when {

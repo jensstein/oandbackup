@@ -42,6 +42,7 @@ import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.RootFile
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.preferences.pref_backupPauseApps
 import com.machiav3lli.backup.preferences.pref_backupTarCmd
 import com.machiav3lli.backup.preferences.pref_excludeCache
 import com.machiav3lli.backup.preferences.pref_fakeBackupSeconds
@@ -57,7 +58,6 @@ import com.machiav3lli.backup.utils.getEncryptionPassword
 import com.machiav3lli.backup.utils.initIv
 import com.machiav3lli.backup.utils.isCompressionEnabled
 import com.machiav3lli.backup.utils.isEncryptionEnabled
-import com.machiav3lli.backup.utils.isPauseApps
 import com.machiav3lli.backup.utils.suAddFiles
 import com.machiav3lli.backup.utils.suCopyFileToDocument
 import com.topjohnwu.superuser.ShellUtils
@@ -119,10 +119,10 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             backupBuilder.setIv(iv)
 
             val backupInstanceDir = backupBuilder.backupPath
-            val pauseApp = context.isPauseApps
+            val pauseApp = pref_backupPauseApps.value
             if (pauseApp) {
                 Timber.d("pre-process package (to avoid file inconsistencies during backup etc.)")
-                preprocessPackage(app.packageName)
+                preprocessPackage(type = "backup", packageName = app.packageName)
             }
 
             try {
@@ -224,7 +224,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 work?.setOperation("fin")
                 if (pauseApp) {
                     Timber.d("post-process package (to set it back to normal operation)")
-                    postprocessPackage(app.packageName)
+                    postprocessPackage(type = "backup", packageName = app.packageName)
                 }
                 //invalidateCacheForPackage(app.packageName)
                 if (backup == null)
