@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
+import com.machiav3lli.backup.BUTTON_ICON_SIZE
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.Log
@@ -158,7 +159,7 @@ fun InfoChipsBlock(
                         if (chip.icon != null) Icon(
                             imageVector = chip.icon,
                             contentDescription = chip.text,
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(BUTTON_ICON_SIZE)
                         )
                     },
                     border = SuggestionChipDefaults.suggestionChipBorder(
@@ -190,7 +191,7 @@ fun InfoChipsBlock(
                     if (chip.icon != null) Icon(
                         imageVector = chip.icon,
                         contentDescription = chip.text,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(BUTTON_ICON_SIZE)
                     )
                 },
                 border = SuggestionChipDefaults.suggestionChipBorder(

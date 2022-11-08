@@ -19,6 +19,7 @@ package com.machiav3lli.backup
 
 import android.Manifest
 import android.content.Intent
+import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.ui.item.ChipItem
 import com.machiav3lli.backup.ui.item.Legend
 import com.machiav3lli.backup.ui.item.Link
@@ -61,6 +62,11 @@ val themeItems = mutableMapOf(
 ).apply {
     if (OABX.minSDK(31)) set(THEME_DYNAMIC, R.string.prefs_theme_dynamic)
 }
+
+val BASIC_BUTTON_SIZE = 48.dp
+val BUTTON_ICON_SIZE = 24.dp
+val STANDALONE_ICON_SIZE = 48.dp
+val SMALL_ICON_SIZE = 32.dp
 
 val accentColorItems = mapOf(
     0 to R.string.prefs_accent_0,
