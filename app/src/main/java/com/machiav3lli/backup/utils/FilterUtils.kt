@@ -35,8 +35,6 @@ import com.machiav3lli.backup.MODE_DATA_EXT
 import com.machiav3lli.backup.MODE_DATA_MEDIA
 import com.machiav3lli.backup.MODE_DATA_OBB
 import com.machiav3lli.backup.MODE_NONE
-import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.preferences.pref_oldBackups
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.SPECIAL_FILTER_DISABLED
 import com.machiav3lli.backup.SPECIAL_FILTER_LAUNCHABLE
@@ -46,6 +44,8 @@ import com.machiav3lli.backup.SPECIAL_FILTER_OLD
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.possibleMainFilters
+import com.machiav3lli.backup.preferences.pref_oldBackups
+import java.text.Collator
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -118,23 +118,31 @@ private fun List<Package>.applySpecialFilter(
 private fun List<Package>.applySort(sort: Int, sortAsc: Boolean): List<Package> =
     if (!sortAsc) {
         when (sort) {
-            MAIN_SORT_PACKAGENAME -> sortedByDescending { it.packageName.lowercase() }
+            MAIN_SORT_PACKAGENAME -> sortedWith(
+                compareBy(Collator.getInstance().reversed()) { it.packageName.lowercase() }
+            )
             MAIN_SORT_APPSIZE -> sortedByDescending { it.appBytes }
             MAIN_SORT_DATASIZE -> sortedByDescending { it.dataBytes }
             MAIN_SORT_APPDATASIZE -> sortedByDescending { it.appBytes + it.dataBytes }
             MAIN_SORT_BACKUPSIZE -> sortedByDescending { it.backupBytes }
             MAIN_SORT_BACKUPDATE -> sortedWith(compareBy<Package> { it.latestBackup?.backupDate }.thenBy { it.packageLabel })
-            else -> sortedByDescending { it.packageLabel.lowercase() }
+            else -> sortedWith(
+                compareBy(Collator.getInstance().reversed()) { it.packageLabel.lowercase() }
+            )
         }
     } else {
         when (sort) {
-            MAIN_SORT_PACKAGENAME -> sortedBy { it.packageName.lowercase() }
+            MAIN_SORT_PACKAGENAME -> sortedWith(
+                compareBy(Collator.getInstance()) { it.packageName.lowercase() }
+            )
             MAIN_SORT_APPSIZE -> sortedBy { it.appBytes }
             MAIN_SORT_DATASIZE -> sortedBy { it.dataBytes }
             MAIN_SORT_APPDATASIZE -> sortedBy { it.appBytes + it.dataBytes }
             MAIN_SORT_BACKUPSIZE -> sortedBy { it.backupBytes }
             MAIN_SORT_BACKUPDATE -> sortedWith(compareByDescending<Package> { it.latestBackup?.backupDate }.thenBy { it.packageLabel })
-            else -> sortedBy { it.packageLabel.lowercase() }
+            else -> sortedWith(
+                compareBy(Collator.getInstance()) { it.packageLabel.lowercase() }
+            )
         }
     }
 
