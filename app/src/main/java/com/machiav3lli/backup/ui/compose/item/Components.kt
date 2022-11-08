@@ -27,7 +27,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -71,6 +70,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
@@ -381,6 +381,7 @@ fun Tooltip(
 @Composable
 fun RoundButton(
     modifier: Modifier = Modifier,
+    size: Dp = ICON_SIZE_SMALL,
     icon: ImageVector,
     description: String = "",
     onClick: () -> Unit
@@ -390,9 +391,7 @@ fun RoundButton(
         onClick = onClick
     ) {
         Icon(
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxSize(),
+            modifier = Modifier.size(size),
             imageVector = icon,
             contentDescription = description
         )

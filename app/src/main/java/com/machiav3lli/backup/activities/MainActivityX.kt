@@ -30,7 +30,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -51,7 +50,6 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import com.machiav3lli.backup.BUTTON_SIZE_MEDIUM
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.NAV_MAIN
 import com.machiav3lli.backup.OABX
@@ -194,9 +192,6 @@ class MainActivityX : BaseActivity() {
                             ) {
 
                                 RoundButton(
-                                    modifier = Modifier
-                                        .padding(horizontal = 4.dp)
-                                        .size(BUTTON_SIZE_MEDIUM),
                                     icon = Phosphor.Prohibit,
                                     description = stringResource(id = R.string.sched_blocklist)
                                 ) {
@@ -220,9 +215,6 @@ class MainActivityX : BaseActivity() {
                                     }
                                 }
                                 RoundButton(
-                                    modifier = Modifier
-                                        .padding(horizontal = 4.dp)
-                                        .size(BUTTON_SIZE_MEDIUM),
                                     description = stringResource(id = R.string.prefs_title),
                                     icon = Phosphor.GearSix
                                 ) { navController.navigate(NavItem.Settings.destination) }
@@ -240,16 +232,10 @@ class MainActivityX : BaseActivity() {
                                     }
                                 )
                                 RoundButton(
-                                    modifier = Modifier
-                                        .padding(horizontal = 4.dp)
-                                        .size(BUTTON_SIZE_MEDIUM),
                                     description = stringResource(id = R.string.refresh),
                                     icon = Phosphor.ArrowsClockwise
                                 ) { OABX.main?.needRefresh = true }
                                 RoundButton(
-                                    modifier = Modifier
-                                        .padding(horizontal = 4.dp)
-                                        .size(BUTTON_SIZE_MEDIUM),
                                     description = stringResource(id = R.string.prefs_title),
                                     icon = Phosphor.GearSix
                                 ) { navController.navigate(NavItem.Settings.destination) }
