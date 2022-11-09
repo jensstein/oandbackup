@@ -17,6 +17,7 @@
  */
 package com.machiav3lli.backup.pages
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -64,12 +65,11 @@ import com.machiav3lli.backup.ui.compose.recycler.UpdatedPackageRecycler
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.sortFilterModel
-import com.machiav3lli.backup.viewmodels.HomeViewModel
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun HomePage(viewModel: HomeViewModel) {
+fun HomePage() {
     // TODO include tags in search
     val main = OABX.main!!
     var appSheet: AppSheet? = null
@@ -111,21 +111,10 @@ fun HomePage(viewModel: HomeViewModel) {
     Scaffold(
         containerColor = Color.Transparent,
         floatingActionButton = {
-            //AnimatedVisibility(
-            //    modifier = Modifier.padding(start = 28.dp),
-            //    visible = updatedApps?.isNotEmpty() ?: true
-            //) {
-            // AnimatedVisibility doesn't work, it hides the button and shows it when clicking refresh button
-            // none of the "visible" expressions work (hg42)
-            //AnimatedVisibility(
-            //    modifier = Modifier.padding(start = 26.dp),
-            //    //visible = !mainActivityX.viewModel.updatedPackages.value.isNullOrEmpty()
-            //    //visible = !updatedPackages.isNullOrEmpty()
-            //    visible = (updatedPackages?.size ?: 0) > 0
-            //)
-            if (!updatedPackages.isNullOrEmpty())
-            //if ((updatedPackages?.size ?: 0) > 0)
-            {
+            AnimatedVisibility(
+                modifier = Modifier.padding(start = 28.dp),
+                visible = updatedPackages?.isNotEmpty() ?: true
+            ) {
                 ExpandingFadingVisibility(
                     expanded = updaterExpanded,
                     expandedView = {

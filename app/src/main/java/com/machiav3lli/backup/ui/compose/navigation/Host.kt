@@ -33,7 +33,6 @@ import com.machiav3lli.backup.preferences.ToolsPrefsPage
 import com.machiav3lli.backup.preferences.UserPrefsPage
 import com.machiav3lli.backup.viewmodels.BatchViewModel
 import com.machiav3lli.backup.viewmodels.ExportsViewModel
-import com.machiav3lli.backup.viewmodels.HomeViewModel
 import com.machiav3lli.backup.viewmodels.LogViewModel
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
 
@@ -50,9 +49,7 @@ fun MainNavHost(
         startDestination = NavItem.Home.destination
     ) {
         slideUpComposable(NavItem.Home.destination) {
-            val viewModel =
-                viewModel<HomeViewModel>(factory = HomeViewModel.Factory(application))
-            HomePage(viewModel)
+            HomePage()
         }
         slideUpComposable(route = NavItem.Backup.destination) {
             val viewModel =
@@ -107,10 +104,10 @@ fun PrefsNavHost(
         slideUpComposable(NavItem.Exports.destination) {
             val viewModel = viewModel<ExportsViewModel>(
                 factory =
-                    ExportsViewModel.Factory(
-                        ODatabase.getInstance(navController.context).scheduleDao,
-                        application
-                    )
+                ExportsViewModel.Factory(
+                    ODatabase.getInstance(navController.context).scheduleDao,
+                    application
+                )
             )
             ExportsPage(viewModel)
         }

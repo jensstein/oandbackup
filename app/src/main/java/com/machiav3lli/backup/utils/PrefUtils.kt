@@ -99,11 +99,13 @@ fun Context.getCryptoSalt(): ByteArray {
     } else FALLBACK_SALT
 }
 
-fun Context.isEncryptionEnabled(): Boolean = pref_encryption.value && getEncryptionPassword().isNotEmpty()
+fun Context.isEncryptionEnabled(): Boolean =
+    pref_encryption.value && getEncryptionPassword().isNotEmpty()
 
 fun Context.getEncryptionPassword(): String = pref_password.value
 
-fun Context.isCompressionEnabled(): Boolean = getCompressionLevel() > 0 // && compression algorithm != null
+fun Context.isCompressionEnabled(): Boolean =
+    getCompressionLevel() > 0 // && compression algorithm != null
 
 fun Context.getCompressionLevel() = pref_compressionLevel.value
 
@@ -412,7 +414,7 @@ val Context.checkUsageStatsPermission: Boolean
 
 fun Context.checkBatteryOptimization(powerManager: PowerManager)
         : Boolean = persist_ignoreBatteryOptimization.value
-                        || powerManager.isIgnoringBatteryOptimizations(packageName)
+        || powerManager.isIgnoringBatteryOptimizations(packageName)
 
 
 val Context.isBackupDeviceProtectedData: Boolean
@@ -445,29 +447,41 @@ var Context.sortFilterModel: SortFilterModel
             else SortFilterModel()
         return sortFilterModel
     }
-    set(value) { persist_sortFilter.value = value.toString() }
+    set(value) {
+        persist_sortFilter.value = value.toString()
+    }
 
 class StorageLocationNotConfiguredException : Exception("Storage Location has not been configured")
 
 var styleTheme: Int
     get() = pref_appTheme.value
-    set(value) { pref_appTheme.value = value }
+    set(value) {
+        pref_appTheme.value = value
+    }
 
 var stylePrimary: Int
     get() = pref_appAccentColor.value
-    set(value) { pref_appAccentColor.value = value }
+    set(value) {
+        pref_appAccentColor.value = value
+    }
 
 var styleSecondary: Int
     get() = pref_appSecondaryColor.value
-    set(value) { pref_appSecondaryColor.value = value }
+    set(value) {
+        pref_appSecondaryColor.value = value
+    }
 
 var Context.language: String
     get() = pref_languages.value
-    set(value) { pref_languages.value = value }
+    set(value) {
+        pref_languages.value = value
+    }
 
 var Context.specialBackupsEnabled: Boolean
     get() = pref_enableSpecialBackups.value
-    set(value) { pref_enableSpecialBackups.value = value }
+    set(value) {
+        pref_enableSpecialBackups.value = value
+    }
 
 fun Context.getLocaleOfCode(localeCode: String): Locale = when {
     localeCode.isEmpty() -> resources.configuration.locales[0]
