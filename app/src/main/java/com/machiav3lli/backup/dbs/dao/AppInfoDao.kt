@@ -22,6 +22,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import com.machiav3lli.backup.dbs.entity.AppInfo
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AppInfoDao : BaseDao<AppInfo> {
@@ -33,6 +34,9 @@ interface AppInfoDao : BaseDao<AppInfo> {
 
     @get:Query("SELECT * FROM appinfo ORDER BY packageName ASC")
     val allLive: LiveData<MutableList<AppInfo>>
+
+    @get:Query("SELECT * FROM appinfo ORDER BY packageName ASC")
+    val allFlow: Flow<MutableList<AppInfo>>
 
     @Query("SELECT * FROM appinfo WHERE packageName = :packageName")
     fun get(packageName: String): AppInfo

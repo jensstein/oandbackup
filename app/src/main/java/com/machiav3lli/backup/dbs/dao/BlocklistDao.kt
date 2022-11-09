@@ -21,6 +21,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import com.machiav3lli.backup.dbs.entity.Blocklist
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BlocklistDao : BaseDao<Blocklist> {
@@ -32,6 +33,9 @@ interface BlocklistDao : BaseDao<Blocklist> {
 
     @get:Query("SELECT * FROM blocklist ORDER BY blocklistId ASC")
     val liveAll: LiveData<List<Blocklist>>
+
+    @get:Query("SELECT * FROM blocklist ORDER BY blocklistId ASC")
+    val allFlow: Flow<List<Blocklist>>
 
     @Query("SELECT packageName FROM blocklist WHERE blocklistId = :blocklistId")
     fun getBlocklistedPackages(blocklistId: Long): List<String>
