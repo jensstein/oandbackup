@@ -52,6 +52,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -158,7 +159,7 @@ class AppSheet() : BaseSheet(), ActionListener {
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
     @Composable
     fun AppPage() {
-        val thePackages by requireMainActivity().viewModel.packageList.observeAsState()
+        val thePackages by requireMainActivity().viewModel.packageList.collectAsState()
         val thePackage: Package? = thePackages?.find { it.packageName == packageName }
         val snackbarText by viewModel.snackbarText.observeAsState()
         val appExtras by viewModel.appExtras.observeAsState()

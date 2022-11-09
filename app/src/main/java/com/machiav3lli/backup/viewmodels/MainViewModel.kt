@@ -19,8 +19,6 @@ package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -34,8 +32,6 @@ import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Blocklist
-import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.handler.toAppInfoList
 import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.items.Package
@@ -44,9 +40,14 @@ import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.preferences.pref_usePackageCacheOnUpdate
 import com.machiav3lli.backup.utils.applyFilter
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -57,93 +58,86 @@ class MainViewModel(
     private val appContext: Application
 ) : AndroidViewModel(appContext) {
 
-    var packageList = MediatorLiveData<MutableList<Package>>()
-    var backupsMap = MediatorLiveData<Map<String, List<Backup>>>()
-    var blocklist = MediatorLiveData<List<Blocklist>>()
-    var appExtrasMap = MediatorLiveData<Map<String, AppExtras>>()
-    var filteredList = MediatorLiveData<List<Package>>()
-    var updatedPackages = MediatorLiveData<MutableList<Package>>()
+    var blocklist = db.blocklistDao.allFlow
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Lazily,
+            emptyList()
+        )
 
-    val searchQueryFlow = MutableSharedFlow<String>(replay = 1)
-    val searchQuery = searchQueryFlow.asSharedFlow()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    var backupsMap = db.backupDao.allFlow
+        .mapLatest { it.groupBy(Backup::packageName) }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Lazily,
+            emptyMap()
+        )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    var appExtrasMap = db.appExtrasDao.allFlow
+        .mapLatest { it.associateBy(AppExtras::packageName) }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Lazily,
+            emptyMap()
+        )
+
+    var packageList = combine(db.appInfoDao.allFlow, backupsMap) { a, b ->
+        a.toPackageList(
+            appContext,
+            blocklist.value.mapNotNull(Blocklist::packageName),
+            b
+        )
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.Lazily,
+        null
+    )
 
     val modelSortFilterFlow = MutableSharedFlow<SortFilterModel>(replay = 1)
-    val modelSortFilter = modelSortFilterFlow.asSharedFlow()
+    val modelSortFilter = modelSortFilterFlow.stateIn(
+        viewModelScope,
+        SharingStarted.Lazily,
+        SortFilterModel()
+    )
 
-    // TODO fix force refresh on changing backup directory or change method
-    val isNeedRefresh = MutableLiveData(false)  //TODO using mutable state may be more light weight
+    var filteredList = combine(packageList, backupsMap, db.appInfoDao.allFlow) { a, _, _ ->
+        a?.applyFilter(modelSortFilter.value, OABX.main!!)
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.Lazily,
+        null
+    )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    var updatedPackages = filteredList.mapLatest { it?.filter(Package::isUpdated)?.toMutableList() }
+
+    private val _searchQuery = MutableSharedFlow<String>(replay = 1)
+    val searchQuery = _searchQuery.asSharedFlow()
+
+    fun setSearchQuery(query: String) {
+        viewModelScope.launch {
+            _searchQuery.emit(query)
+        }
+    }
 
     init {
-        filteredList.addSource(packageList) { packages ->
-            viewModelScope.launch {
-                withContext(Dispatchers.IO) {
-                    try {
-                        modelSortFilter.collectLatest {
-                            filteredList.postValue(packages.applyFilter(it, OABX.main!!))
-                        }
-                    } catch (e: Throwable) {
-                        LogsHandler.unhandledException(e)
-                    }
-                }
+        viewModelScope.launch {
+            withContext(Dispatchers.Default) {
+                blocklist.collectLatest { triggerPackageListConsumers() }
             }
-        }
-        blocklist.addSource(db.blocklistDao.liveAll,
-            blocklist::setValue
-        )
-        backupsMap.addSource(db.backupDao.allLive) {
-            viewModelScope.launch {
-                withContext(Dispatchers.IO) {
-                    backupsMap.postValue(it.groupBy(Backup::packageName))
-                }
-            }
-        }
-        packageList.addSource(db.appInfoDao.allLive) {
-            viewModelScope.launch {
-                withContext(Dispatchers.IO) {
-                    try {
-                        packageList.postValue(
-                            it.toPackageList(
-                                appContext,
-                                blocklist.value.orEmpty().mapNotNull(Blocklist::packageName),
-                                backupsMap.value.orEmpty()
-                            )
-                        )
-                    } catch (e: Throwable) {
-                        LogsHandler.unhandledException(e)
-                    }
-                }
-            }
-        }
-        packageList.addSource(backupsMap) { map ->
-            viewModelScope.launch {
-                withContext(Dispatchers.IO) {
-                    packageList.postValue(
-                        packageList.value.orEmpty().toAppInfoList().toPackageList(
-                            appContext,
-                            blocklist.value.orEmpty().mapNotNull(Blocklist::packageName),
-                            map
-                        )
-                    )
-                }
-            }
-        }
-        updatedPackages.addSource(filteredList) {
-            updatedPackages.postValue(filteredList.value?.filter { it.isUpdated }?.toMutableList())
-        }
-        appExtrasMap.addSource(db.appExtrasDao.liveAll) {
-            appExtrasMap.value = it.associateBy(AppExtras::packageName)
         }
     }
 
     fun triggerPackageListConsumers() {
-        packageList.postValue(packageList.value)
+        //packageList.postValue(packageList.value)
     }
 
     // TODO add to interface
     fun refreshList() {
         viewModelScope.launch {
             recreateAppInfoList()
-            isNeedRefresh.postValue(false)
         }
     }
 
@@ -151,7 +145,7 @@ class MainViewModel(
         withContext(Dispatchers.IO) {
             beginBusy()
             val time = measureTimeMillis {
-                packageList.postValue(null)
+                //packageList.postValue(null)
                 appContext.updateAppTables(db.appInfoDao, db.backupDao)
             }
             OABX.addInfoText("recreateAppInfoList: ${(time / 1000 + 0.5).toInt()} sec")

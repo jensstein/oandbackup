@@ -36,7 +36,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -101,10 +100,6 @@ class MainActivityX : BaseActivity() {
         MainViewModel.Factory(ODatabase.getInstance(OABX.context), application)
     }
 
-    var needRefresh: Boolean
-        get() = viewModel.isNeedRefresh.value ?: false
-        set(value) = viewModel.isNeedRefresh.postValue(value)
-
     private lateinit var sheetSortFilter: SortFilterSheet
 
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
@@ -143,28 +138,6 @@ class MainActivityX : BaseActivity() {
 
         Shell.getShell()
 
-        viewModel.blocklist.observe(this) {
-            viewModel.triggerPackageListConsumers()
-        }
-        viewModel.filteredList.observe(this) { }
-        viewModel.packageList.observe(this) { pkgs ->
-            //crScope.launch {
-            //    try {
-            //        // throws: "pkgs must not be null"
-            //        viewModel.modelSortFilter.collectLatest { filter ->
-            //            viewModel.filteredList.postValue(pkgs.applyFilter(filter, OABX.main!!))
-            //        }
-            //    } catch(e: Throwable) {
-            //        LogsHandler.unhandledException(e)
-            //    }
-            //}
-        }
-        viewModel.backupsMap.observe(this) { }
-        viewModel.isNeedRefresh.observe(this) {
-            if (it && OABX.busy.value == 0)
-                invalidateBackupLocation()
-        }
-
         if (freshStart)
             runOnUiThread { showEncryptionDialog() }
 
@@ -172,7 +145,7 @@ class MainActivityX : BaseActivity() {
             AppTheme {
                 val navController = rememberAnimatedNavController()
                 val query by viewModel.searchQuery.collectAsState(initial = "")
-                val list by viewModel.packageList.observeAsState(null)
+                val list by viewModel.packageList.collectAsState(null)
                 var pageTitle by remember {
                     mutableStateOf(NavItem.Home.title)
                 }
@@ -184,8 +157,7 @@ class MainActivityX : BaseActivity() {
                 SideEffect {
                     //crScope.launch { viewModel.searchQueryFlow.emit("") }  // don't clear the search box (e.g. on screen rotation)
                     crScope.launch { viewModel.modelSortFilterFlow.emit(sortFilterModel) }
-                    if (freshStart)
-                        needRefresh = true
+                    if (freshStart) refreshList()
                 }
 
                 Scaffold(
@@ -233,16 +205,16 @@ class MainActivityX : BaseActivity() {
                                     query = query,
                                     onQueryChanged = { newQuery ->
                                         if (newQuery != query)
-                                            crScope.launch { viewModel.searchQueryFlow.emit(newQuery) }
+                                            viewModel.setSearchQuery(newQuery)
                                     },
                                     onClose = {
-                                        crScope.launch { viewModel.searchQueryFlow.emit("") }
+                                        viewModel.setSearchQuery("")
                                     }
                                 )
                                 RoundButton(
                                     description = stringResource(id = R.string.refresh),
                                     icon = Phosphor.ArrowsClockwise
-                                ) { OABX.main?.needRefresh = true }
+                                ) { refreshList() }
                                 RoundButton(
                                     description = stringResource(id = R.string.prefs_title),
                                     icon = Phosphor.GearSix
@@ -376,6 +348,11 @@ class MainActivityX : BaseActivity() {
 
     fun refreshView() {
         crScope.launch { viewModel.modelSortFilterFlow.emit(sortFilterModel) }
+    }
+
+    fun refreshList() {
+        if (OABX.busy.value == 0)
+            invalidateBackupLocation()
     }
 
     fun showSnackBar(message: String) {

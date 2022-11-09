@@ -29,7 +29,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -63,9 +62,9 @@ import timber.log.Timber
 @Composable
 fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
     val main = OABX.main!!
-    val list by main.viewModel.packageList.observeAsState(null)
+    val list by main.viewModel.packageList.collectAsState(null)
     val modelSortFilter by main.viewModel.modelSortFilter.collectAsState(main.sortFilterModel)
-    val filteredList by main.viewModel.filteredList.observeAsState(null)
+    val filteredList by main.viewModel.filteredList.collectAsState(null)
     val query by main.viewModel.searchQuery.collectAsState(initial = "")
 
     val filterPredicate = { item: Package ->

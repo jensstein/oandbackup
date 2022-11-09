@@ -33,7 +33,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -75,10 +74,10 @@ fun HomePage(viewModel: HomeViewModel) {
     val main = OABX.main!!
     var appSheet: AppSheet? = null
 
-    val list by main.viewModel.packageList.observeAsState(null)
+    val list by main.viewModel.packageList.collectAsState(null)
     val modelSortFilter by main.viewModel.modelSortFilter.collectAsState(main.sortFilterModel)
-    val filteredList by  main.viewModel.filteredList.observeAsState(null)
-    val updatedPackages by main.viewModel.updatedPackages.observeAsState(null)
+    val filteredList by main.viewModel.filteredList.collectAsState(null)
+    val updatedPackages by main.viewModel.updatedPackages.collectAsState(null)
     val query by main.viewModel.searchQuery.collectAsState(initial = "")
     var updaterExpanded by remember { mutableStateOf(false) }
 
