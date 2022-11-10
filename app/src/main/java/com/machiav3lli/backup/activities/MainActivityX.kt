@@ -77,7 +77,7 @@ import com.machiav3lli.backup.ui.compose.navigation.MainNavHost
 import com.machiav3lli.backup.ui.compose.navigation.NavItem
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.FileUtils.invalidateBackupLocation
-import com.machiav3lli.backup.utils.applyFilter
+import com.machiav3lli.backup.utils.classAndId
 import com.machiav3lli.backup.utils.destinationToItem
 import com.machiav3lli.backup.utils.getStats
 import com.machiav3lli.backup.utils.isEncryptionEnabled
@@ -106,13 +106,31 @@ class MainActivityX : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val context = this
         //val freshStart = (OABX.main?.viewModel?.packageList?.value.isNullOrEmpty())
-        val freshStart = (savedInstanceState == null)
-        Timber.i("==================== activity ${this.localClassName} ${if (freshStart) "fresh started" else "already initialized"} (${OABX.main} vs $this)")
+        val freshStart = (savedInstanceState == null)   //TODO use some lifecycle method
+        val mainChanged = (this != OABX.mainSaved)
+        Timber.d("======================================== activity ${
+                        classAndId(this)
+                    }${
+                        if (freshStart) ", fresh start" else ""
+                    }${
+                        if(mainChanged and (! freshStart or (OABX.mainSaved != null)))
+                            ", main changed (was ${classAndId(OABX.mainSaved)})"
+                        else
+                            ""
+                    }"
+        )
         OABX.activity = this
         OABX.main = this
 
         setCustomTheme()
         super.onCreate(savedInstanceState)
+
+        Timber.d("viewModel: ${
+                        classAndId(viewModel)
+                    }, was ${
+                        classAndId(OABX.viewModelSaved)
+                    }"
+        )
 
         OABX.appsSuspendedChecked = false
 
@@ -292,6 +310,8 @@ class MainActivityX : BaseActivity() {
     }
 
     override fun onDestroy() {
+        OABX.viewModelSaved = viewModel
+        OABX.mainSaved = OABX.main
         OABX.main = null
         super.onDestroy()
     }

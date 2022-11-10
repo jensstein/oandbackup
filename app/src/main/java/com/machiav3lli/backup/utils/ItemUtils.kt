@@ -46,6 +46,13 @@ import com.machiav3lli.backup.ui.compose.theme.ColorUpdated
 import com.machiav3lli.backup.ui.compose.theme.ColorUser
 import com.machiav3lli.backup.ui.item.InfoChipItem
 
+fun classAndId(obj: Any?): String {
+    return if (obj != null)
+        "${obj.javaClass.simpleName}@${Integer.toHexString(obj.hashCode())}"
+    else
+        "<null>"
+}
+
 fun getStats(appsList: List<Package>): Triple<Int, Int, Int> {
     var backupsNumber = 0
     var updatedNumber = 0

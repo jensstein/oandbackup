@@ -29,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.DynamicColorsOptions
 import com.machiav3lli.backup.activities.MainActivityX
@@ -179,6 +180,8 @@ class OABX : Application() {
             set(mainActivity) {
                 mainRef = WeakReference(mainActivity)
             }
+        var mainSaved: MainActivityX? = null    // just to see if activity changed
+        var viewModelSaved: ViewModel? = null
 
         var appsSuspendedChecked = false
 
