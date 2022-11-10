@@ -34,6 +34,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -103,19 +104,20 @@ class MainActivityX : BaseActivity() {
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         val context = this
-        //val freshStart = (OABX.main?.viewModel?.packageList?.value.isNullOrEmpty())
-        val freshStart = (savedInstanceState == null)   //TODO use some lifecycle method
+        val freshStart = OABX.main?.viewModel?.packageList?.value.isNullOrEmpty()
+        //val freshStart = (savedInstanceState == null)   //TODO use some lifecycle method
         val mainChanged = (this != OABX.mainSaved)
-        Timber.d("======================================== activity ${
-                        classAndId(this)
-                    }${
-                        if (freshStart) ", fresh start" else ""
-                    }${
-                        if(mainChanged and (! freshStart or (OABX.mainSaved != null)))
-                            ", main changed (was ${classAndId(OABX.mainSaved)})"
-                        else
-                            ""
-                    }"
+        Timber.d(
+            "======================================== activity ${
+                classAndId(this)
+            }${
+                if (freshStart) ", fresh start" else ""
+            }${
+                if (mainChanged and (!freshStart or (OABX.mainSaved != null)))
+                    ", main changed (was ${classAndId(OABX.mainSaved)})"
+                else
+                    ""
+            }"
         )
         OABX.activity = this
         OABX.main = this
@@ -123,11 +125,12 @@ class MainActivityX : BaseActivity() {
         setCustomTheme()
         super.onCreate(savedInstanceState)
 
-        Timber.d("viewModel: ${
-                        classAndId(viewModel)
-                    }, was ${
-                        classAndId(OABX.viewModelSaved)
-                    }"
+        Timber.d(
+            "viewModel: ${
+                classAndId(viewModel)
+            }, was ${
+                classAndId(OABX.viewModelSaved)
+            }"
         )
 
         OABX.appsSuspendedChecked = false
@@ -174,9 +177,19 @@ class MainActivityX : BaseActivity() {
                 LaunchedEffect(viewModel) {
                     if (freshStart) {
                         //TODO hg42 even this doesn not trigger the flows?
-                        //OABX.context.sortFilterModel = OABX.context.sortFilterModel
-                        //viewModel.searchQuery.value = ""
-                        //viewModel.modelSortFilter.value = OABX.context.sortFilterModel
+                        //TODO hg42 OABX.context.sortFilterModel = OABX.context.sortFilterModel
+                        //TODO hg42 viewModel.searchQuery.value = ""
+                        //TODO hg42 viewModel.modelSortFilter.value = OABX.context.sortFilterModel
+                    }
+                }
+
+                Timber.d("search: ${viewModel.searchQuery.value} filter: ${viewModel.modelSortFilter.value}")
+                if (freshStart) {
+                    SideEffect {
+                        Timber.d("#################### freshStart ####################")
+                        //TODO hg42 viewModel.refreshList()
+                        //TODO hg42 viewModel.searchQuery.value = ""
+                        //TODO hg42 viewModel.modelSortFilter.value = OABX.context.sortFilterModel
                     }
                 }
 
@@ -184,7 +197,6 @@ class MainActivityX : BaseActivity() {
                     containerColor = Color.Transparent,
                     contentColor = MaterialTheme.colorScheme.onBackground,
                     topBar = {
-
                         if (navController.currentDestination?.route == NavItem.Scheduler.destination)
                             TopBar(
                                 title = stringResource(id = pageTitle)
@@ -204,7 +216,7 @@ class MainActivityX : BaseActivity() {
                                             MAIN_FILTER_DEFAULT,
                                             true
                                         ) { newList: Set<String> ->
-                                            context.viewModel.updateBlocklist(
+                                            context.viewModel.setBlocklist(
                                                 newList
                                             )
                                         }.show(
@@ -225,8 +237,8 @@ class MainActivityX : BaseActivity() {
                                     query = query,
                                     onQueryChanged = { newQuery ->
                                         //if (newQuery != query)  // then empty string doesn't work...
-                                            query = newQuery
-                                            viewModel.searchQuery.value = query
+                                        query = newQuery
+                                        viewModel.searchQuery.value = query
                                     },
                                     onClose = {
                                         query = ""
@@ -261,7 +273,7 @@ class MainActivityX : BaseActivity() {
                                             MAIN_FILTER_DEFAULT,
                                             true
                                         ) { newList: Set<String> ->
-                                            context.viewModel.updateBlocklist(newList)
+                                            context.viewModel.setBlocklist(newList)
                                         }.show(
                                             context.supportFragmentManager,
                                             "BLOCKLIST_DIALOG"

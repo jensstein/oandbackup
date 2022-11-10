@@ -102,7 +102,7 @@ class SortFilterSheet() : BaseSheet() {
         val packageList by requireMainActivity().viewModel.packageList.collectAsState()
         var model by rememberSaveable { mutableStateOf(requireContext().sortFilterModel) }
         fun currentStats() =
-            getStats(packageList?.applyFilter(model, OABX.context) ?: emptyList())
+            getStats(packageList?.applyFilter(model, OABX.context) ?: emptyList())  //TODO hg42 use central function for all the filtering
 
         AppTheme {
             Scaffold(

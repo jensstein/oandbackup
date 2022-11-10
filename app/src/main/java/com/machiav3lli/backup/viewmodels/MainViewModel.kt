@@ -44,7 +44,6 @@ import com.machiav3lli.backup.utils.sortFilterModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -59,13 +58,14 @@ class MainViewModel(
     private val appContext: Application
 ) : AndroidViewModel(appContext) {
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     var blocklist = db.blocklistDao.allFlow
+        //.mapLatest { it }
         .stateIn(
             viewModelScope,
             SharingStarted.Lazily,
             emptyList()
         )
-
 
     @OptIn(ExperimentalCoroutinesApi::class)
     var backupsMap = db.backupDao.allFlow
@@ -94,24 +94,31 @@ class MainViewModel(
     }.stateIn(
         viewModelScope,
         SharingStarted.Lazily,
-        null
+        emptyList()
     )
 
     var modelSortFilter = MutableComposableSharedFlow(OABX.context.sortFilterModel, viewModelScope)
     var searchQuery = MutableComposableSharedFlow("", viewModelScope)
 
-    var filteredList = FlowUtils.combine(
+    var filteredList = FlowUtils.combine(   // sixpack :-)
             packageList, modelSortFilter.flow, searchQuery.flow, blocklist,
             backupsMap, db.appInfoDao.allFlow
-    ) { a, m, s, b, _, _ ->
+    ) { p, f, s, b, _, _ ->
 
-        a?.filter { item: Package ->
-            s.isEmpty() || (
-                    listOf(item.packageName, item.packageLabel)
-                        .any { it.contains(s, ignoreCase = true) }
-                    )
-        }?.applyFilter(m, OABX.main!!)
+        Timber.w("******************** filtering ******************** packages: ${p.size} search: $s filter: $f block: ${b.joinToString(",")}")
 
+        val blockPackages = b.map { it.packageName }
+        val filtered = p
+            .filter { item: Package ->
+                s.isEmpty() || (
+                        listOf(item.packageName, item.packageLabel)
+                            .any { it.contains(s, ignoreCase = true) }
+                        )
+            }
+            .applyFilter(f, OABX.main!!)
+            .filterNot { blockPackages.contains(it.packageName) }
+        Timber.d("filtered: ${filtered.size}")
+        filtered
     }.stateIn(
         viewModelScope,
         SharingStarted.Lazily,
@@ -124,7 +131,8 @@ class MainViewModel(
     init {
         viewModelScope.launch {
             withContext(Dispatchers.Default) {
-                blocklist.collectLatest { }
+                //blocklist.collectLatest { }
+                //updatedPackages.collectLatest { }
             }
         }
     }
@@ -235,7 +243,7 @@ class MainViewModel(
                     .withPackageName(packageName)
                     .build()
             )
-            packageList.value?.removeIf { it.packageName == packageName }
+            //packageList.value?.removeIf { it.packageName == packageName }
         }
     }
 
@@ -250,7 +258,7 @@ class MainViewModel(
     //    )
     //}
 
-    fun updateBlocklist(newList: Set<String>) {
+    fun setBlocklist(newList: Set<String>) {
         viewModelScope.launch {
             insertIntoBlocklistDB(newList)
         }
@@ -259,7 +267,7 @@ class MainViewModel(
     private suspend fun insertIntoBlocklistDB(newList: Set<String>) =
         withContext(Dispatchers.IO) {
             db.blocklistDao.updateList(PACKAGES_LIST_GLOBAL_ID, newList)
-            packageList.value?.removeIf { newList.contains(it.packageName) }
+            //packageList.value?.removeIf { newList.contains(it.packageName) }
         }
 
     class Factory(

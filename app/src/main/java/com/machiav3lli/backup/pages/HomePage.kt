@@ -31,7 +31,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,8 +51,6 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.fragments.AppSheet
-import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretDown
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CircleWavyWarning
@@ -62,9 +59,6 @@ import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.ExpandingFadingVisibility
 import com.machiav3lli.backup.ui.compose.recycler.HomePackageRecycler
 import com.machiav3lli.backup.ui.compose.recycler.UpdatedPackageRecycler
-import com.machiav3lli.backup.utils.FileUtils
-import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
-import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -73,20 +67,21 @@ fun HomePage() {
     val main = OABX.main!!
     var appSheet: AppSheet? = null
 
-    val list by main.viewModel.packageList.collectAsState(null)
-    val modelSortFilter by main.viewModel.modelSortFilter  //TODO hg42 .collectAsState(main.sortFilterModel)
-    val query by main.viewModel.searchQuery
+    //val list by main.viewModel.packageList.collectAsState(null)
+    //val modelSortFilter by main.viewModel.modelSortFilter  //TODO hg42 .collectAsState(main.sortFilterModel)
+    //val query by main.viewModel.searchQuery
     val filteredList by main.viewModel.filteredList.collectAsState(null)
     val updatedPackages by main.viewModel.updatedPackages.collectAsState(null)
     var updaterExpanded by remember { mutableStateOf(false) }
 
-    val filterPredicate = { item: Package ->
-        query.isEmpty() || (
-                listOf(item.packageName, item.packageLabel)
-                    .any { it.contains(query, ignoreCase = true) }
-                )
-    }
-    val queriedList = filteredList?.filter(filterPredicate)
+    // val filterPredicate = { item: Package ->
+    //     query.isEmpty() || (
+    //             listOf(item.packageName, item.packageLabel)
+    //                 .any { it.contains(query, ignoreCase = true) }
+    //             )
+    // }
+    // val queriedList = filteredList?.filter(filterPredicate)
+    val queriedList = filteredList
 
     val batchConfirmListener = object : BatchDialogFragment.ConfirmListener {
         override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {
@@ -96,18 +91,18 @@ fun HomePage() {
         }
     }
 
-    LaunchedEffect(list, modelSortFilter) {
-        try {
-            //main.viewModel.filteredList.value = list?.applyFilter(modelSortFilter, main)
-            //main.viewModel.triggerPackageListConsumers()
-        } catch (e: FileUtils.BackupLocationInAccessibleException) {
-            Timber.e("Could not update application list: $e")
-        } catch (e: StorageLocationNotConfiguredException) {
-            Timber.e("Could not update application list: $e")
-        } catch (e: Throwable) {
-            LogsHandler.unhandledException(e)
-        }
-    }
+    // LaunchedEffect(list, modelSortFilter) {
+    //     try {
+    //         //main.viewModel.filteredList.value = list?.applyFilter(modelSortFilter, main)
+    //         //main.viewModel.triggerPackageListConsumers()
+    //     } catch (e: FileUtils.BackupLocationInAccessibleException) {
+    //         Timber.e("Could not update application list: $e")
+    //     } catch (e: StorageLocationNotConfiguredException) {
+    //         Timber.e("Could not update application list: $e")
+    //     } catch (e: Throwable) {
+    //         LogsHandler.unhandledException(e)
+    //     }
+    // }
 
     Scaffold(
         containerColor = Color.Transparent,
