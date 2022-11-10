@@ -26,8 +26,10 @@ import com.machiav3lli.backup.ui.item.Link
 import java.time.format.DateTimeFormatter
 
 const val PREFS_SHARED_PRIVATE = "com.machiav3lli.backup"
-const val EXPORTS_FOLDER_NAME = "!-EXPORTS"
-const val LOG_FOLDER_NAME = "!-LOGS"
+const val ADMIN_PREFIX = "!-"
+val SELECTIONS_FOLDER_NAME = "${ADMIN_PREFIX}SELECTIONS"
+val EXPORTS_FOLDER_NAME = "${ADMIN_PREFIX}EXPORTS"
+val LOG_FOLDER_NAME = "${ADMIN_PREFIX}LOGS"
 
 const val LOG_INSTANCE = "%s.log"
 const val BACKUP_INSTANCE_PROPERTIES = "%s-user_%s.properties"

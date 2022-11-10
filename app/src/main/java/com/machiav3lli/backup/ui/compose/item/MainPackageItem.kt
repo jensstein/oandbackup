@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.MODE_ALL
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.SELECTIONS_FOLDER_NAME
 import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
@@ -53,8 +54,6 @@ import com.machiav3lli.backup.utils.getFormattedDate
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
-const val SELECTIONS_FOLDER_NAME = "!-SELECTIONS"
 
 @Composable
 fun Selections(

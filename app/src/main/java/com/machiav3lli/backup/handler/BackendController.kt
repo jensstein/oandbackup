@@ -24,9 +24,8 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Process
-import com.machiav3lli.backup.EXPORTS_FOLDER_NAME
+import com.machiav3lli.backup.ADMIN_PREFIX
 import com.machiav3lli.backup.IGNORED_PERMISSIONS
-import com.machiav3lli.backup.LOG_FOLDER_NAME
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
 import com.machiav3lli.backup.OABX
@@ -292,8 +291,7 @@ fun Context.getBackupPackageDirectories(): List<StorageFile> {
         return backupRoot.listFiles()
             .filter {
                 it.isDirectory &&
-                        it.name != LOG_FOLDER_NAME &&
-                        it.name != EXPORTS_FOLDER_NAME &&
+                        !(it.name?.startsWith(ADMIN_PREFIX) ?: false)
                         !(it.name?.startsWith('.') ?: false)
             }
             .toList()
