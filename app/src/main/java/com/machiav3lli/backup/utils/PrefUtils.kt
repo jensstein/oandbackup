@@ -449,6 +449,7 @@ var Context.sortFilterModel: SortFilterModel
     }
     set(value) {
         persist_sortFilter.value = value.toString()
+        OABX.main?.viewModel?.modelSortFilter?.value = value   //setSortFilter(value)
     }
 
 class StorageLocationNotConfiguredException : Exception("Storage Location has not been configured")

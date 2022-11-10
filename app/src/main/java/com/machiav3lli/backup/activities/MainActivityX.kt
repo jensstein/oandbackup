@@ -33,11 +33,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -79,10 +79,8 @@ import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.FileUtils.invalidateBackupLocation
 import com.machiav3lli.backup.utils.classAndId
 import com.machiav3lli.backup.utils.destinationToItem
-import com.machiav3lli.backup.utils.getStats
 import com.machiav3lli.backup.utils.isEncryptionEnabled
 import com.machiav3lli.backup.utils.setCustomTheme
-import com.machiav3lli.backup.utils.sortFilterModel
 import com.machiav3lli.backup.viewmodels.MainViewModel
 import com.topjohnwu.superuser.Shell
 import kotlinx.coroutines.CoroutineScope
@@ -162,20 +160,24 @@ class MainActivityX : BaseActivity() {
         setContent {
             AppTheme {
                 val navController = rememberAnimatedNavController()
-                val query by viewModel.searchQuery.collectAsState(initial = "")
-                val list by viewModel.packageList.collectAsState(null)
-                var pageTitle by remember {
-                    mutableStateOf(NavItem.Home.title)
-                }
+                var pageTitle by remember { mutableStateOf(NavItem.Home.title) }
+
+                var query by rememberSaveable { mutableStateOf(viewModel.searchQuery.value) }
+                val searchExpanded = query.length > 0
+
+                Timber.d("compose: query = '$query'")
 
                 navController.addOnDestinationChangedListener { _, destination, _ ->
                     pageTitle = destination.destinationToItem()?.title ?: NavItem.Home.title
                 }
 
-                SideEffect {
-                    //crScope.launch { viewModel.searchQueryFlow.emit("") }  // don't clear the search box (e.g. on screen rotation)
-                    crScope.launch { viewModel.modelSortFilterFlow.emit(sortFilterModel) }
-                    if (freshStart) refreshList()
+                LaunchedEffect(viewModel) {
+                    if (freshStart) {
+                        //TODO hg42 even this doesn not trigger the flows?
+                        //OABX.context.sortFilterModel = OABX.context.sortFilterModel
+                        //viewModel.searchQuery.value = ""
+                        //viewModel.modelSortFilter.value = OABX.context.sortFilterModel
+                    }
                 }
 
                 Scaffold(
@@ -195,7 +197,7 @@ class MainActivityX : BaseActivity() {
                                     GlobalScope.launch(Dispatchers.IO) {
                                         val blocklistedPackages =
                                             context.viewModel.blocklist.value
-                                                ?.mapNotNull { it.packageName }.orEmpty()
+                                                .mapNotNull { it.packageName }.orEmpty()
 
                                         PackagesListDialogFragment(
                                             blocklistedPackages,
@@ -219,14 +221,16 @@ class MainActivityX : BaseActivity() {
                         else Column() {
                             TopBar(title = stringResource(id = pageTitle)) {
                                 ExpandableSearchAction(
-                                    expanded = (query.length > 0),
+                                    expanded = searchExpanded,
                                     query = query,
                                     onQueryChanged = { newQuery ->
-                                        if (newQuery != query)
-                                            viewModel.setSearchQuery(newQuery)
+                                        //if (newQuery != query)  // then empty string doesn't work...
+                                            query = newQuery
+                                            viewModel.searchQuery.value = query
                                     },
                                     onClose = {
-                                        viewModel.setSearchQuery("")
+                                        query = ""
+                                        viewModel.searchQuery.value = ""
                                     }
                                 )
                                 RoundButton(
@@ -271,12 +275,7 @@ class MainActivityX : BaseActivity() {
                                     withText = false,
                                     positive = true,
                                 ) {
-                                    sheetSortFilter = SortFilterSheet(
-                                        getStats(
-                                            list?.applyFilter(sortFilterModel, context)
-                                                ?: emptyList()
-                                        ) // TODO apply page's filter too
-                                    )
+                                    sheetSortFilter = SortFilterSheet()
                                     sheetSortFilter.showNow(
                                         supportFragmentManager,
                                         "SORTFILTER_SHEET"
@@ -309,6 +308,10 @@ class MainActivityX : BaseActivity() {
         super.onResume()
     }
 
+    override fun onPause() {
+        super.onPause()
+    }
+
     override fun onDestroy() {
         OABX.viewModelSaved = viewModel
         OABX.mainSaved = OABX.main
@@ -316,7 +319,7 @@ class MainActivityX : BaseActivity() {
         super.onDestroy()
     }
 
-    @Deprecated("Deprecated in Java")
+    @Deprecated("Deprecated in Java")   //TDOD hg42 why? how to handle now?
     override fun onBackPressed() {
         finishAffinity()
     }
@@ -364,10 +367,6 @@ class MainActivityX : BaseActivity() {
 
     fun updatePackage(packageName: String) {
         viewModel.updatePackage(packageName)
-    }
-
-    fun refreshView() {
-        crScope.launch { viewModel.modelSortFilterFlow.emit(sortFilterModel) }
     }
 
     fun refreshList() {

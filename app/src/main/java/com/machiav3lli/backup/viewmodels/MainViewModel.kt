@@ -24,7 +24,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.beginBusy
-import com.machiav3lli.backup.OABX.Companion.context
 import com.machiav3lli.backup.OABX.Companion.endBusy
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
 import com.machiav3lli.backup.dbs.ODatabase
@@ -36,14 +35,15 @@ import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.Package.Companion.invalidateCacheForPackage
-import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.preferences.pref_usePackageCacheOnUpdate
+import com.machiav3lli.backup.ui.compose.MutableComposableSharedFlow
+import com.machiav3lli.backup.utils.FlowUtils
+import com.machiav3lli.backup.utils.FlowUtils.combine
 import com.machiav3lli.backup.utils.applyFilter
+import com.machiav3lli.backup.utils.sortFilterModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.mapLatest
@@ -51,6 +51,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import kotlin.reflect.*
 import kotlin.system.measureTimeMillis
 
 class MainViewModel(
@@ -64,6 +65,7 @@ class MainViewModel(
             SharingStarted.Lazily,
             emptyList()
         )
+
 
     @OptIn(ExperimentalCoroutinesApi::class)
     var backupsMap = db.backupDao.allFlow
@@ -95,15 +97,21 @@ class MainViewModel(
         null
     )
 
-    val modelSortFilterFlow = MutableSharedFlow<SortFilterModel>(replay = 1)
-    val modelSortFilter = modelSortFilterFlow.stateIn(
-        viewModelScope,
-        SharingStarted.Lazily,
-        SortFilterModel()
-    )
+    var modelSortFilter = MutableComposableSharedFlow(OABX.context.sortFilterModel, viewModelScope)
+    var searchQuery = MutableComposableSharedFlow("", viewModelScope)
 
-    var filteredList = combine(packageList, backupsMap, db.appInfoDao.allFlow) { a, _, _ ->
-        a?.applyFilter(modelSortFilter.value, OABX.main!!)
+    var filteredList = FlowUtils.combine(
+            packageList, modelSortFilter.flow, searchQuery.flow, blocklist,
+            backupsMap, db.appInfoDao.allFlow
+    ) { a, m, s, b, _, _ ->
+
+        a?.filter { item: Package ->
+            s.isEmpty() || (
+                    listOf(item.packageName, item.packageLabel)
+                        .any { it.contains(s, ignoreCase = true) }
+                    )
+        }?.applyFilter(m, OABX.main!!)
+
     }.stateIn(
         viewModelScope,
         SharingStarted.Lazily,
@@ -113,25 +121,12 @@ class MainViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     var updatedPackages = filteredList.mapLatest { it?.filter(Package::isUpdated)?.toMutableList() }
 
-    private val _searchQuery = MutableSharedFlow<String>(replay = 1)
-    val searchQuery = _searchQuery.asSharedFlow()
-
-    fun setSearchQuery(query: String) {
-        viewModelScope.launch {
-            _searchQuery.emit(query)
-        }
-    }
-
     init {
         viewModelScope.launch {
             withContext(Dispatchers.Default) {
-                blocklist.collectLatest { triggerPackageListConsumers() }
+                blocklist.collectLatest { }
             }
         }
-    }
-
-    fun triggerPackageListConsumers() {
-        //packageList.postValue(packageList.value)
     }
 
     // TODO add to interface
@@ -145,7 +140,7 @@ class MainViewModel(
         withContext(Dispatchers.IO) {
             beginBusy()
             val time = measureTimeMillis {
-                //packageList.postValue(null)
+                //packageList.postValue(mutableListOf())
                 appContext.updateAppTables(db.appInfoDao, db.backupDao)
             }
             OABX.addInfoText("recreateAppInfoList: ${(time / 1000 + 0.5).toInt()} sec")
@@ -173,13 +168,13 @@ class MainViewModel(
                             Package(appContext, packageName, getAppBackupRoot())
                         }
                         new.ensureBackupList()
-                        new.refreshFromPackageManager(context)
-                        new.refreshStorageStats(context)
+                        new.refreshFromPackageManager(OABX.context)
+                        new.refreshStorageStats(OABX.context)
                         if (!isSpecial) db.appInfoDao.update(new.packageInfo as AppInfo)
                         db.backupDao.updateList(new)
                     } else {
                         val new = Package(appContext, packageName, getAppBackupRoot())
-                        new.refreshFromPackageManager(context)
+                        new.refreshFromPackageManager(OABX.context)
                         if (!isSpecial) db.appInfoDao.update(new.packageInfo as AppInfo)
                         db.backupDao.updateList(new)
                     }

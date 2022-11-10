@@ -7,7 +7,7 @@ import androidx.core.text.isDigitsOnly
 // not necessarily portable or future-proof assumptions
 // a.k.a. HACKS!
 
-//TODO all these might be imporoved by using more future-proof strategies
+//TODO all these might be improved by using more future-proof strategies
 
 class Dirty {
     companion object {

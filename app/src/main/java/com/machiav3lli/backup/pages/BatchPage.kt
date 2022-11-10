@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,7 +41,6 @@ import com.machiav3lli.backup.ALT_MODE_DATA
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
-import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.DiamondsFour
@@ -52,26 +50,24 @@ import com.machiav3lli.backup.ui.compose.item.StateChip
 import com.machiav3lli.backup.ui.compose.recycler.BatchPackageRecycler
 import com.machiav3lli.backup.ui.compose.theme.ColorAPK
 import com.machiav3lli.backup.ui.compose.theme.ColorData
-import com.machiav3lli.backup.utils.FileUtils
-import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.sortFilterModel
 import com.machiav3lli.backup.viewmodels.BatchViewModel
-import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
     val main = OABX.main!!
     val list by main.viewModel.packageList.collectAsState(null)
-    val modelSortFilter by main.viewModel.modelSortFilter.collectAsState(main.sortFilterModel)
+    val modelSortFilter by main.viewModel.modelSortFilter
+    val query by main.viewModel.searchQuery
     val filteredList by main.viewModel.filteredList.collectAsState(null)
-    val query by main.viewModel.searchQuery.collectAsState(initial = "")
 
     val filterPredicate = { item: Package ->
         val includedBoolean = if (backupBoolean) item.isInstalled else item.hasBackups
         val queryBoolean =
-            query.isEmpty() || listOf(item.packageName, item.packageLabel)
-                .find { it.contains(query, true) } != null
+            query.isEmpty() || (
+                listOf(item.packageName, item.packageLabel)
+                    .any { it.contains(query, ignoreCase = true) }
+            )
         includedBoolean && queryBoolean
     }
     val workList = filteredList?.filter(filterPredicate)
@@ -97,19 +93,6 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
             main.startBatchAction(backupBoolean, selectedPackages, selectedModes) {
                 it.removeObserver(this)
             }
-        }
-    }
-
-    LaunchedEffect(list, modelSortFilter) {
-        try {
-            //viewModel.filteredList.value = list?.applyFilter(modelSortFilter, main)
-            main.viewModel.triggerPackageListConsumers()
-        } catch (e: FileUtils.BackupLocationInAccessibleException) {
-            Timber.e("Could not update application list: $e")
-        } catch (e: StorageLocationNotConfiguredException) {
-            Timber.e("Could not update application list: $e")
-        } catch (e: Throwable) {
-            LogsHandler.unhandledException(e)
         }
     }
 

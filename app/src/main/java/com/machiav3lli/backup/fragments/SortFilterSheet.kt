@@ -36,6 +36,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -46,7 +51,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.machiav3lli.backup.EXTRA_STATS
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.mainBackupModeChipItems
@@ -68,27 +73,21 @@ import com.machiav3lli.backup.ui.compose.recycler.MultiSelectableChipGroup
 import com.machiav3lli.backup.ui.compose.recycler.SelectableChipGroup
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.item.ChipItem
+import com.machiav3lli.backup.utils.applyFilter
+import com.machiav3lli.backup.utils.getStats
 import com.machiav3lli.backup.utils.sortFilterModel
 import com.machiav3lli.backup.utils.specialBackupsEnabled
 
 class SortFilterSheet() : BaseSheet() {
-    constructor(stats: Triple<Int, Int, Int> = Triple(0, 0, 0)) : this() {
-        arguments = Bundle().apply {
-            putIntArray(EXTRA_STATS, stats.toList().toIntArray())
-        }
-    }
-
-    private val stats: Triple<Int, Int, Int>
-        get() = requireArguments().getIntArray(EXTRA_STATS)?.let { Triple(it[0], it[1], it[2]) }
-            ?: Triple(0, 0, 0)
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
 
         return ComposeView(requireContext()).apply {
+
             setContent {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 SortFilterPage()
@@ -99,137 +98,138 @@ class SortFilterSheet() : BaseSheet() {
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
     @Composable
     fun SortFilterPage() {
-        val mSortFilterModel = requireContext().sortFilterModel
         val nestedScrollConnection = rememberNestedScrollInteropConnection()
+        val packageList by requireMainActivity().viewModel.packageList.collectAsState()
+        var model by rememberSaveable { mutableStateOf(requireContext().sortFilterModel) }
+        fun currentStats() =
+            getStats(packageList?.applyFilter(model, OABX.context) ?: emptyList())
 
         AppTheme {
-            mSortFilterModel.let {
-                Scaffold(
-                    containerColor = Color.Transparent,
-                    contentColor = MaterialTheme.colorScheme.onBackground,
-                    bottomBar = {
-                        Column(
-                            modifier = Modifier.padding(
-                                start = 8.dp,
-                                end = 8.dp,
-                                bottom = 12.dp,
-                            ),
-                        ) {
-                            Divider(thickness = 2.dp)
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                ElevatedActionButton(
-                                    text = stringResource(id = R.string.resetFilter),
-                                    icon = Phosphor.ArrowUUpLeft,
-                                    modifier = Modifier.weight(1f),
-                                    fullWidth = true,
-                                    positive = false,
-                                    onClick = {
-                                        requireContext().sortFilterModel = SortFilterModel()
-                                        requireMainActivity().refreshView()
-                                        dismissAllowingStateLoss()
-                                    }
-                                )
-                                ElevatedActionButton(
-                                    text = stringResource(id = R.string.applyFilter),
-                                    icon = Phosphor.Check,
-                                    modifier = Modifier.weight(1f),
-                                    fullWidth = true,
-                                    positive = true,
-                                    onClick = {
-                                        requireContext().sortFilterModel = it
-                                        requireMainActivity().refreshView()
-                                        dismissAllowingStateLoss()
-                                    }
-                                )
-                            }
-                        }
-                    }
-                ) { paddingValues ->
-                    LazyColumn(
-                        modifier = Modifier
-                            .padding(paddingValues)
-                            .nestedScroll(nestedScrollConnection)
-                            .fillMaxSize(),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        contentPadding = PaddingValues(8.dp)
+            Scaffold(
+                containerColor = Color.Transparent,
+                contentColor = MaterialTheme.colorScheme.onBackground,
+                bottomBar = {
+                    Column(
+                        modifier = Modifier.padding(
+                            start = 8.dp,
+                            end = 8.dp,
+                            bottom = 12.dp,
+                        ),
                     ) {
-                        item {
-                            Row(
-                                modifier = Modifier
-                                    .padding(top = 4.dp)
-                                    .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                DoubleVerticalText(
-                                    upperText = stats.first.toString(),
-                                    bottomText = stringResource(id = R.string.stats_apps),
-                                    modifier = Modifier.weight(1f)
-                                )
-                                DoubleVerticalText(
-                                    upperText = stats.second.toString(),
-                                    bottomText = stringResource(id = R.string.stats_backups),
-                                    modifier = Modifier.weight(1f)
-                                )
-                                DoubleVerticalText(
-                                    upperText = stats.third.toString(),
-                                    bottomText = stringResource(id = R.string.stats_updated),
-                                    modifier = Modifier.weight(1f)
-                                )
-                                RoundButton(icon = Phosphor.CaretDown) {
+                        Divider(thickness = 2.dp)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            ElevatedActionButton(
+                                text = stringResource(id = R.string.resetFilter),
+                                icon = Phosphor.ArrowUUpLeft,
+                                modifier = Modifier.weight(1f),
+                                fullWidth = true,
+                                positive = false,
+                                onClick = {
+                                    requireContext().sortFilterModel = SortFilterModel()
                                     dismissAllowingStateLoss()
                                 }
-                            }
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Divider(thickness = 2.dp)
-                        }
-                        item {
-                            TitleText(R.string.sort_options)
-                            SelectableChipGroup(
-                                list = sortChipItems,
-                                selectedFlag = it.sort
-                            ) { flag ->
-                                it.sort = flag
-                            }
-                            SwitchChip(
-                                firstTextId = R.string.sortAsc,
-                                firstIcon = Phosphor.SortAscending,
-                                secondTextId = R.string.sortDesc,
-                                secondIcon = Phosphor.SortDescending,
-                                firstSelected = it.sortAsc,
-                                onCheckedChange = { checked -> it.sortAsc = checked }
+                            )
+                            ElevatedActionButton(
+                                text = stringResource(id = R.string.applyFilter),
+                                icon = Phosphor.Check,
+                                modifier = Modifier.weight(1f),
+                                fullWidth = true,
+                                positive = true,
+                                onClick = {
+                                    requireContext().sortFilterModel = model
+                                    dismissAllowingStateLoss()
+                                }
                             )
                         }
-                        item {
-                            TitleText(R.string.filter_options)
-                            MultiSelectableChipGroup(
-                                list = if (requireContext().specialBackupsEnabled) mainFilterChipItems
-                                else mainFilterChipItems.minus(ChipItem.Special),
-                                selectedFlags = it.mainFilter
-                            ) { flag ->
-                                it.mainFilter = it.mainFilter xor flag
+                    }
+                }
+            ) { paddingValues ->
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .nestedScroll(nestedScrollConnection)
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(8.dp)
+                ) {
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .padding(top = 4.dp)
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            DoubleVerticalText(
+                                upperText = currentStats().first.toString(),
+                                bottomText = stringResource(id = R.string.stats_apps),
+                                modifier = Modifier.weight(1f)
+                            )
+                            DoubleVerticalText(
+                                upperText = currentStats().second.toString(),
+                                bottomText = stringResource(id = R.string.stats_backups),
+                                modifier = Modifier.weight(1f)
+                            )
+                            DoubleVerticalText(
+                                upperText = currentStats().third.toString(),
+                                bottomText = stringResource(id = R.string.stats_updated),
+                                modifier = Modifier.weight(1f)
+                            )
+                            RoundButton(icon = Phosphor.CaretDown) {
+                                dismissAllowingStateLoss()
                             }
                         }
-                        item {
-                            TitleText(R.string.backup_filters)
-                            MultiSelectableChipGroup(
-                                list = mainBackupModeChipItems,
-                                selectedFlags = it.backupFilter
-                            ) { flag ->
-                                it.backupFilter = it.backupFilter xor flag
-                            }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Divider(thickness = 2.dp)
+                    }
+                    item {
+                        TitleText(R.string.sort_options)
+                        SelectableChipGroup(
+                            list = sortChipItems,
+                            selectedFlag = model.sort
+                        ) { flag ->
+                            model = model.copy().apply { sort = flag }
                         }
-                        item {
-                            TitleText(R.string.other_filters_options)
-                            SelectableChipGroup(
-                                list = mainSpecialFilterChipItems,
-                                selectedFlag = it.specialFilter
-                            ) { flag ->
-                                it.specialFilter = flag
+                        SwitchChip(
+                            firstTextId = R.string.sortAsc,
+                            firstIcon = Phosphor.SortAscending,
+                            secondTextId = R.string.sortDesc,
+                            secondIcon = Phosphor.SortDescending,
+                            firstSelected = model.sortAsc,
+                            onCheckedChange = { checked ->
+                                model = model.copy().apply { sortAsc = checked }
                             }
+                        )
+                    }
+                    item {
+                        TitleText(R.string.filter_options)
+                        MultiSelectableChipGroup(
+                            list = if (requireContext().specialBackupsEnabled) mainFilterChipItems
+                            else mainFilterChipItems.minus(ChipItem.Special),
+                            selectedFlags = model.mainFilter
+                        ) { flag ->
+                            model = model.copy().apply { mainFilter = mainFilter xor flag }
+                        }
+                    }
+                    item {
+                        TitleText(R.string.backup_filters)
+                        MultiSelectableChipGroup(
+                            list = mainBackupModeChipItems,
+                            selectedFlags = model.backupFilter
+                        ) { flag ->
+                            model = model.copy().apply { backupFilter = backupFilter xor flag }
+                        }
+                    }
+                    item {
+                        TitleText(R.string.other_filters_options)
+                        SelectableChipGroup(
+                            list = mainSpecialFilterChipItems,
+                            selectedFlag = model.specialFilter
+                        ) { flag ->
+                            model = model.copy().apply { specialFilter = flag }
                         }
                     }
                 }

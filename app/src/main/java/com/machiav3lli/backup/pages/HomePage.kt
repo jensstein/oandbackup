@@ -64,7 +64,6 @@ import com.machiav3lli.backup.ui.compose.recycler.HomePackageRecycler
 import com.machiav3lli.backup.ui.compose.recycler.UpdatedPackageRecycler
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.sortFilterModel
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -75,15 +74,17 @@ fun HomePage() {
     var appSheet: AppSheet? = null
 
     val list by main.viewModel.packageList.collectAsState(null)
-    val modelSortFilter by main.viewModel.modelSortFilter.collectAsState(main.sortFilterModel)
+    val modelSortFilter by main.viewModel.modelSortFilter  //TODO hg42 .collectAsState(main.sortFilterModel)
+    val query by main.viewModel.searchQuery
     val filteredList by main.viewModel.filteredList.collectAsState(null)
     val updatedPackages by main.viewModel.updatedPackages.collectAsState(null)
-    val query by main.viewModel.searchQuery.collectAsState(initial = "")
     var updaterExpanded by remember { mutableStateOf(false) }
 
     val filterPredicate = { item: Package ->
-        query.isEmpty() || listOf(item.packageName, item.packageLabel)
-            .find { it.contains(query, true) } != null
+        query.isEmpty() || (
+                listOf(item.packageName, item.packageLabel)
+                    .any { it.contains(query, ignoreCase = true) }
+                )
     }
     val queriedList = filteredList?.filter(filterPredicate)
 
