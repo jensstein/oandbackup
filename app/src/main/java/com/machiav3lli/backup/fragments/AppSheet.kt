@@ -54,7 +54,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -161,8 +160,8 @@ class AppSheet() : BaseSheet(), ActionListener {
     fun AppPage() {
         val thePackages by requireMainActivity().viewModel.packageList.collectAsState()
         val thePackage: Package? = thePackages?.find { it.packageName == packageName }
-        val snackbarText by viewModel.snackbarText.observeAsState()
-        val appExtras by viewModel.appExtras.observeAsState()
+        val snackbarText by viewModel.snackbarText.collectAsState()
+        val appExtras by viewModel.appExtras.collectAsState()
         val refreshNow by viewModel.refreshNow
         val snackbarHostState = remember { SnackbarHostState() }
         val nestedScrollConnection = rememberNestedScrollInteropConnection()
@@ -686,10 +685,10 @@ class AppSheet() : BaseSheet(), ActionListener {
     }
 
     fun showSnackBar(message: String) {
-        viewModel.snackbarText.value = message
+        viewModel.setSnackbarText(message)
     }
 
     fun dismissSnackBar() {
-        viewModel.snackbarText.value = ""
+        viewModel.setSnackbarText("")
     }
 }
