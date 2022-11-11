@@ -58,7 +58,7 @@ class MainViewModel(
     private val appContext: Application
 ) : AndroidViewModel(appContext) {
 
-    var blocklist = db.blocklistDao.allFlow
+    val blocklist = db.blocklistDao.allFlow
         .stateIn(
             viewModelScope,
             SharingStarted.Lazily,
@@ -66,7 +66,7 @@ class MainViewModel(
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    var backupsMap = db.backupDao.allFlow
+    val backupsMap = db.backupDao.allFlow
         .mapLatest { it.groupBy(Backup::packageName) }
         .stateIn(
             viewModelScope,
@@ -75,7 +75,7 @@ class MainViewModel(
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    var appExtrasMap = db.appExtrasDao.allFlow
+    val appExtrasMap = db.appExtrasDao.allFlow
         .mapLatest { it.associateBy(AppExtras::packageName) }
         .stateIn(
             viewModelScope,
@@ -83,10 +83,10 @@ class MainViewModel(
             emptyMap()
         )
 
-    var packageList = combine(db.appInfoDao.allFlow, backupsMap) { a, b ->
+    val packageList = combine(db.appInfoDao.allFlow, backupsMap, blocklist) { a, b, c ->
         a.toPackageList(
             appContext,
-            blocklist.value.mapNotNull(Blocklist::packageName),
+            c.mapNotNull(Blocklist::packageName),
             b
         )
     }.stateIn(
@@ -102,16 +102,17 @@ class MainViewModel(
         SortFilterModel()
     )
 
-    var filteredList = combine(packageList, backupsMap, db.appInfoDao.allFlow) { a, _, _ ->
-        a?.applyFilter(modelSortFilter.value, OABX.main!!)
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.Lazily,
-        null
-    )
+    val filteredList =
+        combine(packageList, modelSortFilter) { a, b ->
+            a?.applyFilter(b, OABX.main!!)
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.Lazily,
+            null
+        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    var updatedPackages = filteredList.mapLatest { it?.filter(Package::isUpdated)?.toMutableList() }
+    val updatedPackages = filteredList.mapLatest { it?.filter(Package::isUpdated)?.toMutableList() }
 
     private val _searchQuery = MutableSharedFlow<String>(replay = 1)
     val searchQuery = _searchQuery.asSharedFlow()
