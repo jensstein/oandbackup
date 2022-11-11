@@ -57,7 +57,7 @@ class MainViewModel(
 ) : AndroidViewModel(appContext) {
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    var blocklist = db.blocklistDao.allFlow
+    val blocklist = db.blocklistDao.allFlow
         //.mapLatest { it }
         .stateIn(
             viewModelScope,
@@ -66,7 +66,7 @@ class MainViewModel(
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    var backupsMap = db.backupDao.allFlow
+    val backupsMap = db.backupDao.allFlow
         .mapLatest { it.groupBy(Backup::packageName) }
         .stateIn(
             viewModelScope,
@@ -75,7 +75,7 @@ class MainViewModel(
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    var appExtrasMap = db.appExtrasDao.allFlow
+    val appExtrasMap = db.appExtrasDao.allFlow
         .mapLatest { it.associateBy(AppExtras::packageName) }
         .stateIn(
             viewModelScope,
@@ -83,7 +83,7 @@ class MainViewModel(
             emptyMap()
         )
 
-    var packageList = combine(db.appInfoDao.allFlow, backupsMap) { a, b ->
+    val packageList = combine(db.appInfoDao.allFlow, backupsMap) { a, b ->
         a.toPackageList(
             appContext,
             blocklist.value.mapNotNull(Blocklist::packageName),
@@ -98,7 +98,7 @@ class MainViewModel(
     var modelSortFilter = MutableComposableSharedFlow(OABX.context.sortFilterModel, viewModelScope)
     var searchQuery = MutableComposableSharedFlow("", viewModelScope)
 
-    var filteredList = combine(   // sixpack :-)
+    val filteredList = combine(   // sixpack :-)
             packageList, modelSortFilter.flow, searchQuery.flow, blocklist,
             backupsMap   //, db.appInfoDao.allFlow
     ) { p, f, s, b, _ ->
@@ -124,7 +124,7 @@ class MainViewModel(
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    var updatedPackages = filteredList.mapLatest { it?.filter(Package::isUpdated)?.toMutableList() }
+    val updatedPackages = filteredList.mapLatest { it?.filter(Package::isUpdated)?.toMutableList() }
 
     init {
         viewModelScope.launch {
