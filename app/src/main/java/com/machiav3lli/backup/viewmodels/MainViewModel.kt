@@ -58,73 +58,118 @@ class MainViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val blocklist = db.blocklistDao.allFlow
+
         //.mapLatest { it }
         .stateIn(
             viewModelScope,
-            SharingStarted.Lazily,
+            SharingStarted.Eagerly,
             emptyList()
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val backupsMap = db.backupDao.allFlow
+
         .mapLatest { it.groupBy(Backup::packageName) }
         .stateIn(
             viewModelScope,
-            SharingStarted.Lazily,
+            SharingStarted.Eagerly,
             emptyMap()
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val appExtrasMap = db.appExtrasDao.allFlow
+
         .mapLatest { it.associateBy(AppExtras::packageName) }
         .stateIn(
             viewModelScope,
-            SharingStarted.Lazily,
+            SharingStarted.Eagerly,
             emptyMap()
         )
 
-    val packageList = combine(db.appInfoDao.allFlow, backupsMap) { a, b ->
-        a.toPackageList(
-            appContext,
-            blocklist.value.mapNotNull(Blocklist::packageName),
-            b
-        )
+    val packageList = combine(db.appInfoDao.allFlow, backupsMap) { p, b ->
+
+        Timber.w("******************** database ******************** db: ${p.size} backups: ${b.size}")
+
+        val list =
+            p.toPackageList(
+                appContext,
+                blocklist.value.mapNotNull(Blocklist::packageName),
+                b
+            )
+
+        Timber.w("packages: ${list.size}")
+        list
     }.stateIn(
         viewModelScope,
-        SharingStarted.Lazily,
+        SharingStarted.Eagerly,
         emptyList()
     )
 
-    var modelSortFilter = MutableComposableSharedFlow(OABX.context.sortFilterModel, viewModelScope)
-    var searchQuery = MutableComposableSharedFlow("", viewModelScope)
+    val blockedList = combine(packageList, blocklist) { p, b ->
 
-    val filteredList = combine(   // sixpack :-)
-            packageList, modelSortFilter.flow, searchQuery.flow, blocklist,
-            backupsMap   //, db.appInfoDao.allFlow
-    ) { p, f, s, b, _ ->
+        Timber.w(
+            "******************** blocking ******************** list: ${p.size} block: ${
+                b.joinToString(
+                    ","
+                )
+            }"
+        )
 
-        Timber.w("******************** filtering ******************** packages: ${p.size} search: $s filter: $f block: ${b.joinToString(",")}")
+        val block = b.map { it.packageName }
+        val list = p.filterNot { block.contains(it.packageName) }
 
-        val blockPackages = b.map { it.packageName }
-        val filtered = p
+        Timber.w("blocked: ${list.size}")
+        list
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        emptyList()
+    )
+
+    val searchQuery = MutableComposableSharedFlow("", viewModelScope)
+
+    val queriedList = combine(blockedList, searchQuery.flow) { p, s ->
+
+        Timber.w("******************** searching ******************** list: ${p.size} search: $s")
+
+        val list = p
             .filter { item: Package ->
                 s.isEmpty() || (
                         listOf(item.packageName, item.packageLabel)
                             .any { it.contains(s, ignoreCase = true) }
                         )
             }
-            .applyFilter(f, OABX.main!!)
-            .filterNot { blockPackages.contains(it.packageName) }
-        Timber.d("filtered: ${filtered.size}")
-        filtered
+
+        Timber.w("queried: ${list.size}")
+        list
     }.stateIn(
         viewModelScope,
-        SharingStarted.Lazily,
-        null
+        SharingStarted.Eagerly,
+        emptyList()
+    )
+
+    var modelSortFilter = MutableComposableSharedFlow(OABX.context.sortFilterModel, viewModelScope)
+
+    val filteredList = combine(queriedList, modelSortFilter.flow) { p, f ->
+
+        Timber.w("******************** filtering ******************** list: ${p.size} filter: $f")
+
+        val list = p
+            .applyFilter(f, OABX.main!!)
+
+        Timber.w("filtered: ${list.size}")
+        list
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        emptyList()
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val updatedPackages = filteredList.mapLatest { it?.filter(Package::isUpdated)?.toMutableList() }
+    val updatedPackages =
+
+        filteredList.mapLatest { it?.filter(Package::isUpdated)?.toMutableList() }
+
 
     init {
         viewModelScope.launch {

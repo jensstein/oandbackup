@@ -6,12 +6,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layout
 import com.machiav3lli.backup.preferences.pref_useSelectableText
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlin.reflect.KProperty
 
 fun Modifier.vertical() = layout { measurable, constraints ->
     val placeable = measurable.measure(constraints)
@@ -45,21 +44,23 @@ class MutableComposableSharedFlow<T>(var initial : T, val scope : CoroutineScope
 
     var state = flow.stateIn(
         scope,
-        SharingStarted.Lazily,
+        SharingStarted.Eagerly,
         initial
     )
 
     var value: T
         get()           { return state.value }
-        set(value: T)   { scope.launch { flow.emit(value) } }
-
-    operator fun getValue(t: Any?, property: KProperty<*>): T {
-        return value
-    }
-
-    operator fun setValue(t: Any?, property: KProperty<*>, aValue: T) {
-        initial = aValue
-        value = aValue
-    }
+        set(value: T)   { initial = value ; scope.launch { flow.emit(value) } }
 }
 
+
+class MutableComposableStateFlow<T>(var initial : T, val scope : CoroutineScope)
+{
+    var flow = MutableStateFlow<T>(initial)
+
+    var state = flow
+
+    var value: T
+        get()           { return state.value }
+        set(value: T)   { initial = value ; scope.launch { flow.emit(value) } }
+}

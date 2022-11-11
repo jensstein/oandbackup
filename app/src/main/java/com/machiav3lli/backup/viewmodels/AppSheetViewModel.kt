@@ -52,14 +52,14 @@ class AppSheetViewModel(
 
     var thePackage = flow<Package?> { app }.stateIn(
         viewModelScope,
-        SharingStarted.Lazily,
+        SharingStarted.Eagerly,
         app
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     var appExtras = database.appExtrasDao.getFlow(app?.packageName ?: "").mapLatest { it }.stateIn(
         viewModelScope,
-        SharingStarted.Lazily,
+        SharingStarted.Eagerly,
         AppExtras(app?.packageName ?: "")
     )
 

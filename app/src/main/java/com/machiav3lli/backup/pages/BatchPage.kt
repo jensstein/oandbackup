@@ -56,19 +56,20 @@ import com.machiav3lli.backup.viewmodels.BatchViewModel
 @Composable
 fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
     val main = OABX.main!!
-    val list by main.viewModel.packageList.collectAsState(null)
-    val modelSortFilter by main.viewModel.modelSortFilter
-    val query by main.viewModel.searchQuery
-    val filteredList by main.viewModel.filteredList.collectAsState(null)
+    //val list by main.viewModel.packageList.collectAsState(emptyList())
+    //val modelSortFilter by main.viewModel.modelSortFilter.flow.collectAsState(main.sortFilterModel)
+    val query by main.viewModel.searchQuery.flow.collectAsState("")
+    val filteredList by main.viewModel.filteredList.collectAsState(emptyList())
 
     val filterPredicate = { item: Package ->
         val includedBoolean = if (backupBoolean) item.isInstalled else item.hasBackups
-        val queryBoolean =
-            query.isEmpty() || (
-                listOf(item.packageName, item.packageLabel)
-                    .any { it.contains(query, ignoreCase = true) }
-            )
-        includedBoolean && queryBoolean
+    //    val queryBoolean =
+    //        query.isEmpty() || (
+    //            listOf(item.packageName, item.packageLabel)
+    //                .any { it.contains(query, ignoreCase = true) }
+    //        )
+    //    includedBoolean && queryBoolean
+        includedBoolean
     }
     val workList = filteredList?.filter(filterPredicate)
     var allApkChecked by remember(workList) {

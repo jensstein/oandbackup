@@ -104,10 +104,14 @@ class MainActivityX : BaseActivity() {
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         val context = this
+        val mainChanged = (this != OABX.mainSaved)
+        OABX.activity = this
+        OABX.main = this
+
         val freshStart = OABX.main?.viewModel?.packageList?.value.isNullOrEmpty()
         //val freshStart = (savedInstanceState == null)   //TODO use some lifecycle method
-        val mainChanged = (this != OABX.mainSaved)
-        Timber.d(
+
+        Timber.w(
             "======================================== activity ${
                 classAndId(this)
             }${
@@ -119,8 +123,6 @@ class MainActivityX : BaseActivity() {
                     ""
             }"
         )
-        OABX.activity = this
-        OABX.main = this
 
         setCustomTheme()
         super.onCreate(savedInstanceState)
@@ -186,7 +188,7 @@ class MainActivityX : BaseActivity() {
                 Timber.d("search: ${viewModel.searchQuery.value} filter: ${viewModel.modelSortFilter.value}")
                 if (freshStart) {
                     SideEffect {
-                        Timber.d("#################### freshStart ####################")
+                        Timber.w("#################### freshStart ####################")
                         //TODO hg42 viewModel.refreshList()
                         //TODO hg42 viewModel.searchQuery.value = ""
                         //TODO hg42 viewModel.modelSortFilter.value = OABX.context.sortFilterModel

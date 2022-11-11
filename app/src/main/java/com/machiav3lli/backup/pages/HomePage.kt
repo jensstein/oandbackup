@@ -70,8 +70,8 @@ fun HomePage() {
     //val list by main.viewModel.packageList.collectAsState(null)
     //val modelSortFilter by main.viewModel.modelSortFilter  //TODO hg42 .collectAsState(main.sortFilterModel)
     //val query by main.viewModel.searchQuery
-    val filteredList by main.viewModel.filteredList.collectAsState(null)
-    val updatedPackages by main.viewModel.updatedPackages.collectAsState(null)
+    val filteredList by main.viewModel.filteredList.collectAsState(emptyList())
+    val updatedPackages by main.viewModel.updatedPackages.collectAsState(emptyList())
     var updaterExpanded by remember { mutableStateOf(false) }
 
     // val filterPredicate = { item: Package ->

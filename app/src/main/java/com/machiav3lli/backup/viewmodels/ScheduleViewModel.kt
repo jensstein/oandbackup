@@ -41,7 +41,7 @@ class ScheduleViewModel(
 
     val schedule: StateFlow<Schedule> = scheduleDB.getScheduleFlow(id).stateIn(
         viewModelScope,
-        SharingStarted.Lazily,
+        SharingStarted.Eagerly,
         Schedule(0)
     )
     val customList = scheduleDB.getCustomListFlow(id)
