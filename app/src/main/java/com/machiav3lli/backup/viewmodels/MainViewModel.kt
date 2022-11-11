@@ -37,8 +37,6 @@ import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.Package.Companion.invalidateCacheForPackage
 import com.machiav3lli.backup.preferences.pref_usePackageCacheOnUpdate
 import com.machiav3lli.backup.ui.compose.MutableComposableSharedFlow
-import com.machiav3lli.backup.utils.FlowUtils
-import com.machiav3lli.backup.utils.FlowUtils.combine
 import com.machiav3lli.backup.utils.applyFilter
 import com.machiav3lli.backup.utils.sortFilterModel
 import kotlinx.coroutines.Dispatchers
@@ -100,10 +98,10 @@ class MainViewModel(
     var modelSortFilter = MutableComposableSharedFlow(OABX.context.sortFilterModel, viewModelScope)
     var searchQuery = MutableComposableSharedFlow("", viewModelScope)
 
-    var filteredList = FlowUtils.combine(   // sixpack :-)
+    var filteredList = combine(   // sixpack :-)
             packageList, modelSortFilter.flow, searchQuery.flow, blocklist,
-            backupsMap, db.appInfoDao.allFlow
-    ) { p, f, s, b, _, _ ->
+            backupsMap   //, db.appInfoDao.allFlow
+    ) { p, f, s, b, _ ->
 
         Timber.w("******************** filtering ******************** packages: ${p.size} search: $s filter: $f block: ${b.joinToString(",")}")
 
