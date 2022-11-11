@@ -17,7 +17,6 @@
  */
 package com.machiav3lli.backup.dbs.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import com.machiav3lli.backup.dbs.entity.Blocklist
@@ -32,16 +31,10 @@ interface BlocklistDao : BaseDao<Blocklist> {
     val all: List<Blocklist>
 
     @get:Query("SELECT * FROM blocklist ORDER BY blocklistId ASC")
-    val liveAll: LiveData<List<Blocklist>>
-
-    @get:Query("SELECT * FROM blocklist ORDER BY blocklistId ASC")
     val allFlow: Flow<List<Blocklist>>
 
     @Query("SELECT packageName FROM blocklist WHERE blocklistId = :blocklistId")
     fun getBlocklistedPackages(blocklistId: Long): List<String>
-
-    @Query("SELECT packageName FROM blocklist WHERE blocklistId = :blocklistId")
-    fun getLiveBlocklist(blocklistId: Long): LiveData<List<String>>
 
     fun updateList(blocklistId: Long, newList: Set<String>) {
         deleteById(blocklistId)
