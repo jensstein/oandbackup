@@ -43,6 +43,9 @@ interface AppExtrasDao : BaseDao<AppExtras> {
     @Query("SELECT * FROM appextras WHERE packageName = :packageName")
     fun getLive(packageName: String): LiveData<AppExtras>
 
+    @Query("SELECT * FROM appextras WHERE packageName = :packageName")
+    fun getFlow(packageName: String): Flow<AppExtras>
+
     @Query("DELETE FROM appextras")
     fun deleteAll()
 

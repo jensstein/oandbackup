@@ -63,6 +63,9 @@ interface ScheduleDao : BaseDao<Schedule> {
     @get:Query("SELECT * FROM schedule ORDER BY id ASC")
     val liveAll: LiveData<List<Schedule>>
 
+    @get:Query("SELECT * FROM schedule ORDER BY id ASC")
+    val allFlow: Flow<List<Schedule>>
+
     @Query("DELETE FROM schedule")
     fun deleteAll()
 
