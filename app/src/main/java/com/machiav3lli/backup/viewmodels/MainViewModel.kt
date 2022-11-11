@@ -96,7 +96,7 @@ class MainViewModel(
         val list =
             p.toPackageList(
                 appContext,
-                blocklist.value.mapNotNull(Blocklist::packageName),
+                emptyList(),    //WECH blocklist.value.mapNotNull(Blocklist::packageName),
                 b
             )
 
