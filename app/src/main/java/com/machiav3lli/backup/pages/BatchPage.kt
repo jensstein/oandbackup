@@ -181,7 +181,7 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                     text = stringResource(id = if (backupBoolean) R.string.backup else R.string.restore),
                     positive = true
                 ) {
-                    val checkedPackages = viewModel.filteredList.value
+                    val checkedPackages = filteredList
                         ?.filter { it.packageName in viewModel.apkCheckedList.union(viewModel.dataCheckedList) }
                         ?: listOf()
                     val selectedList =

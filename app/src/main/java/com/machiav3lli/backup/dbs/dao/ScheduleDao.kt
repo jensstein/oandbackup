@@ -17,7 +17,6 @@
  */
 package com.machiav3lli.backup.dbs.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import com.machiav3lli.backup.dbs.Converters
@@ -40,9 +39,6 @@ interface ScheduleDao : BaseDao<Schedule> {
     @Query("SELECT * FROM schedule WHERE id = :id")
     fun getScheduleFlow(id: Long): Flow<Schedule>
 
-    @Query("SELECT * FROM schedule WHERE id = :id")
-    fun getLiveSchedule(id: Long): LiveData<Schedule?>
-
     @Query("SELECT customList FROM schedule WHERE id = :id")
     fun _getCustomListFlow(id: Long): Flow<String>
 
@@ -61,7 +57,7 @@ interface ScheduleDao : BaseDao<Schedule> {
     val all: List<Schedule>
 
     @get:Query("SELECT * FROM schedule ORDER BY id ASC")
-    val liveAll: LiveData<List<Schedule>>
+    val allFlow: Flow<List<Schedule>>
 
     @Query("DELETE FROM schedule")
     fun deleteAll()

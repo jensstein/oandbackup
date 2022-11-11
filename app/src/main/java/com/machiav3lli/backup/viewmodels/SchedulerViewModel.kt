@@ -19,8 +19,6 @@ package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -29,18 +27,15 @@ import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.utils.cancelAlarm
 import com.machiav3lli.backup.utils.scheduleAlarm
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SchedulerViewModel(val database: ScheduleDao, appContext: Application) :
     AndroidViewModel(appContext) {
 
-    var schedules = MediatorLiveData<List<Schedule>>()
-    val progress = MutableLiveData<Pair<Boolean, Float>>()
-
-    init {
-        schedules.addSource(database.liveAll, schedules::setValue)
-    }
+    var schedules = database.allFlow
+    private val progress = MutableStateFlow(Pair(true,0.0f))
 
     fun addSchedule(withSpecial: Boolean) {
         viewModelScope.launch {
