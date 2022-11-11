@@ -113,7 +113,8 @@ class OABX : Application() {
         appRef = WeakReference(this)
 
         initShellHandler()
-        registerReceiver(
+
+        val result = registerReceiver(
             PackageUnInstalledReceiver(),
             IntentFilter().apply {
                 addAction(Intent.ACTION_PACKAGE_ADDED)
@@ -122,6 +123,7 @@ class OABX : Application() {
                 addDataScheme("package")
             }
         )
+        Timber.d("registerReceiver: PackageUnInstalledReceiver = $result")
 
         work = WorkHandler(context)
         if (pref_cancelOnStart.value)

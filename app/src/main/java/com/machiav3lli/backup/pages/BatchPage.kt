@@ -56,36 +56,27 @@ import com.machiav3lli.backup.viewmodels.BatchViewModel
 @Composable
 fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
     val main = OABX.main!!
-    //val list by main.viewModel.packageList.collectAsState(emptyList())
-    //val modelSortFilter by main.viewModel.modelSortFilter.flow.collectAsState(main.sortFilterModel)
-    val query by main.viewModel.searchQuery.flow.collectAsState(main.viewModel.searchQuery.initial)
     val filteredList by main.viewModel.filteredList.collectAsState(emptyList())
 
     val filterPredicate = { item: Package ->
-        val includedBoolean = if (backupBoolean) item.isInstalled else item.hasBackups
-    //    val queryBoolean =
-    //        query.isEmpty() || (
-    //            listOf(item.packageName, item.packageLabel)
-    //                .any { it.contains(query, ignoreCase = true) }
-    //        )
-    //    includedBoolean && queryBoolean
-        includedBoolean
+        if (backupBoolean) item.isInstalled else item.hasBackups
     }
-    val workList = filteredList?.filter(filterPredicate)
+    val workList = filteredList.filter(filterPredicate)
+
     var allApkChecked by remember(workList) {
         mutableStateOf(
             viewModel.apkCheckedList.size ==
                     workList
-                        ?.filter { !it.isSpecial && (backupBoolean || it.hasApk) }
-                        ?.size
+                        .filter { !it.isSpecial && (backupBoolean || it.hasApk) }
+                        .size
         )
     }
     var allDataChecked by remember(workList) {
         mutableStateOf(
             viewModel.dataCheckedList.size ==
                     workList
-                        ?.filter { backupBoolean || it.hasData }
-                        ?.size
+                        .filter { backupBoolean || it.hasData }
+                        .size
         )
     }
 
@@ -115,13 +106,13 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                     if (b) viewModel.apkCheckedList.add(item.packageName)
                     else viewModel.apkCheckedList.remove(item.packageName)
                     allApkChecked =
-                        viewModel.apkCheckedList.size == workList?.filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }?.size
+                        viewModel.apkCheckedList.size == workList.filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }.size
                 }, onDataClick = { item: Package, b: Boolean ->
                     if (b) viewModel.dataCheckedList.add(item.packageName)
                     else viewModel.dataCheckedList.remove(item.packageName)
                     allDataChecked =
                         viewModel.dataCheckedList.size == workList
-                            ?.filter { ai -> backupBoolean || ai.hasData }?.size
+                            .filter { ai -> backupBoolean || ai.hasData }.size
                 }) { item, checkApk, checkData ->
                 when (checkApk) {
                     true -> viewModel.apkCheckedList.add(item.packageName)
@@ -132,11 +123,11 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                     else -> viewModel.dataCheckedList.remove(item.packageName)
                 }
                 allApkChecked =
-                    viewModel.apkCheckedList.size == workList
-                        ?.filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }?.size
+                    viewModel.apkCheckedList.size ==
+                            (workList.filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }.size)
                 allDataChecked =
-                    viewModel.dataCheckedList.size == workList
-                        ?.filter { ai -> backupBoolean || ai.hasData }?.size
+                    viewModel.dataCheckedList.size ==
+                            (workList.filter { ai -> backupBoolean || ai.hasData }.size)
             }
             Row(
                 modifier = Modifier.padding(horizontal = 8.dp),
@@ -154,8 +145,8 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                     if (checkBoolean)
                         viewModel.apkCheckedList.addAll(
                             workList
-                                ?.filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }
-                                ?.mapNotNull(Package::packageName).orEmpty()
+                                .filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }
+                                .mapNotNull(Package::packageName).orEmpty()
                         )
                     else
                         viewModel.apkCheckedList.clear()
@@ -171,8 +162,8 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                     if (checkBoolean)
                         viewModel.dataCheckedList.addAll(
                             workList
-                                ?.filter { ai -> backupBoolean || ai.hasData }
-                                ?.mapNotNull(Package::packageName).orEmpty()
+                                .filter { ai -> backupBoolean || ai.hasData }
+                                .mapNotNull(Package::packageName).orEmpty()
                         )
                     else
                         viewModel.dataCheckedList.clear()
@@ -183,8 +174,7 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                     positive = true
                 ) {
                     val checkedPackages = filteredList
-                        ?.filter { it.packageName in viewModel.apkCheckedList.union(viewModel.dataCheckedList) }
-                        ?: listOf()
+                        .filter { it.packageName in viewModel.apkCheckedList.union(viewModel.dataCheckedList) }
                     val selectedList =
                         checkedPackages.map(Package::packageInfo).toCollection(ArrayList())
                     val selectedListModes = checkedPackages

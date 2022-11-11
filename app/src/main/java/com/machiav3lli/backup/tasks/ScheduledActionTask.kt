@@ -59,6 +59,11 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         val globalBlocklist = blacklistDao.getBlocklistedPackages(PACKAGES_LIST_GLOBAL_ID)
         val blockList = globalBlocklist.plus(customBlocklist)
 
+        //TODO hg42 the whole filter mechanics should be the same for app and service
+        //   how to do that with flows? flows are "instances" not "classes"
+        //   this would need a class that contains all the flows,
+        //   so you can use it in the viewModel and in the service as separate instances
+
         val unfilteredList: List<Package> = try {
             context.getInstalledPackageList(blockList)
         } catch (e: FileUtils.BackupLocationInAccessibleException) {

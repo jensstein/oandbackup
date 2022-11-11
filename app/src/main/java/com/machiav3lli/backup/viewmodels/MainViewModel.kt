@@ -91,7 +91,7 @@ class MainViewModel(
 
     val packageList = combine(db.appInfoDao.allFlow, backupsMap) { p, b ->
 
-        Timber.w("******************** database ******************** db: ${p.size} backups: ${b.size}")
+        Timber.w("******************** database - db: ${p.size} backups: ${b.size}")
 
         val list =
             p.toPackageList(
@@ -102,8 +102,7 @@ class MainViewModel(
 
         Timber.w("***** packages ->> ${list.size}")
         list
-    }
-        .onEach { Timber.w("*** packageList <<- ${it.size}") }
+    }   .onEach { Timber.w("*** packageList <<- ${it.size}") }
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
@@ -113,7 +112,7 @@ class MainViewModel(
     val blockedList = combine(packageList, blocklist) { p, b ->
 
         Timber.w(
-            "******************** blocking ******************** list: ${p.size} block: ${
+            "******************** blocking - list: ${p.size} block: ${
                 b.joinToString(
                     ","
                 )
@@ -125,8 +124,7 @@ class MainViewModel(
 
         Timber.w("***** blocked ->> ${list.size}")
         list
-    }
-        .onEach { Timber.w("*** blockedList <<- ${it.size}") }
+    }   .onEach { Timber.w("*** blockedList <<- ${it.size}") }
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
@@ -139,7 +137,7 @@ class MainViewModel(
 
     val queriedList = combine(blockedList, searchQuery.flow) { p, s ->
 
-        Timber.w("******************** searching ******************** list: ${p.size} search: '$s'")
+        Timber.w("******************** searching - list: ${p.size} search: '$s'")
 
         val list = p
             .filter { item: Package ->
@@ -151,8 +149,7 @@ class MainViewModel(
 
         Timber.w("***** queried ->> ${list.size}")
         list
-    }
-        .onEach { Timber.w("*** queriedList <<- ${it.size}") }
+    }   .onEach { Timber.w("*** queriedList <<- ${it.size}") }
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
@@ -165,15 +162,14 @@ class MainViewModel(
 
     val filteredList = combine(queriedList, modelSortFilter.flow) { p, f ->
 
-        Timber.w("******************** filtering ******************** list: ${p.size} filter: $f")
+        Timber.w("******************** filtering - list: ${p.size} filter: $f")
 
         val list = p
             .applyFilter(f, OABX.main!!)
 
         Timber.w("***** filtered ->> ${list.size}")
         list
-    }
-        .onEach { Timber.w("*** filteredList <<- ${it.size}") }
+    }   .onEach { Timber.w("*** filteredList <<- ${it.size}") }
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
@@ -194,8 +190,8 @@ class MainViewModel(
     init {
         viewModelScope.launch {
             withContext(Dispatchers.Default) {
-                //blocklist.collectLatest { }
-                //updatedPackages.collectLatest { }
+                //blocklist.collectLatest { }           //WECH
+                //updatedPackages.collectLatest { }     //WECH
             }
         }
     }
@@ -211,7 +207,7 @@ class MainViewModel(
         withContext(Dispatchers.IO) {
             beginBusy()
             val time = measureTimeMillis {
-                //packageList.postValue(mutableListOf())
+                //packageList.postValue(mutableListOf())        //WECH
                 appContext.updateAppTables(db.appInfoDao, db.backupDao)
             }
             OABX.addInfoText("recreateAppInfoList: ${(time / 1000 + 0.5).toInt()} sec")
@@ -221,7 +217,7 @@ class MainViewModel(
 
     fun updatePackage(packageName: String) {
         viewModelScope.launch {
-            packageList.value?.find { it.packageName == packageName }?.let {
+            packageList.value.find { it.packageName == packageName }?.let {
                 updateDataOf(packageName)
             }
         }
@@ -231,7 +227,7 @@ class MainViewModel(
         withContext(Dispatchers.IO) {
             beginBusy()
             invalidateCacheForPackage(packageName)
-            val appPackage = packageList.value?.find { it.packageName == packageName }
+            val appPackage = packageList.value.find { it.packageName == packageName }
             try {
                 appPackage?.apply {
                     if (pref_usePackageCacheOnUpdate.value) {
@@ -306,7 +302,7 @@ class MainViewModel(
                     .withPackageName(packageName)
                     .build()
             )
-            //packageList.value?.removeIf { it.packageName == packageName }
+            //packageList.value?.removeIf { it.packageName == packageName }   //WECH
         }
     }
 
@@ -330,7 +326,7 @@ class MainViewModel(
     private suspend fun insertIntoBlocklistDB(newList: Set<String>) =
         withContext(Dispatchers.IO) {
             db.blocklistDao.updateList(PACKAGES_LIST_GLOBAL_ID, newList)
-            //packageList.value?.removeIf { newList.contains(it.packageName) }
+            //packageList.value?.removeIf { newList.contains(it.packageName) }    //WECH
         }
 
     class Factory(

@@ -109,8 +109,7 @@ class MainActivityX : BaseActivity() {
         OABX.activity = this
         OABX.main = this
 
-        //val freshStart = OABX.main?.viewModel?.packageList?.value.isNullOrEmpty()
-        val freshStart = (savedInstanceState == null)   //TODO use some lifecycle method
+        val freshStart = (savedInstanceState == null)   //TODO use some lifecycle method?
 
         Timber.w(
             "======================================== activity ${
@@ -169,7 +168,7 @@ class MainActivityX : BaseActivity() {
                 var pageTitle by remember { mutableStateOf(NavItem.Home.title) }
 
                 var query by rememberSaveable { mutableStateOf(viewModel.searchQuery.value) }
-                //val query by viewModel.searchQuery.flow.collectAsState(viewModel.searchQuery.initial)
+                //val query by viewModel.searchQuery.flow.collectAsState(viewModel.searchQuery.initial)  // doesn't work with rotate...
                 val searchExpanded = query.length > 0
 
                 Timber.d("compose: query = '$query'")
@@ -214,7 +213,7 @@ class MainActivityX : BaseActivity() {
                                     GlobalScope.launch(Dispatchers.IO) {
                                         val blocklistedPackages =
                                             context.viewModel.blocklist.value
-                                                .mapNotNull { it.packageName }.orEmpty()
+                                                .mapNotNull { it.packageName }
 
                                         PackagesListDialogFragment(
                                             blocklistedPackages,
@@ -241,12 +240,12 @@ class MainActivityX : BaseActivity() {
                                     expanded = searchExpanded,
                                     query = query,
                                     onQueryChanged = { newQuery ->
-                                        //if (newQuery != query)  // then empty string doesn't work...
-                                        //query = newQuery
+                                        //if (newQuery != query)  // empty string doesn't work...
+                                        query = newQuery
                                         viewModel.searchQuery.value = query
                                     },
                                     onClose = {
-                                        //query = ""
+                                        query = ""
                                         viewModel.searchQuery.value = ""
                                     }
                                 )
@@ -271,7 +270,7 @@ class MainActivityX : BaseActivity() {
                                 ) {
                                     GlobalScope.launch(Dispatchers.IO) {
                                         val blocklistedPackages = viewModel.blocklist.value
-                                            ?.mapNotNull { it.packageName }.orEmpty()
+                                            .mapNotNull { it.packageName }.orEmpty()
 
                                         PackagesListDialogFragment(
                                             blocklistedPackages,

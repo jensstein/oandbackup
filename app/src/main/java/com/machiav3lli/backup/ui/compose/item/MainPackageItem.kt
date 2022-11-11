@@ -367,7 +367,7 @@ fun MainPackageItem(
     ) {
         MainPackageContextMenu(expanded = menuExpanded, packageItem = item, productsList = productsList, selection = selection, onAction = onAction)
 
-        val iconSelector =
+        val iconSelector =      //TODO hg42 make this global (but we have closures)
                 Modifier
                     .combinedClickable(
                         onClick = {
@@ -378,7 +378,7 @@ fun MainPackageItem(
                             menuExpanded.value = true
                         }
                     )
-        val rowSelector =
+        val rowSelector =       //TODO hg42 make this global
                 Modifier
                     .combinedClickable(
                         onClick = {

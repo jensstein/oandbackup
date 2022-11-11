@@ -43,7 +43,7 @@ if [[ $command == "pre-backup" ]]; then
       $utilbox ps -A -o PID -u $userid | $utilbox tail -n +2
       $utilbox ls -l /proc/*/fd/* 2>/dev/null |
           $utilbox grep -E "/data/data/|/media/" |
-          #$utilbox grep -E "/data/|/media/" | TODO add an option for wider catching
+          #$utilbox grep -E "/data/|/media/" |  #TODO add an option for wider catching
           $utilbox grep -F /$package/ |
           $utilbox cut -s -d / -f 3
     ) |
