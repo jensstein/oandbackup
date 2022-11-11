@@ -9,8 +9,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 fun Modifier.vertical() = layout { measurable, constraints ->
     val placeable = measurable.measure(constraints)
@@ -38,29 +40,62 @@ fun SelectionContainerX(modifier: Modifier = Modifier, content: @Composable () -
         content()
 }
 
-class MutableComposableSharedFlow<T>(var initial : T, val scope : CoroutineScope)
-{
+
+class MutableComposableSharedFlow<T>(
+    var initial: T,
+    val scope: CoroutineScope,
+    val label: String = "ComposableSharedFlow",
+    val onEach: (T) -> Unit = {}
+) {
     var flow = MutableSharedFlow<T>()
 
-    var state = flow.stateIn(
-        scope,
-        SharingStarted.Eagerly,
-        initial
-    )
+    var state = flow
+        .onEach(onEach)
+        .stateIn(
+            scope,
+            SharingStarted.Eagerly,
+            initial
+        )
 
     var value: T
-        get()           { return state.value }
-        set(value: T)   { initial = value ; scope.launch { flow.emit(value) } }
+        get() {
+            var value = state.value
+            Timber.w("*** $label => $value")
+            return value
+        }
+        set(value: T) {
+            Timber.w("*** $label <= $value")
+            initial = value
+            scope.launch { flow.emit(value) }
+        }
+
+    init {
+        value = initial
+    }
 }
 
-
-class MutableComposableStateFlow<T>(var initial : T, val scope : CoroutineScope)
-{
+class MutableComposableStateFlow<T>(
+    var initial: T,
+    val scope: CoroutineScope,
+    val label: String = "ComposableStateFlow"
+) {
     var flow = MutableStateFlow<T>(initial)
 
     var state = flow
 
     var value: T
-        get()           { return state.value }
-        set(value: T)   { initial = value ; scope.launch { flow.emit(value) } }
+        get() {
+            var value = state.value
+            Timber.w("*** $label => $value")
+            return value
+        }
+        set(value: T) {
+            Timber.w("*** $label <= $value")
+            initial = value
+            scope.launch { flow.emit(value) }
+        }
+
+    init {
+        value = initial
+    }
 }

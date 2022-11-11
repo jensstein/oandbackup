@@ -82,6 +82,7 @@ import com.machiav3lli.backup.utils.classAndId
 import com.machiav3lli.backup.utils.destinationToItem
 import com.machiav3lli.backup.utils.isEncryptionEnabled
 import com.machiav3lli.backup.utils.setCustomTheme
+import com.machiav3lli.backup.utils.sortFilterModel
 import com.machiav3lli.backup.viewmodels.MainViewModel
 import com.topjohnwu.superuser.Shell
 import kotlinx.coroutines.CoroutineScope
@@ -108,8 +109,8 @@ class MainActivityX : BaseActivity() {
         OABX.activity = this
         OABX.main = this
 
-        val freshStart = OABX.main?.viewModel?.packageList?.value.isNullOrEmpty()
-        //val freshStart = (savedInstanceState == null)   //TODO use some lifecycle method
+        //val freshStart = OABX.main?.viewModel?.packageList?.value.isNullOrEmpty()
+        val freshStart = (savedInstanceState == null)   //TODO use some lifecycle method
 
         Timber.w(
             "======================================== activity ${
@@ -168,6 +169,7 @@ class MainActivityX : BaseActivity() {
                 var pageTitle by remember { mutableStateOf(NavItem.Home.title) }
 
                 var query by rememberSaveable { mutableStateOf(viewModel.searchQuery.value) }
+                //val query by viewModel.searchQuery.flow.collectAsState(viewModel.searchQuery.initial)
                 val searchExpanded = query.length > 0
 
                 Timber.d("compose: query = '$query'")
@@ -176,22 +178,23 @@ class MainActivityX : BaseActivity() {
                     pageTitle = destination.destinationToItem()?.title ?: NavItem.Home.title
                 }
 
-                LaunchedEffect(viewModel) {
-                    if (freshStart) {
-                        //TODO hg42 even this doesn not trigger the flows?
-                        //TODO hg42 OABX.context.sortFilterModel = OABX.context.sortFilterModel
-                        //TODO hg42 viewModel.searchQuery.value = ""
-                        //TODO hg42 viewModel.modelSortFilter.value = OABX.context.sortFilterModel
-                    }
-                }
-
                 Timber.d("search: ${viewModel.searchQuery.value} filter: ${viewModel.modelSortFilter.value}")
                 if (freshStart) {
                     SideEffect {
-                        Timber.w("#################### freshStart ####################")
-                        //TODO hg42 viewModel.refreshList()
-                        //TODO hg42 viewModel.searchQuery.value = ""
-                        //TODO hg42 viewModel.modelSortFilter.value = OABX.context.sortFilterModel
+                        // runs earlier, maybe too early (I guess because it's independent from the view model)
+                        //Timber.w("******************** freshStart Sideffect ********************")
+                        //viewModel.searchQuery.value = ""
+                        //viewModel.modelSortFilter.value = OABX.context.sortFilterModel
+                    }
+                }
+
+                if (freshStart) {
+                    LaunchedEffect(viewModel) {
+                        // runs later
+                        Timber.w("******************** freshStart LaunchedEffect(viewModel) ********************")
+                        //TODO hg42 shouldn't be necessary, but no better solution to start the flow game, yet
+                        viewModel.searchQuery.value = ""
+                        viewModel.modelSortFilter.value = OABX.context.sortFilterModel
                     }
                 }
 
@@ -239,11 +242,11 @@ class MainActivityX : BaseActivity() {
                                     query = query,
                                     onQueryChanged = { newQuery ->
                                         //if (newQuery != query)  // then empty string doesn't work...
-                                        query = newQuery
+                                        //query = newQuery
                                         viewModel.searchQuery.value = query
                                     },
                                     onClose = {
-                                        query = ""
+                                        //query = ""
                                         viewModel.searchQuery.value = ""
                                     }
                                 )

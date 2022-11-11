@@ -48,7 +48,7 @@ import com.machiav3lli.backup.viewmodels.SchedulerViewModel
 fun SchedulerPage(viewModel: SchedulerViewModel) {
     val context = LocalContext.current
     var sheetSchedule: ScheduleSheet? = null
-    val schedules by viewModel.schedules.collectAsState(null)
+    val schedules by viewModel.schedules.collectAsState(emptyList())
 
     Scaffold(
         containerColor = Color.Transparent,

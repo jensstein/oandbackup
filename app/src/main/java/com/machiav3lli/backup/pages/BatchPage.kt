@@ -58,7 +58,7 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
     val main = OABX.main!!
     //val list by main.viewModel.packageList.collectAsState(emptyList())
     //val modelSortFilter by main.viewModel.modelSortFilter.flow.collectAsState(main.sortFilterModel)
-    val query by main.viewModel.searchQuery.flow.collectAsState("")
+    val query by main.viewModel.searchQuery.flow.collectAsState(main.viewModel.searchQuery.initial)
     val filteredList by main.viewModel.filteredList.collectAsState(emptyList())
 
     val filterPredicate = { item: Package ->
