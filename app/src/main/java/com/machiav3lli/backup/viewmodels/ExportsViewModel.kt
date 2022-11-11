@@ -19,7 +19,6 @@ package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -31,17 +30,21 @@ import com.machiav3lli.backup.handler.ExportsHandler
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.StorageFile
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ExportsViewModel(val database: ScheduleDao, private val appContext: Application) :
     AndroidViewModel(appContext) {
 
-    var exportsList = MediatorLiveData<MutableList<Pair<Schedule, StorageFile>>>()
+    private val _exportsList =
+        MutableStateFlow<MutableList<Pair<Schedule, StorageFile>>>(mutableListOf())
+    val exportsList = _exportsList.asStateFlow()
 
     fun refreshList() {
         viewModelScope.launch {
-            exportsList.value = recreateExportsList()
+            _exportsList.emit(recreateExportsList())
         }
     }
 
