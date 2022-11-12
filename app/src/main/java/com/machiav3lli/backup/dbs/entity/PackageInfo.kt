@@ -18,8 +18,6 @@
 package com.machiav3lli.backup.dbs.entity
 
 import android.content.Context
-import android.content.pm.ApplicationInfo
-import android.content.pm.PackageInfo
 import android.os.Build
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -41,7 +39,7 @@ open class PackageInfo(
     open val isSpecial: Boolean
         get() = false
 
-    constructor(context: Context, pi: PackageInfo) : this(
+    constructor(context: Context, pi: android.content.pm.PackageInfo) : this(
         packageName = pi.packageName,
         packageLabel = pi.applicationInfo.loadLabel(context.packageManager).toString(),
         versionName = pi.versionName,
@@ -54,7 +52,34 @@ open class PackageInfo(
         },
         sourceDir = pi.applicationInfo.sourceDir,
         splitSourceDirs = pi.applicationInfo.splitSourceDirs ?: arrayOf(),
-        isSystem = pi.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == ApplicationInfo.FLAG_SYSTEM,
+        isSystem = pi.applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_SYSTEM == android.content.pm.ApplicationInfo.FLAG_SYSTEM,
         icon = pi.applicationInfo.icon
     )
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val pkg = other as PackageInfo
+        return packageName == pkg.packageName
+                && this.packageLabel == pkg.packageLabel
+                && this.versionName == pkg.versionName
+                && this.versionCode == pkg.versionCode
+                && this.profileId == pkg.profileId
+                //&& this.sourceDir == pkg.sourceDir
+                //&& this.splitSourceDirs == pkg.splitSourceDirs
+                && this.isSystem == pkg.isSystem
+                && this.icon == pkg.icon
+    }
+
+    override fun hashCode(): Int {
+        var hash = 7
+        hash = 31 * hash + packageName.hashCode()
+        hash = 31 * hash + packageLabel.hashCode()
+        hash = 31 * hash + versionName.hashCode()
+        hash = 31 * hash + versionCode.hashCode()
+        hash = 31 * hash + profileId.hashCode()
+        hash = 31 * hash + isSystem.hashCode()
+        hash = 31 * hash + icon.hashCode()
+        return hash
+    }
 }

@@ -54,6 +54,7 @@ import com.machiav3lli.backup.utils.getFormattedDate
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @Composable
 fun Selections(
@@ -354,7 +355,7 @@ fun MainPackageItem(
 
     val menuExpanded = remember { mutableStateOf(false) }
 
-    //Timber.i("recompose MainPackageItem ${packageItem.packageName}")
+    Timber.i("recompose MainPackageItem ${packageItem.packageName} ${packageItem.packageInfo.icon} ${imageData.hashCode()}")
 
     OutlinedCard(
         modifier = Modifier,
