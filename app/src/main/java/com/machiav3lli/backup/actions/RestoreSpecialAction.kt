@@ -50,27 +50,28 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
         backupMode: Int
     ) {
         work?.setOperation("dat")
-        restoreData(app, backup, backupDir, true)
+        restoreData(app, backup, backupDir)
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
     override fun restoreData(
         app: Package,
         backup: Backup,
-        backupDir: StorageFile,
-        compressed: Boolean
+        backupDir: StorageFile
     ) {
         Timber.i("%s: Restore special data", app)
         val metaInfo = app.packageInfo as SpecialInfo
         val tempPath = RootFile(context.cacheDir, backup.packageName ?: "")
-        val isEncrypted = backup.isEncrypted
-        val backupArchiveFilename =
-            getBackupArchiveFilename(BACKUP_DIR_DATA, compressed, isEncrypted)
-        val backupArchiveFile = backupDir.findFile(backupArchiveFilename)
-            ?: throw RestoreFailedException("Backup archive at $backupArchiveFilename is missing")
+        val backupFilename = getBackupArchiveFilename(
+            BACKUP_DIR_DATA,
+            backup.isCompressed,
+            backup.isEncrypted
+        )
+        val backupArchiveFile = backupDir.findFile(backupFilename)
+            ?: throw RestoreFailedException("Backup archive at $backupFilename is missing")
         try {
             TarArchiveInputStream(
-                openArchiveFile(backupArchiveFile, compressed, isEncrypted, backup.iv)
+                openArchiveFile(backupArchiveFile, backup.isCompressed, backup.isEncrypted, backup.iv)
             ).use { archiveStream ->
                 tempPath.mkdir()
                 // Extract the contents to a temporary directory
@@ -163,8 +164,7 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
     override fun restoreDeviceProtectedData(
         app: Package,
         backup: Backup,
-        backupDir: StorageFile,
-        compressed: Boolean
+        backupDir: StorageFile
     ) {
         // stub
     }
@@ -172,8 +172,7 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
     override fun restoreExternalData(
         app: Package,
         backup: Backup,
-        backupDir: StorageFile,
-        compressed: Boolean
+        backupDir: StorageFile
     ) {
         // stub
     }
@@ -181,8 +180,7 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
     override fun restoreObbData(
         app: Package,
         backup: Backup,
-        backupDir: StorageFile,
-        compressed: Boolean
+        backupDir: StorageFile
     ) {
         // stub
     }

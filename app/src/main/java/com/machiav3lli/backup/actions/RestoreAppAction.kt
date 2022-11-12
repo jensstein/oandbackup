@@ -156,35 +156,35 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         if (backup.hasAppData && backupMode and MODE_DATA == MODE_DATA) {
             Timber.i("[${backup.packageName}] Restoring app's data")
             work?.setOperation("dat")
-            restoreData(app, backup, backupDir, true)
+            restoreData(app, backup, backupDir)
         } else {
             Timber.i("[${backup.packageName}] Skip restoring app's data; not part of the backup or restore mode")
         }
         if (backup.hasDevicesProtectedData && backupMode and MODE_DATA_DE == MODE_DATA_DE) {
             Timber.i("[${backup.packageName}] Restoring app's device-protected data")
             work?.setOperation("prt")
-            restoreDeviceProtectedData(app, backup, backupDir, true)
+            restoreDeviceProtectedData(app, backup, backupDir)
         } else {
             Timber.i("[${backup.packageName}] Skip restoring app's device protected data; not part of the backup or restore mode")
         }
         if (backup.hasExternalData && backupMode and MODE_DATA_EXT == MODE_DATA_EXT) {
             Timber.i("[${backup.packageName}] Restoring app's external data")
             work?.setOperation("ext")
-            restoreExternalData(app, backup, backupDir, true)
+            restoreExternalData(app, backup, backupDir)
         } else {
             Timber.i("[${backup.packageName}] Skip restoring app's external data; not part of the backup or restore mode")
         }
         if (backup.hasObbData && backupMode and MODE_DATA_OBB == MODE_DATA_OBB) {
             Timber.i("[${backup.packageName}] Restoring app's obb files")
             work?.setOperation("obb")
-            restoreObbData(app, backup, backupDir, false)
+            restoreObbData(app, backup, backupDir)
         } else {
             Timber.i("[${backup.packageName}] Skip restoring app's obb files; not part of the backup or restore mode")
         }
         if (backup.hasMediaData && backupMode and MODE_DATA_MEDIA == MODE_DATA_MEDIA) {
             Timber.i("[${backup.packageName}] Restoring app's media files")
             work?.setOperation("med")
-            restoreMediaData(app, backup, backupDir, false)
+            restoreMediaData(app, backup, backupDir)
         } else {
             Timber.i("[${backup.packageName}] Skip restoring app's media files; not part of the backup or restore mode")
         }
@@ -753,8 +753,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     open fun restoreData(
         app: Package,
         backup: Backup,
-        backupDir: StorageFile,
-        compressed: Boolean
+        backupDir: StorageFile
     ) {
         val dataType = BACKUP_DIR_DATA
         val backupFilename = getBackupArchiveFilename(
@@ -802,8 +801,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     open fun restoreDeviceProtectedData(
         app: Package,
         backup: Backup,
-        backupDir: StorageFile,
-        compressed: Boolean
+        backupDir: StorageFile
     ) {
         val dataType = BACKUP_DIR_DEVICE_PROTECTED_FILES
         val backupFilename = getBackupArchiveFilename(
@@ -851,8 +849,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     open fun restoreExternalData(
         app: Package,
         backup: Backup,
-        backupDir: StorageFile,
-        compressed: Boolean
+        backupDir: StorageFile
     ) {
         val dataType = BACKUP_DIR_EXTERNAL_FILES
         val backupFilename = getBackupArchiveFilename(
@@ -896,8 +893,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     open fun restoreObbData(
         app: Package,
         backup: Backup,
-        backupDir: StorageFile,
-        compressed: Boolean
+        backupDir: StorageFile
     ) {
         val extractTo = app.getObbFilesPath(context)
         if (!isPlausiblePath(extractTo, app.packageName))
@@ -952,8 +948,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     open fun restoreMediaData(
         app: Package,
         backup: Backup,
-        backupDir: StorageFile,
-        compressed: Boolean
+        backupDir: StorageFile
     ) {
         val extractTo = app.getMediaFilesPath(context)
         if (!isPlausiblePath(extractTo, app.packageName))
