@@ -40,6 +40,7 @@ import com.machiav3lli.backup.preferences.pref_cancelOnStart
 import com.machiav3lli.backup.preferences.pref_maxLogLines
 import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
+import com.machiav3lli.backup.utils.TraceUtils.methodName
 import com.machiav3lli.backup.utils.styleTheme
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -271,7 +272,15 @@ class OABX : Application() {
         var _busy = AtomicInteger(0)
         val busy = mutableStateOf(0)
 
-        fun beginBusy() { busy.value = _busy.accumulateAndGet(+1, Int::plus) }
-        fun endBusy()   { busy.value = _busy.accumulateAndGet(-1, Int::plus) }
+        fun beginBusy(name: String? = null) {
+            val label = name ?: methodName(1)
+            busy.value = _busy.accumulateAndGet(+1, Int::plus)
+            Timber.w("*** ${"+---".repeat(_busy.get())}\\ busy $label")
+        }
+        fun endBusy(name: String? = null) {
+            val label = name ?: methodName(1)
+            Timber.w("*** ${"+---".repeat(_busy.get())}/ busy $label")
+            busy.value = _busy.accumulateAndGet(-1, Int::plus)
+        }
     }
 }

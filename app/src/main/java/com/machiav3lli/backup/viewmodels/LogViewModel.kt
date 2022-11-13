@@ -43,12 +43,12 @@ class LogViewModel(private val appContext: Application) : AndroidViewModel(appCo
 
     fun refreshList() {
         viewModelScope.launch {
-            beginBusy()
+            beginBusy("Log refreshList")
             logsList.apply {
                 clear()
                 addAll(recreateLogsList())
             }
-            endBusy()
+            endBusy("Log refreshList")
         }
     }
 

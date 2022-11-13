@@ -23,8 +23,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.OABX.Companion.beginBusy
-import com.machiav3lli.backup.OABX.Companion.endBusy
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.AppExtras
@@ -205,13 +203,13 @@ class MainViewModel(
 
     private suspend fun recreateAppInfoList() {
         withContext(Dispatchers.IO) {
-            beginBusy()
+            OABX.beginBusy("recreateAppInfoList")
             val time = measureTimeMillis {
                 //packageList.postValue(mutableListOf())        //WECH
                 appContext.updateAppTables(db.appInfoDao, db.backupDao)
             }
             OABX.addInfoText("recreateAppInfoList: ${(time / 1000 + 0.5).toInt()} sec")
-            endBusy()
+            OABX.endBusy("recreateAppInfoList")
         }
     }
 
@@ -225,7 +223,7 @@ class MainViewModel(
 
     private suspend fun updateDataOf(packageName: String) =
         withContext(Dispatchers.IO) {
-            beginBusy()
+            OABX.beginBusy("updateDataOf")
             invalidateCacheForPackage(packageName)
             val appPackage = packageList.value.find { it.packageName == packageName }
             try {
@@ -249,7 +247,7 @@ class MainViewModel(
             } catch (e: AssertionError) {
                 Timber.w(e.message ?: "")
             }
-            endBusy()
+            OABX.endBusy("updateDataOf")
         }
 
     fun updateExtras(appExtras: AppExtras) {

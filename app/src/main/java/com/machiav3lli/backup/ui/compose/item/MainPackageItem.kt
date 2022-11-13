@@ -179,14 +179,14 @@ fun MainPackageContextMenu(
             todo: (p: Package) -> Unit
         ) {
             MainScope().launch(Dispatchers.IO) {
-                OABX.beginBusy()
+                OABX.beginBusy(action)
                 packages.forEach {
                     if (select != false) selection[it] = false
                     OABX.addInfoText("$action ${it.packageName}")
                     todo(it)
                     selection[it] = select
                 }
-                OABX.endBusy()
+                OABX.endBusy(action)
             }
         }
 
