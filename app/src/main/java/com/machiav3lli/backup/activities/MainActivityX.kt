@@ -175,16 +175,15 @@ class MainActivityX : BaseActivity() {
                                     description = stringResource(id = R.string.sched_blocklist)
                                 ) {
                                     GlobalScope.launch(Dispatchers.IO) {
-                                        val blocklistedPackages =
-                                            context.viewModel.blocklist.value
-                                                ?.mapNotNull { it.packageName }.orEmpty()
+                                        val blocklistedPackages = viewModel.blocklist.value
+                                            .mapNotNull { it.packageName }
 
                                         PackagesListDialogFragment(
                                             blocklistedPackages,
                                             MAIN_FILTER_DEFAULT,
                                             true
                                         ) { newList: Set<String> ->
-                                            context.viewModel.updateBlocklist(
+                                            viewModel.updateBlocklist(
                                                 newList
                                             )
                                         }.show(
@@ -232,14 +231,14 @@ class MainActivityX : BaseActivity() {
                                 ) {
                                     GlobalScope.launch(Dispatchers.IO) {
                                         val blocklistedPackages = viewModel.blocklist.value
-                                            ?.mapNotNull { it.packageName }.orEmpty()
+                                            .mapNotNull { it.packageName }
 
                                         PackagesListDialogFragment(
                                             blocklistedPackages,
                                             MAIN_FILTER_DEFAULT,
                                             true
                                         ) { newList: Set<String> ->
-                                            context.viewModel.updateBlocklist(newList)
+                                            viewModel.updateBlocklist(newList)
                                         }.show(
                                             context.supportFragmentManager,
                                             "BLOCKLIST_DIALOG"
