@@ -21,6 +21,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.items.Package
@@ -37,6 +38,7 @@ class PackageUnInstalledReceiver : BroadcastReceiver() {
             intent.data?.let { if (it.scheme == "package") it.schemeSpecificPart else null }
         if (packageName != null) {
             Package.invalidateSystemCacheForPackage(packageName)
+            OABX.app.packageCache.remove(packageName)
             when (intent.action.orEmpty()) {
                 Intent.ACTION_PACKAGE_ADDED,
                 Intent.ACTION_PACKAGE_REPLACED -> {
@@ -52,8 +54,13 @@ class PackageUnInstalledReceiver : BroadcastReceiver() {
                 }
                 Intent.ACTION_PACKAGE_REMOVED -> {
                     GlobalScope.launch(Dispatchers.IO) {
-                        if (db.backupDao.get(packageName).isEmpty())
+                        val backups = db.backupDao.get(packageName)
+                        if (backups.isEmpty())
                             db.appInfoDao.deleteAllOf(packageName)
+                        else {
+                            val appInfo = backups.maxBy { it.backupDate }.toAppInfo()
+                            db.appInfoDao.replaceInsert(appInfo)
+                        }
                     }
                 }
             }
