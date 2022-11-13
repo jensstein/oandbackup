@@ -91,7 +91,7 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
                     Timber.e(errorMessage)
                     throw RestoreFailedException(errorMessage, null)
                 }
-                val commands = mutableListOf<String>()
+                val commands = mutableListOf<String?>()
                 for (restoreFile in expectedFiles) {
                     val (uid, gid, con) = try {
                         shell.suGetOwnerGroupContext(restoreFile.absolutePath)
@@ -116,13 +116,13 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
                         "$utilBoxQ chown $uid:$gid ${quote(restoreFile)}"
                     )
                     commands.add(
-                        if (con == "?") //TODO hg42: when does it happen?
-                            "restorecon -RF -v ${quote(restoreFile)}"
+                        if (con == "?") //TODO hg42: when does it happen? maybe if selinux not supported on storage?
+                            null // "" ; restorecon -RF -v ${quote(restoreFile)}"  //TODO hg42 doesn't seem to work, probably because selinux unsupported in this case
                         else
                             "chcon -R -h -v '$con' ${quote(restoreFile)}"
                     )
                 }
-                val command = commands.joinToString(" ; ")  // no dependency
+                val command = commands.filterNotNull().joinToString(" ; ")  // no dependency
                 runAsRoot(command)
             }
             if (app.packageName == "special.smsmms.json") {
