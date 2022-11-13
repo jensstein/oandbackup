@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "41972af530623d54e335f87f2787aa67",
+    "identityHash": "7539d578a609f8a4d930201d7f9c8ce3",
     "entities": [
       {
         "tableName": "Schedule",
@@ -88,10 +88,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "id"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [],
         "foreignKeys": []
@@ -120,10 +120,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "id"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [],
         "foreignKeys": []
@@ -158,17 +158,17 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "id"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [],
         "foreignKeys": []
       },
       {
         "tableName": "AppInfo",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`enabled` INTEGER NOT NULL, `installed` INTEGER NOT NULL, `apkDir` TEXT, `dataDir` TEXT, `deDataDir` TEXT, `packageName` TEXT NOT NULL, `packageLabel` TEXT, `versionName` TEXT, `versionCode` INTEGER NOT NULL, `profileId` INTEGER NOT NULL, `sourceDir` TEXT, `splitSourceDirs` TEXT NOT NULL, `isSystem` INTEGER NOT NULL, `icon` INTEGER NOT NULL, PRIMARY KEY(`packageName`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`enabled` INTEGER NOT NULL, `installed` INTEGER NOT NULL, `apkDir` TEXT, `dataDir` TEXT, `deDataDir` TEXT, `permissions` TEXT NOT NULL, `packageName` TEXT NOT NULL, `packageLabel` TEXT, `versionName` TEXT, `versionCode` INTEGER NOT NULL, `profileId` INTEGER NOT NULL, `sourceDir` TEXT, `splitSourceDirs` TEXT NOT NULL, `isSystem` INTEGER NOT NULL, `icon` INTEGER NOT NULL, PRIMARY KEY(`packageName`))",
         "fields": [
           {
             "fieldPath": "enabled",
@@ -199,6 +199,12 @@
             "columnName": "deDataDir",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "permissions",
+            "columnName": "permissions",
+            "affinity": "TEXT",
+            "notNull": true
           },
           {
             "fieldPath": "packageName",
@@ -256,10 +262,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "packageName"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [],
         "foreignKeys": []
@@ -330,17 +336,17 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "packageName"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [],
         "foreignKeys": []
       },
       {
         "tableName": "Backup",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`backupVersionCode` INTEGER NOT NULL, `packageName` TEXT NOT NULL, `packageLabel` TEXT, `versionName` TEXT, `versionCode` INTEGER NOT NULL, `profileId` INTEGER NOT NULL, `sourceDir` TEXT, `splitSourceDirs` TEXT NOT NULL, `isSystem` INTEGER NOT NULL, `backupDate` TEXT NOT NULL, `hasApk` INTEGER NOT NULL, `hasAppData` INTEGER NOT NULL, `hasDevicesProtectedData` INTEGER NOT NULL, `hasExternalData` INTEGER NOT NULL, `hasObbData` INTEGER NOT NULL, `hasMediaData` INTEGER NOT NULL, `compressionType` TEXT, `cipherType` TEXT, `iv` BLOB, `cpuArch` TEXT, `permissions` TEXT NOT NULL, PRIMARY KEY(`packageName`, `backupDate`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`backupVersionCode` INTEGER NOT NULL, `packageName` TEXT NOT NULL, `packageLabel` TEXT, `versionName` TEXT, `versionCode` INTEGER NOT NULL, `profileId` INTEGER NOT NULL, `sourceDir` TEXT, `splitSourceDirs` TEXT NOT NULL, `isSystem` INTEGER NOT NULL, `backupDate` TEXT NOT NULL, `hasApk` INTEGER NOT NULL, `hasAppData` INTEGER NOT NULL, `hasDevicesProtectedData` INTEGER NOT NULL, `hasExternalData` INTEGER NOT NULL, `hasObbData` INTEGER NOT NULL, `hasMediaData` INTEGER NOT NULL, `compressionType` TEXT, `cipherType` TEXT, `iv` BLOB, `cpuArch` TEXT, `permissions` TEXT NOT NULL, `size` INTEGER NOT NULL, `note` TEXT NOT NULL, `persistent` INTEGER NOT NULL, PRIMARY KEY(`packageName`, `backupDate`))",
         "fields": [
           {
             "fieldPath": "backupVersionCode",
@@ -467,14 +473,32 @@
             "columnName": "permissions",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "size",
+            "columnName": "size",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "persistent",
+            "columnName": "persistent",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "packageName",
             "backupDate"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [],
         "foreignKeys": []
@@ -483,7 +507,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '41972af530623d54e335f87f2787aa67')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7539d578a609f8a4d930201d7f9c8ce3')"
     ]
   }
 }
