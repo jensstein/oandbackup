@@ -171,11 +171,17 @@ fun MainPackageContextMenu(
         onDismissRequest = { expanded.value = false }
     ) {
 
-        fun launchEachPackage(packages: List<Package>, select: Boolean = true, todo: (p: Package) -> Unit) {
+        fun launchEachPackage(
+            packages: List<Package>,
+            action: String,
+            select: Boolean = true,
+            todo: (p: Package) -> Unit
+        ) {
             MainScope().launch {
                 OABX.beginBusy()
                 packages.forEach {
                     if (select != false) selection[it] = false
+                    OABX.addInfoText("$action ${it.packageName}")
                     todo(it)
                     selection[it] = select
                 }
@@ -215,7 +221,7 @@ fun MainPackageContextMenu(
                         packages.map { MODE_ALL }
                     ) {
                         it.removeObserver(this)
-                        launchEachPackage(packages) {
+                        launchEachPackage(packages, "backup") {
                             selection[it] = false
                         }
                     }
@@ -233,7 +239,7 @@ fun MainPackageContextMenu(
                         packages.map { MODE_ALL }
                     ) {
                         it.removeObserver(this)
-                        launchEachPackage(packages) {
+                        launchEachPackage(packages, "restore") {
                             selection[it] = false
                         }
                     }
@@ -245,21 +251,11 @@ fun MainPackageContextMenu(
             text = { Text("Add to Blocklist") },
             onClick = {
                 expanded.value = false
-                launchEachPackage(selectedAndVisible) {
+                launchEachPackage(selectedAndVisible, "blocklist <-") {
                     OABX.main?.viewModel?.addToBlocklist(it.packageName)
                 }
             }
         )
-
-        //DropdownMenuItem(
-        //    text = { Text("Remove from Blocklist") },
-        //    onClick = {
-        //        expanded.value = false
-        //        forEachPackage(selectedAndVisible) {
-        //            OABX.main?.viewModel?.removeFromBlocklist(it.packageName)
-        //        }
-        //    }
-        //)
 
         Divider() //--------------------------------------------------------------------------------
 
@@ -267,7 +263,7 @@ fun MainPackageContextMenu(
             text = { Text("Delete All Backups") },
             onClick = {
                 expanded.value = false
-                launchEachPackage(selectedWithBackups) {
+                launchEachPackage(selectedWithBackups, "delete backups") {
                     it.deleteAllBackups()
                 }
             }
@@ -277,7 +273,7 @@ fun MainPackageContextMenu(
             text = { Text("Limit Backups") },
             onClick = {
                 expanded.value = false
-                launchEachPackage(selectedWithBackups) {
+                launchEachPackage(selectedWithBackups, "limit backups") {
                     BackupRestoreHelper.housekeepingPackageBackups(it)
                 }
             }
@@ -297,8 +293,12 @@ fun MainPackageContextMenu(
                     SelectionLoadMenu { selection ->
                         expanded.value = false
                         subMenu.value = null
-                        launchEachPackage(selectedAndVisible, select = false) {}
-                        launchEachPackage(visible.filter { selection.contains(it.packageName) }, select = true) {}
+                        launchEachPackage(selectedAndVisible, "deselect", select = false) {}
+                        launchEachPackage(
+                            visible.filter { selection.contains(it.packageName) },
+                            "select",
+                            select = true
+                        ) {}
                     }
                 }
             }
@@ -311,7 +311,7 @@ fun MainPackageContextMenu(
                     SelectionSaveMenu(selection = selection.filter { it.value }.map { it.key.packageName }) {
                         expanded.value = false
                         subMenu.value = null
-                        launchEachPackage(selectedAndVisible, select = false) {}
+                        launchEachPackage(selectedAndVisible, "save", select = false) {}
                     }
                 }
             }
@@ -321,7 +321,7 @@ fun MainPackageContextMenu(
             text = { Text("All Visible") },
             onClick = {
                 expanded.value = false
-                launchEachPackage(visible, select = true) {}
+                launchEachPackage(visible, "select", select = true) {}
             }
         )
 
@@ -329,7 +329,7 @@ fun MainPackageContextMenu(
             text = { Text("None Visible") },
             onClick = {
                 expanded.value = false
-                launchEachPackage(visible, select = false) {}
+                launchEachPackage(visible, "deselect", select = false) {}
             }
         )
     }
