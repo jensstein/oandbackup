@@ -62,6 +62,7 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
 import com.machiav3lli.backup.preferences.pref_catchUncaughtException
+import com.machiav3lli.backup.preferences.pref_refreshOnStart
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
@@ -159,8 +160,10 @@ class MainActivityX : BaseActivity() {
 
         Shell.getShell()
 
-        if (freshStart)
+        if (freshStart) {
             runOnUiThread { showEncryptionDialog() }
+            //refreshPackages()
+        }
 
         setContent {
             AppTheme {
@@ -194,6 +197,8 @@ class MainActivityX : BaseActivity() {
                         //TODO hg42 shouldn't be necessary, but no better solution to start the flow game, yet
                         viewModel.searchQuery.value = ""
                         viewModel.modelSortFilter.value = OABX.context.sortFilterModel
+                        if(pref_refreshOnStart.value)
+                            refreshPackages()
                     }
                 }
 
@@ -252,7 +257,7 @@ class MainActivityX : BaseActivity() {
                                 RoundButton(
                                     description = stringResource(id = R.string.refresh),
                                     icon = Phosphor.ArrowsClockwise
-                                ) { refreshList() }
+                                ) { refreshPackages() }
                                 RoundButton(
                                     description = stringResource(id = R.string.prefs_title),
                                     icon = Phosphor.GearSix
@@ -385,9 +390,8 @@ class MainActivityX : BaseActivity() {
         viewModel.updatePackage(packageName)
     }
 
-    fun refreshList() {
-        if (OABX.busy.value == 0)
-            invalidateBackupLocation()
+    fun refreshPackages() {
+        invalidateBackupLocation()
     }
 
     fun showSnackBar(message: String) {

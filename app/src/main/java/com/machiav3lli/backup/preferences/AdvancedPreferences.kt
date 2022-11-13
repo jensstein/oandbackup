@@ -119,6 +119,12 @@ val pref_allowDowngrade = BooleanPref(
 
 //---------------------------------------- developer settings
 
+val pref_refreshOnStart = BooleanPref(
+    key = "dev.refreshOnStart",
+    summary = "automatically refresh package list on startup",
+    defaultValue = true
+)
+
 val pref_useSelectableText = BooleanPref(
     key = "dev.useSelectableText",
     summary = "enable text selection (currently unusable, crashes most of the time)",
