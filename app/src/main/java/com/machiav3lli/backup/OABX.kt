@@ -48,6 +48,7 @@ import timber.log.Timber
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
 
 class OABX : Application() {
 
@@ -267,10 +268,10 @@ class OABX : Application() {
                 progress.value = Pair(false, 1f)
         }
 
-        var busy = mutableStateOf(0)
-        private var lockBusy = Object()
+        var _busy = AtomicInteger(0)
+        val busy = mutableStateOf(0)
 
-        fun beginBusy() { synchronized(lockBusy) { busy.value = busy.value.inc() } }
-        fun endBusy()   { synchronized(lockBusy) { busy.value = busy.value.dec() } }
+        fun beginBusy() { busy.value = _busy.accumulateAndGet(+1, Int::plus) }
+        fun endBusy()   { busy.value = _busy.accumulateAndGet(-1, Int::plus) }
     }
 }
