@@ -51,6 +51,7 @@ import com.machiav3lli.backup.preferences.pref_useBackupRestoreWithSelection
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.getBackupDir
 import com.machiav3lli.backup.utils.getFormattedDate
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -177,7 +178,7 @@ fun MainPackageContextMenu(
             select: Boolean = true,
             todo: (p: Package) -> Unit
         ) {
-            MainScope().launch {
+            MainScope().launch(Dispatchers.IO) {
                 OABX.beginBusy()
                 packages.forEach {
                     if (select != false) selection[it] = false
