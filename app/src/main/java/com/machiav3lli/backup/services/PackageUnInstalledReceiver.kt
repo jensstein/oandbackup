@@ -54,8 +54,13 @@ class PackageUnInstalledReceiver : BroadcastReceiver() {
                 }
                 Intent.ACTION_PACKAGE_REMOVED -> {
                     GlobalScope.launch(Dispatchers.IO) {
-                        if (db.backupDao.get(packageName).isEmpty())
+                        val backups = db.backupDao.get(packageName)
+                        if (backups.isEmpty())
                             db.appInfoDao.deleteAllOf(packageName)
+                        else {
+                            val appInfo = backups.maxBy { it.backupDate }.toAppInfo()
+                            db.appInfoDao.replaceInsert(appInfo)
+                        }
                     }
                 }
             }
