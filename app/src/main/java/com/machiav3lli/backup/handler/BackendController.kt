@@ -87,7 +87,7 @@ fun Context.getInstalledPackageList(blockList: List<String> = listOf()): Mutable
         packageList = packageInfoList
             .filterNotNull()
             .filterNot {
-                it.packageName.matches(ignoredPackages) //WECH || blockList.contains(it.packageName)
+                it.packageName.matches(ignoredPackages)
             }
             .mapNotNull {
                 try {
@@ -124,8 +124,7 @@ fun Context.getInstalledPackageList(blockList: List<String> = listOf()): Mutable
         val specialList = mutableListOf<String>()
         if (includeSpecial) {
             SpecialInfo.getSpecialPackages(this).forEach {
-                //WECH if (!blockList.contains(it.packageName))
-                    packageList.add(it)
+                packageList.add(it)
                 specialList.add(it.packageName)
             }
         }
@@ -188,7 +187,7 @@ fun List<AppInfo>.toPackageList(
 
         packageList =
             this.filterNot {
-                it.packageName.matches(ignoredPackages) //WECH || it.packageName in blockList
+                it.packageName.matches(ignoredPackages)
             }
             .mapNotNull {
                 try {

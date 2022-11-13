@@ -646,7 +646,7 @@ class AppSheet() : BaseSheet(), ActionListener {
             .show()
     }
 
-    //TODO hg42 force-stop, force-close, ... ? I think these are different ones, and I don't know which
+    //TODO hg42 force-stop, force-close, ... ? I think these are different ones, and I don't know which.
     //TODO hg42 killBackgroundProcesses seems to be am kill
     //TODO in api33 A13 there is am stop-app which doesn't kill alarms and
     private fun showForceKillDialog(app: Package) {

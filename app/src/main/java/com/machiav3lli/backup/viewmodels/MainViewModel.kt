@@ -94,7 +94,7 @@ class MainViewModel(
         val list =
             p.toPackageList(
                 appContext,
-                emptyList(),    //WECH blocklist.value.mapNotNull(Blocklist::packageName),
+                emptyList(),
                 b
             )
 
@@ -205,7 +205,6 @@ class MainViewModel(
         withContext(Dispatchers.IO) {
             OABX.beginBusy("recreateAppInfoList")
             val time = measureTimeMillis {
-                //packageList.postValue(mutableListOf())        //WECH
                 appContext.updateAppTables(db.appInfoDao, db.backupDao)
             }
             OABX.addInfoText("recreateAppInfoList: ${(time / 1000 + 0.5).toInt()} sec")
@@ -300,7 +299,6 @@ class MainViewModel(
                     .withPackageName(packageName)
                     .build()
             )
-            //packageList.value?.removeIf { it.packageName == packageName }   //WECH
         }
     }
 
@@ -324,7 +322,6 @@ class MainViewModel(
     private suspend fun insertIntoBlocklistDB(newList: Set<String>) =
         withContext(Dispatchers.IO) {
             db.blocklistDao.updateList(PACKAGES_LIST_GLOBAL_ID, newList)
-            //packageList.value?.removeIf { newList.contains(it.packageName) }    //WECH
         }
 
     class Factory(

@@ -194,7 +194,7 @@ class MainActivityX : BaseActivity() {
                     LaunchedEffect(viewModel) {
                         // runs later
                         Timber.w("******************** freshStart LaunchedEffect(viewModel) ********************")
-                        //TODO hg42 shouldn't be necessary, but no better solution to start the flow game, yet
+                        //TODO hg42 I guess this shouldn't be necessary, but no better solution to start the flow game, yet
                         viewModel.searchQuery.value = ""
                         viewModel.modelSortFilter.value = OABX.context.sortFilterModel
                         if(pref_refreshOnStart.value)

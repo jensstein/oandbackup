@@ -67,20 +67,10 @@ fun HomePage() {
     val main = OABX.main!!
     var appSheet: AppSheet? = null
 
-    //val list by main.viewModel.packageList.collectAsState(null)
-    //val modelSortFilter by main.viewModel.modelSortFilter  //TODO hg42 .collectAsState(main.sortFilterModel)
-    //val query by main.viewModel.searchQuery
     val filteredList by main.viewModel.filteredList.collectAsState(emptyList())
     val updatedPackages by main.viewModel.updatedPackages.collectAsState(emptyList())
     var updaterExpanded by remember { mutableStateOf(false) }
 
-    // val filterPredicate = { item: Package ->
-    //     query.isEmpty() || (
-    //             listOf(item.packageName, item.packageLabel)
-    //                 .any { it.contains(query, ignoreCase = true) }
-    //             )
-    // }
-    // val queriedList = filteredList?.filter(filterPredicate)
     val queriedList = filteredList
 
     val batchConfirmListener = object : BatchDialogFragment.ConfirmListener {
@@ -90,19 +80,6 @@ fun HomePage() {
             }
         }
     }
-
-    // LaunchedEffect(list, modelSortFilter) {
-    //     try {
-    //         //main.viewModel.filteredList.value = list?.applyFilter(modelSortFilter, main)
-    //         //main.viewModel.triggerPackageListConsumers()
-    //     } catch (e: FileUtils.BackupLocationInAccessibleException) {
-    //         Timber.e("Could not update application list: $e")
-    //     } catch (e: StorageLocationNotConfiguredException) {
-    //         Timber.e("Could not update application list: $e")
-    //     } catch (e: Throwable) {
-    //         LogsHandler.unhandledException(e)
-    //     }
-    // }
 
     Scaffold(
         containerColor = Color.Transparent,

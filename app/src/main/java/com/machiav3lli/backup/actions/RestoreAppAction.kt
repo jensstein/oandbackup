@@ -726,7 +726,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             }
             fun commandChcon(con: String, target: String): String? {
                 return if (con == "?") //TODO hg42: when does it happen? maybe if selinux not supported on storage?
-                    null // "" ; restorecon -RF -v ${quote(target)}"  //TODO hg42 doesn't seem to work, because unsupported in this case
+                    null // "" ; restorecon -RF -v ${quote(target)}"  //TODO hg42 doesn't seem to work, probably because selinux unsupported in this case
                 else
                     "chcon -R -h -v '$con' ${quote(target)}"
             }
