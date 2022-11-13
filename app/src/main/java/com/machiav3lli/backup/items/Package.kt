@@ -231,7 +231,7 @@ class Package {
                     packageBackupDir
                 }
             }
-        } catch(e: Throwable) {
+        } catch (e: Throwable) {
             unhandledException(e)
             null
         }
@@ -285,10 +285,15 @@ class Package {
     }
 
     fun deleteOldestBackups(keep: Int) {
-        while (keep < backupList.size) {
-            oldestBackup?.let { backup ->
-                Timber.i("[${backup.packageName}] Deleting backup revision ${backup.backupDate}")
-                deleteBackup(backup)
+        while (keep < backupList.size || backupList.all { it.persistent }) {
+            run whileLoop@{
+                backupList.sortedBy { it.backupDate }.forEach { backup ->
+                    if (!backup.persistent) {
+                        Timber.i("[${backup.packageName}] Deleting backup revision ${backup.backupDate}")
+                        deleteBackup(backup)
+                        return@whileLoop
+                    }
+                }
             }
         }
     }
@@ -355,7 +360,8 @@ class Package {
         // e.g. /storage/emulated/0/Android/data
         // Add the package name to the path assuming that if the name of dataDir does not equal the
         // package name and has a prefix or a suffix to use it.
-        return context.getExternalFilesDir(null)?.parentFile?.parentFile?.absolutePath?.plus("${File.separator}$packageName") ?: ""
+        return context.getExternalFilesDir(null)?.parentFile?.parentFile?.absolutePath?.plus("${File.separator}$packageName")
+            ?: ""
     }
 
     // Uses the context to get own obb data directory
@@ -385,7 +391,8 @@ class Package {
         // e.g. /storage/emulated/0/Android/media
         // Add the package name to the path assuming that if the name of dataDir does not equal the
         // package name and has a prefix or a suffix to use it.
-        return context.obbDir.parentFile?.parentFile?.absolutePath?.plus("${File.separator}media${File.separator}$packageName") ?: ""
+        return context.obbDir.parentFile?.parentFile?.absolutePath?.plus("${File.separator}media${File.separator}$packageName")
+            ?: ""
     }
 
     /**

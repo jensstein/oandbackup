@@ -66,7 +66,8 @@ data class Backup constructor(
     var cpuArch: String?,
     var permissions: List<String> = listOf(),
     var size: Long = 0,
-    var note: String = ""
+    var note: String = "",
+    var persistent: Boolean = false,
 ) {
     private val backupFolderNameOld
         get() = String.format(
@@ -95,7 +96,8 @@ data class Backup constructor(
         cipherType: String?,
         iv: ByteArray?,
         cpuArch: String?,
-        size: Long
+        size: Long,
+        persistent: Boolean = false,
     ) : this(
         backupVersionCode = BuildConfig.MAJOR * 1000 + BuildConfig.MINOR,
         packageName = pi.packageName,
@@ -123,7 +125,8 @@ data class Backup constructor(
         iv = iv,
         cpuArch = cpuArch,
         permissions = pi.grantedPermissions,
-        size = size
+        size = size,
+        persistent = persistent,
     )
 
     constructor(
@@ -140,7 +143,8 @@ data class Backup constructor(
         iv: ByteArray?,
         cpuArch: String?,
         permissions: List<String>,
-        size: Long
+        size: Long,
+        persistent: Boolean = false,
     ) : this(
         backupVersionCode = BuildConfig.MAJOR * 1000 + BuildConfig.MINOR,
         packageName = base.packageName,
@@ -163,7 +167,8 @@ data class Backup constructor(
         iv = iv,
         cpuArch = cpuArch,
         permissions = permissions,
-        size = size
+        size = size,
+        persistent = persistent,
     )
 
     val isCompressed: Boolean

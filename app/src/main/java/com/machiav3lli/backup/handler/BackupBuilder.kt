@@ -106,7 +106,8 @@ class BackupBuilder(
             iv = iv,
             cpuArch = cpuArch,
             permissions = if (packageInfo is AppInfo) packageInfo.permissions else emptyList(),
-            size = size
+            size = size,
+            persistent = false,
         )
     }
 

@@ -216,18 +216,15 @@ class MainActivityX : BaseActivity() {
                                     description = stringResource(id = R.string.sched_blocklist)
                                 ) {
                                     GlobalScope.launch(Dispatchers.IO) {
-                                        val blocklistedPackages =
-                                            context.viewModel.blocklist.value
-                                                .mapNotNull { it.packageName }
+                                        val blocklistedPackages = viewModel.blocklist.value
+                                            .mapNotNull { it.packageName }
 
                                         PackagesListDialogFragment(
                                             blocklistedPackages,
                                             MAIN_FILTER_DEFAULT,
                                             true
                                         ) { newList: Set<String> ->
-                                            context.viewModel.setBlocklist(
-                                                newList
-                                            )
+                                            viewModel.setBlocklist(newList)
                                         }.show(
                                             context.supportFragmentManager,
                                             "BLOCKLIST_DIALOG"
@@ -275,14 +272,14 @@ class MainActivityX : BaseActivity() {
                                 ) {
                                     GlobalScope.launch(Dispatchers.IO) {
                                         val blocklistedPackages = viewModel.blocklist.value
-                                            .mapNotNull { it.packageName }.orEmpty()
+                                            .mapNotNull { it.packageName }
 
                                         PackagesListDialogFragment(
                                             blocklistedPackages,
                                             MAIN_FILTER_DEFAULT,
                                             true
                                         ) { newList: Set<String> ->
-                                            context.viewModel.setBlocklist(newList)
+                                            viewModel.setBlocklist(newList)
                                         }.show(
                                             context.supportFragmentManager,
                                             "BLOCKLIST_DIALOG"
@@ -388,6 +385,10 @@ class MainActivityX : BaseActivity() {
 
     fun updatePackage(packageName: String) {
         viewModel.updatePackage(packageName)
+    }
+
+    fun refreshView() {    //TODO hg42 is currently unused (and should always be?)
+        crScope.launch { viewModel.modelSortFilter.flow.emit(sortFilterModel) }
     }
 
     fun refreshPackages() {
