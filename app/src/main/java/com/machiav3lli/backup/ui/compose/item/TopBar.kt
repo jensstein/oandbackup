@@ -28,6 +28,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -68,13 +69,39 @@ import java.lang.Float.max
 @Composable
 fun DefaultPreview() {
     var count by remember { mutableStateOf(0) }
+    val busy by remember { OABX.busy }
+
+    val maxCount = 10
 
     OABX.addInfoText("xxxxxxxxxxxxxxxxx")
     OABX.clearInfoText()
-    OABX.setProgress(0, 100)
-    OABX.beginBusy()
+    OABX.setProgress(count, maxCount)
 
-    TopBar(title = "Progress", modifier = Modifier.background(color = Color.LightGray)) {
+    LaunchedEffect(OABX) {
+        while(count < maxCount) {
+            OABX.beginBusy()
+            delay(3000)
+            count += 1
+            OABX.endBusy()
+            delay(2000)
+        }
+    }
+
+    TopBar(title = "Progress $busy", modifier = Modifier.background(color = Color.LightGray)) {
+        Button(
+            onClick = {
+                OABX.beginBusy()
+            }
+        ) {
+            Text("+")
+        }
+        Button(
+            onClick = {
+                OABX.endBusy()
+            }
+        ) {
+            Text("-")
+        }
         Button(
             onClick = {
                 count++
