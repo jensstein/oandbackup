@@ -1,21 +1,19 @@
 package com.machiav3lli.backup.ui.compose.item
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,6 +21,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -45,14 +44,12 @@ fun ScheduleItem(
     val schedule by remember(item) { mutableStateOf(item) }
     val (checked, check) = mutableStateOf(item.enabled)
 
-    OutlinedCard(
+    Card(
         modifier = Modifier,
         shape = RoundedCornerShape(LocalShapes.current.medium),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface),
-        colors = CardDefaults.outlinedCardColors(
-            containerColor = MaterialTheme.colorScheme.background
+        colors = CardDefaults.cardColors(
+            containerColor = Color.Transparent
         ),
-        elevation = CardDefaults.cardElevation(4.dp),
         onClick = { onClick(schedule) },
     ) {
         Row(
@@ -73,11 +70,7 @@ fun ScheduleItem(
             Column(
                 modifier = Modifier.wrapContentHeight()
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.4f),
-                ) {
+                Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
                         text = schedule.name,
                         modifier = Modifier
@@ -90,11 +83,7 @@ fun ScheduleItem(
                     )
                     ScheduleFilters(item = schedule)
                 }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.4f),
-                ) {
+                Row(modifier = Modifier.fillMaxWidth()) {
                     AnimatedVisibility(visible = schedule.enabled) {
                         val now = System.currentTimeMillis()
                         val timeDiff = abs(calculateTimeToRun(schedule, now) - now)
