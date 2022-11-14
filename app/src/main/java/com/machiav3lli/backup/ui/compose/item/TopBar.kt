@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardActions
@@ -29,11 +28,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -68,13 +69,39 @@ import java.lang.Float.max
 @Composable
 fun DefaultPreview() {
     var count by remember { mutableStateOf(0) }
+    val busy by remember { OABX.busy }
+
+    val maxCount = 10
 
     OABX.addInfoText("xxxxxxxxxxxxxxxxx")
     OABX.clearInfoText()
-    OABX.setProgress(0, 100)
-    OABX.beginBusy()
+    OABX.setProgress(count, maxCount)
 
-    TopBar(title = "Progress", modifier = Modifier.background(color = Color.LightGray)) {
+    LaunchedEffect(OABX) {
+        while(count < maxCount) {
+            OABX.beginBusy()
+            delay(3000)
+            count += 1
+            OABX.endBusy()
+            delay(2000)
+        }
+    }
+
+    TopBar(title = "Progress $busy", modifier = Modifier.background(color = Color.LightGray)) {
+        Button(
+            onClick = {
+                OABX.beginBusy()
+            }
+        ) {
+            Text("+")
+        }
+        Button(
+            onClick = {
+                OABX.endBusy()
+            }
+        ) {
+            Text("-")
+        }
         Button(
             onClick = {
                 count++
@@ -218,10 +245,10 @@ fun TopBar(
                 }
             },
             colors = TopAppBarDefaults.smallTopAppBarColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-                titleContentColor = MaterialTheme.colorScheme.onSurface,
-                actionIconContentColor = MaterialTheme.colorScheme.onSurface,
-                navigationIconContentColor = MaterialTheme.colorScheme.onSurface
+                containerColor = MaterialTheme.colorScheme.background,
+                titleContentColor = MaterialTheme.colorScheme.onBackground,
+                actionIconContentColor = MaterialTheme.colorScheme.onBackground,
+                navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
             ),
             actions = actions
         )
@@ -237,7 +264,7 @@ fun ExpandableSearchAction(
     onClose: () -> Unit,
     onQueryChanged: (String) -> Unit
 ) {
-    val (expanded, onExpanded) = remember {
+    val (expanded, onExpanded) = rememberSaveable {
         mutableStateOf(expanded)
     }
 
@@ -254,9 +281,6 @@ fun ExpandableSearchAction(
         },
         collapsedView = {
             RoundButton(
-                modifier = modifier
-                    .padding(horizontal = 4.dp)
-                    .size(32.dp),
                 icon = Phosphor.MagnifyingGlass,
                 description = stringResource(id = R.string.search),
                 onClick = { onExpanded(true) }

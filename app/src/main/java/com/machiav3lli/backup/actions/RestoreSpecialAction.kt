@@ -50,27 +50,28 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
         backupMode: Int
     ) {
         work?.setOperation("dat")
-        restoreData(app, backup, backupDir, true)
+        restoreData(app, backup, backupDir)
     }
 
     @Throws(RestoreFailedException::class, CryptoSetupException::class)
     override fun restoreData(
         app: Package,
         backup: Backup,
-        backupDir: StorageFile,
-        compressed: Boolean
+        backupDir: StorageFile
     ) {
         Timber.i("%s: Restore special data", app)
         val metaInfo = app.packageInfo as SpecialInfo
         val tempPath = RootFile(context.cacheDir, backup.packageName ?: "")
-        val isEncrypted = backup.isEncrypted
-        val backupArchiveFilename =
-            getBackupArchiveFilename(BACKUP_DIR_DATA, compressed, isEncrypted)
-        val backupArchiveFile = backupDir.findFile(backupArchiveFilename)
-            ?: throw RestoreFailedException("Backup archive at $backupArchiveFilename is missing")
+        val backupFilename = getBackupArchiveFilename(
+            BACKUP_DIR_DATA,
+            backup.isCompressed,
+            backup.isEncrypted
+        )
+        val backupArchiveFile = backupDir.findFile(backupFilename)
+            ?: throw RestoreFailedException("Backup archive at $backupFilename is missing")
         try {
             TarArchiveInputStream(
-                openArchiveFile(backupArchiveFile, compressed, isEncrypted, backup.iv)
+                openArchiveFile(backupArchiveFile, backup.isCompressed, backup.isEncrypted, backup.iv)
             ).use { archiveStream ->
                 tempPath.mkdir()
                 // Extract the contents to a temporary directory
@@ -90,7 +91,7 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
                     Timber.e(errorMessage)
                     throw RestoreFailedException(errorMessage, null)
                 }
-                val commands = mutableListOf<String>()
+                val commands = mutableListOf<String?>()
                 for (restoreFile in expectedFiles) {
                     val (uid, gid, con) = try {
                         shell.suGetOwnerGroupContext(restoreFile.absolutePath)
@@ -115,13 +116,13 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
                         "$utilBoxQ chown $uid:$gid ${quote(restoreFile)}"
                     )
                     commands.add(
-                        if (con == "?") //TODO hg42: when does it happen?
-                            "restorecon -RF -v ${quote(restoreFile)}"
+                        if (con == "?") //TODO hg42: when does it happen? maybe if selinux not supported on storage?
+                            null // "" ; restorecon -RF -v ${quote(restoreFile)}"  //TODO hg42 doesn't seem to work, probably because selinux unsupported in this case
                         else
                             "chcon -R -h -v '$con' ${quote(restoreFile)}"
                     )
                 }
-                val command = commands.joinToString(" ; ")  // no dependency
+                val command = commands.filterNotNull().joinToString(" ; ")  // no dependency
                 runAsRoot(command)
             }
             if (app.packageName == "special.smsmms.json") {
@@ -163,8 +164,7 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
     override fun restoreDeviceProtectedData(
         app: Package,
         backup: Backup,
-        backupDir: StorageFile,
-        compressed: Boolean
+        backupDir: StorageFile
     ) {
         // stub
     }
@@ -172,8 +172,7 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
     override fun restoreExternalData(
         app: Package,
         backup: Backup,
-        backupDir: StorageFile,
-        compressed: Boolean
+        backupDir: StorageFile
     ) {
         // stub
     }
@@ -181,8 +180,7 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
     override fun restoreObbData(
         app: Package,
         backup: Backup,
-        backupDir: StorageFile,
-        compressed: Boolean
+        backupDir: StorageFile
     ) {
         // stub
     }

@@ -2,8 +2,8 @@
 <resources>
     <string name="backup">Зарезервировать</string>
     <string name="restore">Восстановить</string>
-    <string name="backupConfirmation">Зарезервировать?</string>
-    <string name="restoreConfirmation">Восстановить?</string>
+    <string name="backupConfirmation">Зарезервировать\?</string>
+    <string name="restoreConfirmation">Восстановить\?</string>
     <string name="handleApk">APK</string>
     <string name="handleData">Данные</string>
     <string name="handleBoth">APK + Данные</string>
@@ -33,7 +33,7 @@
     <string name="sortByPackageName">Сортировать по пакетам</string>
     <string name="sort">Сортировка и фильтр</string>
     <string name="uninstallDialogMessage">Удалить это приложение\?</string>
-    <string name="deleteBackupDialogMessage">Удалить файлы р.к.?</string>
+    <string name="deleteBackupDialogMessage">Удалить файлы р.к.\?</string>
     <string name="dialogOK">Принять</string>
     <string name="dialogCancel">Отменить</string>
     <string name="dialogYes">Да</string>

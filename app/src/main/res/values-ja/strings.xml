@@ -2,8 +2,8 @@
 <resources>
     <string name="backup">バックアップ</string>
     <string name="restore">復元</string>
-    <string name="backupConfirmation">バックアップ?</string>
-    <string name="restoreConfirmation">復元?</string>
+    <string name="backupConfirmation">バックアップ\?</string>
+    <string name="restoreConfirmation">復元\?</string>
     <string name="handleApk">apk</string>
     <string name="handleData">データ</string>
     <string name="handleBoth">両方</string>
@@ -32,8 +32,8 @@
     <string name="sortByLabel">ラベル順</string>
     <string name="sortByPackageName">パッケージ名で並び替え</string>
     <string name="sort">並び替えとフィルター</string>
-    <string name="uninstallDialogMessage">このアプリをアンインストールしますか?</string>
-    <string name="deleteBackupDialogMessage">バックアップファイルを削除しますか?</string>
+    <string name="uninstallDialogMessage">このアプリをアンインストールしますか\?</string>
+    <string name="deleteBackupDialogMessage">バックアップファイルを削除しますか\?</string>
     <string name="dialogOK">OK</string>
     <string name="dialogCancel">キャンセル</string>
     <string name="dialogYes">はい</string>

@@ -18,12 +18,8 @@
 package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -36,6 +32,13 @@ import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.Package
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -47,19 +50,30 @@ class AppSheetViewModel(
     private val appContext: Application
 ) : AndroidViewModel(appContext) {
 
-    var thePackage = MutableLiveData(app)
-    var appExtras = MediatorLiveData<AppExtras>()
+    var thePackage = flow<Package?> { app }.stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        app
+    )
 
-    var snackbarText = MutableLiveData("")
+    @OptIn(ExperimentalCoroutinesApi::class)
+    var appExtras = database.appExtrasDao.getFlow(app?.packageName ?: "").mapLatest { it }.stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        AppExtras(app?.packageName ?: "")
+    )
+
+    private val _snackbarText = MutableStateFlow("")
+    val snackbarText = _snackbarText.asStateFlow()
+
+    fun setSnackbarText(text: String) {
+        viewModelScope.launch {
+            _snackbarText.emit(text)
+        }
+    }
 
     private var notificationId: Int = System.currentTimeMillis().toInt()
     val refreshNow = mutableStateOf(false)
-
-    init {
-        appExtras.addSource(database.appExtrasDao.getLive(app?.packageName ?: "")) {
-            appExtras.value = it ?: AppExtras(app?.packageName ?: "")
-        }
-    }
 
     fun uninstallApp() {
         viewModelScope.launch {

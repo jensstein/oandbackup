@@ -2,8 +2,8 @@
 <resources>
     <string name="backup">Cadangkan</string>
     <string name="restore">Mengembalikan</string>
-    <string name="backupConfirmation">Cadangkan?</string>
-    <string name="restoreConfirmation">Mengembalikan?</string>
+    <string name="backupConfirmation">Cadangkan\?</string>
+    <string name="restoreConfirmation">Mengembalikan\?</string>
     <string name="handleApk">APK</string>
     <string name="handleData">Data</string>
     <string name="handleBoth">Kedua</string>
@@ -35,8 +35,8 @@
     <string name="sortByLabel">Sortir menurut label</string>
     <string name="sortByPackageName">Sortir menurut nama paket</string>
     <string name="sort">Sortir dan saring</string>
-    <string name="uninstallDialogMessage">Copot pemasangan aplikasi ini?</string>
-    <string name="deleteBackupDialogMessage">Hapus file cadangan?</string>
+    <string name="uninstallDialogMessage">Copot pemasangan aplikasi ini\?</string>
+    <string name="deleteBackupDialogMessage">Hapus file cadangan\?</string>
     <string name="dialogOK">Baik</string>
     <string name="dialogCancel">Membatalkan</string>
     <string name="dialogYes">Iya</string>

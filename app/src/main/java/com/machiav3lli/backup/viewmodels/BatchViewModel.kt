@@ -19,17 +19,14 @@ package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.machiav3lli.backup.items.Package
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class BatchViewModel(appContext: Application) : AndroidViewModel(appContext) {
-    val filteredList: MutableLiveData<List<Package>?> = MutableLiveData()
     val apkCheckedList = mutableSetOf<String>()
     val dataCheckedList = mutableSetOf<String>()
-    val progress = MutableLiveData<Pair<Boolean, Float>>()
-    val refreshing = MutableLiveData<Boolean>()
+    private val progress = MutableStateFlow(Pair(true, 0.0f))
 
     class Factory(
         private val application: Application

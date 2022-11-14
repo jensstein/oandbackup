@@ -27,7 +27,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,15 +35,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -59,7 +60,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import com.machiav3lli.backup.EXTRA_SCHEDULE_ID
-import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.ODatabase
@@ -148,65 +148,62 @@ class ScheduleSheet() : BaseSheet() {
     }
 
     private fun refresh(
-        schedule: Schedule? = viewModel.schedule.value,
+        schedule: Schedule,
         rescheduleBoolean: Boolean
-    ) {
-        viewModel.updateSchedule(schedule, rescheduleBoolean)
-    }
+    ) = viewModel.updateSchedule(schedule, rescheduleBoolean)
 
-    private fun startSchedule() {
-        viewModel.schedule.value?.let {
-            val message = StringBuilder()
-            message.append(
-                "\n${getString(R.string.sched_mode)} ${
-                    modesToString(
-                        requireContext(),
-                        modeToModes(it.mode)
-                    )
-                }"
-            )
-            message.append(
-                "\n${getString(R.string.backup_filters)} ${
-                    filterToString(
-                        requireContext(),
-                        it.filter
-                    )
-                }"
-            )
-            message.append(
-                "\n${getString(R.string.other_filters_options)} ${
-                    specialFilterToString(
-                        requireContext(),
-                        it.specialFilter
-                    )
-                }"
-            )
-            // TODO list the CL packages
-            message.append(
-                "\n${getString(R.string.customListTitle)}: ${
-                    if (it.customList.isNotEmpty()) getString(
-                        R.string.dialogYes
-                    ) else getString(R.string.dialogNo)
-                }"
-            )
-            // TODO list the BL packages
-            message.append(
-                "\n${getString(R.string.sched_blocklist)}: ${
-                    if (it.blockList.isNotEmpty()) getString(
-                        R.string.dialogYes
-                    ) else getString(R.string.dialogNo)
-                }"
-            )
-            AlertDialog.Builder(requireActivity())
-                .setTitle("${it.name}: ${getString(R.string.sched_activateButton)}?")
-                .setMessage(message)
-                .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int ->
-                    if (it.mode != MODE_UNSET)
-                        StartSchedule(requireContext(), database.scheduleDao, scheduleId).execute()
-                }
-                .setNegativeButton(R.string.dialogCancel) { _: DialogInterface?, _: Int -> }
-                .show()
-        }
+    private fun startSchedule(schedule: Schedule) {
+
+        val message = StringBuilder()
+        message.append(
+            "\n${getString(R.string.sched_mode)} ${
+                modesToString(
+                    requireContext(),
+                    modeToModes(schedule.mode)
+                )
+            }"
+        )
+        message.append(
+            "\n${getString(R.string.backup_filters)} ${
+                filterToString(
+                    requireContext(),
+                    schedule.filter
+                )
+            }"
+        )
+        message.append(
+            "\n${getString(R.string.other_filters_options)} ${
+                specialFilterToString(
+                    requireContext(),
+                    schedule.specialFilter
+                )
+            }"
+        )
+        // TODO list the CL packages
+        message.append(
+            "\n${getString(R.string.customListTitle)}: ${
+                if (schedule.customList.isNotEmpty()) getString(
+                    R.string.dialogYes
+                ) else getString(R.string.dialogNo)
+            }"
+        )
+        // TODO list the BL packages
+        message.append(
+            "\n${getString(R.string.sched_blocklist)}: ${
+                if (schedule.blockList.isNotEmpty()) getString(
+                    R.string.dialogYes
+                ) else getString(R.string.dialogNo)
+            }"
+        )
+        AlertDialog.Builder(requireActivity())
+            .setTitle("${schedule.name}: ${getString(R.string.sched_activateButton)}?")
+            .setMessage(message)
+            .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int ->
+                if (schedule.mode != MODE_UNSET)
+                    StartSchedule(requireContext(), database.scheduleDao, scheduleId).execute()
+            }
+            .setNegativeButton(R.string.dialogCancel) { _: DialogInterface?, _: Int -> }
+            .show()
     }
 
     internal class StartSchedule(
@@ -229,233 +226,236 @@ class ScheduleSheet() : BaseSheet() {
         }
     }
 
-    private fun showNameEditorDialog() {
-        ScheduleNameDialog(viewModel.schedule.value?.name.toString()) {
-            viewModel.schedule.value?.name = it
-            refresh(rescheduleBoolean = false)
+    private fun showNameEditorDialog(schedule: Schedule) {
+        ScheduleNameDialog(schedule.name) {
+            schedule.name = it
+            refresh(schedule, rescheduleBoolean = false)
         }.show(requireActivity().supportFragmentManager, "SCHEDULENAME_DIALOG")
     }
 
-    private fun showTimePickerDialog() {
+    private fun showTimePickerDialog(schedule: Schedule) {
         TimePickerDialog(
             requireContext(),
             com.google.android.material.R.style.ThemeOverlay_Material3_MaterialTimePicker,
             { _, hourOfDay, minute ->
-                viewModel.schedule.value?.timeHour = hourOfDay
-                viewModel.schedule.value?.timeMinute = minute
-                refresh(rescheduleBoolean = true)
+                schedule.timeHour = hourOfDay
+                schedule.timeMinute = minute
+                refresh(schedule, rescheduleBoolean = true)
             },
-            viewModel.schedule.value?.timeHour ?: 0,
-            viewModel.schedule.value?.timeMinute ?: 0,
+            schedule.timeHour,
+            schedule.timeMinute,
             true
         )
             .show()
     }
 
-    private fun showIntervalSetterDialog() {
-        IntervalInDaysDialog(viewModel.schedule.value?.interval.toString()) { newInterval: Int ->
-            viewModel.schedule.value?.interval = newInterval
-            refresh(rescheduleBoolean = true)
+    private fun showIntervalSetterDialog(schedule: Schedule) {
+        IntervalInDaysDialog(schedule.interval.toString()) { newInterval: Int ->
+            schedule.interval = newInterval
+            refresh(schedule, rescheduleBoolean = true)
         }.show(requireActivity().supportFragmentManager, "INTERVALDAYS_DIALOG")
     }
 
-    private fun showCustomListDialog() {
-        val selectedPackages = viewModel.schedule.value?.customList?.toList() ?: listOf()
+    private fun showCustomListDialog(schedule: Schedule) {
+        val selectedPackages = schedule.customList.toList()
         PackagesListDialogFragment(
-            selectedPackages, viewModel.schedule.value?.filter
-                ?: MAIN_FILTER_DEFAULT, false
+            selectedPackages, schedule.filter, false
         ) { newList: Set<String> ->
-            viewModel.schedule.value?.customList = newList
-            refresh(rescheduleBoolean = false)
+            schedule.customList = newList
+            refresh(schedule, rescheduleBoolean = false)
         }.show(requireActivity().supportFragmentManager, "CUSTOMLIST_DIALOG")
     }
 
-    private fun showBlockListDialog() {
-        val blocklistedPackages = viewModel.schedule.value?.blockList?.toList() ?: listOf()
+    private fun showBlockListDialog(schedule: Schedule) {
+        val blocklistedPackages = schedule.blockList.toList()
         PackagesListDialogFragment(
-            blocklistedPackages, viewModel.schedule.value?.filter
-                ?: MAIN_FILTER_DEFAULT, true
+            blocklistedPackages, schedule.filter, true
         ) { newList: Set<String> ->
-            viewModel.schedule.value?.blockList = newList
-            refresh(rescheduleBoolean = false)
+            schedule.blockList = newList
+            refresh(schedule, rescheduleBoolean = false)
         }.show(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
     }
 
     @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
     @Composable
     fun SchedulePage() {
-        val schedule by viewModel.schedule.observeAsState()
-        val (checked, check) = mutableStateOf(viewModel.schedule.value?.enabled == true)
+        val schedule by viewModel.schedule.collectAsState()
+        val customList by viewModel.customList.collectAsState(emptySet())
+        val blockList by viewModel.blockList.collectAsState(emptySet())
+        val (checked, check) = mutableStateOf(schedule.enabled)
         val nestedScrollConnection = rememberNestedScrollInteropConnection()
 
         AppTheme {
-            schedule?.let {
-                Scaffold(
-                    containerColor = Color.Transparent,
-                    contentColor = MaterialTheme.colorScheme.onBackground,
-                    bottomBar = {
-                        Column(
-                            modifier = Modifier
-                                .background(MaterialTheme.colorScheme.surface)
-                                .padding(8.dp)
-                        ) {
-                            Row {
-                                AnimatedVisibility(visible = checked) {
-                                    Text(
-                                        text = "${stringResource(id = R.string.sched_timeLeft)} "
-                                            .plus(getTimeLeft(it))
-                                    )
-                                }
-                            }
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                CheckChip(
-                                    checked = it.enabled,
-                                    textId = R.string.sched_checkbox,
-                                    checkedTextId = R.string.enabled,
-                                    onCheckedChange = { checked ->
-                                        check(checked)
-                                        it.enabled = checked
-                                        refresh(it, true)
-                                    }
+            Scaffold(
+                containerColor = Color.Transparent,
+                contentColor = MaterialTheme.colorScheme.onBackground,
+                bottomBar = {
+                    Column(
+                        modifier = Modifier.padding(
+                            start = 8.dp,
+                            end = 8.dp,
+                            bottom = 12.dp,
+                        )
+                    ) {
+                        Divider(thickness = 2.dp)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Row {
+                            AnimatedVisibility(visible = checked) {
+                                Text(
+                                    text = "${stringResource(id = R.string.sched_timeLeft)} "
+                                        .plus(getTimeLeft(schedule))
                                 )
-                                Spacer(modifier = Modifier.weight(1f))
-                                ElevatedActionButton(
-                                    text = stringResource(id = R.string.delete),
-                                    icon = Phosphor.TrashSimple,
-                                    positive = false,
-                                    fullWidth = false
-                                ) {
-                                    viewModel.deleteSchedule()
-                                    cancelAlarm(requireContext(), scheduleId)
-                                    dismissAllowingStateLoss()
-                                }
                             }
+                        }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            CheckChip(
+                                checked = schedule.enabled,
+                                textId = R.string.sched_checkbox,
+                                checkedTextId = R.string.enabled,
+                                onCheckedChange = { checked ->
+                                    check(checked)
+                                    schedule.enabled = checked
+                                    refresh(schedule, true)
+                                }
+                            )
+                            Spacer(modifier = Modifier.weight(1f))
                             ElevatedActionButton(
-                                text = stringResource(id = R.string.sched_activateButton),
-                                icon = Phosphor.ArchiveTray,
-                                fullWidth = true,
-                                onClick = { startSchedule() }
+                                text = stringResource(id = R.string.delete),
+                                icon = Phosphor.TrashSimple,
+                                positive = false,
+                                fullWidth = false
+                            ) {
+                                viewModel.deleteSchedule()
+                                cancelAlarm(requireContext(), scheduleId)
+                                dismissAllowingStateLoss()
+                            }
+                        }
+                        ElevatedActionButton(
+                            text = stringResource(id = R.string.sched_activateButton),
+                            icon = Phosphor.ArchiveTray,
+                            fullWidth = true,
+                            onClick = { startSchedule(schedule) }
+                        )
+                    }
+                }
+            ) { paddingValues ->
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .nestedScroll(nestedScrollConnection)
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(8.dp)
+                ) {
+                    item {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            TitleText(R.string.sched_name)
+                            Text(
+                                text = schedule.name,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .clickable { showNameEditorDialog(schedule) },
+                                style = MaterialTheme.typography.titleLarge,
+                                textAlign = TextAlign.Center,
+                            )
+                            RoundButton(
+                                icon = Phosphor.CaretDown,
+                                description = stringResource(id = R.string.dismiss),
+                                onClick = { dismissAllowingStateLoss() }
                             )
                         }
                     }
-                ) { paddingValues ->
-                    LazyColumn(
-                        modifier = Modifier
-                            .padding(paddingValues)
-                            .nestedScroll(nestedScrollConnection)
-                            .fillMaxSize(),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        contentPadding = PaddingValues(8.dp)
-                    ) {
-                        item {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                TitleText(R.string.sched_name)
-                                Text(
-                                    text = it.name,
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .clickable { showNameEditorDialog() },
-                                    style = MaterialTheme.typography.titleLarge,
-                                    textAlign = TextAlign.Center,
-                                )
-                                RoundButton(
-                                    icon = Phosphor.CaretDown,
-                                    description = stringResource(id = R.string.dismiss),
-                                    onClick = { dismissAllowingStateLoss() }
-                                )
-                            }
+                    item {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            TitleText(R.string.sched_hourOfDay)
+                            Text(
+                                text = LocalTime.of(schedule.timeHour, schedule.timeMinute)
+                                    .toString(),
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxHeight()
+                                    .clickable { showTimePickerDialog(schedule) },
+                                color = MaterialTheme.colorScheme.primary,
+                                textAlign = TextAlign.End,
+                            )
                         }
-                        item {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                TitleText(R.string.sched_hourOfDay)
-                                Text(
-                                    text = LocalTime.of(it.timeHour, it.timeMinute).toString(),
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .fillMaxHeight()
-                                        .clickable { showTimePickerDialog() },
-                                    color = MaterialTheme.colorScheme.primary,
-                                    textAlign = TextAlign.End,
-                                )
-                            }
+                    }
+                    item {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            TitleText(R.string.sched_interval)
+                            Text(
+                                text = schedule.interval.toString(),
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxHeight()
+                                    .clickable { showIntervalSetterDialog(schedule) },
+                                color = MaterialTheme.colorScheme.primary,
+                                textAlign = TextAlign.End,
+                            )
                         }
-                        item {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                TitleText(R.string.sched_interval)
-                                Text(
-                                    text = it.interval.toString(),
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .fillMaxHeight()
-                                        .clickable { showIntervalSetterDialog() },
-                                    color = MaterialTheme.colorScheme.primary,
-                                    textAlign = TextAlign.End,
-                                )
-                            }
+                    }
+                    item {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            ElevatedActionButton(
+                                icon = Phosphor.CheckCircle,
+                                text = stringResource(id = R.string.customListTitle),
+                                positive = customList.isNotEmpty(),
+                                fullWidth = true,
+                                modifier = Modifier.weight(1f),
+                                onClick = { showCustomListDialog(schedule) }
+                            )
+                            ElevatedActionButton(
+                                icon = Phosphor.Prohibit,
+                                text = stringResource(id = R.string.sched_blocklist),
+                                positive = blockList.isNotEmpty(),
+                                fullWidth = true,
+                                modifier = Modifier.weight(1f),
+                                onClick = { showBlockListDialog(schedule) }
+                            )
                         }
-                        item {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                ElevatedActionButton(
-                                    icon = Phosphor.CheckCircle,
-                                    text = stringResource(id = R.string.customListTitle),
-                                    positive = it.customList.isNotEmpty(),
-                                    fullWidth = true,
-                                    modifier = Modifier.weight(1f),
-                                    onClick = { showCustomListDialog() }
-                                )
-                                ElevatedActionButton(
-                                    icon = Phosphor.Prohibit,
-                                    text = stringResource(id = R.string.sched_blocklist),
-                                    positive = it.blockList.isNotEmpty(),
-                                    fullWidth = true,
-                                    modifier = Modifier.weight(1f),
-                                    onClick = { showBlockListDialog() }
-                                )
-                            }
-                        }
+                    }
 
-                        item {
-                            TitleText(R.string.filter_options)
-                            MultiSelectableChipGroup(
-                                list = if (requireContext().specialBackupsEnabled) mainFilterChipItems
-                                else mainFilterChipItems.minus(ChipItem.Special),
-                                selectedFlags = it.filter
-                            ) { flag ->
-                                it.filter = it.filter xor flag
-                                refresh(it, false)
-                            }
+                    item {
+                        TitleText(R.string.filter_options)
+                        MultiSelectableChipGroup(
+                            list = if (requireContext().specialBackupsEnabled) mainFilterChipItems
+                            else mainFilterChipItems.minus(ChipItem.Special),
+                            selectedFlags = schedule.filter
+                        ) { flag ->
+                            schedule.filter = schedule.filter xor flag
+                            refresh(schedule, false)
                         }
-                        item {
-                            TitleText(R.string.sched_mode)
-                            MultiSelectableChipGroup(
-                                list = scheduleBackupModeChipItems,
-                                selectedFlags = it.mode
-                            ) { flag ->
-                                it.mode = it.mode xor flag
-                                refresh(it, false)
-                            }
+                    }
+                    item {
+                        TitleText(R.string.sched_mode)
+                        MultiSelectableChipGroup(
+                            list = scheduleBackupModeChipItems,
+                            selectedFlags = schedule.mode
+                        ) { flag ->
+                            schedule.mode = schedule.mode xor flag
+                            refresh(schedule, false)
                         }
-                        item {
-                            TitleText(R.string.other_filters_options)
-                            SelectableChipGroup(
-                                list = schedSpecialFilterChipItems,
-                                selectedFlag = it.specialFilter
-                            ) { flag ->
-                                it.specialFilter = flag
-                                refresh(it, false)
-                            }
+                    }
+                    item {
+                        TitleText(R.string.other_filters_options)
+                        SelectableChipGroup(
+                            list = schedSpecialFilterChipItems,
+                            selectedFlag = schedule.specialFilter
+                        ) { flag ->
+                            schedule.specialFilter = flag
+                            refresh(schedule, false)
                         }
                     }
                 }

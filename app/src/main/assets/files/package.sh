@@ -1,3 +1,5 @@
+#!/system/bin/sh
+
 command=$1
 shift
 
@@ -19,7 +21,7 @@ while [[ $1 == --* ]]; do
 done
 
 
-if [[ $command == "pre" ]]; then
+if [[ $command == "pre-backup" ]]; then
 
   package=$1
   shift
@@ -41,7 +43,7 @@ if [[ $command == "pre" ]]; then
       $utilbox ps -A -o PID -u $userid | $utilbox tail -n +2
       $utilbox ls -l /proc/*/fd/* 2>/dev/null |
           $utilbox grep -E "/data/data/|/media/" |
-          #$utilbox grep -E "/data/|/media/" | TODO add an option for wider catching
+          #$utilbox grep -E "/data/|/media/" |  #TODO add an option for wider catching
           $utilbox grep -F /$package/ |
           $utilbox cut -s -d / -f 3
     ) |
@@ -63,7 +65,7 @@ if [[ $command == "pre" ]]; then
   exit
 fi
 
-if [[ $command == "post" ]]; then
+if [[ $command == "post-backup" ]]; then
 
   package=$1
   shift
@@ -71,6 +73,7 @@ if [[ $command == "post" ]]; then
   userid=$1
   shift
 
+  # kill background processes, which should be restarted by the system when necessary
   am kill $package
 
   if [[ -n $* ]]; then $utilbox kill -CONT "$@"; fi
@@ -78,6 +81,32 @@ if [[ $command == "post" ]]; then
   if $suspend; then
     pm unsuspend $package
   fi
+
+  exit
+fi
+
+if [[ $command == "pre-restore" ]]; then
+
+  package=$1
+  shift
+
+  userid=$1
+  shift
+
+  # kill app and all of its services without canceling it's scheduled alarms and jobs.
+  # if command does not exist (or fails) stop everything instead
+  am stop-app $package || am force-stop $package
+
+  exit
+fi
+
+if [[ $command == "post-restore" ]]; then
+
+  package=$1
+  shift
+
+  userid=$1
+  shift
 
   exit
 fi

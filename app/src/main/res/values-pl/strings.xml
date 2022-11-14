@@ -2,8 +2,8 @@
 <resources>
     <string name="backup">Kopia zapasowa</string>
     <string name="restore">Przywróć</string>
-    <string name="backupConfirmation">Utworzyć kopię zapasową?</string>
-    <string name="restoreConfirmation">Przywrócić?</string>
+    <string name="backupConfirmation">Utworzyć kopię zapasową\?</string>
+    <string name="restoreConfirmation">Przywrócić\?</string>
     <string name="handleApk">APK</string>
     <string name="handleData">Dane</string>
     <string name="handleBoth">Obie</string>
@@ -35,8 +35,8 @@
     <string name="sortByLabel">Sortuj według etykiety</string>
     <string name="sortByPackageName">Sortuj według nazwy pakietu</string>
     <string name="sort">Sortuj i filtruj</string>
-    <string name="uninstallDialogMessage">Odinstalować tę aplikację?</string>
-    <string name="deleteBackupDialogMessage">Usunąć pliki kopii zapasowych?</string>
+    <string name="uninstallDialogMessage">Odinstalować tę aplikację\?</string>
+    <string name="deleteBackupDialogMessage">Usunąć pliki kopii zapasowych\?</string>
     <string name="dialogOK">Ok</string>
     <string name="dialogCancel">Anuluj</string>
     <string name="dialogYes">Tak</string>
@@ -80,7 +80,7 @@
     <string name="prefs_user">Ustawienia użytkownika</string>
     <string name="prefs_theme">Motyw</string>
     <string name="prefs_acquirewakelock">Zapobiegaj przejściu w stan spoczynku</string>
-    <string name="prefs_batchdelete">Usunąć kopie zapasowe?</string>
+    <string name="prefs_batchdelete">Usunąć kopie zapasowe\?</string>
     <string name="prefs_pathbackupfolder">Katalog kopii zapasowej</string>
     <string name="prefs_oldbackups">Filtruj kopie po czasie</string>
     <string name="prefs_copyselfapk">Skopiuj własne APK</string>

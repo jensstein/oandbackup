@@ -47,17 +47,18 @@ import com.machiav3lli.backup.preferences.pref_excludeCache
 import com.machiav3lli.backup.preferences.pref_installationPackage
 import com.machiav3lli.backup.preferences.pref_refreshAppInfoTimeout
 import com.machiav3lli.backup.preferences.pref_restoreAvoidTemporaryCopy
+import com.machiav3lli.backup.preferences.pref_restoreKillApps
 import com.machiav3lli.backup.preferences.pref_restorePermissions
 import com.machiav3lli.backup.preferences.pref_restoreTarCmd
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.CryptoSetupException
+import com.machiav3lli.backup.utils.Dirty
 import com.machiav3lli.backup.utils.decryptStream
 import com.machiav3lli.backup.utils.getCryptoSalt
 import com.machiav3lli.backup.utils.getEncryptionPassword
 import com.machiav3lli.backup.utils.isAllowDowngrade
 import com.machiav3lli.backup.utils.isDisableVerification
 import com.machiav3lli.backup.utils.isEncryptionEnabled
-import com.machiav3lli.backup.utils.isPauseApps
 import com.machiav3lli.backup.utils.isRestoreAllPermissions
 import com.machiav3lli.backup.utils.suCopyFileFromDocument
 import com.machiav3lli.backup.utils.suRecursiveCopyFileFromDocument
@@ -84,10 +85,10 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         try {
             Timber.i("Restoring: ${app.packageName} [${app.packageLabel}]")
             work?.setOperation("pre")
-            val pauseApp = context.isPauseApps
-            if (pauseApp) {
-                Timber.d("pre-process package (to avoid file inconsistencies during backup etc.)")
-                preprocessPackage(app.packageName)
+            val killApp = pref_restoreKillApps.value
+            if (killApp) {
+                Timber.d("pre-process package")
+                preprocessPackage(type = "restore", packageName = app.packageName)
             }
             try {
                 if (backupDir != null) {
@@ -130,10 +131,9 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                 return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
             } finally {
                 work?.setOperation("fin")
-                if (pauseApp) {
+                if (killApp) {
                     Timber.d("post-process package (to set it back to normal operation)")
-                    postprocessPackage(app.packageName)
-                    //markerFile?.delete()
+                    postprocessPackage(type = "restore", packageName = app.packageName)
                 }
             }
         } finally {
@@ -156,35 +156,35 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         if (backup.hasAppData && backupMode and MODE_DATA == MODE_DATA) {
             Timber.i("[${backup.packageName}] Restoring app's data")
             work?.setOperation("dat")
-            restoreData(app, backup, backupDir, true)
+            restoreData(app, backup, backupDir)
         } else {
             Timber.i("[${backup.packageName}] Skip restoring app's data; not part of the backup or restore mode")
         }
         if (backup.hasDevicesProtectedData && backupMode and MODE_DATA_DE == MODE_DATA_DE) {
             Timber.i("[${backup.packageName}] Restoring app's device-protected data")
             work?.setOperation("prt")
-            restoreDeviceProtectedData(app, backup, backupDir, true)
+            restoreDeviceProtectedData(app, backup, backupDir)
         } else {
             Timber.i("[${backup.packageName}] Skip restoring app's device protected data; not part of the backup or restore mode")
         }
         if (backup.hasExternalData && backupMode and MODE_DATA_EXT == MODE_DATA_EXT) {
             Timber.i("[${backup.packageName}] Restoring app's external data")
             work?.setOperation("ext")
-            restoreExternalData(app, backup, backupDir, true)
+            restoreExternalData(app, backup, backupDir)
         } else {
             Timber.i("[${backup.packageName}] Skip restoring app's external data; not part of the backup or restore mode")
         }
         if (backup.hasObbData && backupMode and MODE_DATA_OBB == MODE_DATA_OBB) {
             Timber.i("[${backup.packageName}] Restoring app's obb files")
             work?.setOperation("obb")
-            restoreObbData(app, backup, backupDir, false)
+            restoreObbData(app, backup, backupDir)
         } else {
             Timber.i("[${backup.packageName}] Skip restoring app's obb files; not part of the backup or restore mode")
         }
         if (backup.hasMediaData && backupMode and MODE_DATA_MEDIA == MODE_DATA_MEDIA) {
             Timber.i("[${backup.packageName}] Restoring app's media files")
             work?.setOperation("med")
-            restoreMediaData(app, backup, backupDir, false)
+            restoreMediaData(app, backup, backupDir)
         } else {
             Timber.i("[${backup.packageName}] Skip restoring app's media files; not part of the backup or restore mode")
         }
@@ -673,38 +673,69 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     ) {
         try {
             val (uid, gid, con) = uidgidcon
-            val gidCache = "${gid}_cache"
+            val gidCache = Dirty.appGidToCacheGid(gid)
             Timber.i("Getting user/group info and apply it recursively on $targetPath")
             // get the contents. lib for example must be owned by root
             //TODO hg42 I think, lib is always a link
             //TODO hg42 directories we exclude would keep their uidgidcon from before
             //TODO hg42 this doesn't seem to be correct, unless the apk install would manage updating uidgidcon
-            val dataContents: MutableList<String> =
+            val topLevelFiles: MutableList<String> =
                 mutableListOf(*shell.suGetDirectoryContents(RootFile(targetPath)))
             // Don't exclude any files from chown, as this may cause SELINUX issues (lost of data on restart)
-            // dataContents.removeAll(DATA_EXCLUDED_BASENAMES)
-            dataContents.removeAll(DATA_EXCLUDED_CACHE_DIRS)    // these are not excluded but processed differently! -> cacheTargets
+            // calculate a list of what must be updated inside the directory
 
-            // calculate a list what must be updated inside the directory
-            val chownTargets = dataContents.map { s -> RootFile(targetPath, s).absolutePath }
-            val cacheTargets = DATA_EXCLUDED_CACHE_DIRS.map { s -> RootFile(targetPath, s).absolutePath }
-            Timber.d("Changing owner and group of '$targetPath' to $uid:$gid and selinux context to $con")
-            var command =
-                "$utilBoxQ chown $uid:$gid ${
-                    quote(RootFile(targetPath).absolutePath)
-                }"
-            if (chownTargets.isNotEmpty())
-                command += " ; $utilBoxQ chown -R $uid:$gid ${
-                    quoteMultiple(chownTargets)
-                }"
-            if (cacheTargets.isNotEmpty())
-                command += " ; $utilBoxQ chown -R $uid:$gidCache ${
-                    quoteMultiple(cacheTargets)
-                }"
-            command += if (con == "?") //TODO hg42: when does it happen? maybe if selinux not supported on storage?
-                "" // "" ; restorecon -RF -v ${quote(targetPath)}"  //TODO hg42 doesn't seem to work
-            else
-                " ; chcon -R -h -v '$con' ${quote(targetPath)}"
+            // assuming target exists, otherwise we should not enter this function, it's guarded outside
+            val target = RootFile(targetPath).absolutePath
+            val chownTargets = topLevelFiles
+                    .filterNot { it in DATA_EXCLUDED_CACHE_DIRS }
+                    .map { s -> RootFile(targetPath, s).absolutePath }
+            val cacheTargets = topLevelFiles
+                    .filter { it in DATA_EXCLUDED_CACHE_DIRS }
+                    .map { s -> RootFile(targetPath, s).absolutePath }
+            Timber.d("Changing owner and group to $uid:$gid for $target and recursive for $chownTargets")
+            Timber.d("Changing owner and group to $uid:$gidCache for cache $cacheTargets")
+            Timber.d("Changing selinux context to $con for $target")
+            // we filter targets from existing files, so we don't need these currently:
+            //fun commandCheckedChown(uid: String, gid: String, target: String): String {
+            //    return "! $utilBoxQ test -d ${
+            //                quote(target)
+            //            } || $utilBoxQ chown $uid:$gid ${
+            //                quote(target)
+            //            }"
+            //}
+            //fun commandCheckedChownMultiRec(uid: String, gid: String, targets: List<String>): String? {
+            //    return if (targets.isNotEmpty())
+            //        "for t in ${
+            //            quoteMultiple(targets)
+            //        }; do ! $utilBoxQ test -e \$t || $utilBoxQ chown -R $uid:$gid \$t; done"
+            //    else
+            //        null
+            //}
+            fun commandChown(uid: String, gid: String, target: String): String {
+                return "$utilBoxQ chown $uid:$gid ${
+                            quote(target)
+                        }"
+            }
+            fun commandChownMultiRec(uid: String, gid: String, targets: List<String>): String? {
+                return if (targets.isNotEmpty())
+                    "$utilBoxQ chown -R $uid:$gid ${
+                        quoteMultiple(targets)
+                    }"
+                else
+                    null
+            }
+            fun commandChcon(con: String, target: String): String? {
+                return if (con == "?") //TODO hg42: when does it happen? maybe if selinux not supported on storage?
+                    null // "" ; restorecon -RF -v ${quote(target)}"  //TODO hg42 doesn't seem to work, probably because selinux unsupported in this case
+                else
+                    "chcon -R -h -v '$con' ${quote(target)}"
+            }
+            val command = listOf(
+                commandChown(uid, gid, target),
+                commandChownMultiRec(uid, gid, chownTargets),
+                commandChownMultiRec(uid, gidCache, cacheTargets),
+                commandChcon(con, target),
+            ).filterNotNull().joinToString(" ; ")
             runAsRoot(command)
         } catch (e: ShellCommandFailedException) {
             val errorMessage = "Could not update permissions for $dataType"
@@ -722,8 +753,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     open fun restoreData(
         app: Package,
         backup: Backup,
-        backupDir: StorageFile,
-        compressed: Boolean
+        backupDir: StorageFile
     ) {
         val dataType = BACKUP_DIR_DATA
         val backupFilename = getBackupArchiveFilename(
@@ -771,8 +801,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     open fun restoreDeviceProtectedData(
         app: Package,
         backup: Backup,
-        backupDir: StorageFile,
-        compressed: Boolean
+        backupDir: StorageFile
     ) {
         val dataType = BACKUP_DIR_DEVICE_PROTECTED_FILES
         val backupFilename = getBackupArchiveFilename(
@@ -820,8 +849,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     open fun restoreExternalData(
         app: Package,
         backup: Backup,
-        backupDir: StorageFile,
-        compressed: Boolean
+        backupDir: StorageFile
     ) {
         val dataType = BACKUP_DIR_EXTERNAL_FILES
         val backupFilename = getBackupArchiveFilename(
@@ -865,8 +893,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     open fun restoreObbData(
         app: Package,
         backup: Backup,
-        backupDir: StorageFile,
-        compressed: Boolean
+        backupDir: StorageFile
     ) {
         val extractTo = app.getObbFilesPath(context)
         if (!isPlausiblePath(extractTo, app.packageName))
@@ -921,8 +948,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     open fun restoreMediaData(
         app: Package,
         backup: Backup,
-        backupDir: StorageFile,
-        compressed: Boolean
+        backupDir: StorageFile
     ) {
         val extractTo = app.getMediaFilesPath(context)
         if (!isPlausiblePath(extractTo, app.packageName))

@@ -2,8 +2,8 @@
 <resources>
     <string name="backup">Резервна копија</string>
     <string name="restore">Враћање</string>
-    <string name="backupConfirmation">Направити резервну копију?</string>
-    <string name="restoreConfirmation">Вратити резервну копију?</string>
+    <string name="backupConfirmation">Направити резервну копију\?</string>
+    <string name="restoreConfirmation">Вратити резервну копију\?</string>
     <string name="handleApk">Apk</string>
     <string name="handleData">Подаци</string>
     <string name="handleBoth">Оба</string>
@@ -32,8 +32,8 @@
     <string name="sortByLabel">Поређај по ознаци</string>
     <string name="sortByPackageName">Поређај по називу пакета</string>
     <string name="sort">Поређај и филтрирај</string>
-    <string name="uninstallDialogMessage">Уклонити ову апликацију?</string>
-    <string name="deleteBackupDialogMessage">Обрисати резервну копију?</string>
+    <string name="uninstallDialogMessage">Уклонити ову апликацију\?</string>
+    <string name="deleteBackupDialogMessage">Обрисати резервну копију\?</string>
     <string name="dialogOK">У реду</string>
     <string name="dialogCancel">Откажи</string>
     <string name="dialogYes">Да</string>

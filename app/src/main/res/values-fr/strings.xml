@@ -31,8 +31,8 @@
     <string name="sortByLabel">trier par libellé</string>
     <string name="sortByPackageName">trier par nom de paquet</string>
     <string name="sort">trier et filtrer</string>
-    <string name="uninstallDialogMessage">désinstaller cette application ?</string>
-    <string name="deleteBackupDialogMessage">effacer les fichiers de sauvegarde ?</string>
+    <string name="uninstallDialogMessage">désinstaller cette application \?</string>
+    <string name="deleteBackupDialogMessage">effacer les fichiers de sauvegarde \?</string>
     <string name="dialogOK">OK</string>
     <string name="dialogCancel">annuler</string>
     <string name="dialogYes">oui</string>
@@ -208,6 +208,7 @@
     <string name="radio_externaldata">Données externes</string>
     <plurals name="days_left">
         <item quantity="one">%d jour,</item>
+        <item quantity="many"></item>
         <item quantity="other">%d jours,</item>
     </plurals>
     <string name="logs_text_empty">Il n\'y a rien à afficher !</string>

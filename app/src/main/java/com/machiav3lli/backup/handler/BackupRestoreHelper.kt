@@ -45,7 +45,6 @@ import java.io.IOException
 
 object BackupRestoreHelper {
 
-    suspend
     fun backup(
         context: Context,
         work: AppActionWork?,
@@ -85,7 +84,6 @@ object BackupRestoreHelper {
         return result
     }
 
-    suspend
     fun restore(
         context: Context, work: AppActionWork?, shellHandler: ShellHandler, appInfo: Package,
         mode: Int, backupProperties: Backup, backupDir: StorageFile?
@@ -108,7 +106,7 @@ object BackupRestoreHelper {
             val apkFile = backupRoot.findFile(filename)
             apkFile?.delete()
             try {
-                val myInfo = context.packageManager.getPackageInfo(BuildConfig.APPLICATION_ID, 0) // TODO
+                val myInfo = context.packageManager.getPackageInfo(BuildConfig.APPLICATION_ID, 0) // TODO 'getPackageInfo(String, Int): PackageInfo!' is deprecated
                 val fileInfos =
                     shell.suGetDetailedDirectoryContents(myInfo.applicationInfo.sourceDir, false)
                 if (fileInfos.size != 1) {

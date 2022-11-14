@@ -2,8 +2,8 @@
 <resources>
     <string name="backup">Backup</string>
     <string name="restore">Restaurar</string>
-    <string name="backupConfirmation">Backup?</string>
-    <string name="restoreConfirmation">Restaurar?</string>
+    <string name="backupConfirmation">Backup\?</string>
+    <string name="restoreConfirmation">Restaurar\?</string>
     <string name="handleApk">APK</string>
     <string name="handleData">Dados</string>
     <string name="handleBoth">Ambos</string>
@@ -32,7 +32,7 @@
     <string name="sortByLabel">Ordenar por nome</string>
     <string name="sortByPackageName">Ordenar por nome de pacote</string>
     <string name="sort">Filtro e ordem</string>
-    <string name="uninstallDialogMessage">Desinstalar aplicação?</string>
+    <string name="uninstallDialogMessage">Desinstalar aplicação\?</string>
     <string name="deleteBackupDialogMessage">Eliminar ficheiros de backup\?</string>
     <string name="dialogOK">OK</string>
     <string name="dialogCancel">Cancelar</string>
@@ -212,6 +212,7 @@
     <string name="prefs_disableverification">Desativar verificação de aplicações via USB</string>
     <plurals name="days_left">
         <item quantity="one">%d dia,</item>
+        <item quantity="many"></item>
         <item quantity="other">%d dias,</item>
     </plurals>
     <string name="stats_apps">Aplicações</string>
@@ -228,10 +229,12 @@
     <string name="help_faq">Perguntas frequentes</string>
     <plurals name="updated_apps">
         <item quantity="one">%d aplicação atualizado</item>
+        <item quantity="many"></item>
         <item quantity="other">%d aplicações atualizados</item>
     </plurals>
     <plurals name="sched_interval_formal">
         <item quantity="one">cada dia</item>
+        <item quantity="many"></item>
         <item quantity="other">cada %d dias</item>
     </plurals>
     <string name="backup_all_updated">Backup de todas as aplicações atualizadas</string>

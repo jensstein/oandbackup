@@ -27,7 +27,7 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.preferences.pref_backupNoBackupData
-import com.machiav3lli.backup.preferences.pref_pmSuspend
+import com.machiav3lli.backup.preferences.pref_backupSuspendApps
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.ShellUtils
@@ -55,64 +55,65 @@ abstract class BaseAppAction protected constructor(
         protected constructor(message: String?, cause: Throwable?) : super(message, cause)
     }
 
-    private fun prepostOptions(): String = if (pref_pmSuspend.value)
-        "--suspend"
-    else
-        ""
+    private fun prepostOptions(type: String): String =
+                    when (type) {
+                        "backup" -> if (pref_backupSuspendApps.value) "--suspend" else ""
+                        else -> ""
+                    }
 
-    open fun preprocessPackage(packageName: String) {
+    open fun preprocessPackage(type: String, packageName: String) {
         try {
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
             val script = ShellHandler.findAssetFile("package.sh").toString()
-            Timber.w("---------------------------------------- Preprocess package $packageName uid ${applicationInfo.uid}")
+            Timber.w("---------------------------------------- preprocess $type $packageName uid ${applicationInfo.uid}")
             if (applicationInfo.uid < android.os.Process.FIRST_APPLICATION_UID) { // exclude several system users, e.g. system, radio
-                Timber.w("Ignore processes of system user UID < ${android.os.Process.FIRST_APPLICATION_UID}")
+                Timber.w("$type $packageName: ignore processes of system user UID < ${android.os.Process.FIRST_APPLICATION_UID}")
                 return
             }
             if (!packageName.matches(doNotStop)) { // will stop most activity, needs a good blacklist
                 val shellResult =
-                    runAsRoot("sh $script pre $utilBoxQ ${prepostOptions()} $packageName ${applicationInfo.uid}")
-                stopped[packageName] = shellResult.out.asSequence()
+                    runAsRoot("sh $script pre-$type $utilBoxQ ${prepostOptions(type)} $packageName ${applicationInfo.uid}")
+                preResults["$type-$packageName"] = shellResult.out.asSequence()
                     .filter { line: String -> line.isNotEmpty() }
                     .toMutableList()
-                Timber.w("$packageName pids: ${stopped[packageName]?.joinToString(" ")}")
+                Timber.w("$type $packageName: pre-results: ${preResults["$type-$packageName"]?.joinToString(" ")}")
             }
         } catch (e: PackageManager.NameNotFoundException) {
-            Timber.w("$packageName does not exist. Cannot preprocess!")
+            Timber.w("$type $packageName: cannot preprocess: package does not exist")
         } catch (e: ShellCommandFailedException) {
-            Timber.w("Could not stop package ${packageName}: ${e.shellResult.err.joinToString(" ")}")
+            Timber.w("$type $packageName: cannot preprocess: ${e.shellResult.err.joinToString(" ")}")
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e)
         }
     }
 
-    open fun postprocessPackage(packageName: String) {
+    open fun postprocessPackage(type: String, packageName: String) {
         try {
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
             val script = ShellHandler.findAssetFile("package.sh").toString()
-            Timber.w("........................................ Postprocess package $packageName uid ${applicationInfo.uid}")
+            Timber.w("........................................ postprocess $type $packageName uid ${applicationInfo.uid}")
             if (applicationInfo.uid < android.os.Process.FIRST_APPLICATION_UID) { // exclude several system users, e.g. system, radio
-                Timber.w("Ignore processes of system user UID < ${android.os.Process.FIRST_APPLICATION_UID}")
+                Timber.w("$type $packageName: ignore processes of system user UID < ${android.os.Process.FIRST_APPLICATION_UID}")
                 return
             }
-            stopped[packageName]?.let { pids ->
-                Timber.w("Continue stopped PIDs for package ${packageName}: ${pids.joinToString(" ")}")
+            preResults["$type-$packageName"]?.let { results ->
+                Timber.w("$type $packageName: postprocess pre-results: ${results.joinToString(" ")}")
                 runAsRoot(
-                    "sh $script post $utilBoxQ ${prepostOptions()} $packageName ${applicationInfo.uid} ${
-                        pids.joinToString(
+                    "sh $script post-$type $utilBoxQ ${prepostOptions(type)} $packageName ${applicationInfo.uid} ${
+                        results.joinToString(
                             " "
                         )
                     }"
                 )
-                stopped.remove(packageName)
+                preResults.remove("$type-$packageName")
             } ?: run {
-                Timber.w("No stopped PIDs for package $packageName")
+                Timber.w("$type $packageName: no pre-results")
                 runAsRoot("sh $script $packageName ${applicationInfo.uid}")
             }
         } catch (e: PackageManager.NameNotFoundException) {
-            Timber.w("$packageName does not exist. Cannot post-process!")
+            Timber.w("$type $packageName: cannot postprocess: package does not exist")
         } catch (e: ShellCommandFailedException) {
-            Timber.w("Could not continue package ${packageName}: ${e.shellResult.err.joinToString(" ")}")
+            Timber.w("$type $packageName: cannot postprocess: ${e.shellResult.err.joinToString(" ")}")
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e)
         }
@@ -146,7 +147,7 @@ abstract class BaseAppAction protected constructor(
             "cache",
             "trash",
             ".thumbnails",
-            if (utilBox.hasBugDotDotDir) "..*" else null
+            if (utilBox.hasBug("DotDotDir")) "..*" else null
         )
 
         val ignoredPackages = ("""(?x)
@@ -176,7 +177,7 @@ abstract class BaseAppAction protected constructor(
             | """ + Regex.escape(BuildConfig.APPLICATION_ID) + """
             """).toRegex()
 
-        private val stopped = mutableMapOf<String, List<String>>()
+        private val preResults = mutableMapOf<String, List<String>>()
 
         fun extractErrorMessage(shellResult: Shell.Result): String {
             // if stderr does not say anything, try stdout

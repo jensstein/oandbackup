@@ -24,9 +24,10 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Process
-import com.machiav3lli.backup.EXPORTS_FOLDER_NAME
+import com.machiav3lli.backup.ADMIN_PREFIX
+import com.machiav3lli.backup.EXPORTS_FOLDER_NAME_ALT
 import com.machiav3lli.backup.IGNORED_PERMISSIONS
-import com.machiav3lli.backup.LOG_FOLDER_NAME
+import com.machiav3lli.backup.LOG_FOLDER_NAME_ALT
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
 import com.machiav3lli.backup.OABX
@@ -41,14 +42,13 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.StorageFile.Companion.cacheInvalidate
-import com.machiav3lli.backup.preferences.pref_pmSuspend
+import com.machiav3lli.backup.preferences.pref_backupSuspendApps
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupDir
 import com.machiav3lli.backup.utils.getInstalledPackagesWithPermissions
 import com.machiav3lli.backup.utils.specialBackupsEnabled
 import timber.log.Timber
-import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.*
 import kotlin.system.measureTimeMillis
@@ -73,7 +73,10 @@ fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
     StorageLocationNotConfiguredException::class
 )
 fun Context.getInstalledPackageList(blockList: List<String> = listOf()): MutableList<Package> {
+
     var packageList: MutableList<Package>
+
+    OABX.beginBusy("getInstalledPackageList")
 
     val time = measureTimeMillis {
 
@@ -84,7 +87,7 @@ fun Context.getInstalledPackageList(blockList: List<String> = listOf()): Mutable
         packageList = packageInfoList
             .filterNotNull()
             .filterNot {
-                it.packageName.matches(ignoredPackages) || blockList.contains(it.packageName)
+                it.packageName.matches(ignoredPackages)
             }
             .mapNotNull {
                 try {
@@ -121,7 +124,7 @@ fun Context.getInstalledPackageList(blockList: List<String> = listOf()): Mutable
         val specialList = mutableListOf<String>()
         if (includeSpecial) {
             SpecialInfo.getSpecialPackages(this).forEach {
-                if (!blockList.contains(it.packageName)) packageList.add(it)
+                packageList.add(it)
                 specialList.add(it.packageName)
             }
         }
@@ -161,6 +164,8 @@ fun Context.getInstalledPackageList(blockList: List<String> = listOf()): Mutable
         "getPackageList: ${(time / 1000 + 0.5).toInt()} sec"
     )
 
+    OABX.endBusy("getInstalledPackageList")
+
     return packageList
 }
 
@@ -173,12 +178,17 @@ fun List<AppInfo>.toPackageList(
     backupMap: Map<String, List<Backup>> = mapOf()
 ): MutableList<Package> {
 
-    val includeSpecial = context.specialBackupsEnabled
+    var packageList : MutableList<Package> = mutableListOf()
 
-    val packageList =
-        this.filterNot {
-            it.packageName.matches(ignoredPackages) || it.packageName in blockList
-        }
+    OABX.beginBusy("toPackageList")
+
+    try {
+        val includeSpecial = context.specialBackupsEnabled
+
+        packageList =
+            this.filterNot {
+                it.packageName.matches(ignoredPackages)
+            }
             .mapNotNull {
                 try {
                     Package.get(it.packageName) {
@@ -191,28 +201,34 @@ fun List<AppInfo>.toPackageList(
             }
             .toMutableList()
 
-    // Special Backups must added before the uninstalled packages, because otherwise it would
-    // discover the backup directory and run in a special case where no the directory is empty.
-    // This would mean, that no package info is available – neither from backup.properties
-    // nor from PackageManager.
-    // TODO show special packages directly wihtout restarting NB
-    //val specialList = mutableListOf<String>()
-    if (includeSpecial) {
-        SpecialInfo.getSpecialPackages(context).forEach {
-            if (!blockList.contains(it.packageName)) {
-                it.updateBackupList(backupMap[it.packageName].orEmpty())
-                packageList.add(it)
+        // Special Backups must added before the uninstalled packages, because otherwise it would
+        // discover the backup directory and run in a special case where no the directory is empty.
+        // This would mean, that no package info is available – neither from backup.properties
+        // nor from PackageManager.
+        // TODO show special packages directly wihtout restarting NB
+        //val specialList = mutableListOf<String>()
+        if (includeSpecial) {
+            SpecialInfo.getSpecialPackages(context).forEach {
+                if (!blockList.contains(it.packageName)) {
+                    it.updateBackupList(backupMap[it.packageName].orEmpty())
+                    packageList.add(it)
+                }
+                //specialList.add(it.packageName)
             }
-            //specialList.add(it.packageName)
         }
+
+    } catch (e: Throwable) {
+        LogsHandler.unhandledException(e)
     }
+
+    OABX.endBusy("toPackageList")
 
     return packageList
 }
 
 fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
 
-    OABX.beginBusy()
+    OABX.beginBusy("updateAppTables")
 
     val pm = packageManager
     val installedPackages = pm.getInstalledPackagesWithPermissions()
@@ -221,7 +237,7 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
     val specialNames = specialPackages.map { it.packageName }
     val backups = mutableListOf<Backup>()
 
-    if (!OABX.appsSuspendedChecked && pref_pmSuspend.value) {
+    if (!OABX.appsSuspendedChecked && pref_backupSuspendApps.value) {
         installedNames.filter { packageName ->
             0 != (OABX.activity?.packageManager
                 ?.getPackageInfo(packageName, 0)
@@ -278,7 +294,7 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
     appInfoDao.updateList(*appInfoList.toTypedArray())
     backupDao.updateList(*backups.toTypedArray())
 
-    OABX.endBusy()
+    OABX.endBusy("updateAppTables")
 }
 
 @Throws(
@@ -286,23 +302,28 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
     StorageLocationNotConfiguredException::class
 )
 fun Context.getBackupPackageDirectories(): List<StorageFile> {
-    //StorageFile.invalidateCache()     // no -> only invalidate the backups
-    val backupRoot = getBackupDir()
-    cacheInvalidate(backupRoot)         // only invalidate the backups (TODO but forcing it should probably be somewhere else, e.g. button action)
+
+    OABX.beginBusy("getBackupPackageDirectories")
+
     try {
+        //StorageFile.invalidateCache()     // no -> only invalidate the backups
+        val backupRoot = getBackupDir()
+        cacheInvalidate(backupRoot)         // only invalidate the backups (TODO but forcing it should probably be somewhere else, e.g. button action)
         return backupRoot.listFiles()
             .filter {
                 it.isDirectory &&
-                        it.name != LOG_FOLDER_NAME &&
-                        it.name != EXPORTS_FOLDER_NAME &&
+                        it.name != LOG_FOLDER_NAME_ALT &&
+                        it.name != EXPORTS_FOLDER_NAME_ALT &&
+                        !(it.name?.startsWith(ADMIN_PREFIX) ?: false) &&
                         !(it.name?.startsWith('.') ?: false)
             }
             .toList()
-    } catch (e: FileNotFoundException) {
-        Timber.e("${e.javaClass.simpleName}: ${e.message}")
     } catch (e: Throwable) {
         LogsHandler.unhandledException(e)
+    } finally {
+        OABX.endBusy("getBackupPackageDirectories")
     }
+
     return arrayListOf()
 }
 

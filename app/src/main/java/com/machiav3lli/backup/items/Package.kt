@@ -27,13 +27,14 @@ import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER_OLD
 import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.preferences.pref_cachePackages
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
+import com.machiav3lli.backup.handler.LogsHandler.Companion.unhandledException
 import com.machiav3lli.backup.handler.getPackageStorageStats
+import com.machiav3lli.backup.preferences.pref_cachePackages
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupDir
@@ -111,13 +112,12 @@ class Package {
                     .packageInfo
             } catch (e: Throwable) {
                 Timber.i("$packageName is not installed")
-                if (this.backupList.isEmpty()) {
+                this.packageInfo = latestBackup?.toAppInfo() ?: run {
                     throw AssertionError(
                         "Backup History is empty and package is not installed. The package is completely unknown?",
                         e
                     )
                 }
-                this.packageInfo = latestBackup!!.toAppInfo()
             }
         }
         OABX.app.packageCache.put(packageName, this)
@@ -216,17 +216,24 @@ class Package {
     fun getAppBackupRoot(
         create: Boolean = false,
         packageName: String = this.packageName
-    ): StorageFile? = when {
-        packageBackupDir != null && packageBackupDir?.exists() == true -> {
-            packageBackupDir
-        }
-        create -> {
-            packageBackupDir = OABX.context.getBackupDir().ensureDirectory(packageName)
-            packageBackupDir
-        }
-        else -> {
-            packageBackupDir = OABX.context.getBackupDir().findFile(packageName)
-            packageBackupDir
+    ): StorageFile? {
+        return try {
+            when {
+                packageBackupDir != null && packageBackupDir?.exists() == true -> {
+                    packageBackupDir
+                }
+                create -> {
+                    packageBackupDir = OABX.context.getBackupDir().ensureDirectory(packageName)
+                    packageBackupDir
+                }
+                else -> {
+                    packageBackupDir = OABX.context.getBackupDir().findFile(packageName)
+                    packageBackupDir
+                }
+            }
+        } catch (e: Throwable) {
+            unhandledException(e)
+            null
         }
     }
 
@@ -278,10 +285,15 @@ class Package {
     }
 
     fun deleteOldestBackups(keep: Int) {
-        while (keep < backupList.size) {
-            oldestBackup?.let { backup ->
-                Timber.i("[${backup.packageName}] Deleting backup revision ${backup.backupDate}")
-                deleteBackup(backup)
+        while (keep < backupList.size || backupList.all { it.persistent }) {
+            run whileLoop@{
+                backupList.sortedBy { it.backupDate }.forEach { backup ->
+                    if (!backup.persistent) {
+                        Timber.i("[${backup.packageName}] Deleting backup revision ${backup.backupDate}")
+                        deleteBackup(backup)
+                        return@whileLoop
+                    }
+                }
             }
         }
     }
@@ -316,7 +328,7 @@ class Package {
         get() = (packageInfo as SpecialInfo).specialFiles
 
     val packageLabel: String
-        get() = if (packageInfo.packageLabel != null) packageInfo.packageLabel!! else packageName
+        get() = packageInfo.packageLabel ?: packageName
 
     val versionCode: Int
         get() = packageInfo.versionCode
@@ -348,7 +360,8 @@ class Package {
         // e.g. /storage/emulated/0/Android/data
         // Add the package name to the path assuming that if the name of dataDir does not equal the
         // package name and has a prefix or a suffix to use it.
-        return "${context.getExternalFilesDir(null)!!.parentFile!!.parentFile!!.absolutePath}${File.separator}$packageName"
+        return context.getExternalFilesDir(null)?.parentFile?.parentFile?.absolutePath?.plus("${File.separator}$packageName")
+            ?: ""
     }
 
     // Uses the context to get own obb data directory
@@ -362,7 +375,7 @@ class Package {
         // e.g. /storage/emulated/0/Android/obb
         // Add the package name to the path assuming that if the name of dataDir does not equal the
         // package name and has a prefix or a suffix to use it.
-        return "${context.obbDir.parentFile!!.absolutePath}${File.separator}$packageName"
+        return context.obbDir.parentFile?.absolutePath?.plus("${File.separator}$packageName") ?: ""
     }
 
     // Uses the context to get own media directory
@@ -378,7 +391,8 @@ class Package {
         // e.g. /storage/emulated/0/Android/media
         // Add the package name to the path assuming that if the name of dataDir does not equal the
         // package name and has a prefix or a suffix to use it.
-        return "${context.obbDir.parentFile!!.parentFile!!.absolutePath}${File.separator}media${File.separator}$packageName"
+        return context.obbDir.parentFile?.parentFile?.absolutePath?.plus("${File.separator}media${File.separator}$packageName")
+            ?: ""
     }
 
     /**

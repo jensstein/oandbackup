@@ -19,7 +19,6 @@ package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -28,6 +27,9 @@ import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.utils.cancelAlarm
 import com.machiav3lli.backup.utils.scheduleAlarm
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -37,16 +39,17 @@ class ScheduleViewModel(
     appContext: Application
 ) : AndroidViewModel(appContext) {
 
-    var schedule = MediatorLiveData<Schedule>()
-
-    init {
-        schedule.addSource(scheduleDB.getLiveSchedule(id), schedule::setValue)
-    }
+    val schedule: StateFlow<Schedule> = scheduleDB.getScheduleFlow(id).stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        Schedule(0)
+    )
+    val customList = scheduleDB.getCustomListFlow(id)
+    val blockList = scheduleDB.getBlockListFlow(id)
 
 
     fun updateSchedule(schedule: Schedule?, rescheduleBoolean: Boolean) {
         viewModelScope.launch {
-            this@ScheduleViewModel.schedule.value = schedule
             schedule?.let { updateS(it, rescheduleBoolean) }
         }
     }
@@ -73,7 +76,7 @@ class ScheduleViewModel(
 
     private suspend fun deleteS() {
         withContext(Dispatchers.IO) {
-            scheduleDB.delete(schedule.value!!)
+            scheduleDB.deleteById(id)
         }
     }
 

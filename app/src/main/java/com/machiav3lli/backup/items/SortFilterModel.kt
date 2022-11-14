@@ -17,18 +17,28 @@
  */
 package com.machiav3lli.backup.items
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.machiav3lli.backup.BACKUP_FILTER_DEFAULT
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.MAIN_SORT_LABEL
 import com.machiav3lli.backup.SPECIAL_FILTER_ALL
 
-class SortFilterModel(
+data class SortFilterModel(
     var sort: Int = MAIN_SORT_LABEL,
     var sortAsc: Boolean = true,
     var mainFilter: Int = MAIN_FILTER_DEFAULT,
     var backupFilter: Int = BACKUP_FILTER_DEFAULT,
     var specialFilter: Int = SPECIAL_FILTER_ALL
-) {
+): Parcelable {
+
+    constructor(parcel: Parcel) : this(
+        parcel.readInt(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readInt()) {
+    }
 
     constructor(sortFilterCode: String) : this() {
         sort = sortFilterCode[0].digitToInt()
@@ -40,4 +50,26 @@ class SortFilterModel(
 
     override fun toString(): String =
         "$sort${sortAsc.compareTo(false)}$mainFilter$specialFilter$backupFilter"
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(sort)
+        parcel.writeByte(if (sortAsc) 1 else 0)
+        parcel.writeInt(mainFilter)
+        parcel.writeInt(backupFilter)
+        parcel.writeInt(specialFilter)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<SortFilterModel> {
+        override fun createFromParcel(parcel: Parcel): SortFilterModel {
+            return SortFilterModel(parcel)
+        }
+
+        override fun newArray(size: Int): Array<SortFilterModel?> {
+            return arrayOfNulls(size)
+        }
+    }
 }

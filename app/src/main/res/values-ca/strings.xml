@@ -266,5 +266,4 @@
     <string name="backup">Còpia de seguretat</string>
     <string name="intro_permission_storage_location_warning">No trieu el directori d\'emmagatzematge principal ni la carpeta de descàrregues; creeu una carpeta només per a les còpies de seguretat. Més informació sobre això a les FAQ</string>
     <string name="global_blocklist_add">Afegir a la llista global de no desitjats</string>
-    <string name="forceKill">Matar procés</string>
 </resources>

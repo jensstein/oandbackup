@@ -17,11 +17,11 @@
  */
 package com.machiav3lli.backup.dbs.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import com.machiav3lli.backup.dbs.entity.AppInfo
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AppInfoDao : BaseDao<AppInfo> {
@@ -32,13 +32,10 @@ interface AppInfoDao : BaseDao<AppInfo> {
     val all: MutableList<AppInfo>
 
     @get:Query("SELECT * FROM appinfo ORDER BY packageName ASC")
-    val allLive: LiveData<MutableList<AppInfo>>
+    val allFlow: Flow<MutableList<AppInfo>>
 
     @Query("SELECT * FROM appinfo WHERE packageName = :packageName")
     fun get(packageName: String): AppInfo
-
-    @Query("SELECT * FROM appinfo WHERE packageName = :packageName")
-    fun getLive(packageName: String): LiveData<AppInfo>
 
     @Query("DELETE FROM appinfo")
     fun emptyTable()

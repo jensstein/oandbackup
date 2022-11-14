@@ -19,6 +19,7 @@ package com.machiav3lli.backup.handler
 
 //import com.google.code.regexp.Pattern
 import android.os.Environment.DIRECTORY_DOCUMENTS
+import androidx.core.text.isDigitsOnly
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.preferences.pref_useFindLs
@@ -42,8 +43,8 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 
-const val testedVersions = "0.8.0 - 0.8.7"
-const val bugDotDotDir = "0.8.3 - 0.8.6"
+const val verKnown = "0.8.0 - 0.8.7"
+const val verBugDotDotDir = "0.8.3 - 0.8.6"
 
 class ShellHandler {
 
@@ -53,52 +54,86 @@ class ShellHandler {
         var name: String = "",
         var version: String = "0.0.0",
         var reason: String = "",
-        var score: Double = 0.0
+        var score: Int = 0
     ) {
+        var bugs = mutableMapOf<String, Boolean>()
 
-        var isTestedVersion = false
-        var hasBugDotDotDir = false
+        var isKnownVersion = false
         val semver: Semver
+
+        companion object {
+            val bugDetectors = mapOf<String, (String, UtilBox) -> Unit>(
+                "DotDotDir" to { name, box ->
+                    box.apply {
+                        //TODO hg42 should use a real "feature" test instead of version (but it hangs)
+                        if (semver.satisfies(verBugDotDotDir)) {
+                            bugs[name] = true
+                            // workaround: ignore directories of this kind
+                        }
+                    }
+                },
+                "LsLNum" to { name, box ->
+                    box.apply {
+                        try {
+                            val line = runAsRoot("${quote()} ls -ld /").out.first() ?: ""
+                            val (attr, n, user, group, tail) = line.split(" ", limit = 5)
+                            if (user.isDigitsOnly() || group.isDigitsOnly()) {
+                                bugs[name] = true
+                                //score = score.mod(1_00_00_00_0)  // fatal
+                                // not fatal, becasue we have a workaround
+                            }
+                        } catch (e: Throwable) {
+                            bugs["unSpec"] = true
+                            score = score.mod(1_00_00_00_0)  //TODO hg42 fatal? when can this happen?
+                            LogsHandler.unhandledException(e)
+                        }
+                    }
+                }
+            )
+
+        }
 
         init {
             version = version.replace(Regex("""^[vV]"""), "")
             version = version.replace(Regex("""-android$"""), "")
             semver = Semver(version, Semver.SemverType.NPM)
             if (semver.satisfies("=0.0.0")) {
-                score = 0.0
+                score =                    0
             } else {
+                score +=           1_00_00_0 * (semver.major ?: 0)
+                score +=              1_00_0 * (semver.minor ?: 0)
+                score +=                 1_0 * (semver.patch ?: 0)
+
                 if (!name.contains("vendor")) {
-                    score += 0.000_000_000_1
+                    score +=               1
+                }
+                if (!name.contains("stock")) {
+                    score +=               1
                 }
                 if (name.contains("ext")) {
-                    score += 0.000_000_000_1
+                    score +=               2
                 }
                 if (name.contains("local")) {
-                    score += 0.000_000_000_1
+                    score +=   10_00_00_00_0
                 }
-                if (semver.satisfies(testedVersions)) {
-                    score += 10.0
-                    isTestedVersion = true
+
+                if (semver.satisfies(verKnown)) {
+                    isKnownVersion = true
+                    score +=    1_00_00_00_0
                 }
-                if (detectBugDotDotDir()) {
-                    hasBugDotDotDir = true
-                } else {
-                    score += 1000.0
+
+                bugDetectors.forEach { it.value(it.key, this) }
+
+                if (!hasBugs()) {
+                    score += 200_00_00_00_0
                 }
-                score += (semver.major?.times(1000) ?: 0)
-                    .plus(semver.minor ?: 0)
-                    .times(1000)
-                    .plus(semver.patch ?: 0)
-                    .div(1_000_000_000)
             }
         }
 
-        private fun detectBugDotDotDir(): Boolean {
-            //TODO hg42 may use a real "feature" test instead of version
-            return semver.satisfies(bugDotDotDir)
-        }
-
         fun quote() = quote(name)
+
+        fun hasBugs() = bugs.isNotEmpty()
+        fun hasBug(name: String) = bugs[name] == true
     }
 
     init {
@@ -113,7 +148,7 @@ class ShellHandler {
         Timber.i("is root         = ${Shell.rootAccess()}")
         Timber.i("is mount-master = $isMountMaster")
 
-        val boxes = mutableListOf<UtilBox>()
+        utilBoxes = mutableListOf<UtilBox>()
         try {
             UTILBOX_NAMES.forEach { box ->
                 var boxVersion = ""
@@ -127,7 +162,7 @@ class ShellHandler {
                         } else {
                             ""
                         }
-                        boxes.add(UtilBox(name = box, version = boxVersion))
+                        utilBoxes.add(UtilBox(name = box, version = boxVersion))
                     } else {
                         throw Exception() // goto catch
                     }
@@ -142,13 +177,13 @@ class ShellHandler {
                             } else {
                                 ""
                             }
-                            boxes.add(UtilBox(name = box, version = boxVersion))
+                            utilBoxes.add(UtilBox(name = box, version = boxVersion))
                         } else {
                             throw Exception("failed") // goto catch
                         }
                     } catch (e: Throwable) {
                         LogsHandler.unhandledException(e, "utilBox $box failed")
-                        boxes.add(UtilBox(name = box, reason = LogsHandler.message(e)))
+                        utilBoxes.add(UtilBox(name = box, reason = LogsHandler.message(e)))
                     }
                 }
             }
@@ -157,8 +192,8 @@ class ShellHandler {
         }
         OABX.lastErrorCommand = ""  // ignore fails while searching for utilBox
 
-        boxes.sortByDescending { it.score }
-        boxes.forEach { box ->
+        utilBoxes.sortByDescending { it.score }
+        utilBoxes.forEach { box ->
             Timber.i(
                 "utilBox: ${box.name}: ${
                     if (box.version.isNotEmpty())
@@ -168,11 +203,11 @@ class ShellHandler {
                 }"
             )
         }
-        utilBox = boxes.first()
-        if (utilBox.score <= 0) {
+        utilBox = utilBoxes.first()
+        if (utilBox.score <= 1) {
             Timber.d("No good utilbox found")
             val message =
-                boxes.map { box ->
+                utilBoxes.map { box ->
                     "${box.name}: ${
                         if (box.version.isNotEmpty())
                             "${box.version} -> ${box.score}"
@@ -182,7 +217,7 @@ class ShellHandler {
                 }.joinToString("\n")
             OABX.addInfoText(
                 "No good utilbox found, tried these:\n${
-                    boxes.map { box ->
+                    utilBoxes.map { box ->
                         if (box.version.isNotEmpty()) "${box.version} -> ${box.score}" else ""
                     }.joinToString("\n")
                 }${
@@ -202,7 +237,7 @@ class ShellHandler {
     }
 
     @Throws(ShellCommandFailedException::class, UnexpectedCommandResult::class)
-    fun suGetFileInfo(path: String, parent: String? = null): FileInfo {
+    fun suGetFileInfo(path: String, parent: String? = null, utilBoxQ: String = ShellHandler.utilBoxQ): FileInfo {
         val shellResult = runAsRoot("$utilBoxQ ls -bdAll ${quote(path)}")
         val relativeParent = parent ?: ""
         val result = shellResult.out.asSequence()
@@ -584,11 +619,13 @@ class ShellHandler {
             "/data/local/toybox",
             "toybox-ext",
             "toybox_vendor",
+            "toybox-stock",
             "toybox",
         )
 
         val isMountMaster get() = Shell.getShell().status >= ROOT_MOUNT_MASTER
 
+        var utilBoxes = mutableListOf<UtilBox>()
         var utilBox: UtilBox = UtilBox()
         val utilBoxQ get() = utilBox.quote()
 

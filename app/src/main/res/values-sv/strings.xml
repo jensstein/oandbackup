@@ -2,8 +2,8 @@
 <resources>
     <string name="backup">säkerhetskopiera</string>
     <string name="restore">återställ</string>
-    <string name="backupConfirmation">säkerhetskopiera?</string>
-    <string name="restoreConfirmation">återställ?</string>
+    <string name="backupConfirmation">säkerhetskopiera\?</string>
+    <string name="restoreConfirmation">återställ\?</string>
     <string name="handleApk">apk</string>
     <string name="handleData">data</string>
     <string name="handleBoth">båda</string>
@@ -32,8 +32,8 @@
     <string name="sortByLabel">sortera efter namn</string>
     <string name="sortByPackageName">sortera efter paketnamn</string>
     <string name="sort">sortering och filter</string>
-    <string name="uninstallDialogMessage">avinstallera appen?</string>
-    <string name="deleteBackupDialogMessage">ta bort säkerhetskopior?</string>
+    <string name="uninstallDialogMessage">avinstallera appen\?</string>
+    <string name="deleteBackupDialogMessage">ta bort säkerhetskopior\?</string>
     <string name="dialogOK">OK</string>
     <string name="dialogCancel">avbryt</string>
     <string name="dialogYes">ja</string>

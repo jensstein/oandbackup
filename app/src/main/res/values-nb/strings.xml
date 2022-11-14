@@ -2,8 +2,8 @@
 <resources>
     <string name="backup">Lag sikkerhetskopi</string>
     <string name="restore">Gjenopprett</string>
-    <string name="backupConfirmation">Lag sikkerhetskopi?</string>
-    <string name="restoreConfirmation">Gjenopprett?</string>
+    <string name="backupConfirmation">Lag sikkerhetskopi\?</string>
+    <string name="restoreConfirmation">Gjenopprett\?</string>
     <string name="handleApk">APK</string>
     <string name="handleData">Data</string>
     <string name="handleBoth">Begge</string>
@@ -32,8 +32,8 @@
     <string name="sortByLabel">Sorter etter navn</string>
     <string name="sortByPackageName">Sorter etter pakkenavn</string>
     <string name="sort">Sorter og filtrer</string>
-    <string name="uninstallDialogMessage">Avinstaller appen?</string>
-    <string name="deleteBackupDialogMessage">Slett sikkerhetskopien?</string>
+    <string name="uninstallDialogMessage">Avinstaller appen\?</string>
+    <string name="deleteBackupDialogMessage">Slett sikkerhetskopien\?</string>
     <string name="dialogOK">OK</string>
     <string name="dialogCancel">Avbrut</string>
     <string name="dialogYes">Ja</string>
@@ -63,11 +63,11 @@
     <string name="notInstalledModeDataWarning">Appen kan ikke gjenopprettes fra en sikkerhetskopi som mangler APKen</string>
     <string name="shareTitle">Del med</string>
     <string name="prefs_tools">Verktøyer</string>
-    <string name="prefs_batchdelete">Slett sikkerhetskopier?</string>
+    <string name="prefs_batchdelete">Slett sikkerhetskopier\?</string>
     <string name="batchDeleteMessage">Sletter sikkerhetskopier…</string>
     <string name="batchDeleteNotificationTitle">Slett sikkerhetskopier</string>
     <!--tools_backupsDeleted: shown in a notification followed by the number of backups deleted-->
-    <string name="batchDeleteBackupsDeleted">Sikkerhetskopier ble slettet: </string>
+    <string name="batchDeleteBackupsDeleted">Sikkerhetskopier ble slettet:</string>
     <string name="batchDeleteNothingToDelete">Ingen sikkerhetskopier å slette</string>
     <string name="enablePackage">Aktiver program</string>
     <!--enablePackageTitle: title for a list of checkable users-->

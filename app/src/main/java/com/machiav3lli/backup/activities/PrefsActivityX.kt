@@ -23,7 +23,6 @@ import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -34,7 +33,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.machiav3lli.backup.NAV_PREFS
 import com.machiav3lli.backup.OABX
@@ -68,6 +66,7 @@ class PrefsActivityX : BaseActivity() {
         OABX.activity = this
         setCustomTheme()
         super.onCreate(savedInstanceState)
+
         setContent {
             AppTheme {
                 val navController = rememberAnimatedNavController()
@@ -83,24 +82,21 @@ class PrefsActivityX : BaseActivity() {
                     containerColor = Color.Transparent,
                     contentColor = MaterialTheme.colorScheme.onBackground,
                     topBar = {
-                            Column {
-                                TopBar(
-                                    title = stringResource(id = pageTitle ?: NavItem.Settings.title)
+                        Column {
+                            TopBar(
+                                title = stringResource(id = pageTitle ?: NavItem.Settings.title)
+                            ) {
+                                RoundButton(
+                                    icon = Phosphor.Info,
+                                    description = stringResource(id = R.string.help),
                                 ) {
-                                    RoundButton(
-                                        modifier = Modifier
-                                            .padding(horizontal = 4.dp)
-                                            .size(32.dp),
-                                        icon = Phosphor.Info,
-                                        description = stringResource(id = R.string.help),
-                                    ) {
-                                        if (helpSheet != null && helpSheet!!.isVisible) helpSheet?.dismissAllowingStateLoss()
-                                        helpSheet = HelpSheet()
-                                        helpSheet!!.showNow(supportFragmentManager, "HELPSHEET")
-                                    }
+                                    if (helpSheet != null && helpSheet!!.isVisible) helpSheet?.dismissAllowingStateLoss()
+                                    helpSheet = HelpSheet()
+                                    helpSheet!!.showNow(supportFragmentManager, "HELPSHEET")
                                 }
                             }
-                        },
+                        }
+                    },
                     bottomBar = { BottomNavBar(page = NAV_PREFS, navController = navController) }
                 ) { paddingValues ->
                     PrefsNavHost(

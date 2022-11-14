@@ -19,29 +19,26 @@ package com.machiav3lli.backup.activities
 
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Looper
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -63,9 +60,9 @@ import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.fragments.SortFilterSheet
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
-import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
 import com.machiav3lli.backup.preferences.pref_catchUncaughtException
+import com.machiav3lli.backup.preferences.pref_refreshOnStart
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
@@ -82,10 +79,8 @@ import com.machiav3lli.backup.ui.compose.navigation.MainNavHost
 import com.machiav3lli.backup.ui.compose.navigation.NavItem
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.FileUtils.invalidateBackupLocation
-import com.machiav3lli.backup.utils.applyFilter
+import com.machiav3lli.backup.utils.TraceUtils.classAndId
 import com.machiav3lli.backup.utils.destinationToItem
-import com.machiav3lli.backup.utils.getPrivateSharedPrefs
-import com.machiav3lli.backup.utils.getStats
 import com.machiav3lli.backup.utils.isEncryptionEnabled
 import com.machiav3lli.backup.utils.setCustomTheme
 import com.machiav3lli.backup.utils.sortFilterModel
@@ -94,40 +89,52 @@ import com.topjohnwu.superuser.Shell
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.system.exitProcess
 
 class MainActivityX : BaseActivity() {
 
-    private lateinit var prefs: SharedPreferences
     private val crScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 
     val viewModel by viewModels<MainViewModel> {
         MainViewModel.Factory(ODatabase.getInstance(OABX.context), application)
     }
 
-    var needRefresh: Boolean
-        get() = viewModel.isNeedRefresh.value ?: false
-        set(value) = viewModel.isNeedRefresh.postValue(value)
-
-    private val _searchQuery = MutableSharedFlow<String>()
-    val searchQuery = _searchQuery.asSharedFlow()
-
     private lateinit var sheetSortFilter: SortFilterSheet
-    private val _modelSortFilter = MutableSharedFlow<SortFilterModel>()
-    val modelSortFilter = _modelSortFilter.asSharedFlow()
 
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         val context = this
+        val mainChanged = (this != OABX.mainSaved)
         OABX.activity = this
         OABX.main = this
 
+        val freshStart = (savedInstanceState == null)   //TODO use some lifecycle method?
+
+        Timber.w(
+            "======================================== activity ${
+                classAndId(this)
+            }${
+                if (freshStart) ", fresh start" else ""
+            }${
+                if (mainChanged and (!freshStart or (OABX.mainSaved != null)))
+                    ", main changed (was ${classAndId(OABX.mainSaved)})"
+                else
+                    ""
+            }"
+        )
+
         setCustomTheme()
         super.onCreate(savedInstanceState)
+
+        Timber.d(
+            "viewModel: ${
+                classAndId(viewModel)
+            }, was ${
+                classAndId(OABX.viewModelSaved)
+            }"
+        )
 
         OABX.appsSuspendedChecked = false
 
@@ -153,65 +160,71 @@ class MainActivityX : BaseActivity() {
 
         Shell.getShell()
 
-        prefs = getPrivateSharedPrefs()
-
-        viewModel.blocklist.observe(this) {
-            needRefresh = true
+        if (freshStart) {
+            runOnUiThread { showEncryptionDialog() }
+            //refreshPackages()
         }
-        viewModel.packageList.observe(this) { }
-        viewModel.backupsMap.observe(this) { }
-        viewModel.isNeedRefresh.observe(this) {
-            if (it && OABX.busy.value == 0)
-                invalidateBackupLocation()
-        }
-
-        runOnUiThread { showEncryptionDialog() }
 
         setContent {
             AppTheme {
                 val navController = rememberAnimatedNavController()
-                val query by searchQuery.collectAsState(initial = "")
-                val list by viewModel.packageList.observeAsState(null)
-                var pageTitle by remember {
-                    mutableStateOf(NavItem.Home.title)
-                }
+                var pageTitle by remember { mutableStateOf(NavItem.Home.title) }
+
+                var query by rememberSaveable { mutableStateOf(viewModel.searchQuery.value) }
+                //val query by viewModel.searchQuery.flow.collectAsState(viewModel.searchQuery.initial)  // doesn't work with rotate...
+                val searchExpanded = query.length > 0
+
+                Timber.d("compose: query = '$query'")
 
                 navController.addOnDestinationChangedListener { _, destination, _ ->
                     pageTitle = destination.destinationToItem()?.title ?: NavItem.Home.title
                 }
 
-                SideEffect {
-                    crScope.launch { _searchQuery.emit("") }
-                    crScope.launch { _modelSortFilter.emit(sortFilterModel) }
+                Timber.d("search: ${viewModel.searchQuery.value} filter: ${viewModel.modelSortFilter.value}")
+                if (freshStart) {
+                    SideEffect {
+                        // runs earlier, maybe too early (I guess because it's independent from the view model)
+                        //Timber.w("******************** freshStart Sideffect ********************")
+                        //viewModel.searchQuery.value = ""
+                        //viewModel.modelSortFilter.value = OABX.context.sortFilterModel
+                    }
+                }
+
+                if (freshStart) {
+                    LaunchedEffect(viewModel) {
+                        // runs later
+                        Timber.w("******************** freshStart LaunchedEffect(viewModel) ********************")
+                        //TODO hg42 I guess this shouldn't be necessary, but no better solution to start the flow game, yet
+                        viewModel.searchQuery.value = ""
+                        viewModel.modelSortFilter.value = OABX.context.sortFilterModel
+                        if(pref_refreshOnStart.value)
+                            refreshPackages()
+                    }
                 }
 
                 Scaffold(
                     containerColor = Color.Transparent,
                     contentColor = MaterialTheme.colorScheme.onBackground,
                     topBar = {
-
                         if (navController.currentDestination?.route == NavItem.Scheduler.destination)
-                            TopBar(title = stringResource(id = pageTitle)) {
+                            TopBar(
+                                title = stringResource(id = pageTitle)
+                            ) {
+
                                 RoundButton(
-                                    modifier = Modifier
-                                        .padding(horizontal = 4.dp)
-                                        .size(32.dp),
                                     icon = Phosphor.Prohibit,
                                     description = stringResource(id = R.string.sched_blocklist)
                                 ) {
                                     GlobalScope.launch(Dispatchers.IO) {
-                                        val blocklistedPackages =
-                                            context.viewModel.blocklist.value
-                                                ?.mapNotNull { it.packageName }.orEmpty()
+                                        val blocklistedPackages = viewModel.blocklist.value
+                                            .mapNotNull { it.packageName }
 
                                         PackagesListDialogFragment(
                                             blocklistedPackages,
                                             MAIN_FILTER_DEFAULT,
                                             true
                                         ) { newList: Set<String> ->
-                                            context.viewModel.updateBlocklist(
-                                                newList
-                                            )
+                                            viewModel.setBlocklist(newList)
                                         }.show(
                                             context.supportFragmentManager,
                                             "BLOCKLIST_DIALOG"
@@ -219,9 +232,6 @@ class MainActivityX : BaseActivity() {
                                     }
                                 }
                                 RoundButton(
-                                    modifier = Modifier
-                                        .padding(horizontal = 4.dp)
-                                        .size(32.dp),
                                     description = stringResource(id = R.string.prefs_title),
                                     icon = Phosphor.GearSix
                                 ) { navController.navigate(NavItem.Settings.destination) }
@@ -229,51 +239,47 @@ class MainActivityX : BaseActivity() {
                         else Column() {
                             TopBar(title = stringResource(id = pageTitle)) {
                                 ExpandableSearchAction(
+                                    expanded = searchExpanded,
                                     query = query,
                                     onQueryChanged = { newQuery ->
-                                        if (newQuery != query)
-                                            crScope.launch { _searchQuery.emit(newQuery) }
+                                        //if (newQuery != query)  // empty string doesn't work...
+                                        query = newQuery
+                                        viewModel.searchQuery.value = query
                                     },
                                     onClose = {
-                                        crScope.launch { _searchQuery.emit("") }
+                                        query = ""
+                                        viewModel.searchQuery.value = ""
                                     }
                                 )
                                 RoundButton(
-                                    modifier = Modifier
-                                        .padding(horizontal = 4.dp)
-                                        .size(32.dp),
                                     description = stringResource(id = R.string.refresh),
                                     icon = Phosphor.ArrowsClockwise
-                                ) { OABX.main?.needRefresh = true }
+                                ) { refreshPackages() }
                                 RoundButton(
-                                    modifier = Modifier
-                                        .padding(horizontal = 4.dp)
-                                        .size(32.dp),
                                     description = stringResource(id = R.string.prefs_title),
                                     icon = Phosphor.GearSix
                                 ) { navController.navigate(NavItem.Settings.destination) }
                             }
                             Row(
-                                modifier = Modifier
-                                    .background(MaterialTheme.colorScheme.surface)
-                                    .padding(horizontal = 8.dp),
+                                modifier = Modifier.padding(horizontal = 8.dp),
                                 horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 ElevatedActionButton(
                                     icon = Phosphor.Prohibit,
                                     text = stringResource(id = R.string.sched_blocklist),
-                                    positive = false
+                                    withText = false,
+                                    positive = false,
                                 ) {
                                     GlobalScope.launch(Dispatchers.IO) {
                                         val blocklistedPackages = viewModel.blocklist.value
-                                            ?.mapNotNull { it.packageName }.orEmpty()
+                                            .mapNotNull { it.packageName }
 
                                         PackagesListDialogFragment(
                                             blocklistedPackages,
                                             MAIN_FILTER_DEFAULT,
                                             true
                                         ) { newList: Set<String> ->
-                                            context.viewModel.updateBlocklist(newList)
+                                            viewModel.setBlocklist(newList)
                                         }.show(
                                             context.supportFragmentManager,
                                             "BLOCKLIST_DIALOG"
@@ -284,14 +290,10 @@ class MainActivityX : BaseActivity() {
                                 ElevatedActionButton(
                                     icon = Phosphor.FunnelSimple,
                                     text = stringResource(id = R.string.sort_and_filter),
-                                    positive = true
+                                    withText = false,
+                                    positive = true,
                                 ) {
-                                    sheetSortFilter = SortFilterSheet(
-                                        getStats(
-                                            list?.applyFilter(sortFilterModel, context)
-                                                ?: emptyList()
-                                        ) // TODO apply page's filter too
-                                    )
+                                    sheetSortFilter = SortFilterSheet()
                                     sheetSortFilter.showNow(
                                         supportFragmentManager,
                                         "SORTFILTER_SHEET"
@@ -324,12 +326,18 @@ class MainActivityX : BaseActivity() {
         super.onResume()
     }
 
+    override fun onPause() {
+        super.onPause()
+    }
+
     override fun onDestroy() {
+        OABX.viewModelSaved = viewModel
+        OABX.mainSaved = OABX.main
         OABX.main = null
         super.onDestroy()
     }
 
-    @Deprecated("Deprecated in Java")
+    @Deprecated("Deprecated in Java")   //TDOD hg42 why? how to handle now?
     override fun onBackPressed() {
         finishAffinity()
     }
@@ -379,8 +387,12 @@ class MainActivityX : BaseActivity() {
         viewModel.updatePackage(packageName)
     }
 
-    fun refreshView() {
-        crScope.launch { _modelSortFilter.emit(sortFilterModel) }
+    fun refreshView() {    //TODO hg42 is currently unused (and should always be?)
+        crScope.launch { viewModel.modelSortFilter.flow.emit(sortFilterModel) }
+    }
+
+    fun refreshPackages() {
+        invalidateBackupLocation()
     }
 
     fun showSnackBar(message: String) {

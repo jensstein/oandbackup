@@ -6,15 +6,22 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.expandIn
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.shrinkOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -23,6 +30,8 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -41,9 +50,11 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.SelectableChipColors
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,9 +70,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.machiav3lli.backup.ICON_SIZE_LARGE
+import com.machiav3lli.backup.ICON_SIZE_MEDIUM
+import com.machiav3lli.backup.ICON_SIZE_SMALL
 import com.machiav3lli.backup.MAIN_FILTER_SPECIAL
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
@@ -108,6 +125,8 @@ import com.machiav3lli.backup.ui.compose.theme.ColorUpdated
 import com.machiav3lli.backup.ui.compose.theme.ColorUser
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.brighter
+import com.machiav3lli.backup.utils.darker
+import kotlinx.coroutines.delay
 
 @Composable
 fun ButtonIcon(
@@ -118,7 +137,7 @@ fun ButtonIcon(
     Icon(
         imageVector = icon,
         contentDescription = stringResource(id = textId),
-        modifier = Modifier.size(24.dp),
+        modifier = Modifier.size(ICON_SIZE_SMALL),
         tint = tint ?: LocalContentColor.current
     )
 }
@@ -132,7 +151,7 @@ fun PrefIcon(
     Icon(
         imageVector = icon,
         contentDescription = text,
-        modifier = Modifier.size(32.dp),
+        modifier = Modifier.size(ICON_SIZE_MEDIUM),   //TODO BUTTON_ICON_SIZE?
         tint = tint ?: MaterialTheme.colorScheme.onBackground
     )
 }
@@ -145,7 +164,7 @@ fun PackageIcon(
 ) {
     AsyncImage(
         modifier = modifier
-            .size(48.dp)
+            .size(ICON_SIZE_LARGE)
             .clip(RoundedCornerShape(LocalShapes.current.medium)),
         model = ImageRequest.Builder(LocalContext.current)
             .crossfade(true)
@@ -194,7 +213,7 @@ fun ActionButton(
         if (icon != null) {
             if (iconOnSide) Spacer(modifier = Modifier.weight(1f))
             Icon(
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(ICON_SIZE_SMALL),
                 imageVector = icon,
                 contentDescription = text
             )
@@ -233,7 +252,7 @@ fun ElevatedActionButton(
     ) {
         if (icon != null) {
             Icon(
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(ICON_SIZE_SMALL),
                 imageVector = icon,
                 contentDescription = text
             )
@@ -276,40 +295,93 @@ fun TopBarButton(
 }
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CardButton(
     modifier: Modifier = Modifier,
     icon: ImageVector,
     tint: Color,
     description: String,
-    enabled: Boolean = true,
     onClick: () -> Unit
 ) {
-    ElevatedButton(
-        modifier = modifier.padding(4.dp),
-        colors = ButtonDefaults.elevatedButtonColors(
-            containerColor = tint.brighter(0.2f),
-            contentColor = MaterialTheme.colorScheme.background
-        ),
-        contentPadding = PaddingValues(12.dp),
+    val openPopup = remember { mutableStateOf(false) }
+
+    Surface(
+        modifier = modifier
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = { openPopup.value = true }
+            ),
+        color = tint.let {
+            if (isSystemInDarkTheme()) it.brighter(0.2f)
+            else it.darker(0.2f)
+        },
+        contentColor = MaterialTheme.colorScheme.background,
         shape = MaterialTheme.shapes.medium,
-        enabled = enabled,
-        onClick = { onClick() }
     ) {
-        Icon(imageVector = icon, contentDescription = description)
-        /*Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
+        Column(
+            modifier = modifier.padding(PaddingValues(12.dp)),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceAround
+        ) {
+            Icon(imageVector = icon, contentDescription = description)
+            /*Text(
+                modifier = modifier.weight(1f),
                 text = description,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-        }*/
+                textAlign = TextAlign.Center,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.titleSmall
+            )*/
+        }
+
+        if (openPopup.value) {
+            Tooltip(description, openPopup)
+        }
+    }
+
+}
+
+@Composable
+fun Tooltip(
+    text: String,
+    openPopup: MutableState<Boolean>,
+) {
+    Popup(
+        alignment = Alignment.TopCenter,
+        offset = IntOffset(0, 100),
+    ) {
+        LaunchedEffect(key1 = Unit) {
+            delay(3000)
+            openPopup.value = false
+        }
+
+        Box {
+            Row(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .widthIn(max = 120.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.surface,
+                        shape = MaterialTheme.shapes.medium
+                    )
+            ) {
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = text,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+            }
+        }
     }
 }
 
 @Composable
 fun RoundButton(
     modifier: Modifier = Modifier,
+    size: Dp = ICON_SIZE_SMALL,
     icon: ImageVector,
     description: String = "",
     onClick: () -> Unit
@@ -319,7 +391,7 @@ fun RoundButton(
         onClick = onClick
     ) {
         Icon(
-            modifier = Modifier.size(24.dp),
+            modifier = Modifier.size(size),
             imageVector = icon,
             contentDescription = description
         )
@@ -347,7 +419,7 @@ fun StateChip(
         onClick = onClick,
     ) {
         Icon(
-            modifier = Modifier.size(24.dp),
+            modifier = Modifier.size(ICON_SIZE_SMALL),
             imageVector = icon,
             contentDescription = text
         )
@@ -373,7 +445,7 @@ fun CheckChip(
             selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
             iconColor = MaterialTheme.colorScheme.onBackground,
             selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            containerColor = MaterialTheme.colorScheme.background,
+            containerColor = Color.Transparent,
             selectedContainerColor = MaterialTheme.colorScheme.primaryContainer
         ),
         leadingIcon = {
@@ -404,17 +476,14 @@ fun SwitchChip(
         selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
         iconColor = MaterialTheme.colorScheme.onSurface,
         selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = Color.Transparent,
         selectedContainerColor = MaterialTheme.colorScheme.primaryContainer
     ),
     onCheckedChange: (Boolean) -> Unit
 ) {
     Row(
         modifier = Modifier
-            .background(
-                MaterialTheme.colorScheme.surface,
-                MaterialTheme.shapes.small
-            )
+            .border(1.dp, MaterialTheme.colorScheme.outline, MaterialTheme.shapes.medium)
             .padding(horizontal = 6.dp)
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -593,6 +662,21 @@ fun VerticalFadingVisibility(
     exitPositive = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Bottom),
     enterNegative = fadeIn() + expandVertically(expandFrom = Alignment.Top),
     exitNegative = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
+    collapsedView = collapsedView,
+    expandedView = expandedView
+)
+
+@Composable
+fun ExpandingFadingVisibility(
+    expanded: Boolean = false,
+    expandedView: @Composable (AnimatedVisibilityScope.() -> Unit),
+    collapsedView: @Composable (AnimatedVisibilityScope.() -> Unit)
+) = StatefulAnimatedVisibility(
+    currentState = expanded,
+    enterPositive = fadeIn() + expandIn(),
+    exitPositive = fadeOut() + shrinkOut(),
+    enterNegative = fadeIn() + expandIn(),
+    exitNegative = fadeOut() + shrinkOut(),
     collapsedView = collapsedView,
     expandedView = expandedView
 )
@@ -843,7 +927,8 @@ fun CardSubRow(
             Icon(imageVector = icon, contentDescription = text, tint = iconColor)
             Text(
                 text = text,
-                maxLines = 1,
+                maxLines = 2,
+                style = MaterialTheme.typography.bodyMedium,
                 overflow = TextOverflow.Ellipsis
             )
         }

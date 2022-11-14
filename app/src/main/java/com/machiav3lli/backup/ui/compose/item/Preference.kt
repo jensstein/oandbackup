@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.machiav3lli.backup.ICON_SIZE_SMALL
 import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.item.BooleanPref
 import com.machiav3lli.backup.ui.item.EnumPref
@@ -250,7 +251,7 @@ fun SwitchPreference(
         endWidget = { isEnabled ->
             Switch(
                 modifier = Modifier
-                    .height(24.dp),
+                    .height(ICON_SIZE_SMALL),
                 checked = checked,
                 onCheckedChange = {
                     onCheckedChange(it)
@@ -298,7 +299,7 @@ fun CheckboxPreference(
         endWidget = { isEnabled ->
             Checkbox(
                 modifier = Modifier
-                    .height(24.dp),
+                    .height(ICON_SIZE_SMALL),
                 checked = checked,
                 onCheckedChange = {
                     onCheckedChange(it)

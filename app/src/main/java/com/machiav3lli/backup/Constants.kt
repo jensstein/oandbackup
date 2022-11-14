@@ -18,28 +18,20 @@
 package com.machiav3lli.backup
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
-import com.machiav3lli.backup.preferences.pref_allowShadowingDefault
-import com.machiav3lli.backup.preferences.pref_biometricLock
-import com.machiav3lli.backup.preferences.pref_deviceLock
-import com.machiav3lli.backup.preferences.pref_encryption
-import com.machiav3lli.backup.preferences.pref_password
-import com.machiav3lli.backup.preferences.pref_pauseApps
-import com.machiav3lli.backup.preferences.pref_pmSuspend
-import com.machiav3lli.backup.preferences.pref_shadowRootFile
+import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.ui.item.ChipItem
 import com.machiav3lli.backup.ui.item.Legend
 import com.machiav3lli.backup.ui.item.Link
-import com.machiav3lli.backup.ui.item.Pref
-import com.machiav3lli.backup.utils.isBiometricLockAvailable
-import com.machiav3lli.backup.utils.isDeviceLockAvailable
-import com.machiav3lli.backup.utils.isDeviceLockEnabled
 import java.time.format.DateTimeFormatter
 
 const val PREFS_SHARED_PRIVATE = "com.machiav3lli.backup"
-const val EXPORTS_FOLDER_NAME = "EXPORTS"
-const val LOG_FOLDER_NAME = "LOGS"
+const val ADMIN_PREFIX = "!-"
+val SELECTIONS_FOLDER_NAME = "${ADMIN_PREFIX}SELECTIONS"
+val EXPORTS_FOLDER_NAME = "${ADMIN_PREFIX}EXPORTS"
+val EXPORTS_FOLDER_NAME_ALT = "EXPORTS"
+val LOG_FOLDER_NAME = "${ADMIN_PREFIX}LOGS"
+val LOG_FOLDER_NAME_ALT = "LOGS"
 
 const val LOG_INSTANCE = "%s.log"
 const val BACKUP_INSTANCE_PROPERTIES = "%s-user_%s.properties"
@@ -75,6 +67,11 @@ val themeItems = mutableMapOf(
     if (OABX.minSDK(31)) set(THEME_DYNAMIC, R.string.prefs_theme_dynamic)
 }
 
+val BUTTON_SIZE_MEDIUM = 48.dp
+val ICON_SIZE_SMALL = 24.dp
+val ICON_SIZE_MEDIUM = 32.dp
+val ICON_SIZE_LARGE = 48.dp
+
 val accentColorItems = mapOf(
     0 to R.string.prefs_accent_0,
     1 to R.string.prefs_accent_1,
@@ -104,16 +101,16 @@ const val ALT_MODE_APK = 1
 const val ALT_MODE_DATA = 2
 const val ALT_MODE_BOTH = 3
 
-const val MODE_UNSET            = 0b0000000
-const val MODE_NONE             = 0b0100000
-const val MODE_APK              = 0b0010000
-const val MODE_DATA             = 0b0001000
-const val MODE_DATA_DE          = 0b0000100
-const val MODE_DATA_EXT         = 0b0000010
-const val MODE_DATA_OBB         = 0b0000001
-const val MODE_DATA_MEDIA       = 0b1000000
+const val MODE_UNSET = 0b0000000
+const val MODE_NONE = 0b0100000
+const val MODE_APK = 0b0010000
+const val MODE_DATA = 0b0001000
+const val MODE_DATA_DE = 0b0000100
+const val MODE_DATA_EXT = 0b0000010
+const val MODE_DATA_OBB = 0b0000001
+const val MODE_DATA_MEDIA = 0b1000000
 const val BACKUP_FILTER_DEFAULT = 0b1111111
-val possibleSchedModes  =
+val possibleSchedModes =
     listOf(MODE_APK, MODE_DATA, MODE_DATA_DE, MODE_DATA_EXT, MODE_DATA_OBB, MODE_DATA_MEDIA)
 val MODE_ALL = possibleSchedModes.reduce { a, b -> a.or(b) }
 
@@ -215,6 +212,8 @@ val legendList = listOf(
     Legend.Launch,
     Legend.Disable,
     Legend.Enable,
+    Legend.Uninstall,
+    Legend.Block,
     Legend.System,
     Legend.User,
     Legend.Special,
@@ -224,7 +223,7 @@ val legendList = listOf(
     Legend.External,
     Legend.OBB,
     Legend.Media,
-    Legend.Updated
+    Legend.Updated,
 )
 
 val BACKUP_DATE_TIME_FORMATTER_OLD: DateTimeFormatter =

@@ -3,7 +3,7 @@
     <string name="backup">Yedekle</string>
     <string name="restore">Geri Yükle</string>
     <string name="backupConfirmation">Yedeklensin mi\?</string>
-    <string name="restoreConfirmation">Geri yüklensin mi?</string>
+    <string name="restoreConfirmation">Geri yüklensin mi\?</string>
     <string name="handleApk">APK</string>
     <string name="handleData">Veri</string>
     <string name="handleBoth">İkisi de</string>
@@ -35,8 +35,8 @@
     <string name="sortByLabel">İsme göre sırala</string>
     <string name="sortByPackageName">Paket adına göre sırala</string>
     <string name="sort">Sırala ve Filtrele</string>
-    <string name="uninstallDialogMessage">Bu uygulamayı kaldır?</string>
-    <string name="deleteBackupDialogMessage">Yedekleme dosyalarını sil?</string>
+    <string name="uninstallDialogMessage">Bu uygulamayı kaldır\?</string>
+    <string name="deleteBackupDialogMessage">Yedekleme dosyalarını sil\?</string>
     <string name="dialogOK">Tamam</string>
     <string name="dialogCancel">İptal</string>
     <string name="dialogYes">Evet</string>

@@ -29,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.DynamicColorsOptions
 import com.machiav3lli.backup.activities.MainActivityX
@@ -39,8 +40,7 @@ import com.machiav3lli.backup.preferences.pref_cancelOnStart
 import com.machiav3lli.backup.preferences.pref_maxLogLines
 import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
-import com.machiav3lli.backup.utils.getDefaultSharedPreferences
-import com.machiav3lli.backup.utils.getPrivateSharedPrefs
+import com.machiav3lli.backup.utils.TraceUtils.methodName
 import com.machiav3lli.backup.utils.styleTheme
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -49,6 +49,7 @@ import timber.log.Timber
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
 
 class OABX : Application() {
 
@@ -114,7 +115,8 @@ class OABX : Application() {
         appRef = WeakReference(this)
 
         initShellHandler()
-        registerReceiver(
+
+        val result = registerReceiver(
             PackageUnInstalledReceiver(),
             IntentFilter().apply {
                 addAction(Intent.ACTION_PACKAGE_ADDED)
@@ -123,6 +125,7 @@ class OABX : Application() {
                 addDataScheme("package")
             }
         )
+        Timber.d("registerReceiver: PackageUnInstalledReceiver = $result")
 
         work = WorkHandler(context)
         if (pref_cancelOnStart.value)
@@ -181,6 +184,8 @@ class OABX : Application() {
             set(mainActivity) {
                 mainRef = WeakReference(mainActivity)
             }
+        var mainSaved: MainActivityX? = null    // just to see if activity changed
+        var viewModelSaved: ViewModel? = null
 
         var appsSuspendedChecked = false
 
@@ -258,16 +263,24 @@ class OABX : Application() {
         val progress = mutableStateOf(Pair(false, 0f))
 
         fun setProgress(now: Int = 0, max: Int = 0) {
-            if (max > now)
+            if (max > now)  // not ">=", because max can be zero
                 progress.value = Pair(true, 1f * now / max)
             else
-                progress.value = Pair(false, 0f)
+                progress.value = Pair(false, 1f)
         }
 
-        var busy = mutableStateOf(0)
-        private var lockBusy = Object()
+        var _busy = AtomicInteger(0)
+        val busy = mutableStateOf(0)
 
-        fun beginBusy() { synchronized(lockBusy) { busy.value = busy.value.inc() } }
-        fun endBusy()   { synchronized(lockBusy) { busy.value = busy.value.dec() } }
+        fun beginBusy(name: String? = null) {
+            val label = name ?: methodName(1)
+            busy.value = _busy.accumulateAndGet(+1, Int::plus)
+            Timber.w("*** ${"+---".repeat(_busy.get())}\\ busy $label")
+        }
+        fun endBusy(name: String? = null) {
+            val label = name ?: methodName(1)
+            Timber.w("*** ${"+---".repeat(_busy.get())}/ busy $label")
+            busy.value = _busy.accumulateAndGet(-1, Int::plus)
+        }
     }
 }

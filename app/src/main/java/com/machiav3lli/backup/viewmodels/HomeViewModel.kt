@@ -19,13 +19,10 @@ package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.machiav3lli.backup.items.Package
 
 class HomeViewModel(appContext: Application) : AndroidViewModel(appContext) {
-    val filteredList: MutableLiveData<List<Package>?> = MutableLiveData(null)
 
     class Factory(private val application: Application) :
         ViewModelProvider.Factory {

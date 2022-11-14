@@ -2,7 +2,7 @@
 <resources>
     <string name="backup">Varunda</string>
     <string name="restore">Taasta</string>
-    <string name="backupConfirmation">Varundad?</string>
+    <string name="backupConfirmation">Varundad\?</string>
     <string name="restoreConfirmation">Taasta\?</string>
     <string name="handleApk">APK</string>
     <string name="handleData">Andmed</string>
@@ -35,8 +35,8 @@
     <string name="sortByLabel">Sorteeri nime järgi</string>
     <string name="sortByPackageName">Sorteeri paketinime järgi</string>
     <string name="sort">Sorteeri ja filtreeri</string>
-    <string name="uninstallDialogMessage">Eemaldad selle rakenduse?</string>
-    <string name="deleteBackupDialogMessage">Kustutad varundusfailid?</string>
+    <string name="uninstallDialogMessage">Eemaldad selle rakenduse\?</string>
+    <string name="deleteBackupDialogMessage">Kustutad varundusfailid\?</string>
     <string name="dialogOK">OK</string>
     <string name="dialogCancel">Tühista</string>
     <string name="dialogYes">Jah</string>

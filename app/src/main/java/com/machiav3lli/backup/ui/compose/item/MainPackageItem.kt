@@ -13,14 +13,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,18 +32,123 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.MODE_ALL
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.SELECTIONS_FOLDER_NAME
 import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.preferences.pref_useBackupRestoreWithSelection
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
+import com.machiav3lli.backup.utils.getBackupDir
 import com.machiav3lli.backup.utils.getFormattedDate
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
+
+@Composable
+fun Selections(
+    onAction: (StorageFile) -> Unit = {}
+) {
+    val backupDir = OABX.context.getBackupDir()
+    val selectionsDir = backupDir.findFile(SELECTIONS_FOLDER_NAME) ?: backupDir.createDirectory(SELECTIONS_FOLDER_NAME)
+    val files = selectionsDir.listFiles()
+
+    if (files.isEmpty())
+        DropdownMenuItem(
+            text = { Text("--- no selections ---") },
+            onClick = {}
+        )
+    else
+        files.forEach { file ->
+            file.name?.let { name ->
+                DropdownMenuItem(
+                    text = { Text(name) },
+                    onClick = { onAction(file) }
+                )
+            }
+        }
+}
+
+@Composable
+fun SelectionLoadMenu(
+    onAction: (List<String>) -> Unit = {}
+) {
+    DropdownMenu(
+        expanded = true,
+        onDismissRequest = { onAction(listOf()) }
+    ) {
+        Selections {
+            onAction(it.readText().lines())
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SelectionSaveMenu(
+    selection: List<String>,
+    onAction: () -> Unit = {}
+) {
+    DropdownMenu(
+        expanded = true,
+        offset = DpOffset(50.dp, -1000.dp),
+        onDismissRequest = { onAction() }
+    ) {
+        val name = remember { mutableStateOf("") }
+        val focusManager = LocalFocusManager.current
+        val textFieldFocusRequester = remember { FocusRequester() }
+
+        LaunchedEffect(textFieldFocusRequester) {
+            delay(100)
+            textFieldFocusRequester.requestFocus()
+        }
+
+        DropdownMenuItem(
+            text = {
+                OutlinedTextField(
+                    modifier = Modifier
+                        .testTag("input")
+                        .focusRequester(textFieldFocusRequester),
+                    value = name.value,
+                    placeholder = { Text(text = "selection name", color = Color.Gray) },
+                    singleLine = false,
+                    keyboardOptions = KeyboardOptions(
+                        autoCorrect = false
+                    ),
+                    onValueChange = {
+                        if (it.endsWith("\n")) {
+                            name.value = it.dropLast(1)
+                            focusManager.clearFocus()
+                            val backupDir = OABX.context.getBackupDir()
+                            val selectionsDir = backupDir.findFile(SELECTIONS_FOLDER_NAME) ?: backupDir.createDirectory(SELECTIONS_FOLDER_NAME)
+                            selectionsDir.createFile("application/octet-stream", name.value).writeText(selection.joinToString("\n"))
+                            onAction()
+                        } else
+                            name.value = it
+                    }
+                )
+            },
+            onClick = {}
+        )
+
+        Selections {
+            it.writeText(selection.joinToString("\n"))
+            onAction()
+        }
+    }
+}
 
 @Composable
 fun MainPackageContextMenu(
@@ -53,26 +162,31 @@ fun MainPackageContextMenu(
     val selectedAndVisible = visible.filter { selection[it] == true }
     val selectedAndInstalled = selectedAndVisible.filter { it.isInstalled }
     val selectedWithBackups = selectedAndVisible.filter { it.hasBackups }
+
+    val subMenu = remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
+    subMenu.value?.let { it() }
+
     DropdownMenu(
         expanded = expanded.value,
+        offset = DpOffset(20.dp, 0.dp),
         onDismissRequest = { expanded.value = false }
     ) {
 
-        fun launch(todo: () -> Unit) {
-            MainScope().launch {
-                todo()
-            }
-        }
-
-        fun launchEachPackage(packages: List<Package>, select: Boolean = true, todo: (p: Package) -> Unit) {
-            launch {
-                OABX.beginBusy()
+        fun launchEachPackage(
+            packages: List<Package>,
+            action: String,
+            select: Boolean = true,
+            todo: (p: Package) -> Unit
+        ) {
+            MainScope().launch(Dispatchers.IO) {
+                OABX.beginBusy(action)
                 packages.forEach {
                     if (select != false) selection[it] = false
+                    OABX.addInfoText("$action ${it.packageName}")
                     todo(it)
                     selection[it] = select
                 }
-                OABX.endBusy()
+                OABX.endBusy(action)
             }
         }
 
@@ -108,7 +222,7 @@ fun MainPackageContextMenu(
                         packages.map { MODE_ALL }
                     ) {
                         it.removeObserver(this)
-                        launchEachPackage(packages) {
+                        launchEachPackage(packages, "backup") {
                             selection[it] = false
                         }
                     }
@@ -126,7 +240,7 @@ fun MainPackageContextMenu(
                         packages.map { MODE_ALL }
                     ) {
                         it.removeObserver(this)
-                        launchEachPackage(packages) {
+                        launchEachPackage(packages, "restore") {
                             selection[it] = false
                         }
                     }
@@ -138,21 +252,11 @@ fun MainPackageContextMenu(
             text = { Text("Add to Blocklist") },
             onClick = {
                 expanded.value = false
-                launchEachPackage(selectedAndVisible) {
+                launchEachPackage(selectedAndVisible, "blocklist <-") {
                     OABX.main?.viewModel?.addToBlocklist(it.packageName)
                 }
             }
         )
-
-        //DropdownMenuItem(
-        //    text = { Text("Remove from Blocklist") },
-        //    onClick = {
-        //        expanded.value = false
-        //        forEachPackage(selectedAndVisible) {
-        //            OABX.main?.viewModel?.removeFromBlocklist(it.packageName)
-        //        }
-        //    }
-        //)
 
         Divider() //--------------------------------------------------------------------------------
 
@@ -160,7 +264,7 @@ fun MainPackageContextMenu(
             text = { Text("Delete All Backups") },
             onClick = {
                 expanded.value = false
-                launchEachPackage(selectedWithBackups) {
+                launchEachPackage(selectedWithBackups, "delete backups") {
                     it.deleteAllBackups()
                 }
             }
@@ -170,7 +274,7 @@ fun MainPackageContextMenu(
             text = { Text("Limit Backups") },
             onClick = {
                 expanded.value = false
-                launchEachPackage(selectedWithBackups) {
+                launchEachPackage(selectedWithBackups, "limit backups") {
                     BackupRestoreHelper.housekeepingPackageBackups(it)
                 }
             }
@@ -179,20 +283,54 @@ fun MainPackageContextMenu(
         Divider() //--------------------------------------------------------------------------------
 
         DropdownMenuItem(
-            text = { Text("Select All Visible") },
+            enabled = false, onClick = {},
+            text = { Text("selection:") }
+        )
+
+        DropdownMenuItem(
+            text = { Text("Load") },
             onClick = {
-                expanded.value = false
-                launchEachPackage(visible, select = true) {
+                subMenu.value = {
+                    SelectionLoadMenu { selection ->
+                        expanded.value = false
+                        subMenu.value = null
+                        launchEachPackage(selectedAndVisible, "deselect", select = false) {}
+                        launchEachPackage(
+                            visible.filter { selection.contains(it.packageName) },
+                            "select",
+                            select = true
+                        ) {}
+                    }
                 }
             }
         )
 
         DropdownMenuItem(
-            text = { Text("DeSelect All Visible") },
+            text = { Text("Save") },
+            onClick = {
+                subMenu.value = {
+                    SelectionSaveMenu(selection = selection.filter { it.value }.map { it.key.packageName }) {
+                        expanded.value = false
+                        subMenu.value = null
+                        launchEachPackage(selectedAndVisible, "save", select = false) {}
+                    }
+                }
+            }
+        )
+
+        DropdownMenuItem(
+            text = { Text("All Visible") },
             onClick = {
                 expanded.value = false
-                launchEachPackage(visible, select = false) {
-                }
+                launchEachPackage(visible, "select", select = true) {}
+            }
+        )
+
+        DropdownMenuItem(
+            text = { Text("None Visible") },
+            onClick = {
+                expanded.value = false
+                launchEachPackage(visible, "deselect", select = false) {}
             }
         )
     }
@@ -218,7 +356,7 @@ fun MainPackageItem(
 
     val menuExpanded = remember { mutableStateOf(false) }
 
-    //Timber.i("recompose MainPackageItem ${packageItem.packageName}")
+    Timber.i("recompose MainPackageItem ${packageItem.packageName} ${packageItem.packageInfo.icon} ${imageData.hashCode()}")
 
     OutlinedCard(
         modifier = Modifier,
@@ -231,7 +369,7 @@ fun MainPackageItem(
     ) {
         MainPackageContextMenu(expanded = menuExpanded, packageItem = item, productsList = productsList, selection = selection, onAction = onAction)
 
-        val iconSelector =
+        val iconSelector =      //TODO hg42 make this global (but we have closures)
                 Modifier
                     .combinedClickable(
                         onClick = {
@@ -242,7 +380,7 @@ fun MainPackageItem(
                             menuExpanded.value = true
                         }
                     )
-        val rowSelector =
+        val rowSelector =       //TODO hg42 make this global
                 Modifier
                     .combinedClickable(
                         onClick = {

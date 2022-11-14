@@ -2,8 +2,8 @@
 <resources>
     <string name="backup">Back-up</string>
     <string name="restore">Terugzetten</string>
-    <string name="backupConfirmation">Back-up?</string>
-    <string name="restoreConfirmation">Terugzetten?</string>
+    <string name="backupConfirmation">Back-up\?</string>
+    <string name="restoreConfirmation">Terugzetten\?</string>
     <string name="handleApk">APK</string>
     <string name="handleData">Data</string>
     <string name="handleBoth">Beide</string>
@@ -32,8 +32,8 @@
     <string name="sortByLabel">Sorteer op label</string>
     <string name="sortByPackageName">Sorteer op pakketnaam</string>
     <string name="sort">Sorteer en filter</string>
-    <string name="uninstallDialogMessage">Deïnstalleer deze app?</string>
-    <string name="deleteBackupDialogMessage">Verwijder back-up bestanden?</string>
+    <string name="uninstallDialogMessage">Deïnstalleer deze app\?</string>
+    <string name="deleteBackupDialogMessage">Verwijder back-up bestanden\?</string>
     <string name="dialogOK">Akkoord</string>
     <string name="dialogCancel">Annuleer</string>
     <string name="dialogYes">Ja</string>

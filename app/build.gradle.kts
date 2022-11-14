@@ -25,10 +25,10 @@ plugins {
 }
 val vKotlin = "1.7.20"
 val vComposeCompiler = "1.3.2"
-val vCompose = "1.3.0-rc01"
+val vCompose = "1.3.0"
 val vRoom = "2.5.0-beta01"
-val vNavigation = "2.5.2"
-val vAccompanist = "0.26.5-rc"
+val vNavigation = "2.5.3"
+val vAccompanist = "0.27.0"
 val vLibsu = "3.2.1"
 
 android {
@@ -134,7 +134,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
     implementation("androidx.security:security-crypto-ktx:1.1.0-alpha03")
     implementation("androidx.biometric:biometric:1.2.0-alpha05")
-    implementation("org.apache.commons:commons-compress:1.21")
+    implementation("org.apache.commons:commons-compress:1.22")
     implementation("commons-io:commons-io:2.11.0")      // attention, there is an old 2003 version, that looks like newer
     implementation("com.jakewharton.timber:timber:5.0.1")
     implementation("com.github.topjohnwu.libsu:core:$vLibsu")
@@ -144,8 +144,8 @@ dependencies {
     //implementation("com.github.tony19:named-regexp:0.2.6") // regex named groups
 
     // UI
-    implementation("androidx.fragment:fragment-ktx:1.5.3")
-    implementation("com.google.android.material:material:1.8.0-alpha01")
+    implementation("androidx.fragment:fragment-ktx:1.5.4")
+    implementation("com.google.android.material:material:1.8.0-alpha02")
     implementation("androidx.preference:preference-ktx:1.2.0")
     implementation("androidx.navigation:navigation-fragment-ktx:$vNavigation")
     implementation("androidx.navigation:navigation-ui-ktx:$vNavigation")
@@ -158,8 +158,8 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:$vCompose")
     implementation("androidx.compose.runtime:runtime-livedata:$vCompose")
     implementation("androidx.navigation:navigation-compose:$vNavigation")
-    implementation("com.google.android.material:compose-theme-adapter-3:1.0.20")
-    implementation("androidx.compose.material3:material3:1.0.0-rc01")
+    implementation("com.google.android.material:compose-theme-adapter-3:1.0.21")
+    implementation("androidx.compose.material3:material3:1.0.0")
     implementation("com.google.accompanist:accompanist-flowlayout:$vAccompanist")
     implementation("com.google.accompanist:accompanist-systemuicontroller:$vAccompanist")
     implementation("com.google.accompanist:accompanist-navigation-animation:$vAccompanist")
@@ -170,6 +170,14 @@ dependencies {
     val androidxTest = "1.4.0"
     implementation("androidx.test:rules:$androidxTest")
     androidTestImplementation("androidx.test:runner:$androidxTest")
+
+    // compose testing
+    //androidTestImplementation("androidx.ui:ui-test:$vCompose")
+    // Test rules and transitive dependencies:
+    androidTestImplementation("androidx.compose.ui:ui-test:$vCompose")
+    //androidTestImplementation("androidx.compose.ui:ui-test-junit4:$vCompose")
+    // Needed for createComposeRule, but not createAndroidComposeRule:
+    debugImplementation("androidx.compose.ui:ui-test-manifest:$vCompose")
 }
 
 // using a task as a preBuild dependency instead of a function that takes some time insures that it runs

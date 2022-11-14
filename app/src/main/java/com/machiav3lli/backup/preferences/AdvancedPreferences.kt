@@ -52,7 +52,7 @@ fun AdvancedPrefsPage() {
         ) {
             item {
                 PrefsGroup(prefs = prefs) { pref ->
-                    if (pref == pref_enableSpecialBackups) {
+                    if (pref == pref_enableSpecialBackups) {    //TODO hg42 hmm, why here?, and why no check if enabled?
                         val newModel = context.sortFilterModel
                         newModel.mainFilter = newModel.mainFilter and MAIN_FILTER_DEFAULT
                         context.sortFilterModel = newModel
@@ -119,6 +119,18 @@ val pref_allowDowngrade = BooleanPref(
 
 //---------------------------------------- developer settings
 
+val pref_refreshOnStart = BooleanPref(
+    key = "dev.refreshOnStart",
+    summary = "automatically refresh package list on startup",
+    defaultValue = true
+)
+
+val pref_useSelectableText = BooleanPref(
+    key = "dev.useSelectableText",
+    summary = "enable text selection (currently unusable, crashes most of the time)",
+    defaultValue = false
+)
+
 val pref_useBackupRestoreWithSelection = BooleanPref(
     key = "dev.useBackupRestoreWithSelection",
     summary = "selection context menu shows allows 'Backup' and 'Restore' (both work on apk and data)",
@@ -167,17 +179,23 @@ val pref_useExactAlarm = BooleanPref(
     defaultValue = false
 )
 
-val pref_pauseApps = BooleanPref(
-    key = "dev.pauseApps",
-    summaryId = R.string.prefs_pauseapps_summary,
+val pref_backupPauseApps = BooleanPref(
+    key = "dev.backupPauseApps",
+    summary = "pause apps during backups to avoid inconsistencies caused by ongoing file changes or other conflicts",
     defaultValue = true
 )
 
-val pref_pmSuspend = BooleanPref(
-    key = "dev.pmSuspend",
-    summaryId = R.string.prefs_pmsuspend_summary,
+val pref_backupSuspendApps = BooleanPref(
+    key = "dev.backupSuspendApps",
+    summary = "additionally use pm suspend command to pause apps",
     defaultValue = false,
-    enableIf = { pref_pauseApps.value }
+    enableIf = { pref_backupPauseApps.value }
+)
+
+val pref_restoreKillApps = BooleanPref(
+    key = "dev.restoreKillApps",
+    summary = "kill apps before restores",
+    defaultValue = true
 )
 
 val pref_backupTarCmd = BooleanPref(
