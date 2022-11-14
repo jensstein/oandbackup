@@ -364,9 +364,9 @@
     <string name="prefs_cachepackages_summary" translatable="false"/>
     <string name="logfileSavedAt" translatable="false"/>
     <string name="place_holder" translatable="false"/>
-    <string name="prefs_multilineinfochips"/>
-    <string name="prefs_multilineinfochips_summary"/>
-    <string name="prefs_squeezenavtext"/>
+    <string name="prefs_multilineinfochips">多行显示信息段</string>
+    <string name="prefs_multilineinfochips_summary">允许跨行显示应用列表中的信息段。</string>
+    <string name="prefs_squeezenavtext">导航栏文字缩进</string>
     <string name="prefs_squeezenavtext_summary">允许导航栏文字缩放以适应实际宽度。</string>
     <string name="prefs_cancelonstart_summary" translatable="false"/>
     <string name="prefs_usealarmclock_summary" translatable="false"/>
@@ -386,6 +386,6 @@
     <string name="prefs_useexpedited_summary" translatable="false"/>
     <string name="prefs_shadowrootfile_summary" translatable="false"/>
     <string name="prefs_nobackupdata">备份未备份的文件</string>
-    <string name="prefs_nobackupdata_summary">备份标记为不备份的文件</string>
+    <string name="prefs_nobackupdata_summary">备份标记为未备份的文件</string>
     <string name="prefs_tools_terminal">终端</string>
 </resources>
