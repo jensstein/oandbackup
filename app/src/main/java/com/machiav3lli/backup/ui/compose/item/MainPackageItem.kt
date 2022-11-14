@@ -1,26 +1,24 @@
 package com.machiav3lli.backup.ui.compose.item
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -62,7 +60,9 @@ fun Selections(
     onAction: (StorageFile) -> Unit = {}
 ) {
     val backupDir = OABX.context.getBackupDir()
-    val selectionsDir = backupDir.findFile(SELECTIONS_FOLDER_NAME) ?: backupDir.createDirectory(SELECTIONS_FOLDER_NAME)
+    val selectionsDir = backupDir.findFile(SELECTIONS_FOLDER_NAME) ?: backupDir.createDirectory(
+        SELECTIONS_FOLDER_NAME
+    )
     val files = selectionsDir.listFiles()
 
     if (files.isEmpty())
@@ -103,7 +103,7 @@ fun SelectionSaveMenu(
 ) {
     DropdownMenu(
         expanded = true,
-        offset = DpOffset(50.dp, -1000.dp),
+        offset = DpOffset(50.dp, (-1000).dp),
         onDismissRequest = { onAction() }
     ) {
         val name = remember { mutableStateOf("") }
@@ -132,8 +132,10 @@ fun SelectionSaveMenu(
                             name.value = it.dropLast(1)
                             focusManager.clearFocus()
                             val backupDir = OABX.context.getBackupDir()
-                            val selectionsDir = backupDir.findFile(SELECTIONS_FOLDER_NAME) ?: backupDir.createDirectory(SELECTIONS_FOLDER_NAME)
-                            selectionsDir.createFile("application/octet-stream", name.value).writeText(selection.joinToString("\n"))
+                            val selectionsDir = backupDir.findFile(SELECTIONS_FOLDER_NAME)
+                                ?: backupDir.createDirectory(SELECTIONS_FOLDER_NAME)
+                            selectionsDir.createFile("application/octet-stream", name.value)
+                                .writeText(selection.joinToString("\n"))
                             onAction()
                         } else
                             name.value = it
@@ -181,7 +183,7 @@ fun MainPackageContextMenu(
             MainScope().launch(Dispatchers.IO) {
                 OABX.beginBusy(action)
                 packages.forEach {
-                    if (select != false) selection[it] = false
+                    if (select) selection[it] = false
                     OABX.addInfoText("$action ${it.packageName}")
                     todo(it)
                     selection[it] = select
@@ -210,7 +212,7 @@ fun MainPackageContextMenu(
             text = { Text("${selectedAndVisible.count()} selected items:") }
         )
 
-        if(pref_useBackupRestoreWithSelection.value) {
+        if (pref_useBackupRestoreWithSelection.value) {
             DropdownMenuItem(
                 text = { Text(OABX.getString(R.string.backup)) },
                 onClick = {
@@ -309,7 +311,8 @@ fun MainPackageContextMenu(
             text = { Text("Save") },
             onClick = {
                 subMenu.value = {
-                    SelectionSaveMenu(selection = selection.filter { it.value }.map { it.key.packageName }) {
+                    SelectionSaveMenu(selection = selection.filter { it.value }
+                        .map { it.key.packageName }) {
                         expanded.value = false
                         subMenu.value = null
                         launchEachPackage(selectedAndVisible, "save", select = false) {}
@@ -358,58 +361,62 @@ fun MainPackageItem(
 
     Timber.i("recompose MainPackageItem ${packageItem.packageName} ${packageItem.packageInfo.icon} ${imageData.hashCode()}")
 
-    OutlinedCard(
+    Card(
         modifier = Modifier,
         shape = RoundedCornerShape(LocalShapes.current.medium),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface),
-        colors = CardDefaults.outlinedCardColors(
-            containerColor = MaterialTheme.colorScheme.background
+        colors = CardDefaults.cardColors(
+            containerColor = Color.Transparent
         ),
-        elevation = CardDefaults.cardElevation(4.dp),
     ) {
-        MainPackageContextMenu(expanded = menuExpanded, packageItem = item, productsList = productsList, selection = selection, onAction = onAction)
+        MainPackageContextMenu(
+            expanded = menuExpanded,
+            packageItem = item,
+            productsList = productsList,
+            selection = selection,
+            onAction = onAction
+        )
 
         val iconSelector =      //TODO hg42 make this global (but we have closures)
-                Modifier
-                    .combinedClickable(
-                        onClick = {
-                            selection[packageItem] = !(selection[packageItem] == true)
-                        },
-                        onLongClick = {
-                            selection[packageItem] = true
-                            menuExpanded.value = true
-                        }
-                    )
+            Modifier
+                .combinedClickable(
+                    onClick = {
+                        selection[packageItem] = (selection[packageItem] != true)
+                    },
+                    onLongClick = {
+                        selection[packageItem] = true
+                        menuExpanded.value = true
+                    }
+                )
         val rowSelector =       //TODO hg42 make this global
-                Modifier
-                    .combinedClickable(
-                        onClick = {
-                            if (selectedAndVisible.count() == 0) {
-                                onAction(packageItem)
-                            } else {
-                                selection[packageItem] = !(selection[packageItem] == true)
-                            }
-                        },
-                        onLongClick = {
-                            if (selectedAndVisible.count() == 0) {
-                                selection[packageItem] = !(selection[packageItem] == true)
-                            } else {
-                                if (selection[packageItem] == true)
-                                    menuExpanded.value = true
-                                else {
-                                    //selection[packageItem] = true
-                                    // select from - to ? but the map is not sorted
-                                    //selection.entries.forEach {
-                                    //
-                                    //}
-                                }
+            Modifier
+                .combinedClickable(
+                    onClick = {
+                        if (selectedAndVisible.isEmpty()) {
+                            onAction(packageItem)
+                        } else {
+                            selection[packageItem] = (selection[packageItem] != true)
+                        }
+                    },
+                    onLongClick = {
+                        if (selectedAndVisible.isEmpty()) {
+                            selection[packageItem] = (selection[packageItem] != true)
+                        } else {
+                            if (selection[packageItem] == true)
+                                menuExpanded.value = true
+                            else {
+                                //selection[packageItem] = true
+                                // select from - to ? but the map is not sorted
+                                //selection.entries.forEach {
+                                //
+                                //}
                             }
                         }
-                    )
+                    }
+                )
 
         Row(
             modifier = rowSelector
-                .background(color = if (selection[packageItem] == true) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.background)
+                .background(color = if (selection[packageItem] == true) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
                 .fillMaxWidth()
                 .padding(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -420,11 +427,7 @@ fun MainPackageItem(
             Column(
                 modifier = Modifier.wrapContentHeight()
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.4f),
-                ) {
+                Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
                         text = packageItem.packageLabel,
                         modifier = Modifier
@@ -437,11 +440,7 @@ fun MainPackageItem(
                     )
                     PackageLabels(item = packageItem)
                 }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.4f),
-                ) {
+                Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
                         text = packageItem.packageName,
                         modifier = Modifier

@@ -57,8 +57,8 @@ fun <T> VerticalItemList(
                 LazyColumn(
                     modifier = modifier
                         .testTag("VerticalItemList.Column"),
-                    verticalArrangement = Arrangement.Absolute.spacedBy(8.dp),
-                    contentPadding = PaddingValues(vertical = 8.dp, horizontal = 8.dp),
+                    verticalArrangement = Arrangement.Absolute.spacedBy(4.dp),
+                    contentPadding = PaddingValues(vertical = 8.dp),
                 ) {
                     items(items = list, key = itemKey, itemContent = itemContent)
                 }

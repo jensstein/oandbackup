@@ -42,7 +42,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -54,22 +53,19 @@ class MainViewModel(
     private val db: ODatabase,
     private val appContext: Application
 ) : AndroidViewModel(appContext) {
-
-    @OptIn(ExperimentalCoroutinesApi::class)
+// TODO consider adding option for tracing
     val blocklist = db.blocklistDao.allFlow
-
-        .onEach { Timber.w("*** blocklist <<- ${it.size}") }
+        //.onEach { Timber.w("*** blocklist <<- ${it.size}") }
         .stateIn(
             viewModelScope,
-            SharingStarted.Eagerly,
+            SharingStarted.Lazily,
             emptyList()
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val backupsMap = db.backupDao.allFlow
-
         .mapLatest { it.groupBy(Backup::packageName) }
-        .onEach { Timber.w("*** backupsMap <<- ${it.size}") }
+        //.onEach { Timber.w("*** backupsMap <<- ${it.size}") }
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
@@ -78,9 +74,8 @@ class MainViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val appExtrasMap = db.appExtrasDao.allFlow
-
         .mapLatest { it.associateBy(AppExtras::packageName) }
-        .onEach { Timber.w("*** appExtrasMap <<- ${it.size}") }
+        //.onEach { Timber.w("*** appExtrasMap <<- ${it.size}") }
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
@@ -88,41 +83,47 @@ class MainViewModel(
         )
 
     val packageList = combine(db.appInfoDao.allFlow, backupsMap) { p, b ->
+        //Timber.w("******************** database - db: ${p.size} backups: ${b.size}")
 
-        Timber.w("******************** database - db: ${p.size} backups: ${b.size}")
+        val list = p.toPackageList(
+            appContext,
+            emptyList(),
+            b
+        )
 
-        val list =
-            p.toPackageList(
-                appContext,
-                emptyList(),
-                b
-            )
-
-        Timber.w("***** packages ->> ${list.size}")
+        //Timber.w("***** packages ->> ${list.size}")
         list
-    }   .onEach { Timber.w("*** packageList <<- ${it.size}") }
+    }   //.onEach { Timber.w("*** packageList <<- ${it.size}") }
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
             emptyList()
         )
 
-    val blockedList = combine(packageList, blocklist) { p, b ->
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val packageMap = packageList
+        .mapLatest { it.associateBy(Package::packageName) }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            emptyMap()
+        )
 
-        Timber.w(
+    val notBlockedList = combine(packageList, blocklist) { p, b ->
+        /*Timber.w(
             "******************** blocking - list: ${p.size} block: ${
                 b.joinToString(
                     ","
                 )
             }"
-        )
+        )*/
 
         val block = b.map { it.packageName }
         val list = p.filterNot { block.contains(it.packageName) }
 
-        Timber.w("***** blocked ->> ${list.size}")
+        //Timber.w("***** blocked ->> ${list.size}")
         list
-    }   .onEach { Timber.w("*** blockedList <<- ${it.size}") }
+    }   //.onEach { Timber.w("*** blockedList <<- ${it.size}") }
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
@@ -130,12 +131,20 @@ class MainViewModel(
         )
 
     val searchQuery = MutableComposableSharedFlow("", viewModelScope, "searchQuery") {
-        Timber.w("*** searchQuery <<- '${it}'")
+        //Timber.w("*** searchQuery <<- '${it}'")
     }
 
-    val queriedList = combine(blockedList, searchQuery.flow) { p, s ->
+    var modelSortFilter = MutableComposableSharedFlow(
+        OABX.context.sortFilterModel,
+        viewModelScope,
+        "modelSortFilter"
+    ) {
+        //Timber.w("*** modelSortFilter <<- ${it}")
+    }
 
-        Timber.w("******************** searching - list: ${p.size} search: '$s'")
+    val filteredList = combine(notBlockedList, modelSortFilter.flow, searchQuery.flow) { p, f, s ->
+
+        //Timber.w("******************** filtering - list: ${p.size} filter: $f")
 
         val list = p
             .filter { item: Package ->
@@ -144,30 +153,11 @@ class MainViewModel(
                             .any { it.contains(s, ignoreCase = true) }
                         )
             }
-
-        Timber.w("***** queried ->> ${list.size}")
-        list
-    }   .onEach { Timber.w("*** queriedList <<- ${it.size}") }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.Eagerly,
-            emptyList()
-        )
-
-    var modelSortFilter = MutableComposableSharedFlow(OABX.context.sortFilterModel, viewModelScope, "modelSortFilter") {
-        Timber.w("*** modelSortFilter <<- ${it}")
-    }
-
-    val filteredList = combine(queriedList, modelSortFilter.flow) { p, f ->
-
-        Timber.w("******************** filtering - list: ${p.size} filter: $f")
-
-        val list = p
             .applyFilter(f, OABX.main!!)
 
-        Timber.w("***** filtered ->> ${list.size}")
+        //Timber.w("***** filtered ->> ${list.size}")
         list
-    }   .onEach { Timber.w("*** filteredList <<- ${it.size}") }
+    }   //.onEach { Timber.w("*** filteredList <<- ${it.size}") }
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
@@ -175,24 +165,9 @@ class MainViewModel(
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val updatedPackages = packageList
+    val updatedPackages = notBlockedList
         .mapLatest { it.filter(Package::isUpdated).toMutableList() }
-        .onEach { Timber.w("*** updatedPackages <<- ${it.size}") }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.Eagerly,
-            emptyList()
-        )
-
-
-    init {
-        viewModelScope.launch {
-            withContext(Dispatchers.Default) {
-                //blocklist.collectLatest { }           //WECH
-                //updatedPackages.collectLatest { }     //WECH
-            }
-        }
-    }
+    //.onEach { Timber.w("*** updatedPackages <<- ${it.size}") }
 
     // TODO add to interface
     fun refreshList() {
@@ -214,7 +189,7 @@ class MainViewModel(
 
     fun updatePackage(packageName: String) {
         viewModelScope.launch {
-            packageList.value.find { it.packageName == packageName }?.let {
+            packageMap.value[packageName]?.let {
                 updateDataOf(packageName)
             }
         }
@@ -224,7 +199,7 @@ class MainViewModel(
         withContext(Dispatchers.IO) {
             OABX.beginBusy("updateDataOf")
             invalidateCacheForPackage(packageName)
-            val appPackage = packageList.value.find { it.packageName == packageName }
+            val appPackage = packageMap.value[packageName]
             try {
                 appPackage?.apply {
                     if (pref_usePackageCacheOnUpdate.value) {

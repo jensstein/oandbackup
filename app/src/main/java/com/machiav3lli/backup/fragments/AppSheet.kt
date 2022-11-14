@@ -145,8 +145,7 @@ class AppSheet() : BaseSheet(), ActionListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        mPackage =
-            requireMainActivity().viewModel.packageList.value?.find { it.packageName == packageName }
+        mPackage = requireMainActivity().viewModel.packageMap.value[packageName]
         users = savedInstanceState?.getStringArrayList(BUNDLE_USERS) ?: ArrayList()
 
         return ComposeView(requireContext()).apply {
@@ -158,8 +157,8 @@ class AppSheet() : BaseSheet(), ActionListener {
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
     @Composable
     fun AppPage() {
-        val thePackages by requireMainActivity().viewModel.packageList.collectAsState()
-        val thePackage: Package? = thePackages?.find { it.packageName == packageName }
+        val thePackages by requireMainActivity().viewModel.packageMap.collectAsState()
+        val thePackage: Package? = thePackages[packageName]
         val snackbarText by viewModel.snackbarText.collectAsState()
         val appExtras by viewModel.appExtras.collectAsState()
         val refreshNow by viewModel.refreshNow
@@ -296,36 +295,36 @@ class AppSheet() : BaseSheet(), ActionListener {
                             }
                         }
                         item {
-                            AnimatedVisibility(
-                                visible = packageInfo.isInstalled && !packageInfo.isDisabled,
-                            ) {
+                            val launchIntent = requireContext().packageManager
+                                .getLaunchIntentForPackage(packageInfo.packageName)
+                            AnimatedVisibility(visible = launchIntent != null) {
                                 CardButton(
                                     modifier = Modifier.fillMaxHeight(),
                                     icon = Phosphor.ArrowSquareOut,
                                     tint = colorResource(id = R.color.ic_obb),
                                     description = stringResource(id = R.string.launch_app)
                                 ) {
-                                    requireContext().packageManager.getLaunchIntentForPackage(
-                                        packageInfo.packageName
-                                    )?.let {
+                                    launchIntent?.let {
                                         startActivity(it)
                                     }
                                 }
                             }
                         }
                         item {
-                            CardButton(
-                                modifier = Modifier.fillMaxHeight(),
-                                icon = Icon.Exodus,
-                                tint = colorResource(id = R.color.ic_exodus),
-                                description = stringResource(id = R.string.exodus_report)
-                            ) {
-                                requireContext().startActivity(
-                                    Intent(
-                                        Intent.ACTION_VIEW,
-                                        Uri.parse(exodusUrl(packageInfo.packageName))
+                            AnimatedVisibility(visible = !packageInfo.isSpecial) {
+                                CardButton(
+                                    modifier = Modifier.fillMaxHeight(),
+                                    icon = Icon.Exodus,
+                                    tint = colorResource(id = R.color.ic_exodus),
+                                    description = stringResource(id = R.string.exodus_report)
+                                ) {
+                                    requireContext().startActivity(
+                                        Intent(
+                                            Intent.ACTION_VIEW,
+                                            Uri.parse(exodusUrl(packageInfo.packageName))
+                                        )
                                     )
-                                )
+                                }
                             }
                         }
                         item {
@@ -344,7 +343,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                         }
                         item {
                             AnimatedVisibility(
-                                visible = packageInfo.isInstalled
+                                visible = packageInfo.isInstalled && !packageInfo.isSpecial
                             ) {
                                 CardButton(
                                     modifier = Modifier.fillMaxHeight(),
