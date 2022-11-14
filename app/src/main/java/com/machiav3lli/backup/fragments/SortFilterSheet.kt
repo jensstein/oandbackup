@@ -99,10 +99,9 @@ class SortFilterSheet() : BaseSheet() {
     @Composable
     fun SortFilterPage() {
         val nestedScrollConnection = rememberNestedScrollInteropConnection()
-        val packageList by requireMainActivity().viewModel.packageList.collectAsState()
+        val packageList by requireMainActivity().viewModel.notBlockedList.collectAsState()
         var model by rememberSaveable { mutableStateOf(requireContext().sortFilterModel) }
-        fun currentStats() =
-            getStats(packageList?.applyFilter(model, OABX.context) ?: emptyList())  //TODO hg42 use central function for all the filtering
+        fun currentStats() = getStats(packageList.applyFilter(model, OABX.context))  //TODO hg42 use central function for all the filtering
 
         AppTheme {
             Scaffold(

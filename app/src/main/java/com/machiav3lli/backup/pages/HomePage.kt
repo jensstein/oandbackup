@@ -71,8 +71,6 @@ fun HomePage() {
     val updatedPackages by main.viewModel.updatedPackages.collectAsState(emptyList())
     var updaterExpanded by remember { mutableStateOf(false) }
 
-    val queriedList = filteredList
-
     val batchConfirmListener = object : BatchDialogFragment.ConfirmListener {
         override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {
             main.startBatchAction(true, selectedPackages, selectedModes) {
@@ -184,7 +182,7 @@ fun HomePage() {
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize(),
-            productsList = queriedList ?: listOf(),
+            productsList = filteredList,
             onClick = { item ->
                 if (appSheet != null) appSheet?.dismissAllowingStateLoss()
                 appSheet = AppSheet(item.packageName)
