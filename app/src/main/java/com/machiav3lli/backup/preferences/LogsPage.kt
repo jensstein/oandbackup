@@ -24,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.ui.compose.recycler.LogRecycler
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
@@ -36,7 +37,7 @@ fun LogsPage(viewModel: LogViewModel) {
     val logs = remember { viewModel.logsList }
 
     AppTheme {
-        Scaffold { paddingValues ->
+        Scaffold(containerColor = Color.Transparent) { paddingValues ->
             LogRecycler(
                 modifier = Modifier
                     .padding(paddingValues)
