@@ -314,18 +314,20 @@ class AppSheet() : BaseSheet(), ActionListener {
                             }
                         }
                         item {
-                            CardButton(
-                                modifier = Modifier.fillMaxHeight(),
-                                icon = Icon.Exodus,
-                                tint = colorResource(id = R.color.ic_exodus),
-                                description = stringResource(id = R.string.exodus_report)
-                            ) {
-                                requireContext().startActivity(
-                                    Intent(
-                                        Intent.ACTION_VIEW,
-                                        Uri.parse(exodusUrl(packageInfo.packageName))
+                            AnimatedVisibility(visible = !packageInfo.isSpecial) {
+                                CardButton(
+                                    modifier = Modifier.fillMaxHeight(),
+                                    icon = Icon.Exodus,
+                                    tint = colorResource(id = R.color.ic_exodus),
+                                    description = stringResource(id = R.string.exodus_report)
+                                ) {
+                                    requireContext().startActivity(
+                                        Intent(
+                                            Intent.ACTION_VIEW,
+                                            Uri.parse(exodusUrl(packageInfo.packageName))
+                                        )
                                     )
-                                )
+                                }
                             }
                         }
                         item {
