@@ -108,10 +108,10 @@ fun HomePage() {
                                     modifier = Modifier.weight(1f),
                                     text = stringResource(id = R.string.backup_all_updated),
                                 ) {
-                                    val selectedList = updatedPackages.orEmpty()
+                                    val selectedList = updatedPackages
                                         .map { it.packageInfo }
                                         .toCollection(ArrayList())
-                                    val selectedListModes = updatedPackages.orEmpty()
+                                    val selectedListModes = updatedPackages
                                         .mapNotNull {
                                             it.latestBackup?.let { bp ->
                                                 when {

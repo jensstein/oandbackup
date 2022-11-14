@@ -42,6 +42,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -53,9 +54,12 @@ class MainViewModel(
     private val db: ODatabase,
     private val appContext: Application
 ) : AndroidViewModel(appContext) {
-// TODO consider adding option for tracing
+
+    // TODO consider adding option for tracing
+
     val blocklist = db.blocklistDao.allFlow
-        //.onEach { Timber.w("*** blocklist <<- ${it.size}") }
+
+        .onEach { Timber.w("*** blocklist <<- ${it.size}") }
         .stateIn(
             viewModelScope,
             SharingStarted.Lazily,
@@ -64,8 +68,9 @@ class MainViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val backupsMap = db.backupDao.allFlow
+
         .mapLatest { it.groupBy(Backup::packageName) }
-        //.onEach { Timber.w("*** backupsMap <<- ${it.size}") }
+        .onEach { Timber.w("*** backupsMap <<- ${it.size}") }
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
@@ -74,8 +79,9 @@ class MainViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val appExtrasMap = db.appExtrasDao.allFlow
+
         .mapLatest { it.associateBy(AppExtras::packageName) }
-        //.onEach { Timber.w("*** appExtrasMap <<- ${it.size}") }
+        .onEach { Timber.w("*** appExtrasMap <<- ${it.size}") }
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
@@ -83,17 +89,19 @@ class MainViewModel(
         )
 
     val packageList = combine(db.appInfoDao.allFlow, backupsMap) { p, b ->
-        //Timber.w("******************** database - db: ${p.size} backups: ${b.size}")
 
-        val list = p.toPackageList(
-            appContext,
-            emptyList(),
-            b
-        )
+        Timber.w("******************** database - db: ${p.size} backups: ${b.size}")
 
-        //Timber.w("***** packages ->> ${list.size}")
+        val list =
+            p.toPackageList(
+                appContext,
+                emptyList(),
+                b
+            )
+
+        Timber.w("***** packages ->> ${list.size}")
         list
-    }   //.onEach { Timber.w("*** packageList <<- ${it.size}") }
+    }   .onEach { Timber.w("*** packageList <<- ${it.size}") }
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
@@ -110,20 +118,21 @@ class MainViewModel(
         )
 
     val notBlockedList = combine(packageList, blocklist) { p, b ->
-        /*Timber.w(
+
+        Timber.w(
             "******************** blocking - list: ${p.size} block: ${
                 b.joinToString(
                     ","
                 )
             }"
-        )*/
+        )
 
         val block = b.map { it.packageName }
         val list = p.filterNot { block.contains(it.packageName) }
 
-        //Timber.w("***** blocked ->> ${list.size}")
+        Timber.w("***** blocked ->> ${list.size}")
         list
-    }   //.onEach { Timber.w("*** blockedList <<- ${it.size}") }
+    }   .onEach { Timber.w("*** notBlockedList <<- ${it.size}") }
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
@@ -131,7 +140,7 @@ class MainViewModel(
         )
 
     val searchQuery = MutableComposableSharedFlow("", viewModelScope, "searchQuery") {
-        //Timber.w("*** searchQuery <<- '${it}'")
+        Timber.w("*** searchQuery <<- '${it}'")
     }
 
     var modelSortFilter = MutableComposableSharedFlow(
@@ -144,7 +153,7 @@ class MainViewModel(
 
     val filteredList = combine(notBlockedList, modelSortFilter.flow, searchQuery.flow) { p, f, s ->
 
-        //Timber.w("******************** filtering - list: ${p.size} filter: $f")
+        Timber.w("******************** filtering - list: ${p.size} filter: $f")
 
         val list = p
             .filter { item: Package ->
@@ -155,9 +164,9 @@ class MainViewModel(
             }
             .applyFilter(f, OABX.main!!)
 
-        //Timber.w("***** filtered ->> ${list.size}")
+        Timber.w("***** filtered ->> ${list.size}")
         list
-    }   //.onEach { Timber.w("*** filteredList <<- ${it.size}") }
+    }   .onEach { Timber.w("*** filteredList <<- ${it.size}") }
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
@@ -167,8 +176,10 @@ class MainViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     val updatedPackages = notBlockedList
         .mapLatest { it.filter(Package::isUpdated).toMutableList() }
-    //.onEach { Timber.w("*** updatedPackages <<- ${it.size}") }
+        .onEach { Timber.w("*** updatedPackages <<- ${it.size}") }
 
+
+        
     // TODO add to interface
     fun refreshList() {
         viewModelScope.launch {
