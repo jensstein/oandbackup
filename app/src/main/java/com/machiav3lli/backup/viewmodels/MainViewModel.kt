@@ -107,7 +107,14 @@ class MainViewModel(
             emptyList()
         )
 
-    val blockedList = combine(packageList, blocklist) { p, b ->
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val packageMap = packageList
+        .mapLatest { it.associateBy(Package::packageName) }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            emptyMap()
+        )
 
         Timber.w(
             "******************** blocking - list: ${p.size} block: ${
@@ -214,7 +221,7 @@ class MainViewModel(
 
     fun updatePackage(packageName: String) {
         viewModelScope.launch {
-            packageList.value.find { it.packageName == packageName }?.let {
+            packageMap.value[packageName]?.let {
                 updateDataOf(packageName)
             }
         }
@@ -224,7 +231,7 @@ class MainViewModel(
         withContext(Dispatchers.IO) {
             OABX.beginBusy("updateDataOf")
             invalidateCacheForPackage(packageName)
-            val appPackage = packageList.value.find { it.packageName == packageName }
+            val appPackage = packageMap.value[packageName]
             try {
                 appPackage?.apply {
                     if (pref_usePackageCacheOnUpdate.value) {
