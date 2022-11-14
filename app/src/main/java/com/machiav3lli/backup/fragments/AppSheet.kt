@@ -343,7 +343,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                         }
                         item {
                             AnimatedVisibility(
-                                visible = packageInfo.isInstalled
+                                visible = packageInfo.isInstalled && !packageInfo.isSpecial
                             ) {
                                 CardButton(
                                     modifier = Modifier.fillMaxHeight(),
