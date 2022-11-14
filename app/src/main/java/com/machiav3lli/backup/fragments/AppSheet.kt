@@ -296,18 +296,16 @@ class AppSheet() : BaseSheet(), ActionListener {
                             }
                         }
                         item {
-                            AnimatedVisibility(
-                                visible = packageInfo.isInstalled && !packageInfo.isDisabled,
-                            ) {
+                            val launchIntent = requireContext().packageManager
+                                .getLaunchIntentForPackage(packageInfo.packageName)
+                            AnimatedVisibility(visible = launchIntent != null) {
                                 CardButton(
                                     modifier = Modifier.fillMaxHeight(),
                                     icon = Phosphor.ArrowSquareOut,
                                     tint = colorResource(id = R.color.ic_obb),
                                     description = stringResource(id = R.string.launch_app)
                                 ) {
-                                    requireContext().packageManager.getLaunchIntentForPackage(
-                                        packageInfo.packageName
-                                    )?.let {
+                                    launchIntent?.let {
                                         startActivity(it)
                                     }
                                 }
