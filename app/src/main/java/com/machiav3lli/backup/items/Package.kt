@@ -486,14 +486,17 @@ class Package {
 
         fun invalidateCacheForPackage(packageName: String) {
             StorageFile.invalidateCache { it.contains(packageName) }
+            OABX.app.packageCache.remove(packageName)
         }
 
         fun invalidateBackupCacheForPackage(packageName: String) {
             StorageFile.invalidateCache { it.contains(packageName) }
+            OABX.app.packageCache.remove(packageName)
         }
 
         fun invalidateSystemCacheForPackage(packageName: String) {
             StorageFile.invalidateCache { it.contains(packageName) }
+            OABX.app.packageCache.remove(packageName)
         }
     }
 }

@@ -38,7 +38,6 @@ class PackageUnInstalledReceiver : BroadcastReceiver() {
             intent.data?.let { if (it.scheme == "package") it.schemeSpecificPart else null }
         if (packageName != null) {
             Package.invalidateSystemCacheForPackage(packageName)
-            OABX.app.packageCache.remove(packageName)
             when (intent.action.orEmpty()) {
                 Intent.ACTION_PACKAGE_ADDED,
                 Intent.ACTION_PACKAGE_REPLACED -> {
