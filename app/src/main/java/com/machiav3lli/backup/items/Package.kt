@@ -285,9 +285,9 @@ class Package {
     }
 
     fun deleteOldestBackups(keep: Int) {
-        while (keep < backupList.size || backupList.all { it.persistent }) {
+        while (keep < backupList.size || !backupList.all { it.persistent }) {
             run whileLoop@{
-                backupList.sortedBy { it.backupDate }.forEach { backup ->
+                backupList.sortedBy { it.backupDate }.dropLast(1).forEach { backup ->
                     if (!backup.persistent) {
                         Timber.i("[${backup.packageName}] Deleting backup revision ${backup.backupDate}")
                         deleteBackup(backup)
