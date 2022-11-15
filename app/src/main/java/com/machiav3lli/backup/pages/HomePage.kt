@@ -82,10 +82,13 @@ fun HomePage() {
     Scaffold(
         containerColor = Color.Transparent,
         floatingActionButton = {
-            AnimatedVisibility(
-                modifier = Modifier.padding(start = 28.dp),
-                visible = updatedPackages.isNotEmpty()
-            ) {
+            // AnimatedVisibility STILL doesn't work, it hides the button and shows it when clicking refresh button
+            // none of the "visible" expressions work (hg42)
+            //AnimatedVisibility(
+            //    modifier = Modifier.padding(start = 28.dp),
+            //    visible = updatedPackages.isNotEmpty()
+            //) {
+            if (updatedPackages.isNotEmpty()) {
                 ExpandingFadingVisibility(
                     expanded = updaterExpanded,
                     expandedView = {
