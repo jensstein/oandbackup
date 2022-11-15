@@ -174,6 +174,18 @@ class AppSheetViewModel(
         }
     }
 
+    fun rewriteBackup(newBackup: Backup) {
+        viewModelScope.launch {
+            rewrite(newBackup)
+        }
+    }
+
+    private suspend fun rewrite(newBackup: Backup) {
+        withContext(Dispatchers.IO) {
+            thePackage.value?.rewriteBackupProps(newBackup)
+        }
+    }
+
     class Factory(
         private val packageInfo: Package?,
         private val database: ODatabase,

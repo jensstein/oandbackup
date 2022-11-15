@@ -510,6 +510,9 @@ class AppSheet() : BaseSheet(), ActionListener {
                                             .setNegativeButton(R.string.dialogNo, null)
                                             .show()
                                     }
+                                },
+                                rewriteBackup = { backup ->
+                                    viewModel.rewriteBackup(backup)
                                 }
                             )
                         }
