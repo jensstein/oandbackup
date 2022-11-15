@@ -16,6 +16,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -26,6 +30,8 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ClockCounterClockwise
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Lock
+import com.machiav3lli.backup.ui.compose.icons.phosphor.LockOpen
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.getFormattedDate
@@ -35,6 +41,7 @@ fun BackupItem(
     item: Backup,
     onRestore: (Backup) -> Unit = { },
     onDelete: (Backup) -> Unit = { },
+    rewriteBackup: (Backup) -> Unit = { },
 ) {
     OutlinedCard(
         modifier = Modifier,
@@ -138,12 +145,14 @@ fun BackupItem(
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                ElevatedActionButton(
-                    icon = Phosphor.ClockCounterClockwise,
-                    text = stringResource(id = R.string.restore),
-                    positive = true,
-                    onClick = { onRestore(item) },
-                )
+                var persistent by remember(item.persistent) {
+                    mutableStateOf(item.persistent)
+                }
+
+                RoundButton(icon = if (persistent) Phosphor.Lock else Phosphor.LockOpen) {
+                    persistent = !persistent
+                    rewriteBackup(item.copy(persistent = persistent))
+                }
                 Spacer(modifier = Modifier.weight(1f))
                 ElevatedActionButton(
                     icon = Phosphor.TrashSimple,
@@ -151,6 +160,12 @@ fun BackupItem(
                     positive = false,
                     withText = false,
                     onClick = { onDelete(item) },
+                )
+                ElevatedActionButton(
+                    icon = Phosphor.ClockCounterClockwise,
+                    text = stringResource(id = R.string.restore),
+                    positive = true,
+                    onClick = { onRestore(item) },
                 )
             }
         }
