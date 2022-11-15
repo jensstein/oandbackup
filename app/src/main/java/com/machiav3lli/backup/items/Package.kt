@@ -279,6 +279,40 @@ class Package {
         }
     }
 
+    fun rewriteBackupProps(newBackup: Backup) {
+        if (newBackup.packageName != packageName) {
+            throw RuntimeException("Asked to delete a backup of ${newBackup.packageName} but this object is for $packageName")
+        }
+        Timber.d("[$packageName] Deleting backup revision $newBackup")
+        val propertiesFileName = String.format(
+            BACKUP_INSTANCE_PROPERTIES,
+            BACKUP_DATE_TIME_FORMATTER.format(newBackup.backupDate),
+            newBackup.profileId
+        )
+        val propertiesFileNameOld = String.format(
+            BACKUP_INSTANCE_PROPERTIES,
+            BACKUP_DATE_TIME_FORMATTER_OLD.format(newBackup.backupDate),
+            newBackup.profileId
+        )
+
+        try {
+            packageBackupDir?.findFile(propertiesFileName)?.apply {
+                delete()
+                writeText(newBackup.toJSON())
+            } ?: packageBackupDir?.findFile(propertiesFileNameOld)?.apply {
+                delete()
+                writeText(newBackup.toJSON())
+            }
+        } catch (e: Throwable) {
+            LogsHandler.unhandledException(e, newBackup.packageName)
+        }
+        try {
+            backupList = backupList.filterNot { it.backupDate == newBackup.backupDate } + newBackup
+        } catch (e: Throwable) {
+            LogsHandler.unhandledException(e, newBackup.packageName)
+        }
+    }
+
     fun deleteAllBackups() {
         while (backupList.isNotEmpty())
             deleteBackup(backupList.first())
