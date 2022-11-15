@@ -17,7 +17,6 @@
  */
 package com.machiav3lli.backup.pages
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -119,9 +118,9 @@ fun HomePage() {
                                             it.latestBackup?.let { bp ->
                                                 when {
                                                     bp.hasApk && bp.hasAppData -> ALT_MODE_BOTH
-                                                    bp.hasApk -> ALT_MODE_APK
-                                                    bp.hasAppData -> ALT_MODE_DATA
-                                                    else -> ALT_MODE_UNSET
+                                                    bp.hasApk                  -> ALT_MODE_APK
+                                                    bp.hasAppData              -> ALT_MODE_DATA
+                                                    else                       -> ALT_MODE_UNSET
                                                 }
                                             }
                                         }
@@ -163,8 +162,8 @@ fun HomePage() {
                     collapsedView = {
                         val text = pluralStringResource(
                             id = R.plurals.updated_apps,
-                            count = updatedPackages.orEmpty().size,
-                            updatedPackages.orEmpty().size
+                            count = updatedPackages.size,
+                            updatedPackages.size
                         )
                         ExtendedFloatingActionButton(
                             text = { Text(text = text) },

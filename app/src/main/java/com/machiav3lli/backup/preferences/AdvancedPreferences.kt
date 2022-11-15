@@ -52,7 +52,7 @@ fun AdvancedPrefsPage() {
         ) {
             item {
                 PrefsGroup(prefs = prefs) { pref ->
-                    if (pref == pref_enableSpecialBackups) {    //TODO hg42 hmm, why here?, and why no check if enabled?
+                    if (pref == pref_enableSpecialBackups) {
                         val newModel = context.sortFilterModel
                         newModel.mainFilter = newModel.mainFilter and MAIN_FILTER_DEFAULT
                         context.sortFilterModel = newModel
