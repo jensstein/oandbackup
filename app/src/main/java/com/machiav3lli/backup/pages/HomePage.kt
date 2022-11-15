@@ -84,7 +84,7 @@ fun HomePage() {
         floatingActionButton = {
             AnimatedVisibility(
                 modifier = Modifier.padding(start = 28.dp),
-                visible = updatedPackages?.isNotEmpty() ?: true
+                visible = updatedPackages.isNotEmpty()
             ) {
                 ExpandingFadingVisibility(
                     expanded = updaterExpanded,

@@ -207,6 +207,7 @@ data class Backup constructor(
             ", backupVersionCode='" + backupVersionCode + '\'' +
             ", size=" + size +
             ", permissions='" + permissions + '\'' +
+            ", persistent='" + persistent + '\'' +
             '}'
 
     override fun equals(other: Any?): Boolean = when {
@@ -237,7 +238,8 @@ data class Backup constructor(
                 || cpuArch != other.cpuArch
                 || backupFolderName != other.backupFolderName
                 || isEncrypted != other.isEncrypted
-                || permissions != other.permissions -> false
+                || permissions != other.permissions
+                || persistent != other.persistent -> false
         else -> true
     }
 
@@ -265,6 +267,7 @@ data class Backup constructor(
         result = 31 * result + backupFolderName.hashCode()
         result = 31 * result + isEncrypted.hashCode()
         result = 31 * result + permissions.hashCode()
+        result = 31 * result + persistent.hashCode()
         return result
     }
 

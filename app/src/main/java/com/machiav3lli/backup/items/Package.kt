@@ -31,8 +31,6 @@ import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
-import com.machiav3lli.backup.handler.LogsHandler.Companion.unhandledException
 import com.machiav3lli.backup.handler.getPackageStorageStats
 import com.machiav3lli.backup.preferences.pref_cachePackages
 import com.machiav3lli.backup.utils.FileUtils
@@ -142,7 +140,7 @@ class Package {
             storageStats = context.getPackageStorageStats(packageName)
             true
         } catch (e: PackageManager.NameNotFoundException) {
-            logException(e, "Could not refresh StorageStats. Package was not found")
+            LogsHandler.logException(e, "Could not refresh StorageStats. Package was not found")
             false
         }
     }
@@ -155,7 +153,7 @@ class Package {
             packageInfo = AppInfo(context, pi)
             refreshStorageStats(context)
         } catch (e: PackageManager.NameNotFoundException) {
-            logException(e, "$packageName is not installed. Refresh failed")
+            LogsHandler.logException(e, "$packageName is not installed. Refresh failed")
             return false
         }
         return true
@@ -232,7 +230,7 @@ class Package {
                 }
             }
         } catch (e: Throwable) {
-            unhandledException(e)
+            LogsHandler.unhandledException(e)
             null
         }
     }
