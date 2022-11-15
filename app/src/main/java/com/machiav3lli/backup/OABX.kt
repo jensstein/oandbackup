@@ -37,6 +37,7 @@ import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.preferences.pref_cancelOnStart
+import com.machiav3lli.backup.preferences.pref_logToSystemLogcat
 import com.machiav3lli.backup.preferences.pref_maxLogLines
 import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
@@ -56,7 +57,7 @@ class OABX : Application() {
     // packages are an external resource, so handle them as a singleton
     var packageCache = mutableMapOf<String, Package>()
     var cache: LruCache<String, MutableList<Package>> =
-        LruCache(10)    //TODO hg42 not caching 4000 lists? right?
+        LruCache(10)
 
     var work: WorkHandler? = null
 
@@ -67,7 +68,8 @@ class OABX : Application() {
             override fun log(
                 priority: Int, tag: String?, message: String, t: Throwable?
             ) {
-                super.log(priority, "$tag", message, t)
+                if (pref_logToSystemLogcat.value)
+                    super.log(priority, "$tag", message, t)
 
                 val prio =
                         when (priority) {

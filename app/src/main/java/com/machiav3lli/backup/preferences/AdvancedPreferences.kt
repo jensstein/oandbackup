@@ -119,6 +119,12 @@ val pref_allowDowngrade = BooleanPref(
 
 //---------------------------------------- developer settings
 
+val pref_logToSystemLogcat = BooleanPref(
+    key = "dev.logToSystemLogcat",
+    summary = "log to Android logcat, otherwise only internal",
+    defaultValue = false
+)
+
 val pref_refreshOnStart = BooleanPref(
     key = "dev.refreshOnStart",
     summary = "automatically refresh package list on startup",
