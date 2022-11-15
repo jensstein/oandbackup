@@ -159,10 +159,11 @@ class AppSheet() : BaseSheet(), ActionListener {
     fun AppPage() {
         val thePackages by requireMainActivity().viewModel.packageMap.collectAsState()
         val thePackage: Package? = thePackages[packageName]
-        val snackbarText by viewModel.snackbarText.collectAsState()
+        val snackbarText by viewModel.snackbarText.flow.collectAsState("")
         val appExtras by viewModel.appExtras.collectAsState()
         val refreshNow by viewModel.refreshNow
         val snackbarHostState = remember { SnackbarHostState() }
+        val snackbarVisible = snackbarText.isNotEmpty()
         val nestedScrollConnection = rememberNestedScrollInteropConnection()
         val coroutineScope = rememberCoroutineScope()
         val columns = 3
@@ -247,7 +248,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                                     dismissAllowingStateLoss()
                                 }
                             }
-                            AnimatedVisibility(visible = !snackbarText.isNullOrEmpty()) {
+                            AnimatedVisibility(visible = snackbarVisible) {
                                 Text(
                                     text = snackbarText.toString(),
                                     color = MaterialTheme.colorScheme.primary,
@@ -257,14 +258,16 @@ class AppSheet() : BaseSheet(), ActionListener {
                                 )
                             }
                             Spacer(Modifier.height(8.dp))
-                            if (snackbarText.isNullOrEmpty()) Divider(thickness = 2.dp)
-                            else LinearProgressIndicator(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(5.dp),
-                                trackColor = MaterialTheme.colorScheme.surface,
-                                color = MaterialTheme.colorScheme.primary,
-                            )
+                            if (snackbarVisible)
+                                LinearProgressIndicator(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(5.dp),
+                                    trackColor = MaterialTheme.colorScheme.surface,
+                                    color = MaterialTheme.colorScheme.primary,
+                                )
+                            else
+                                Divider(thickness = 2.dp)
                         }
                     },
                     snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -426,7 +429,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                                             icon = Phosphor.ArchiveTray,
                                             text = stringResource(id = R.string.backup),
                                             fullWidth = true,
-                                            enabled = snackbarText.isNullOrEmpty(),
+                                            enabled = ! snackbarVisible,
                                             onClick = { showBackupDialog(packageInfo) }
                                         )
                                     }
@@ -436,7 +439,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                                             text = stringResource(id = R.string.delete_all_backups),
                                             fullWidth = true,
                                             positive = false,
-                                            enabled = snackbarText.isNullOrEmpty(),
+                                            enabled = ! snackbarVisible,
                                             onClick = {
                                                 snackbarHostState.showDeleteAllBackupsDialog(
                                                     packageInfo,
@@ -687,10 +690,10 @@ class AppSheet() : BaseSheet(), ActionListener {
     }
 
     fun showSnackBar(message: String) {
-        viewModel.setSnackbarText(message)
+        viewModel.snackbarText.value = message
     }
 
     fun dismissSnackBar() {
-        viewModel.setSnackbarText("")
+        viewModel.snackbarText.value = ""
     }
 }

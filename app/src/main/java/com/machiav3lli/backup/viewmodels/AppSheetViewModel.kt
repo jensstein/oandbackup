@@ -31,11 +31,11 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.preferences.pref_traceFlows
+import com.machiav3lli.backup.ui.compose.MutableComposableSharedFlow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -63,13 +63,13 @@ class AppSheetViewModel(
         AppExtras(app?.packageName ?: "")
     )
 
-    private val _snackbarText = MutableStateFlow("")
-    val snackbarText = _snackbarText.asStateFlow()
-
-    fun setSnackbarText(text: String) {
-        viewModelScope.launch {
-            _snackbarText.emit(text)
-        }
+    val snackbarText = MutableComposableSharedFlow(
+        "",
+        viewModelScope,
+        "snackBarText"
+    ) {
+        if (pref_traceFlows.value)
+            Timber.w("*** snackbarText <<- '${it}'")
     }
 
     private var notificationId: Int = System.currentTimeMillis().toInt()
