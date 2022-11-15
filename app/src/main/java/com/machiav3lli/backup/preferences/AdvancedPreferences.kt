@@ -6,9 +6,14 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,12 +50,52 @@ fun AdvancedPrefsPage() {
     val devOptions = Pref.preferences["dev"] ?: listOf()
 
     AppTheme {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            item {
+        if (true) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                item {
+                    PrefsGroup(prefs = prefs) { pref ->
+                        if (pref == pref_enableSpecialBackups) {
+                            val newModel = context.sortFilterModel
+                            newModel.mainFilter = newModel.mainFilter and MAIN_FILTER_DEFAULT
+                            context.sortFilterModel = newModel
+                        }
+                    }
+                }
+                item {
+                    PrefsExpandableGroupHeader(
+                        titleId = R.string.prefs_dev_settings,
+                        summaryId = R.string.prefs_dev_settings_summary,
+                        icon = Phosphor.Warning
+                    ) {
+                        expand(!expanded)
+                    }
+                }
+                item {
+                    Box {
+                        AnimatedVisibility(
+                            visible = expanded,
+                            //enter = EnterTransition.None,
+                            //exit = ExitTransition.None
+                            enter = expandVertically() + fadeIn(),
+                            exit = shrinkVertically() + fadeOut()
+                        ) {
+                            PrefsGroup(prefs = devOptions)
+                        }
+                    }
+                }
+            }
+        } else {
+            val scroll = rememberScrollState()
+            Column(
+                Modifier
+                    .verticalScroll(scroll)
+                    .padding(PaddingValues(8.dp)),
+                verticalArrangement = Arrangement.spacedBy(0.dp)
+            ) {
                 PrefsGroup(prefs = prefs) { pref ->
                     if (pref == pref_enableSpecialBackups) {
                         val newModel = context.sortFilterModel
@@ -58,8 +103,6 @@ fun AdvancedPrefsPage() {
                         context.sortFilterModel = newModel
                     }
                 }
-            }
-            item {
                 PrefsExpandableGroupHeader(
                     titleId = R.string.prefs_dev_settings,
                     summaryId = R.string.prefs_dev_settings_summary,
@@ -67,10 +110,10 @@ fun AdvancedPrefsPage() {
                 ) {
                     expand(!expanded)
                 }
-            }
-            item {
                 AnimatedVisibility(
                     visible = expanded,
+                    //enter = EnterTransition.None,
+                    //exit = ExitTransition.None
                     enter = expandVertically() + fadeIn(),
                     exit = shrinkVertically() + fadeOut()
                 ) {

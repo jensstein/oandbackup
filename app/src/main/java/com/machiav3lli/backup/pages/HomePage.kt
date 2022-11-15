@@ -17,6 +17,9 @@
  */
 package com.machiav3lli.backup.pages
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -68,6 +71,7 @@ fun HomePage() {
 
     val filteredList by main.viewModel.filteredList.collectAsState(emptyList())
     val updatedPackages by main.viewModel.updatedPackages.collectAsState(emptyList())
+    val updaterVisible = updatedPackages.isNotEmpty()
     var updaterExpanded by remember { mutableStateOf(false) }
 
     val batchConfirmListener = object : BatchDialogFragment.ConfirmListener {
@@ -81,13 +85,16 @@ fun HomePage() {
     Scaffold(
         containerColor = Color.Transparent,
         floatingActionButton = {
-            // AnimatedVisibility STILL doesn't work, it hides the button and shows it when clicking refresh button
+            // AnimatedVisibility doesn't work with animation,
+            // it hides the button and shows it when clicking the refresh button
             // none of the "visible" expressions work (hg42)
-            //AnimatedVisibility(
-            //    modifier = Modifier.padding(start = 28.dp),
-            //    visible = updatedPackages.isNotEmpty()
-            //) {
-            if (updatedPackages.isNotEmpty()) {
+            //if (updaterVisible) {
+            AnimatedVisibility(
+                modifier = Modifier.padding(start = 28.dp),
+                visible = updaterVisible,
+                enter = EnterTransition.None,
+                exit = ExitTransition.None
+            ) {
                 ExpandingFadingVisibility(
                     expanded = updaterExpanded,
                     expandedView = {
