@@ -278,19 +278,19 @@ class OABX : Application() {
         val busy = mutableStateOf(0)
 
         fun beginBusy(name: String? = null) {
-            busy.value = _busy.accumulateAndGet(+1, Int::plus)
             if (pref_traceBusy.value) {
                 val label = name ?: methodName(1)
                 Timber.w("*** ${"+---".repeat(_busy.get())}\\ busy $label")
             }
+            busy.value = _busy.accumulateAndGet(+1, Int::plus)
         }
 
         fun endBusy(name: String? = null) {
+            busy.value = _busy.accumulateAndGet(-1, Int::plus)
             if (pref_traceBusy.value) {
                 val label = name ?: methodName(1)
                 Timber.w("*** ${"+---".repeat(_busy.get())}/ busy $label")
             }
-            busy.value = _busy.accumulateAndGet(-1, Int::plus)
         }
     }
 }
