@@ -1,8 +1,9 @@
 package com.machiav3lli.backup.ui.compose.item
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,8 +15,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -23,6 +27,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -38,10 +43,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -53,6 +60,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Popup
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.preferences.pref_showInfoLogBar
@@ -61,6 +69,7 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.MagnifyingGlass
 import com.machiav3lli.backup.ui.compose.icons.phosphor.X
 import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.compose.vertical
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.lang.Float.max
@@ -71,19 +80,23 @@ fun DefaultPreview() {
     var count by remember { mutableStateOf(0) }
     val busy by remember { OABX.busy }
 
-    val maxCount = 10
+    val maxCount = 4
 
-    OABX.addInfoText("xxxxxxxxxxxxxxxxx")
     OABX.clearInfoText()
+    repeat(10) { OABX.addInfoText("line $it") }
     OABX.setProgress(count, maxCount)
 
     LaunchedEffect(OABX) {
-        while (count < maxCount) {
-            OABX.beginBusy()
-            delay(3000)
-            count += 1
-            OABX.endBusy()
-            delay(2000)
+        MainScope().launch {
+            while (count < maxCount) {
+                OABX.beginBusy()
+                OABX.addInfoText("count is $count busy is $busy")
+                delay(1000)
+                count += 1
+                OABX.endBusy()
+                OABX.addInfoText("count is $count busy is $busy")
+                delay(1000)
+            }
         }
     }
 
@@ -159,27 +172,30 @@ fun GlobalIndicators() {
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun TopBar(
     modifier: Modifier = Modifier,
     title: String,
-    actions: @Composable (RowScope.() -> Unit)
+    actions: @Composable (RowScope.() -> Unit),
 ) {
-    var tempShow by remember { mutableStateOf(false) }
+    var tempShowInfo by remember { mutableStateOf(false) }
+    var longShowInfo by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-    val infoText = OABX.getInfoText(n = 5, fill = "")
-    var lastInfoText by remember { mutableStateOf(infoText) }
-    val changed = (infoText != lastInfoText)
+    val infoText =
+        if (longShowInfo)
+            OABX.getInfoText()
+        else
+            OABX.getInfoText(n = 5, fill = "")
+    val scroll = rememberScrollState(0)
+    val showInfo = !longShowInfo && (OABX.showInfo || tempShowInfo) && pref_showInfoLogBar.value
 
-    SideEffect {
-        if (changed) {
-            lastInfoText = infoText
-            tempShow = true
-            scope.launch {
-                delay(5000)
-                tempShow = false
-            }
+    LaunchedEffect(infoText) {
+        tempShowInfo = true
+        scope.launch {
+            scroll.scrollTo(scroll.maxValue)
+            delay(5000)
+            tempShowInfo = false
         }
     }
 
@@ -187,16 +203,21 @@ fun TopBar(
         TopAppBar(
             modifier = modifier.wrapContentHeight(),
             title = {
-                if ((OABX.showInfo || tempShow) && pref_showInfoLogBar.value) {
+                if (showInfo) {
                     Row(
-                        verticalAlignment = Alignment.Bottom,
+                        verticalAlignment = if (showInfo) Alignment.Bottom else Alignment.CenterVertically,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                OABX.showInfo = !OABX.showInfo
-                                if (!OABX.showInfo)
-                                    tempShow = false
-                            }
+                            .wrapContentSize()
+                            .combinedClickable(
+                                onClick = {
+                                    OABX.showInfo = !OABX.showInfo
+                                    if (!OABX.showInfo)
+                                        tempShowInfo = false
+                                },
+                                onLongClick = {
+                                    longShowInfo = true
+                                }
+                            )
                     ) {
                         Text(
                             text = buildAnnotatedString {
@@ -214,16 +235,26 @@ fun TopBar(
                         Text(
                             text = infoText,
                             style = MaterialTheme.typography.bodySmall,
-                            fontSize = 11.0.sp,
-                            lineHeight = 11.0.sp,
-                            color = MaterialTheme.colorScheme.onBackground,
+                            fontSize = 10.0.sp,
+                            lineHeight = 10.0.sp,
+                            color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .background(
-                                    color = MaterialTheme.colorScheme.background,
+                                    color = MaterialTheme.colorScheme.surface,
                                     shape = MaterialTheme.shapes.extraSmall
                                 )
                                 .padding(horizontal = 4.dp)
+                                .combinedClickable(
+                                    onClick = {
+                                        OABX.showInfo = !OABX.showInfo
+                                        if (!OABX.showInfo)
+                                            tempShowInfo = false
+                                    },
+                                    onLongClick = {
+                                        longShowInfo = true
+                                    }
+                                )
                         )
                     }
                 } else {
@@ -232,15 +263,53 @@ fun TopBar(
                         modifier = Modifier
                             .fillMaxSize()
                             .ifThen(pref_showInfoLogBar.value) {
-                                clickable {
-                                    OABX.showInfo = !OABX.showInfo
-                                }
+                                combinedClickable(
+                                    onClick = {
+                                        OABX.showInfo = !OABX.showInfo
+                                        if (!OABX.showInfo)
+                                            tempShowInfo = false
+                                    },
+                                    onLongClick = {
+                                        longShowInfo = true
+                                    }
+                                )
                             }
                     ) {
                         Text(
                             text = title,
                             style = MaterialTheme.typography.headlineMedium,
                         )
+                    }
+                    if (longShowInfo) {
+                        Popup {
+                            Surface(
+                                color = MaterialTheme.colorScheme.surface,
+                                contentColor = MaterialTheme.colorScheme.onSurface,
+                                shape = AbsoluteRoundedCornerShape(16.dp),
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(horizontal = 4.dp, vertical = 4.dp)
+                                    .combinedClickable(
+                                        onClick = {
+                                            longShowInfo = false
+                                            tempShowInfo = false
+                                        }
+                                    )
+                            ) {
+                                Text(
+                                    text = infoText,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    fontSize = 10.0.sp,
+                                    lineHeight = 10.0.sp,
+                                    //color = MaterialTheme.colorScheme.onSurface,
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(horizontal = 16.dp)
+                                        .verticalScroll(scroll)
+                                        .clip(RectangleShape)
+                                )
+                            }
+                        }
                     }
                 }
             },

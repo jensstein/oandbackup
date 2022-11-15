@@ -147,8 +147,9 @@ class OABX : Application() {
 
         MainScope().launch {
             delay(1000)
-            addInfoText("[click to hide/show permanently]")
-            addInfoText("")
+            addInfoText("--> click title to keep infobox open")
+            addInfoText("--> long click for big infobox")
+            addInfoText("--> click big infobox to close")
         }
     }
 
@@ -234,7 +235,7 @@ class OABX : Application() {
                 infoLines.drop(1)
         }
 
-        fun getInfoText(n: Int, fill: String? = null): String {
+        fun getInfoText(n: Int = nInfoLines, fill: String? = null): String {
             val lines = infoLines.takeLast(n).toMutableList()
             if (fill != null)
                 while (lines.size < n)
