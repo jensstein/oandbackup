@@ -56,10 +56,8 @@ class MainViewModel(
     private val appContext: Application
 ) : AndroidViewModel(appContext) {
 
-    // TODO consider adding option for tracing
-
     val blocklist = db.blocklistDao.allFlow
-
+        //------------------------------------------------------------------------------------------
         .trace { "*** blocklist <<- ${it.size}" }
         .stateIn(
             viewModelScope,
@@ -69,7 +67,7 @@ class MainViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val backupsMap = db.backupDao.allFlow
-
+        //------------------------------------------------------------------------------------------
         .mapLatest { it.groupBy(Backup::packageName) }
         .trace { "*** backupsMap <<- ${it.size}" }
         .stateIn(
@@ -80,7 +78,7 @@ class MainViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val appExtrasMap = db.appExtrasDao.allFlow
-
+        //------------------------------------------------------------------------------------------
         .mapLatest { it.associateBy(AppExtras::packageName) }
         .trace { "*** appExtrasMap <<- ${it.size}" }
         .stateIn(
@@ -90,7 +88,7 @@ class MainViewModel(
         )
 
     val packageList = combine(db.appInfoDao.allFlow, backupsMap) { p, b ->
-
+        //==========================================================================================
         if (pref_traceFlows.value)
             Timber.w("******************** database - db: ${p.size} backups: ${b.size}")
 
@@ -113,6 +111,7 @@ class MainViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val packageMap = packageList
+        //------------------------------------------------------------------------------------------
         .mapLatest { it.associateBy(Package::packageName) }
         .stateIn(
             viewModelScope,
@@ -121,7 +120,7 @@ class MainViewModel(
         )
 
     val notBlockedList = combine(packageList, blocklist) { p, b ->
-
+        //==========================================================================================
         if (pref_traceFlows.value)
             Timber.w(
                 "******************** blocking - list: ${p.size} block: ${
@@ -144,21 +143,28 @@ class MainViewModel(
             emptyList()
         )
 
-    val searchQuery = MutableComposableSharedFlow("", viewModelScope, "searchQuery") {
+    val searchQuery = MutableComposableSharedFlow(
+        //------------------------------------------------------------------------------------------
+        "",
+        viewModelScope,
+        "searchQuery"
+    ) {
         if (pref_traceFlows.value)
             Timber.w("*** searchQuery <<- '${it}'")
     }
 
     var modelSortFilter = MutableComposableSharedFlow(
+        //------------------------------------------------------------------------------------------
         OABX.context.sortFilterModel,
         viewModelScope,
         "modelSortFilter"
     ) {
-        //Timber.w("*** modelSortFilter <<- ${it}")
+        if (pref_traceFlows.value)
+            Timber.w("*** modelSortFilter <<- ${it}")
     }
 
     val filteredList = combine(notBlockedList, modelSortFilter.flow, searchQuery.flow) { p, f, s ->
-
+        //==========================================================================================
         if (pref_traceFlows.value)
             Timber.w("******************** filtering - list: ${p.size} filter: $f")
 
@@ -185,6 +191,8 @@ class MainViewModel(
     val updatedPackages = notBlockedList // TODO Fix not showing on switch
         .mapLatest { it.filter(Package::isUpdated).toMutableList() }
         .trace { "*** updatedPackages <<- ${it.size}" }
+
+
 
 
     // TODO add to interface
