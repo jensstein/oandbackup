@@ -2,7 +2,6 @@ package com.machiav3lli.backup.ui.compose.item
 
 import android.text.format.Formatter
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,11 +9,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,7 +32,6 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.ClockCounterClockwise
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Lock
 import com.machiav3lli.backup.ui.compose.icons.phosphor.LockOpen
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
-import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.getFormattedDate
 
 @Composable
@@ -43,14 +41,12 @@ fun BackupItem(
     onDelete: (Backup) -> Unit = { },
     rewriteBackup: (Backup) -> Unit = { },
 ) {
-    OutlinedCard(
+    Card(
         modifier = Modifier,
-        shape = RoundedCornerShape(LocalShapes.current.medium),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface),
-        colors = CardDefaults.outlinedCardColors(
-            containerColor = MaterialTheme.colorScheme.background
+        shape = MaterialTheme.shapes.medium,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
         ),
-        elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(
             modifier = Modifier
@@ -58,11 +54,7 @@ fun BackupItem(
                 .padding(8.dp)
                 .wrapContentHeight()
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
-            ) {
+            Row(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     text = item.versionName ?: "",
                     modifier = Modifier
@@ -85,11 +77,7 @@ fun BackupItem(
                 )
                 BackupLabels(item = item)
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
-            ) {
+            Row(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     text = item.backupDate.getFormattedDate(true) ?: "",
                     modifier = Modifier
@@ -140,9 +128,7 @@ fun BackupItem(
                 }
             }
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 var persistent by remember(item.persistent) {
