@@ -81,48 +81,24 @@ fun AdvancedPrefsPage() {
     }
 }
 
-val pref_enableSpecialBackups = BooleanPref(
-    key = "adv.enableSpecialBackups",
-    titleId = R.string.prefs_enablespecial,
-    summaryId = R.string.prefs_enablespecial_summary,
-    icon = Phosphor.AsteriskSimple,
-    iconTint = ColorSpecial,
-    defaultValue = false
-)
-
-val pref_disableVerification = BooleanPref(
-    key = "adv.disableVerification",
-    titleId = R.string.prefs_disableverification,
-    summaryId = R.string.prefs_disableverification_summary,
-    icon = Phosphor.AndroidLogo,
-    iconTint = ColorUpdated,
-    defaultValue = true
-)
-
-val pref_giveAllPermissions = BooleanPref(
-    key = "adv.giveAllPermissions",
-    titleId = R.string.prefs_restoreallpermissions,
-    summaryId = R.string.prefs_restoreallpermissions_summary,
-    icon = Phosphor.ShieldStar,
-    iconTint = ColorDeData,
-    defaultValue = false
-)
-
-val pref_allowDowngrade = BooleanPref(
-    key = "adv.allowDowngrade",
-    titleId = R.string.prefs_allowdowngrade,
-    summaryId = R.string.prefs_allowdowngrade_summary,
-    icon = Phosphor.ClockCounterClockwise,
-    defaultValue = false
-)
-
-
 //---------------------------------------- developer settings
 
 val pref_logToSystemLogcat = BooleanPref(
     key = "dev.logToSystemLogcat",
     summary = "log to Android logcat, otherwise only internal",
     defaultValue = false
+)
+
+val pref_traceFlows = BooleanPref(
+    key = "dev.traceFlows",
+    summary = "trace Kotlin Flows (reactive data streams)",
+    defaultValue = true
+)
+
+val pref_traceBusy = BooleanPref(
+    key = "dev.traceBusy",
+    summary = "trace beginBusy/endBusy (busy indicator)",
+    defaultValue = true
 )
 
 val pref_refreshOnStart = BooleanPref(
@@ -342,6 +318,44 @@ val pref_forceCrash = LaunchPref(
 ) {
     throw Exception("forceCrash")
 }
+
+
+//---------------------------------------- advanced preferences
+
+val pref_enableSpecialBackups = BooleanPref(
+    key = "adv.enableSpecialBackups",
+    titleId = R.string.prefs_enablespecial,
+    summaryId = R.string.prefs_enablespecial_summary,
+    icon = Phosphor.AsteriskSimple,
+    iconTint = ColorSpecial,
+    defaultValue = false
+)
+
+val pref_disableVerification = BooleanPref(
+    key = "adv.disableVerification",
+    titleId = R.string.prefs_disableverification,
+    summaryId = R.string.prefs_disableverification_summary,
+    icon = Phosphor.AndroidLogo,
+    iconTint = ColorUpdated,
+    defaultValue = true
+)
+
+val pref_giveAllPermissions = BooleanPref(
+    key = "adv.giveAllPermissions",
+    titleId = R.string.prefs_restoreallpermissions,
+    summaryId = R.string.prefs_restoreallpermissions_summary,
+    icon = Phosphor.ShieldStar,
+    iconTint = ColorDeData,
+    defaultValue = false
+)
+
+val pref_allowDowngrade = BooleanPref(
+    key = "adv.allowDowngrade",
+    titleId = R.string.prefs_allowdowngrade,
+    summaryId = R.string.prefs_allowdowngrade_summary,
+    icon = Phosphor.ClockCounterClockwise,
+    defaultValue = false
+)
 
 
 

@@ -1,6 +1,18 @@
 package com.machiav3lli.backup.utils
 
+import com.machiav3lli.backup.preferences.pref_traceFlows
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onEach
+import timber.log.Timber
+
 object TraceUtils {
+
+    fun <T> Flow<T>.trace(createText: suspend (T) -> String): Flow<T> {
+        return if (pref_traceFlows.value)
+            onEach { Timber.w(createText(it)) }
+        else
+            this
+    }
 
     fun stackFrame(skip: Int = 0): StackTraceElement? {
         // >= Java 9
