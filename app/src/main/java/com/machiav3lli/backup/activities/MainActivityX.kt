@@ -50,8 +50,9 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.rememberPagerState
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
-import com.machiav3lli.backup.NAV_MAIN
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.addInfoText
 import com.machiav3lli.backup.R
@@ -74,13 +75,12 @@ import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.ExpandableSearchAction
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TopBar
-import com.machiav3lli.backup.ui.compose.navigation.BottomNavBar
 import com.machiav3lli.backup.ui.compose.navigation.MainNavHost
 import com.machiav3lli.backup.ui.compose.navigation.NavItem
+import com.machiav3lli.backup.ui.compose.navigation.PagerNavBar
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.FileUtils.invalidateBackupLocation
 import com.machiav3lli.backup.utils.TraceUtils.classAndId
-import com.machiav3lli.backup.utils.destinationToItem
 import com.machiav3lli.backup.utils.isEncryptionEnabled
 import com.machiav3lli.backup.utils.setCustomTheme
 import com.machiav3lli.backup.utils.sortFilterModel
@@ -103,7 +103,10 @@ class MainActivityX : BaseActivity() {
 
     private lateinit var sheetSortFilter: SortFilterSheet
 
-    @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+    @OptIn(
+        ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class,
+        ExperimentalPagerApi::class
+    )
     override fun onCreate(savedInstanceState: Bundle?) {
         val context = this
         val mainChanged = (this != OABX.mainSaved)
@@ -167,18 +170,21 @@ class MainActivityX : BaseActivity() {
 
         setContent {
             AppTheme {
+                val pagerState = rememberPagerState()
                 val navController = rememberAnimatedNavController()
-                var pageTitle by remember { mutableStateOf(NavItem.Home.title) }
+                val pages = listOf(
+                    NavItem.Home,
+                    NavItem.Backup,
+                    NavItem.Restore,
+                    NavItem.Scheduler,
+                )
+                val currentPage by remember(pagerState.currentPage) { mutableStateOf(pages[pagerState.currentPage]) }
 
                 var query by rememberSaveable { mutableStateOf(viewModel.searchQuery.value) }
                 //val query by viewModel.searchQuery.flow.collectAsState(viewModel.searchQuery.initial)  // doesn't work with rotate...
-                val searchExpanded = query.length > 0
+                val searchExpanded = query.isNotEmpty()
 
                 Timber.d("compose: query = '$query'")
-
-                navController.addOnDestinationChangedListener { _, destination, _ ->
-                    pageTitle = destination.destinationToItem()?.title ?: NavItem.Home.title
-                }
 
                 Timber.d("search: ${viewModel.searchQuery.value} filter: ${viewModel.modelSortFilter.value}")
                 if (freshStart) {
@@ -197,7 +203,7 @@ class MainActivityX : BaseActivity() {
                         //TODO hg42 I guess this shouldn't be necessary, but no better solution to start the flow game, yet
                         viewModel.searchQuery.value = ""
                         viewModel.modelSortFilter.value = OABX.context.sortFilterModel
-                        if(pref_refreshOnStart.value)
+                        if (pref_refreshOnStart.value)
                             refreshPackages()
                     }
                 }
@@ -206,9 +212,9 @@ class MainActivityX : BaseActivity() {
                     containerColor = Color.Transparent,
                     contentColor = MaterialTheme.colorScheme.onBackground,
                     topBar = {
-                        if (navController.currentDestination?.route == NavItem.Scheduler.destination)
+                        if (currentPage.destination == NavItem.Scheduler.destination)
                             TopBar(
-                                title = stringResource(id = pageTitle)
+                                title = stringResource(id = currentPage.title)
                             ) {
 
                                 RoundButton(
@@ -237,7 +243,7 @@ class MainActivityX : BaseActivity() {
                                 ) { navController.navigate(NavItem.Settings.destination) }
                             }
                         else Column() {
-                            TopBar(title = stringResource(id = pageTitle)) {
+                            TopBar(title = stringResource(id = currentPage.title)) {
                                 ExpandableSearchAction(
                                     expanded = searchExpanded,
                                     query = query,
@@ -303,14 +309,14 @@ class MainActivityX : BaseActivity() {
                         }
                     },
                     bottomBar = {
-                        BottomNavBar(page = NAV_MAIN, navController = navController)
+                        PagerNavBar(pageItems = pages, pagerState = pagerState)
                     }
                 ) { paddingValues ->
-
                     MainNavHost(
                         modifier = Modifier.padding(paddingValues),
                         navController = navController,
-                        application = application
+                        pagerState,
+                        pages
                     )
                 }
             }

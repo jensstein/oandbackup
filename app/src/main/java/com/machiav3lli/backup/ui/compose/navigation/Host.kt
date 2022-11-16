@@ -16,13 +16,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.activity
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.PagerState
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.PrefsActivityX
 import com.machiav3lli.backup.dbs.ODatabase
-import com.machiav3lli.backup.pages.BatchPage
-import com.machiav3lli.backup.pages.HomePage
 import com.machiav3lli.backup.pages.PermissionsPage
-import com.machiav3lli.backup.pages.SchedulerPage
 import com.machiav3lli.backup.pages.WelcomePage
 import com.machiav3lli.backup.preferences.AdvancedPrefsPage
 import com.machiav3lli.backup.preferences.ExportsPage
@@ -31,45 +30,27 @@ import com.machiav3lli.backup.preferences.ServicePrefsPage
 import com.machiav3lli.backup.preferences.TerminalPage
 import com.machiav3lli.backup.preferences.ToolsPrefsPage
 import com.machiav3lli.backup.preferences.UserPrefsPage
-import com.machiav3lli.backup.viewmodels.BatchViewModel
 import com.machiav3lli.backup.viewmodels.ExportsViewModel
 import com.machiav3lli.backup.viewmodels.LogViewModel
-import com.machiav3lli.backup.viewmodels.SchedulerViewModel
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalPagerApi::class)
 @Composable
 fun MainNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    application: Application
+    pagerState: PagerState,
+    pages: List<NavItem>
 ) {
     AnimatedNavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = NavItem.Home.destination
+        startDestination = NavItem.Main.destination
     ) {
-        slideUpComposable(NavItem.Home.destination) {
-            HomePage()
-        }
-        slideUpComposable(route = NavItem.Backup.destination) {
-            val viewModel =
-                viewModel<BatchViewModel>(factory = BatchViewModel.Factory(application))
-            BatchPage(viewModel, true)
-        }
-        slideUpComposable(NavItem.Restore.destination) {
-            val viewModel =
-                viewModel<BatchViewModel>(factory = BatchViewModel.Factory(application))
-            BatchPage(viewModel, false)
-        }
-        slideUpComposable(NavItem.Scheduler.destination) {
-            val viewModel = viewModel<SchedulerViewModel>(
-                factory =
-                SchedulerViewModel.Factory(
-                    ODatabase.getInstance(navController.context).scheduleDao,
-                    application
-                )
+        slideUpComposable(NavItem.Main.destination) {
+            SlidePager(
+                pagerState = pagerState,
+                pageItems = pages,
             )
-            SchedulerPage(viewModel)
         }
         activity(NavItem.Settings.destination) {
             this.activityClass = PrefsActivityX::class
