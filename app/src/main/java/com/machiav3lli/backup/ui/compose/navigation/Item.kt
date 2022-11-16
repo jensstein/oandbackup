@@ -1,15 +1,19 @@
 package com.machiav3lli.backup.ui.compose.navigation
 
 import android.app.Application
-import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.pages.BatchPage
 import com.machiav3lli.backup.pages.HomePage
 import com.machiav3lli.backup.pages.SchedulerPage
+import com.machiav3lli.backup.preferences.AdvancedPrefsPage
+import com.machiav3lli.backup.preferences.ServicePrefsPage
+import com.machiav3lli.backup.preferences.ToolsPrefsPage
+import com.machiav3lli.backup.preferences.UserPrefsPage
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ArchiveTray
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Bug
@@ -87,7 +91,7 @@ sealed class NavItem(var title: Int, var icon: ImageVector, var destination: Str
     )
 
     @Composable
-    fun ComposablePage(context: Context, application: Application) {
+    fun ComposablePage(navController: NavHostController, application: Application) {
         when (destination) {
             Home.destination -> HomePage()
             Backup.destination, Restore.destination -> {
@@ -100,13 +104,17 @@ sealed class NavItem(var title: Int, var icon: ImageVector, var destination: Str
                 val viewModel = viewModel<SchedulerViewModel>(
                     factory =
                     SchedulerViewModel.Factory(
-                        ODatabase.getInstance(context).scheduleDao,
+                        ODatabase.getInstance(navController.context).scheduleDao,
                         application
                     )
                 )
 
                 SchedulerPage(viewModel)
             }
+            UserPrefs.destination -> UserPrefsPage()
+            ServicePrefs.destination -> ServicePrefsPage()
+            AdvancedPrefs.destination -> AdvancedPrefsPage()
+            ToolsPrefs.destination -> ToolsPrefsPage(navController = navController)
         }
     }
 }

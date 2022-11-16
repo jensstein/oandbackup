@@ -50,6 +50,7 @@ fun MainNavHost(
             SlidePager(
                 pagerState = pagerState,
                 pageItems = pages,
+                navController = navController
             )
         }
         activity(NavItem.Settings.destination) {

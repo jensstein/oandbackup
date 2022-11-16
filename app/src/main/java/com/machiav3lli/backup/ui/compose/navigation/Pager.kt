@@ -15,10 +15,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -29,9 +29,17 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun SlidePager(modifier: Modifier = Modifier, pageItems: List<NavItem>, pagerState: PagerState) {
+fun SlidePager(
+    modifier: Modifier = Modifier,
+    pageItems: List<NavItem>,
+    pagerState: PagerState,
+    navController: NavHostController
+) {
     HorizontalPager(modifier = modifier, state = pagerState, count = pageItems.size) { page ->
-        pageItems[page].ComposablePage(context = LocalContext.current, application = OABX.app)
+        pageItems[page].ComposablePage(
+            navController = navController,
+            application = OABX.app
+        )
     }
 }
 
