@@ -1,28 +1,26 @@
 package com.machiav3lli.backup.ui.compose.item
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -33,7 +31,6 @@ import com.machiav3lli.backup.ui.compose.SelectionContainerX
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ShareNetwork
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
-import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.getFormattedDate
 
 @Composable
@@ -42,18 +39,17 @@ fun LogItem(
     onShare: (Log) -> Unit = {},
     onDelete: (Log) -> Unit = {}
 ) {
-    OutlinedCard(
-        shape = RoundedCornerShape(LocalShapes.current.medium),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface),
+    Card(
+        shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.outlinedCardColors(
-            containerColor = MaterialTheme.colorScheme.background
+            containerColor = Color.Transparent
         ),
-        elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -61,9 +57,7 @@ fun LogItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
-                    modifier = Modifier
-                        .wrapContentHeight()
-                        .weight(1f)
+                    modifier = Modifier.weight(1f)
                 ) {
                     Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
                         Column(modifier = Modifier.weight(1f, true)) {
@@ -100,18 +94,18 @@ fun LogItem(
                             }
                         }
                         ElevatedActionButton(
-                            icon = Phosphor.ShareNetwork,
-                            text = stringResource(id = R.string.shareTitle),
-                            withText = false,
-                            positive = true,
-                            onClick = { onShare(item) }
-                        )
-                        ElevatedActionButton(
                             icon = Phosphor.TrashSimple,
                             text = stringResource(id = R.string.delete),
                             withText = false,
                             positive = false,
                             onClick = { onDelete(item) }
+                        )
+                        ElevatedActionButton(
+                            icon = Phosphor.ShareNetwork,
+                            text = stringResource(id = R.string.shareTitle),
+                            withText = false,
+                            positive = true,
+                            onClick = { onShare(item) }
                         )
                     }
                 }
@@ -123,23 +117,33 @@ fun LogItem(
                 val typo = MaterialTheme.typography.bodySmall
                 SelectionContainerX {
                     if (lines.value.size < maxLines) {
-                        Column {
+                        Column(
+                            modifier = Modifier.padding(8.dp)
+                        ) {
                             lines.value.forEach {
-                                Text(text = if (it == "") " " else it, style = typo)    //TODO hg42 workaround
+                                Text(
+                                    text = if (it == "") " " else it,
+                                    style = typo
+                                )    //TODO hg42 workaround
                             }
                         }
                     } else {
                         val listState = rememberLazyListState()
-                        Box(modifier = Modifier
-                            .fillMaxWidth()
-                            .height(with(LocalDensity.current) { typo.lineHeight.toDp() }*maxLines)
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(with(LocalDensity.current) { typo.lineHeight.toDp() } * maxLines)
                         ) {
-                            LazyColumn(modifier = Modifier
-                                .fillMaxWidth(),
+                            LazyColumn(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentPadding = PaddingValues(8.dp),
                                 state = listState
                             ) {
                                 items(lines.value) {
-                                    Text(text = if (it == "") " " else it, style = typo)    //TODO hg42 workaround
+                                    Text(
+                                        text = if (it == "") " " else it,
+                                        style = typo
+                                    )    //TODO hg42 workaround
                                 }
                             }
                         }
