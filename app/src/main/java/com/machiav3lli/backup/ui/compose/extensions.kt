@@ -9,8 +9,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -44,13 +45,11 @@ fun SelectionContainerX(modifier: Modifier = Modifier, content: @Composable () -
 class MutableComposableSharedFlow<T>(
     var initial: T,
     val scope: CoroutineScope,
-    val label: String = "ComposableSharedFlow",
-    val onEach: (T) -> Unit = {}
+    val label: String = "ComposableSharedFlow"
 ) {
     var flow = MutableSharedFlow<T>()
 
     var state = flow
-        .onEach(onEach)
         .stateIn(
             scope,
             SharingStarted.Eagerly,
@@ -59,7 +58,7 @@ class MutableComposableSharedFlow<T>(
 
     var value: T
         get() {
-            var value = state.value
+            val value = state.value
             Timber.w("*** $label => $value")
             return value
         }
@@ -81,21 +80,24 @@ class MutableComposableStateFlow<T>(
 ) {
     var flow = MutableStateFlow<T>(initial)
 
-    var state = flow
+    val state = flow.asStateFlow()
 
     var value: T
         get() {
-            var value = state.value
+            val value = state.value
             Timber.w("*** $label => $value")
             return value
         }
         set(value: T) {
             Timber.w("*** $label <= $value")
-            initial = value
-            scope.launch { flow.emit(value) }
+            //initial = value
+            scope.launch { flow.update { value } }
         }
 
     init {
         value = initial
     }
 }
+
+//typealias MutableComposableFlow<T> = MutableComposableSharedFlow<T>
+typealias MutableComposableFlow<T> = MutableComposableStateFlow<T>

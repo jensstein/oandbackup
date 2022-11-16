@@ -35,7 +35,7 @@ import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.Package.Companion.invalidateCacheForPackage
 import com.machiav3lli.backup.preferences.pref_traceFlows
 import com.machiav3lli.backup.preferences.pref_usePackageCacheOnUpdate
-import com.machiav3lli.backup.ui.compose.MutableComposableSharedFlow
+import com.machiav3lli.backup.ui.compose.MutableComposableFlow
 import com.machiav3lli.backup.utils.TraceUtils.trace
 import com.machiav3lli.backup.utils.applyFilter
 import com.machiav3lli.backup.utils.sortFilterModel
@@ -148,25 +148,19 @@ class MainViewModel(
             emptyList()
         )
 
-    val searchQuery = MutableComposableSharedFlow(
+    val searchQuery = MutableComposableFlow(
         //------------------------------------------------------------------------------------------ searchQuery
         "",
         viewModelScope,
         "searchQuery"
-    ) {
-        if (pref_traceFlows.value)
-            Timber.w("*** searchQuery <<- '${it}'")
-    }
+    )
 
-    var modelSortFilter = MutableComposableSharedFlow(
+    var modelSortFilter = MutableComposableFlow(
         //------------------------------------------------------------------------------------------ modelSortFilter
         OABX.context.sortFilterModel,
         viewModelScope,
         "modelSortFilter"
-    ) {
-        if (pref_traceFlows.value)
-            Timber.w("*** modelSortFilter <<- ${it}")
-    }
+    )
 
     val filteredList = combine(notBlockedList, modelSortFilter.flow, searchQuery.flow) { p, f, s ->
         //========================================================================================== filteredList

@@ -31,8 +31,7 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.Package
-import com.machiav3lli.backup.preferences.pref_traceFlows
-import com.machiav3lli.backup.ui.compose.MutableComposableSharedFlow
+import com.machiav3lli.backup.ui.compose.MutableComposableFlow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
@@ -63,14 +62,11 @@ class AppSheetViewModel(
         AppExtras(app?.packageName ?: "")
     )
 
-    val snackbarText = MutableComposableSharedFlow(
+    val snackbarText = MutableComposableFlow(
         "",
         viewModelScope,
         "snackBarText"
-    ) {
-        if (pref_traceFlows.value)
-            Timber.w("*** snackbarText <<- '${it}'")
-    }
+    )
 
     private var notificationId: Int = System.currentTimeMillis().toInt()
     val refreshNow = mutableStateOf(false)

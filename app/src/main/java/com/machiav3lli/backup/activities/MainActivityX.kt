@@ -66,6 +66,7 @@ import com.machiav3lli.backup.preferences.pref_catchUncaughtException
 import com.machiav3lli.backup.preferences.pref_refreshOnStart
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
+import com.machiav3lli.backup.ui.compose.MutableComposableSharedFlow
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowsClockwise
 import com.machiav3lli.backup.ui.compose.icons.phosphor.FunnelSimple
@@ -201,9 +202,12 @@ class MainActivityX : BaseActivity() {
                         // runs later
                         Timber.w("******************** freshStart LaunchedEffect(viewModel) ********************")
                         //TODO hg42 I guess this shouldn't be necessary, but no better solution to start the flow game, yet
-                        viewModel.searchQuery.value = ""
-                        viewModel.modelSortFilter.value = OABX.context.sortFilterModel
-                        if (pref_refreshOnStart.value)
+                        //TODO indeed it doesn't seem to be necessary with MutableStateFlow under the hood
+                        if (viewModel.searchQuery is MutableComposableSharedFlow<*>)
+                            viewModel.searchQuery.value = ""
+                        if (viewModel.modelSortFilter is MutableComposableSharedFlow<*>)
+                            viewModel.modelSortFilter.value = OABX.context.sortFilterModel
+                        if(pref_refreshOnStart.value)
                             refreshPackages()
                     }
                 }
