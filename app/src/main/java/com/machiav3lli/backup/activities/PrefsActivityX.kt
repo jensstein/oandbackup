@@ -98,11 +98,9 @@ class PrefsActivityX : BaseActivity() {
                         Column {
                             TopBar(
                                 title = stringResource(
-                                    id =
-                                    if (navController.currentDestination?.route != NavItem.Settings.destination)
-                                        navController.currentDestination?.destinationToItem()?.title
-                                            ?: NavItem.Settings.title
-                                    else currentPage.title
+                                    id = if (barVisible) currentPage.title
+                                    else navController.currentDestination?.destinationToItem()?.title
+                                        ?: NavItem.Settings.title
                                 )
                             ) {
                                 RoundButton(
