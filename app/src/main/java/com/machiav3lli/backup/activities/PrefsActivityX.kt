@@ -29,12 +29,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import com.machiav3lli.backup.NAV_PREFS
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.rememberPagerState
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.ODatabase
@@ -43,8 +43,8 @@ import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Info
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TopBar
-import com.machiav3lli.backup.ui.compose.navigation.BottomNavBar
 import com.machiav3lli.backup.ui.compose.navigation.NavItem
+import com.machiav3lli.backup.ui.compose.navigation.PagerNavBar
 import com.machiav3lli.backup.ui.compose.navigation.PrefsNavHost
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.destinationToItem
@@ -61,7 +61,10 @@ class PrefsActivityX : BaseActivity() {
         LogViewModel.Factory(application)
     }
 
-    @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+    @OptIn(
+        ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class,
+        ExperimentalPagerApi::class
+    )
     override fun onCreate(savedInstanceState: Bundle?) {
         OABX.activity = this
         setCustomTheme()
@@ -69,14 +72,15 @@ class PrefsActivityX : BaseActivity() {
 
         setContent {
             AppTheme {
+                val pagerState = rememberPagerState()
                 val navController = rememberAnimatedNavController()
-                var pageTitle: Int? by remember {
-                    mutableStateOf(NavItem.Settings.title)
-                }
-
-                navController.addOnDestinationChangedListener { _, destination, _ ->
-                    pageTitle = destination.destinationToItem()?.title
-                }
+                val pages = listOf(
+                    NavItem.UserPrefs,
+                    NavItem.ServicePrefs,
+                    NavItem.AdvancedPrefs,
+                    NavItem.ToolsPrefs,
+                )
+                val currentPage by remember(pagerState.currentPage) { mutableStateOf(pages[pagerState.currentPage]) }
 
                 Scaffold(
                     containerColor = Color.Transparent,
@@ -84,7 +88,13 @@ class PrefsActivityX : BaseActivity() {
                     topBar = {
                         Column {
                             TopBar(
-                                title = stringResource(id = pageTitle ?: NavItem.Settings.title)
+                                title = stringResource(
+                                    id =
+                                    if (navController.currentDestination?.route != NavItem.Settings.destination)
+                                        navController.currentDestination?.destinationToItem()?.title
+                                            ?: NavItem.Settings.title
+                                    else currentPage.title
+                                )
                             ) {
                                 RoundButton(
                                     icon = Phosphor.Info,
@@ -97,12 +107,14 @@ class PrefsActivityX : BaseActivity() {
                             }
                         }
                     },
-                    bottomBar = { BottomNavBar(page = NAV_PREFS, navController = navController) }
+                    bottomBar = { PagerNavBar(pageItems = pages, pagerState = pagerState) }
                 ) { paddingValues ->
                     PrefsNavHost(
                         modifier = Modifier.padding(paddingValues),
                         navController = navController,
-                        application = application
+                        application = application,
+                        pages = pages,
+                        pagerState = pagerState,
                     )
                 }
             }

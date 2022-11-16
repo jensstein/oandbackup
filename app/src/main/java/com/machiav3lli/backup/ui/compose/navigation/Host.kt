@@ -23,13 +23,9 @@ import com.machiav3lli.backup.activities.PrefsActivityX
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.pages.PermissionsPage
 import com.machiav3lli.backup.pages.WelcomePage
-import com.machiav3lli.backup.preferences.AdvancedPrefsPage
 import com.machiav3lli.backup.preferences.ExportsPage
 import com.machiav3lli.backup.preferences.LogsPage
-import com.machiav3lli.backup.preferences.ServicePrefsPage
 import com.machiav3lli.backup.preferences.TerminalPage
-import com.machiav3lli.backup.preferences.ToolsPrefsPage
-import com.machiav3lli.backup.preferences.UserPrefsPage
 import com.machiav3lli.backup.viewmodels.ExportsViewModel
 import com.machiav3lli.backup.viewmodels.LogViewModel
 
@@ -39,7 +35,7 @@ fun MainNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     pagerState: PagerState,
-    pages: List<NavItem>
+    pages: List<NavItem>,
 ) {
     AnimatedNavHost(
         modifier = modifier,
@@ -59,29 +55,26 @@ fun MainNavHost(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalPagerApi::class)
 @Composable
 fun PrefsNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    application: Application
+    application: Application,
+    pagerState: PagerState,
+    pages: List<NavItem>
 ) {
     AnimatedNavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = NavItem.UserPrefs.destination
+        startDestination = NavItem.Settings.destination
     ) {
-        slideUpComposable(NavItem.UserPrefs.destination) {
-            UserPrefsPage()
-        }
-        slideUpComposable(route = NavItem.ServicePrefs.destination) {
-            ServicePrefsPage()
-        }
-        slideUpComposable(NavItem.AdvancedPrefs.destination) {
-            AdvancedPrefsPage()
-        }
-        slideUpComposable(NavItem.ToolsPrefs.destination) {
-            ToolsPrefsPage(navController)
+        slideUpComposable(NavItem.Settings.destination) {
+            SlidePager(
+                pageItems = pages,
+                pagerState = pagerState,
+                navController = navController,
+            )
         }
         slideUpComposable(NavItem.Exports.destination) {
             val viewModel = viewModel<ExportsViewModel>(
