@@ -23,13 +23,19 @@ plugins {
     kotlin("kapt")
     kotlin("plugin.serialization").version("1.7.20")
 }
+
 val vKotlin = "1.7.20"
 val vComposeCompiler = "1.3.2"
+
 val vCompose = "1.3.1"
 val vRoom = "2.5.0-beta02"
 val vNavigation = "2.5.3"
 val vAccompanist = "0.27.0"
 val vLibsu = "3.2.1"
+
+val vJunitJupiter = "5.9.1"
+val vAndroidxTest = "1.4.0"
+val vAndroidxTestExt = "1.1.4"
 
 android {
     namespace = "com.machiav3lli.backup"
@@ -149,7 +155,6 @@ dependencies {
     implementation("androidx.preference:preference-ktx:1.2.0")
     implementation("androidx.navigation:navigation-fragment-ktx:$vNavigation")
     implementation("androidx.navigation:navigation-ui-ktx:$vNavigation")
-    implementation("io.coil-kt:coil-compose:2.2.2")
 
     // Compose
     implementation("androidx.compose.runtime:runtime:$vCompose")
@@ -158,6 +163,7 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:$vCompose")
     implementation("androidx.compose.runtime:runtime-livedata:$vCompose")
     implementation("androidx.navigation:navigation-compose:$vNavigation")
+    implementation("io.coil-kt:coil-compose:2.2.2")
     implementation("androidx.compose.material3:material3:1.0.1")
     implementation("com.google.accompanist:accompanist-flowlayout:$vAccompanist")
     implementation("com.google.accompanist:accompanist-systemuicontroller:$vAccompanist")
@@ -165,11 +171,10 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager:$vAccompanist")
 
     // Testing
-    implementation("androidx.test.ext:junit-ktx:1.1.4")
-    androidTestImplementation("org.junit.jupiter:junit-jupiter:5.9.1")
-    val androidxTest = "1.4.0"
-    implementation("androidx.test:rules:$androidxTest")
-    androidTestImplementation("androidx.test:runner:$androidxTest")
+    androidTestImplementation("org.junit.jupiter:junit-jupiter:$vJunitJupiter")
+    androidTestImplementation("androidx.test:runner:$vAndroidxTest")
+    implementation("androidx.test:rules:$vAndroidxTest")
+    implementation("androidx.test.ext:junit-ktx:$vAndroidxTestExt")
 
     // compose testing
     //androidTestImplementation("androidx.ui:ui-test:$vCompose")
