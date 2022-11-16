@@ -129,10 +129,10 @@ abstract class BaseAppAction protected constructor(
         const val BACKUP_DIR_OBB_FILES = "obb_files"
         const val BACKUP_DIR_MEDIA_FILES = "media_files"
 
-        /* @hg42 why exclude lib? how is it restored?
-           @machiav3lli libs are generally created while installing the app. Backing them up
-           would result a compatibility problem between devices with different cpu_arch
-         */
+        // @hg42 why exclude lib? how is it restored?
+        // @machiav3lli libs are generally created while installing the app. Backing them up
+        // would result a compatibility problem between devices with different cpu_arch
+
         val DATA_EXCLUDED_CACHE_DIRS = listOf(
             "cache",
             "code_cache"

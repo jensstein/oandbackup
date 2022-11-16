@@ -55,7 +55,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 val yesNo = listOf(
     "yes" to "no",
@@ -464,7 +463,7 @@ fun MainPackageItem(
 
     val menuExpanded = remember { mutableStateOf(false) }
 
-    Timber.i("recompose MainPackageItem ${packageItem.packageName} ${packageItem.packageInfo.icon} ${imageData.hashCode()}")
+    //Timber.d("recompose MainPackageItem ${packageItem.packageName} ${packageItem.packageInfo.icon} ${imageData.hashCode()}")
 
     Card(
         modifier = Modifier,
