@@ -162,6 +162,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-flowlayout:$vAccompanist")
     implementation("com.google.accompanist:accompanist-systemuicontroller:$vAccompanist")
     implementation("com.google.accompanist:accompanist-navigation-animation:$vAccompanist")
+    implementation("com.google.accompanist:accompanist-pager:$vAccompanist")
 
     // Testing
     implementation("androidx.test.ext:junit-ktx:1.1.4")
