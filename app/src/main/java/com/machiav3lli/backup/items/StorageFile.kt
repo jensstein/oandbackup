@@ -498,9 +498,9 @@ open class StorageFile {
         }
     }
 
-    fun writeText(text: String) : Boolean {
+    fun writeText(text: String): Boolean {
         return try {
-            parent?.createFile(name!!)?.outputStream()?.writer()?.use {
+            outputStream()?.writer()?.use {
                 it.write(text)
                 parent?.path?.let { cacheFilesAdd(it, this) }
                 true
