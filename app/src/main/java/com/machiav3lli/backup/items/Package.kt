@@ -317,14 +317,11 @@ class Package {
     }
 
     fun deleteOldestBackups(keep: Int) {
-        while (keep < backupList.size || !backupList.all { it.persistent }) {
-            run whileLoop@{
-                backupList.sortedBy { it.backupDate }.dropLast(1).forEach { backup ->
-                    if (!backup.persistent) {
-                        Timber.i("[${backup.packageName}] Deleting backup revision ${backup.backupDate}")
-                        deleteBackup(backup)
-                        return@whileLoop
-                    }
+        while (keep < backupList.size && !backupsWithoutNewest.all { it.persistent }) {
+            backupsWithoutNewest.forEach { backup ->
+                if (!backup.persistent && keep < backupList.size) {
+                    Timber.i("[${backup.packageName}] Deleting backup revision ${backup.backupDate}")
+                    deleteBackup(backup)
                 }
             }
         }
@@ -332,6 +329,9 @@ class Package {
 
     val backupsNewestFirst: List<Backup>
         get() = needBackupList().sortedByDescending { item -> item.backupDate }
+
+    val backupsWithoutNewest: List<Backup>
+        get() = needBackupList().sortedBy { item -> item.backupDate }.dropLast(1)
 
     val latestBackup: Backup?
         get() = needBackupList().maxByOrNull { it.backupDate }
