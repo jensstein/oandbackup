@@ -295,11 +295,9 @@ class Package {
 
         try {
             packageBackupDir?.findFile(propertiesFileName)?.apply {
-                delete()
-                writeText(newBackup.toJSON())
+                overwriteText(newBackup.toJSON())
             } ?: packageBackupDir?.findFile(propertiesFileNameOld)?.apply {
-                delete()
-                writeText(newBackup.toJSON())
+                overwriteText(newBackup.toJSON())
             }
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, newBackup.packageName)

@@ -511,6 +511,12 @@ open class StorageFile {
         }
     }
 
+    fun overwriteText(text: String): Boolean {
+        delete()
+        return parent?.createFile(name!!)
+            ?.writeText(text) ?: false
+    }
+
     fun findUri(displayName: String): Uri? {
         // recurse down, uri?.run { ... } prevents optimizing-away (and null test makes sense anyway)
         uri?.run {
