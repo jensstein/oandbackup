@@ -85,7 +85,9 @@ import com.machiav3lli.backup.utils.TraceUtils.classAndId
 import com.machiav3lli.backup.utils.isEncryptionEnabled
 import com.machiav3lli.backup.utils.setCustomTheme
 import com.machiav3lli.backup.utils.sortFilterModel
+import com.machiav3lli.backup.viewmodels.BatchViewModel
 import com.machiav3lli.backup.viewmodels.MainViewModel
+import com.machiav3lli.backup.viewmodels.SchedulerViewModel
 import com.topjohnwu.superuser.Shell
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -100,6 +102,18 @@ class MainActivityX : BaseActivity() {
 
     val viewModel by viewModels<MainViewModel> {
         MainViewModel.Factory(ODatabase.getInstance(OABX.context), application)
+    }
+    val backupViewModel: BatchViewModel by viewModels {
+        BatchViewModel.Factory(application)
+    }
+    val restoreViewModel: BatchViewModel by viewModels {
+        BatchViewModel.Factory(application)
+    }
+    val schedulerViewModel: SchedulerViewModel by viewModels {
+        SchedulerViewModel.Factory(
+            ODatabase.getInstance(applicationContext).scheduleDao,
+            application
+        )
     }
 
     private lateinit var sheetSortFilter: SortFilterSheet
@@ -207,7 +221,7 @@ class MainActivityX : BaseActivity() {
                             viewModel.searchQuery.value = ""
                         if (viewModel.modelSortFilter is MutableComposableSharedFlow<*>)
                             viewModel.modelSortFilter.value = OABX.context.sortFilterModel
-                        if(pref_refreshOnStart.value)
+                        if (pref_refreshOnStart.value)
                             refreshPackages()
                     }
                 }

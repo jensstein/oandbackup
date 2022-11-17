@@ -1,12 +1,10 @@
 package com.machiav3lli.backup.ui.compose.navigation
 
-import android.app.Application
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.pages.BatchPage
 import com.machiav3lli.backup.pages.HomePage
 import com.machiav3lli.backup.pages.SchedulerPage
@@ -26,8 +24,6 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.SlidersHorizontal
 import com.machiav3lli.backup.ui.compose.icons.phosphor.UserGear
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Warning
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Wrench
-import com.machiav3lli.backup.viewmodels.BatchViewModel
-import com.machiav3lli.backup.viewmodels.SchedulerViewModel
 
 sealed class NavItem(var title: Int, var icon: ImageVector, var destination: String) {
 
@@ -91,25 +87,21 @@ sealed class NavItem(var title: Int, var icon: ImageVector, var destination: Str
     )
 
     @Composable
-    fun ComposablePage(navController: NavHostController, application: Application) {
+    fun ComposablePage(navController: NavHostController) {
         when (destination) {
             Home.destination -> HomePage()
             Backup.destination, Restore.destination -> {
-                val viewModel =
-                    viewModel<BatchViewModel>(factory = BatchViewModel.Factory(application))
-
-                BatchPage(viewModel = viewModel, backupBoolean = destination == Backup.destination)
+                OABX.main?.let {
+                    if (destination == Backup.destination) it.backupViewModel
+                    else it.restoreViewModel
+                }?.let {
+                    BatchPage(viewModel = it, backupBoolean = destination == Backup.destination)
+                }
             }
             Scheduler.destination -> {
-                val viewModel = viewModel<SchedulerViewModel>(
-                    factory =
-                    SchedulerViewModel.Factory(
-                        ODatabase.getInstance(navController.context).scheduleDao,
-                        application
-                    )
-                )
-
-                SchedulerPage(viewModel)
+                OABX.main?.schedulerViewModel?.let { viewModel ->
+                    SchedulerPage(viewModel)
+                }
             }
             UserPrefs.destination -> UserPrefsPage()
             ServicePrefs.destination -> ServicePrefsPage()

@@ -22,7 +22,6 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
-import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.preferences.pref_squeezeNavText
 import com.machiav3lli.backup.ui.compose.item.ResponsiveText
 import kotlinx.coroutines.launch
@@ -38,7 +37,6 @@ fun SlidePager(
     HorizontalPager(modifier = modifier, state = pagerState, count = pageItems.size) { page ->
         pageItems[page].ComposablePage(
             navController = navController,
-            application = OABX.app
         )
     }
 }
