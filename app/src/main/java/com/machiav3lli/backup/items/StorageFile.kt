@@ -418,7 +418,10 @@ open class StorageFile {
         return newFile
     }
 
-    fun createFile(mimeType: String, displayName: String): StorageFile {
+    fun createFile(
+        displayName: String,
+        mimeType: String = "application/octet-stream"
+    ): StorageFile {
         val newFile =
             file?.let {
                 if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
@@ -497,7 +500,7 @@ open class StorageFile {
 
     fun writeText(text: String) : Boolean {
         return try {
-            parent?.createFile("application/octet-stream", name!!)?.outputStream()?.writer()?.use {
+            parent?.createFile(name!!)?.outputStream()?.writer()?.use {
                 it.write(text)
                 parent?.path?.let { cacheFilesAdd(it, this) }
                 true

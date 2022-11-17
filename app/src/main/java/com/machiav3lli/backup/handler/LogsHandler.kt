@@ -53,7 +53,7 @@ class LogsHandler {
                 LOG_INSTANCE,
                 BACKUP_DATE_TIME_FORMATTER.format(date)
             )
-            logsDirectory.createFile("application/octet-stream", logFileName).let { logFile ->
+            logsDirectory.createFile(logFileName).let { logFile ->
                 BufferedOutputStream(logFile.outputStream()).use { logOut ->
                     logOut.write(
                         logItem.toJSON().toByteArray(StandardCharsets.UTF_8)

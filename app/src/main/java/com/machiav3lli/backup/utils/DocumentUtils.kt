@@ -18,8 +18,6 @@ import timber.log.Timber
 import java.io.File
 import java.io.IOException
 
-const val binaryMimeType = "application/octet-stream"
-
 @Throws(BackupLocationInAccessibleException::class, StorageLocationNotConfiguredException::class)
 fun Context.getBackupDir(): StorageFile =
     StorageFile.fromUri(this, getBackupDirUri(this))
@@ -61,7 +59,7 @@ fun suRecursiveCopyFilesToDocument(
 fun suCopyFileToDocument(sourcePath: String, targetDir: StorageFile) {
     val sourceFile = RootFile(sourcePath)
     sourceFile.inputStream().use { inputStream ->
-        targetDir.createFile(binaryMimeType, sourceFile.name).let { newFile ->
+        targetDir.createFile(sourceFile.name).let { newFile ->
             newFile.outputStream().use { outputStream ->
                 IOUtils.copy(inputStream, outputStream)
             }
@@ -74,7 +72,7 @@ fun suCopyFileToDocument(
     sourceFileInfo: ShellHandler.FileInfo,
     targetDir: StorageFile
 ) {
-    targetDir.createFile(binaryMimeType, sourceFileInfo.filename).let { newFile ->
+    targetDir.createFile(sourceFileInfo.filename).let { newFile ->
         newFile.outputStream()!!.use { outputStream ->
             ShellHandler.quirkLibsuReadFileWorkaround(sourceFileInfo, outputStream)
         }

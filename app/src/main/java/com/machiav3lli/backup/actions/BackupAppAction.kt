@@ -251,8 +251,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             BACKUP_INSTANCE_PROPERTIES,
             BACKUP_DATE_TIME_FORMATTER.format(backup.backupDate), backup.profileId
         )
-        val propertiesFile =
-            packageBackupDir.createFile("application/octet-stream", propertiesFileName)
+        val propertiesFile = packageBackupDir.createFile(propertiesFileName)
         propertiesFile.outputStream()?.use { propertiesOut ->
             propertiesOut.write(
                 backup.toJSON().toByteArray(StandardCharsets.UTF_8)
@@ -278,7 +277,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             shouldCompress,
             iv != null && context.isEncryptionEnabled()
         )
-        val backupFile = backupInstanceDir.createFile("application/octet-stream", backupFilename)
+        val backupFile = backupInstanceDir.createFile(backupFilename)
 
         var outStream: OutputStream = backupFile.outputStream()!!
 
@@ -438,7 +437,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             shouldCompress,
             iv != null && context.isEncryptionEnabled()
         )
-        val backupFile = backupInstanceDir.createFile("application/octet-stream", backupFilename)
+        val backupFile = backupInstanceDir.createFile(backupFilename)
 
         var outStream: OutputStream = backupFile.outputStream()!!
 

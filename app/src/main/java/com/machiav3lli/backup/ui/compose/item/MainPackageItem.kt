@@ -147,7 +147,7 @@ fun SelectionSaveMenu(
                         val selectionsDir =
                             backupDir.findFile(SELECTIONS_FOLDER_NAME) ?: backupDir.createDirectory(
                                 SELECTIONS_FOLDER_NAME)
-                        selectionsDir.createFile("application/octet-stream", name.value)
+                        selectionsDir.createFile(name.value)
                             .writeText(selection.joinToString("\n"))
                         onAction()
                     } else

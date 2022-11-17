@@ -49,7 +49,7 @@ class ExportsHandler(var context: Context) {
         val scheds = dataSource.all
         scheds.forEach {
             val fileName = String.format(EXPORTS_INSTANCE, it.name)
-            exportsDirectory?.createFile("application/octet-stream", fileName)?.let { exportFile ->
+            exportsDirectory?.createFile(fileName)?.let { exportFile ->
                 BufferedOutputStream(exportFile.outputStream())
                     .use { exportOut ->
                         exportOut.write(
