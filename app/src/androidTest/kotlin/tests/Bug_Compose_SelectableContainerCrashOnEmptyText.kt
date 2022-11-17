@@ -3,6 +3,7 @@ package com.example.myapplication
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Offset
@@ -42,27 +43,29 @@ class Bug_Compose_SelectableContainerCrashOnEmptyText {
             |Line
             |Line
             """.trimMargin()
-        Column {
-            SelectionContainer {
-                Column {
-                    Text("simple")
-                    Text(text = text)   // works
-                }
-            }
-            SelectionContainer {
-                Column {
-                    Text("crash")
-                    text.lines().forEach {
-                        Text(text = it)
+        Surface {
+            Column {
+                SelectionContainer {
+                    Column {
+                        Text("simple")
+                        Text(text = text)   // works
                     }
                 }
-            }
-            SelectionContainer {
-                Column {
-                    Text("space")
-                    text.lines().forEach {
-                        // empty lines replaced by a space works
-                        Text(text = if (it == "") " " else it)
+                SelectionContainer {
+                    Column {
+                        Text("space")
+                        text.lines().forEach {
+                            // empty lines replaced by a space works
+                            Text(text = if (it == "") " " else it)
+                        }
+                    }
+                }
+                SelectionContainer {
+                    Column {
+                        Text("crash")
+                        text.lines().forEach {
+                            Text(text = it)
+                        }
                     }
                 }
             }
@@ -75,7 +78,9 @@ class Bug_Compose_SelectableContainerCrashOnEmptyText {
 
     @Before
     fun setUp() {
-        test.setContent { SelectableText() }
+        test.setContent {
+            SelectableText()
+        }
         test.onRoot().printToLog("root")
     }
 
