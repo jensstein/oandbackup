@@ -19,6 +19,7 @@ package com.machiav3lli.backup.handler
 
 import android.content.Context
 import com.machiav3lli.backup.EXPORTS_FOLDER_NAME
+import com.machiav3lli.backup.EXPORTS_FOLDER_NAME_ALT
 import com.machiav3lli.backup.EXPORTS_INSTANCE
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.PrefsActivityX
@@ -40,6 +41,13 @@ class ExportsHandler(var context: Context) {
     init {
         val backupRootFolder = context.getBackupDir()
         exportsDirectory = backupRootFolder.ensureDirectory(EXPORTS_FOLDER_NAME)
+        backupRootFolder.findFile(EXPORTS_FOLDER_NAME_ALT)?.let { oldFolder ->
+            oldFolder.listFiles().forEach {
+                exportsDirectory?.createFile(it.name!!)
+                    ?.writeText(it.readText())
+            }
+            oldFolder.deleteRecursive()
+        }
     }
 
     @Throws(IOException::class)
