@@ -80,7 +80,7 @@
     <string name="prefs_user">用户首选项</string>
     <string name="prefs_theme">主题</string>
     <string name="prefs_acquirewakelock">阻止睡眠</string>
-    <string name="prefs_batchdelete">删除不需要的备份</string>
+    <string name="prefs_batchdelete">删除备份\?</string>
     <string name="prefs_pathbackupfolder">备份文件夹</string>
     <string name="prefs_oldbackups">筛选过时备份的天数</string>
     <string name="prefs_copyselfapk">复制本应用自身 APK</string>
@@ -150,7 +150,7 @@
     <string name="prefs_theme_system">跟随系统</string>
     <string name="empty_filtered_list">列表为空。</string>
     <string name="dialog_refuse">放弃</string>
-    <string name="dialog_approve">好的</string>
+    <string name="dialog_approve">好的!</string>
     <string name="ignore_battery_optimization_title">电池优化</string>
     <string name="ignore_battery_optimization_message">备份有时会意外停止。为避免这种情况，请关闭电池优化</string>
     <string name="ignore_battery_optimization_not_supported">此设备不支持忽略电池优化！</string>
@@ -167,11 +167,12 @@
     <string name="intro_permission_usageaccess">该应用需要此权限才能获得统计信息，从而获得应用的缓存及数据大小。</string>
     <string name="intro_permission_storage">本应用程序使用存储的读/写权限来访问外部存储，从而获得备份其他应用的外部数据的权限。</string>
     <string name="intro_welcome_message">Neo Backup（原名OAndBackupX）是著名的备份程序OAndBackup的fork分叉，其目的是使OAndBackup能在202X年使用，并成为Neo应用套件的一部分。目前，该应用程序已经完全重写，接下来将会使它变得更强大，并添加一些已长期计划的功能。它可以适用于任何设备的备份/还原数据。
-\n因此，我们随时欢迎所有类型的对本项目的贡献。
+\n因此，我们随时欢迎任何类型的对本项目的贡献。
+\n
 \n现在谈谈我们的应用程序的功能：
-\n• 它需要root权限，用于备份应用程序本体和它们的数据。
-\n• 支持单个程序的备份和还原，也支持批量备份和还原。
-\n• 可以实时还原系统程序，而不需要重新启动系统。
+\n• 它需要root权限，用于备份应用和它们的数据。
+\n• 支持单个应用的备份和还原，也支持批量备份和还原。
+\n• 可以还原系统程序，而不需要重新启动系统。
 \n• 备份可以定时执行，对计划任务的数量没有限制，并且可以从已安装应用程序列表中选定并创建所需的自定义备份列表。</string>
     <string name="welcome_to_oabx">欢迎使用 Neo Backup！</string>
     <string name="storage_access">访问存储空间</string>
@@ -181,7 +182,7 @@
     <string name="apptype_special">特殊备份</string>
     <string name="sortDataSize">数据大小</string>
     <string name="dialog_unlock">解锁</string>
-    <string name="dialog_start">开始使用</string>
+    <string name="dialog_start">开始使用!</string>
     <string name="dialogSave">保存</string>
     <string name="sched_add">添加计划任务</string>
     <string name="prefs_password_match_false">密码不匹配</string>
