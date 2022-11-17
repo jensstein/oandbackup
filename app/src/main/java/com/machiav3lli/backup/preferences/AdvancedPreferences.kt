@@ -135,13 +135,13 @@ val pref_logToSystemLogcat = BooleanPref(
 val pref_traceFlows = BooleanPref(
     key = "dev.traceFlows",
     summary = "trace Kotlin Flows (reactive data streams)",
-    defaultValue = true
+    defaultValue = false
 )
 
 val pref_traceBusy = BooleanPref(
     key = "dev.traceBusy",
     summary = "trace beginBusy/endBusy (busy indicator)",
-    defaultValue = true
+    defaultValue = false
 )
 
 val pref_refreshOnStart = BooleanPref(
