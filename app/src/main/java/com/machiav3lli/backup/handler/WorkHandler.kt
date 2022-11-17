@@ -24,6 +24,7 @@ import com.machiav3lli.backup.preferences.pref_maxRetriesPerPackage
 import com.machiav3lli.backup.services.CommandReceiver
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
+import com.machiav3lli.backup.utils.TraceUtils.traceBold
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -116,9 +117,9 @@ class WorkHandler(appContext: Context) {
             OABX.wakelock(false) // now everything is done
 
             OABX.service?.let {
-                Timber.w("%%%%% ------------------------------------------ service stopping...\\")
+                traceBold("%%%%% ------------------------------------------ service stopping...\\")
                 it.stopSelf()
-                Timber.w("%%%%% ------------------------------------------ service stopped.../")
+                traceBold("%%%%% ------------------------------------------ service stopped.../")
             }
         }.start()
     }

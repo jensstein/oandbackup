@@ -82,6 +82,7 @@ import com.machiav3lli.backup.ui.compose.navigation.PagerNavBar
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.FileUtils.invalidateBackupLocation
 import com.machiav3lli.backup.utils.TraceUtils.classAndId
+import com.machiav3lli.backup.utils.TraceUtils.traceBold
 import com.machiav3lli.backup.utils.isEncryptionEnabled
 import com.machiav3lli.backup.utils.setCustomTheme
 import com.machiav3lli.backup.utils.sortFilterModel
@@ -205,7 +206,7 @@ class MainActivityX : BaseActivity() {
                 if (freshStart) {
                     SideEffect {
                         // runs earlier, maybe too early (I guess because it's independent from the view model)
-                        //Timber.w("******************** freshStart Sideffect ********************")
+                        //traceBold("******************** freshStart Sideffect ********************")
                         //viewModel.searchQuery.value = ""
                         //viewModel.modelSortFilter.value = OABX.context.sortFilterModel
                     }
@@ -214,7 +215,7 @@ class MainActivityX : BaseActivity() {
                 if (freshStart) {
                     LaunchedEffect(viewModel) {
                         // runs later
-                        Timber.w("******************** freshStart LaunchedEffect(viewModel) ********************")
+                        traceBold("******************** freshStart LaunchedEffect(viewModel) ********************")
                         //TODO hg42 I guess this shouldn't be necessary, but no better solution to start the flow game, yet
                         //TODO indeed it doesn't seem to be necessary with MutableStateFlow under the hood
                         if (viewModel.searchQuery is MutableComposableSharedFlow<*>)

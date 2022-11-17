@@ -43,6 +43,7 @@ import com.machiav3lli.backup.preferences.pref_traceBusy
 import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.utils.TraceUtils.methodName
+import com.machiav3lli.backup.utils.TraceUtils.traceBold
 import com.machiav3lli.backup.utils.styleTheme
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -280,7 +281,7 @@ class OABX : Application() {
         fun beginBusy(name: String? = null) {
             if (pref_traceBusy.value) {
                 val label = name ?: methodName(1)
-                Timber.w("*** ${"+---".repeat(_busy.get())}\\ busy $label")
+                traceBold("*** ${"+---".repeat(_busy.get())}\\ busy $label")
             }
             busy.value = _busy.accumulateAndGet(+1, Int::plus)
         }
@@ -289,7 +290,7 @@ class OABX : Application() {
             busy.value = _busy.accumulateAndGet(-1, Int::plus)
             if (pref_traceBusy.value) {
                 val label = name ?: methodName(1)
-                Timber.w("*** ${"+---".repeat(_busy.get())}/ busy $label")
+                traceBold("*** ${"+---".repeat(_busy.get())}/ busy $label")
             }
         }
     }

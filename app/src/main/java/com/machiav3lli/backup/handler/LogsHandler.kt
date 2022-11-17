@@ -28,8 +28,9 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.preferences.pref_maxLogCount
 import com.machiav3lli.backup.preferences.pref_maxLogLines
-import com.machiav3lli.backup.preferences.pref_useLogCat
+import com.machiav3lli.backup.preferences.pref_useLogCatForUncaught
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupDir
@@ -61,6 +62,7 @@ class LogsHandler {
                     Timber.i("Wrote $logFile file for $logItem")
                 }
             }
+            housekeepingLogs()
         }
 
         @Throws(IOException::class)
@@ -84,6 +86,31 @@ class LogsHandler {
                 }
             }
             return logs
+        }
+
+        @Throws(IOException::class)
+        fun housekeepingLogs() {
+            val logs = mutableListOf<Log>()
+            val backupRootFolder = OABX.context.getBackupDir()
+            StorageFile.invalidateCache { it.contains(LOG_FOLDER_NAME) }
+            //val logsDirectory = StorageFile(backupRootFolder, LOG_FOLDER_NAME)
+            backupRootFolder.findFile(LOG_FOLDER_NAME)?.let { logsDir ->
+                if (logsDir.isDirectory) {
+                    // must be ISO time format with sane sorted fields yyyy-mm-dd hh:mm:ss
+                    val logs = logsDir.listFiles().sortedByDescending { it.name }
+                    while(logs.size > pref_maxLogCount.value) {
+                        val log = logs.first()
+                        try {
+                            log.delete()
+                        } catch (e: Throwable) {
+                            val message =
+                                "(catchall) cannot delete log '${log.path}'"
+                            unhandledException(e, message)
+                            //no => recursion! logErrors(message)
+                        }
+                    }
+                }
+            }
         }
 
         fun getLogFile(date: LocalDateTime): StorageFile? {
@@ -113,7 +140,7 @@ class LogsHandler {
                             "\n\n========== collected messages\n\n" +
                             OABX.lastLogMessages.joinToString("\n") +
                             "\n" +
-                            if (pref_useLogCat.value)
+                            if (pref_useLogCatForUncaught.value)
                                 "\n\n========== logcat\n\n" +
                                         ShellHandler.runAsRoot(
                                             "logcat -d -t ${

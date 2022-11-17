@@ -64,14 +64,17 @@ fun PrefsGroup(
         modifier = modifier,
         heading = heading
     ) {
-        prefs.forEachIndexed { index, item ->
-            PrefsBuilder(
-                item,
-                onPrefDialog,
-                index,
-                size,
-            )
-            if (index < size - 1) Spacer(modifier = Modifier.height(4.dp))
+        if (prefs.size > 0) {
+            prefs.forEachIndexed { index, item ->
+                PrefsBuilder(
+                    item,
+                    onPrefDialog,
+                    index,
+                    size,
+                )
+                if (index < size - 1)
+                    Spacer(modifier = Modifier.height(4.dp))
+            }
         }
     }
 }
