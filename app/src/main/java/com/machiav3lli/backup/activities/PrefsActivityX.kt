@@ -127,9 +127,12 @@ class PrefsActivityX : BaseActivity() {
                     PrefsNavHost(
                         modifier = Modifier.padding(paddingValues),
                         navController = navController,
-                        application = application,
-                        pages = pages,
                         pagerState = pagerState,
+                        pages = pages,
+                        viewModels = listOf(
+                            exportsViewModel,
+                            logsViewModel,
+                        )
                     )
                 }
             }

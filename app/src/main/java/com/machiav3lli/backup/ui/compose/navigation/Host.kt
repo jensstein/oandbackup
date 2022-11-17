@@ -1,6 +1,5 @@
 package com.machiav3lli.backup.ui.compose.navigation
 
-import android.app.Application
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
@@ -9,7 +8,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -20,7 +19,6 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.PrefsActivityX
-import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.pages.PermissionsPage
 import com.machiav3lli.backup.pages.WelcomePage
 import com.machiav3lli.backup.preferences.ExportsPage
@@ -60,9 +58,9 @@ fun MainNavHost(
 fun PrefsNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    application: Application,
     pagerState: PagerState,
-    pages: List<NavItem>
+    pages: List<NavItem>,
+    viewModels: List<AndroidViewModel>
 ) {
     AnimatedNavHost(
         modifier = modifier,
@@ -77,19 +75,11 @@ fun PrefsNavHost(
             )
         }
         slideUpComposable(NavItem.Exports.destination) {
-            val viewModel = viewModel<ExportsViewModel>(
-                factory =
-                ExportsViewModel.Factory(
-                    ODatabase.getInstance(navController.context).scheduleDao,
-                    application
-                )
-            )
+            val viewModel = viewModels.find { it is ExportsViewModel } as ExportsViewModel
             ExportsPage(viewModel)
         }
         slideUpComposable(NavItem.Logs.destination) {
-            val viewModel = viewModel<LogViewModel>(
-                factory = LogViewModel.Factory(application)
-            )
+            val viewModel = viewModels.find { it is LogViewModel } as LogViewModel
             LogsPage(viewModel)
         }
         slideUpComposable(NavItem.Terminal.destination) {
