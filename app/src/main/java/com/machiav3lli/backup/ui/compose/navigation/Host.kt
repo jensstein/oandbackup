@@ -74,11 +74,11 @@ fun PrefsNavHost(
                 navController = navController,
             )
         }
-        slideUpComposable(NavItem.Exports.destination) {
+        slideDownComposable(NavItem.Exports.destination) {
             val viewModel = viewModels.find { it is ExportsViewModel } as ExportsViewModel
             ExportsPage(viewModel)
         }
-        slideUpComposable(NavItem.Logs.destination) {
+        slideDownComposable(NavItem.Logs.destination) {
             val viewModel = viewModels.find { it is LogViewModel } as LogViewModel
             LogsPage(viewModel)
         }
@@ -101,7 +101,7 @@ fun IntroNavHost(
         startDestination = if (beenWelcomed) NavItem.Permissions.destination
         else NavItem.Welcome.destination
     ) {
-        slideUpComposable(NavItem.Welcome.destination) {
+        slideDownComposable(NavItem.Welcome.destination) {
             WelcomePage()
         }
         slideUpComposable(route = NavItem.Permissions.destination) {
@@ -122,6 +122,20 @@ fun NavGraphBuilder.slideUpComposable(
         route,
         enterTransition = { slideInVertically { height -> height } + fadeIn() },
         exitTransition = { slideOutVertically { height -> -height } + fadeOut() }
+    ) {
+        composable(it)
+    }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+fun NavGraphBuilder.slideDownComposable(
+    route: String,
+    composable: @Composable (AnimatedVisibilityScope.(NavBackStackEntry) -> Unit)
+) {
+    composable(
+        route,
+        enterTransition = { slideInVertically { height -> -height } + fadeIn() },
+        exitTransition = { slideOutVertically { height -> height } + fadeOut() }
     ) {
         composable(it)
     }
