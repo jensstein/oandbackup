@@ -43,8 +43,8 @@ fun LogsPage(viewModel: LogViewModel) {
                     .padding(paddingValues)
                     .fillMaxSize(),
                 productsList = logs.sortedByDescending(Log::logDate),
-                onShare  = {  viewModel.shareLog(it, pref_shareAsFile.value) },
-                onDelete = {  viewModel.deleteLog(it) }
+                onShare = { viewModel.shareLog(it, pref_shareAsFile.value) },
+                onDelete = { viewModel.deleteLog(it) }
             )
         }
     }

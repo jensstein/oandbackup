@@ -154,8 +154,10 @@ open class StorageFile {
 
     var parent: StorageFile? = null
     var context: Context? = null
-            get() = field ?: OABX.context
-            set(value: Context?) { field = value }
+        get() = field ?: OABX.context
+        set(value: Context?) {
+            field = value
+        }
 
     private var file: RootFile? = null
     private var _uri: Uri? = null
@@ -167,11 +169,11 @@ open class StorageFile {
                     _uri
                 }
             } ?: context?.let {
-                    FileProvider.getUriForFile(
-                        it, "${it.applicationContext.packageName}.provider", f
-                    )
-                }
-            } ?: Uri.fromFile(file?.absoluteFile)
+                FileProvider.getUriForFile(
+                    it, "${it.applicationContext.packageName}.provider", f
+                )
+            }
+        } ?: Uri.fromFile(file?.absoluteFile)
 
     data class DocumentInfo(
         val id: String,
@@ -711,7 +713,7 @@ open class StorageFile {
             if (pref_invalidateSelective.value) {
                 try {
                     invalidateFilters.add(filter)
-                } catch(e: ArrayIndexOutOfBoundsException) {
+                } catch (e: ArrayIndexOutOfBoundsException) {
                 }
                 cacheCheck() //TODO
             } else {

@@ -78,7 +78,7 @@ fun DefaultPreview() {
     OABX.setProgress(count, maxCount)
 
     LaunchedEffect(OABX) {
-        while(count < maxCount) {
+        while (count < maxCount) {
             OABX.beginBusy()
             delay(3000)
             count += 1

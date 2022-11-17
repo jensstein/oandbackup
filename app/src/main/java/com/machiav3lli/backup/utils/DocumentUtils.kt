@@ -37,8 +37,8 @@ fun suRecursiveCopyFilesToDocument(
             val parentFile = StorageFile.fromUri(context, parentUri)
             when (file.fileType) {
                 FileType.REGULAR_FILE -> suCopyFileToDocument(file, parentFile)
-                FileType.DIRECTORY    -> parentFile.createDirectory(file.filename)
-                else                  -> Timber.e("SAF does not support ${file.fileType} for ${file.filePath}")
+                FileType.DIRECTORY -> parentFile.createDirectory(file.filename)
+                else -> Timber.e("SAF does not support ${file.fileType} for ${file.filePath}")
             }
         } catch (e: Throwable) {
             LogsHandler.logException(e)

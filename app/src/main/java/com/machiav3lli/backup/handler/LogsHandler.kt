@@ -103,27 +103,27 @@ class LogsHandler {
             try {
                 val logText =
                     errors +
-                    "\n\n" +
-                    "${BuildConfig.APPLICATION_ID} ${BuildConfig.VERSION_NAME}\n" +
-                    "${utilBox.name} ${utilBox.version} ${
-                        if (utilBox.isKnownVersion) "tested" else "untested"
-                    }${
-                        if (utilBox.hasBug("DotDotDir")) " bugDotDotDir" else ""
-                    } -> score ${utilBox.score}" +
-                    "\n\n========== collected messages\n\n" +
-                    OABX.lastLogMessages.joinToString("\n") +
-                    "\n" +
-                    if (pref_useLogCat.value)
-                        "\n\n========== logcat\n\n" +
-                        ShellHandler.runAsRoot(
-                            "logcat -d -t ${
-                                pref_maxLogLines.value
-                            } --pid=${
-                                Process.myPid()
-                            }"  // -d = dump and exit
-                        ).out.joinToString("\n")
-                    else
-                        ""
+                            "\n\n" +
+                            "${BuildConfig.APPLICATION_ID} ${BuildConfig.VERSION_NAME}\n" +
+                            "${utilBox.name} ${utilBox.version} ${
+                                if (utilBox.isKnownVersion) "tested" else "untested"
+                            }${
+                                if (utilBox.hasBug("DotDotDir")) " bugDotDotDir" else ""
+                            } -> score ${utilBox.score}" +
+                            "\n\n========== collected messages\n\n" +
+                            OABX.lastLogMessages.joinToString("\n") +
+                            "\n" +
+                            if (pref_useLogCat.value)
+                                "\n\n========== logcat\n\n" +
+                                        ShellHandler.runAsRoot(
+                                            "logcat -d -t ${
+                                                pref_maxLogLines.value
+                                            } --pid=${
+                                                Process.myPid()
+                                            }"  // -d = dump and exit
+                                        ).out.joinToString("\n")
+                            else
+                                ""
                 writeToLogFile(logText)
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -136,22 +136,22 @@ class LogsHandler {
 
         fun stackTrace(e: Throwable) = e.stackTrace.joinToString("\nat ", "at ")
         fun message(e: Throwable, backTrace: Boolean = false) =
-                "${e::class.simpleName}${
-                    if(e.message != null)
-                        "\n${e.message}"
-                    else
-                        ""
-                }${
-                    if(e.cause != null)
-                        "\ncause: ${e.cause}"
-                    else
-                        ""
-                }${
-                    if(backTrace) 
-                        "\n${stackTrace(e)}" 
-                    else 
-                        ""
-                }"
+            "${e::class.simpleName}${
+                if (e.message != null)
+                    "\n${e.message}"
+                else
+                    ""
+            }${
+                if (e.cause != null)
+                    "\ncause: ${e.cause}"
+                else
+                    ""
+            }${
+                if (backTrace)
+                    "\n${stackTrace(e)}"
+                else
+                    ""
+            }"
 
         fun logException(
             e: Throwable,

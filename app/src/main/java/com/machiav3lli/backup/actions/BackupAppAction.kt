@@ -134,7 +134,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                     do {
                         val now = System.currentTimeMillis()
                         val seconds = (now - startTime) / 1000.0
-                        work?.setOperation((seconds/10).toInt().toString().padStart(3, '0'))
+                        work?.setOperation((seconds / 10).toInt().toString().padStart(3, '0'))
                         Thread.sleep(step)
                     } while (seconds < fakeSeconds)
 
@@ -469,7 +469,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 options += " --exclude ${quote(excludeCache)}"
             }
 
-            val cmd = "sh ${quote(tarScript)} create $utilBoxQ $options ${ quote(sourcePath) }"
+            val cmd = "sh ${quote(tarScript)} create $utilBoxQ $options ${quote(sourcePath)}"
 
             Timber.i("SHELL: $cmd")
 
@@ -582,7 +582,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 iv
             )
         } catch (ex: BackupFailedException) {
-            when(ex.cause) {
+            when (ex.cause) {
                 is ShellCommandFailedException -> {
                     if (isFileNotFoundException(ex.cause as ShellCommandFailedException)) {
                         // no such data found
@@ -612,7 +612,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 iv
             )
         } catch (ex: BackupFailedException) {
-            when(ex.cause) {
+            when (ex.cause) {
                 is ShellCommandFailedException -> {
                     if (isFileNotFoundException(ex.cause as ShellCommandFailedException)) {
                         // no such data found
@@ -642,7 +642,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 iv
             )
         } catch (ex: BackupFailedException) {
-            when(ex.cause) {
+            when (ex.cause) {
                 is ShellCommandFailedException -> {
                     if (isFileNotFoundException(ex.cause as ShellCommandFailedException)) {
                         // no such data found
@@ -672,7 +672,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 iv
             )
         } catch (ex: BackupFailedException) {
-            when(ex.cause) {
+            when (ex.cause) {
                 is ShellCommandFailedException -> {
                     if (isFileNotFoundException(ex.cause as ShellCommandFailedException)) {
                         // no such data found

@@ -84,7 +84,7 @@ fun Selections(
 ) {
     val backupDir = OABX.context.getBackupDir()
     val selectionsDir = backupDir.findFile(SELECTIONS_FOLDER_NAME)
-    		?: backupDir.createDirectory(SELECTIONS_FOLDER_NAME)
+        ?: backupDir.createDirectory(SELECTIONS_FOLDER_NAME)
     val files = selectionsDir.listFiles()
 
     if (files.isEmpty())
@@ -144,9 +144,8 @@ fun SelectionSaveMenu(
                         name.value = it.dropLast(1)
                         focusManager.clearFocus()
                         val backupDir = OABX.context.getBackupDir()
-                        val selectionsDir =
-                            backupDir.findFile(SELECTIONS_FOLDER_NAME) ?: backupDir.createDirectory(
-                                SELECTIONS_FOLDER_NAME)
+                        val selectionsDir = backupDir.findFile(SELECTIONS_FOLDER_NAME)
+                            ?: backupDir.createDirectory(SELECTIONS_FOLDER_NAME)
                         selectionsDir.createFile(name.value)
                             .writeText(selection.joinToString("\n"))
                         onAction()
@@ -195,7 +194,7 @@ fun MainPackageContextMenu(
 
     val subMenu = remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
     subMenu.value?.let { it() }
-    if (! expanded.value)
+    if (!expanded.value)
         subMenu.value = null
 
     fun launchPackagesAction(
