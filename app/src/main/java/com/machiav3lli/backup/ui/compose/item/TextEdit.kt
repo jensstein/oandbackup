@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -52,22 +53,22 @@ fun MorphableTextField(
     val (expanded, onExpanded) = remember {
         mutableStateOf(expanded)
     }
-
-    VerticalFadingVisibility(
-        expanded = expanded,
-        expandedView = {
-            TextEditBlock(
-                text = text,
-                modifier = modifier,
-                onCancel = onCancel,
-                onExpanded = onExpanded,
-                onSave = onSave
-            )
-        },
-        collapsedView = {
-            TextViewBlock(text = text, onExpanded = onExpanded)
-        }
-    )
+    Box(modifier) {
+        VerticalFadingVisibility(
+            expanded = expanded,
+            expandedView = {
+                TextEditBlock(
+                    text = text,
+                    onCancel = onCancel,
+                    onExpanded = onExpanded,
+                    onSave = onSave
+                )
+            },
+            collapsedView = {
+                TextViewBlock(text = text, onExpanded = onExpanded)
+            }
+        )
+    }
 }
 
 @Composable
@@ -113,7 +114,6 @@ fun TextEditBlock(
 
     Row(
         modifier = modifier
-            .fillMaxWidth()
             .background(
                 color = MaterialTheme.colorScheme.background,
                 shape = MaterialTheme.shapes.medium
