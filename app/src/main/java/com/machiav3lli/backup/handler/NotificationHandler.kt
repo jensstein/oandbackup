@@ -62,7 +62,7 @@ fun showNotification(
             .setGroup(BuildConfig.APPLICATION_ID)
             .setSortKey("9")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setSmallIcon(R.drawable.ic_app)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle(title)
             .setStyle(if (bigText.isEmpty()) null
                       else NotificationCompat.BigTextStyle().bigText(bigText))

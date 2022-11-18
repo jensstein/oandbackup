@@ -274,7 +274,7 @@ open class ScheduleService : Service() {
         )
         this.notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(getString(R.string.sched_notificationMessage))
-            .setSmallIcon(R.drawable.ic_app)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setOngoing(true)
             .setSilent(true)
             .setContentIntent(contentPendingIntent)

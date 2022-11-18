@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
- ~ OAndBackupX: open-source apps backup and restore app.
+ ~ Neo Backup: open-source apps backup and restore app.
  ~ Copyright (C) 2020  Antonios Hazim
  ~
  ~ This program is free software: you can redistribute it and/or modify
@@ -18,5 +18,5 @@
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
     <background android:drawable="@color/ic_launcher_background" />
     <foreground android:drawable="@drawable/ic_launcher_foreground" />
-    <monochrome android:drawable="@drawable/ic_app_mc" />
+    <monochrome android:drawable="@drawable/ic_launcher_foreground_mc" />
 </adaptive-icon>

@@ -459,7 +459,7 @@ class WorkHandler(appContext: Context) {
                         )
                             .setGroup(BuildConfig.APPLICATION_ID)
                             .setSortKey("1-$batchName")
-                            .setSmallIcon(R.drawable.ic_app)
+                            .setSmallIcon(R.drawable.ic_launcher_foreground)
                             .setContentTitle(title)
                             .setContentText(Html.fromHtml(shortText, htmlFlags))
                             .setStyle(
