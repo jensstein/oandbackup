@@ -350,7 +350,7 @@ val pref_useLogCatForUncaught = BooleanPref(
     key = "dev-trace.useLogCatForUncaught",
     summary = "use logcat instead of internal log for uncaught exceptions",
     defaultValue = false,
-    enableIf = { pref_allowShadowingDefault.value }
+    enableIf = { pref_catchUncaughtException.value }
 )
 
 val pref_maxLogCount = IntPref(
