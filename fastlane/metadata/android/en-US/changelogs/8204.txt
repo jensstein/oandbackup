@@ -1,0 +1,7 @@
+Add: Persisting backups
+Add: Save/Load context menu selections
+Fix: Support of non-magisk SU implementations
+Fix: Re-initiating app state when rotating screen
+Update: Allow swiping between pages
+Update: Simplify UI
+and many more in the full changelog…

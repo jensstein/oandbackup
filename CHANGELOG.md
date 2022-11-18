@@ -1,50 +1,62 @@
 CHANGELOG
 =========
 
-changes in the queue
+8.2.1 (18.11.2022) +290 Commits
+------------------
 
-- Fix: `su 0` now is the only feature su needs to have, all su implementations should work now
-- Fix: ls -l bug of statically linked toybox variants (e.g. toybox-ext Magisk module)
-- Fix: the ls -l bug gave numeric user ids, this is now handled (xxx_cache group adds 10000 if numeric)
-- Fix: the su fix also fixes quoting/escaping problems of Magisk su
-- Fix: better tar error output handling
-- Fix: if selinux context cannot be retrieved from the file system, it probably doesn't support it
-- Fix: do not use restorecon in this case, which created error messages
-- Fix: if group of a cache directory is a system group (like sdcard_rw), don't change it
-- Fix: toybox score had some problems
-- Fix: small StorageFile issue which may result in mysterious bugs
-- Fix: make startup more robust in case NB was restored by another NB or any other backup software
-- Update: special folders start with `!-` to put them at the top of a directory listing
-- Update: pauseApps + pmSuspend is now backupPauseApps + backupSuspendApps
-- Update: added different processing for restores: restoreKillApps (apps can be killed before restore)
-
-UI:
-- Fix: search term is applied again when changing tab
-- Fix: context menu actions shouldn't block any more
-- Fix: delete any password accidentally saved to non-encrypted preferences (in experimental versions)
-- Fix: dependent preferences should now work flawless (e.g. encryption should enable/disbale password)
-- Fix: Share button on Logs works now
-- Fix: LogPage should work well now (we still need a limited count of LogItems)
-- Fix: add missing buttons to legend on HelpPage
-- Add: context menu: Save/Load to/from name (which is a file in !-SELECTION)
-- Add: error dialogs now have a Save button
+#### Function
+- Add: Persisting backups
+- Add: Dev Prefs: restoreKillApps, pref_refreshOnStart, pref_logToSystemLogcat
+- Add: Dev Prefs: Trace options
 - Add: Terminal for support (retrieving infos by buttons, e.g. toybox versions, su version, text can be saved to Log)
-- Update: a short touch on the app icon in the list will select it, a long touch on the icon will always open the context menu
+- Fix: Support of non-magisk SU implementations (`su 0` now is the only feature su needs to have)
+- Fix: Bug in `ls -l` of statically linked toybox variants (e.g. toybox-ext Magisk module)
+- Fix: Handling of `ls -l` numeric user ids output (xxx_cache group adds 10000 if numeric)
+- Fix: Quoting/escaping problems of Magisk su
+- Fix: Do not use restorecon if selinux context cannot be retrieved from the file system
+- Fix: Don't change group of a cache directory if it'S a system group (e.g. sdcard_rw)
+- Fix: A StorageFile bug resulting more issues
+- Fix: Make startup more robust in case NB was restored by backup software
+- Fix: Cache invalidation
+- Fix: Restoring (un)compressed data/specials
+- Fix: Specials and data: don't restorecon in case of selinux context = "?"
+- Fix: Updating a Package on (Un)Install when there's backups
+- Fix: Delete any password accidentally saved to non-encrypted preferences
+- Update: Special folders start with `!-` to put them at the top of a directory listing
+- Update: Activities hold VMs (avoid memory duplicates)
+- Update: Simplify files creation
+- Update: Improve tar error output handling
+- Update: Dev prefs: pauseApps + pmSuspend is now backupPauseApps + backupSuspendApps
+- Update: Toybox scores
+- Update: Migrate fields from LiveData to Flow
+- Update: Context menu actions to non-blocking
+- Update: Replace AppInfo of uninstalled packages that left backups
+
+#### UI
+- Add: Missing buttons to legend on HelpSheet
+- Add: Save button to error dialogs
+- Fix: Share button on Logs works now
+- Fix: LogsPage
+- Fix: ScheduleSheet custom & block lists state update
+- Update: Allow swiping between pages
+- Update: Minimize & simplify UI layouts
+- Update: Hide NavBar when in a Tool page
 - Update: Log entries have a maximum height and are scrollable
-- Update: make busy indicator + progress bar global (= visible on all pages)
-- Update: progress bar now starts with a minimum value
- 
-Antonios (copied from git log):
+- Update: Global loading/busy bar
 - Update: Migrate updatedApps bar into expandable FAB
-- Update: HelpSheet smaller items' text
-- Update: Simplify control bar's ActionButtons
-- Update: Color TopBar with BackgroundColor
 - Update: Make StatusBar transparent
-- Update: Revamp AppSheet layout for better accessibility
-- Update: CardButton layout
 
-- Update: additions to FAQ (thanks Martin)
-
+#### Usability/UX
+- Add: Tooltips to AppSheet action buttons
+- Add: Save/Load context menu selections
+- Fix: Dependent preferences should now work flawless
+- Fix: Re-initiating app state when rotating screen
+- Fix: Show Launch action only for launchable apps
+- Update: Alphabetical sort respects Locale
+- Update: Short touch on the app icon will select it, a long touch opens context menu
+- Update: Hide irrelevant actions for Specials
+- Update: Search term is applied again when changing tab
+- Update: Make SortFilterSheet immediately updating counts
 
 8.2.0 (22.10.2022) +150 Commits
 ------------------
