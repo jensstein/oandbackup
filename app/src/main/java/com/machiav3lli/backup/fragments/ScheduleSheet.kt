@@ -47,6 +47,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -81,6 +83,7 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.Prohibit
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
 import com.machiav3lli.backup.ui.compose.item.CheckChip
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
+import com.machiav3lli.backup.ui.compose.item.MorphableTextField
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TitleText
 import com.machiav3lli.backup.ui.compose.recycler.MultiSelectableChipGroup
@@ -279,7 +282,8 @@ class ScheduleSheet() : BaseSheet() {
     @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
     @Composable
     fun SchedulePage() {
-        val schedule by viewModel.schedule.collectAsState()
+        val schedule by viewModel.schedule.collectAsState(Schedule(0))
+        var scheduleName by remember(schedule) { mutableStateOf(schedule.name) }
         val customList by viewModel.customList.collectAsState(emptySet())
         val blockList by viewModel.blockList.collectAsState(emptySet())
         val (checked, check) = mutableStateOf(schedule.enabled)
@@ -353,13 +357,16 @@ class ScheduleSheet() : BaseSheet() {
                             horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
                             TitleText(R.string.sched_name)
-                            Text(
-                                text = schedule.name,
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .clickable { showNameEditorDialog(schedule) },
-                                style = MaterialTheme.typography.titleLarge,
-                                textAlign = TextAlign.Center,
+                            MorphableTextField(
+                                modifier = Modifier.weight(1f),
+                                text = scheduleName,
+                                onCancel = {
+                                },
+                                onSave = {
+                                    scheduleName = it
+                                    schedule.name = it
+                                    refresh(schedule, rescheduleBoolean = false)
+                                }
                             )
                             RoundButton(
                                 icon = Phosphor.CaretDown,
