@@ -435,7 +435,7 @@ fun CheckChip(
     modifier: Modifier = Modifier,
     onCheckedChange: (Boolean) -> Unit
 ) {
-    val (checked, check) = remember { mutableStateOf(checked) }
+    val (checked, check) = remember(checked) { mutableStateOf(checked) }
 
     FilterChip(
         modifier = modifier.padding(vertical = 8.dp, horizontal = 4.dp),
