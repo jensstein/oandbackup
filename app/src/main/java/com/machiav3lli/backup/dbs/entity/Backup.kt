@@ -21,6 +21,7 @@ import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.os.Build
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER_OLD
@@ -67,6 +68,7 @@ data class Backup constructor(
     var permissions: List<String> = listOf(),
     var size: Long = 0,
     var note: String = "",
+    @ColumnInfo(defaultValue = "0")
     var persistent: Boolean = false,
 ) {
     private val backupFolderNameOld
