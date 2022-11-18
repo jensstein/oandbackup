@@ -255,8 +255,8 @@ val pref_cacheFileLists = BooleanPref(
 //---------------------------------------- developer settings - workarounds
 
 val pref_useSelectableText = BooleanPref(
-    key = "dev.useSelectableText",
-    summary = "enable text selection (currently unusable, crashes most of the time)",
+    key = "dev-hack.useSelectableText",
+    summary = "enable text selection (works better now, still with workaround)",
     defaultValue = false
 )
 
