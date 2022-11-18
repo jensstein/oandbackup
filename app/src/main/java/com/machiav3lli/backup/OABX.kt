@@ -33,6 +33,7 @@ import androidx.lifecycle.ViewModel
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.DynamicColorsOptions
 import com.machiav3lli.backup.activities.MainActivityX
+import com.machiav3lli.backup.handler.LogsHandler.Companion.message
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.Package
@@ -71,6 +72,7 @@ class OABX : Application() {
                 priority: Int, tag: String?, message: String, t: Throwable?,
             ) {
                 val traceToLogcat = runCatching { pref_logToSystemLogcat.value }.getOrDefault(true)
+                val maxLogLines = runCatching { pref_maxLogLines.value }.getOrDefault(200)
                 //val traceToLogcat = pref_logToSystemLogcat.value
                 if (traceToLogcat)
                     super.log(priority, "$tag", message, t)
@@ -88,12 +90,17 @@ class OABX : Application() {
                 val now = System.currentTimeMillis()
                 val timeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                 val date = timeFormat.format(now)
-                lastLogMessages.add("$date $prio $tag : $message")
                 try {
-                    while (lastLogMessages.size > pref_maxLogLines.value)
-                        lastLogMessages.removeAt(0)
+                    synchronized(lastLogMessages) {
+                        lastLogMessages.add("$date $prio $tag : $message")
+                        while (lastLogMessages.size > maxLogLines)
+                            lastLogMessages.removeAt(0)
+                    }
                 } catch (e: Throwable) {
                     // ignore
+                    lastLogMessages.clear()
+                    lastLogMessages.add("$date E LOG : while adding or limiting log lines")
+                    lastLogMessages.add("$date E LOG : ${message(e, backTrace = true)}")
                 }
             }
 
