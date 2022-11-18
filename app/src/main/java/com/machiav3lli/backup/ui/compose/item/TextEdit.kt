@@ -36,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
@@ -47,6 +48,7 @@ fun MorphableTextField(
     text: String?,
     modifier: Modifier = Modifier,
     expanded: Boolean = false,
+    textAlignment: TextAlign? = null,
     onCancel: () -> Unit,
     onSave: (String) -> Unit
 ) {
@@ -65,7 +67,7 @@ fun MorphableTextField(
                 )
             },
             collapsedView = {
-                TextViewBlock(text = text, onExpanded = onExpanded)
+                TextViewBlock(text = text, textAlignment = textAlignment, onExpanded = onExpanded)
             }
         )
     }
@@ -75,6 +77,7 @@ fun MorphableTextField(
 fun TextViewBlock(
     text: String?,
     modifier: Modifier = Modifier,
+    textAlignment: TextAlign? = null,
     onExpanded: (Boolean) -> Unit
 ) {
     OutlinedCard(
@@ -89,7 +92,8 @@ fun TextViewBlock(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp, vertical = 18.dp),
-            text = text ?: " "
+            text = text ?: " ",
+            textAlign = textAlignment,
         )
     }
 }
