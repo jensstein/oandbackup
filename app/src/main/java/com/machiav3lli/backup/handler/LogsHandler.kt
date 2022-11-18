@@ -59,7 +59,7 @@ class LogsHandler {
                     logOut.write(
                         logItem.toJSON().toByteArray(StandardCharsets.UTF_8)
                     )
-                    Timber.i("Wrote $logFile file for $logItem")
+                    //traceDebug { "Wrote $logFile file for $logItem" }
                 }
             }
             housekeepingLogs()
@@ -80,7 +80,7 @@ class LogsHandler {
                             val message =
                                 "(catchall) Incomplete log or wrong structure found in $it."
                             unhandledException(e, it)
-                            //no, recursion! logErrors(message)
+                            //no => recursion! logErrors(message)
                         }
                     }
                 }
@@ -90,7 +90,6 @@ class LogsHandler {
 
         @Throws(IOException::class)
         fun housekeepingLogs() {
-            val logs = mutableListOf<Log>()
             val backupRootFolder = OABX.context.getBackupDir()
             StorageFile.invalidateCache { it.contains(LOG_FOLDER_NAME) }
             //val logsDirectory = StorageFile(backupRootFolder, LOG_FOLDER_NAME)
@@ -98,17 +97,20 @@ class LogsHandler {
                 if (logsDir.isDirectory) {
                     // must be ISO time format with sane sorted fields yyyy-mm-dd hh:mm:ss
                     val logs = logsDir.listFiles().sortedByDescending { it.name }
-                    while(logs.size > pref_maxLogCount.value) {
-                        val log = logs.first()
-                        try {
-                            log.delete()
-                        } catch (e: Throwable) {
-                            val message =
-                                "(catchall) cannot delete log '${log.path}'"
-                            unhandledException(e, message)
-                            //no => recursion! logErrors(message)
-                        }
-                    }
+                    //traceDebug { "logs ${logs.map { it.name ?: "?" }.joinToString(" ")}" }
+                    if (logs.size > pref_maxLogCount.value)
+                        logs.subList(pref_maxLogCount.value, logs.size)
+                            .forEach {
+                                try {
+                                    //traceDebug { "delete ${it.path}" }
+                                    it.delete()
+                                } catch (e: Throwable) {
+                                    val message =
+                                        "(catchall) cannot delete log '${it.path}'"
+                                    unhandledException(e, message)
+                                    //no => recursion! logErrors(message)
+                                }
+                            }
                 }
             }
         }
@@ -207,7 +209,7 @@ class LogsHandler {
                     ?: false -> context.getString(R.string.error_datachanged)
                 errorText?.contains("Input is not in the .gz format")
                     ?: false -> context.getString(R.string.error_encryptionpassword)
-                else -> errorText
+                else         -> errorText
             }
         }
     }
