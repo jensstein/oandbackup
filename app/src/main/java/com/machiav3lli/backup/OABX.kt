@@ -105,13 +105,16 @@ class OABX : Application() {
             }
 
             override fun createStackElementTag(element: StackTraceElement): String {
-                return "${
-                    element.methodName
-                }@${
-                    element.lineNumber
-                }:${
-                    super.createStackElementTag(element)
-                }"
+                if (element.methodName.startsWith("trace"))
+                    return ""
+                else
+                    return "${
+                        super.createStackElementTag(element)
+                    }.${
+                        element.methodName
+                    }:${
+                        element.lineNumber
+                    }"
             }
         })
     }
