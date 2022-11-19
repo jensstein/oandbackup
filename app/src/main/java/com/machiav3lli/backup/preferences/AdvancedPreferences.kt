@@ -49,6 +49,7 @@ fun DevPrefGroups() {
     val devTraceOptions = Pref.preferences["dev-trace"] ?: listOf()
     val devHackOptions = Pref.preferences["dev-hack"] ?: listOf()
     val devAltOptions = Pref.preferences["dev-alt"] ?: listOf()
+    val devNewOptions = Pref.preferences["dev-new"] ?: listOf()
     val devFakeOptions = Pref.preferences["dev-fake"] ?: listOf()
 
     Column {
@@ -56,6 +57,7 @@ fun DevPrefGroups() {
         PrefsGroup(prefs = devFileOptions, heading = "file handling")
         PrefsGroup(prefs = devTraceOptions, heading = "logging / tracing")
         PrefsGroup(prefs = devHackOptions, heading = "workarounds (hacks)")
+        PrefsGroup(prefs = devNewOptions, heading = "new experimental (for devs)")
         PrefsGroup(prefs = devAltOptions, heading = "alternates (for devs to compare)")
         PrefsGroup(prefs = devFakeOptions, heading = "faking (simulated actions)")
     }
