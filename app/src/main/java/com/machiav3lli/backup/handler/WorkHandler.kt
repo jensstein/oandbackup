@@ -117,9 +117,9 @@ class WorkHandler(appContext: Context) {
             OABX.wakelock(false) // now everything is done
 
             OABX.service?.let {
-                traceBold("%%%%% ------------------------------------------ service stopping...\\")
+                traceBold { "%%%%% ------------------------------------------ service stopping...\\" }
                 it.stopSelf()
-                traceBold("%%%%% ------------------------------------------ service stopped.../")
+                traceBold { "%%%%% ------------------------------------------ service stopped.../" }
             }
         }.start()
     }

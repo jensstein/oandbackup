@@ -289,7 +289,7 @@ class OABX : Application() {
         fun beginBusy(name: String? = null) {
             if (pref_traceBusy.value) {
                 val label = name ?: methodName(1)
-                traceBold("*** ${"+---".repeat(_busy.get())}\\ busy $label")
+                traceBold { "*** ${"+---".repeat(_busy.get())}\\ busy $label" }
             }
             busy.value = _busy.accumulateAndGet(+1, Int::plus)
         }
@@ -298,7 +298,7 @@ class OABX : Application() {
             busy.value = _busy.accumulateAndGet(-1, Int::plus)
             if (pref_traceBusy.value) {
                 val label = name ?: methodName(1)
-                traceBold("*** ${"+---".repeat(_busy.get())}/ busy $label")
+                traceBold { "*** ${"+---".repeat(_busy.get())}/ busy $label" }
             }
         }
     }

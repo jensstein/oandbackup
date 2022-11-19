@@ -206,7 +206,7 @@ class MainActivityX : BaseActivity() {
                 if (freshStart) {
                     SideEffect {
                         // runs earlier, maybe too early (I guess because it's independent from the view model)
-                        //traceBold("******************** freshStart Sideffect ********************")
+                        //traceBold { "******************** freshStart Sideffect ********************" }
                         //viewModel.searchQuery.value = ""
                         //viewModel.modelSortFilter.value = OABX.context.sortFilterModel
                     }
@@ -215,7 +215,7 @@ class MainActivityX : BaseActivity() {
                 if (freshStart) {
                     LaunchedEffect(viewModel) {
                         // runs later
-                        traceBold("******************** freshStart LaunchedEffect(viewModel) ********************")
+                        traceBold { "******************** freshStart LaunchedEffect(viewModel) ********************" }
                         //TODO hg42 I guess this shouldn't be necessary, but no better solution to start the flow game, yet
                         //TODO indeed it doesn't seem to be necessary with MutableStateFlow under the hood
                         if (viewModel.searchQuery is MutableComposableSharedFlow<*>)

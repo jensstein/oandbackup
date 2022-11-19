@@ -376,19 +376,26 @@ val pref_logToSystemLogcat = BooleanPref(
 val pref_trace = BooleanPref(
     key = "dev-trace.trace",
     summary = "global switch for all traceXXX options",
-    defaultValue = false
+    defaultValue = true
 )
 
 val pref_traceFlows = BooleanPref(
     key = "dev-trace.traceFlows",
     summary = "trace Kotlin Flows (reactive data streams)",
-    defaultValue = false,
+    defaultValue = true,
     enableIf = { pref_trace.value }
 )
 
 val pref_traceBusy = BooleanPref(
     key = "dev-trace.traceBusy",
     summary = "trace beginBusy/endBusy (busy indicator)",
+    defaultValue = true,
+    enableIf = { pref_trace.value }
+)
+
+val pref_traceDebug = BooleanPref(
+    key = "dev-trace.traceDebug",
+    summary = "trace for debugging purposes (for devs)",
     defaultValue = false,
     enableIf = { pref_trace.value }
 )

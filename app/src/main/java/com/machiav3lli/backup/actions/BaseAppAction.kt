@@ -66,7 +66,7 @@ abstract class BaseAppAction protected constructor(
         try {
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
             val script = ShellHandler.findAssetFile("package.sh").toString()
-            traceBold("---------------------------------------- preprocess $type $packageName uid ${applicationInfo.uid}")
+            traceBold { "---------------------------------------- preprocess $type $packageName uid ${applicationInfo.uid}" }
             if (applicationInfo.uid < android.os.Process.FIRST_APPLICATION_UID) { // exclude several system users, e.g. system, radio
                 Timber.w("$type $packageName: ignore processes of system user UID < ${android.os.Process.FIRST_APPLICATION_UID}")
                 return
@@ -98,7 +98,7 @@ abstract class BaseAppAction protected constructor(
         try {
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
             val script = ShellHandler.findAssetFile("package.sh").toString()
-            traceBold("........................................ postprocess $type $packageName uid ${applicationInfo.uid}")
+            traceBold { "........................................ postprocess $type $packageName uid ${applicationInfo.uid}" }
             if (applicationInfo.uid < android.os.Process.FIRST_APPLICATION_UID) { // exclude several system users, e.g. system, radio
                 Timber.w("$type $packageName: ignore processes of system user UID < ${android.os.Process.FIRST_APPLICATION_UID}")
                 return

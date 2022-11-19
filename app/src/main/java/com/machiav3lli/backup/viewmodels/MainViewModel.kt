@@ -93,7 +93,7 @@ class MainViewModel(
     val packageList = combine(db.appInfoDao.allFlow, backupsMap) { p, b ->
         //========================================================================================== packageList
         if (pref_traceFlows.value)
-            traceBold("******************** database - db: ${p.size} backups: ${b.size}")
+            traceBold { "******************** database - db: ${p.size} backups: ${b.size}" }
 
         val list =
             p.toPackageList(
@@ -103,7 +103,7 @@ class MainViewModel(
             )
 
         if (pref_traceFlows.value)
-            traceBold("***** packages ->> ${list.size}")
+            traceBold { "***** packages ->> ${list.size}" }
         list
     }
         .trace { "*** packageList <<- ${it.size}" }
@@ -127,19 +127,19 @@ class MainViewModel(
     val notBlockedList = combine(packageList, blocklist) { p, b ->
         //========================================================================================== notBlockedList
         if (pref_traceFlows.value)
-            traceBold(
+            traceBold {
                 "******************** blocking - list: ${p.size} block: ${
                     b.joinToString(
                         ","
                     )
                 }"
-            )
+            }
 
         val block = b.map { it.packageName }
         val list = p.filterNot { block.contains(it.packageName) }
 
         if (pref_traceFlows.value)
-            traceBold("***** blocked ->> ${list.size}")
+            traceBold { "***** blocked ->> ${list.size}" }
         list
     }
         .trace { "*** notBlockedList <<- ${it.size}" }
@@ -166,7 +166,7 @@ class MainViewModel(
     val filteredList = combine(notBlockedList, modelSortFilter.flow, searchQuery.flow) { p, f, s ->
         //========================================================================================== filteredList
         if (pref_traceFlows.value)
-            traceBold("******************** filtering - list: ${p.size} filter: $f")
+            traceBold { "******************** filtering - list: ${p.size} filter: $f" }
 
         val list = p
             .filter { item: Package ->
@@ -178,7 +178,7 @@ class MainViewModel(
             .applyFilter(f, OABX.main!!)
 
         if (pref_traceFlows.value)
-            traceBold("***** filtered ->> ${list.size}")
+            traceBold { "***** filtered ->> ${list.size}" }
         list
     }
         .trace { "*** filteredList <<- ${it.size}" }
