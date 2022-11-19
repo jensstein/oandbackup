@@ -38,6 +38,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -69,7 +70,21 @@ val padding = 5.dp
 @Preview
 @Composable
 fun DefaultPreview() {
-    TerminalPage()
+    TerminalPage("""
+        aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa.    
+        bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb.    
+        cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc.    
+        dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd.    
+        eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee.
+        === yyy
+        --- xxx
+        *** zzz
+        this is an error
+        this is an ERROR
+        this is a warning
+        this is a WARNING
+    """.trimIndent() + "\nline".repeat(100)
+    )
 }
 
 fun info(): List<String> {
@@ -139,7 +154,7 @@ fun TerminalButton(name: String, important : Boolean = false, action: () -> Unit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TerminalPage() {
+fun TerminalPage(text: String ? = null) {
     val output = remember { mutableStateListOf<String>() }
     val listState = rememberLazyListState()
     var command by remember { mutableStateOf("") }
@@ -159,6 +174,12 @@ fun TerminalPage() {
             beginBusy()
             add(shell(command))
             endBusy()
+        }
+    }
+
+    text?.let {
+        LaunchedEffect(true) {
+            add(text.lines())
         }
     }
 
@@ -238,6 +259,8 @@ fun TerminalPage() {
                 TerminalButton("ecmd") {
                     command = OABX.lastErrorCommand
                 }
+                if (BuildConfig.DEBUG) {
+                }
             }
         }
         Box(modifier = Modifier
@@ -252,22 +275,26 @@ fun TerminalPage() {
             ) {
                 SelectionContainerX {
                     LazyColumn(modifier = Modifier
-                        .fillMaxSize(),
+                        //.fillMaxSize()
+                            ,
+                        verticalArrangement = Arrangement.spacedBy(1.dp),
                         state = listState
                     ) {
                         items(output) {
-                            if (it.startsWith("===") or it.startsWith("---"))
-                                Text(if (it == "") " " else it,     //TODO hg42 workaround
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 10.sp,
-                                    color = Color.Yellow
-                                )
-                            else
-                                Text(if (it == "") " " else it,     //TODO hg42 workaround
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = 10.sp,
-                                    color = Color.White
-                                )
+                            Text(if (it == "") " " else it,     //TODO hg42 workaround
+                                fontFamily = FontFamily.Monospace,
+                                fontSize = 10.sp,
+                                lineHeight = 10.sp,
+                                softWrap = true,
+                                color = when {
+                                    it.contains("error", ignoreCase = true) -> Color(1f, 0f, 0f)
+                                    it.contains("warning", ignoreCase = true) -> Color(1f, 0.5f, 0f)
+                                    it.contains("***") -> Color(0f, 1f, 1f)
+                                    it.startsWith("===") -> Color(1f, 1f, 0f)
+                                    it.startsWith("---") -> Color(0.8f, 0.8f, 0f)
+                                    else -> Color.White
+                                }
+                            )
                         }
                     }
                 }
