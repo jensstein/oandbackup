@@ -383,6 +383,7 @@ fun RoundButton(
     modifier: Modifier = Modifier,
     size: Dp = ICON_SIZE_SMALL,
     icon: ImageVector,
+    tint: Color = MaterialTheme.colorScheme.onBackground,
     description: String = "",
     onClick: () -> Unit
 ) {
@@ -393,6 +394,7 @@ fun RoundButton(
         Icon(
             modifier = Modifier.size(size),
             imageVector = icon,
+            tint = tint,
             contentDescription = description
         )
     }

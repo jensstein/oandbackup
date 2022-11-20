@@ -55,8 +55,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
@@ -283,15 +285,17 @@ fun TerminalText(text: List<String>, scrollOnAdd: Boolean = true) {
 
     lastNLines.value = nLines
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(color = Color.Transparent),
+        contentAlignment = Alignment.BottomEnd
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(0.dp)
-                .weight(1f, fill = true)
+                //.weight(1f, fill = true)
                 .ifThen(!wrap, { horizontalScroll(hscroll) })
                 .background(color = Color.Transparent)
         ) {
@@ -299,6 +303,7 @@ fun TerminalText(text: List<String>, scrollOnAdd: Boolean = true) {
                 LazyColumn(
                     modifier = Modifier
                         .padding(8.dp, 0.dp, 0.dp, 0.dp),
+                        //.padding(8.dp, 0.dp, if (wrap) 0.dp else 52.dp*3, 0.dp),
                     verticalArrangement = Arrangement.spacedBy(1.dp),
                     state = listState
                 ) {
@@ -323,17 +328,32 @@ fun TerminalText(text: List<String>, scrollOnAdd: Boolean = true) {
                             }
                         )
                     }
+                    //if (!wrap) item { Spacer(modifier = Modifier.height(48.dp)) }
                 }
             }
         }
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-            RoundButton(icon = if (wrap) Icons.Rounded.MoreVert else Icons.Rounded.List) {
+
+        @Composable
+        fun SmallButton(icon: ImageVector, onClick: () -> Unit) {
+            RoundButton(
+                icon = icon,
+                onClick = onClick,
+                tint = Color(1f, 1f, 1f)
+            )
+        }
+
+        Row(modifier = Modifier
+            //.fillMaxWidth()
+            .background(color = Color.Transparent),
+            horizontalArrangement = Arrangement.End
+        ) {
+            SmallButton(icon = if (wrap) Icons.Rounded.MoreVert else Icons.Rounded.List) {
                 wrap = !wrap
             }
-            RoundButton(icon = Icons.Rounded.KeyboardArrowUp) {
+            SmallButton(icon = Icons.Rounded.KeyboardArrowUp) {
                 scope.launch { listState.animateScrollToItem(0) }
             }
-            RoundButton(icon = Icons.Rounded.KeyboardArrowDown) {
+            SmallButton(icon = Icons.Rounded.KeyboardArrowDown) {
                 scope.launch { listState.animateScrollToItem(text.size) }
             }
         }
