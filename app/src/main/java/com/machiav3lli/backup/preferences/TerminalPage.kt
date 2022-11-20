@@ -263,7 +263,7 @@ fun TerminalPage() {
                 .padding(0.dp)
                 .background(color = Color(0.2f, 0.2f, 0.3f))
         ) {
-            TerminalText(output)
+            TerminalText(output, scrollOnAdd = true)
         }
     }
 }
@@ -274,16 +274,13 @@ fun TerminalText(text: List<String>, scrollOnAdd: Boolean = true) {
     val hscroll = rememberScrollState()
     val listState = rememberLazyListState()
     val nLines = text.size
-    val lastNLines = remember { mutableStateOf(nLines) }
     var wrap by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
-    if (scrollOnAdd) // && nLines != lastNLines.value && lastNLines.value > 0)
-        LaunchedEffect(text) {
+    if (scrollOnAdd)
+        LaunchedEffect(nLines) {
             listState.animateScrollToItem(index = nLines)
         }
-
-    lastNLines.value = nLines
 
     Box(
         modifier = Modifier
