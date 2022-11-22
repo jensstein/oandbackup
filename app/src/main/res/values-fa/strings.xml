@@ -170,7 +170,7 @@
     <string name="storage_access"></string>
     <string name="intro_permission_smsmms"></string>
     <string name="apptype_special"></string>
-    <string name="prefs_housekeepingmoment_summary"></string>
+    <string name="prefs_housekeepingmoment_summary"/>
     <string name="dialog_export_schedules"></string>
     <string name="logs_text_empty"></string>
     <string name="dialogNo"></string>
@@ -213,7 +213,7 @@
     <string name="prefs_sessionIinstaller"></string>
     <string name="dialog_refuse"></string>
     <string name="failed_unzipping"></string>
-    <string name="prefs_housekeepingmoment"></string>
+    <string name="prefs_housekeepingmoment"/>
     <string name="intro_permission_calllogs"></string>
     <string name="prefs_disableverification_summary"></string>
     <string name="prefs_schedulesexportimport"></string>
@@ -286,7 +286,7 @@
     <string name="prefs_usefindls_summary" translatable="false"></string>
     <string name="prefs_assemblefilelistonestep_summary" translatable="false"></string>
     <string name="prefs_catchuncaughtexception_summary" translatable="false"></string>
-    <string name="prefs_maxcrashlines_summary" translatable="false"></string>
+    <string name="prefs_maxcrashlines_summary" translatable="false"/>
     <string name="prefs_invalidateselective_summary" translatable="false"></string>
     <string name="prefs_cacheuris_summary" translatable="false"></string>
     <string name="prefs_cachefilelists_summary" translatable="false"></string>
@@ -377,6 +377,9 @@
     <string name="title_note"></string>
     <string name="help_changelog"></string>
     <string name="prefs_delaybeforerefreshappinfo_summary" translatable="false"></string>
-    <string name="enable_encryption_message"></string>
-    <string name="sched_exported"></string>
+    <string name="enable_encryption_message"/>
+    <string name="sched_exported"/>
+    <string name="prefs_tools_terminal"></string>
+    <string name="prefs_nobackupdata"></string>
+    <string name="prefs_nobackupdata_summary"></string>
 </resources>
