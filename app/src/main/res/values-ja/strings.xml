@@ -159,228 +159,228 @@
     <string name="prefs_stopcont">バックアップ、復元の前後にアプリを一時停止、再開する</string>
     <string name="prefs_stopcont_summary">上級者専用: バックアップ中にアプリがファイルを変更してバックアップが失敗する場合に役立つかもしれません。</string>
     <string name="prefs_saveappslist_summary">バックアップディレクトリにtxt形式でアプリのリストを保存する</string>
-    <string name="sortDataSize"/>
-    <string name="calllogs_permission_title"/>
-    <string name="help_group_matrix"/>
-    <string name="sortAsc"/>
-    <string name="add_tag"/>
-    <string name="edit_note"/>
-    <string name="split_apks"/>
-    <string name="prefs_accent_2"/>
-    <string name="prefs_accent_3"/>
-    <string name="prefs_accent_5"/>
-    <string name="prefs_accent_6"/>
-    <string name="prefs_accent_7"/>
-    <string name="prefs_accent_8"/>
-    <string name="prefs_secondary_3"/>
-    <string name="prefs_secondary_4"/>
-    <string name="prefs_secondary_5"/>
-    <string name="prefs_secondary_6"/>
-    <string name="finished"/>
-    <string name="prefs_user_short"/>
-    <string name="prefs_advanced_short"/>
-    <string name="prefs_loadingtoasts_summary"/>
-    <string name="prefs_dev_settings"/>
-    <string name="prefs_usecolumnnamesaf_summary" translatable="false"/>
-    <string name="prefs_pmsuspend_summary" translatable="false"/>
-    <string name="prefs_backuptarcmd_summary" translatable="false"/>
-    <string name="prefs_stricthardlinks_summary" translatable="false"/>
-    <string name="prefs_restoreavoidtempcopy_summary" translatable="false"/>
-    <string name="prefs_shadowrootfile_summary" translatable="false"/>
-    <string name="prefs_invalidateselective_summary" translatable="false"/>
-    <string name="prefs_useexpedited_summary" translatable="false"/>
-    <string name="last_backup_title"/>
-    <string name="app_s_type_title"/>
-    <string name="encrypted_data_title"/>
-    <string name="other_filters_options"/>
-    <string name="empty_filtered_list"/>
-    <string name="ignore_battery_optimization_title"/>
-    <string name="ignore_battery_optimization_message"/>
-    <string name="ignore_battery_optimization_not_supported"/>
-    <string name="failed_unzipping"/>
-    <string name="backup_filters"/>
-    <string name="smsmms_permission_title"/>
-    <string name="grant_usage_access_message"/>
-    <string name="app_size"/>
-    <string name="data_size"/>
-    <string name="logfileSavedAt" translatable="false"/>
-    <string name="help_group_telegram"/>
-    <string name="help_faq"/>
-    <string name="help_legend"/>
-    <string name="help_appTypeHint"/>
-    <string name="enable_encryption_title"/>
-    <string name="sort_and_filter"/>
-    <string name="storage_access"/>
-    <string name="welcome_to_oabx"/>
-    <string name="intro_permission_storage_location"/>
-    <string name="usage_notes_title"/>
-    <string name="main"/>
-    <string name="backup_all_updated"/>
-    <string name="prefs_secondary_0"/>
-    <string name="prefs_secondary_7"/>
-    <string name="prefs_secondary_color"/>
-    <string name="error_encryptionpassword"/>
-    <string name="title_note"/>
-    <string name="batch"/>
-    <string name="delete"/>
-    <string name="dismiss"/>
-    <string name="enabled"/>
-    <string name="sortDesc"/>
-    <string name="contacts_permission_title"/>
-    <string name="error_updating_schedule_mode"/>
-    <string name="exodus_report"/>
-    <string name="grant_calllogs_message"/>
-    <string name="permission_not_granted"/>
-    <string name="sched_add"/>
-    <string name="sortBackupSize"/>
-    <string name="launch_app"/>
-    <string name="bothBackedUp"/>
-    <string name="apptype_special"/>
-    <string name="grant_contacts_message"/>
-    <string name="radio_launchable"/>
-    <string name="prefs_tools_short"/>
-    <string name="prefs_loadingtoasts"/>
-    <string name="intro_welcome_message"/>
-    <string name="grant_smsmms_message"/>
-    <string name="apptype_user"/>
-    <string name="prefs_service_short"/>
-    <string name="utilboxCheck" translatable="false"/>
-    <string name="available_actions"/>
-    <string name="app_info"/>
-    <string name="app_s_icon"/>
-    <string name="stats_updated"/>
-    <string name="no_file_manager_message"/>
-    <string name="error_creating_notification_channel"/>
-    <string name="prefs_delaybeforerefreshappinfo_summary" translatable="false"/>
-    <string name="write_apps_list_all"/>
-    <string name="sortAppSize"/>
-    <string name="sortAppDataSize"/>
-    <string name="stats_apps"/>
-    <string name="prefs_secondary_2"/>
-    <string name="prefs_cacheuris_summary" translatable="false"/>
+    <string name="sortDataSize"></string>
+    <string name="calllogs_permission_title"></string>
+    <string name="help_group_matrix"></string>
+    <string name="sortAsc"></string>
+    <string name="add_tag"></string>
+    <string name="edit_note"></string>
+    <string name="split_apks"></string>
+    <string name="prefs_accent_2"></string>
+    <string name="prefs_accent_3"></string>
+    <string name="prefs_accent_5"></string>
+    <string name="prefs_accent_6"></string>
+    <string name="prefs_accent_7"></string>
+    <string name="prefs_accent_8"></string>
+    <string name="prefs_secondary_3"></string>
+    <string name="prefs_secondary_4"></string>
+    <string name="prefs_secondary_5"></string>
+    <string name="prefs_secondary_6"></string>
+    <string name="finished"></string>
+    <string name="prefs_user_short"></string>
+    <string name="prefs_advanced_short"></string>
+    <string name="prefs_loadingtoasts_summary"></string>
+    <string name="prefs_dev_settings"></string>
+    <string name="prefs_usecolumnnamesaf_summary" translatable="false"></string>
+    <string name="prefs_pmsuspend_summary" translatable="false"></string>
+    <string name="prefs_backuptarcmd_summary" translatable="false"></string>
+    <string name="prefs_stricthardlinks_summary" translatable="false"></string>
+    <string name="prefs_restoreavoidtempcopy_summary" translatable="false"></string>
+    <string name="prefs_shadowrootfile_summary" translatable="false"></string>
+    <string name="prefs_invalidateselective_summary" translatable="false"></string>
+    <string name="prefs_useexpedited_summary" translatable="false"></string>
+    <string name="last_backup_title"></string>
+    <string name="app_s_type_title"></string>
+    <string name="encrypted_data_title"></string>
+    <string name="other_filters_options"></string>
+    <string name="empty_filtered_list"></string>
+    <string name="ignore_battery_optimization_title"></string>
+    <string name="ignore_battery_optimization_message"></string>
+    <string name="ignore_battery_optimization_not_supported"></string>
+    <string name="failed_unzipping"></string>
+    <string name="backup_filters"></string>
+    <string name="smsmms_permission_title"></string>
+    <string name="grant_usage_access_message"></string>
+    <string name="app_size"></string>
+    <string name="data_size"></string>
+    <string name="logfileSavedAt" translatable="false"></string>
+    <string name="help_group_telegram"></string>
+    <string name="help_faq"></string>
+    <string name="help_legend"></string>
+    <string name="help_appTypeHint"></string>
+    <string name="enable_encryption_title"></string>
+    <string name="sort_and_filter"></string>
+    <string name="storage_access"></string>
+    <string name="welcome_to_oabx"></string>
+    <string name="intro_permission_storage_location"></string>
+    <string name="usage_notes_title"></string>
+    <string name="main"></string>
+    <string name="backup_all_updated"></string>
+    <string name="prefs_secondary_0"></string>
+    <string name="prefs_secondary_7"></string>
+    <string name="prefs_secondary_color"></string>
+    <string name="error_encryptionpassword"></string>
+    <string name="title_note"></string>
+    <string name="batch"></string>
+    <string name="delete"></string>
+    <string name="dismiss"></string>
+    <string name="enabled"></string>
+    <string name="sortDesc"></string>
+    <string name="contacts_permission_title"></string>
+    <string name="error_updating_schedule_mode"></string>
+    <string name="exodus_report"></string>
+    <string name="grant_calllogs_message"></string>
+    <string name="permission_not_granted"></string>
+    <string name="sched_add"></string>
+    <string name="sortBackupSize"></string>
+    <string name="launch_app"></string>
+    <string name="bothBackedUp"></string>
+    <string name="apptype_special"></string>
+    <string name="grant_contacts_message"></string>
+    <string name="radio_launchable"></string>
+    <string name="prefs_tools_short"></string>
+    <string name="prefs_loadingtoasts"></string>
+    <string name="intro_welcome_message"></string>
+    <string name="grant_smsmms_message"></string>
+    <string name="apptype_user"></string>
+    <string name="prefs_service_short"></string>
+    <string name="utilboxCheck" translatable="false"></string>
+    <string name="available_actions"></string>
+    <string name="app_info"></string>
+    <string name="app_s_icon"></string>
+    <string name="stats_updated"></string>
+    <string name="no_file_manager_message"></string>
+    <string name="error_creating_notification_channel"></string>
+    <string name="prefs_delaybeforerefreshappinfo_summary" translatable="false"></string>
+    <string name="write_apps_list_all"></string>
+    <string name="sortAppSize"></string>
+    <string name="sortAppDataSize"></string>
+    <string name="stats_apps"></string>
+    <string name="prefs_secondary_2"></string>
+    <string name="prefs_cacheuris_summary" translatable="false"></string>
     <plurals name="sched_interval_formal">
-        <item quantity="other"/>
+        <item quantity="other"></item>
     </plurals>
-    <string name="prefs_maxretriesperpackage_summary" translatable="false"/>
-    <string name="write_apps_list_filtered"/>
-    <string name="filtered_list"/>
-    <string name="all_data"/>
-    <string name="prefs_useforeground_summary" translatable="false"/>
-    <string name="apptype_system"/>
-    <string name="clear_cache"/>
-    <string name="dialog_export_schedules"/>
-    <string name="cache_size"/>
-    <string name="spec_fingerprint"/>
-    <string name="title_tags"/>
-    <string name="schedule_failed"/>
-    <string name="prefs_secondary_1"/>
-    <string name="restart_dialog"/>
-    <string name="dialog_refuse"/>
-    <string name="help_issues"/>
-    <string name="supended_apps_cleanup"/>
-    <string name="prefs_unset"/>
-    <string name="version_name_title"/>
-    <string name="backup_mode_title"/>
-    <string name="prefs_accent_4"/>
-    <string name="sortBackupDate"/>
-    <string name="home"/>
-    <string name="dialogSave"/>
-    <string name="dialog_unlock"/>
-    <string name="filter_options"/>
-    <string name="intro_permission_storage"/>
-    <string name="copyOwnApkSuccess"/>
-    <string name="copyOwnApkFailed"/>
-    <string name="wait_noappslist"/>
-    <string name="dialog_import"/>
-    <string name="sortAscDesc"/>
-    <string name="intro_permission_storage_location_warning"/>
-    <string name="spec_smsmmsjson"/>
-    <string name="spec_calllogsjson"/>
-    <string name="sortPackageName"/>
-    <string name="all"/>
-    <string name="resetFilter"/>
-    <string name="applyFilter"/>
-    <string name="error_datachanged"/>
-    <string name="prefs_accent_0"/>
-    <string name="prefs_accent_1"/>
-    <string name="prefs_secondary_8"/>
-    <string name="prefs_accent_color"/>
-    <string name="root_missing"/>
-    <string name="loading_list"/>
-    <string name="prefs_multilineinfochips"/>
-    <string name="prefs_multilineinfochips_summary"/>
-    <string name="prefs_squeezenavtext"/>
-    <string name="prefs_squeezenavtext_summary"/>
-    <string name="prefs_restorepermissions_summary"/>
-    <string name="prefs_cachepackages_summary" translatable="false"/>
-    <string name="prefs_dev_settings_summary"/>
-    <string name="prefs_showinfologbar_summary" translatable="false"/>
-    <string name="prefs_usepackagecacheonupdate_summary" translatable="false"/>
-    <string name="prefs_cancelonstart_summary" translatable="false"/>
-    <string name="prefs_usealarmclock_summary" translatable="false"/>
-    <string name="prefs_useexactalarm_summary" translatable="false"/>
-    <string name="prefs_pauseapps_summary" translatable="false"/>
-    <string name="prefs_restoretarcmd_summary" translatable="false"/>
-    <string name="prefs_allowshadowingdefault_summary" translatable="false"/>
-    <string name="prefs_usefindls_summary" translatable="false"/>
-    <string name="sched_blocklist"/>
-    <string name="prefs_assemblefilelistonestep_summary" translatable="false"/>
-    <string name="prefs_catchuncaughtexception_summary" translatable="false"/>
+    <string name="prefs_maxretriesperpackage_summary" translatable="false"></string>
+    <string name="write_apps_list_filtered"></string>
+    <string name="filtered_list"></string>
+    <string name="all_data"></string>
+    <string name="prefs_useforeground_summary" translatable="false"></string>
+    <string name="apptype_system"></string>
+    <string name="clear_cache"></string>
+    <string name="dialog_export_schedules"></string>
+    <string name="cache_size"></string>
+    <string name="spec_fingerprint"></string>
+    <string name="title_tags"></string>
+    <string name="schedule_failed"></string>
+    <string name="prefs_secondary_1"></string>
+    <string name="restart_dialog"></string>
+    <string name="dialog_refuse"></string>
+    <string name="help_issues"></string>
+    <string name="supended_apps_cleanup"></string>
+    <string name="prefs_unset"></string>
+    <string name="version_name_title"></string>
+    <string name="backup_mode_title"></string>
+    <string name="prefs_accent_4"></string>
+    <string name="sortBackupDate"></string>
+    <string name="home"></string>
+    <string name="dialogSave"></string>
+    <string name="dialog_unlock"></string>
+    <string name="filter_options"></string>
+    <string name="intro_permission_storage"></string>
+    <string name="copyOwnApkSuccess"></string>
+    <string name="copyOwnApkFailed"></string>
+    <string name="wait_noappslist"></string>
+    <string name="dialog_import"></string>
+    <string name="sortAscDesc"></string>
+    <string name="intro_permission_storage_location_warning"></string>
+    <string name="spec_smsmmsjson"></string>
+    <string name="spec_calllogsjson"></string>
+    <string name="sortPackageName"></string>
+    <string name="all"></string>
+    <string name="resetFilter"></string>
+    <string name="applyFilter"></string>
+    <string name="error_datachanged"></string>
+    <string name="prefs_accent_0"></string>
+    <string name="prefs_accent_1"></string>
+    <string name="prefs_secondary_8"></string>
+    <string name="prefs_accent_color"></string>
+    <string name="root_missing"></string>
+    <string name="loading_list"></string>
+    <string name="prefs_multilineinfochips"></string>
+    <string name="prefs_multilineinfochips_summary"></string>
+    <string name="prefs_squeezenavtext"></string>
+    <string name="prefs_squeezenavtext_summary"></string>
+    <string name="prefs_restorepermissions_summary"></string>
+    <string name="prefs_cachepackages_summary" translatable="false"></string>
+    <string name="prefs_dev_settings_summary"></string>
+    <string name="prefs_showinfologbar_summary" translatable="false"></string>
+    <string name="prefs_usepackagecacheonupdate_summary" translatable="false"></string>
+    <string name="prefs_cancelonstart_summary" translatable="false"></string>
+    <string name="prefs_usealarmclock_summary" translatable="false"></string>
+    <string name="prefs_useexactalarm_summary" translatable="false"></string>
+    <string name="prefs_pauseapps_summary" translatable="false"></string>
+    <string name="prefs_restoretarcmd_summary" translatable="false"></string>
+    <string name="prefs_allowshadowingdefault_summary" translatable="false"></string>
+    <string name="prefs_usefindls_summary" translatable="false"></string>
+    <string name="sched_blocklist"></string>
+    <string name="prefs_assemblefilelistonestep_summary" translatable="false"></string>
+    <string name="prefs_catchuncaughtexception_summary" translatable="false"></string>
     <string name="prefs_maxcrashlines_summary" translatable="false"/>
-    <string name="prefs_cachefilelists_summary" translatable="false"/>
-    <string name="prefs_refreshappinfotimeout_summary" translatable="false"/>
-    <string name="prefs_fakebackupseconds_summary" translatable="false"/>
-    <string name="sched_name"/>
-    <string name="dialogCancelAll"/>
-    <string name="sort_options"/>
-    <string name="sortLabel"/>
-    <string name="deleted_backup"/>
-    <string name="intro_permission_contacts"/>
-    <string name="intro_permission_usageaccess"/>
-    <string name="delete_all_backups"/>
-    <string name="logs_text_empty"/>
-    <string name="all_apk"/>
-    <string name="schedule"/>
-    <string name="showDisabled"/>
-    <string name="app_name" translatable="false"/>
-    <string name="grant_usage_access_title"/>
-    <string name="intro_permission_smsmms"/>
-    <string name="intro_permission_calllogs"/>
-    <string name="fetching_action_list"/>
-    <string name="help"/>
-    <string name="place_holder" translatable="false"/>
-    <string name="prefs_schedulesexportimport"/>
-    <string name="prefs_schedulesexportimport_summary"/>
-    <string name="no_file_manager_title"/>
-    <string name="shell_initproblem"/>
-    <string name="dialog_export"/>
-    <string name="sched_imported"/>
-    <string name="logs_share_failed"/>
-    <string name="forceKill"/>
-    <string name="global_blocklist_add"/>
+    <string name="prefs_cachefilelists_summary" translatable="false"></string>
+    <string name="prefs_refreshappinfotimeout_summary" translatable="false"></string>
+    <string name="prefs_fakebackupseconds_summary" translatable="false"></string>
+    <string name="sched_name"></string>
+    <string name="dialogCancelAll"></string>
+    <string name="sort_options"></string>
+    <string name="sortLabel"></string>
+    <string name="deleted_backup"></string>
+    <string name="intro_permission_contacts"></string>
+    <string name="intro_permission_usageaccess"></string>
+    <string name="delete_all_backups"></string>
+    <string name="logs_text_empty"></string>
+    <string name="all_apk"></string>
+    <string name="schedule"></string>
+    <string name="showDisabled"></string>
+    <string name="app_name" translatable="false"></string>
+    <string name="grant_usage_access_title"></string>
+    <string name="intro_permission_smsmms"></string>
+    <string name="intro_permission_calllogs"></string>
+    <string name="fetching_action_list"></string>
+    <string name="help"></string>
+    <string name="place_holder" translatable="false"></string>
+    <string name="prefs_schedulesexportimport"></string>
+    <string name="prefs_schedulesexportimport_summary"></string>
+    <string name="no_file_manager_title"></string>
+    <string name="shell_initproblem"></string>
+    <string name="dialog_export"></string>
+    <string name="sched_imported"></string>
+    <string name="logs_share_failed"></string>
+    <string name="forceKill"></string>
+    <string name="global_blocklist_add"></string>
     <plurals name="days_left">
-        <item quantity="other"/>
+        <item quantity="other"></item>
     </plurals>
     <plurals name="updated_apps">
-        <item quantity="other"/>
+        <item quantity="other"></item>
     </plurals>
-    <string name="help_changelog"/>
-    <string name="prefs_sessionIinstaller"/>
-    <string name="prefs_sessionIinstaller_summary"/>
-    <string name="prefs_installerpackagename"/>
-    <string name="prefs_restorepermissions"/>
-    <string name="root_is_mandatory"/>
-    <string name="see_faq"/>
-    <string name="prefs_theme_dynamic"/>
-    <string name="intro_permission_batteryoptimization"/>
-    <string name="stats_backups"/>
+    <string name="help_changelog"></string>
+    <string name="prefs_sessionIinstaller"></string>
+    <string name="prefs_sessionIinstaller_summary"></string>
+    <string name="prefs_installerpackagename"></string>
+    <string name="prefs_restorepermissions"></string>
+    <string name="root_is_mandatory"></string>
+    <string name="see_faq"></string>
+    <string name="prefs_theme_dynamic"></string>
+    <string name="intro_permission_batteryoptimization"></string>
+    <string name="stats_backups"></string>
     <string name="enable_encryption_message"/>
     <string name="dialog_approve"/>
     <string name="dialog_start"/>
     <string name="sched_exported"/>
     <string name="forceKillMessage"/>
     <string name="msg_appkill_warning"/>
-    <string name="prefs_tools_terminal"/>
-    <string name="prefs_nobackupdata_summary"/>
-    <string name="prefs_nobackupdata"/>
+    <string name="prefs_tools_terminal"></string>
+    <string name="prefs_nobackupdata_summary"></string>
+    <string name="prefs_nobackupdata"></string>
 </resources>
