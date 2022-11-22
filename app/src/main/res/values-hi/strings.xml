@@ -374,11 +374,11 @@
     <string name="sortBackupDate"></string>
     <string name="prefs_schedulesexportimport"></string>
     <string name="schedule"></string>
-    <string name="sched_exported"></string>
-    <string name="enable_encryption_message"></string>
-    <string name="prefs_acquirewakelock_summary"></string>
-    <string name="msg_appkill_warning"></string>
-    <string name="forceKillMessage"></string>
+    <string name="sched_exported"/>
+    <string name="enable_encryption_message"/>
+    <string name="prefs_acquirewakelock_summary"/>
+    <string name="msg_appkill_warning"/>
+    <string name="forceKillMessage"/>
     <string name="prefs_nobackupdata_summary"></string>
     <string name="prefs_tools_terminal"></string>
     <string name="prefs_nobackupdata"></string>
