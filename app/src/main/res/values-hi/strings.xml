@@ -124,7 +124,7 @@
     <string name="prefs_restorepermissions"></string>
     <string name="prefs_restorepermissions_summary"></string>
     <string name="prefs_numBackupRevisions_summary"></string>
-    <string name="prefs_housekeepingmoment"></string>
+    <string name="prefs_housekeepingmoment"/>
     <string name="prefs_stopcont"></string>
     <string name="prefs_copyselfapk"></string>
     <string name="prefs_cancelonstart_summary" translatable="false"></string>
@@ -206,7 +206,7 @@
     <string name="prefs_excludecache_summary"></string>
     <string name="prefs_externaldata"></string>
     <string name="prefs_externaldata_summary"></string>
-    <string name="prefs_housekeepingmoment_summary"></string>
+    <string name="prefs_housekeepingmoment_summary"/>
     <string name="prefs_compression_level"></string>
     <string name="prefs_restoreallpermissions"></string>
     <string name="prefs_allowdowngrade_summary"></string>
@@ -268,7 +268,7 @@
     <string name="prefs_usefindls_summary" translatable="false"></string>
     <string name="prefs_assemblefilelistonestep_summary" translatable="false"></string>
     <string name="prefs_catchuncaughtexception_summary" translatable="false"></string>
-    <string name="prefs_maxcrashlines_summary" translatable="false"></string>
+    <string name="prefs_maxcrashlines_summary" translatable="false"/>
     <string name="prefs_invalidateselective_summary" translatable="false"></string>
     <string name="prefs_cacheuris_summary" translatable="false"></string>
     <string name="prefs_cachefilelists_summary" translatable="false"></string>
@@ -374,9 +374,12 @@
     <string name="sortBackupDate"></string>
     <string name="prefs_schedulesexportimport"></string>
     <string name="schedule"></string>
-    <string name="sched_exported"></string>
-    <string name="enable_encryption_message"></string>
-    <string name="prefs_acquirewakelock_summary"></string>
-    <string name="msg_appkill_warning"></string>
-    <string name="forceKillMessage"></string>
+    <string name="sched_exported"/>
+    <string name="enable_encryption_message"/>
+    <string name="prefs_acquirewakelock_summary"/>
+    <string name="msg_appkill_warning"/>
+    <string name="forceKillMessage"/>
+    <string name="prefs_nobackupdata_summary"></string>
+    <string name="prefs_tools_terminal"></string>
+    <string name="prefs_nobackupdata"></string>
 </resources>
