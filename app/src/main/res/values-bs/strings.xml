@@ -286,7 +286,7 @@
     <string name="prefs_enablespecial_summary"></string>
     <string name="calllogs_permission_title"></string>
     <string name="enabled"></string>
-    <string name="prefs_maxcrashlines_summary" translatable="false"></string>
+    <string name="prefs_maxcrashlines_summary" translatable="false"/>
     <string name="prefs_secondary_1"></string>
     <string name="fetching_action_list"></string>
     <string name="fallbackToDefault"></string>
@@ -302,8 +302,8 @@
     </plurals>
     <string name="supended_apps_cleanup"></string>
     <string name="error_pmDataIncompleteException_dataRestoreFailed"></string>
-    <string name="prefs_housekeepingmoment_after"></string>
-    <string name="prefs_housekeepingmoment_before"></string>
+    <string name="prefs_housekeepingmoment_after"/>
+    <string name="prefs_housekeepingmoment_before"/>
     <string name="prefs_compression_level_summary"></string>
     <string name="prefs_acquirewakelock"></string>
     <string name="prefs_saveappslist"></string>
@@ -331,8 +331,8 @@
     <string name="prefs_multilineinfochips_summary"></string>
     <string name="prefs_squeezenavtext"></string>
     <string name="prefs_squeezenavtext_summary"></string>
-    <string name="prefs_housekeepingmoment"></string>
-    <string name="prefs_housekeepingmoment_summary"></string>
+    <string name="prefs_housekeepingmoment"/>
+    <string name="prefs_housekeepingmoment_summary"/>
     <string name="prefs_disableverification"></string>
     <string name="prefs_allowdowngrade"></string>
     <string name="prefs_stopcont"></string>
@@ -380,8 +380,11 @@
     <string name="prefs_accent_8"></string>
     <string name="home"></string>
     <string name="all_data"></string>
-    <string name="msg_appkill_warning"></string>
-    <string name="prefs_acquirewakelock_summary"></string>
-    <string name="forceKillMessage"></string>
-    <string name="sched_exported"></string>
+    <string name="msg_appkill_warning"/>
+    <string name="prefs_acquirewakelock_summary"/>
+    <string name="forceKillMessage"/>
+    <string name="sched_exported"/>
+    <string name="prefs_nobackupdata"></string>
+    <string name="prefs_nobackupdata_summary"></string>
+    <string name="prefs_tools_terminal"></string>
 </resources>
