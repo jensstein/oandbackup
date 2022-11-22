@@ -354,7 +354,7 @@
     <string name="prefs_accent_8"></string>
     <string name="prefs_useexpedited_summary" translatable="false"></string>
     <string name="prefs_catchuncaughtexception_summary" translatable="false"></string>
-    <string name="prefs_maxcrashlines_summary" translatable="false"></string>
+    <string name="prefs_maxcrashlines_summary" translatable="false"/>
     <string name="prefs_user_short"></string>
     <string name="prefs_fakebackupseconds_summary" translatable="false"></string>
     <string name="prefs_cancelonstart_summary" translatable="false"></string>
@@ -390,4 +390,7 @@
     <string name="dialog_export_schedules"></string>
     <string name="prefs_installerpackagename"></string>
     <string name="prefs_theme_dynamic"></string>
+    <string name="prefs_nobackupdata_summary"></string>
+    <string name="prefs_tools_terminal"></string>
+    <string name="prefs_nobackupdata"></string>
 </resources>
