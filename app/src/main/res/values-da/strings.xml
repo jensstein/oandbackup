@@ -73,7 +73,7 @@
     <string name="batchrestore"></string>
     <string name="prefs_user"></string>
     <string name="backupSuccess"></string>
-    <string name="prefs_housekeepingmoment_after"></string>
+    <string name="prefs_housekeepingmoment_after"/>
     <string name="help_issues"></string>
     <string name="main"></string>
     <plurals name="days_left">
@@ -127,7 +127,7 @@
     <string name="prefs_theme_system"></string>
     <string name="other_filters_options"></string>
     <string name="showSplitAPKs"></string>
-    <string name="prefs_housekeepingmoment_before"></string>
+    <string name="prefs_housekeepingmoment_before"/>
     <string name="sched_imported"></string>
     <string name="dialog_approve"></string>
     <string name="cache_size"></string>
@@ -138,7 +138,7 @@
     <string name="prefs_restoreallpermissions"></string>
     <string name="prefs_disableverification"></string>
     <string name="stats_backups"></string>
-    <string name="prefs_maxcrashlines_summary" translatable="false"></string>
+    <string name="prefs_maxcrashlines_summary" translatable="false"/>
     <string name="prefs_theme_dark"></string>
     <string name="sortAsc"></string>
     <string name="help_changelog"></string>
@@ -223,8 +223,8 @@
     <string name="prefs_deviceprotecteddata_summary"></string>
     <string name="prefs_numBackupRevisions"></string>
     <string name="prefs_numBackupRevisions_summary"></string>
-    <string name="prefs_housekeepingmoment"></string>
-    <string name="prefs_housekeepingmoment_summary"></string>
+    <string name="prefs_housekeepingmoment"/>
+    <string name="prefs_housekeepingmoment_summary"/>
     <string name="prefs_compression_level"></string>
     <string name="prefs_compression_level_summary"></string>
     <string name="prefs_acquirewakelock"></string>
@@ -379,6 +379,9 @@
     <string name="backup_all_updated"></string>
     <string name="add_tag"></string>
     <string name="edit_note"></string>
-    <string name="sched_exported"></string>
-    <string name="enable_encryption_message"></string>
+    <string name="sched_exported"/>
+    <string name="enable_encryption_message"/>
+    <string name="prefs_tools_terminal"></string>
+    <string name="prefs_nobackupdata"></string>
+    <string name="prefs_nobackupdata_summary"></string>
 </resources>
