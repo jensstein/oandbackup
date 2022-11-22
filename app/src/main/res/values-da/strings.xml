@@ -379,8 +379,8 @@
     <string name="backup_all_updated"></string>
     <string name="add_tag"></string>
     <string name="edit_note"></string>
-    <string name="sched_exported"></string>
-    <string name="enable_encryption_message"></string>
+    <string name="sched_exported"/>
+    <string name="enable_encryption_message"/>
     <string name="prefs_tools_terminal"></string>
     <string name="prefs_nobackupdata"></string>
     <string name="prefs_nobackupdata_summary"></string>
