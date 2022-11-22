@@ -330,7 +330,7 @@
     <string name="prefs_service_short"></string>
     <string name="root_missing"></string>
     <string name="grant_smsmms_message"></string>
-    <string name="prefs_maxcrashlines_summary" translatable="false"></string>
+    <string name="prefs_maxcrashlines_summary" translatable="false"/>
     <string name="prefs_sessionIinstaller"></string>
     <string name="prefs_tools_short"></string>
     <string name="prefs_usecolumnnamesaf_summary" translatable="false"></string>
@@ -390,4 +390,7 @@
     <string name="supended_apps_cleanup"></string>
     <string name="prefs_restoreavoidtempcopy_summary" translatable="false"></string>
     <string name="prefs_shadowrootfile_summary" translatable="false"></string>
+    <string name="prefs_tools_terminal"></string>
+    <string name="prefs_nobackupdata"></string>
+    <string name="prefs_nobackupdata_summary"></string>
 </resources>
