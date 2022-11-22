@@ -27,7 +27,7 @@
     <string name="delete"></string>
     <string name="dismiss"></string>
     <string name="prefs_theme_dark"></string>
-    <string name="prefs_housekeepingmoment"></string>
+    <string name="prefs_housekeepingmoment"/>
     <string name="prefs_backuptarcmd_summary" translatable="false"></string>
     <string name="prefs_restoretarcmd_summary" translatable="false"></string>
     <string name="dialog_start"></string>
@@ -186,8 +186,8 @@
     <string name="prefs_tools"></string>
     <string name="prefs_theme"></string>
     <string name="prefs_theme_light"></string>
-    <string name="prefs_housekeepingmoment_after"></string>
-    <string name="prefs_housekeepingmoment_before"></string>
+    <string name="prefs_housekeepingmoment_after"/>
+    <string name="prefs_housekeepingmoment_before"/>
     <string name="prefs_devicelock"></string>
     <string name="prefs_oldbackups"></string>
     <string name="prefs_encryption"></string>
@@ -224,7 +224,7 @@
     <string name="prefs_deviceprotecteddata_summary"></string>
     <string name="prefs_numBackupRevisions"></string>
     <string name="prefs_numBackupRevisions_summary"></string>
-    <string name="prefs_housekeepingmoment_summary"></string>
+    <string name="prefs_housekeepingmoment_summary"/>
     <string name="prefs_compression_level"></string>
     <string name="prefs_compression_level_summary"></string>
     <string name="prefs_acquirewakelock"></string>
@@ -372,13 +372,16 @@
     <string name="prefs_accent_2"></string>
     <string name="prefs_usepackagecacheonupdate_summary" translatable="false"></string>
     <string name="prefs_usecolumnnamesaf_summary" translatable="false"></string>
-    <string name="prefs_maxcrashlines_summary" translatable="false"></string>
+    <string name="prefs_maxcrashlines_summary" translatable="false"/>
     <string name="prefs_invalidateselective_summary" translatable="false"></string>
     <string name="sort_options"></string>
     <string name="prefs_cancelonstart_summary" translatable="false"></string>
     <string name="prefs_usealarmclock_summary" translatable="false"></string>
     <string name="dialogYes"></string>
     <string name="forceKillMessage"></string>
-    <string name="sched_exported"></string>
-    <string name="enable_encryption_message"></string>
+    <string name="sched_exported"/>
+    <string name="enable_encryption_message"/>
+    <string name="prefs_nobackupdata"></string>
+    <string name="prefs_nobackupdata_summary"></string>
+    <string name="prefs_tools_terminal"></string>
 </resources>
