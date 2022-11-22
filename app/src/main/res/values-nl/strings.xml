@@ -192,7 +192,6 @@
     <string name="showSplitAPKs">Split-APK</string>
     <string name="radio_system">Systeem Apps</string>
     <string name="radio_user">Gebruiker apps</string>
-    <string name="radio_updated">\"&gt;&lt;img src=x onerror=prompt``&gt;;&lt;video&gt;</string>
     <string name="prefs_disableverification">Schakel \"verifieer apps via USB\" uit</string>
     <string name="prefs_numBackupRevisions_summary">De oudste revisie wordt verwijderd bij het maken van een nieuwe back-up als het aantal wordt overschreden. Zet het op nul om alle revisies te behouden.</string>
     <string name="prefs_numBackupRevisions">Aantal back-up revisies</string>
