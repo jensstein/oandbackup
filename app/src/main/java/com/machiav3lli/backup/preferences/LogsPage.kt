@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,6 +37,10 @@ fun LogsPage(viewModel: LogViewModel) {
 
     val logs = remember { viewModel.logsList }
 
+    LaunchedEffect(true) {
+        viewModel.refreshList()
+    }
+
     AppTheme {
         Scaffold(containerColor = Color.Transparent) { paddingValues ->
             LogRecycler(
@@ -43,8 +48,8 @@ fun LogsPage(viewModel: LogViewModel) {
                     .padding(paddingValues)
                     .fillMaxSize(),
                 productsList = logs.sortedByDescending(Log::logDate),
-                onShare  = {  viewModel.shareLog(it, pref_shareAsFile.value) },
-                onDelete = {  viewModel.deleteLog(it) }
+                onShare = { viewModel.shareLog(it, pref_shareAsFile.value) },
+                onDelete = { viewModel.deleteLog(it) }
             )
         }
     }

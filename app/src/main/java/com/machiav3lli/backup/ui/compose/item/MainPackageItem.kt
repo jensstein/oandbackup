@@ -21,6 +21,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -43,6 +44,7 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.SELECTIONS_FOLDER_NAME
 import com.machiav3lli.backup.handler.BackupRestoreHelper
+import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.preferences.pref_useBackupRestoreWithSelection
@@ -53,16 +55,36 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
+
+val yesNo = listOf(
+    "yes" to "no",
+    "really!" to "oh no!",
+    "yeah" to "forget it"
+)
+
+@Composable
+fun Confirmation(
+    text: String = "Are you sure?",
+    onAction: () -> Unit = {},
+) {
+    val (yes, no) = yesNo.random()
+    DropdownMenuItem(
+        text = { Text(yes) },
+        onClick = { onAction() }
+    )
+    DropdownMenuItem(
+        text = { Text(no) },
+        onClick = {}
+    )
+}
 
 @Composable
 fun Selections(
     onAction: (StorageFile) -> Unit = {}
 ) {
     val backupDir = OABX.context.getBackupDir()
-    val selectionsDir = backupDir.findFile(SELECTIONS_FOLDER_NAME) ?: backupDir.createDirectory(
-        SELECTIONS_FOLDER_NAME
-    )
+    val selectionsDir = backupDir.findFile(SELECTIONS_FOLDER_NAME)
+        ?: backupDir.createDirectory(SELECTIONS_FOLDER_NAME)
     val files = selectionsDir.listFiles()
 
     if (files.isEmpty())
@@ -85,13 +107,8 @@ fun Selections(
 fun SelectionLoadMenu(
     onAction: (List<String>) -> Unit = {}
 ) {
-    DropdownMenu(
-        expanded = true,
-        onDismissRequest = { onAction(listOf()) }
-    ) {
-        Selections {
-            onAction(it.readText().lines())
-        }
+    Selections {
+        onAction(it.readText().lines())
     }
 }
 
@@ -101,53 +118,63 @@ fun SelectionSaveMenu(
     selection: List<String>,
     onAction: () -> Unit = {}
 ) {
-    DropdownMenu(
-        expanded = true,
-        offset = DpOffset(50.dp, (-1000).dp),
-        onDismissRequest = { onAction() }
-    ) {
-        val name = remember { mutableStateOf("") }
-        val focusManager = LocalFocusManager.current
-        val textFieldFocusRequester = remember { FocusRequester() }
+    val name = remember { mutableStateOf("") }
+    val focusManager = LocalFocusManager.current
+    val textFieldFocusRequester = remember { FocusRequester() }
 
-        LaunchedEffect(textFieldFocusRequester) {
-            delay(100)
-            textFieldFocusRequester.requestFocus()
-        }
+    LaunchedEffect(textFieldFocusRequester) {
+        delay(100)
+        textFieldFocusRequester.requestFocus()
+    }
 
-        DropdownMenuItem(
-            text = {
-                OutlinedTextField(
-                    modifier = Modifier
-                        .testTag("input")
-                        .focusRequester(textFieldFocusRequester),
-                    value = name.value,
-                    placeholder = { Text(text = "selection name", color = Color.Gray) },
-                    singleLine = false,
-                    keyboardOptions = KeyboardOptions(
-                        autoCorrect = false
-                    ),
-                    onValueChange = {
-                        if (it.endsWith("\n")) {
-                            name.value = it.dropLast(1)
-                            focusManager.clearFocus()
-                            val backupDir = OABX.context.getBackupDir()
-                            val selectionsDir = backupDir.findFile(SELECTIONS_FOLDER_NAME)
-                                ?: backupDir.createDirectory(SELECTIONS_FOLDER_NAME)
-                            selectionsDir.createFile("application/octet-stream", name.value)
-                                .writeText(selection.joinToString("\n"))
-                            onAction()
-                        } else
-                            name.value = it
-                    }
-                )
-            },
-            onClick = {}
-        )
+    DropdownMenuItem(
+        text = {
+            OutlinedTextField(
+                modifier = Modifier
+                    .testTag("input")
+                    .focusRequester(textFieldFocusRequester),
+                value = name.value,
+                placeholder = { Text(text = "selection name", color = Color.Gray) },
+                singleLine = false,
+                keyboardOptions = KeyboardOptions(
+                    autoCorrect = false
+                ),
+                onValueChange = {
+                    if (it.endsWith("\n")) {
+                        name.value = it.dropLast(1)
+                        focusManager.clearFocus()
+                        val backupDir = OABX.context.getBackupDir()
+                        val selectionsDir = backupDir.findFile(SELECTIONS_FOLDER_NAME)
+                            ?: backupDir.createDirectory(SELECTIONS_FOLDER_NAME)
+                        selectionsDir.createFile(name.value)
+                            .writeText(selection.joinToString("\n"))
+                        onAction()
+                    } else
+                        name.value = it
+                }
+            )
+        },
+        onClick = {}
+    )
 
-        Selections {
-            it.writeText(selection.joinToString("\n"))
-            onAction()
+    Selections {
+        it.writeText(selection.joinToString("\n"))
+        onAction()
+    }
+}
+
+fun openSubMenu(
+    subMenu: MutableState<(@Composable () -> Unit)?>,
+    composable: @Composable () -> Unit,
+) {
+    subMenu.value = {
+        DropdownMenu(
+            expanded = true,
+            offset = DpOffset(50.dp, -1000.dp),
+            modifier = Modifier.background(MaterialTheme.colorScheme.surfaceColorAtElevation(100.dp)),
+            onDismissRequest = { subMenu.value = null }
+        ) {
+            composable()
         }
     }
 }
@@ -167,30 +194,51 @@ fun MainPackageContextMenu(
 
     val subMenu = remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
     subMenu.value?.let { it() }
+    if (!expanded.value)
+        subMenu.value = null
+
+    fun launchPackagesAction(
+        action: String,
+        todo: () -> Unit,
+    ) {
+        MainScope().launch(Dispatchers.IO) {
+            OABX.beginBusy(action)
+            todo()
+            OABX.endBusy(action)
+        }
+    }
+
+    fun forEachPackage(
+        packages: List<Package>,
+        action: String,
+        select: Boolean? = true,
+        todo: (p: Package) -> Unit = {},
+    ) {
+        packages.forEach { p ->
+            if (select == true) selection[p] = false
+            OABX.addInfoText("$action ${p.packageName}")
+            todo(p)
+            select?.let { s -> selection[p] = s }
+        }
+    }
+
+    fun launchEachPackage(
+        packages: List<Package>,
+        action: String,
+        select: Boolean? = true,
+        todo: (p: Package) -> Unit = {},
+    ) {
+        launchPackagesAction(action) {
+            forEachPackage(packages, action, select = select, todo = todo)
+        }
+    }
 
     DropdownMenu(
         expanded = expanded.value,
         offset = DpOffset(20.dp, 0.dp),
+        modifier = Modifier.background(MaterialTheme.colorScheme.surfaceColorAtElevation(0.dp)),
         onDismissRequest = { expanded.value = false }
     ) {
-
-        fun launchEachPackage(
-            packages: List<Package>,
-            action: String,
-            select: Boolean = true,
-            todo: (p: Package) -> Unit
-        ) {
-            MainScope().launch(Dispatchers.IO) {
-                OABX.beginBusy(action)
-                packages.forEach {
-                    if (select) selection[it] = false
-                    OABX.addInfoText("$action ${it.packageName}")
-                    todo(it)
-                    selection[it] = select
-                }
-                OABX.endBusy(action)
-            }
-        }
 
         DropdownMenuItem(
             enabled = false, onClick = {},
@@ -205,6 +253,63 @@ fun MainPackageContextMenu(
             }
         )
 
+        Divider() //--------------------------------------------------------------------------------
+
+        DropdownMenuItem(
+            enabled = false, onClick = {},
+            text = { Text("selection:") }
+        )
+
+        DropdownMenuItem(
+            text = { Text("Load") },
+            onClick = {
+                openSubMenu(subMenu) {
+                    SelectionLoadMenu { selection ->
+                        expanded.value = false
+                        launchPackagesAction("load") {
+                            forEachPackage(selectedAndVisible, "deselect", select = false)
+                            forEachPackage(
+                                visible.filter { selection.contains(it.packageName) },
+                                "select",
+                                select = true
+                            )
+                        }
+                    }
+                }
+            }
+        )
+
+        DropdownMenuItem(
+            text = { Text("Save") },
+            onClick = {
+                openSubMenu(subMenu) {
+                    SelectionSaveMenu(
+                        selection = selection.filter { it.value }.map { it.key.packageName }
+                    ) {
+                        expanded.value = false
+                        launchEachPackage(selectedAndVisible, "save", select = false) {}
+                    }
+                }
+            }
+        )
+
+        Divider() //--------------------------------------------------------------------------------
+
+        DropdownMenuItem(
+            text = { Text("Select Visible") },
+            onClick = {
+                expanded.value = false
+                launchEachPackage(visible, "select", select = true) {}
+            }
+        )
+
+        DropdownMenuItem(
+            text = { Text("Deselect Visible") },
+            onClick = {
+                expanded.value = false
+                launchEachPackage(visible, "deselect", select = false) {}
+            }
+        )
         Divider() //--------------------------------------------------------------------------------
 
         DropdownMenuItem(
@@ -263,21 +368,42 @@ fun MainPackageContextMenu(
         Divider() //--------------------------------------------------------------------------------
 
         DropdownMenuItem(
-            text = { Text("Delete All Backups") },
+            text = { Text("Enable") },
             onClick = {
                 expanded.value = false
-                launchEachPackage(selectedWithBackups, "delete backups") {
-                    it.deleteAllBackups()
+                launchEachPackage(selectedAndVisible, "enable") {
+                    runAsRoot("pm enable ${it.packageName}")
+                    Package.invalidateCacheForPackage(it.packageName)
                 }
             }
         )
 
         DropdownMenuItem(
-            text = { Text("Limit Backups") },
+            text = { Text("Disable") },
             onClick = {
-                expanded.value = false
-                launchEachPackage(selectedWithBackups, "limit backups") {
-                    BackupRestoreHelper.housekeepingPackageBackups(it)
+                openSubMenu(subMenu) {
+                    Confirmation {
+                        expanded.value = false
+                        launchEachPackage(selectedAndVisible, "disable") {
+                            runAsRoot("pm disable ${it.packageName}")
+                            Package.invalidateCacheForPackage(it.packageName)
+                        }
+                    }
+                }
+            }
+        )
+
+        DropdownMenuItem(
+            text = { Text("Uninstall") },
+            onClick = {
+                openSubMenu(subMenu) {
+                    Confirmation {
+                        expanded.value = false
+                        launchEachPackage(selectedAndVisible, "uninstall") {
+                            runAsRoot("pm uninstall ${it.packageName}")
+                            Package.invalidateCacheForPackage(it.packageName)
+                        }
+                    }
                 }
             }
         )
@@ -285,55 +411,32 @@ fun MainPackageContextMenu(
         Divider() //--------------------------------------------------------------------------------
 
         DropdownMenuItem(
-            enabled = false, onClick = {},
-            text = { Text("selection:") }
-        )
-
-        DropdownMenuItem(
-            text = { Text("Load") },
+            text = { Text("Delete All Backups") },
             onClick = {
-                subMenu.value = {
-                    SelectionLoadMenu { selection ->
+                openSubMenu(subMenu) {
+                    Confirmation {
                         expanded.value = false
-                        subMenu.value = null
-                        launchEachPackage(selectedAndVisible, "deselect", select = false) {}
-                        launchEachPackage(
-                            visible.filter { selection.contains(it.packageName) },
-                            "select",
-                            select = true
-                        ) {}
+                        launchEachPackage(selectedWithBackups, "delete backups") {
+                            it.deleteAllBackups()
+                            Package.invalidateCacheForPackage(it.packageName)
+                        }
                     }
                 }
             }
         )
 
         DropdownMenuItem(
-            text = { Text("Save") },
+            text = { Text("Limit Backups") },
             onClick = {
-                subMenu.value = {
-                    SelectionSaveMenu(selection = selection.filter { it.value }
-                        .map { it.key.packageName }) {
+                openSubMenu(subMenu) {
+                    Confirmation {
                         expanded.value = false
-                        subMenu.value = null
-                        launchEachPackage(selectedAndVisible, "save", select = false) {}
+                        launchEachPackage(selectedWithBackups, "limit backups") {
+                            BackupRestoreHelper.housekeepingPackageBackups(it)
+                            Package.invalidateCacheForPackage(it.packageName)
+                        }
                     }
                 }
-            }
-        )
-
-        DropdownMenuItem(
-            text = { Text("All Visible") },
-            onClick = {
-                expanded.value = false
-                launchEachPackage(visible, "select", select = true) {}
-            }
-        )
-
-        DropdownMenuItem(
-            text = { Text("None Visible") },
-            onClick = {
-                expanded.value = false
-                launchEachPackage(visible, "deselect", select = false) {}
             }
         )
     }
@@ -359,7 +462,7 @@ fun MainPackageItem(
 
     val menuExpanded = remember { mutableStateOf(false) }
 
-    Timber.i("recompose MainPackageItem ${packageItem.packageName} ${packageItem.packageInfo.icon} ${imageData.hashCode()}")
+    //Timber.d("recompose MainPackageItem ${packageItem.packageName} ${packageItem.packageInfo.icon} ${imageData.hashCode()}")
 
     Card(
         modifier = Modifier,
@@ -380,7 +483,7 @@ fun MainPackageItem(
             Modifier
                 .combinedClickable(
                     onClick = {
-                        selection[packageItem] = (selection[packageItem] != true)
+                        selection[packageItem] = !(selection[packageItem] == true)
                     },
                     onLongClick = {
                         selection[packageItem] = true
@@ -394,12 +497,12 @@ fun MainPackageItem(
                         if (selectedAndVisible.isEmpty()) {
                             onAction(packageItem)
                         } else {
-                            selection[packageItem] = (selection[packageItem] != true)
+                            selection[packageItem] = !(selection[packageItem] == true)
                         }
                     },
                     onLongClick = {
                         if (selectedAndVisible.isEmpty()) {
-                            selection[packageItem] = (selection[packageItem] != true)
+                            selection[packageItem] = !(selection[packageItem] == true)
                         } else {
                             if (selection[packageItem] == true)
                                 menuExpanded.value = true

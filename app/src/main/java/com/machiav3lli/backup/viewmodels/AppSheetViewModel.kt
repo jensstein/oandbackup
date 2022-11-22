@@ -31,11 +31,10 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.ui.compose.MutableComposableFlow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -63,14 +62,11 @@ class AppSheetViewModel(
         AppExtras(app?.packageName ?: "")
     )
 
-    private val _snackbarText = MutableStateFlow("")
-    val snackbarText = _snackbarText.asStateFlow()
-
-    fun setSnackbarText(text: String) {
-        viewModelScope.launch {
-            _snackbarText.emit(text)
-        }
-    }
+    val snackbarText = MutableComposableFlow(
+        "",
+        viewModelScope,
+        "snackBarText"
+    )
 
     private var notificationId: Int = System.currentTimeMillis().toInt()
     val refreshNow = mutableStateOf(false)
@@ -171,6 +167,18 @@ class AppSheetViewModel(
                 database.appExtrasDao.replaceInsert(appExtras)
             else
                 thePackage.value?.let { database.appExtrasDao.deleteByPackageName(it.packageName) }
+        }
+    }
+
+    fun rewriteBackup(newBackup: Backup) {
+        viewModelScope.launch {
+            rewrite(newBackup)
+        }
+    }
+
+    private suspend fun rewrite(newBackup: Backup) {
+        withContext(Dispatchers.IO) {
+            thePackage.value?.rewriteBackupProps(newBackup)
         }
     }
 

@@ -226,8 +226,11 @@ val legendList = listOf(
     Legend.Updated,
 )
 
+// must be ISO time format for sane sorting yyyy, MM, dd, ...
+// and only allowed file name characters (on all systems, Windows has the smallest set)
 val BACKUP_DATE_TIME_FORMATTER_OLD: DateTimeFormatter =
     DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss")
+// use millisec, because computers (and users) can be faster than a sec
 val BACKUP_DATE_TIME_FORMATTER: DateTimeFormatter =
     DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSS")
 

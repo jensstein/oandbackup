@@ -33,7 +33,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -47,6 +46,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -81,6 +82,7 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.Prohibit
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
 import com.machiav3lli.backup.ui.compose.item.CheckChip
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
+import com.machiav3lli.backup.ui.compose.item.MorphableTextField
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TitleText
 import com.machiav3lli.backup.ui.compose.recycler.MultiSelectableChipGroup
@@ -280,9 +282,10 @@ class ScheduleSheet() : BaseSheet() {
     @Composable
     fun SchedulePage() {
         val schedule by viewModel.schedule.collectAsState()
+        var scheduleName by remember(schedule) { mutableStateOf(schedule.name) }
         val customList by viewModel.customList.collectAsState(emptySet())
         val blockList by viewModel.blockList.collectAsState(emptySet())
-        val (checked, check) = mutableStateOf(schedule.enabled)
+        var enabled by remember(schedule) { mutableStateOf(schedule.enabled) }
         val nestedScrollConnection = rememberNestedScrollInteropConnection()
 
         AppTheme {
@@ -300,7 +303,7 @@ class ScheduleSheet() : BaseSheet() {
                         Divider(thickness = 2.dp)
                         Spacer(modifier = Modifier.height(8.dp))
                         Row {
-                            AnimatedVisibility(visible = checked) {
+                            AnimatedVisibility(visible = enabled) {
                                 Text(
                                     text = "${stringResource(id = R.string.sched_timeLeft)} "
                                         .plus(getTimeLeft(schedule))
@@ -309,11 +312,11 @@ class ScheduleSheet() : BaseSheet() {
                         }
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             CheckChip(
-                                checked = schedule.enabled,
+                                checked = enabled,
                                 textId = R.string.sched_checkbox,
                                 checkedTextId = R.string.enabled,
                                 onCheckedChange = { checked ->
-                                    check(checked)
+                                    enabled = checked
                                     schedule.enabled = checked
                                     refresh(schedule, true)
                                 }
@@ -350,16 +353,20 @@ class ScheduleSheet() : BaseSheet() {
                     item {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             TitleText(R.string.sched_name)
-                            Text(
-                                text = schedule.name,
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .clickable { showNameEditorDialog(schedule) },
-                                style = MaterialTheme.typography.titleLarge,
-                                textAlign = TextAlign.Center,
+                            MorphableTextField(
+                                modifier = Modifier.weight(1f),
+                                text = scheduleName,
+                                textAlignment = TextAlign.Center,
+                                onCancel = {
+                                },
+                                onSave = {
+                                    scheduleName = it
+                                    schedule.name = it
+                                    refresh(schedule, rescheduleBoolean = false)
+                                }
                             )
                             RoundButton(
                                 icon = Phosphor.CaretDown,
@@ -370,34 +377,35 @@ class ScheduleSheet() : BaseSheet() {
                     }
                     item {
                         Row(
+                            modifier = Modifier
+                                .clickable { showTimePickerDialog(schedule) }
+                                .padding(vertical = 4.dp),
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             TitleText(R.string.sched_hourOfDay)
                             Text(
                                 text = LocalTime.of(schedule.timeHour, schedule.timeMinute)
                                     .toString(),
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .fillMaxHeight()
-                                    .clickable { showTimePickerDialog(schedule) },
+                                modifier = Modifier.weight(1f),
                                 color = MaterialTheme.colorScheme.primary,
                                 textAlign = TextAlign.End,
                             )
                         }
                     }
                     item {
+                        // TODO replace with slider Or custom Compose Dialog?
                         Row(
+                            modifier = Modifier
+                                .clickable { showIntervalSetterDialog(schedule) }
+                                .padding(vertical = 4.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
                             TitleText(R.string.sched_interval)
                             Text(
                                 text = schedule.interval.toString(),
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .fillMaxHeight()
-                                    .clickable { showIntervalSetterDialog(schedule) },
+                                modifier = Modifier.weight(1f),
                                 color = MaterialTheme.colorScheme.primary,
                                 textAlign = TextAlign.End,
                             )

@@ -4,15 +4,17 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layout
+import com.machiav3lli.backup.preferences.pref_traceFlows
 import com.machiav3lli.backup.preferences.pref_useSelectableText
+import com.machiav3lli.backup.utils.TraceUtils.traceBold
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 fun Modifier.vertical() = layout { measurable, constraints ->
     val placeable = measurable.measure(constraints)
@@ -44,13 +46,11 @@ fun SelectionContainerX(modifier: Modifier = Modifier, content: @Composable () -
 class MutableComposableSharedFlow<T>(
     var initial: T,
     val scope: CoroutineScope,
-    val label: String = "ComposableSharedFlow",
-    val onEach: (T) -> Unit = {}
+    val label: String = "ComposableSharedFlow"
 ) {
     var flow = MutableSharedFlow<T>()
 
     var state = flow
-        .onEach(onEach)
         .stateIn(
             scope,
             SharingStarted.Eagerly,
@@ -60,11 +60,13 @@ class MutableComposableSharedFlow<T>(
     var value: T
         get() {
             var value = state.value
-            Timber.w("*** $label => $value")
+            if (pref_traceFlows.value)
+                traceBold { "*** $label => $value" }
             return value
         }
         set(value: T) {
-            Timber.w("*** $label <= $value")
+            if (pref_traceFlows.value)
+                traceBold { "*** $label <= $value" }
             initial = value
             scope.launch { flow.emit(value) }
         }
@@ -81,21 +83,26 @@ class MutableComposableStateFlow<T>(
 ) {
     var flow = MutableStateFlow<T>(initial)
 
-    var state = flow
+    val state = flow.asStateFlow()
 
     var value: T
         get() {
-            var value = state.value
-            Timber.w("*** $label => $value")
+            val value = state.value
+            if (pref_traceFlows.value)
+                traceBold { "*** $label => $value" }
             return value
         }
         set(value: T) {
-            Timber.w("*** $label <= $value")
-            initial = value
-            scope.launch { flow.emit(value) }
+            if (pref_traceFlows.value)
+                traceBold { "*** $label <= $value" }
+            //initial = value
+            scope.launch { flow.update { value } }
         }
 
     init {
         value = initial
     }
 }
+
+//typealias MutableComposableFlow<T> = MutableComposableSharedFlow<T>
+typealias MutableComposableFlow<T> = MutableComposableStateFlow<T>

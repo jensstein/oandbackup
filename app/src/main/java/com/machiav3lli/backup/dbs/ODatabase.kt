@@ -18,6 +18,7 @@
 package com.machiav3lli.backup.dbs
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -46,7 +47,7 @@ import com.machiav3lli.backup.dbs.entity.SpecialInfo
         Backup::class],
     version = 4,
     exportSchema = true,
-    autoMigrations = []
+    autoMigrations = [AutoMigration(from = 2, to = 4)]
 )
 @TypeConverters(Converters::class)
 abstract class ODatabase : RoomDatabase() {

@@ -28,8 +28,9 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.preferences.pref_maxLogCount
 import com.machiav3lli.backup.preferences.pref_maxLogLines
-import com.machiav3lli.backup.preferences.pref_useLogCat
+import com.machiav3lli.backup.preferences.pref_useLogCatForUncaught
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupDir
@@ -53,14 +54,15 @@ class LogsHandler {
                 LOG_INSTANCE,
                 BACKUP_DATE_TIME_FORMATTER.format(date)
             )
-            logsDirectory.createFile("application/octet-stream", logFileName).let { logFile ->
+            logsDirectory.createFile(logFileName).let { logFile ->
                 BufferedOutputStream(logFile.outputStream()).use { logOut ->
                     logOut.write(
                         logItem.toJSON().toByteArray(StandardCharsets.UTF_8)
                     )
-                    Timber.i("Wrote $logFile file for $logItem")
+                    //traceDebug { "Wrote $logFile file for $logItem" }
                 }
             }
+            housekeepingLogs()
         }
 
         @Throws(IOException::class)
@@ -78,12 +80,39 @@ class LogsHandler {
                             val message =
                                 "(catchall) Incomplete log or wrong structure found in $it."
                             unhandledException(e, it)
-                            //no, recursion! logErrors(message)
+                            //no => recursion! logErrors(message)
                         }
                     }
                 }
             }
             return logs
+        }
+
+        @Throws(IOException::class)
+        fun housekeepingLogs() {
+            val backupRootFolder = OABX.context.getBackupDir()
+            StorageFile.invalidateCache { it.contains(LOG_FOLDER_NAME) }
+            //val logsDirectory = StorageFile(backupRootFolder, LOG_FOLDER_NAME)
+            backupRootFolder.findFile(LOG_FOLDER_NAME)?.let { logsDir ->
+                if (logsDir.isDirectory) {
+                    // must be ISO time format with sane sorted fields yyyy-mm-dd hh:mm:ss
+                    val logs = logsDir.listFiles().sortedByDescending { it.name }
+                    //traceDebug { "logs ${logs.map { it.name ?: "?" }.joinToString(" ")}" }
+                    if (logs.size > pref_maxLogCount.value)
+                        logs.subList(pref_maxLogCount.value, logs.size)
+                            .forEach {
+                                try {
+                                    //traceDebug { "delete ${it.path}" }
+                                    it.delete()
+                                } catch (e: Throwable) {
+                                    val message =
+                                        "(catchall) cannot delete log '${it.path}'"
+                                    unhandledException(e, message)
+                                    //no => recursion! logErrors(message)
+                                }
+                            }
+                }
+            }
         }
 
         fun getLogFile(date: LocalDateTime): StorageFile? {
@@ -103,27 +132,27 @@ class LogsHandler {
             try {
                 val logText =
                     errors +
-                    "\n\n" +
-                    "${BuildConfig.APPLICATION_ID} ${BuildConfig.VERSION_NAME}\n" +
-                    "${utilBox.name} ${utilBox.version} ${
-                        if (utilBox.isKnownVersion) "tested" else "untested"
-                    }${
-                        if (utilBox.hasBug("DotDotDir")) " bugDotDotDir" else ""
-                    } -> score ${utilBox.score}" +
-                    "\n\n========== collected messages\n\n" +
-                    OABX.lastLogMessages.joinToString("\n") +
-                    "\n" +
-                    if (pref_useLogCat.value)
-                        "\n\n========== logcat\n\n" +
-                        ShellHandler.runAsRoot(
-                            "logcat -d -t ${
-                                pref_maxLogLines.value
-                            } --pid=${
-                                Process.myPid()
-                            }"  // -d = dump and exit
-                        ).out.joinToString("\n")
-                    else
-                        ""
+                            "\n\n" +
+                            "${BuildConfig.APPLICATION_ID} ${BuildConfig.VERSION_NAME}\n" +
+                            "${utilBox.name} ${utilBox.version} ${
+                                if (utilBox.isKnownVersion) "tested" else "untested"
+                            }${
+                                if (utilBox.hasBug("DotDotDir")) " bugDotDotDir" else ""
+                            } -> score ${utilBox.score}" +
+                            "\n\n========== collected messages\n\n" +
+                            OABX.lastLogMessages.joinToString("\n") +
+                            "\n" +
+                            if (pref_useLogCatForUncaught.value)
+                                "\n\n========== logcat\n\n" +
+                                        ShellHandler.runAsRoot(
+                                            "logcat -d -t ${
+                                                pref_maxLogLines.value
+                                            } --pid=${
+                                                Process.myPid()
+                                            }"  // -d = dump and exit
+                                        ).out.joinToString("\n")
+                            else
+                                ""
                 writeToLogFile(logText)
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -136,22 +165,22 @@ class LogsHandler {
 
         fun stackTrace(e: Throwable) = e.stackTrace.joinToString("\nat ", "at ")
         fun message(e: Throwable, backTrace: Boolean = false) =
-                "${e::class.simpleName}${
-                    if(e.message != null)
-                        "\n${e.message}"
-                    else
-                        ""
-                }${
-                    if(e.cause != null)
-                        "\ncause: ${e.cause}"
-                    else
-                        ""
-                }${
-                    if(backTrace) 
-                        "\n${stackTrace(e)}" 
-                    else 
-                        ""
-                }"
+            "${e::class.simpleName}${
+                if (e.message != null)
+                    "\n${e.message}"
+                else
+                    ""
+            }${
+                if (e.cause != null)
+                    "\ncause: ${e.cause}"
+                else
+                    ""
+            }${
+                if (backTrace)
+                    "\n${stackTrace(e)}"
+                else
+                    ""
+            }"
 
         fun logException(
             e: Throwable,
@@ -180,7 +209,7 @@ class LogsHandler {
                     ?: false -> context.getString(R.string.error_datachanged)
                 errorText?.contains("Input is not in the .gz format")
                     ?: false -> context.getString(R.string.error_encryptionpassword)
-                else -> errorText
+                else         -> errorText
             }
         }
     }

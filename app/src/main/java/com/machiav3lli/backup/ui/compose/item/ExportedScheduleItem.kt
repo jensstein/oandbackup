@@ -1,6 +1,5 @@
 package com.machiav3lli.backup.ui.compose.item
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,13 +8,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -30,7 +30,6 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import java.time.LocalTime
 
-
 @Composable
 fun ExportedScheduleItem(
     item: Schedule,
@@ -38,14 +37,13 @@ fun ExportedScheduleItem(
     onRestore: (Schedule) -> Unit = { },
     onDelete: (StorageFile) -> Unit = { },
 ) {
-    OutlinedCard(
+    Card(
         modifier = Modifier,
         shape = RoundedCornerShape(LocalShapes.current.medium),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface),
-        colors = CardDefaults.outlinedCardColors(
-            containerColor = MaterialTheme.colorScheme.background
+        colors = CardDefaults.cardColors(
+            containerColor = Color.Transparent
         ),
-        elevation = CardDefaults.cardElevation(4.dp)
+        elevation = CardDefaults.cardElevation(0.dp)
     ) {
         Column(
             modifier = Modifier
@@ -71,9 +69,7 @@ fun ExportedScheduleItem(
                 ScheduleFilters(item = item)
             }
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 var setTime = LocalTime.of(item.timeHour, item.timeMinute).toString()
                 setTime += " ${
@@ -98,26 +94,24 @@ fun ExportedScheduleItem(
                 ScheduleTypes(item = item)
             }
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                ElevatedActionButton(
-                    icon = Phosphor.ClockCounterClockwise,
-                    text = stringResource(id = R.string.dialog_import),
-                    positive = true,
-                    onClick = { onRestore(item) }
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-
                 ElevatedActionButton(
                     icon = Phosphor.TrashSimple,
                     text = stringResource(id = R.string.delete),
                     withText = false,
                     positive = false,
                     onClick = { onDelete(file) }
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                ElevatedActionButton(
+                    icon = Phosphor.ClockCounterClockwise,
+                    text = stringResource(id = R.string.dialog_import),
+                    positive = true,
+                    onClick = { onRestore(item) }
                 )
             }
         }

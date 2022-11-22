@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -35,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
@@ -46,34 +48,36 @@ fun MorphableTextField(
     text: String?,
     modifier: Modifier = Modifier,
     expanded: Boolean = false,
+    textAlignment: TextAlign? = null,
     onCancel: () -> Unit,
     onSave: (String) -> Unit
 ) {
     val (expanded, onExpanded) = remember {
         mutableStateOf(expanded)
     }
-
-    VerticalFadingVisibility(
-        expanded = expanded,
-        expandedView = {
-            TextEditBlock(
-                text = text,
-                modifier = modifier,
-                onCancel = onCancel,
-                onExpanded = onExpanded,
-                onSave = onSave
-            )
-        },
-        collapsedView = {
-            TextViewBlock(text = text, onExpanded = onExpanded)
-        }
-    )
+    Box(modifier) {
+        VerticalFadingVisibility(
+            expanded = expanded,
+            expandedView = {
+                TextEditBlock(
+                    text = text,
+                    onCancel = onCancel,
+                    onExpanded = onExpanded,
+                    onSave = onSave
+                )
+            },
+            collapsedView = {
+                TextViewBlock(text = text, textAlignment = textAlignment, onExpanded = onExpanded)
+            }
+        )
+    }
 }
 
 @Composable
 fun TextViewBlock(
     text: String?,
     modifier: Modifier = Modifier,
+    textAlignment: TextAlign? = null,
     onExpanded: (Boolean) -> Unit
 ) {
     OutlinedCard(
@@ -88,7 +92,8 @@ fun TextViewBlock(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp, vertical = 18.dp),
-            text = text ?: " "
+            text = text ?: " ",
+            textAlign = textAlignment,
         )
     }
 }
@@ -113,7 +118,6 @@ fun TextEditBlock(
 
     Row(
         modifier = modifier
-            .fillMaxWidth()
             .background(
                 color = MaterialTheme.colorScheme.background,
                 shape = MaterialTheme.shapes.medium

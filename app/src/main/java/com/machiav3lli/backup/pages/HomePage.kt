@@ -18,6 +18,8 @@
 package com.machiav3lli.backup.pages
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -69,6 +71,7 @@ fun HomePage() {
 
     val filteredList by main.viewModel.filteredList.collectAsState(emptyList())
     val updatedPackages by main.viewModel.updatedPackages.collectAsState(emptyList())
+    val updaterVisible = updatedPackages.isNotEmpty()
     var updaterExpanded by remember { mutableStateOf(false) }
 
     val batchConfirmListener = object : BatchDialogFragment.ConfirmListener {
@@ -82,9 +85,15 @@ fun HomePage() {
     Scaffold(
         containerColor = Color.Transparent,
         floatingActionButton = {
+            // AnimatedVisibility doesn't work with animation,
+            // it hides the button and shows it when clicking the refresh button
+            // none of the "visible" expressions work (hg42)
+            //if (updaterVisible) {
             AnimatedVisibility(
                 modifier = Modifier.padding(start = 28.dp),
-                visible = updatedPackages?.isNotEmpty() ?: true
+                visible = updaterVisible,
+                enter = EnterTransition.None,
+                exit = ExitTransition.None
             ) {
                 ExpandingFadingVisibility(
                     expanded = updaterExpanded,
@@ -108,17 +117,17 @@ fun HomePage() {
                                     modifier = Modifier.weight(1f),
                                     text = stringResource(id = R.string.backup_all_updated),
                                 ) {
-                                    val selectedList = updatedPackages.orEmpty()
+                                    val selectedList = updatedPackages
                                         .map { it.packageInfo }
                                         .toCollection(ArrayList())
-                                    val selectedListModes = updatedPackages.orEmpty()
+                                    val selectedListModes = updatedPackages
                                         .mapNotNull {
                                             it.latestBackup?.let { bp ->
                                                 when {
                                                     bp.hasApk && bp.hasAppData -> ALT_MODE_BOTH
-                                                    bp.hasApk -> ALT_MODE_APK
-                                                    bp.hasAppData -> ALT_MODE_DATA
-                                                    else -> ALT_MODE_UNSET
+                                                    bp.hasApk                  -> ALT_MODE_APK
+                                                    bp.hasAppData              -> ALT_MODE_DATA
+                                                    else                       -> ALT_MODE_UNSET
                                                 }
                                             }
                                         }
@@ -160,8 +169,8 @@ fun HomePage() {
                     collapsedView = {
                         val text = pluralStringResource(
                             id = R.plurals.updated_apps,
-                            count = updatedPackages.orEmpty().size,
-                            updatedPackages.orEmpty().size
+                            count = updatedPackages.size,
+                            updatedPackages.size
                         )
                         ExtendedFloatingActionButton(
                             text = { Text(text = text) },

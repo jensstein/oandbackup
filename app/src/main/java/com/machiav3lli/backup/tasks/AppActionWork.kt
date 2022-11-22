@@ -247,7 +247,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                     else -> context.getString(com.machiav3lli.backup.R.string.batchrestore)
                 }
             )
-            .setSmallIcon(R.drawable.ic_app)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setOngoing(true)
             .setSilent(true)
             .setContentIntent(contentPendingIntent)

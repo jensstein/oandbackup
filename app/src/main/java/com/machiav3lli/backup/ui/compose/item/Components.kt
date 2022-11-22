@@ -383,6 +383,7 @@ fun RoundButton(
     modifier: Modifier = Modifier,
     size: Dp = ICON_SIZE_SMALL,
     icon: ImageVector,
+    tint: Color = MaterialTheme.colorScheme.onBackground,
     description: String = "",
     onClick: () -> Unit
 ) {
@@ -393,6 +394,7 @@ fun RoundButton(
         Icon(
             modifier = Modifier.size(size),
             imageVector = icon,
+            tint = tint,
             contentDescription = description
         )
     }
@@ -435,7 +437,7 @@ fun CheckChip(
     modifier: Modifier = Modifier,
     onCheckedChange: (Boolean) -> Unit
 ) {
-    val (checked, check) = remember { mutableStateOf(checked) }
+    val (checked, check) = remember(checked) { mutableStateOf(checked) }
 
     FilterChip(
         modifier = modifier.padding(vertical = 8.dp, horizontal = 4.dp),

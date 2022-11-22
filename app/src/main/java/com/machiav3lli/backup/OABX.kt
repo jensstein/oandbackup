@@ -33,14 +33,18 @@ import androidx.lifecycle.ViewModel
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.DynamicColorsOptions
 import com.machiav3lli.backup.activities.MainActivityX
+import com.machiav3lli.backup.handler.LogsHandler.Companion.message
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.preferences.pref_cancelOnStart
+import com.machiav3lli.backup.preferences.pref_logToSystemLogcat
 import com.machiav3lli.backup.preferences.pref_maxLogLines
+import com.machiav3lli.backup.preferences.pref_traceBusy
 import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.utils.TraceUtils.methodName
+import com.machiav3lli.backup.utils.TraceUtils.traceBold
 import com.machiav3lli.backup.utils.styleTheme
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -56,7 +60,7 @@ class OABX : Application() {
     // packages are an external resource, so handle them as a singleton
     var packageCache = mutableMapOf<String, Package>()
     var cache: LruCache<String, MutableList<Package>> =
-        LruCache(10)    //TODO hg42 not caching 4000 lists? right?
+        LruCache(10)
 
     var work: WorkHandler? = null
 
@@ -65,40 +69,52 @@ class OABX : Application() {
         Timber.plant(object : Timber.DebugTree() {
 
             override fun log(
-                priority: Int, tag: String?, message: String, t: Throwable?
+                priority: Int, tag: String?, message: String, t: Throwable?,
             ) {
-                super.log(priority, "$tag", message, t)
+                val traceToLogcat = runCatching { pref_logToSystemLogcat.value }.getOrDefault(true)
+                val maxLogLines = runCatching { pref_maxLogLines.value }.getOrDefault(200)
+                //val traceToLogcat = pref_logToSystemLogcat.value
+                if (traceToLogcat)
+                    super.log(priority, "$tag", message, t)
 
                 val prio =
-                        when (priority) {
-                            android.util.Log.VERBOSE -> "V"
-                            android.util.Log.ASSERT -> "A"
-                            android.util.Log.DEBUG -> "D"
-                            android.util.Log.ERROR -> "E"
-                            android.util.Log.INFO -> "I"
-                            android.util.Log.WARN -> "W"
-                            else                  -> "?"
-                        }
+                    when (priority) {
+                        android.util.Log.VERBOSE -> "V"
+                        android.util.Log.ASSERT  -> "A"
+                        android.util.Log.DEBUG   -> "D"
+                        android.util.Log.ERROR   -> "E"
+                        android.util.Log.INFO    -> "I"
+                        android.util.Log.WARN    -> "W"
+                        else                     -> "?"
+                    }
                 val now = System.currentTimeMillis()
                 val timeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                 val date = timeFormat.format(now)
-                lastLogMessages.add("$date $prio $tag : $message")
                 try {
-                    while (lastLogMessages.size > pref_maxLogLines.value)
-                        lastLogMessages.removeAt(0)
-                } catch(e: Throwable) {
+                    synchronized(lastLogMessages) {
+                        lastLogMessages.add("$date $prio $tag : $message")
+                        while (lastLogMessages.size > maxLogLines)
+                            lastLogMessages.removeAt(0)
+                    }
+                } catch (e: Throwable) {
                     // ignore
+                    lastLogMessages.clear()
+                    lastLogMessages.add("$date E LOG : while adding or limiting log lines")
+                    lastLogMessages.add("$date E LOG : ${message(e, backTrace = true)}")
                 }
             }
 
             override fun createStackElementTag(element: StackTraceElement): String {
-                return "${
-                    element.methodName
-                }@${
-                    element.lineNumber
-                }:${
-                    super.createStackElementTag(element)
-                }"
+                if (element.methodName.startsWith("trace"))
+                    return ""
+                else
+                    return "${
+                        super.createStackElementTag(element)
+                    }.${
+                        element.methodName
+                    }:${
+                        element.lineNumber
+                    }"
             }
         })
     }
@@ -134,8 +150,9 @@ class OABX : Application() {
 
         MainScope().launch {
             delay(1000)
-            addInfoText("[click to hide/show permanently]")
-            addInfoText("")
+            addInfoText("--> click title to keep infobox open")
+            addInfoText("--> long click for big infobox")
+            addInfoText("--> click big infobox to close")
         }
     }
 
@@ -221,7 +238,7 @@ class OABX : Application() {
                 infoLines.drop(1)
         }
 
-        fun getInfoText(n: Int, fill: String? = null): String {
+        fun getInfoText(n: Int = nInfoLines, fill: String? = null): String {
             val lines = infoLines.takeLast(n).toMutableList()
             if (fill != null)
                 while (lines.size < n)
@@ -273,14 +290,19 @@ class OABX : Application() {
         val busy = mutableStateOf(0)
 
         fun beginBusy(name: String? = null) {
-            val label = name ?: methodName(1)
+            if (pref_traceBusy.value) {
+                val label = name ?: methodName(1)
+                traceBold { "*** ${"+---".repeat(_busy.get())}\\ busy $label" }
+            }
             busy.value = _busy.accumulateAndGet(+1, Int::plus)
-            Timber.w("*** ${"+---".repeat(_busy.get())}\\ busy $label")
         }
+
         fun endBusy(name: String? = null) {
-            val label = name ?: methodName(1)
-            Timber.w("*** ${"+---".repeat(_busy.get())}/ busy $label")
             busy.value = _busy.accumulateAndGet(-1, Int::plus)
+            if (pref_traceBusy.value) {
+                val label = name ?: methodName(1)
+                traceBold { "*** ${"+---".repeat(_busy.get())}/ busy $label" }
+            }
         }
     }
 }

@@ -154,8 +154,10 @@ open class StorageFile {
 
     var parent: StorageFile? = null
     var context: Context? = null
-            get() = field ?: OABX.context
-            set(value: Context?) { field = value }
+        get() = field ?: OABX.context
+        set(value: Context?) {
+            field = value
+        }
 
     private var file: RootFile? = null
     private var _uri: Uri? = null
@@ -167,11 +169,11 @@ open class StorageFile {
                     _uri
                 }
             } ?: context?.let {
-                    FileProvider.getUriForFile(
-                        it, "${it.applicationContext.packageName}.provider", f
-                    )
-                }
-            } ?: Uri.fromFile(file?.absoluteFile)
+                FileProvider.getUriForFile(
+                    it, "${it.applicationContext.packageName}.provider", f
+                )
+            }
+        } ?: Uri.fromFile(file?.absoluteFile)
 
     data class DocumentInfo(
         val id: String,
@@ -418,7 +420,10 @@ open class StorageFile {
         return newFile
     }
 
-    fun createFile(mimeType: String, displayName: String): StorageFile {
+    fun createFile(
+        displayName: String,
+        mimeType: String = "application/octet-stream"
+    ): StorageFile {
         val newFile =
             file?.let {
                 if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
@@ -495,9 +500,9 @@ open class StorageFile {
         }
     }
 
-    fun writeText(text: String) : Boolean {
+    fun writeText(text: String): Boolean {
         return try {
-            parent?.createFile("application/octet-stream", name!!)?.outputStream()?.writer()?.use {
+            outputStream()?.writer()?.use {
                 it.write(text)
                 parent?.path?.let { cacheFilesAdd(it, this) }
                 true
@@ -506,6 +511,12 @@ open class StorageFile {
             unhandledException(e, _uri)
             false
         }
+    }
+
+    fun overwriteText(text: String): Boolean {
+        delete()
+        return parent?.createFile(name!!)
+            ?.writeText(text) ?: false
     }
 
     fun findUri(displayName: String): Uri? {
@@ -702,7 +713,7 @@ open class StorageFile {
             if (pref_invalidateSelective.value) {
                 try {
                     invalidateFilters.add(filter)
-                } catch(e: ArrayIndexOutOfBoundsException) {
+                } catch (e: ArrayIndexOutOfBoundsException) {
                 }
                 cacheCheck() //TODO
             } else {

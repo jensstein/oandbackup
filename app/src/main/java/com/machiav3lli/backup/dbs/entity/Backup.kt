@@ -21,6 +21,7 @@ import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.os.Build
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER_OLD
@@ -67,6 +68,7 @@ data class Backup constructor(
     var permissions: List<String> = listOf(),
     var size: Long = 0,
     var note: String = "",
+    @ColumnInfo(defaultValue = "0")
     var persistent: Boolean = false,
 ) {
     private val backupFolderNameOld
@@ -207,6 +209,7 @@ data class Backup constructor(
             ", backupVersionCode='" + backupVersionCode + '\'' +
             ", size=" + size +
             ", permissions='" + permissions + '\'' +
+            ", persistent='" + persistent + '\'' +
             '}'
 
     override fun equals(other: Any?): Boolean = when {
@@ -237,7 +240,8 @@ data class Backup constructor(
                 || cpuArch != other.cpuArch
                 || backupFolderName != other.backupFolderName
                 || isEncrypted != other.isEncrypted
-                || permissions != other.permissions -> false
+                || permissions != other.permissions
+                || persistent != other.persistent -> false
         else -> true
     }
 
@@ -265,6 +269,7 @@ data class Backup constructor(
         result = 31 * result + backupFolderName.hashCode()
         result = 31 * result + isEncrypted.hashCode()
         result = 31 * result + permissions.hashCode()
+        result = 31 * result + persistent.hashCode()
         return result
     }
 

@@ -41,6 +41,7 @@ class ExportsViewModel(val database: ScheduleDao, private val appContext: Applic
     private val _exportsList =
         MutableStateFlow<MutableList<Pair<Schedule, StorageFile>>>(mutableListOf())
     val exportsList = _exportsList.asStateFlow()
+    val handler = ExportsHandler(appContext)
 
     fun refreshList() {
         viewModelScope.launch {
@@ -50,7 +51,7 @@ class ExportsViewModel(val database: ScheduleDao, private val appContext: Applic
 
     private suspend fun recreateExportsList(): MutableList<Pair<Schedule, StorageFile>> =
         withContext(Dispatchers.IO) {
-            ExportsHandler(appContext).readExports()
+            handler.readExports()
         }
 
     fun exportSchedules() {
@@ -62,7 +63,7 @@ class ExportsViewModel(val database: ScheduleDao, private val appContext: Applic
 
     private suspend fun export() =
         withContext(Dispatchers.IO) {
-            ExportsHandler(appContext).exportSchedules()
+            handler.exportSchedules()
         }
 
 

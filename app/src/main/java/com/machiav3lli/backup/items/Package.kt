@@ -31,8 +31,6 @@ import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
-import com.machiav3lli.backup.handler.LogsHandler.Companion.unhandledException
 import com.machiav3lli.backup.handler.getPackageStorageStats
 import com.machiav3lli.backup.preferences.pref_cachePackages
 import com.machiav3lli.backup.utils.FileUtils
@@ -142,7 +140,7 @@ class Package {
             storageStats = context.getPackageStorageStats(packageName)
             true
         } catch (e: PackageManager.NameNotFoundException) {
-            logException(e, "Could not refresh StorageStats. Package was not found")
+            LogsHandler.logException(e, "Could not refresh StorageStats. Package was not found")
             false
         }
     }
@@ -155,7 +153,7 @@ class Package {
             packageInfo = AppInfo(context, pi)
             refreshStorageStats(context)
         } catch (e: PackageManager.NameNotFoundException) {
-            logException(e, "$packageName is not installed. Refresh failed")
+            LogsHandler.logException(e, "$packageName is not installed. Refresh failed")
             return false
         }
         return true
@@ -232,7 +230,7 @@ class Package {
                 }
             }
         } catch (e: Throwable) {
-            unhandledException(e)
+            LogsHandler.unhandledException(e)
             null
         }
     }
@@ -279,20 +277,49 @@ class Package {
         }
     }
 
+    fun rewriteBackupProps(newBackup: Backup) {
+        if (newBackup.packageName != packageName) {
+            throw RuntimeException("Asked to delete a backup of ${newBackup.packageName} but this object is for $packageName")
+        }
+        Timber.d("[$packageName] Deleting backup revision $newBackup")
+        val propertiesFileName = String.format(
+            BACKUP_INSTANCE_PROPERTIES,
+            BACKUP_DATE_TIME_FORMATTER.format(newBackup.backupDate),
+            newBackup.profileId
+        )
+        val propertiesFileNameOld = String.format(
+            BACKUP_INSTANCE_PROPERTIES,
+            BACKUP_DATE_TIME_FORMATTER_OLD.format(newBackup.backupDate),
+            newBackup.profileId
+        )
+
+        try {
+            packageBackupDir?.findFile(propertiesFileName)?.apply {
+                overwriteText(newBackup.toJSON())
+            } ?: packageBackupDir?.findFile(propertiesFileNameOld)?.apply {
+                overwriteText(newBackup.toJSON())
+            }
+        } catch (e: Throwable) {
+            LogsHandler.unhandledException(e, newBackup.packageName)
+        }
+        try {
+            backupList = backupList.filterNot { it.backupDate == newBackup.backupDate } + newBackup
+        } catch (e: Throwable) {
+            LogsHandler.unhandledException(e, newBackup.packageName)
+        }
+    }
+
     fun deleteAllBackups() {
         while (backupList.isNotEmpty())
             deleteBackup(backupList.first())
     }
 
     fun deleteOldestBackups(keep: Int) {
-        while (keep < backupList.size || backupList.all { it.persistent }) {
-            run whileLoop@{
-                backupList.sortedBy { it.backupDate }.forEach { backup ->
-                    if (!backup.persistent) {
-                        Timber.i("[${backup.packageName}] Deleting backup revision ${backup.backupDate}")
-                        deleteBackup(backup)
-                        return@whileLoop
-                    }
+        while (keep < backupList.size && !backupsWithoutNewest.all { it.persistent }) {
+            backupsWithoutNewest.forEach { backup ->
+                if (!backup.persistent && keep < backupList.size) {
+                    Timber.i("[${backup.packageName}] Deleting backup revision ${backup.backupDate}")
+                    deleteBackup(backup)
                 }
             }
         }
@@ -300,6 +327,9 @@ class Package {
 
     val backupsNewestFirst: List<Backup>
         get() = needBackupList().sortedByDescending { item -> item.backupDate }
+
+    val backupsWithoutNewest: List<Backup>
+        get() = needBackupList().sortedBy { item -> item.backupDate }.dropLast(1)
 
     val latestBackup: Backup?
         get() = needBackupList().maxByOrNull { it.backupDate }
@@ -486,14 +516,17 @@ class Package {
 
         fun invalidateCacheForPackage(packageName: String) {
             StorageFile.invalidateCache { it.contains(packageName) }
+            OABX.app.packageCache.remove(packageName)
         }
 
         fun invalidateBackupCacheForPackage(packageName: String) {
             StorageFile.invalidateCache { it.contains(packageName) }
+            OABX.app.packageCache.remove(packageName)
         }
 
         fun invalidateSystemCacheForPackage(packageName: String) {
             StorageFile.invalidateCache { it.contains(packageName) }
+            OABX.app.packageCache.remove(packageName)
         }
     }
 }

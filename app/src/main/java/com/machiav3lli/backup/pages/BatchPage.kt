@@ -131,10 +131,9 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
             }
             Row(
                 modifier = Modifier.padding(horizontal = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 StateChip(
-                    modifier = Modifier.padding(start = 8.dp, end = 4.dp),
                     icon = Phosphor.DiamondsFour,
                     text = stringResource(id = R.string.all_apk),
                     checked = allApkChecked,

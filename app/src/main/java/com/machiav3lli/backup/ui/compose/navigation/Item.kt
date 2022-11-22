@@ -1,7 +1,17 @@
 package com.machiav3lli.backup.ui.compose.navigation
 
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavHostController
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.pages.BatchPage
+import com.machiav3lli.backup.pages.HomePage
+import com.machiav3lli.backup.pages.SchedulerPage
+import com.machiav3lli.backup.preferences.AdvancedPrefsPage
+import com.machiav3lli.backup.preferences.ServicePrefsPage
+import com.machiav3lli.backup.preferences.ToolsPrefsPage
+import com.machiav3lli.backup.preferences.UserPrefsPage
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ArchiveTray
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Bug
@@ -75,4 +85,28 @@ sealed class NavItem(var title: Int, var icon: ImageVector, var destination: Str
         Phosphor.Bug,
         "prefs_tools/logs"
     )
+
+    @Composable
+    fun ComposablePage(navController: NavHostController) {
+        when (destination) {
+            Home.destination -> HomePage()
+            Backup.destination, Restore.destination -> {
+                OABX.main?.let {
+                    if (destination == Backup.destination) it.backupViewModel
+                    else it.restoreViewModel
+                }?.let {
+                    BatchPage(viewModel = it, backupBoolean = destination == Backup.destination)
+                }
+            }
+            Scheduler.destination -> {
+                OABX.main?.schedulerViewModel?.let { viewModel ->
+                    SchedulerPage(viewModel)
+                }
+            }
+            UserPrefs.destination -> UserPrefsPage()
+            ServicePrefs.destination -> ServicePrefsPage()
+            AdvancedPrefs.destination -> AdvancedPrefsPage()
+            ToolsPrefs.destination -> ToolsPrefsPage(navController = navController)
+        }
+    }
 }

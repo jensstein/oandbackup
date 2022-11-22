@@ -23,13 +23,19 @@ plugins {
     kotlin("kapt")
     kotlin("plugin.serialization").version("1.7.20")
 }
+
 val vKotlin = "1.7.20"
 val vComposeCompiler = "1.3.2"
-val vCompose = "1.3.0"
-val vRoom = "2.5.0-beta01"
+
+val vCompose = "1.3.1"
+val vRoom = "2.5.0-beta02"
 val vNavigation = "2.5.3"
 val vAccompanist = "0.27.0"
 val vLibsu = "3.2.1"
+
+val vJunitJupiter = "5.9.1"
+val vAndroidxTest = "1.4.0"
+val vAndroidxTestExt = "1.1.4"
 
 android {
     namespace = "com.machiav3lli.backup"
@@ -39,8 +45,8 @@ android {
         applicationId = "com.machiav3lli.backup"
         minSdk = 26
         targetSdk = 32
-        versionCode = 8201
-        versionName = "8.2.0"
+        versionCode = 8204
+        versionName = "8.2.1"
         buildConfigField("int", "MAJOR", "8")
         buildConfigField("int", "MINOR", "2")
 
@@ -129,10 +135,10 @@ dependencies {
     implementation("androidx.room:room-runtime:$vRoom")
     implementation("androidx.room:room-ktx:$vRoom")
     kapt("androidx.room:room-compiler:$vRoom")
-    implementation("androidx.work:work-runtime-ktx:2.8.0-beta01")
+    implementation("androidx.work:work-runtime-ktx:2.8.0-beta02")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
-    implementation("androidx.security:security-crypto-ktx:1.1.0-alpha03")
+    implementation("androidx.security:security-crypto-ktx:1.1.0-alpha04")
     implementation("androidx.biometric:biometric:1.2.0-alpha05")
     implementation("org.apache.commons:commons-compress:1.22")
     implementation("commons-io:commons-io:2.11.0")      // attention, there is an old 2003 version, that looks like newer
@@ -149,7 +155,6 @@ dependencies {
     implementation("androidx.preference:preference-ktx:1.2.0")
     implementation("androidx.navigation:navigation-fragment-ktx:$vNavigation")
     implementation("androidx.navigation:navigation-ui-ktx:$vNavigation")
-    implementation("io.coil-kt:coil-compose:2.2.2")
 
     // Compose
     implementation("androidx.compose.runtime:runtime:$vCompose")
@@ -158,18 +163,18 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:$vCompose")
     implementation("androidx.compose.runtime:runtime-livedata:$vCompose")
     implementation("androidx.navigation:navigation-compose:$vNavigation")
-    implementation("com.google.android.material:compose-theme-adapter-3:1.0.21")
-    implementation("androidx.compose.material3:material3:1.0.0")
+    implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation("androidx.compose.material3:material3:1.0.1")
     implementation("com.google.accompanist:accompanist-flowlayout:$vAccompanist")
     implementation("com.google.accompanist:accompanist-systemuicontroller:$vAccompanist")
     implementation("com.google.accompanist:accompanist-navigation-animation:$vAccompanist")
+    implementation("com.google.accompanist:accompanist-pager:$vAccompanist")
 
     // Testing
-    implementation("androidx.test.ext:junit-ktx:1.1.3")
-    androidTestImplementation("org.junit.jupiter:junit-jupiter:5.9.1")
-    val androidxTest = "1.4.0"
-    implementation("androidx.test:rules:$androidxTest")
-    androidTestImplementation("androidx.test:runner:$androidxTest")
+    androidTestImplementation("org.junit.jupiter:junit-jupiter:$vJunitJupiter")
+    androidTestImplementation("androidx.test:runner:$vAndroidxTest")
+    implementation("androidx.test:rules:$vAndroidxTest")
+    implementation("androidx.test.ext:junit-ktx:$vAndroidxTestExt")
 
     // compose testing
     //androidTestImplementation("androidx.ui:ui-test:$vCompose")

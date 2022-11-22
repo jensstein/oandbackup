@@ -20,7 +20,10 @@ package com.machiav3lli.backup.activities
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,7 +37,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import com.machiav3lli.backup.NAV_PREFS
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.rememberPagerState
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.ODatabase
@@ -43,8 +47,8 @@ import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Info
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TopBar
-import com.machiav3lli.backup.ui.compose.navigation.BottomNavBar
 import com.machiav3lli.backup.ui.compose.navigation.NavItem
+import com.machiav3lli.backup.ui.compose.navigation.PagerNavBar
 import com.machiav3lli.backup.ui.compose.navigation.PrefsNavHost
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.destinationToItem
@@ -61,7 +65,10 @@ class PrefsActivityX : BaseActivity() {
         LogViewModel.Factory(application)
     }
 
-    @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+    @OptIn(
+        ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class,
+        ExperimentalPagerApi::class
+    )
     override fun onCreate(savedInstanceState: Bundle?) {
         OABX.activity = this
         setCustomTheme()
@@ -69,13 +76,19 @@ class PrefsActivityX : BaseActivity() {
 
         setContent {
             AppTheme {
+                val pagerState = rememberPagerState()
                 val navController = rememberAnimatedNavController()
-                var pageTitle: Int? by remember {
-                    mutableStateOf(NavItem.Settings.title)
-                }
+                val pages = listOf(
+                    NavItem.UserPrefs,
+                    NavItem.ServicePrefs,
+                    NavItem.AdvancedPrefs,
+                    NavItem.ToolsPrefs,
+                )
+                val currentPage by remember(pagerState.currentPage) { mutableStateOf(pages[pagerState.currentPage]) }
+                var barVisible by remember { mutableStateOf(true) }
 
                 navController.addOnDestinationChangedListener { _, destination, _ ->
-                    pageTitle = destination.destinationToItem()?.title
+                    barVisible = destination.route == NavItem.Settings.destination
                 }
 
                 Scaffold(
@@ -84,7 +97,11 @@ class PrefsActivityX : BaseActivity() {
                     topBar = {
                         Column {
                             TopBar(
-                                title = stringResource(id = pageTitle ?: NavItem.Settings.title)
+                                title = stringResource(
+                                    id = if (barVisible) currentPage.title
+                                    else navController.currentDestination?.destinationToItem()?.title
+                                        ?: NavItem.Settings.title
+                                )
                             ) {
                                 RoundButton(
                                     icon = Phosphor.Info,
@@ -97,12 +114,25 @@ class PrefsActivityX : BaseActivity() {
                             }
                         }
                     },
-                    bottomBar = { BottomNavBar(page = NAV_PREFS, navController = navController) }
+                    bottomBar = {
+                        AnimatedVisibility(
+                            barVisible,
+                            enter = slideInVertically { height -> height },
+                            exit = slideOutVertically { height -> height },
+                        ) {
+                            PagerNavBar(pageItems = pages, pagerState = pagerState)
+                        }
+                    }
                 ) { paddingValues ->
                     PrefsNavHost(
                         modifier = Modifier.padding(paddingValues),
                         navController = navController,
-                        application = application
+                        pagerState = pagerState,
+                        pages = pages,
+                        viewModels = listOf(
+                            exportsViewModel,
+                            logsViewModel,
+                        )
                     )
                 }
             }
