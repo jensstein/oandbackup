@@ -98,7 +98,7 @@
     <string name="prefs_theme_light"></string>
     <string name="prefs_rememberfiltering_summary"></string>
     <string name="prefs_deviceprotecteddata"></string>
-    <string name="prefs_housekeepingmoment_summary"></string>
+    <string name="prefs_housekeepingmoment_summary"/>
     <string name="prefs_compression_level"></string>
     <string name="prefs_acquirewakelock"></string>
     <string name="prefs_acquirewakelock_summary"></string>
@@ -110,7 +110,7 @@
     <string name="prefs_restoreavoidtempcopy_summary" translatable="false"></string>
     <string name="prefs_shadowrootfile_summary" translatable="false"></string>
     <string name="prefs_catchuncaughtexception_summary" translatable="false"></string>
-    <string name="prefs_maxcrashlines_summary" translatable="false"></string>
+    <string name="prefs_maxcrashlines_summary" translatable="false"/>
     <string name="prefs_invalidateselective_summary" translatable="false"></string>
     <string name="prefs_cacheuris_summary" translatable="false"></string>
     <string name="prefs_cachefilelists_summary" translatable="false"></string>
@@ -310,11 +310,11 @@
     <string name="prefs_advanced"></string>
     <string name="prefs_tools"></string>
     <string name="prefs_theme_dark"></string>
-    <string name="prefs_housekeepingmoment_after"></string>
-    <string name="prefs_housekeepingmoment_before"></string>
+    <string name="prefs_housekeepingmoment_after"/>
+    <string name="prefs_housekeepingmoment_before"/>
     <string name="prefs_theme_system"></string>
     <string name="prefs_mediadata"></string>
-    <string name="prefs_housekeepingmoment"></string>
+    <string name="prefs_housekeepingmoment"/>
     <string name="prefs_compression_level_summary"></string>
     <string name="prefs_restoreallpermissions"></string>
     <string name="prefs_batchdelete_summary"></string>
@@ -386,4 +386,7 @@
     <string name="sortAscDesc"></string>
     <string name="prefs_maxretriesperpackage_summary" translatable="false"></string>
     <string name="finished"></string>
+    <string name="prefs_tools_terminal"></string>
+    <string name="prefs_nobackupdata"></string>
+    <string name="prefs_nobackupdata_summary"></string>
 </resources>
