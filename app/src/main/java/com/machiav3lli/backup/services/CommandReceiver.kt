@@ -15,9 +15,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class CommandReceiver : //TODO hg42 how to maintain security?
-                        //TODO machiav3lli by making the receiver only internally accessible (not exported)
-                        //TODO hg42 but it's one of the purposes to be remotely controllable from other apps like Tasker
-                        //TODO hg42 no big prob for now: cancel, starting or changing schedule isn't very critical
+//TODO machiav3lli by making the receiver only internally accessible (not exported)
+//TODO hg42 but it's one of the purposes to be remotely controllable from other apps like Tasker
+//TODO hg42 no big prob for now: cancel, starting or changing schedule isn't very critical
     BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         if (intent == null) return

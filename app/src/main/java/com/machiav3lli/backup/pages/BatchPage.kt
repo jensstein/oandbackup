@@ -145,7 +145,7 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                         viewModel.apkCheckedList.addAll(
                             workList
                                 .filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }
-                                .mapNotNull(Package::packageName).orEmpty()
+                                .mapNotNull(Package::packageName)
                         )
                     else
                         viewModel.apkCheckedList.clear()
@@ -162,7 +162,7 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                         viewModel.dataCheckedList.addAll(
                             workList
                                 .filter { ai -> backupBoolean || ai.hasData }
-                                .mapNotNull(Package::packageName).orEmpty()
+                                .mapNotNull(Package::packageName)
                         )
                     else
                         viewModel.dataCheckedList.clear()

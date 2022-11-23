@@ -74,15 +74,11 @@ android {
             )
             //versionNameSuffix = "-alpha01"
             isMinifyEnabled = true
-            manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher"
-            manifestPlaceholders["appIconRound"] = "@mipmap/ic_launcher_round"
         }
         named("debug") {
             applicationIdSuffix = ".debug"
             //versionNameSuffix = "-alpha01"
             isMinifyEnabled = false
-            manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher_vv"
-            manifestPlaceholders["appIconRound"] = "@mipmap/ic_launcher_round_vv"
         }
         create("neo") {
             applicationIdSuffix = ".neo"
@@ -92,8 +88,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher_vv"
-            manifestPlaceholders["appIconRound"] = "@mipmap/ic_launcher_round_vv"
         }
     }
     buildFeatures {
