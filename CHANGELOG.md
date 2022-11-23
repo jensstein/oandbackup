@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+8.2.2 (23.11.2022) +160 Commits
+------------------
+
+#### Function
+- Fix: Schedules handling
+
+#### UI
+- Add: System theme based icon
+
 8.2.1 (18.11.2022) +290 Commits
 ------------------
 
