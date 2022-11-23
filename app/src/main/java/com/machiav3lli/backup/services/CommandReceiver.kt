@@ -58,10 +58,12 @@ class CommandReceiver : //TODO hg42 how to maintain security?
                         val scheduleDao = ODatabase.getInstance(context).scheduleDao
                         scheduleDao.getSchedule(name)?.let { schedule ->
                             val (hour, minute) = setTime.split(":").map { it.toInt() }
-                            schedule.timeHour = hour
-                            schedule.timeMinute = minute
-                            scheduleDao.update(schedule)
-                            scheduleAlarm(context, schedule.id, true)
+                            val newSched = schedule.copy(
+                                timeHour = hour,
+                                timeMinute = minute,
+                            )
+                            scheduleDao.update(newSched)
+                            scheduleAlarm(context, newSched.id, true)
                         }
                     }.start()
                 }

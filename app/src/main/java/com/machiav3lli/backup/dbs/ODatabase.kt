@@ -45,9 +45,12 @@ import com.machiav3lli.backup.dbs.entity.SpecialInfo
         AppInfo::class,
         SpecialInfo::class,
         Backup::class],
-    version = 4,
+    version = 5,
     exportSchema = true,
-    autoMigrations = [AutoMigration(from = 2, to = 4)]
+    autoMigrations = [
+        AutoMigration(from = 2, to = 4),
+        AutoMigration(from = 4, to = 5),
+    ]
 )
 @TypeConverters(Converters::class)
 abstract class ODatabase : RoomDatabase() {
