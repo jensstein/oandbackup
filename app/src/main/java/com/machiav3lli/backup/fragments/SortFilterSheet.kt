@@ -209,8 +209,8 @@ class SortFilterSheet() : BaseSheet() {
                             list = if (requireContext().specialBackupsEnabled) mainFilterChipItems
                             else mainFilterChipItems.minus(ChipItem.Special),
                             selectedFlags = model.mainFilter
-                        ) { flag ->
-                            model = model.copy().apply { mainFilter = mainFilter xor flag }
+                        ) { flags, flag ->
+                            model = model.copy(mainFilter = flags)
                         }
                     }
                     item {
@@ -218,8 +218,8 @@ class SortFilterSheet() : BaseSheet() {
                         MultiSelectableChipGroup(
                             list = mainBackupModeChipItems,
                             selectedFlags = model.backupFilter
-                        ) { flag ->
-                            model = model.copy().apply { backupFilter = backupFilter xor flag }
+                        ) { flags, flag ->
+                            model = model.copy(backupFilter = flags)
                         }
                     }
                     item {
@@ -228,7 +228,7 @@ class SortFilterSheet() : BaseSheet() {
                             list = mainSpecialFilterChipItems,
                             selectedFlag = model.specialFilter
                         ) { flag ->
-                            model = model.copy().apply { specialFilter = flag }
+                            model = model.copy(specialFilter = flag)
                         }
                     }
                 }

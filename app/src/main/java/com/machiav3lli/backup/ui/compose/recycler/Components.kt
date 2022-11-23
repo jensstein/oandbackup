@@ -17,8 +17,6 @@ import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -138,14 +136,12 @@ fun <T> HorizontalItemList(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelectableChipGroup(
+fun SelectableChipGroup(                        //TODO hg42 move to item/Components.kt ?
     modifier: Modifier = Modifier,
     list: List<ChipItem>,
     selectedFlag: Int,
     onClick: (Int) -> Unit
 ) {
-    val (selectedFlag, setFlag) = remember { mutableStateOf(selectedFlag) }
-
     FlowRow(
         modifier = modifier
             .fillMaxWidth(),
@@ -174,7 +170,6 @@ fun SelectableChipGroup(
                     ButtonIcon(it.icon, it.textId)
                 },
                 onClick = {
-                    setFlag(it.flag)
                     onClick(it.flag)
                 },
                 label = {
@@ -192,14 +187,12 @@ fun SelectableChipGroup(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MultiSelectableChipGroup(
+fun MultiSelectableChipGroup(                   //TODO hg42 move to item/Components.kt ?
     modifier: Modifier = Modifier,
     list: List<ChipItem>,
     selectedFlags: Int,
-    onClick: (Int) -> Unit
+    onClick: (Int, Int) -> Unit
 ) {
-    val (selectedFlags, setFlag) = remember { mutableStateOf(selectedFlags) }
-
     FlowRow(
         modifier = modifier
             .fillMaxWidth(),
@@ -228,8 +221,7 @@ fun MultiSelectableChipGroup(
                     ButtonIcon(it.icon, it.textId)
                 },
                 onClick = {
-                    onClick(it.flag)
-                    setFlag(selectedFlags xor it.flag)
+                    onClick(selectedFlags xor it.flag, it.flag)
                 },
                 label = {
                     Text(

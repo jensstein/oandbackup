@@ -437,7 +437,7 @@ fun CheckChip(
     modifier: Modifier = Modifier,
     onCheckedChange: (Boolean) -> Unit
 ) {
-    val (checked, check) = remember(checked) { mutableStateOf(checked) }
+    val (checked, check) = remember(checked) { mutableStateOf(checked) }   //TODO hg42 should probably be removed like for MultiChips
 
     FilterChip(
         modifier = modifier.padding(vertical = 8.dp, horizontal = 4.dp),
@@ -490,7 +490,7 @@ fun SwitchChip(
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val (firstSelected, selectFirst) = remember { mutableStateOf(firstSelected) }
+        val (firstSelected, selectFirst) = remember { mutableStateOf(firstSelected) }   //TODO hg42 should probably be removed like for MultiChips
 
         FilterChip(
             modifier = Modifier.weight(1f),

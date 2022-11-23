@@ -45,9 +45,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -89,6 +86,7 @@ import com.machiav3lli.backup.ui.compose.recycler.MultiSelectableChipGroup
 import com.machiav3lli.backup.ui.compose.recycler.SelectableChipGroup
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.item.ChipItem
+import com.machiav3lli.backup.utils.TraceUtils.traceDebug
 import com.machiav3lli.backup.utils.calculateTimeToRun
 import com.machiav3lli.backup.utils.cancelAlarm
 import com.machiav3lli.backup.utils.filterToString
@@ -291,11 +289,11 @@ class ScheduleSheet() : BaseSheet() {
     @Composable
     fun SchedulePage() {
         val schedule by viewModel.schedule.collectAsState()
-        var scheduleName by remember(schedule) { mutableStateOf(schedule.name) }
         val customList by viewModel.customList.collectAsState(emptySet())
         val blockList by viewModel.blockList.collectAsState(emptySet())
-        val enabled by remember(schedule) { mutableStateOf(schedule.enabled) }
         val nestedScrollConnection = rememberNestedScrollInteropConnection()
+
+        traceDebug { "*** recompose schedule <<- ${schedule}" }
 
         AppTheme {
             Scaffold(
@@ -312,16 +310,19 @@ class ScheduleSheet() : BaseSheet() {
                         Divider(thickness = 2.dp)
                         Spacer(modifier = Modifier.height(8.dp))
                         Row {
-                            AnimatedVisibility(visible = enabled) {
+                            AnimatedVisibility(visible = schedule.enabled) {
                                 Text(
-                                    text = "${stringResource(id = R.string.sched_timeLeft)} "
-                                        .plus(getTimeLeft(schedule))
+                                    text = "${
+                                        stringResource(id = R.string.sched_timeLeft)
+                                    } ${
+                                        getTimeLeft(schedule)
+                                    }"
                                 )
                             }
                         }
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             CheckChip(
-                                checked = enabled,
+                                checked = schedule.enabled,
                                 textId = R.string.sched_checkbox,
                                 checkedTextId = R.string.enabled,
                                 onCheckedChange = { checked ->
@@ -368,12 +369,11 @@ class ScheduleSheet() : BaseSheet() {
                             TitleText(R.string.sched_name)
                             MorphableTextField(
                                 modifier = Modifier.weight(1f),
-                                text = scheduleName,
+                                text = schedule.name,
                                 textAlignment = TextAlign.Center,
                                 onCancel = {
                                 },
                                 onSave = {
-                                    scheduleName = it
                                     refresh(
                                         schedule.copy(name = it),
                                         rescheduleBoolean = false,
@@ -448,36 +448,45 @@ class ScheduleSheet() : BaseSheet() {
                     }
 
                     item {
+                        traceDebug { "*** recompose filter ${schedule.filter}" }
                         TitleText(R.string.filter_options)
                         MultiSelectableChipGroup(
-                            list = if (requireContext().specialBackupsEnabled) mainFilterChipItems
-                            else mainFilterChipItems.minus(ChipItem.Special),
+                            list = if (requireContext().specialBackupsEnabled)
+                                mainFilterChipItems
+                            else
+                                mainFilterChipItems.minus(ChipItem.Special),
+                            //selectedFlags = schedule.filter
                             selectedFlags = schedule.filter
-                        ) { flag ->
+                        ) { flags, flag ->
+                            traceDebug { "*** onClick filter ${schedule.filter} xor ${flag} -> $flags (${schedule.filter xor flag})" }
                             refresh(
-                                schedule.copy(filter = schedule.filter xor flag),
+                                schedule.copy(filter = flags),
                                 false,
                             )
                         }
                     }
                     item {
+                        traceDebug { "*** recompose mode ${schedule.mode}" }
                         TitleText(R.string.sched_mode)
                         MultiSelectableChipGroup(
                             list = scheduleBackupModeChipItems,
                             selectedFlags = schedule.mode
-                        ) { flag ->
+                        ) { flags, flag ->
+                            traceDebug { "*** onClick mode ${schedule.mode} xor ${flag} -> $flags (${schedule.mode xor flag})" }
                             refresh(
-                                schedule.copy(mode = schedule.mode xor flag),
+                                schedule.copy(mode = flags),
                                 false,
                             )
                         }
                     }
                     item {
+                        traceDebug { "*** recompose specialFilter ${schedule.specialFilter}" }
                         TitleText(R.string.other_filters_options)
                         SelectableChipGroup(
                             list = schedSpecialFilterChipItems,
                             selectedFlag = schedule.specialFilter
                         ) { flag ->
+                            traceDebug { "*** onClick specialFilter -> $flag" }
                             refresh(
                                 schedule.copy(specialFilter = flag),
                                 false,
