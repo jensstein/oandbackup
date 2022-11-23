@@ -79,7 +79,8 @@ class ExportsHandler(var context: Context) {
         invalidateCache { it.contains(EXPORTS_FOLDER_NAME) }
         exportsDirectory?.listFiles()?.forEach {
             if (it.isFile) try {
-                exports.add(Pair(Schedule(it), it))
+                val schedule = Schedule.Builder(it).build()
+                exports.add(Pair(schedule, it))
             } catch (e: NullPointerException) {
                 val message = "(Null) Incomplete schedule or wrong structure found in ${it}."
                 Timber.w(message)

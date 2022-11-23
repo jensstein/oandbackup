@@ -39,56 +39,24 @@ import java.io.IOException
 @Serializable
 data class Schedule(
     @PrimaryKey(autoGenerate = true)
-    var id: Long = 0
+    val id: Long = 0,
+    val enabled: Boolean = false,
+    val name: String = "New Schedule",
+    val timeHour: Int = 0,
+    val timeMinute: Int = 0,
+    val interval: Int = 1,
+    val timePlaced: Long = System.currentTimeMillis(),
+
+    val filter: Int = MAIN_FILTER_DEFAULT,
+    val mode: Int = MODE_APK,
+    val specialFilter: Int = SPECIAL_FILTER_ALL,
+
+    val timeToRun: Long = 0,
+
+    val customList: Set<String> = setOf(),
+
+    val blockList: Set<String> = setOf(),
 ) {
-    var name: String = "New Schedule"
-    var enabled = false
-
-    var timeHour = 0
-    var timeMinute = 0
-    var interval = 1
-    var timePlaced = System.currentTimeMillis()
-
-    var filter: Int = MAIN_FILTER_DEFAULT
-    var mode: Int = MODE_APK
-    var specialFilter: Int = SPECIAL_FILTER_ALL
-
-    var timeToRun: Long = 0
-
-    var customList: Set<String> = setOf()
-
-    var blockList: Set<String> = setOf()
-
-    constructor(exportFile: StorageFile) : this() {
-        try {
-            exportFile.inputStream()!!.use { inputStream ->
-                val item = fromJson(inputStream.reader().readText())
-                this.id = item.id
-                this.name = item.name
-                this.filter = item.filter
-                this.mode = item.mode
-                this.specialFilter = item.specialFilter
-                this.timeHour = item.timeHour
-                this.timeMinute = item.timeMinute
-                this.interval = item.interval
-                this.customList = item.customList
-                this.blockList = item.blockList
-            }
-        } catch (e: FileNotFoundException) {
-            throw Backup.BrokenBackupException(
-                "Cannot open ${exportFile.name} at ${exportFile.path}",
-                e
-            )
-        } catch (e: IOException) {
-            throw Backup.BrokenBackupException(
-                "Cannot read ${exportFile.name} at ${exportFile.path}",
-                e
-            )
-        } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, exportFile.path)
-            throw Backup.BrokenBackupException("Unable to process ${exportFile.name} at ${exportFile.path}. [${e.javaClass.canonicalName}] $e")
-        }
-    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -145,30 +113,56 @@ data class Schedule(
     fun getBatchName(startTime: Long): String =
         WorkHandler.getBatchName(this.name, startTime)
 
-    class Builder {
-        val schedule: Schedule = Schedule()
+    class Builder() {
+        var schedule: Schedule = Schedule()
+
+        constructor(exportFile: StorageFile) : this() {
+            try {
+                exportFile.inputStream()!!.use { inputStream ->
+                    val item = fromJson(inputStream.reader().readText())
+                    schedule = item.copy(
+                        enabled = false,
+                        timePlaced = System.currentTimeMillis(),
+                        timeToRun = 0,
+                    )
+                }
+            } catch (e: FileNotFoundException) {
+                throw Backup.BrokenBackupException(
+                    "Cannot open ${exportFile.name} at ${exportFile.path}",
+                    e
+                )
+            } catch (e: IOException) {
+                throw Backup.BrokenBackupException(
+                    "Cannot read ${exportFile.name} at ${exportFile.path}",
+                    e
+                )
+            } catch (e: Throwable) {
+                LogsHandler.unhandledException(e, exportFile.path)
+                throw Backup.BrokenBackupException("Unable to process ${exportFile.name} at ${exportFile.path}. [${e.javaClass.canonicalName}] $e")
+            }
+        }
 
         fun withId(id: Int): Builder {
-            schedule.id = id.toLong()
+            schedule = schedule.copy(id = id.toLong())
             return this
         }
 
         fun withSpecial(with: Boolean = true): Builder {
-            if (with) schedule.filter = MAIN_FILTER_DEFAULT
-            else schedule.filter = MAIN_FILTER_DEFAULT_WITHOUT_SPECIAL
+            schedule = schedule.copy(
+                filter = if (with) MAIN_FILTER_DEFAULT
+                else MAIN_FILTER_DEFAULT_WITHOUT_SPECIAL
+            )
             return this
         }
 
         fun import(export: Schedule): Builder {
-            schedule.name = export.name
-            schedule.filter = export.filter
-            schedule.mode = export.mode
-            schedule.specialFilter = export.specialFilter
-            schedule.timeHour = export.timeHour
-            schedule.timeMinute = export.timeMinute
-            schedule.interval = export.interval
-            schedule.customList = export.customList
-            schedule.blockList = export.blockList
+            schedule = export
+                .copy(
+                    id = schedule.id,
+                    enabled = false,
+                    timePlaced = System.currentTimeMillis(),
+                    timeToRun = 0,
+                )
             return this
         }
 

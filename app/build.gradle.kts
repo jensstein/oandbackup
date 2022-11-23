@@ -30,7 +30,7 @@ val vComposeCompiler = "1.3.2"
 val vCompose = "1.3.1"
 val vRoom = "2.5.0-beta02"
 val vNavigation = "2.5.3"
-val vAccompanist = "0.27.0"
+val vAccompanist = "0.27.1"
 val vLibsu = "3.2.1"
 
 val vJunitJupiter = "5.9.1"
@@ -45,8 +45,8 @@ android {
         applicationId = "com.machiav3lli.backup"
         minSdk = 26
         targetSdk = 32
-        versionCode = 8204
-        versionName = "8.2.1"
+        versionCode = 8205
+        versionName = "8.2.2"
         buildConfigField("int", "MAJOR", "8")
         buildConfigField("int", "MINOR", "2")
 
@@ -74,15 +74,11 @@ android {
             )
             //versionNameSuffix = "-alpha01"
             isMinifyEnabled = true
-            manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher"
-            manifestPlaceholders["appIconRound"] = "@mipmap/ic_launcher_round"
         }
         named("debug") {
             applicationIdSuffix = ".debug"
             //versionNameSuffix = "-alpha01"
             isMinifyEnabled = false
-            manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher_vv"
-            manifestPlaceholders["appIconRound"] = "@mipmap/ic_launcher_round_vv"
         }
         create("neo") {
             applicationIdSuffix = ".neo"
@@ -92,8 +88,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher_vv"
-            manifestPlaceholders["appIconRound"] = "@mipmap/ic_launcher_round_vv"
         }
     }
     buildFeatures {

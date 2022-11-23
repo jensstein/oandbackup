@@ -230,8 +230,10 @@ class ScheduleSheet() : BaseSheet() {
 
     private fun showNameEditorDialog(schedule: Schedule) {
         ScheduleNameDialog(schedule.name) {
-            schedule.name = it
-            refresh(schedule, rescheduleBoolean = false)
+            refresh(
+                schedule.copy(name = it),
+                rescheduleBoolean = false
+            )
         }.show(requireActivity().supportFragmentManager, "SCHEDULENAME_DIALOG")
     }
 
@@ -240,9 +242,10 @@ class ScheduleSheet() : BaseSheet() {
             requireContext(),
             com.google.android.material.R.style.ThemeOverlay_Material3_MaterialTimePicker,
             { _, hourOfDay, minute ->
-                schedule.timeHour = hourOfDay
-                schedule.timeMinute = minute
-                refresh(schedule, rescheduleBoolean = true)
+                refresh(
+                    schedule.copy(timeHour = hourOfDay, timeMinute = minute),
+                    rescheduleBoolean = true
+                )
             },
             schedule.timeHour,
             schedule.timeMinute,
@@ -253,8 +256,10 @@ class ScheduleSheet() : BaseSheet() {
 
     private fun showIntervalSetterDialog(schedule: Schedule) {
         IntervalInDaysDialog(schedule.interval.toString()) { newInterval: Int ->
-            schedule.interval = newInterval
-            refresh(schedule, rescheduleBoolean = true)
+            refresh(
+                schedule.copy(interval = newInterval),
+                rescheduleBoolean = true
+            )
         }.show(requireActivity().supportFragmentManager, "INTERVALDAYS_DIALOG")
     }
 
@@ -263,8 +268,10 @@ class ScheduleSheet() : BaseSheet() {
         PackagesListDialogFragment(
             selectedPackages, schedule.filter, false
         ) { newList: Set<String> ->
-            schedule.customList = newList
-            refresh(schedule, rescheduleBoolean = false)
+            refresh(
+                schedule.copy(customList = newList),
+                rescheduleBoolean = false,
+            )
         }.show(requireActivity().supportFragmentManager, "CUSTOMLIST_DIALOG")
     }
 
@@ -273,8 +280,10 @@ class ScheduleSheet() : BaseSheet() {
         PackagesListDialogFragment(
             blocklistedPackages, schedule.filter, true
         ) { newList: Set<String> ->
-            schedule.blockList = newList
-            refresh(schedule, rescheduleBoolean = false)
+            refresh(
+                schedule.copy(blockList = newList),
+                rescheduleBoolean = false,
+            )
         }.show(requireActivity().supportFragmentManager, "BLOCKLIST_DIALOG")
     }
 
@@ -285,7 +294,7 @@ class ScheduleSheet() : BaseSheet() {
         var scheduleName by remember(schedule) { mutableStateOf(schedule.name) }
         val customList by viewModel.customList.collectAsState(emptySet())
         val blockList by viewModel.blockList.collectAsState(emptySet())
-        var enabled by remember(schedule) { mutableStateOf(schedule.enabled) }
+        val enabled by remember(schedule) { mutableStateOf(schedule.enabled) }
         val nestedScrollConnection = rememberNestedScrollInteropConnection()
 
         AppTheme {
@@ -316,9 +325,10 @@ class ScheduleSheet() : BaseSheet() {
                                 textId = R.string.sched_checkbox,
                                 checkedTextId = R.string.enabled,
                                 onCheckedChange = { checked ->
-                                    enabled = checked
-                                    schedule.enabled = checked
-                                    refresh(schedule, true)
+                                    refresh(
+                                        schedule.copy(enabled = checked),
+                                        true,
+                                    )
                                 }
                             )
                             Spacer(modifier = Modifier.weight(1f))
@@ -364,8 +374,10 @@ class ScheduleSheet() : BaseSheet() {
                                 },
                                 onSave = {
                                     scheduleName = it
-                                    schedule.name = it
-                                    refresh(schedule, rescheduleBoolean = false)
+                                    refresh(
+                                        schedule.copy(name = it),
+                                        rescheduleBoolean = false,
+                                    )
                                 }
                             )
                             RoundButton(
@@ -442,8 +454,10 @@ class ScheduleSheet() : BaseSheet() {
                             else mainFilterChipItems.minus(ChipItem.Special),
                             selectedFlags = schedule.filter
                         ) { flag ->
-                            schedule.filter = schedule.filter xor flag
-                            refresh(schedule, false)
+                            refresh(
+                                schedule.copy(filter = schedule.filter xor flag),
+                                false,
+                            )
                         }
                     }
                     item {
@@ -452,8 +466,10 @@ class ScheduleSheet() : BaseSheet() {
                             list = scheduleBackupModeChipItems,
                             selectedFlags = schedule.mode
                         ) { flag ->
-                            schedule.mode = schedule.mode xor flag
-                            refresh(schedule, false)
+                            refresh(
+                                schedule.copy(mode = schedule.mode xor flag),
+                                false,
+                            )
                         }
                     }
                     item {
@@ -462,8 +478,10 @@ class ScheduleSheet() : BaseSheet() {
                             list = schedSpecialFilterChipItems,
                             selectedFlag = schedule.specialFilter
                         ) { flag ->
-                            schedule.specialFilter = flag
-                            refresh(schedule, false)
+                            refresh(
+                                schedule.copy(specialFilter = flag),
+                                false,
+                            )
                         }
                     }
                 }

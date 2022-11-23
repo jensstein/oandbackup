@@ -80,8 +80,10 @@ fun SchedulerPage(viewModel: SchedulerViewModel) {
                 )
             },
             onCheckChanged = { item: Schedule, b: Boolean ->
-                item.enabled = b
-                viewModel.updateSchedule(item, true)
+                viewModel.updateSchedule(
+                    item.copy(enabled = b),
+                    true,
+                )
             }
         )
     }

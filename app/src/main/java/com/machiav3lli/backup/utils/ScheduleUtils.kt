@@ -23,11 +23,10 @@ import android.content.Context
 import android.content.Intent
 import android.icu.util.Calendar
 import android.os.Build
-import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.preferences.pref_useAlarmClock
-import com.machiav3lli.backup.preferences.pref_useExactAlarm
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.Schedule
+import com.machiav3lli.backup.preferences.pref_useAlarmClock
+import com.machiav3lli.backup.preferences.pref_useExactAlarm
 import com.machiav3lli.backup.services.AlarmReceiver
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -55,12 +54,15 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
 
                 val now = System.currentTimeMillis()
                 val timeLeft = calculateTimeToRun(schedule, now) - now
-                if (rescheduleBoolean) {
-                    schedule.timePlaced = now
-                    schedule.timeToRun = calculateTimeToRun(schedule, now)
-                } else if (timeLeft <= TimeUnit.MINUTES.toMillis(1)) // give it a minute to finish what it could be handling e.g. on reboot
-                    schedule.timeToRun = now + TimeUnit.MINUTES.toMillis(1)
-                scheduleDao.update(schedule)
+                scheduleDao.update(
+                    schedule.copy(
+                        timePlaced = if (rescheduleBoolean) now else schedule.timePlaced,
+                        timeToRun = if (rescheduleBoolean) calculateTimeToRun(schedule, now)
+                        else if (timeLeft <= TimeUnit.MINUTES.toMillis(1))
+                            now + TimeUnit.MINUTES.toMillis(1)
+                        else schedule.timeToRun,
+                    )
+                )
 
                 val hasPermission: Boolean =
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
