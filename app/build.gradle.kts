@@ -30,7 +30,7 @@ val vComposeCompiler = "1.3.2"
 val vCompose = "1.3.1"
 val vRoom = "2.5.0-beta02"
 val vNavigation = "2.5.3"
-val vAccompanist = "0.27.0"
+val vAccompanist = "0.27.1"
 val vLibsu = "3.2.1"
 
 val vJunitJupiter = "5.9.1"
