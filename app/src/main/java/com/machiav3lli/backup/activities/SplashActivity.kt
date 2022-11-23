@@ -23,7 +23,6 @@ import android.os.Bundle
 import android.os.PowerManager
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -64,7 +63,6 @@ import com.machiav3lli.backup.utils.isStorageDirSetAndOk
 import com.machiav3lli.backup.utils.setCustomTheme
 import com.topjohnwu.superuser.Shell
 import kotlin.system.exitProcess
-
 
 @Preview
 @Composable
@@ -178,10 +176,7 @@ class SplashActivity : BaseActivity() {
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
-                        painter = painterResource(
-                            id = if (isSystemInDarkTheme()) R.drawable.ic_launcher_foreground_vv
-                            else R.drawable.ic_launcher_foreground
-                        ),
+                        painter = painterResource(id = R.drawable.ic_launcher_foreground),
                         contentDescription = stringResource(id = R.string.app_name)
                     )
                 }
