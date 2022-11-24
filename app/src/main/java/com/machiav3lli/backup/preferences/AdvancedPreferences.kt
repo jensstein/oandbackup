@@ -399,6 +399,13 @@ val pref_traceBusy = BooleanPref(
     enableIf = { pref_trace.value }
 )
 
+val pref_traceBackupProps = BooleanPref(
+    key = "dev-trace.traceBackupProps",
+    summary = "trace backup properties (json)",
+    defaultValue = false,
+    enableIf = { pref_trace.value }
+)
+
 val pref_traceDebug = BooleanPref(
     key = "dev-trace.traceDebug",
     summary = "trace for debugging purposes (for devs)",

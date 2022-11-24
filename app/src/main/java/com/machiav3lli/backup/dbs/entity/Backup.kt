@@ -31,11 +31,11 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.grantedPermissions
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.LocalDateTimeSerializer
+import com.machiav3lli.backup.utils.TraceUtils.traceBackupProps
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -283,7 +283,7 @@ data class Backup constructor(
     companion object {
 
         fun fromJson(json: String): Backup {
-            Timber.d("json: $json")
+            traceBackupProps { "backup json: $json" }
             return Json.decodeFromString(json)
         }
 
@@ -294,12 +294,12 @@ data class Backup constructor(
                 return fromJson(json)
             } catch (e: FileNotFoundException) {
                 throw BrokenBackupException(
-                    "Cannot open ${propertiesFile.path}\n$json",
+                    "Cannot open ${propertiesFile.path}",
                     e
                 )
             } catch (e: IOException) {
                 throw BrokenBackupException(
-                    "Cannot read ${propertiesFile.path}\n$json",
+                    "Cannot read ${propertiesFile.path}",
                     e
                 )
             } catch (e: Throwable) {

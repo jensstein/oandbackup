@@ -1,6 +1,7 @@
 package com.machiav3lli.backup.utils
 
 import com.machiav3lli.backup.preferences.pref_trace
+import com.machiav3lli.backup.preferences.pref_traceBackupProps
 import com.machiav3lli.backup.preferences.pref_traceDebug
 import com.machiav3lli.backup.preferences.pref_traceFlows
 import kotlinx.coroutines.flow.Flow
@@ -30,6 +31,11 @@ object TraceUtils {
 
     fun trace(lazyText: () -> String) {
         if (pref_trace.value)
+            Timber.d(lazyText())
+    }
+
+    fun traceBackupProps(lazyText: () -> String) {
+        if (pref_trace.value && pref_traceBackupProps.value)
             Timber.d(lazyText())
     }
 
