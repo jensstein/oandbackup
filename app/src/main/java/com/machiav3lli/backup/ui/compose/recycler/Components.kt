@@ -16,15 +16,15 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowRow
 import com.machiav3lli.backup.R
@@ -138,14 +138,12 @@ fun <T> HorizontalItemList(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelectableChipGroup(
+fun SelectableChipGroup(                        //TODO hg42 move to item/Components.kt ?
     modifier: Modifier = Modifier,
     list: List<ChipItem>,
     selectedFlag: Int,
     onClick: (Int) -> Unit
 ) {
-    val (selectedFlag, setFlag) = remember { mutableStateOf(selectedFlag) }
-
     FlowRow(
         modifier = modifier
             .fillMaxWidth(),
@@ -153,10 +151,10 @@ fun SelectableChipGroup(
     ) {
         list.forEach {
             val colors = FilterChipDefaults.filterChipColors(
-                containerColor = Color.Transparent,
+                containerColor = MaterialTheme.colorScheme.surface,
+                selectedContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
                 labelColor = MaterialTheme.colorScheme.onSurface,
-                selectedContainerColor = Color.Transparent,
-                selectedLabelColor = MaterialTheme.colorScheme.primary,
+                selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 iconColor = MaterialTheme.colorScheme.onSurface,
                 selectedLeadingIconColor = colorResource(id = it.colorId)
             )
@@ -164,9 +162,9 @@ fun SelectableChipGroup(
             FilterChip(
                 colors = colors,
                 border = FilterChipDefaults.filterChipBorder(
-                    borderColor = MaterialTheme.colorScheme.onSurface,
-                    selectedBorderColor = MaterialTheme.colorScheme.primary,
-                    borderWidth = 1.dp,
+                    borderColor = Color.Transparent,
+                    selectedBorderColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    borderWidth = 0.dp,
                     selectedBorderWidth = 1.dp
                 ),
                 selected = it.flag == selectedFlag,
@@ -174,15 +172,14 @@ fun SelectableChipGroup(
                     ButtonIcon(it.icon, it.textId)
                 },
                 onClick = {
-                    setFlag(it.flag)
                     onClick(it.flag)
                 },
                 label = {
                     Text(
                         text = stringResource(id = it.textId),
-                        color = if (it.flag == selectedFlag) MaterialTheme.colorScheme.primary
-                        else MaterialTheme.colorScheme.onSurface,
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = if (it.flag == selectedFlag) FontWeight.Black
+                        else FontWeight.Normal
                     )
                 }
             )
@@ -192,14 +189,12 @@ fun SelectableChipGroup(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MultiSelectableChipGroup(
+fun MultiSelectableChipGroup(                   //TODO hg42 move to item/Components.kt ?
     modifier: Modifier = Modifier,
     list: List<ChipItem>,
     selectedFlags: Int,
-    onClick: (Int) -> Unit
+    onClick: (Int, Int) -> Unit
 ) {
-    val (selectedFlags, setFlag) = remember { mutableStateOf(selectedFlags) }
-
     FlowRow(
         modifier = modifier
             .fillMaxWidth(),
@@ -207,10 +202,10 @@ fun MultiSelectableChipGroup(
     ) {
         list.forEach {
             val colors = FilterChipDefaults.filterChipColors(
-                containerColor = Color.Transparent,
+                containerColor = MaterialTheme.colorScheme.surface,
+                selectedContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
                 labelColor = MaterialTheme.colorScheme.onSurface,
-                selectedContainerColor = Color.Transparent,
-                selectedLabelColor = MaterialTheme.colorScheme.primary,
+                selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 iconColor = MaterialTheme.colorScheme.onSurface,
                 selectedLeadingIconColor = colorResource(id = it.colorId)
             )
@@ -218,9 +213,9 @@ fun MultiSelectableChipGroup(
             FilterChip(
                 colors = colors,
                 border = FilterChipDefaults.filterChipBorder(
-                    borderColor = MaterialTheme.colorScheme.onSurface,
-                    selectedBorderColor = MaterialTheme.colorScheme.primary,
-                    borderWidth = 1.dp,
+                    borderColor = Color.Transparent,
+                    selectedBorderColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    borderWidth = 0.dp,
                     selectedBorderWidth = 1.dp
                 ),
                 selected = it.flag and selectedFlags != 0,
@@ -228,15 +223,14 @@ fun MultiSelectableChipGroup(
                     ButtonIcon(it.icon, it.textId)
                 },
                 onClick = {
-                    onClick(it.flag)
-                    setFlag(selectedFlags xor it.flag)
+                    onClick(selectedFlags xor it.flag, it.flag)
                 },
                 label = {
                     Text(
                         text = stringResource(id = it.textId),
-                        color = if (it.flag and selectedFlags != 0) MaterialTheme.colorScheme.primary
-                        else MaterialTheme.colorScheme.onSurface,
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = if (it.flag and selectedFlags != 0) FontWeight.Black
+                        else FontWeight.Normal
                     )
                 }
             )

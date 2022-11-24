@@ -26,11 +26,11 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.utils.applyAccentStyle
 import com.machiav3lli.backup.utils.applySecondaryStyle
 
-open class BaseSheet : BottomSheetDialogFragment() {
+open class BaseSheet(private val initExpanded: Boolean = true) : BottomSheetDialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val sheet = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
-        sheet.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        if (initExpanded) sheet.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         sheet.context.theme.applyAccentStyle()
         sheet.context.theme.applySecondaryStyle()
         return sheet

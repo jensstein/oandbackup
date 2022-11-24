@@ -24,6 +24,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.dbs.dao.ScheduleDao
 import com.machiav3lli.backup.dbs.entity.Schedule
+import com.machiav3lli.backup.utils.TraceUtils.trace
 import com.machiav3lli.backup.utils.cancelAlarm
 import com.machiav3lli.backup.utils.scheduleAlarm
 import kotlinx.coroutines.Dispatchers
@@ -39,11 +40,13 @@ class ScheduleViewModel(
     appContext: Application
 ) : AndroidViewModel(appContext) {
 
-    val schedule: StateFlow<Schedule> = scheduleDB.getScheduleFlow(id).stateIn(
-        viewModelScope,
-        SharingStarted.Eagerly,
-        Schedule(0)
-    )
+    val schedule: StateFlow<Schedule> = scheduleDB.getScheduleFlow(id)
+        .trace { "*** schedule <<- ${it}" }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            Schedule(0)
+        )
     val customList = scheduleDB.getCustomListFlow(id)
     val blockList = scheduleDB.getBlockListFlow(id)
 

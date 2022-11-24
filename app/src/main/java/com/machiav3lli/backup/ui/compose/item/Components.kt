@@ -46,13 +46,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.SelectableChipColors
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -400,6 +400,7 @@ fun RoundButton(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun StateChip(
     modifier: Modifier = Modifier,
@@ -409,22 +410,31 @@ fun StateChip(
     checked: Boolean,
     onClick: () -> Unit
 ) {
-    OutlinedButton(
-        modifier = modifier.defaultMinSize(minWidth = 1.dp, minHeight = 1.dp),
-        contentPadding = PaddingValues(8.dp),
-        colors = ButtonDefaults.outlinedButtonColors(
-            contentColor = if (checked) MaterialTheme.colorScheme.onSurface else color,
-            containerColor = if (checked) color else Color.Transparent
-        ),
+    val openPopup = remember { mutableStateOf(false) }
+
+    Surface(
+        modifier = modifier
+            .defaultMinSize(minWidth = 1.dp, minHeight = 1.dp)
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = { openPopup.value = true }
+            ),
+        contentColor = if (checked) MaterialTheme.colorScheme.onSurface else color,
+        color = if (checked) color else Color.Transparent,
         shape = RoundedCornerShape(LocalShapes.current.medium),
         border = BorderStroke(1.dp, color),
-        onClick = onClick,
     ) {
         Icon(
-            modifier = Modifier.size(ICON_SIZE_SMALL),
+            modifier = Modifier
+                .padding(8.dp)
+                .size(ICON_SIZE_SMALL),
             imageVector = icon,
             contentDescription = text
         )
+
+        if (openPopup.value) {
+            Tooltip(text, openPopup)
+        }
     }
 }
 
@@ -437,7 +447,7 @@ fun CheckChip(
     modifier: Modifier = Modifier,
     onCheckedChange: (Boolean) -> Unit
 ) {
-    val (checked, check) = remember(checked) { mutableStateOf(checked) }
+    val (checked, check) = remember(checked) { mutableStateOf(checked) }   //TODO hg42 should probably be removed like for MultiChips
 
     FilterChip(
         modifier = modifier.padding(vertical = 8.dp, horizontal = 4.dp),
@@ -474,23 +484,23 @@ fun SwitchChip(
     secondIcon: ImageVector,
     firstSelected: Boolean = true,
     colors: SelectableChipColors = FilterChipDefaults.filterChipColors(
+        containerColor = Color.Transparent,
+        selectedContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
         labelColor = MaterialTheme.colorScheme.onSurface,
         selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
         iconColor = MaterialTheme.colorScheme.onSurface,
         selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-        containerColor = Color.Transparent,
-        selectedContainerColor = MaterialTheme.colorScheme.primaryContainer
     ),
     onCheckedChange: (Boolean) -> Unit
 ) {
     Row(
         modifier = Modifier
-            .border(1.dp, MaterialTheme.colorScheme.outline, MaterialTheme.shapes.medium)
+            .border(1.dp, MaterialTheme.colorScheme.onPrimaryContainer, MaterialTheme.shapes.medium)
             .padding(horizontal = 6.dp)
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val (firstSelected, selectFirst) = remember { mutableStateOf(firstSelected) }
+        val (firstSelected, selectFirst) = remember { mutableStateOf(firstSelected) }   //TODO hg42 should probably be removed like for MultiChips
 
         FilterChip(
             modifier = Modifier.weight(1f),
@@ -516,7 +526,9 @@ fun SwitchChip(
                     Text(
                         text = stringResource(id = firstTextId),
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        fontWeight = if (firstSelected) FontWeight.Black
+                        else FontWeight.Normal
                     )
                 }
             }
@@ -542,7 +554,9 @@ fun SwitchChip(
                     Text(
                         text = stringResource(id = secondTextId),
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        fontWeight = if (!firstSelected) FontWeight.Black
+                        else FontWeight.Normal
                     )
                 }
             },
