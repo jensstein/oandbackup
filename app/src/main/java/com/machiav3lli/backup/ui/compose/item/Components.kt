@@ -46,7 +46,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.SelectableChipColors
@@ -400,6 +399,7 @@ fun RoundButton(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun StateChip(
     modifier: Modifier = Modifier,
@@ -409,22 +409,31 @@ fun StateChip(
     checked: Boolean,
     onClick: () -> Unit
 ) {
-    OutlinedButton(
-        modifier = modifier.defaultMinSize(minWidth = 1.dp, minHeight = 1.dp),
-        contentPadding = PaddingValues(8.dp),
-        colors = ButtonDefaults.outlinedButtonColors(
-            contentColor = if (checked) MaterialTheme.colorScheme.onSurface else color,
-            containerColor = if (checked) color else Color.Transparent
-        ),
+    val openPopup = remember { mutableStateOf(false) }
+
+    Surface(
+        modifier = modifier
+            .defaultMinSize(minWidth = 1.dp, minHeight = 1.dp)
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = { openPopup.value = true }
+            ),
+        contentColor = if (checked) MaterialTheme.colorScheme.onSurface else color,
+        color = if (checked) color else Color.Transparent,
         shape = RoundedCornerShape(LocalShapes.current.medium),
         border = BorderStroke(1.dp, color),
-        onClick = onClick,
     ) {
         Icon(
-            modifier = Modifier.size(ICON_SIZE_SMALL),
+            modifier = Modifier
+                .padding(8.dp)
+                .size(ICON_SIZE_SMALL),
             imageVector = icon,
             contentDescription = text
         )
+
+        if (openPopup.value) {
+            Tooltip(text, openPopup)
+        }
     }
 }
 
