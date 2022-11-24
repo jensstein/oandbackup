@@ -78,7 +78,7 @@ import java.lang.Float.max
 @Composable
 fun DefaultPreview() {
     var count by remember { mutableStateOf(0) }
-    val busy by remember { OABX.busy }
+    val busy by remember { OABX.busy }      //TODO hg42 remove remember ???
 
     val maxCount = 4
 
@@ -145,8 +145,8 @@ fun TestPreview() {
 
 @Composable
 fun GlobalIndicators() {
-    val busy by remember { OABX.busy }
-    val progress by remember { OABX.progress }
+    val busy by remember { OABX.busy }          //TODO hg42 remove remember ???
+    val progress by remember { OABX.progress }  //TODO hg42 remove remember ???
 
     Column(verticalArrangement = Arrangement.SpaceEvenly) {
         AnimatedVisibility(visible = progress.first) {

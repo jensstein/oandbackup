@@ -192,7 +192,7 @@ fun MainPackageContextMenu(
     val selectedAndInstalled = selectedAndVisible.filter { it.isInstalled }
     val selectedWithBackups = selectedAndVisible.filter { it.hasBackups }
 
-    val subMenu = remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
+    val subMenu = remember { mutableStateOf<(@Composable () -> Unit)?>(null) }  //TODO hg42 var/by ???
     subMenu.value?.let { it() }
     if (!expanded.value)
         subMenu.value = null
@@ -450,7 +450,7 @@ fun MainPackageItem(
     selection: SnapshotStateMap<Package, Boolean>,
     onAction: (Package) -> Unit = {}
 ) {
-    val packageItem by remember(item) { mutableStateOf(item) }
+    val packageItem by remember(item) { mutableStateOf(item) }      //TODO hg42 remove remember ???
     val visible = productsList
     val selectedAndVisible = visible.filter { selection[it] == true }
     val imageData by remember(packageItem) {
