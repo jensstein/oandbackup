@@ -52,6 +52,7 @@ import androidx.compose.material3.SelectableChipColors
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -483,18 +484,18 @@ fun SwitchChip(
     secondIcon: ImageVector,
     firstSelected: Boolean = true,
     colors: SelectableChipColors = FilterChipDefaults.filterChipColors(
+        containerColor = Color.Transparent,
+        selectedContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
         labelColor = MaterialTheme.colorScheme.onSurface,
         selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
         iconColor = MaterialTheme.colorScheme.onSurface,
         selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-        containerColor = Color.Transparent,
-        selectedContainerColor = MaterialTheme.colorScheme.primaryContainer
     ),
     onCheckedChange: (Boolean) -> Unit
 ) {
     Row(
         modifier = Modifier
-            .border(1.dp, MaterialTheme.colorScheme.outline, MaterialTheme.shapes.medium)
+            .border(1.dp, MaterialTheme.colorScheme.onPrimaryContainer, MaterialTheme.shapes.medium)
             .padding(horizontal = 6.dp)
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -525,7 +526,9 @@ fun SwitchChip(
                     Text(
                         text = stringResource(id = firstTextId),
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        fontWeight = if (firstSelected) FontWeight.Black
+                        else FontWeight.Normal
                     )
                 }
             }
@@ -551,7 +554,9 @@ fun SwitchChip(
                     Text(
                         text = stringResource(id = secondTextId),
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        fontWeight = if (!firstSelected) FontWeight.Black
+                        else FontWeight.Normal
                     )
                 }
             },
