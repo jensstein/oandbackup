@@ -46,6 +46,7 @@ import com.machiav3lli.backup.utils.sortFilterModel
 fun DevPrefGroups() {
     val devUserOptions = Pref.preferences["dev-adv"] ?: listOf()
     val devFileOptions = Pref.preferences["dev-file"] ?: listOf()
+    val devLogOptions = Pref.preferences["dev-log"] ?: listOf()
     val devTraceOptions = Pref.preferences["dev-trace"] ?: listOf()
     val devHackOptions = Pref.preferences["dev-hack"] ?: listOf()
     val devAltOptions = Pref.preferences["dev-alt"] ?: listOf()
@@ -55,7 +56,8 @@ fun DevPrefGroups() {
     Column {
         PrefsGroup(prefs = devUserOptions, heading = "advanced options (who know)")
         PrefsGroup(prefs = devFileOptions, heading = "file handling")
-        PrefsGroup(prefs = devTraceOptions, heading = "logging / tracing")
+        PrefsGroup(prefs = devLogOptions, heading = "logging")
+        PrefsGroup(prefs = devTraceOptions, heading = "tracing")
         PrefsGroup(prefs = devHackOptions, heading = "workarounds (hacks)")
         PrefsGroup(prefs = devNewOptions, heading = "new experimental (for devs)")
         PrefsGroup(prefs = devAltOptions, heading = "alternates (for devs to compare)")
@@ -340,40 +342,42 @@ val pref_useExpedited = BooleanPref(
     defaultValue = true
 )
 
-//---------------------------------------- developer settings - tracing
+//---------------------------------------- developer settings - logging
 
 val pref_catchUncaughtException = BooleanPref(
-    key = "dev-trace.catchUncaughtException",
+    key = "dev-log.catchUncaughtException",
     summaryId = R.string.prefs_catchuncaughtexception_summary,
     defaultValue = false
 )
 
 val pref_useLogCatForUncaught = BooleanPref(
-    key = "dev-trace.useLogCatForUncaught",
+    key = "dev-log.useLogCatForUncaught",
     summary = "use logcat instead of internal log for uncaught exceptions",
     defaultValue = false,
     enableIf = { pref_catchUncaughtException.value }
 )
 
 val pref_maxLogCount = IntPref(
-    key = "dev-trace.maxLogCount",
+    key = "dev-log.maxLogCount",
     summary = "maximum count of log entries",
     entries = ((1..9 step 1) + (10..100 step 10)).toList(),
     defaultValue = 20
 )
 
 val pref_maxLogLines = IntPref(
-    key = "dev-trace.maxLogLines",
+    key = "dev-log.maxLogLines",
     summary = "maximum lines in the log (logcat or internal)",
     entries = ((10..90 step 10) + (100..500 step 50)).toList(),
     defaultValue = 50
 )
 
 val pref_logToSystemLogcat = BooleanPref(
-    key = "dev-trace.logToSystemLogcat",
+    key = "dev-log.logToSystemLogcat",
     summary = "log to Android logcat, otherwise only internal",
     defaultValue = false
 )
+
+//---------------------------------------- developer settings - tracing
 
 val pref_trace = BooleanPref(
     key = "dev-trace.trace",
