@@ -62,6 +62,13 @@ val pref_catchUncaughtException = BooleanPref(
     defaultValue = false
 )
 
+val pref_uncaughtExceptionsJumpToPreferences = BooleanPref(
+    key = "dev-log.uncaughtExceptionsJumpToPreferences",
+    summary = "in case of unexpected crashes juimp to preferences (prevent loops if a preference causes this)",
+    defaultValue = false,
+    enableIf = { pref_catchUncaughtException.value }
+)
+
 val pref_useLogCatForUncaught = BooleanPref(
     key = "dev-log.useLogCatForUncaught",
     summary = "use logcat instead of internal log for uncaught exceptions",
