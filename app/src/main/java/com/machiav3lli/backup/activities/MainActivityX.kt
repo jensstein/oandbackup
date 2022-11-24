@@ -58,6 +58,7 @@ import com.machiav3lli.backup.OABX.Companion.addInfoText
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
+import com.machiav3lli.backup.fragments.BatchPrefsSheet
 import com.machiav3lli.backup.fragments.SortFilterSheet
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
@@ -118,6 +119,7 @@ class MainActivityX : BaseActivity() {
     }
 
     private lateinit var sheetSortFilter: SortFilterSheet
+    private lateinit var sheetBatchPrefs: BatchPrefsSheet
 
     @OptIn(
         ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class,
@@ -424,6 +426,14 @@ class MainActivityX : BaseActivity() {
     }
 
     fun dismissSnackBar() {
+    }
+
+    fun showBatchPrefsSheet() {
+        sheetBatchPrefs = BatchPrefsSheet()
+        sheetBatchPrefs.showNow(
+            supportFragmentManager,
+            "SORTFILTER_SHEET"
+        )
     }
 
     fun whileShowingSnackBar(message: String, todo: () -> Unit) {

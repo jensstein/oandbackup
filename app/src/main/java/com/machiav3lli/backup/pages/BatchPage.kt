@@ -45,7 +45,9 @@ import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.DiamondsFour
 import com.machiav3lli.backup.ui.compose.icons.phosphor.HardDrives
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Nut
 import com.machiav3lli.backup.ui.compose.item.ActionButton
+import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.StateChip
 import com.machiav3lli.backup.ui.compose.recycler.BatchPackageRecycler
 import com.machiav3lli.backup.ui.compose.theme.ColorAPK
@@ -166,6 +168,9 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                         )
                     else
                         viewModel.dataCheckedList.clear()
+                }
+                RoundButton(icon = Phosphor.Nut) {
+                    main.showBatchPrefsSheet()
                 }
                 ActionButton(
                     modifier = Modifier.weight(1f),
