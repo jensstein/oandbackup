@@ -20,9 +20,11 @@ package com.machiav3lli.backup.pages
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -31,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -132,8 +135,9 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                             (workList.filter { ai -> backupBoolean || ai.hasData }.size)
             }
             Row(
-                modifier = Modifier.padding(horizontal = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                modifier = Modifier.padding(horizontal = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 StateChip(
                     icon = Phosphor.DiamondsFour,
@@ -152,6 +156,7 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                     else
                         viewModel.apkCheckedList.clear()
                 }
+                Spacer(modifier = Modifier.width(0.1.dp))
                 StateChip(
                     icon = Phosphor.HardDrives,
                     text = stringResource(id = R.string.all_data),
