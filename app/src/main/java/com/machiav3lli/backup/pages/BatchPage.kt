@@ -175,7 +175,7 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                         viewModel.dataCheckedList.clear()
                 }
                 RoundButton(icon = Phosphor.Nut) {
-                    main.showBatchPrefsSheet()
+                    main.showBatchPrefsSheet(backupBoolean)
                 }
                 ActionButton(
                     modifier = Modifier.weight(1f),

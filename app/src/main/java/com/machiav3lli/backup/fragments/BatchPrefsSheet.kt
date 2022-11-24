@@ -38,7 +38,7 @@ import com.machiav3lli.backup.preferences.pref_backupObbData
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 
-class BatchPrefsSheet() : BaseSheet(false) {
+class BatchPrefsSheet(val backupBoolean: Boolean) : BaseSheet(false) {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,13 +50,13 @@ class BatchPrefsSheet() : BaseSheet(false) {
 
             setContent {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                BatchPrefsPage()
+                BatchPrefsPage(backupBoolean)
             }
         }
     }
 
     @Composable
-    fun BatchPrefsPage() {
+    fun BatchPrefsPage(backupBoolean: Boolean) {
         val prefs = listOf(
             pref_backupDeviceProtectedData,
             pref_backupExternalData,

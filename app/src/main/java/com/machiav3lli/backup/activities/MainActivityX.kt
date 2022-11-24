@@ -428,8 +428,8 @@ class MainActivityX : BaseActivity() {
     fun dismissSnackBar() {
     }
 
-    fun showBatchPrefsSheet() {
-        sheetBatchPrefs = BatchPrefsSheet()
+    fun showBatchPrefsSheet(backupBoolean: Boolean) {
+        sheetBatchPrefs = BatchPrefsSheet(backupBoolean)
         sheetBatchPrefs.showNow(
             supportFragmentManager,
             "SORTFILTER_SHEET"
