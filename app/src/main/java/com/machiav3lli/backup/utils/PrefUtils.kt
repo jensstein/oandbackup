@@ -68,6 +68,10 @@ import com.machiav3lli.backup.preferences.pref_giveAllPermissions
 import com.machiav3lli.backup.preferences.pref_languages
 import com.machiav3lli.backup.preferences.pref_password
 import com.machiav3lli.backup.preferences.pref_pathBackupFolder
+import com.machiav3lli.backup.preferences.pref_restoreDeviceProtectedData
+import com.machiav3lli.backup.preferences.pref_restoreExternalData
+import com.machiav3lli.backup.preferences.pref_restoreMediaData
+import com.machiav3lli.backup.preferences.pref_restoreObbData
 import com.topjohnwu.superuser.Shell
 import java.nio.charset.StandardCharsets
 import java.util.*
@@ -428,6 +432,18 @@ val Context.isBackupObbData: Boolean
 
 val Context.isBackupMediaData: Boolean
     get() = pref_backupMediaData.value
+
+val Context.isRestoreDeviceProtectedData: Boolean
+    get() = pref_restoreDeviceProtectedData.value
+
+val Context.isRestoreExternalData: Boolean
+    get() = pref_restoreExternalData.value
+
+val Context.isRestoreObbData: Boolean
+    get() = pref_restoreObbData.value
+
+val Context.isRestoreMediaData: Boolean
+    get() = pref_restoreMediaData.value
 
 val Context.isDisableVerification: Boolean
     get() = pref_disableVerification.value
