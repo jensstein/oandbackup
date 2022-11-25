@@ -20,9 +20,11 @@ package com.machiav3lli.backup.dbs
 import android.content.Context
 import androidx.room.AutoMigration
 import androidx.room.Database
+import androidx.room.DeleteColumn
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.AutoMigrationSpec
 import com.machiav3lli.backup.MAIN_DB_NAME
 import com.machiav3lli.backup.dbs.dao.AppExtrasDao
 import com.machiav3lli.backup.dbs.dao.AppInfoDao
@@ -45,11 +47,12 @@ import com.machiav3lli.backup.dbs.entity.SpecialInfo
         AppInfo::class,
         SpecialInfo::class,
         Backup::class],
-    version = 5,
+    version = 6,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 2, to = 4),
         AutoMigration(from = 4, to = 5),
+        AutoMigration(from = 5, to = 6, spec = ODatabase.Companion.AutoMigration5to6::class),
     ]
 )
 @TypeConverters(Converters::class)
@@ -79,5 +82,11 @@ abstract class ODatabase : RoomDatabase() {
                 return INSTANCE!!
             }
         }
+
+        @DeleteColumn(
+            tableName = "AppExtras",
+            columnName = "id"
+        )
+        class AutoMigration5to6 : AutoMigrationSpec
     }
 }
