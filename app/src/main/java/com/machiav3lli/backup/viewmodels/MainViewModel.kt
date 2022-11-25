@@ -265,12 +265,7 @@ class MainViewModel(
 
     private suspend fun updateExtrasWith(appExtras: AppExtras) {
         withContext(Dispatchers.IO) {
-            val oldExtras = db.appExtrasDao.all.find { it.packageName == appExtras.packageName }
-            if (oldExtras != null) {
-                appExtras.id = oldExtras.id
-                db.appExtrasDao.update(appExtras)
-            } else
-                db.appExtrasDao.insert(appExtras)
+            db.appExtrasDao.replaceInsert(appExtras)
             true
         }
     }
