@@ -1,6 +1,20 @@
 CHANGELOG
 =========
 
+8.2.4 (25.11.2022) +10 Commits
+------------------
+
+#### Function
+- Fix: BlockLists in schedules
+- Fix: Repetitive running schedules
+- Update: Default disable tracing
+
+#### UI
+- Fix: Restore full height of terminal
+
+#### Usability/UX
+- Update: Separate service prefs into backup and restore ones
+
 8.2.3 (25.11.2022) +25 Commits
 ------------------
 
