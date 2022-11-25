@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.dp
+import com.machiav3lli.backup.EXTRA_BACKUP_BOOLEAN
 import com.machiav3lli.backup.preferences.pref_backupDeviceProtectedData
 import com.machiav3lli.backup.preferences.pref_backupExternalData
 import com.machiav3lli.backup.preferences.pref_backupMediaData
@@ -38,7 +39,16 @@ import com.machiav3lli.backup.preferences.pref_backupObbData
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 
-class BatchPrefsSheet(val backupBoolean: Boolean) : BaseSheet(false) {
+class BatchPrefsSheet() : BaseSheet(false) {
+
+    constructor(backupBoolean: Boolean) : this() {
+        arguments = Bundle().apply {
+            putBoolean(EXTRA_BACKUP_BOOLEAN, backupBoolean)
+        }
+    }
+
+    val backupBoolean: Boolean
+        get() = requireArguments().getBoolean(EXTRA_BACKUP_BOOLEAN)!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
