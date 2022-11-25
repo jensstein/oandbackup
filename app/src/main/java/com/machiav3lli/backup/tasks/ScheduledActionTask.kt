@@ -42,7 +42,7 @@ import java.time.temporal.ChronoUnit
 open class ScheduledActionTask(val context: Context, private val scheduleId: Long) :
     CoroutinesAsyncTask<Void?, String, Triple<String, List<String>, Int>>() {
 
-    override suspend fun doInBackground(vararg params: Void?): Triple<String, List<String>, Int>? {
+    override fun doInBackground(vararg params: Void?): Triple<String, List<String>, Int>? {
 
         val database = ODatabase.getInstance(context)
         val scheduleDao = database.scheduleDao

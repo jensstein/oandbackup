@@ -34,7 +34,7 @@ class BackupActionTask(
     BackupRestoreHelper.ActionType.BACKUP, appSheet
 ) {
 
-    override suspend fun doInBackground(vararg params: Void?): ActionResult? {
+    override fun doInBackground(vararg params: Void?): ActionResult? {
 
         val mainActivityX = mainActivityXReference.get()
         if (mainActivityX == null || mainActivityX.isFinishing) {
