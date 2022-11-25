@@ -111,7 +111,7 @@ fun LogItem(
                         .padding(0.dp)
                         .background(color = Color(0.2f, 0.2f, 0.3f))
                 ) {
-                    TerminalText(lines, scrollOnAdd = false)
+                    TerminalText(lines, limitLines = 25, scrollOnAdd = false)
                 }
             }
         }

@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -262,15 +263,16 @@ fun TerminalPage() {
             modifier = Modifier
                 .weight(1f)
                 .padding(0.dp)
+                .fillMaxHeight()
                 .background(color = Color(0.2f, 0.2f, 0.3f))
         ) {
-            TerminalText(output, scrollOnAdd = true)
+            TerminalText(output, limitLines = 0, scrollOnAdd = true)
         }
     }
 }
 
 @Composable
-fun TerminalText(text: List<String>, scrollOnAdd: Boolean = true) {
+fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean = true) {
 
     val hscroll = rememberScrollState()
     val listState = rememberLazyListState()
@@ -285,28 +287,36 @@ fun TerminalText(text: List<String>, scrollOnAdd: Boolean = true) {
 
     Box(
         modifier = Modifier
+            .ifThen(limitLines == 0) { fillMaxHeight() }
             .fillMaxWidth()
             .background(color = Color.Transparent),
         contentAlignment = Alignment.BottomEnd
     ) {
         Box(
             modifier = Modifier
+                .ifThen(limitLines == 0) { fillMaxHeight() }
                 .fillMaxWidth()
                 .padding(0.dp)
-                .ifThen(!wrap, { horizontalScroll(hscroll) })
+                .ifThen(!wrap) { horizontalScroll(hscroll) }
                 .background(color = Color.Transparent)
         ) {
             val fontSize = 10.sp
-            val lineHeightSp = fontSize*1.4     //TODO hg42 factor 1.4 is empiric, how is it correctly?
+            val lineHeightSp =
+                fontSize * 1.4     //TODO hg42 factor 1.4 is empiric, how is it correctly?
             val lineSpacing = 1.dp
-            val maxLines = 25
             val lineHeight = with(LocalDensity.current) { lineHeightSp.toDp() }
             val totalLineHeight = lineHeight + lineSpacing
             SelectionContainerX {
                 LazyColumn(
                     modifier = Modifier
                         .padding(8.dp, 0.dp, 0.dp, 0.dp)
-                        .heightIn(0.dp, totalLineHeight * maxLines + lineSpacing),
+                        .ifThen(limitLines == 0) { fillMaxHeight() }
+                        .ifThen(limitLines > 0) {
+                            heightIn(
+                                0.dp,
+                                totalLineHeight * limitLines + lineSpacing
+                            )
+                        },
                     verticalArrangement = Arrangement.spacedBy(lineSpacing),
                     state = listState
                 ) {
@@ -367,7 +377,7 @@ fun TerminalText(text: List<String>, scrollOnAdd: Boolean = true) {
 @Composable
 fun Preview_Terminal() {
 
-    Box(modifier = Modifier.height(500.dp)) {
+    Box(modifier = Modifier.height(600.dp)) {
         TerminalPage()
     }
 }
@@ -407,7 +417,7 @@ fun Preview_TerminalText() {
             .padding(0.dp)
             .background(color = Color(0.2f, 0.2f, 0.3f))
     ) {
-        TerminalText(text, false)
+        TerminalText(text, limitLines = 20, scrollOnAdd = false)
     }
 }
 
