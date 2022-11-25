@@ -151,9 +151,7 @@
     <string name="prefs_logviewer">Afficher le journal</string>
     <string name="prefs_batchdelete_summary">Supprimez les sauvegardes de toutes les applications qui ne sont pas actuellement installées.</string>
     <string name="prefs_enablespecial">Activer les sauvegardes spéciales</string>
-    <string name="prefs_deviceprotecteddata_summary">Sauvegarde et restaure les données placées dans data/user_de</string>
     <string name="prefs_deviceprotecteddata">Sauvegarder les données protégées par l\'appareil</string>
-    <string name="prefs_externaldata_summary">Sauvegarde et restauration des données placées sur le stockage externe (par exemple /storage/emulated/0/Android/data/)</string>
     <string name="prefs_externaldata">Sauvegarder les données externes</string>
     <string name="prefs_excludecache_summary">Exclure le cache de l\'application de la sauvegarde des données</string>
     <string name="prefs_excludecache">Exclure le cache de l’application</string>
@@ -216,7 +214,6 @@
     <string name="prefs_disableverification">Désactiver la vérification d\'applications via USB</string>
     <string name="help_issues">Problèmes connus</string>
     <string name="fetching_action_list">Récupération de la liste des applications pour les %1$s…</string>
-    <string name="prefs_obbdata_summary">Sauvegarde et restaure les fichiers obb de l\'app placés sur le stockage externe (par exemple /storage/emulated/0/Android/obb/)</string>
     <string name="stats_apps">Applications</string>
     <string name="stats_backups">Sauvegardes</string>
     <string name="stats_updated">Mise à jour</string>
@@ -296,7 +293,6 @@
     <string name="radio_mediadata">Données média</string>
     <string name="error_pmDataIncompleteException_dataRestoreFailed">Les données de l\'application n\'ont pas été restaurées.</string>
     <string name="prefs_mediadata">Sauvegarder les fichiers media</string>
-    <string name="prefs_mediadata_summary">Sauvegarde et restaure les fichiers médias de l\'application qui sont placés sur un stockage externe (par ex. /storage/emulated/0/Android/media/)</string>
     <string name="prefs_compression_level">Niveau de compression</string>
     <string name="prefs_compression_level_summary">Une valeur inférieure compresse plus rapidement mais il en résulte des fichiers plus volumineux. Une valeur plus élevée compresse mieux mais prend plus de temps.</string>
     <string name="title_note">Note :</string>

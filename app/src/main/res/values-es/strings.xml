@@ -99,9 +99,7 @@
     <string name="prefs_excludecache">Excluir caché de la aplicación</string>
     <string name="prefs_excludecache_summary">Excluir caché de la aplicación en el respaldo de datos</string>
     <string name="prefs_externaldata">Respaldar datos externos</string>
-    <string name="prefs_externaldata_summary">Respalda y restaura datos de la tarjeta externa ( p.ej.: /storage/emulated/0/Android/data/)</string>
     <string name="prefs_deviceprotecteddata">Repalda datos protegidos del dispositivo</string>
-    <string name="prefs_deviceprotecteddata_summary">Repalda y restaura datos situados en data/user_de</string>
     <string name="prefs_copyselfapk">Respaldar APK de esta app</string>
     <string name="prefs_copyselfapk_summary">Coloca una copia de Neo Backup en el nivel superior de la carpeta de copia de seguridad</string>
     <string name="prefs_acquirewakelock">Prevenir suspensión</string>
@@ -216,7 +214,6 @@
         <item quantity="other">%d días,</item>
     </plurals>
     <string name="help_issues">Errores conocidos</string>
-    <string name="prefs_obbdata_summary">Realiza una copia de seguridad y restaura los archivos obb de la aplicación que se colocan en el almacenamiento externo (por ejemplo, /storage/emulated/0/Android/obb/)</string>
     <string name="prefs_obbdata">Respaldar archivos obb</string>
     <string name="stats_backups">Respaldos</string>
     <string name="stats_apps">Aplicaciones</string>
@@ -298,7 +295,6 @@
     <string name="prefs_accent_0">Rojo cometa</string>
     <string name="sortBackupDate">Fecha de respaldo</string>
     <string name="backup_all_updated">Respaldar todas las aplicaciones actualizadas</string>
-    <string name="prefs_mediadata_summary">Respalda y restaura los archivos de medios de la aplicación que estén situados en el almacenamiento externo (ej. /storage/emulated/0/Android/media/)</string>
     <string name="radio_mediadata">Datos de medios</string>
     <string name="prefs_mediadata">Respaldar archivos de medios</string>
     <string name="help_changelog">Registro de cambios</string>

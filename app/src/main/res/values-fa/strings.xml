@@ -103,7 +103,6 @@
     <string name="prefs_installerpackagename">نام پکیج نصب‌کننده:</string>
     <string name="prefs_restorepermissions">بازگردانی مجوزها</string>
     <string name="prefs_deviceprotecteddata">پشتیبان‌گیری داده‌های محافظت شده دستگاه</string>
-    <string name="prefs_deviceprotecteddata_summary">پشتیبان‌گیری و بازگردانی داده‌های قرارداده شده در data/user_de</string>
     <string name="prefs_numBackupRevisions">تعداد نسخه‌های پشتیبان</string>
     <string name="prefs_compression_level">سطح فشرده‌سازی</string>
     <string name="prefs_acquirewakelock">جلوگیری از به خواب رفتن دستگاه</string>

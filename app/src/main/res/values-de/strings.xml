@@ -153,8 +153,6 @@
     <string name="encrypted_data_title">Verschlüsselte Daten:</string>
     <string name="failed_unzipping">Fehler beim Entpacken von Daten, überprüfe das Verschlüsselungspasswort!</string>
     <string name="prefs_externaldata">Externe Daten sichern</string>
-    <string name="prefs_externaldata_summary">Daten im externen Speicher sichern und daraus wiederherstellen (i.d.R /storage/emulated/0/Android/data/)</string>
-    <string name="prefs_deviceprotecteddata_summary">Daten sichern unter und wiederherstellen aus /data/user_de</string>
     <string name="prefs_deviceprotecteddata">Geräteseitig verschlüsselte Daten sichern</string>
     <string name="split_apks">Split-APKs</string>
     <string name="backup_filters">Sicherungsfilter:</string>
@@ -220,7 +218,6 @@
     <string name="stats_backups">Sicherungen</string>
     <string name="stats_updated">Aktualisiert</string>
     <string name="radio_launchable">Startbare Apps</string>
-    <string name="prefs_obbdata_summary">Sichert und stellt die obb-Dateien der App wieder her, die sich auf dem externen Speicher befindet (z.B. /storage/emulated/0/Android/obb/)</string>
     <string name="prefs_obbdata">obb Dateien sichern</string>
     <string name="prefs_allowdowngrade">Installation von Vorgängerversionen erlauben</string>
     <string name="prefs_allowdowngrade_summary">Wiederherstellen einer älteren Version der installierten App zulassen (gilt nur für debugfähige Versionen).</string>
@@ -296,7 +293,6 @@
     <string name="title_tags">Tags:</string>
     <string name="title_note">Hinweis:</string>
     <string name="sortBackupDate">Sicherungsdatum</string>
-    <string name="prefs_mediadata_summary">Sichert und stellt die Mediendateien der App wieder her, die sich auf dem externen Speicher befinden (z. B. /storage/emulated/0/Android/media/)</string>
     <string name="prefs_mediadata">Mediendateien sichern</string>
     <string name="radio_mediadata">Mediendaten</string>
     <string name="prefs_compression_level">Kompressionslevel</string>

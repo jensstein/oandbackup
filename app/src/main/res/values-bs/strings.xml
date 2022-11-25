@@ -149,8 +149,6 @@
     <string name="prefs_numBackupRevisions">Broj revizija sigurnosne kopije</string>
     <string name="prefs_stopcont_summary">Samo za stručnjake: Ovo možemo pomoći ukoliko aplikacija izmjenjuje datoteke prilikom izrade sigurnosne kopije čija izrada zbog toga ne uspjeva.</string>
     <string name="prefs_copyselfapk_summary">Stavlja kopiju OAndBackupX u najviši nivo mape za sigurnosne kopije prilikom izrade sigurnosne kopije</string>
-    <string name="prefs_deviceprotecteddata_summary">Pravi sigurnosnu kopiju i vraća podatke koje se nalaze u data/user_de</string>
-    <string name="prefs_externaldata_summary">Pravi sigurnosnu kopija i vraća podatke koji se nalaze na vanjskoj memoriji (npr. /storage/emulated/0/Android/data/)</string>
     <string name="prefs_excludecache_summary">Izuzmi keš memoriju aplikacije iz podatkovnih sigurnosnih kopija</string>
     <string name="prefs_excludecache">Izuzmi keš memoriju aplikacije</string>
     <string name="prefs_oldbackups_summary">Filtriraj sigurnosne kopije starije od vrijednosti u danima. Koristi se sa filterom \'Prikaži stare sigurnosne kopije\'.</string>

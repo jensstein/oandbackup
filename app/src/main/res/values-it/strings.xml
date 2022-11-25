@@ -112,8 +112,6 @@
     <string name="prefs_password">Password per crittografia</string>
     <string name="prefs_externaldata">Backup dati esterni</string>
     <string name="prefs_deviceprotecteddata">Backup dei dati protetti dal dispositivo</string>
-    <string name="prefs_deviceprotecteddata_summary">Backup e ripristina i dati inseriti in data/user_de</string>
-    <string name="prefs_externaldata_summary">Backup e ripristino dei dati inseriti nella memoria esterna (ad es. /storage/emulated/0/Android/data/)</string>
     <string name="prefs_password_summary">Imposta su vuoto per disabilitare la crittografia</string>
     <string name="prefs_encryption_summary">Abilita per crittografare i backup dei dati</string>
     <string name="prefs_excludecache_summary">Escludi la cache dell\'app dal backup dei dati</string>
@@ -217,7 +215,6 @@
     <string name="intro_permission_storage_location">L\'app ha bisogno di una posizione di backup per archiviare i backup. L\'app potrebbe richiedere alcuni gigabyte di spazio di archiviazione per un backup completo e interroga molto il filesystem. Tienilo a mente quando scegli posizioni di archiviazione basate sulla rete.</string>
     <string name="intro_permission_storage">L\'app utilizza i permessi di lettura/scrittura dello spazio di archiviazione per poter accedere allo spazio di archiviazione esterno e fornire la possibilità di eseguire il backup di dati/obb esterni di altre app.</string>
     <string name="prefs_stopcont">STOP-CONT pre e post-elaborazione delle app su backup/ripristino</string>
-    <string name="prefs_obbdata_summary">Backup e ripristino dei file obb dell\'app che si trovano sulla memoria esterna (ad es. /storage/emulated/0/Android/obb/)</string>
     <string name="prefs_obbdata">Backup dei file obb</string>
     <string name="stats_apps">App</string>
     <string name="stats_backups">Backup</string>
@@ -296,7 +293,6 @@
     <string name="prefs_accent_1">Porpora fine</string>
     <string name="prefs_accent_0">Cometa rossa</string>
     <string name="backup_all_updated">Backup di tutte le app aggiornate</string>
-    <string name="prefs_mediadata_summary">Backup e ripristino dei file multimediali dell\'app che si trovano sulla memoria esterna (ad es. /storage/emulated/0/Android/media/)</string>
     <string name="radio_mediadata">Dati multimediali</string>
     <string name="error_pmDataIncompleteException_dataRestoreFailed">I dati dell\'app non sono stati ripristinati.</string>
     <string name="prefs_mediadata">Backup file multimediali</string>

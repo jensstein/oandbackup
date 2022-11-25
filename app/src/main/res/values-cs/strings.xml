@@ -37,7 +37,6 @@
     <string name="enablePackage">Povolit aplikaci</string>
     <string name="prefs_tools">Nástroje</string>
     <string name="prefs_tools_short">Nástroje</string>
-    <string name="prefs_obbdata_summary">Zálohuje a obnoví soubory obb aplikací, které jsou uloženy na externím úložišti (např. /storage/emulated/0/Android/obb/)</string>
     <string name="radio_updated">Aktualizováno</string>
     <string name="radio_externaldata">Externí data</string>
     <string name="radio_deviceprotecteddata">Data chráněná zařízením</string>
@@ -116,10 +115,8 @@
     <string name="prefs_excludecache">Vyloučit mezipamět aplikace</string>
     <string name="prefs_excludecache_summary">Vyloučit mezipaměť aplikace ze zálohy dat</string>
     <string name="prefs_externaldata">Zálohovat externí data</string>
-    <string name="prefs_externaldata_summary">Zálohuje a obnoví data, která jsou uložena na externím úložišti (např. /storage/emulated/0/Android/data/)</string>
     <string name="prefs_obbdata">Zálohovat soubory obb</string>
     <string name="prefs_mediadata">Zálohovat média</string>
-    <string name="prefs_mediadata_summary">Zálohuje a obnoví média aplikací, které jsou uloženy na externím úložišti (např. /storage/emulated/0/Android/media/)</string>
     <string name="prefs_installerpackagename">Název balíčku instalátoru:</string>
     <string name="prefs_compression_level">Úroveň komprese</string>
     <string name="prefs_compression_level_summary">Nižší hodnota se zkomprimuje rychleji, ale výsledkem jsou větší soubory. Vyšší hodnota komprimuje lépe, ale trvá to déle.</string>
@@ -189,7 +186,6 @@
     <string name="sortBackupDate">Datum zálohy</string>
     <string name="help_changelog">Seznam změn</string>
     <string name="prefs_deviceprotecteddata">Zálohovat data chráněná zařízením</string>
-    <string name="prefs_deviceprotecteddata_summary">Zálohuje a obnoví data umístěná v adresáři data/user_de</string>
     <string name="prefs_numBackupRevisions">Počet revizí zálohy</string>
     <string name="prefs_numBackupRevisions_summary">Nejstarší revize bude odstraněna po vytvoření nové zálohy, pokud bude počet překročen. Nastavte na nulu pro ponechání všech revizí.</string>
     <string name="prefs_disableverification">Zakázat Ověřovat aplikace přes USB</string>

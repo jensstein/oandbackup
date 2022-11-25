@@ -93,8 +93,6 @@
     <string name="prefs_password">Krüpteeringu parool</string>
     <string name="prefs_externaldata">Varunda väliseid andmeid</string>
     <string name="prefs_deviceprotecteddata">Varunda seadme poolt kaitstud andmeid</string>
-    <string name="prefs_deviceprotecteddata_summary">Varundab ja taastab andmed, mis asuvad kohas data/user_de</string>
-    <string name="prefs_externaldata_summary">Varundab ja taastab andmed, mis asuvad välismälus (nt /storage/emulated/0/Android/data/)</string>
     <string name="prefs_password_summary">Krüpteeringu keelamiseks jäta tühjaks</string>
     <string name="prefs_encryption_summary">Luba, et krüpteerida andmevarundusi</string>
     <string name="prefs_excludecache_summary">Välista andmevarundusest rakenduse vahemälu</string>
