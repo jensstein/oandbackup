@@ -354,7 +354,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             val excludeCache = pref_excludeCache.value
             val allFilesToBackup =
                 shell.suGetDetailedDirectoryContents(sourcePath, true, sourcePath)
-                    .filterNot { f: ShellHandler.FileInfo -> f.filename in DATA_EXCLUDED_BASENAMES } //TODO basenames! not all levels
+                    .filterNot { f: ShellHandler.FileInfo -> f.filename in DATA_BACKUP_EXCLUDED_BASENAMES } //TODO basenames! not all levels
                     .filterNot { f: ShellHandler.FileInfo -> f.filename in DATA_EXCLUDED_NAMES }
                     .filterNot { f: ShellHandler.FileInfo -> excludeCache && f.filename in DATA_EXCLUDED_CACHE_DIRS }
             allFilesToBackup

@@ -50,7 +50,7 @@ fun altModeToMode(context: Context, mode: Int, backupBoolean: Boolean) = when (m
     }
 }
 
-fun modeIfActive(context: Context, mode: Int) = when {
+fun backupModeIfActive(context: Context, mode: Int) = when {
     mode == MODE_APK -> MODE_APK
     mode == MODE_DATA -> MODE_DATA
     mode == MODE_DATA_DE && context.isBackupDeviceProtectedData -> MODE_DATA_DE

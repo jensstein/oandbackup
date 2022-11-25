@@ -26,7 +26,7 @@ import com.machiav3lli.backup.*
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 import com.machiav3lli.backup.items.Package
-import com.machiav3lli.backup.utils.modeIfActive
+import com.machiav3lli.backup.utils.backupModeIfActive
 
 class BackupDialogFragment(val appInfo: Package, private val listener: ActionListener) :
     DialogFragment() {
@@ -58,7 +58,7 @@ class BackupDialogFragment(val appInfo: Package, private val listener: ActionLis
 
         val checkedOptions = BooleanArray(possibleModes.size)
         possibleModes.forEachIndexed { i, mode ->
-            val activeMode = modeIfActive(requireContext(), mode)
+            val activeMode = backupModeIfActive(requireContext(), mode)
             selectedMode = selectedMode or activeMode
             checkedOptions[i] = activeMode != MODE_UNSET
         }

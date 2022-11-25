@@ -425,7 +425,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                                             icon = Phosphor.ArchiveTray,
                                             text = stringResource(id = R.string.backup),
                                             fullWidth = true,
-                                            enabled = ! snackbarVisible,
+                                            enabled = !snackbarVisible,
                                             onClick = { showBackupDialog(packageInfo) }
                                         )
                                     }
@@ -435,7 +435,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                                             text = stringResource(id = R.string.delete_all_backups),
                                             fullWidth = true,
                                             positive = false,
-                                            enabled = ! snackbarVisible,
+                                            enabled = !snackbarVisible,
                                             onClick = {
                                                 snackbarHostState.showDeleteAllBackupsDialog(
                                                     packageInfo,
