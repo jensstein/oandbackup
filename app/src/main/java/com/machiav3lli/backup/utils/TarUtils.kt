@@ -17,8 +17,8 @@
  */
 package com.machiav3lli.backup.utils
 
-import com.machiav3lli.backup.actions.BaseAppAction.Companion.DATA_EXCLUDED_BASENAMES
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.DATA_EXCLUDED_CACHE_DIRS
+import com.machiav3lli.backup.actions.BaseAppAction.Companion.DATA_RESTORE_EXCLUDED_BASENAMES
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
@@ -60,9 +60,9 @@ const val BUFFER_SIZE = 8 * 1024 * 1024
 // #define	__S_IEXEC	0100	// Execute by owner
 
 // NOTE: underscores separate octal digits not hex digits!
-private const val DIR_MODE_OR_MASK     = 0b0_000_100_000_000_000_000
-private const val FILE_MODE_OR_MASK    = 0b0_001_000_000_000_000_000
-private const val FIFO_MODE_OR_MASK    = 0b0_000_001_000_000_000_000
+private const val DIR_MODE_OR_MASK = 0b0_000_100_000_000_000_000
+private const val FILE_MODE_OR_MASK = 0b0_001_000_000_000_000_000
+private const val FIFO_MODE_OR_MASK = 0b0_000_001_000_000_000_000
 private const val SYMLINK_MODE_OR_MASK = 0b0_001_010_000_000_000_000
 
 /**
@@ -169,13 +169,14 @@ fun setAttributes(targetFile: RootFile, tarEntry: TarArchiveEntry) {
         throw IOException("Unable to chown $path to $user:$group: $e")
     }
     val timeStr =
-            SimpleDateFormat(
-                "yyyy-MM-dd'T'HH:mm:SS",
-                Locale.getDefault(Locale.Category.FORMAT)
-            ).format(tarEntry.modTime.time)
+        SimpleDateFormat(
+            "yyyy-MM-dd'T'HH:mm:SS",
+            Locale.getDefault(Locale.Category.FORMAT)
+        ).format(tarEntry.modTime.time)
     try {
         //targetPath.setLastModified(tarEntry.modTime.time)   YYYY-MM-DDThh:mm:SS[.frac][tz]
-        runAsRoot("$qUtilBox touch -m -d $timeStr ${quote(path)}"
+        runAsRoot(
+            "$qUtilBox touch -m -d $timeStr ${quote(path)}"
         )
     } catch (e: Throwable) {
         throw IOException("Unable to set modification time on $path to $timeStr: $e")
@@ -185,7 +186,7 @@ fun setAttributes(targetFile: RootFile, tarEntry: TarArchiveEntry) {
 @Throws(IOException::class)
 fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile, forceOldVersion: Boolean = false) {
     val qUtilBox = ShellHandler.utilBoxQ
-    val strictHardLinks = pref_strictHardLinks.value && ! forceOldVersion
+    val strictHardLinks = pref_strictHardLinks.value && !forceOldVersion
     val postponeInfo = mutableMapOf<String, TarArchiveEntry>()
     generateSequence { nextTarEntry }.forEach { tarEntry ->
         val targetFile = RootFile(targetDir, tarEntry.name)
@@ -200,8 +201,8 @@ fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile, forceOldVersion: Boole
         val relPath = targetFile.relativeTo(targetDir).toString()
         when {
             relPath.isEmpty() ||
-            relPath in DATA_EXCLUDED_BASENAMES ||
-            relPath in DATA_EXCLUDED_CACHE_DIRS -> {
+                    relPath in DATA_RESTORE_EXCLUDED_BASENAMES ||
+                    relPath in DATA_EXCLUDED_CACHE_DIRS -> {
                 return@forEach
             }
             tarEntry.isDirectory -> {
@@ -214,7 +215,7 @@ fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile, forceOldVersion: Boole
             tarEntry.isLink -> {
                 // OABX v7 tarapi implementation stores all links as hard links (bug)
                 // and extracts all links as symlinks (repair)
-                if(strictHardLinks)
+                if (strictHardLinks)
                     try {
                         runAsRoot(
                             "$qUtilBox ln ${quote(tarEntry.linkName)} ${quote(targetFile)}"
