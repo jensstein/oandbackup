@@ -1,1 +1,1 @@
-A sua ferramenta de código aberto para fazer backup dos seus apps … e dos dados delas
+ferramenta para fazer cópias de segurança das suas aplicações e dados
