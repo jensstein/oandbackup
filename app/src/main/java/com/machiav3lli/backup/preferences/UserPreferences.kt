@@ -68,7 +68,7 @@ fun UserPrefsPage() {
     val context = LocalContext.current
     val openDialog = remember { mutableStateOf(false) }
     var dialogsPref by remember { mutableStateOf<Pref?>(null) }
-    var backupDir by remember { mutableStateOf(context.backupDirConfigured) }
+    var backupDir by remember { mutableStateOf(context.backupDirConfigured) }   //TODO hg42 remember ???
 
     val prefs = Pref.preferences["user"] ?: listOf()
 

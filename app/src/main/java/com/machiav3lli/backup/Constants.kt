@@ -51,6 +51,7 @@ const val NAV_PREFS = 1
 
 const val PREFS_LANGUAGES_DEFAULT = "system"
 const val EXTRA_PACKAGE_NAME = "packageName"
+const val EXTRA_BACKUP_BOOLEAN = "backupBoolean"
 const val EXTRA_SCHEDULE_ID = "scheduleId"
 const val EXTRA_STATS = "stats"
 

@@ -72,7 +72,9 @@ fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
     FileUtils.BackupLocationInAccessibleException::class,
     StorageLocationNotConfiguredException::class
 )
-fun Context.getInstalledPackageList(blockList: List<String> = listOf()): MutableList<Package> {
+fun Context.getInstalledPackageList(            // only used in ScheduledActionTask
+    blockList: List<String> = listOf()
+): MutableList<Package> {
 
     var packageList: MutableList<Package>
 
@@ -88,6 +90,7 @@ fun Context.getInstalledPackageList(blockList: List<String> = listOf()): Mutable
             .filterNotNull()
             .filterNot {
                 it.packageName.matches(ignoredPackages)
+                        || blockList.contains(it.packageName)
             }
             .mapNotNull {
                 try {
@@ -178,7 +181,7 @@ fun List<AppInfo>.toPackageList(
     backupMap: Map<String, List<Backup>> = mapOf()
 ): MutableList<Package> {
 
-    var packageList : MutableList<Package> = mutableListOf()
+    var packageList: MutableList<Package> = mutableListOf()
 
     OABX.beginBusy("toPackageList")
 
@@ -189,17 +192,17 @@ fun List<AppInfo>.toPackageList(
             this.filterNot {
                 it.packageName.matches(ignoredPackages)
             }
-            .mapNotNull {
-                try {
-                    Package.get(it.packageName) {
-                        Package(context, it, backupMap[it.packageName].orEmpty())
+                .mapNotNull {
+                    try {
+                        Package.get(it.packageName) {
+                            Package(context, it, backupMap[it.packageName].orEmpty())
+                        }
+                    } catch (e: AssertionError) {
+                        Timber.e("Could not create Package for ${it}: $e")
+                        null
                     }
-                } catch (e: AssertionError) {
-                    Timber.e("Could not create Package for ${it}: $e")
-                    null
                 }
-            }
-            .toMutableList()
+                .toMutableList()
 
         // Special Backups must added before the uninstalled packages, because otherwise it would
         // discover the backup directory and run in a special case where no the directory is empty.

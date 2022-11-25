@@ -35,7 +35,7 @@ import com.machiav3lli.backup.viewmodels.LogViewModel
 @Composable
 fun LogsPage(viewModel: LogViewModel) {
 
-    val logs = remember { viewModel.logsList }
+    val logs = remember(viewModel) { viewModel.logsList }
 
     LaunchedEffect(true) {
         viewModel.refreshList()

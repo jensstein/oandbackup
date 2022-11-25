@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="backup">Зарезервировать</string>
+    <string name="backup">Бекап</string>
     <string name="restore">Восстановить</string>
     <string name="backupConfirmation">Зарезервировать\?</string>
     <string name="restoreConfirmation">Восстановить\?</string>
@@ -174,8 +174,6 @@
     <string name="prefs_unset">Снять</string>
     <string name="prefs_logviewer">Просмотреть лог</string>
     <string name="prefs_batchdelete_summary">Удалить р.к. всех приложений, не установленных в настоящий момент.</string>
-    <string name="prefs_deviceprotecteddata_summary">Резервное копирование и восстановление данных, расположенных в data/user_de</string>
-    <string name="prefs_externaldata_summary">Резервное копирование и восстановление данных, расположенных на внешнем носителе (напр., /storage/emulated/0/Android/data/)</string>
     <string name="prefs_excludecache_summary">Исключить кэш приложений из р.к. данных</string>
     <string name="prefs_excludecache">Исключить кэш приложений</string>
     <string name="prefs_password_match_false">Пароли не совпадают</string>
@@ -214,7 +212,6 @@
     <string name="radio_externaldata">Внешние данные</string>
     <string name="prefs_advanced">Расширенные возможности</string>
     <string name="help_issues">Известные проблемы</string>
-    <string name="prefs_obbdata_summary">Создаёт резервную копию и восстанавливает obb-файлы приложения, которые размещаются во внешнем хранилище (например, /storage/emulated/0/Android/obb/)</string>
     <string name="prefs_obbdata">Резервное копирование obb файлов</string>
     <string name="radio_obbdata">OBB-данные</string>
     <plurals name="updated_apps">
@@ -301,7 +298,6 @@
     <string name="title_tags">Теги:</string>
     <string name="title_note">Заметка:</string>
     <string name="sortBackupDate">Дата резервной копии</string>
-    <string name="prefs_mediadata_summary">Резервное копирование и восстановление медиа файлов приложения хранятся на внешнем накопителе (как /storage/emulated/0/Android/media/)</string>
     <string name="prefs_mediadata">Резервное копирование медиа файлов</string>
     <string name="radio_mediadata">Медиа-данные</string>
     <string name="help_changelog">Список изменений</string>
@@ -364,4 +360,7 @@
     <string name="prefs_multilineinfochips_summary">Разрешить информационным фишкам в листе приложений занимать несколько строк.</string>
     <string name="prefs_squeezenavtext">Сжать текст элемента навигации</string>
     <string name="prefs_squeezenavtext_summary">Позволить менять размер текста под элементами панели навигации, чтобы заполнить доступную ширину.</string>
+    <string name="prefs_nobackupdata">Бэкап файлов no_backup</string>
+    <string name="prefs_tools_terminal">Терминал</string>
+    <string name="prefs_nobackupdata_summary">Бэкап файлов в данных, которые помечены как не подлежащие бэкапу</string>
 </resources>

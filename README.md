@@ -83,7 +83,7 @@ All new icons in 7.0.0 based on CC0 icons found on [SVG Repo](https://www.svgrep
 
 [Jens Stein](https://github.com/jensstein) for his unbelievably valuable work on OAndBackup.
 
-[Nils](https://github.com/Tiefkuehlpizze), [Harald](https://github.com/hg42), [Martin](https://github.com/Smojo) and [DL](https://github.com/dl200010) for their active contribution to the project.
+[Nils](https://github.com/Tiefkuehlpizze), [Martin](https://github.com/Smojo) and [DL](https://github.com/dl200010) for their active contribution to the project.
 
 [Oliver Pepperell](https://github.com/opepp) for his contribution to the new anniversary design.
 
@@ -103,6 +103,8 @@ Before that, translations were done analog/offline by those great people:
 
 I, myself acknowledge the role of the donations to motivate the work on FOSS projects, but in the state of how dynamic everything around my FOSS-contributions is, I would prefer to not take donations for now (the same answer as the last years). Nevertheless this project wouldn't have the accessibility it has without translations, which you the community drive and for which Weblate provides a platform. That's why I would you suggest you to consider [donating to Weblate](https://weblate.org/donate).
 
-## Author
+Following the application on their grant for open-source projects, my Tutanota email account got promoted to premium. For that thanks to [Tutanota](https://tutanota.com) for their support!
 
-Antonios Hazim
+## Authors
+
+Antonios Hazim & Harald Gautsche

@@ -30,15 +30,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.dp
-import com.machiav3lli.backup.preferences.pref_backupDeviceProtectedData
-import com.machiav3lli.backup.preferences.pref_backupExternalData
-import com.machiav3lli.backup.preferences.pref_backupMediaData
-import com.machiav3lli.backup.preferences.pref_backupNoBackupData
-import com.machiav3lli.backup.preferences.pref_backupObbData
+import com.machiav3lli.backup.EXTRA_BACKUP_BOOLEAN
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
+import com.machiav3lli.backup.ui.item.Pref
 
 class BatchPrefsSheet() : BaseSheet(false) {
+
+    constructor(backupBoolean: Boolean) : this() {
+        arguments = Bundle().apply {
+            putBoolean(EXTRA_BACKUP_BOOLEAN, backupBoolean)
+        }
+    }
+
+    val backupBoolean: Boolean
+        get() = requireArguments().getBoolean(EXTRA_BACKUP_BOOLEAN)!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,20 +56,14 @@ class BatchPrefsSheet() : BaseSheet(false) {
 
             setContent {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                BatchPrefsPage()
+                BatchPrefsPage(backupBoolean)
             }
         }
     }
 
     @Composable
-    fun BatchPrefsPage() {
-        val prefs = listOf(
-            pref_backupDeviceProtectedData,
-            pref_backupExternalData,
-            pref_backupObbData,
-            pref_backupMediaData,
-            pref_backupNoBackupData
-        )
+    fun BatchPrefsPage(backupBoolean: Boolean) {
+        val prefs = Pref.preferences[if (backupBoolean) "srv-bkp" else "srv-rst"] ?: listOf()
 
         AppTheme {
             LazyColumn(

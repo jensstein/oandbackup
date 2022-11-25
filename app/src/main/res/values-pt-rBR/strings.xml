@@ -87,10 +87,7 @@
     <string name="prefs_disableverification_summary">Desativa esta opção de desenvolvedor enquanto restaura APKs e a reativa depois. Resolve o erro: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
     <string name="prefs_disableverification">Desativar Verificação de apps via USB</string>
     <string name="prefs_acquirewakelock_summary">Obter wakelock durante operações em lote para impedir a suspensão. Acelera o backup e restauração consideravelmente, mas consome mais energia.</string>
-    <string name="prefs_deviceprotecteddata_summary">Faz backup e restaura os dados que são colocados em data/user_de</string>
     <string name="prefs_deviceprotecteddata">Fazer backup de dados protegidos do dispositivo</string>
-    <string name="prefs_externaldata_summary">Faz o backup e restaura os dados que são colocados no armazenamento externo (Ex.: /storage/emulated/0/Android/data/)</string>
-    <string name="prefs_obbdata_summary">Faz backup e restaura os arquivos OBB do app que são colocados no armazenamento externo (Ex.: /storage/emulated/0/Android/obb/)</string>
     <string name="prefs_obbdata">Backup de arquivos OBB</string>
     <string name="prefs_excludecache_summary">Excluir cache do app do backup de dados</string>
     <string name="prefs_excludecache">Excluir cache do app</string>
@@ -293,7 +290,6 @@
     <string name="prefs_accent_1">Roxo Fino</string>
     <string name="prefs_accent_0">Cometa Vermelho</string>
     <string name="sortBackupDate">Data do Backup</string>
-    <string name="prefs_mediadata_summary">Faz um backup e restaura os arquivos de mídia do aplicativo em um armazenamento externo (e.g./storage/emulated/0/Android/media/)</string>
     <string name="prefs_mediadata">Backup de arquivos de mídia</string>
     <string name="radio_mediadata">Dados de mídia</string>
     <string name="prefs_secondary_8">Menta</string>

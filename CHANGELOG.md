@@ -1,6 +1,37 @@
 CHANGELOG
 =========
 
+8.2.4 (25.11.2022) +10 Commits
+------------------
+
+#### Function
+- Fix: BlockLists in schedules
+- Fix: Repetitive running schedules
+- Update: Default disable tracing
+
+#### UI
+- Fix: Restore full height of terminal
+
+#### Usability/UX
+- Update: Separate service prefs into backup and restore ones
+
+8.2.3 (25.11.2022) +25 Commits
+------------------
+
+#### Function
+- Fix: Note & Tags in AppSheet
+- Fix: Log not updated when deleting items
+- Update: Separate PrefGroups for logging and tracing
+
+#### UI
+- Fix: Schedule filters
+- Fix: Height calculation of LogItem/TerminalText, button colors
+- Update: Revamp Chips layout
+
+#### Usability/UX
+- Add: Batch settings Sheet
+- Add: Tooltips to check all buttons in Batch
+
 8.2.2 (23.11.2022) +160 Commits
 ------------------
 

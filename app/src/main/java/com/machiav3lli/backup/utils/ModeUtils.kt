@@ -31,19 +31,26 @@ import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.possibleSchedModes
 
-fun altModeToMode(context: Context, mode: Int) = when (mode) {
+fun altModeToMode(context: Context, mode: Int, backupBoolean: Boolean) = when (mode) {
     ALT_MODE_APK -> MODE_APK
     else -> {
         var dataMode = if (mode == ALT_MODE_BOTH) 0b11000 else MODE_DATA
-        if (context.isBackupDeviceProtectedData) dataMode = dataMode or MODE_DATA_DE
-        if (context.isBackupExternalData) dataMode = dataMode or MODE_DATA_EXT
-        if (context.isBackupObbData) dataMode = dataMode or MODE_DATA_OBB
-        if (context.isBackupMediaData) dataMode = dataMode or MODE_DATA_MEDIA
+        if (backupBoolean) {
+            if (context.isBackupDeviceProtectedData) dataMode = dataMode or MODE_DATA_DE
+            if (context.isBackupExternalData) dataMode = dataMode or MODE_DATA_EXT
+            if (context.isBackupObbData) dataMode = dataMode or MODE_DATA_OBB
+            if (context.isBackupMediaData) dataMode = dataMode or MODE_DATA_MEDIA
+        } else {
+            if (context.isRestoreDeviceProtectedData) dataMode = dataMode or MODE_DATA_DE
+            if (context.isRestoreExternalData) dataMode = dataMode or MODE_DATA_EXT
+            if (context.isRestoreObbData) dataMode = dataMode or MODE_DATA_OBB
+            if (context.isRestoreMediaData) dataMode = dataMode or MODE_DATA_MEDIA
+        }
         dataMode
     }
 }
 
-fun modeIfActive(context: Context, mode: Int) = when {
+fun backupModeIfActive(context: Context, mode: Int) = when {
     mode == MODE_APK -> MODE_APK
     mode == MODE_DATA -> MODE_DATA
     mode == MODE_DATA_DE && context.isBackupDeviceProtectedData -> MODE_DATA_DE

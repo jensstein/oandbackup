@@ -7,8 +7,6 @@
     <string name="intro_permission_usageaccess">Aplicația are nevoie de această permisiune pentru a putea verifica statisticile și dimensiunile datelor și cache-ului aplicațiilor.</string>
     <string name="sort_options">Sortează după:</string>
     <string name="prefs_numBackupRevisions_summary">Cea mai veche revizie va fi ștearsă la crearea unui nou backup dacă numărul este depășit. Setează-l la zero pentru a păstra toate reviziile.</string>
-    <string name="prefs_externaldata_summary">Fă backupuri și restaurează datele care sunt plasate în spațiul de stocare extern (de exemplu, /storage/emulated/0/Android/data/)</string>
-    <string name="prefs_obbdata_summary">Fă backupuri și restaurează fișierele obb ale aplicațiilor, care sunt plasate în spațiul de stocare extern (de exemplu, /storage/emulated/0/Android/obb/)</string>
     <string name="restoreConfirmation">Restaurezi\?</string>
     <string name="help_issues">Probleme cunoscute</string>
     <string name="batchDeleteNothingToDelete">Niciun backup de șters</string>
@@ -45,8 +43,6 @@
     <string name="batchDeleteBackupsDeleted">Backupuri șterse:</string>
     <string name="prefs_rememberfiltering">Ține minte sortarea și filtrele</string>
     <string name="prefs_tools">Instrumente</string>
-    <string name="prefs_mediadata_summary">Fă backupuri și restaurează fișierele media ale aplicațiilor, care sunt plasate în spațiul de stocare extern (de exemplu, /storage/emulated/0/Android/media/)</string>
-    <string name="prefs_deviceprotecteddata_summary">Fă backupuri și restaurează datele care sunt plasate în data/user_de</string>
     <string name="prefs_numBackupRevisions">Număr de revizii al backupurilor</string>
     <string name="prefs_enablespecial">Activează backupurile speciale</string>
     <string name="prefs_copyselfapk_summary">Plasează o copie a OAndBackupX la nivelul superior al folderului pentru backupuri</string>

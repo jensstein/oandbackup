@@ -21,37 +21,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-class AppExtras(var packageName: String = "") {
-    @PrimaryKey(autoGenerate = true)
-    var id: Long = 0
-    var customTags: MutableSet<String> = mutableSetOf()
-    var note: String = ""
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-        val aBlocklist = other as AppExtras
-        return id == aBlocklist.id
-                && packageName == aBlocklist.packageName
-                && customTags == aBlocklist.customTags
-                && note == aBlocklist.note
-    }
-
-    override fun hashCode(): Int {
-        var hash = 7
-        hash = 31 * hash + id.toInt()
-        hash = 31 * hash + packageName.hashCode()
-        hash = 31 * hash + customTags.hashCode()
-        hash = 31 * hash + note.hashCode()
-        return hash
-    }
-
-    override fun toString(): String {
-        return "AppExtras{" +
-                "id=" + id +
-                ", packageName=" + packageName +
-                ", customTags=" + customTags +
-                ", note=" + note +
-                '}'
-    }
-}
+data class AppExtras(
+    @PrimaryKey
+    val packageName: String = "",
+    val customTags: MutableSet<String> = mutableSetOf(),
+    val note: String = "",
+)

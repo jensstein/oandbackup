@@ -26,9 +26,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -59,6 +60,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
@@ -261,15 +263,16 @@ fun TerminalPage() {
             modifier = Modifier
                 .weight(1f)
                 .padding(0.dp)
+                .fillMaxHeight()
                 .background(color = Color(0.2f, 0.2f, 0.3f))
         ) {
-            TerminalText(output, scrollOnAdd = true)
+            TerminalText(output, limitLines = 0, scrollOnAdd = true)
         }
     }
 }
 
 @Composable
-fun TerminalText(text: List<String>, scrollOnAdd: Boolean = true) {
+fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean = true) {
 
     val hscroll = rememberScrollState()
     val listState = rememberLazyListState()
@@ -284,48 +287,59 @@ fun TerminalText(text: List<String>, scrollOnAdd: Boolean = true) {
 
     Box(
         modifier = Modifier
-            .fillMaxSize()
+            .ifThen(limitLines == 0) { fillMaxHeight() }
+            .fillMaxWidth()
             .background(color = Color.Transparent),
         contentAlignment = Alignment.BottomEnd
     ) {
         Box(
             modifier = Modifier
-                .fillMaxSize()
+                .ifThen(limitLines == 0) { fillMaxHeight() }
+                .fillMaxWidth()
                 .padding(0.dp)
-                //.weight(1f, fill = true)
-                .ifThen(!wrap, { horizontalScroll(hscroll) })
+                .ifThen(!wrap) { horizontalScroll(hscroll) }
                 .background(color = Color.Transparent)
         ) {
+            val fontSize = 10.sp
+            val lineHeightSp =
+                fontSize * 1.4     //TODO hg42 factor 1.4 is empiric, how is it correctly?
+            val lineSpacing = 1.dp
+            val lineHeight = with(LocalDensity.current) { lineHeightSp.toDp() }
+            val totalLineHeight = lineHeight + lineSpacing
             SelectionContainerX {
                 LazyColumn(
                     modifier = Modifier
-                        .padding(8.dp, 0.dp, 0.dp, 0.dp),
-                        //.padding(8.dp, 0.dp, if (wrap) 0.dp else 52.dp*3, 0.dp),
-                    verticalArrangement = Arrangement.spacedBy(1.dp),
+                        .padding(8.dp, 0.dp, 0.dp, 0.dp)
+                        .ifThen(limitLines == 0) { fillMaxHeight() }
+                        .ifThen(limitLines > 0) {
+                            heightIn(
+                                0.dp,
+                                totalLineHeight * limitLines + lineSpacing
+                            )
+                        },
+                    verticalArrangement = Arrangement.spacedBy(lineSpacing),
                     state = listState
                 ) {
                     items(text) {
-                        Text(
-                            if (it == "") " " else it,     //TODO hg42 workaround
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 10.sp,
-                            lineHeight = 10.sp,
-                            softWrap = wrap,
-                            color = when {
+                        val color =
+                            when {
                                 it.contains("error", ignoreCase = true) -> Color(1f, 0f, 0f)
                                 it.contains("warning", ignoreCase = true) -> Color(1f, 0.5f, 0f)
                                 it.contains("***") -> Color(0f, 1f, 1f)
                                 it.startsWith("===") -> Color(1f, 1f, 0f)
-                                it.startsWith("---") -> Color(
-                                    0.8f,
-                                    0.8f,
-                                    0f
-                                )
+                                it.startsWith("---") -> Color(0.8f, 0.8f, 0f)
                                 else -> Color.White
                             }
+                        Text(
+                            if (it == "") " " else it,     //TODO hg42 workaround
+                            fontFamily = FontFamily.Monospace,
+                            fontSize = fontSize,
+                            lineHeight = lineHeightSp,
+                            softWrap = wrap,
+                            color = color,
+                            modifier = Modifier.padding(0.dp)
                         )
                     }
-                    //if (!wrap) item { Spacer(modifier = Modifier.height(48.dp)) }
                 }
             }
         }
@@ -335,13 +349,14 @@ fun TerminalText(text: List<String>, scrollOnAdd: Boolean = true) {
             RoundButton(
                 icon = icon,
                 onClick = onClick,
-                tint = Color(1f, 1f, 1f)
+                tint = Color(1f, 0.5f, 1f, 0.7f)
             )
         }
 
-        Row(modifier = Modifier
-            //.fillMaxWidth()
-            .background(color = Color.Transparent),
+        Row(
+            modifier = Modifier
+                //.fillMaxWidth()
+                .background(color = Color.Transparent),
             horizontalArrangement = Arrangement.End
         ) {
             SmallButton(icon = if (wrap) Icons.Rounded.MoreVert else Icons.Rounded.List) {
@@ -362,7 +377,7 @@ fun TerminalText(text: List<String>, scrollOnAdd: Boolean = true) {
 @Composable
 fun Preview_Terminal() {
 
-    Box(modifier = Modifier.height(500.dp)) {
+    Box(modifier = Modifier.height(600.dp)) {
         TerminalPage()
     }
 }
@@ -385,7 +400,7 @@ fun Preview_TerminalText() {
             "this is an ERROR",
             "this is a warning",
             "this is a WARNING",
-            *((1..30).map { "line $it" }.toTypedArray())
+            *((13..30).map { "line $it" }.toTypedArray())
         )
     }
 
@@ -398,11 +413,11 @@ fun Preview_TerminalText() {
 
     Box(
         modifier = Modifier
-            .height(500.dp)
+            //.height(500.dp)
             .padding(0.dp)
             .background(color = Color(0.2f, 0.2f, 0.3f))
     ) {
-        TerminalText(text)
+        TerminalText(text, limitLines = 20, scrollOnAdd = false)
     }
 }
 

@@ -41,7 +41,7 @@ fun ScheduleItem(
     onClick: (Schedule) -> Unit = {},
     onCheckChanged: (Schedule, Boolean) -> Unit = { _: Schedule, _: Boolean -> }
 ) {
-    val schedule by remember(item) { mutableStateOf(item) }
+    val schedule by remember(item) { mutableStateOf(item) }     //TODO hg42 remove remember ???
     val (checked, check) = mutableStateOf(item.enabled)
 
     Card(

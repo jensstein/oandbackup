@@ -157,11 +157,8 @@
     <string name="prefs_acquirewakelock">Prevenir el son</string>
     <string name="prefs_numBackupRevisions_summary">La revisió més antiga se suprimirà quan es creï una nova còpia de seguretat si se supera el nombre. Establiu-lo a zero per mantenir totes les revisions.</string>
     <string name="prefs_numBackupRevisions">Nombre de revisions de còpia de seguretat</string>
-    <string name="prefs_deviceprotecteddata_summary">Fa una còpia de seguretat i restaura les dades que es col·loquen a data/user_de</string>
     <string name="prefs_deviceprotecteddata">Feu una còpia de seguretat de les dades protegides pel dispositiu</string>
-    <string name="prefs_obbdata_summary">Còpia de seguretat i restauració dels fitxers OBB de l\'aplicació que es col·loquen a l\'emmagatzematge extern (p. Ex. /storage/emulated/0/Android/obb/)</string>
     <string name="prefs_obbdata">Feu una còpia de seguretat dels fitxers OBB</string>
-    <string name="prefs_externaldata_summary">Còpia de seguretat i restauració de les dades que es col·loquen a l’emmagatzematge extern (p. Ex. /storage/emulated/0/Android/data/)</string>
     <string name="prefs_externaldata">Feu una còpia de seguretat de dades externes</string>
     <string name="prefs_excludecache_summary">Exclou la memòria cau de l\'aplicació de la còpia de seguretat de dades</string>
     <string name="prefs_excludecache">Exclou la memòria cau de les aplicacions</string>

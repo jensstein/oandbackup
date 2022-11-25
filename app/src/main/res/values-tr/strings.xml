@@ -93,8 +93,6 @@
     <string name="prefs_password">Şifreleme parolası</string>
     <string name="prefs_externaldata">Harici veriyi yedekle</string>
     <string name="prefs_deviceprotecteddata">Cihaz korunan verisini yedekle</string>
-    <string name="prefs_deviceprotecteddata_summary">data/user_de de bulunan veriyi yedekler ve geri yükler</string>
-    <string name="prefs_externaldata_summary">Harici depolamada bulunan veriyi yedekler ve geri yükler (örn: /storage/emulated/0/Android/data/)</string>
     <string name="prefs_password_summary">Şifrelemeyi devre dışı bırakmak için boş bırakın</string>
     <string name="prefs_encryption_summary">Veri yedeklerini şifrelemek için etkinleştirin</string>
     <string name="prefs_excludecache_summary">Uygulamanın önbelleğini veri yedeklemesinden hariç tutun</string>
@@ -237,7 +235,6 @@
     <string name="prefs_restoreallpermissions_summary">Geri yüklenen uygulamaya istediği tüm izinleri verin.</string>
     <string name="prefs_disableverification_summary">Apk\'ları geri yüklerken bu geliştirici seçeneğini devre dışı bırakır ve daha sonra yeniden etkinleştirir. Hatayı çözer: INSTALL_FAİLED_VERİFİCATİON_FAİLURE.</string>
     <string name="prefs_disableverification">USB üzerinden uygulamaları doğrulamayı devre dışı bırak</string>
-    <string name="prefs_obbdata_summary">Harici depolama alanına yerleştirilen uygulamanın obb dosyalarını Yedekler ve geri yükler (örn. / storage/emulated / 0 / Android / obb/)</string>
     <string name="prefs_obbdata">obb dosyalarını yedekle</string>
     <plurals name="sched_interval_formal">
         <item quantity="one">her gün</item>
@@ -296,7 +293,6 @@
     <string name="prefs_accent_1">İnce Mor</string>
     <string name="prefs_accent_0">Kırmızı Kuyruklu Yıldız</string>
     <string name="help_changelog">Değişim günlüğü</string>
-    <string name="prefs_mediadata_summary">Uygulamanın harici depolama birimine yerleştirilen medya dosyalarını yedekler ve geri yükler (Ör. /storage/emulated/0/Android/media/)</string>
     <string name="prefs_mediadata">Medya dosyalarını yedekleyin</string>
     <string name="radio_mediadata">Medya Verileri</string>
     <string name="dialogCancelAll">Tümünü iptal et</string>

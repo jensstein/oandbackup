@@ -171,9 +171,7 @@
     <string name="sched_add">Voeg planning toe</string>
     <string name="prefs_logviewer">Bekijk de log</string>
     <string name="prefs_batchdelete_summary">Verwijder back-ups van alle apps die op het moment niet geïnstalleerd zijn.</string>
-    <string name="prefs_deviceprotecteddata_summary">Maakt back-up en herstelt data die geplaatst is in data/user_de</string>
     <string name="prefs_deviceprotecteddata">Back-up toestel beveiligde data</string>
-    <string name="prefs_externaldata_summary">Maakt back-up en herstelt data die geplaatst is op externe opslag (bijv /storage/emulated/0/Android/data/</string>
     <string name="prefs_externaldata">Back-up externe gegevens</string>
     <string name="prefs_excludecache_summary">Uitsluiten van de app\'s cache van de data back-up</string>
     <string name="prefs_password_match_false">De wachtwoorden komen niet overeen</string>
@@ -195,7 +193,6 @@
     <string name="prefs_disableverification">Schakel \"verifieer apps via USB\" uit</string>
     <string name="prefs_numBackupRevisions_summary">De oudste revisie wordt verwijderd bij het maken van een nieuwe back-up als het aantal wordt overschreden. Zet het op nul om alle revisies te behouden.</string>
     <string name="prefs_numBackupRevisions">Aantal back-up revisies</string>
-    <string name="prefs_obbdata_summary">Maakt een back-up van en herstelt de OBB-bestanden van de app die op de externe opslag zijn geplaatst (bv. /opslag/geëmuleerd/0/Android/obb/)</string>
     <string name="prefs_obbdata">Maak een back-up van de OBB-bestanden</string>
     <string name="prefs_advanced">geavanceerde voorkeuren</string>
     <string name="radio_obbdata">OBB gegevens</string>

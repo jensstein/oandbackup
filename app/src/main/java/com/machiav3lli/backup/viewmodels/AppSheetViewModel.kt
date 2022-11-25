@@ -56,7 +56,9 @@ class AppSheetViewModel(
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    var appExtras = database.appExtrasDao.getFlow(app?.packageName ?: "").mapLatest { it }.stateIn(
+    var appExtras = database.appExtrasDao.getFlow(app?.packageName).mapLatest {
+        it ?: AppExtras(app?.packageName ?: "")
+    }.stateIn(
         viewModelScope,
         SharingStarted.Eagerly,
         AppExtras(app?.packageName ?: "")

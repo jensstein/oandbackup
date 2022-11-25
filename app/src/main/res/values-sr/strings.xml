@@ -180,7 +180,6 @@
     <string name="prefs_excludecache_summary">Изозстави кеш апликације из резервне копије података</string>
     <string name="prefs_externaldata">Направи резервну копију екстерних података</string>
     <string name="prefs_obbdata">Направи резервну копију обб фајлова</string>
-    <string name="prefs_obbdata_summary">Направи резервну копију и поврати обб фајлове апликације ускладиштене на екстерном складишту (пр. /storage/emulated/0/Android/obb/)</string>
     <string name="prefs_mediadata">Направи резервну копију фајлова медија</string>
     <string name="prefs_deviceprotecteddata">Направи резервну копију заштићених података уређаја</string>
     <string name="prefs_restorepermissions">Поврати дозволе</string>
@@ -214,10 +213,7 @@
     <string name="welcome_to_oabx">Добродошли у Нео Бекап!</string>
     <string name="prefs_unset">Неподешено</string>
     <string name="bothBackedUp">АПК и податци</string>
-    <string name="prefs_externaldata_summary">Направи резервну копију и поврати податке ускладиштене на екстерном складишту (пр. /storage/emulated/0/Android/data/)</string>
-    <string name="prefs_mediadata_summary">Направи резервну копију и поврати фајлове медија аплицаије ускладиштенена екстерном складишту (пр. /storage/emulated/0/Android/media/)</string>
     <string name="prefs_restorepermissions_summary">Поврати дозволе које су дате апликацији у тренутку прављења резервне копије. Знај да неке дозволе не могу бити дате програмски и тиме изазивају неуспех повратка пакета у целости, што Нео Бекап онда покрива повратком пакета без дозволе.</string>
-    <string name="prefs_deviceprotecteddata_summary">Направи резервну копију и поврати података који су смештени у data/user_de</string>
     <string name="prefs_numBackupRevisions_summary">Најстарија ревизија ће бити обрисана приликом прављења нове резервне копије ако је број прекорачен. Подеси на нула да задржиш све ревизије.</string>
     <string name="prefs_restoreallpermissions_summary">Даје повраћеној апликацији све дозволе које захтева.</string>
     <string name="prefs_allowdowngrade_summary">Дозволи повратак старије верзије инсталиране апликације.</string>

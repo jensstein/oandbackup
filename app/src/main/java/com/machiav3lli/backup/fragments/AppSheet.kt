@@ -385,18 +385,15 @@ class AppSheet() : BaseSheet(), ActionListener {
                                 TitleText(textId = R.string.title_tags)
                                 Spacer(modifier = Modifier.height(8.dp))
                                 TagsBlock(
-                                    tags = appExtras?.customTags ?: mutableSetOf(),
+                                    tags = appExtras.customTags,
                                     onRemove = {
-                                        viewModel.setExtras(appExtras?.apply {
+                                        viewModel.setExtras(appExtras.apply {
                                             customTags.remove(it)
                                         })
                                     },
                                     onAdd = {
-                                        viewModel.setExtras(appExtras?.apply {
-                                            if (customTags.isNotEmpty())
-                                                customTags.add(it)
-                                            else
-                                                customTags = mutableSetOf(it)
+                                        viewModel.setExtras(appExtras.apply {
+                                            customTags.add(it)
                                         })
                                     }
                                 )
@@ -407,11 +404,10 @@ class AppSheet() : BaseSheet(), ActionListener {
                                 TitleText(textId = R.string.title_note)
                                 Spacer(modifier = Modifier.height(8.dp))
                                 MorphableTextField(
-                                    text = appExtras?.note,
-                                    onCancel = {
-                                    },
+                                    text = appExtras.note,
+                                    onCancel = { },
                                     onSave = {
-                                        viewModel.setExtras(appExtras?.apply { note = it })
+                                        viewModel.setExtras(appExtras.copy(note = it))
                                     }
                                 )
                             }
@@ -429,7 +425,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                                             icon = Phosphor.ArchiveTray,
                                             text = stringResource(id = R.string.backup),
                                             fullWidth = true,
-                                            enabled = ! snackbarVisible,
+                                            enabled = !snackbarVisible,
                                             onClick = { showBackupDialog(packageInfo) }
                                         )
                                     }
@@ -439,7 +435,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                                             text = stringResource(id = R.string.delete_all_backups),
                                             fullWidth = true,
                                             positive = false,
-                                            enabled = ! snackbarVisible,
+                                            enabled = !snackbarVisible,
                                             onClick = {
                                                 snackbarHostState.showDeleteAllBackupsDialog(
                                                     packageInfo,

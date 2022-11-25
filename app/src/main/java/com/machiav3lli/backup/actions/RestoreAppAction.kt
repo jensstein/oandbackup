@@ -474,7 +474,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                     // clear the data from the final directory
                     wipeDirectory(
                         targetPath,
-                        DATA_EXCLUDED_BASENAMES
+                        DATA_RESTORE_EXCLUDED_BASENAMES
                     )
                     archiveStream.suUnpackTo(RootFile(targetPath), forceOldVersion)
                 } else {
@@ -486,7 +486,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                         // clear the data from the final directory
                         wipeDirectory(
                             targetPath,
-                            DATA_EXCLUDED_BASENAMES
+                            DATA_RESTORE_EXCLUDED_BASENAMES
                         )
                         // Move all the extracted data into the target directory
                         val command =
@@ -544,7 +544,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
 
                     wipeDirectory(
                         targetDir.absolutePath,
-                        DATA_EXCLUDED_BASENAMES
+                        DATA_RESTORE_EXCLUDED_BASENAMES
                     )
 
                     val tarScript = findAssetFile("tar.sh").toString()

@@ -93,8 +93,6 @@
     <string name="prefs_password">Hasło szyfrowania</string>
     <string name="prefs_externaldata">Kopiuj dane z pamięci zewnętrznej</string>
     <string name="prefs_deviceprotecteddata">Kopiuj chronione dane wewnętrzne</string>
-    <string name="prefs_deviceprotecteddata_summary">Kopiuje i przywraca dane z data/user_de</string>
-    <string name="prefs_externaldata_summary">Kopiuje i przywraca dane z pamięci zewnętrznej (np. /storage/emulated/0/Android/data/)</string>
     <string name="prefs_password_summary">Ustaw na puste aby wyłączyć szyfrowanie</string>
     <string name="prefs_encryption_summary">Włącz aby szyfrować kopię zapasową</string>
     <string name="prefs_excludecache_summary">Usuń pamięć podręczną aplikacji przed wykonaniem kopii</string>
@@ -216,7 +214,6 @@
     <string name="prefs_stopcont_summary">Zaawansowane: Może to pomóc, jeśli aplikacja zmienia pliki podczas tworzenia kopii zapasowej i kopia zapasowa się nie powiedzie.</string>
     <string name="prefs_disableverification_summary">Wyłącza tę opcję podczas przywracania plików APK, a następnie włącza ją ponownie. Rozwiązuje błąd: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
     <string name="prefs_disableverification">Wyłącz weryfikację aplikacji przez USB</string>
-    <string name="prefs_obbdata_summary">Kopiuje i przywraca dane OBB z pamięci zewnętrznej (np. /storage/emulated/0/Android/obb/)</string>
     <string name="prefs_obbdata">Utwórz kopię zapasową plików obb</string>
     <string name="stats_apps">Aplikacje</string>
     <string name="stats_backups">Kopie Zapasowe</string>

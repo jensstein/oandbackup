@@ -155,11 +155,8 @@
     <string name="prefs_acquirewakelock">Ngăn chặn ngủ</string>
     <string name="prefs_numBackupRevisions_summary">Phiên bản cũ nhất sẽ bị xoá khi tạo một bản sao lưu mới nếu con số này bị vượt quá. Đặt là không để giữ tất cả phiên bản.</string>
     <string name="prefs_numBackupRevisions">Số phiên bản bản sao lưu</string>
-    <string name="prefs_deviceprotecteddata_summary">Sao lưu và khôi phục dữ liệu được đặt trong data/user_de</string>
     <string name="prefs_deviceprotecteddata">Sao lưu dữ liệu được thiết bị bảo vệ</string>
-    <string name="prefs_obbdata_summary">Sao lưu và khôi phục các tệp obb của ứng dụng, chúng được đặt trong bộ nhớ ngoài (vd: /storage/emulated/0/Android/obb/)</string>
     <string name="prefs_obbdata">Sao lưu các tệp obb</string>
-    <string name="prefs_externaldata_summary">Sao lưu và khôi phục dữ liệu được đặt trong bộ nhớ ngoài (vd: /storage/emulated/0/Android/data/)</string>
     <string name="prefs_excludecache">Loại trừ bộ nhớ đệm của ứng dụng</string>
     <string name="prefs_enablespecial_summary">Vẫn cần thử nghiệm kỹ, hãy biết sự nguy hiểm rằng nó có thể gây ra treo logo. Phản hồi luôn được chào đón.</string>
     <string name="prefs_enablespecial">Bật các bản sao lưu đặc biệt</string>
@@ -288,7 +285,6 @@
     <string name="title_note">Lưu ý:</string>
     <string name="help_changelog">Nhật ký thay đổi</string>
     <string name="prefs_mediadata">Sao lưu tệp dữ liệu phương tiện</string>
-    <string name="prefs_mediadata_summary">Sao lưu và khôi phục các tệp phương tiện của ứng dụng được đặt ở bộ nhớ ngoài (vd: /storage/emulated/0/Android/media/)</string>
     <string name="prefs_accent_8">Bí ngô</string>
     <string name="home">Trang chủ</string>
     <string name="radio_mediadata">Dữ liệu phương tiện</string>

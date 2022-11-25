@@ -28,6 +28,7 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.preferences.pref_backupNoBackupData
 import com.machiav3lli.backup.preferences.pref_backupSuspendApps
+import com.machiav3lli.backup.preferences.pref_restoreNoBackupData
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.TraceUtils.traceBold
 import com.topjohnwu.superuser.Shell
@@ -144,9 +145,13 @@ abstract class BaseAppAction protected constructor(
             "cache",
             "code_cache"
         )
-        val DATA_EXCLUDED_BASENAMES = listOfNotNull(
+        val DATA_BACKUP_EXCLUDED_BASENAMES = listOfNotNull(
             "lib",      //TODO hg42 what about architecture dependent names? or may be application specific? lib* ???
             if (!pref_backupNoBackupData.value) "no_backup" else null //TODO hg42 use Context.getNoBackupFilesDir() ??? tricky, because it's an absolute path (remove common part...)
+        )
+        val DATA_RESTORE_EXCLUDED_BASENAMES = listOfNotNull(
+            "lib",      //TODO hg42 what about architecture dependent names? or may be application specific? lib* ???
+            if (!pref_restoreNoBackupData.value) "no_backup" else null //TODO hg42 use Context.getNoBackupFilesDir() ??? tricky, because it's an absolute path (remove common part...)
         )
         val DATA_EXCLUDED_NAMES = listOfNotNull(
             "com.google.android.gms.appid.xml",

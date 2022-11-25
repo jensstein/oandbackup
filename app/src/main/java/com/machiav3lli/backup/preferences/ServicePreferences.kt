@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -11,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.R
@@ -55,19 +57,15 @@ fun ServicePrefsPage() {
     val openDialog = remember { mutableStateOf(false) }
     var dialogsPref by remember { mutableStateOf<Pref?>(null) }
 
-    val prefs = Pref.preferences["srv"] ?: listOf()
-
     AppTheme {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            item {
-                PrefsGroup(prefs = prefs) { pref ->
-                    dialogsPref = pref
-                    openDialog.value = true
-                }
+            ServicePrefGroups { pref ->
+                dialogsPref = pref
+                openDialog.value = true
             }
         }
 
@@ -91,6 +89,33 @@ fun ServicePrefsPage() {
                 }
             }
         }
+    }
+}
+
+fun LazyListScope.ServicePrefGroups(onPrefDialog: (Pref) -> Unit) {
+    val generalServicePrefs = Pref.preferences["srv"] ?: listOf()
+    val backupServicePrefs = Pref.preferences["srv-bkp"] ?: listOf()
+    val restoreServicePrefs = Pref.preferences["srv-rst"] ?: listOf()
+
+    item {
+        PrefsGroup(
+            prefs = generalServicePrefs,
+            onPrefDialog = onPrefDialog
+        )
+    }
+    item {
+        PrefsGroup(
+            prefs = backupServicePrefs,
+            heading = stringResource(id = R.string.backup),
+            onPrefDialog = onPrefDialog
+        )
+    }
+    item {
+        PrefsGroup(
+            prefs = restoreServicePrefs,
+            heading = stringResource(id = R.string.restore),
+            onPrefDialog = onPrefDialog
+        )
     }
 }
 
@@ -118,10 +143,10 @@ val kill_password = PasswordPref(   // make sure password is never saved in non-
     private = false,
     defaultValue = ""
 )
-val kill_password_set = run  { kill_password.value = "" }
+val kill_password_set = run { kill_password.value = "" }
 
 val pref_backupDeviceProtectedData = BooleanPref(
-    key = "srv.backupDeviceProtectedData",
+    key = "srv-bkp.backupDeviceProtectedData",
     titleId = R.string.prefs_deviceprotecteddata,
     summaryId = R.string.prefs_deviceprotecteddata_summary,
     icon = Phosphor.ShieldCheckered,
@@ -130,7 +155,7 @@ val pref_backupDeviceProtectedData = BooleanPref(
 )
 
 val pref_backupExternalData = BooleanPref(
-    key = "srv.backupExternalData",
+    key = "srv-bkp.backupExternalData",
     titleId = R.string.prefs_externaldata,
     summaryId = R.string.prefs_externaldata_summary,
     icon = Phosphor.FloppyDisk,
@@ -139,7 +164,7 @@ val pref_backupExternalData = BooleanPref(
 )
 
 val pref_backupObbData = BooleanPref(
-    key = "srv.backupObbData",
+    key = "srv-bkp.backupObbData",
     titleId = R.string.prefs_obbdata,
     summaryId = R.string.prefs_obbdata_summary,
     icon = Phosphor.GameController,
@@ -148,7 +173,7 @@ val pref_backupObbData = BooleanPref(
 )
 
 val pref_backupMediaData = BooleanPref(
-    key = "srv.backupMediaData",
+    key = "srv-bkp.backupMediaData",
     titleId = R.string.prefs_mediadata,
     summaryId = R.string.prefs_mediadata_summary,
     icon = Phosphor.PlayCircle,
@@ -157,9 +182,54 @@ val pref_backupMediaData = BooleanPref(
 )
 
 val pref_backupNoBackupData = BooleanPref(
-    key = "srv.backupNoBackupData",
+    key = "srv-bkp.backupNoBackupData",
     titleId = R.string.prefs_nobackupdata,
     summaryId = R.string.prefs_nobackupdata_summary,
+    icon = Phosphor.ProhibitInset,
+    iconTint = ColorData,
+    defaultValue = false
+)
+
+val pref_restoreDeviceProtectedData = BooleanPref(
+    key = "srv-rst.restoreDeviceProtectedData",
+    titleId = R.string.prefs_deviceprotecteddata_rst,
+    summaryId = R.string.prefs_deviceprotecteddata_rst_summary,
+    icon = Phosphor.ShieldCheckered,
+    iconTint = ColorDeData,
+    defaultValue = true
+)
+
+val pref_restoreExternalData = BooleanPref(
+    key = "srv-rst.restoreExternalData",
+    titleId = R.string.prefs_externaldata_rst,
+    summaryId = R.string.prefs_externaldata_rst_summary,
+    icon = Phosphor.FloppyDisk,
+    iconTint = ColorExtDATA,
+    defaultValue = true
+)
+
+val pref_restoreObbData = BooleanPref(
+    key = "srv-rst.restoreObbData",
+    titleId = R.string.prefs_obbdata_rst,
+    summaryId = R.string.prefs_obbdata_rst_summary,
+    icon = Phosphor.GameController,
+    iconTint = ColorOBB,
+    defaultValue = true
+)
+
+val pref_restoreMediaData = BooleanPref(
+    key = "srv-rst.restoreMediaData",
+    titleId = R.string.prefs_mediadata_rst,
+    summaryId = R.string.prefs_mediadata_rst_summary,
+    icon = Phosphor.PlayCircle,
+    iconTint = ColorMedia,
+    defaultValue = true
+)
+
+val pref_restoreNoBackupData = BooleanPref(
+    key = "srv-rst.restoreNoBackupData",
+    titleId = R.string.prefs_nobackupdata_rst,
+    summaryId = R.string.prefs_nobackupdata_rst_summary,
     icon = Phosphor.ProhibitInset,
     iconTint = ColorData,
     defaultValue = false

@@ -99,9 +99,7 @@
     <string name="prefs_excludecache">Excluir caché de la aplicación</string>
     <string name="prefs_excludecache_summary">Excluir caché de la aplicación en el respaldo de datos</string>
     <string name="prefs_externaldata">Respaldar datos externos</string>
-    <string name="prefs_externaldata_summary">Respalda y restaura datos de la tarjeta externa ( p.ej.: /storage/emulated/0/Android/data/)</string>
     <string name="prefs_deviceprotecteddata">Repalda datos protegidos del dispositivo</string>
-    <string name="prefs_deviceprotecteddata_summary">Repalda y restaura datos situados en data/user_de</string>
     <string name="prefs_copyselfapk">Respaldar APK de esta app</string>
     <string name="prefs_copyselfapk_summary">Coloca una copia de Neo Backup en el nivel superior de la carpeta de copia de seguridad</string>
     <string name="prefs_acquirewakelock">Prevenir suspensión</string>
@@ -216,7 +214,6 @@
         <item quantity="other">%d días,</item>
     </plurals>
     <string name="help_issues">Errores conocidos</string>
-    <string name="prefs_obbdata_summary">Realiza una copia de seguridad y restaura los archivos obb de la aplicación que se colocan en el almacenamiento externo (por ejemplo, /storage/emulated/0/Android/obb/)</string>
     <string name="prefs_obbdata">Respaldar archivos obb</string>
     <string name="stats_backups">Respaldos</string>
     <string name="stats_apps">Aplicaciones</string>
@@ -298,7 +295,6 @@
     <string name="prefs_accent_0">Rojo cometa</string>
     <string name="sortBackupDate">Fecha de respaldo</string>
     <string name="backup_all_updated">Respaldar todas las aplicaciones actualizadas</string>
-    <string name="prefs_mediadata_summary">Respalda y restaura los archivos de medios de la aplicación que estén situados en el almacenamiento externo (ej. /storage/emulated/0/Android/media/)</string>
     <string name="radio_mediadata">Datos de medios</string>
     <string name="prefs_mediadata">Respaldar archivos de medios</string>
     <string name="help_changelog">Registro de cambios</string>
@@ -346,15 +342,15 @@
     <string name="prefs_loadingtoasts_summary">Mostrando las notificaciones del sistema mientras se carga la lista</string>
     <string name="dismiss">Descartar</string>
     <string name="supended_apps_cleanup">limpiar las aplicaciones suspendidas sobrantes</string>
-    <string name="prefs_loadingtoasts">Cargando toasts</string>
+    <string name="prefs_loadingtoasts">Barras de carga</string>
     <string name="prefs_theme_dynamic">Tema dinámico (si está disponible)</string>
     <string name="add_tag">Agregar nueva etiqueta</string>
     <string name="edit_note">Editar nota</string>
-    <string name="root_is_mandatory">Dado que las aplicaciones están aisladas unas de otras, el acceso de superusuario es obligatorio para poder hacer copias de seguridad y restaurar sus datos.</string>
+    <string name="root_is_mandatory">Dado que las aplicaciones están aisladas entre sí, se requiere acceso de superusuario para realizar copias de seguridad y restaurar sus datos.</string>
     <string name="enabled">Activado</string>
     <string name="see_faq">¡Consulte las preguntas frecuentes!</string>
     <string name="sortAppDataSize">Tamaño de los datos de la aplicación</string>
-    <string name="dialog_export_schedules">Exportar mis horarios</string>
+    <string name="dialog_export_schedules">Exportar mis planes</string>
     <string name="delete">Eliminar</string>
     <string name="root_missing">¡Falta ROOT!</string>
     <string name="prefs_multilineinfochips_summary">Permitir que las fichas de información en la hoja de aplicación se extiendan por varias líneas.</string>
@@ -363,4 +359,5 @@
     <string name="prefs_multilineinfochips">Las fichas con información ocupan varias lineas</string>
     <string name="prefs_nobackupdata">Copia de seguridad sin archivos</string>
     <string name="prefs_nobackupdata_summary">Hacer una copia de seguridad de los archivos en los datos que están etiquetados para no ser respaldados</string>
+    <string name="prefs_tools_terminal">Terminal</string>
 </resources>

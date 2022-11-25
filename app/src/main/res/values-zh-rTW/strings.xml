@@ -127,10 +127,7 @@
     <string name="batchbackup">批次備份</string>
     <string name="dialogNo">否</string>
     <string name="prefs_numBackupRevisions_summary">如果在建立新備份時超過這個數量，會刪除最舊的版本。</string>
-    <string name="prefs_deviceprotecteddata_summary">備份與還原放置於 data/user_de 的資料</string>
     <string name="prefs_deviceprotecteddata">備份受裝置保護的資料</string>
-    <string name="prefs_obbdata_summary">備份與還原放置於外部儲存空間的應用程式 obb 檔案（例如 /storage/emulated/0/Android/obb/）</string>
-    <string name="prefs_externaldata_summary">備份與還原放置於外部儲存空間的資料（例如 /storage/emulated/0/Android/data/）</string>
     <string name="welcome_to_oabx">歡迎使用 OABX！</string>
     <string name="storage_access">儲存空間存取</string>
     <string name="sort_and_filter">排序與篩選</string>
@@ -187,7 +184,6 @@
     <string name="prefs_enablespecial_summary">還需要許多測試，請嘗試了解可能造成 boot loop 的風險。歡迎提供意見。</string>
     <string name="help_issues">已知問題</string>
     <string name="radio_mediadata">媒體資料</string>
-    <string name="prefs_mediadata_summary">備份與還原放置於外部儲存空間（例如 /storage/emulated/0/Android/media/）的應用程式媒體檔案</string>
     <string name="prefs_compression_level">壓縮等級</string>
     <string name="prefs_acquirewakelock">阻止睡眠</string>
     <string name="prefs_acquirewakelock_summary">在批次操作時獲取 wakelock 以阻止睡眠。這會大幅加速備份與還原，但是會消耗更多電量。</string>

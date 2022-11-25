@@ -47,22 +47,25 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
     if (scheduleId >= 0) {
         Thread {
             val scheduleDao = ODatabase.getInstance(context).scheduleDao
-            val schedule = scheduleDao.getSchedule(scheduleId)
+            var schedule = scheduleDao.getSchedule(scheduleId)
             if (schedule?.enabled == true) {
 
                 val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
                 val now = System.currentTimeMillis()
                 val timeLeft = calculateTimeToRun(schedule, now) - now
-                scheduleDao.update(
-                    schedule.copy(
-                        timePlaced = if (rescheduleBoolean) now else schedule.timePlaced,
-                        timeToRun = if (rescheduleBoolean) calculateTimeToRun(schedule, now)
-                        else if (timeLeft <= TimeUnit.MINUTES.toMillis(1))
-                            now + TimeUnit.MINUTES.toMillis(1)
-                        else schedule.timeToRun,
+
+                if (rescheduleBoolean) {
+                    schedule = schedule.copy(
+                        timePlaced = now,
+                        timeToRun = calculateTimeToRun(schedule, now)
                     )
-                )
+                } else if (timeLeft <= TimeUnit.MINUTES.toMillis(1)) {
+                    schedule = schedule.copy(
+                        timeToRun = now + TimeUnit.MINUTES.toMillis(1)
+                    )
+                }
+                scheduleDao.update(schedule)
 
                 val hasPermission: Boolean =
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

@@ -122,8 +122,6 @@
     <string name="prefs_passwordconfirmation">Confirmação de palavra-passe de cifra</string>
     <string name="prefs_password_match_true">As palavras-passe coincidem</string>
     <string name="prefs_excludecache">Excluir cache da aplicação</string>
-    <string name="prefs_externaldata_summary">Faz o backup e restaura os dados que são colocados no armazenamento externo (Ex: /storage/emulated/0/Android/data/)</string>
-    <string name="prefs_deviceprotecteddata_summary">Faz backup e restaura os dados que são colocados em data/user_de</string>
     <string name="prefs_batchdelete_summary">Eliminar backups de todas as aplicações não instaladas atualmente.</string>
     <string name="prefs_logviewer">Ver registo</string>
     <string name="sched_add">Adicionar agendamento</string>
@@ -220,7 +218,6 @@
     <string name="stats_updated">Atualizado</string>
     <string name="radio_launchable">Aplicações iniciáveis</string>
     <string name="help_issues">Problemas conhecidos</string>
-    <string name="prefs_obbdata_summary">Faz backup e restauro de ficheiros obb da aplicação que são colocados no armazenamento externo (Ex: /storage/emulated/0/Android/obb/)</string>
     <string name="prefs_obbdata">Backup de ficheiros obb</string>
     <string name="prefs_allowdowngrade">Permitir versões anteriores</string>
     <string name="prefs_allowdowngrade_summary">Permitir restauro de versões anteriores da aplicação.</string>
@@ -300,7 +297,6 @@
     <string name="prefs_accent_2">Índigo calmo</string>
     <string name="prefs_accent_1">Roxo fino</string>
     <string name="prefs_accent_0">Cometa vermelho</string>
-    <string name="prefs_mediadata_summary">Realiza um backup e restaura os ficheiros multimédia da aplicação que estão colocados no armazenamento externo (ex. /storage/emulated/0/Android/media/)</string>
     <string name="radio_mediadata">Dados de media</string>
     <string name="error_pmDataIncompleteException_dataRestoreFailed">Os dados da aplicação não foram restaurados.</string>
     <string name="prefs_compression_level">Nível de compressão</string>

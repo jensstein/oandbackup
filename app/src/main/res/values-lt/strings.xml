@@ -233,8 +233,6 @@
     <string name="all_data">Tikrinti visus duomenis</string>
     <string name="all_apk">Tikrinti visus APK</string>
     <string name="prefs_advanced">Išplėstinės nuostatos</string>
-    <string name="prefs_obbdata_summary">Kuria atsargines kopijas ir atstato išorinėje saugykloje (pvz., /storage/emulated/0/Android/obb/) esančius programėlės obb failus</string>
-    <string name="prefs_mediadata_summary">Kuria atsargines kopijas ir atkuria programėlės medijos failus, esančius išorinėje saugykloje (pvz., /storage/emulated/0/Android/media/)</string>
     <string name="restoreDataWithoutApkError">Negalima atkurti duomenų neatkuriant APK, paketas neįdiegtas.</string>
     <string name="fallbackToDefault">Grįžti prie numatytųjų nustatymų</string>
     <string name="backupFolderError">Nustatykite teisingą kelią nustatymuose ir įsitikinkite, kad jis egzistuoja arba jį galima sukurti</string>
@@ -251,8 +249,6 @@
     <string name="prefs_enablespecial_summary">Vis dar reikalauja intensyvaus testavimo, bandykite žinodami, kad tai gali sukelti nepertraukiamą įrenginio pasikartojantį persikrovimą. Atsiliepimai visada laukiami.</string>
     <string name="prefs_deviceprotecteddata">Kurti įrenginio apsaugotų duomenų atsargines kopijas</string>
     <string name="prefs_encryption_summary">Įgalinti, kad būtų šifruojami duomenys atsarginėse kopijose</string>
-    <string name="prefs_externaldata_summary">Atkuria atsargines kopijas ir atkuria duomenis, kurie yra išorinėje saugykloje (pvz., /storage/emulated/0/Android/data/)</string>
-    <string name="prefs_deviceprotecteddata_summary">Kuria atsarginę kopiją ir atkuria duomenis, įrašytus į data/user_de</string>
     <string name="intro_permission_usageaccess">Programėlei reikia šio leidimo, kad ji galėtų patikrinti jūsų programėlių statistiką ir duomenų dydį bei talpyklą.</string>
     <string name="prefs_batchdelete_summary">Ištrina visų šiuo metu neįdiegtų programėlių atsargines kopijas.</string>
     <string name="sched_hourOfDay">Dienos metas:</string>

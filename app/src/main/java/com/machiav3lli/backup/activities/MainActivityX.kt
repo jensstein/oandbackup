@@ -196,7 +196,7 @@ class MainActivityX : BaseActivity() {
                     NavItem.Restore,
                     NavItem.Scheduler,
                 )
-                val currentPage by remember(pagerState.currentPage) { mutableStateOf(pages[pagerState.currentPage]) }
+                val currentPage by remember(pagerState.currentPage) { mutableStateOf(pages[pagerState.currentPage]) }   //TODO hg42 remove remember ???
 
                 var query by rememberSaveable { mutableStateOf(viewModel.searchQuery.value) }
                 //val query by viewModel.searchQuery.flow.collectAsState(viewModel.searchQuery.initial)  // doesn't work with rotate...
@@ -428,8 +428,8 @@ class MainActivityX : BaseActivity() {
     fun dismissSnackBar() {
     }
 
-    fun showBatchPrefsSheet() {
-        sheetBatchPrefs = BatchPrefsSheet()
+    fun showBatchPrefsSheet(backupBoolean: Boolean) {
+        sheetBatchPrefs = BatchPrefsSheet(backupBoolean)
         sheetBatchPrefs.showNow(
             supportFragmentManager,
             "SORTFILTER_SHEET"

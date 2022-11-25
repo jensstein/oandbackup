@@ -56,7 +56,7 @@ fun BasePreference(
     bottomWidget: (@Composable (isEnabled: Boolean) -> Unit)? = null,
     onClick: (() -> Unit)? = null
 ) {
-    var isEnabled by remember { mutableStateOf(pref.enableIf?.invoke() ?: true) }
+    var isEnabled by remember { mutableStateOf(pref.enableIf?.invoke() ?: true) }   //TODO hg42 remove remember ???
 
     SideEffect {
         pref.enableIf?.run {
@@ -223,7 +223,7 @@ fun SwitchPreference(
     onCheckedChange: ((Boolean) -> Unit) = {},
 ) {
     val context = LocalContext.current
-    var checked by remember(pref.value) { mutableStateOf(pref.value) }
+    var checked by remember(pref.value) { mutableStateOf(pref.value) }  //TODO hg42 remove remember ???
     val check = { value: Boolean ->
         pref.value = value
         checked = value
@@ -271,7 +271,7 @@ fun CheckboxPreference(
     groupSize: Int = 1,
     onCheckedChange: ((Boolean) -> Unit) = {},
 ) {
-    var checked by remember(pref.value) { mutableStateOf(pref.value) }
+    var checked by remember(pref.value) { mutableStateOf(pref.value) }  //TODO hg42 remove remember ???
     val check = { value: Boolean ->
         pref.value = value
         checked = value
@@ -320,7 +320,7 @@ fun SeekBarPreference(
     onValueChange: ((Int) -> Unit) = {},
 ) {
     val currentValue = pref.value
-    var sliderPosition by remember {
+    var sliderPosition by remember {    //TODO hg42 remove remember ???
         mutableStateOf(
             pref.entries.indexOfFirst { it == currentValue }.let {
                 if (it < 0)

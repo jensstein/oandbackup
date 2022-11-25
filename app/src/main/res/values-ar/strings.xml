@@ -51,11 +51,8 @@
     <string name="refresh">تحديث</string>
     <string name="prefs_numBackupRevisions_summary">سيتم حذف النسخة الأقدم عند إنشاء نسخة احتياطية جديدة إذا تم تجاوز الرقم. اضبطه على صفر للاحتفاظ بجميع المراجعات.</string>
     <string name="prefs_numBackupRevisions">عدد النسخ الاحتياطية</string>
-    <string name="prefs_deviceprotecteddata_summary">النسخ الاحتياطي واستعادة البيانات التي يتم وضعها في data / user_de</string>
     <string name="prefs_deviceprotecteddata">نسخ احتياطي للبيانات المحمية بالجهاز</string>
-    <string name="prefs_obbdata_summary">النسخ الاحتياطي واستعادة ملفات obb للتطبيق المحفوظة في وحدة التخزين الخارجية (على سبيل المثال / storage / emulated / 0 / Android / obb )</string>
     <string name="prefs_obbdata">نسخ احتياطي لملفات obb</string>
-    <string name="prefs_externaldata_summary">النسخ الاحتياطي واستعادة البيانات الموضوعة على وحدة التخزين الخارجية (على سبيل المثال / storage / emulated / 0 / Android / data /)</string>
     <string name="prefs_externaldata">نسخ احتياطي للبيانات الخارجية</string>
     <string name="prefs_excludecache_summary">استبعاد ذاكرة التخزين المؤقت للتطبيق من النسخ الاحتياطي للبيانات</string>
     <string name="prefs_excludecache">استبعاد ذاكرة التخزين المؤقت للتطبيق</string>
@@ -301,7 +298,6 @@
     <string name="title_tags">العلامات:</string>
     <string name="title_note">ملحوظة:</string>
     <string name="sortBackupDate">تاريخ النسخ الاحتياطي</string>
-    <string name="prefs_mediadata_summary">نسخ ملفات الوسائط الخاصة بالتطبيق التي يتم وضعها في التخزين الخارجي واستعادتها (على سبيل المثال /storage/emulated/0/Android/media / )</string>
     <string name="prefs_mediadata">نسخ ملفات الوسائط احتياطيًا</string>
     <string name="radio_mediadata">بيانات الوسائط</string>
     <string name="help_changelog">سجل التغييرات</string>

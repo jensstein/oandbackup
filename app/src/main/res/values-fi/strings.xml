@@ -79,11 +79,9 @@
     <string name="prefs_excludecache">Ohita sovellusten välimuisti</string>
     <string name="prefs_excludecache_summary">Jätä sovellusten välimuisti pois datavarmuuskopioista</string>
     <string name="prefs_externaldata">Varmuuskopioi ulkoinen data</string>
-    <string name="prefs_externaldata_summary">Varmuuskopioi ja palauttaa datan, joka on sijoitettuna ulkoiselle tallennustilalle (esim. /storage/emulated/0/Android/data/)</string>
     <string name="prefs_obbdata">Varmuuskopioi obb-tiedostot</string>
     <string name="prefs_mediadata">Varmuuskopioi mediatiedostot</string>
     <string name="prefs_deviceprotecteddata">Varmuuskopioi laitteen suojaama data</string>
-    <string name="prefs_deviceprotecteddata_summary">Varmuuskopioi ja palauttaa datan, joka on sijoitettuna kohteessa data/user_de</string>
     <string name="prefs_numBackupRevisions">Varmuuskopioiden versioiden määrä</string>
     <string name="prefs_compression_level">Pakkaamisen taso</string>
     <string name="prefs_compression_level_summary">Matalampi arvo pakkaa nopeammin, mutta tuottaa suurempia tiedostoja. Suurempi arvo pakkaa tiedostot pienemmäksi, mutta vie enemmän aikaa.</string>
@@ -235,7 +233,6 @@
     <string name="showOnlySystem">Vain järjestelmäsovellukset</string>
     <string name="uninstallDialogMessage">Poistetaanko tämä sovellus\?</string>
     <string name="mkfileError">Ei voitu luoda tiedostoa</string>
-    <string name="prefs_obbdata_summary">Varmuuskopioi ja palauttaa obb-tiedostot, jotka ovat sijoitettuna ulkoiselle tallennustilalle (esim. /storage/emulated/0/Android/obb/)</string>
     <string name="sortByPackageName">Lajittele pakkauksen nimen mukaan</string>
     <string name="showSplitAPKs">Split-APK</string>
     <string name="restoreProgress">Palautetaan…</string>
@@ -253,7 +250,6 @@
     <string name="prefs_enablespecial">Ota käyttöön erityiset varmuuskopiot</string>
     <string name="ignore_battery_optimization_message">Varmuuskopiointiprosessi saattaa joskus katketa. Tämän estämiseksi akun optimointi tulisi ottaa pois käytöstä</string>
     <string name="grant_usage_access_message">Tämä vaaditaan sovellusten tiedostojen koon määrittämiseen</string>
-    <string name="prefs_mediadata_summary">Varmuuskopioi ja palauttaa mediatiedostot, jotka ovat sijoitettuna ulkoiselle tallennustilalle (esim. /storage/emulated/0/Android/media/)</string>
     <string name="prefs_batchdelete">Poistetaanko varmuuskopiot\?</string>
     <string name="prefs_enablespecial_summary">Vaatii edelleen intensiivistä testausta, tiedosta bootloop-riski. Palaute on aina tervetullutta.</string>
     <string name="spec_calllogsjson">Puheluhistoria JSON</string>
