@@ -1,6 +1,23 @@
 CHANGELOG
 =========
 
+8.2.3 (25.11.2022) +25 Commits
+------------------
+
+#### Function
+- Fix: Note & Tags in AppSheet
+- Fix: Log not updated when deleting items
+- Update: Separate PrefGroups for logging and tracing
+
+#### UI
+- Fix: Schedule filters
+- Fix: Height calculation of LogItem/TerminalText, button colors
+- Update: Revamp Chips layout
+
+#### Usability/UX
+- Add: Batch settings Sheet
+- Add: Tooltips to check all buttons in Batch
+
 8.2.2 (23.11.2022) +160 Commits
 ------------------
 
