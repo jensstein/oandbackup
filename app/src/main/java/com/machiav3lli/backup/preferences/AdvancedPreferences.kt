@@ -388,14 +388,14 @@ val pref_trace = BooleanPref(
 val pref_traceFlows = BooleanPref(
     key = "dev-trace.traceFlows",
     summary = "trace Kotlin Flows (reactive data streams)",
-    defaultValue = false,
+    defaultValue = true,
     enableIf = { pref_trace.value }
 )
 
 val pref_traceBusy = BooleanPref(
     key = "dev-trace.traceBusy",
     summary = "trace beginBusy/endBusy (busy indicator)",
-    defaultValue = false,
+    defaultValue = true,
     enableIf = { pref_trace.value }
 )
 
