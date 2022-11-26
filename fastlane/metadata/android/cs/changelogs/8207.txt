@@ -1,0 +1,5 @@
+Oprava: Seznamy bloků v rozvrzích
+Oprava: Opakované spuštění rozvrhů
+Oprava: Obnovení plné výšky terminálu
+Aktualizace: Rozdělení předvoleb služeb na záložní a obnovovací
+Aktualizace: Výchozí vypnutí sledování
