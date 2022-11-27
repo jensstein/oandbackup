@@ -1,54 +1,66 @@
 package com.machiav3lli.backup.utils
 
 import com.machiav3lli.backup.preferences.pref_trace
-import com.machiav3lli.backup.preferences.pref_traceBackupProps
-import com.machiav3lli.backup.preferences.pref_traceDebug
-import com.machiav3lli.backup.preferences.pref_traceFlows
+import com.machiav3lli.backup.preferences.traceFlows
+import com.machiav3lli.backup.ui.item.BooleanPref
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onEach
 import timber.log.Timber
 
 object TraceUtils {
-
-    // use these in implementations of other trace functions
-
-    fun traceBold(text: String = "") {
-        if (pref_trace.value)
-            Timber.w(text)
-    }
+    // only use these in implementations of other trace functions
 
     fun trace(text: String = "") {
         if (pref_trace.value)
             Timber.d(text)
     }
 
-    // use these instead to have lazy evaluation of the text
-
-    fun traceBold(lazyText: () -> String) {
+    fun traceBold(text: String = "") {
         if (pref_trace.value)
-            Timber.w(lazyText())
+            Timber.w(text)
     }
+
+    // use these instead to have lazy evaluation of the text in normal situations
 
     fun trace(lazyText: () -> String) {
-        if (pref_trace.value)
-            Timber.d(lazyText())
+        trace(lazyText())
     }
 
-    fun traceBackupProps(lazyText: () -> String) {
-        if (pref_trace.value && pref_traceBackupProps.value)
-            Timber.d(lazyText())
+    fun traceBold(lazyText: () -> String) {
+        traceBold(lazyText())
     }
 
-    fun traceDebug(lazyText: () -> String) {
-        if (pref_trace.value && pref_traceDebug.value)
-            Timber.d(lazyText())
+    open class TracePref(name: String, summary: String, default: Boolean) {
+
+        val pref = BooleanPref(
+            key = "dev-trace.trace$name",
+            summary = summary,
+            defaultValue = default,
+            enableIf = { pref_trace.value }
+        )
+
+        open operator fun invoke(lazyText: () -> String) {
+            if (pref.value)
+                trace(lazyText)
+        }
+    }
+
+    class TracePrefBold(name: String, summary: String, default: Boolean) :
+        TracePref(name, summary, default) {
+
+        override operator fun invoke(lazyText: () -> String) {
+            if (pref.value)
+                traceBold(lazyText)
+        }
     }
 
     fun <T> Flow<T>.trace(lazyText: (T) -> String): Flow<T> {
-        return if (pref_traceFlows.value)
-            onEach { traceBold { lazyText(it) } }
-        else
-            this
+        // doesn't really matter, but toggling the pref only works when recreating the flow
+        //return if (traceFlows.value)
+        //    onEach { traceFlows { lazyText(it) } }
+        //else
+        //    this
+        return onEach { traceFlows { lazyText(it) } }
     }
 
     // reflection
@@ -86,5 +98,5 @@ object TraceUtils {
         else
             "<null>"
     }
-}
 
+}

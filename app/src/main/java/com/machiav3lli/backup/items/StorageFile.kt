@@ -636,7 +636,7 @@ open class StorageFile {
     }
 
     fun deleteRecursive(): Boolean = when {
-        isFile ->
+        isFile      ->
             delete()
         isDirectory -> try {
             val contents = listFiles()
@@ -654,7 +654,7 @@ open class StorageFile {
             unhandledException(e, _uri)
             false
         }
-        else -> false
+        else        -> false
     }
 
     companion object {
@@ -775,11 +775,14 @@ open class StorageFile {
             try {
                 while (invalidateFilters.size > 0) {
                     invalidateFilters.removeFirst().let { isInvalid ->
-                        fileListCache =
-                            fileListCache.toMap().filterNot { isInvalid(it.key) }.toMutableMap()
-                        uriStorageFileCache =
-                            uriStorageFileCache.toMap().filterNot { isInvalid(it.key) }
-                                .toMutableMap()
+                        fileListCache = fileListCache
+                            .toMap()
+                            .filterNot { isInvalid(it.key) }
+                            .toMutableMap()
+                        uriStorageFileCache = uriStorageFileCache
+                            .toMap()
+                            .filterNot { isInvalid(it.key) }
+                            .toMutableMap()
                     }
                 }
             } catch (e: Throwable) {

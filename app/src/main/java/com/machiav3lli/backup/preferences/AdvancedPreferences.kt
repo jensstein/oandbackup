@@ -39,6 +39,7 @@ import com.machiav3lli.backup.ui.item.IntPref
 import com.machiav3lli.backup.ui.item.LaunchPref
 import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.ui.item.StringPref
+import com.machiav3lli.backup.utils.TraceUtils
 import com.machiav3lli.backup.utils.sortFilterModel
 
 
@@ -385,32 +386,34 @@ val pref_trace = BooleanPref(
     defaultValue = false
 )
 
-val pref_traceFlows = BooleanPref(
-    key = "dev-trace.traceFlows",
+val traceSection = TraceUtils.TracePref(
+    name = "Section",
+    summary = "trace important sections (backup, schedule, etc.)",
+    default = true
+)
+
+val traceFlows = TraceUtils.TracePrefBold(
+    name = "Flows",
     summary = "trace Kotlin Flows (reactive data streams)",
-    defaultValue = true,
-    enableIf = { pref_trace.value }
+    default = true
 )
 
-val pref_traceBusy = BooleanPref(
-    key = "dev-trace.traceBusy",
-    summary = "trace beginBusy/endBusy (busy indicator)",
-    defaultValue = true,
-    enableIf = { pref_trace.value }
+val traceBusy = TraceUtils.TracePrefBold(
+    name = "Busy",
+    default = true,
+    summary = "trace beginBusy/endBusy (busy indicator)"
 )
 
-val pref_traceBackupProps = BooleanPref(
-    key = "dev-trace.traceBackupProps",
+val traceBackupProps = TraceUtils.TracePref(
+    name = "BackupProps",
     summary = "trace backup properties (json)",
-    defaultValue = false,
-    enableIf = { pref_trace.value }
+    default = false
 )
 
-val pref_traceDebug = BooleanPref(
-    key = "dev-trace.traceDebug",
+val traceDebug = TraceUtils.TracePref(
+    name = "Debug",
     summary = "trace for debugging purposes (for devs)",
-    defaultValue = false,
-    enableIf = { pref_trace.value }
+    default = false
 )
 
 //---------------------------------------- developer settings - faking
