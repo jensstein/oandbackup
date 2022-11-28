@@ -72,9 +72,10 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.beginBusy
 import com.machiav3lli.backup.OABX.Companion.endBusy
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
+import com.machiav3lli.backup.handler.ShellHandler.FileInfo.Companion.utilBoxInfo
+import com.machiav3lli.backup.pref_maxLogLines
 import com.machiav3lli.backup.ui.compose.SelectionContainerX
 import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.compose.item.RoundButton
@@ -89,21 +90,7 @@ fun info(): List<String> {
         "",
         "--- > info",
         "${BuildConfig.APPLICATION_ID} ${BuildConfig.VERSION_NAME}"
-    ) + ShellHandler.utilBoxes.map { box ->
-        "${box.name}: ${
-            if (box.version.isNotEmpty() and (box.version != "0.0.0"))
-                "${box.version}${
-                    if (utilBox.isKnownVersion) "" else " (unknown)"
-                } -> ${box.score}${
-                    if (box.hasBugs())
-                        " bugs: " + box.bugs.keys.joinToString(",")
-                    else
-                        " good, no known bugs"
-                }"
-            else
-                box.reason
-        }"
-    }
+    ) + utilBoxInfo()
 }
 
 fun shell(command: String): List<String> {

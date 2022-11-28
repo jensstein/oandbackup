@@ -22,6 +22,7 @@ import android.os.Environment.DIRECTORY_DOCUMENTS
 import androidx.core.text.isDigitsOnly
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.handler.ShellHandler.FileInfo.Companion.utilBoxInfo
 import com.machiav3lli.backup.preferences.pref_useFindLs
 import com.machiav3lli.backup.utils.BUFFER_SIZE
 import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
@@ -167,7 +168,7 @@ class ShellHandler {
                         throw Exception() // goto catch
                     }
                 } catch (e: Throwable) {
-                    LogsHandler.unhandledException(e, "utilBox $box --version failed")
+                    Timber.d("utilBox FAILED: ----------> $box --version")
                     try {
                         val shellResult = runAsRoot(box)
                         if (shellResult.isSuccess) {
@@ -182,7 +183,7 @@ class ShellHandler {
                             throw Exception("failed") // goto catch
                         }
                     } catch (e: Throwable) {
-                        LogsHandler.unhandledException(e, "utilBox $box failed")
+                        Timber.i("utilBox FAILED: ----------> $box")
                         utilBoxes.add(UtilBox(name = box, reason = LogsHandler.message(e)))
                     }
                 }
@@ -193,37 +194,12 @@ class ShellHandler {
         OABX.lastErrorCommand = ""  // ignore fails while searching for utilBox
 
         utilBoxes.sortByDescending { it.score }
-        utilBoxes.forEach { box ->
-            Timber.i(
-                "utilBox: ${box.name}: ${
-                    if (box.version.isNotEmpty())
-                        "${box.version} -> ${box.score}"
-                    else
-                        box.reason
-                }"
-            )
-        }
+
+        utilBoxInfo().forEach { Timber.i(it) }
+
         utilBox = utilBoxes.first()
         if (utilBox.score <= 1) {
-            Timber.d("No good utilbox found")
-            val message =
-                utilBoxes.map { box ->
-                    "${box.name}: ${
-                        if (box.version.isNotEmpty())
-                            "${box.version} -> ${box.score}"
-                        else
-                            box.reason
-                    }"
-                }.joinToString("\n")
-            OABX.addInfoText(
-                "No good utilbox found, tried these:\n${
-                    utilBoxes.map { box ->
-                        if (box.version.isNotEmpty()) "${box.version} -> ${box.score}" else ""
-                    }.joinToString("\n")
-                }${
-                    if (message.isEmpty()) "" else "\n$message"
-                }"
-            )
+            Timber.e("No good utilbox found (using $utilBox)")
             //throw UtilboxNotAvailableException(message)
         }
 
@@ -375,6 +351,24 @@ class ShellHandler {
             private val FALLBACK_MODE_FOR_DIR = translatePosixPermissionToMode("rwxrwx--x")
             private val FALLBACK_MODE_FOR_FILE = translatePosixPermissionToMode("rw-rw----")
             private val FALLBACK_MODE_FOR_CACHE = translatePosixPermissionToMode("rwxrws--x")
+
+            fun utilBoxInfo(): List<String> {
+                return utilBoxes.map { box ->
+                    "${box.name}: ${
+                        if (box.version.isNotEmpty() and (box.version != "0.0.0"))
+                            "${box.version}${
+                                if (utilBox.isKnownVersion) "" else " (unknown)"
+                            } -> ${box.score}${
+                                if (box.hasBugs())
+                                    " bugs: " + box.bugs.keys.joinToString(",")
+                                else
+                                    " good, no known bugs"
+                            }"
+                        else
+                            box.reason
+                    }"
+                }
+            }
 
             /*  from toybox ls.c
 

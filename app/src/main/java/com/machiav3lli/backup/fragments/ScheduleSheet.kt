@@ -68,7 +68,7 @@ import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.dialogs.ScheduleNameDialog
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.mainFilterChipItems
-import com.machiav3lli.backup.preferences.traceDebug
+import com.machiav3lli.backup.traceDebug
 import com.machiav3lli.backup.schedSpecialFilterChipItems
 import com.machiav3lli.backup.scheduleBackupModeChipItems
 import com.machiav3lli.backup.services.ScheduleService

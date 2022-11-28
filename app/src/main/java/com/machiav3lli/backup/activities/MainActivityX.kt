@@ -62,8 +62,8 @@ import com.machiav3lli.backup.fragments.BatchPrefsSheet
 import com.machiav3lli.backup.fragments.SortFilterSheet
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
+import com.machiav3lli.backup.pref_catchUncaughtException
 import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
-import com.machiav3lli.backup.preferences.pref_catchUncaughtException
 import com.machiav3lli.backup.preferences.pref_refreshOnStart
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork

@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layout
 import com.machiav3lli.backup.preferences.pref_useSelectableText
-import com.machiav3lli.backup.preferences.traceFlows
+import com.machiav3lli.backup.traceFlows
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

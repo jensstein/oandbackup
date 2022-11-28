@@ -27,8 +27,8 @@ import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.preferences.pref_useAlarmClock
 import com.machiav3lli.backup.preferences.pref_useExactAlarm
-import com.machiav3lli.backup.preferences.traceSchedule
 import com.machiav3lli.backup.services.AlarmReceiver
+import com.machiav3lli.backup.traceSchedule
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 

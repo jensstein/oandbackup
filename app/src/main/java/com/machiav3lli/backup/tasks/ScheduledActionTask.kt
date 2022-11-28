@@ -32,6 +32,7 @@ import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.getInstalledPackageList
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.pref_catchUncaughtException
 import com.machiav3lli.backup.preferences.pref_oldBackups
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
