@@ -33,6 +33,7 @@ import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.getPackageStorageStats
 import com.machiav3lli.backup.preferences.pref_cachePackages
+import com.machiav3lli.backup.preferences.traceBackupProps
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupDir
@@ -165,7 +166,7 @@ class Package {
     }
 
     fun refreshBackupList() {
-        Timber.w("refreshbackupList: $packageName")
+        traceBackupProps { "refreshbackupList: $packageName" }
         invalidateBackupCacheForPackage(packageName)
         val backups = mutableListOf<Backup>()
         getAppBackupRoot()?.listFiles()  //TODO hg42 create a coroutine version of  listFiles?

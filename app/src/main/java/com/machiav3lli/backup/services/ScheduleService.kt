@@ -33,17 +33,18 @@ import com.machiav3lli.backup.ACTION_CANCEL
 import com.machiav3lli.backup.ACTION_SCHEDULE
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.OABX.Companion.beginLogSection
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.preferences.pref_useForeground
+import com.machiav3lli.backup.preferences.traceSchedule
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.tasks.ScheduledActionTask
 import com.machiav3lli.backup.utils.scheduleAlarm
-import timber.log.Timber
 
 open class ScheduleService : Service() {
     private lateinit var scheduledActionTask: ScheduledActionTask
@@ -57,7 +58,7 @@ open class ScheduleService : Service() {
 
     override fun onCreate() {
         OABX.wakelock(true)
-        Timber.i("%%%%% ############################################################ ScheduleService create")
+        traceSchedule { "%%%%% ############################################################ ScheduleService create" }
         super.onCreate()
         OABX.service = this
         this.notificationId = System.currentTimeMillis().toInt()
@@ -82,9 +83,7 @@ open class ScheduleService : Service() {
     }
 
     override fun onDestroy() {
-        Timber.i(
-            "%%%%% ############################################################ ScheduleService destroy"
-        )
+        traceSchedule { "%%%%% ############################################################ ScheduleService destroy" }
         OABX.service = null
         OABX.wakelock(false)
     }
@@ -96,34 +95,36 @@ open class ScheduleService : Service() {
 
         OABX.wakelock(true)
 
-        var message =
-            "%%%%% ############################################################ ScheduleService starting for scheduleId=$scheduleId name=$name"
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            message += " ui=$isUiContext"
+        traceSchedule {
+            var message =
+                "%%%%% ############################################################ ScheduleService starting for scheduleId=$scheduleId name=$name"
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                message += " ui=$isUiContext"
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                message += " fgsv=$foregroundServiceType"
+            }
+            message
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            message += " fgsv=$foregroundServiceType"
-        }
-        Timber.i(message)
 
         if (intent != null) {
             when (val action = intent.action) {
                 ACTION_CANCEL -> {
-                    Timber.i("action $action")
+                    traceSchedule { "action $action" }
                     OABX.work.cancel(name)
                     OABX.wakelock(false)
-                    Timber.d("%%%%% service stop")
+                    traceSchedule { "%%%%% service stop" }
                     stopSelf()
                 }
                 ACTION_SCHEDULE -> {
                     // scheduleId already read from extras
-                    Timber.i("action $action")
+                    traceSchedule { "action $action" }
                 }
                 null -> {
                     // no action = standard action, simply continue with extra data
                 }
                 else -> {
-                    Timber.d("action $action unknown, ignored")
+                    traceSchedule { "action $action unknown, ignored" }
                     //OABX.wakelock(false)
                     //return START_NOT_STICKY
                     // or
@@ -237,7 +238,7 @@ open class ScheduleService : Service() {
                     super.onPostExecute(result)
                 }
             }
-            Timber.i(getString(R.string.sched_startingbackup))
+            traceSchedule { getString(R.string.sched_startingbackup) }   //TODO why translate this?
             scheduledActionTask.execute()
         }
         OABX.wakelock(false)
@@ -246,9 +247,11 @@ open class ScheduleService : Service() {
 
     fun startedSchedule() {
         runningSchedules++
+        beginLogSection("schedule")
     }
 
     fun stoppedSchedule(intent: Intent?) {
+        OABX.endLogSection("schedule")
         runningSchedules--
         // do this globally
         //if (runningSchedules <= 0)

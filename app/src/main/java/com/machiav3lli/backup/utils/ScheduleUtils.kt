@@ -27,6 +27,7 @@ import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.preferences.pref_useAlarmClock
 import com.machiav3lli.backup.preferences.pref_useExactAlarm
+import com.machiav3lli.backup.preferences.traceSchedule
 import com.machiav3lli.backup.services.AlarmReceiver
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -56,11 +57,13 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                 val timeLeft = calculateTimeToRun(schedule, now) - now
 
                 if (rescheduleBoolean) {
+                    traceSchedule { "re-scheduling $schedule" }
                     schedule = schedule.copy(
                         timePlaced = now,
                         timeToRun = calculateTimeToRun(schedule, now)
                     )
                 } else if (timeLeft <= TimeUnit.MINUTES.toMillis(1)) {
+                    traceSchedule { "set schedule $schedule" }
                     schedule = schedule.copy(
                         timeToRun = now + TimeUnit.MINUTES.toMillis(1)
                     )
@@ -93,9 +96,13 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                             pendingIntent
                         )
                 }
-                Timber.i("scheduled backup starting in: ${TimeUnit.MILLISECONDS.toMinutes(schedule.timeToRun - System.currentTimeMillis())} minutes")
+                traceSchedule {
+                    "schedule starting in: ${
+                        TimeUnit.MILLISECONDS.toMinutes(schedule.timeToRun - System.currentTimeMillis())
+                    } minutes"
+                }
             } else
-                Timber.i("schedule is disabled. Nothing to schedule!")
+                traceSchedule { "schedule is disabled. Nothing to schedule!" }
         }.start()
     } else {
         Timber.e("got id: $scheduleId from $context")
@@ -107,7 +114,7 @@ fun cancelAlarm(context: Context, scheduleId: Long) {
     val pendingIntent = createPendingIntent(context, scheduleId)
     alarmManager.cancel(pendingIntent)
     pendingIntent.cancel()
-    Timber.i("cancelled backup with id: $scheduleId")
+    traceSchedule { "cancelled schedule with id: $scheduleId" }
 }
 
 fun createPendingIntent(context: Context, scheduleId: Long): PendingIntent {

@@ -39,7 +39,8 @@ import com.machiav3lli.backup.ui.item.IntPref
 import com.machiav3lli.backup.ui.item.LaunchPref
 import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.ui.item.StringPref
-import com.machiav3lli.backup.utils.TraceUtils
+import com.machiav3lli.backup.utils.TraceUtils.TracePref
+import com.machiav3lli.backup.utils.TraceUtils.TracePrefBold
 import com.machiav3lli.backup.utils.sortFilterModel
 
 
@@ -386,31 +387,37 @@ val pref_trace = BooleanPref(
     defaultValue = false
 )
 
-val traceSection = TraceUtils.TracePref(
+val traceSection = TracePref(
     name = "Section",
     summary = "trace important sections (backup, schedule, etc.)",
     default = true
 )
 
-val traceFlows = TraceUtils.TracePrefBold(
+val traceSchedule = TracePrefBold(
+    name = "Schedule",
+    summary = "trace schedules",
+    default = true
+)
+
+val traceFlows = TracePrefBold(
     name = "Flows",
     summary = "trace Kotlin Flows (reactive data streams)",
     default = true
 )
 
-val traceBusy = TraceUtils.TracePrefBold(
+val traceBusy = TracePrefBold(
     name = "Busy",
     default = true,
     summary = "trace beginBusy/endBusy (busy indicator)"
 )
 
-val traceBackupProps = TraceUtils.TracePref(
+val traceBackupProps = TracePref(
     name = "BackupProps",
     summary = "trace backup properties (json)",
     default = false
 )
 
-val traceDebug = TraceUtils.TracePref(
+val traceDebug = TracePref(
     name = "Debug",
     summary = "trace for debugging purposes (for devs)",
     default = false
