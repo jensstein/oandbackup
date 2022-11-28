@@ -68,6 +68,7 @@ import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.dialogs.ScheduleNameDialog
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.mainFilterChipItems
+import com.machiav3lli.backup.preferences.traceDebug
 import com.machiav3lli.backup.schedSpecialFilterChipItems
 import com.machiav3lli.backup.scheduleBackupModeChipItems
 import com.machiav3lli.backup.services.ScheduleService
@@ -86,7 +87,6 @@ import com.machiav3lli.backup.ui.compose.recycler.MultiSelectableChipGroup
 import com.machiav3lli.backup.ui.compose.recycler.SelectableChipGroup
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.item.ChipItem
-import com.machiav3lli.backup.utils.TraceUtils.traceDebug
 import com.machiav3lli.backup.utils.calculateTimeToRun
 import com.machiav3lli.backup.utils.cancelAlarm
 import com.machiav3lli.backup.utils.filterToString

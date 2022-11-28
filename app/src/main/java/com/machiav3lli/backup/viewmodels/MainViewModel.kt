@@ -33,11 +33,10 @@ import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.Package.Companion.invalidateCacheForPackage
-import com.machiav3lli.backup.preferences.pref_traceFlows
 import com.machiav3lli.backup.preferences.pref_usePackageCacheOnUpdate
+import com.machiav3lli.backup.preferences.traceFlows
 import com.machiav3lli.backup.ui.compose.MutableComposableFlow
 import com.machiav3lli.backup.utils.TraceUtils.trace
-import com.machiav3lli.backup.utils.TraceUtils.traceBold
 import com.machiav3lli.backup.utils.applyFilter
 import com.machiav3lli.backup.utils.sortFilterModel
 import kotlinx.coroutines.Dispatchers
@@ -92,8 +91,7 @@ class MainViewModel(
 
     val packageList = combine(db.appInfoDao.allFlow, backupsMap) { p, b ->
         //========================================================================================== packageList
-        if (pref_traceFlows.value)
-            traceBold { "******************** database - db: ${p.size} backups: ${b.size}" }
+        traceFlows { "******************** database - db: ${p.size} backups: ${b.size}" }
 
         val list =
             p.toPackageList(
@@ -102,8 +100,7 @@ class MainViewModel(
                 b
             )
 
-        if (pref_traceFlows.value)
-            traceBold { "***** packages ->> ${list.size}" }
+        traceFlows { "***** packages ->> ${list.size}" }
         list
     }
         .trace { "*** packageList <<- ${it.size}" }
@@ -126,8 +123,7 @@ class MainViewModel(
 
     val notBlockedList = combine(packageList, blocklist) { p, b ->
         //========================================================================================== notBlockedList
-        if (pref_traceFlows.value)
-            traceBold {
+        traceFlows {
                 "******************** blocking - list: ${p.size} block: ${
                     b.joinToString(
                         ","
@@ -138,8 +134,7 @@ class MainViewModel(
         val block = b.map { it.packageName }
         val list = p.filterNot { block.contains(it.packageName) }
 
-        if (pref_traceFlows.value)
-            traceBold { "***** blocked ->> ${list.size}" }
+        traceFlows { "***** blocked ->> ${list.size}" }
         list
     }
         .trace { "*** notBlockedList <<- ${it.size}" }
@@ -165,8 +160,7 @@ class MainViewModel(
 
     val filteredList = combine(notBlockedList, modelSortFilter.flow, searchQuery.flow) { p, f, s ->
         //========================================================================================== filteredList
-        if (pref_traceFlows.value)
-            traceBold { "******************** filtering - list: ${p.size} filter: $f" }
+        traceFlows { "******************** filtering - list: ${p.size} filter: $f" }
 
         val list = p
             .filter { item: Package ->
@@ -177,8 +171,7 @@ class MainViewModel(
             }
             .applyFilter(f, OABX.main!!)
 
-        if (pref_traceFlows.value)
-            traceBold { "***** filtered ->> ${list.size}" }
+        traceFlows { "***** filtered ->> ${list.size}" }
         list
     }
         .trace { "*** filteredList <<- ${it.size}" }

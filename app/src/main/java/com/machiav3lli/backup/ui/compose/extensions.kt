@@ -4,9 +4,8 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layout
-import com.machiav3lli.backup.preferences.pref_traceFlows
 import com.machiav3lli.backup.preferences.pref_useSelectableText
-import com.machiav3lli.backup.utils.TraceUtils.traceBold
+import com.machiav3lli.backup.preferences.traceFlows
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -59,14 +58,12 @@ class MutableComposableSharedFlow<T>(
 
     var value: T
         get() {
-            var value = state.value
-            if (pref_traceFlows.value)
-                traceBold { "*** $label => $value" }
+            val value = state.value
+            traceFlows { "*** $label => $value" }
             return value
         }
         set(value: T) {
-            if (pref_traceFlows.value)
-                traceBold { "*** $label <= $value" }
+            traceFlows { "*** $label <= $value" }
             initial = value
             scope.launch { flow.emit(value) }
         }
@@ -88,13 +85,11 @@ class MutableComposableStateFlow<T>(
     var value: T
         get() {
             val value = state.value
-            if (pref_traceFlows.value)
-                traceBold { "*** $label => $value" }
+            traceFlows { "*** $label => $value" }
             return value
         }
         set(value: T) {
-            if (pref_traceFlows.value)
-                traceBold { "*** $label <= $value" }
+            traceFlows { "*** $label <= $value" }
             //initial = value
             scope.launch { flow.update { value } }
         }

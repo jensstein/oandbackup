@@ -40,11 +40,11 @@ import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.preferences.pref_cancelOnStart
 import com.machiav3lli.backup.preferences.pref_logToSystemLogcat
 import com.machiav3lli.backup.preferences.pref_maxLogLines
-import com.machiav3lli.backup.preferences.pref_traceBusy
+import com.machiav3lli.backup.preferences.traceBusy
+import com.machiav3lli.backup.preferences.traceSection
 import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.utils.TraceUtils.methodName
-import com.machiav3lli.backup.utils.TraceUtils.traceBold
 import com.machiav3lli.backup.utils.styleTheme
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -167,6 +167,27 @@ class OABX : Application() {
         val lastLogMessages = mutableListOf<String>()
         var lastErrorPackage = ""
         var lastErrorCommand = ""
+        var logSections = mutableMapOf<String, Int>().withDefault { 0 }     //TODO hg42 use AtomicInteger? but map is synchronized anyways
+
+        fun beginLogSection(section: String) {
+            var count = 0
+            synchronized(logSections) {
+                count = logSections.getValue(section)
+                logSections[section] = count + 1
+                //if (count == 0 && xxx)  logMessages.clear()           //TODO hg42
+            }
+            traceSection { "*** ${"|---".repeat(count-1)}\\ $section" }
+        }
+
+        fun endLogSection(section: String) {
+            var count = 0
+            synchronized(logSections) {
+                count = logSections.getValue(section)
+                logSections[section] = count - 1
+            }
+            traceSection { "*** ${"|---".repeat(count)}/ $section" }
+            //if (count == 0 && xxx)  ->Log                             //TODO hg42
+        }
 
         // app should always be created
         var appRef: WeakReference<OABX> = WeakReference(null)
@@ -248,7 +269,7 @@ class OABX : Application() {
 
         // if any background work is to be done
         private var theWakeLock: PowerManager.WakeLock? = null
-        private var wakeLockNested: Int = 0
+        private var wakeLockNested: Int = 0                         //TODO hg42 use AtomicInteger
         private const val wakeLockTag = "OABX:Application"
 
         // count the nesting levels
@@ -290,18 +311,18 @@ class OABX : Application() {
         val busy = mutableStateOf(0)
 
         fun beginBusy(name: String? = null) {
-            if (pref_traceBusy.value) {
+            traceBusy {
                 val label = name ?: methodName(1)
-                traceBold { "*** ${"+---".repeat(_busy.get())}\\ busy $label" }
+                "*** ${"+---".repeat(_busy.get())}\\ busy $label"
             }
             busy.value = _busy.accumulateAndGet(+1, Int::plus)
         }
 
         fun endBusy(name: String? = null) {
             busy.value = _busy.accumulateAndGet(-1, Int::plus)
-            if (pref_traceBusy.value) {
+            traceBusy {
                 val label = name ?: methodName(1)
-                traceBold { "*** ${"+---".repeat(_busy.get())}/ busy $label" }
+                "*** ${"+---".repeat(_busy.get())}/ busy $label"
             }
         }
     }
