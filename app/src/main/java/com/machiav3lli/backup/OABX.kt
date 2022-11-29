@@ -176,7 +176,7 @@ class OABX : Application() {
                 logSections[section] = count + 1
                 //if (count == 0 && xxx)  logMessages.clear()           //TODO hg42
             }
-            traceSection { "*** ${"|---".repeat(count-1)}\\ $section" }
+            traceSection { "*** ${"|---".repeat(count)}\\ $section" }
         }
 
         fun endLogSection(section: String) {
@@ -185,7 +185,7 @@ class OABX : Application() {
                 count = logSections.getValue(section)
                 logSections[section] = count - 1
             }
-            traceSection { "*** ${"|---".repeat(count)}/ $section" }
+            traceSection { "*** ${"|---".repeat(count-1)}/ $section" }
             //if (count == 0 && xxx)  ->Log                             //TODO hg42
         }
 
