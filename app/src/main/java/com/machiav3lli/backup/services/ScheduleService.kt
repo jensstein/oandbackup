@@ -152,6 +152,7 @@ open class ScheduleService : Service() {
                             getString(R.string.empty_filtered_list),
                             false
                         )
+                        traceSchedule { "stop service -> re-schedule" }
                         scheduleAlarm(context, scheduleId, true)
                         stopService(intent)
                     } else {
@@ -215,6 +216,9 @@ open class ScheduleService : Service() {
                                     t?.state == WorkInfo.State.FAILED ||
                                     t?.state == WorkInfo.State.CANCELLED
                                 ) {
+                                    traceSchedule {
+                                        "work manager changed to state ${t.state.name} -> re-schedule"
+                                    }
                                     scheduleAlarm(context, scheduleId, true)
                                     OABX.main?.refreshPackages()
                                     finishWorkLiveData.removeObserver(this)

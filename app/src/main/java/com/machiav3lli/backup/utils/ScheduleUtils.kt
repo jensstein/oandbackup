@@ -62,11 +62,13 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                         timePlaced = now,
                         timeToRun = calculateTimeToRun(schedule, now)
                     )
+                    traceSchedule { "re-scheduling $schedule" }
                 } else if (timeLeft <= TimeUnit.MINUTES.toMillis(1)) {
                     traceSchedule { "set schedule $schedule" }
                     schedule = schedule.copy(
                         timeToRun = now + TimeUnit.MINUTES.toMillis(1)
                     )
+                    traceSchedule { "set schedule $schedule" }
                 }
                 scheduleDao.update(schedule)
 
@@ -78,23 +80,27 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                     }
                 val pendingIntent = createPendingIntent(context, scheduleId)
                 if (hasPermission && pref_useAlarmClock.value) {
+                    traceSchedule { "alarmManager.setAlarmClock $schedule" }
                     alarmManager.setAlarmClock(
                         AlarmManager.AlarmClockInfo(schedule.timeToRun, null),
                         pendingIntent
                     )
                 } else {
-                    if (hasPermission && pref_useExactAlarm.value)
+                    if (hasPermission && pref_useExactAlarm.value) {
+                        traceSchedule { "alarmManager.setExactAndAllowWhileIdle $schedule" }
                         alarmManager.setExactAndAllowWhileIdle(
                             AlarmManager.RTC_WAKEUP,
                             schedule.timeToRun,
                             pendingIntent
                         )
-                    else
+                    } else {
+                        traceSchedule { "alarmManager.setAndAllowWhileIdle $schedule" }
                         alarmManager.setAndAllowWhileIdle(
                             AlarmManager.RTC_WAKEUP,
                             schedule.timeToRun,
                             pendingIntent
                         )
+                    }
                 }
                 traceSchedule {
                     "schedule starting in: ${
