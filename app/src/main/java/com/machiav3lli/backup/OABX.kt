@@ -50,8 +50,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.lang.ref.WeakReference
-import java.text.SimpleDateFormat
-import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
 
@@ -232,8 +230,7 @@ class OABX : Application() {
                             else                     -> "?"
                         }
                     val now = System.currentTimeMillis()
-                    val timeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                    val date = timeFormat.format(now)
+                    val date = ISO_DATE_TIME_FORMAT.format(now)
                     try {
                         synchronized(OABX.lastLogMessages) {
                             OABX.lastLogMessages.add("$date $prio $tag : $message")
@@ -412,7 +409,7 @@ class OABX : Application() {
         fun beginBusy(name: String? = null) {
             traceBusy {
                 val label = name ?: methodName(1)
-                "*** ${"+---".repeat(_busy.get())}\\ busy $label"
+                "*** ${"|---".repeat(_busy.get())}\\ busy $label"
             }
             busy.value = _busy.accumulateAndGet(+1, Int::plus)
         }
@@ -421,7 +418,7 @@ class OABX : Application() {
             busy.value = _busy.accumulateAndGet(-1, Int::plus)
             traceBusy {
                 val label = name ?: methodName(1)
-                "*** ${"+---".repeat(_busy.get())}/ busy $label"
+                "*** ${"|---".repeat(_busy.get())}/ busy $label"
             }
         }
     }
