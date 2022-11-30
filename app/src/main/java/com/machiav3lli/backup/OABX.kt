@@ -252,9 +252,9 @@ class OABX : Application() {
 
                 override fun createStackElementTag(element: StackTraceElement): String {
                     if (element.methodName.startsWith("trace"))
-                        return ""
+                        return "NeoBackup"
                     else
-                        return "${
+                        return "NeoBackup:${
                             super.createStackElementTag(element)
                         }.${
                             element.methodName
