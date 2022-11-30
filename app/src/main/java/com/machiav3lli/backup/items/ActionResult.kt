@@ -39,6 +39,6 @@ class ActionResult(
     }
 
     companion object {
-        val timeFormat = SimpleDateFormat("yyyy/MM/dd - HH:mm:ss", Locale.ENGLISH)
+        val timeFormat = SimpleDateFormat("yyyy/MM/dd - HH:mm:ss", Locale.ENGLISH)      //TODO hg42 why ENGLISH???
     }
 }
