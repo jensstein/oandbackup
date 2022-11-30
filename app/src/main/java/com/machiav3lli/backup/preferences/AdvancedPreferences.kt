@@ -351,6 +351,13 @@ val pref_fakeBackupSeconds = IntPref(
     defaultValue = 0
 )
 
+val pref_fakeScheduleMin = IntPref(
+    key = "dev-fake.fakeScheduleMin",
+    summary = "[minute] run each enabled schedule every x min",
+    entries = (listOf(0) + (3..9 step 1) + (10..60 step 5)).toList(),
+    defaultValue = 0
+)
+
 val pref_forceCrash = LaunchPref(
     key = "dev-fake.forceCrash",
     summary = "crash the app [for testing only]"
