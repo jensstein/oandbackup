@@ -232,7 +232,10 @@ val legendList = listOf(
 val ISO_DATE_TIME_FORMAT get() : SimpleDateFormat =
     SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
 
-val ISO_DATE_TIME_MS_FORMAT get() : SimpleDateFormat =
+val ISO_DATE_TIME_FORMAT_MIN get() : SimpleDateFormat =
+    SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+
+val ISO_DATE_TIME_FORMAT_MS get() : SimpleDateFormat =
     SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS", Locale.getDefault())
 
 // must be ISO time format for sane sorting yyyy, MM, dd, ...
