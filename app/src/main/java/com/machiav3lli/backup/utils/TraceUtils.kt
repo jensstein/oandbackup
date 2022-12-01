@@ -55,12 +55,15 @@ object TraceUtils {
     }
 
     fun <T> Flow<T>.trace(lazyText: (T) -> String): Flow<T> {
-        // doesn't really matter, but toggling the pref only works when recreating the flow
-        //return if (traceFlows.value)
-        //    onEach { traceFlows { lazyText(it) } }
-        //else
-        //    this
-        return onEach { traceFlows { lazyText(it) } }
+        return if (traceFlows.pref.value)
+            onEach { traceFlows { lazyText(it) } }
+        else
+            this
+
+        // speed doesn't really matter, but toggling the pref only has an effect when recreating the flow
+        //return onEach { traceFlows { lazyText(it) } }
+
+        //return this
     }
 
     // reflection
@@ -76,8 +79,18 @@ object TraceUtils {
 
     fun methodName(skip: Int = 0): String {
         return try {
-            val frame = stackFrame(skip + 2)
-            frame?.methodName ?: ""
+            val stackTrace = Throwable().stackTrace
+            var i = skip + 2
+            var methodName = ""
+            do {
+                val frame = stackTrace[++i]
+                methodName = frame?.methodName ?: ""
+            } while (frame != null && (
+                        methodName.contains("trace") ||
+                        methodName.contains("log")
+                        )
+            )
+            methodName
         } catch (e: Throwable) {
             ""
         }
@@ -85,8 +98,21 @@ object TraceUtils {
 
     fun classAndMethodName(skip: Int = 0): String {
         return try {
-            val frame = stackFrame(skip + 1)
-            "${frame?.className}::${frame?.methodName}"
+            val stackTrace = Throwable().stackTrace
+            var i = skip + 2
+            var className = ""
+            var methodName = ""
+            do {
+                val frame = stackTrace[++i]
+                className = frame?.className ?: ""
+                methodName = frame?.methodName ?: ""
+            } while (frame != null && (
+                        className.contains("Log") ||
+                        methodName.contains("trace") ||
+                        methodName.contains("log")
+                        )
+            )
+            "${className}::${methodName}"
         } catch (e: Throwable) {
             ""
         }

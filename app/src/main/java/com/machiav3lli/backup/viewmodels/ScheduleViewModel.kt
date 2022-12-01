@@ -25,7 +25,6 @@ import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.dbs.dao.ScheduleDao
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.traceSchedule
-import com.machiav3lli.backup.utils.TraceUtils.trace
 import com.machiav3lli.backup.utils.cancelAlarm
 import com.machiav3lli.backup.utils.scheduleAlarm
 import kotlinx.coroutines.Dispatchers
@@ -42,7 +41,7 @@ class ScheduleViewModel(
 ) : AndroidViewModel(appContext) {
 
     val schedule: StateFlow<Schedule> = scheduleDB.getScheduleFlow(id)
-        .trace { "*** schedule <<- ${it}" }
+        //TODO hg42 .trace { "*** schedule <<- ${it}" }     // what can here be null? (something is null that is not declared as nullable)
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
