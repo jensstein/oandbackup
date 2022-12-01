@@ -62,14 +62,14 @@ class ScheduleViewModel(
         withContext(Dispatchers.IO) {
             scheduleDB.update(schedule)
             if (schedule.enabled) {
-                traceSchedule { "ScheduleViewModel.updateS -> ${if (rescheduleBoolean) "re-" else ""}schedule"}
+                traceSchedule { "ScheduleViewModel.updateS -> ${if (rescheduleBoolean) "re-" else ""}schedule" }
                 scheduleAlarm(
                     getApplication<Application>().baseContext,
                     schedule.id,
                     rescheduleBoolean
                 )
             } else {
-                traceSchedule { "ScheduleViewModel.updateS -> cancelAlarm"}
+                traceSchedule { "ScheduleViewModel.updateS -> cancelAlarm" }
                 cancelAlarm(getApplication<Application>().baseContext, schedule.id)
             }
         }

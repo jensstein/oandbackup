@@ -51,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
@@ -87,17 +88,15 @@ import com.machiav3lli.backup.ui.compose.recycler.MultiSelectableChipGroup
 import com.machiav3lli.backup.ui.compose.recycler.SelectableChipGroup
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.item.ChipItem
-import com.machiav3lli.backup.utils.calculateTimeToRun
 import com.machiav3lli.backup.utils.cancelAlarm
 import com.machiav3lli.backup.utils.filterToString
+import com.machiav3lli.backup.utils.getTimeLeft
 import com.machiav3lli.backup.utils.modeToModes
 import com.machiav3lli.backup.utils.modesToString
 import com.machiav3lli.backup.utils.specialBackupsEnabled
 import com.machiav3lli.backup.utils.specialFilterToString
 import com.machiav3lli.backup.viewmodels.ScheduleViewModel
 import java.time.LocalTime
-import java.util.concurrent.TimeUnit
-import kotlin.math.abs
 
 class ScheduleSheet() : BaseSheet() {
     private lateinit var viewModel: ScheduleViewModel
@@ -128,23 +127,6 @@ class ScheduleSheet() : BaseSheet() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent { SchedulePage() }
         }
-    }
-
-    private fun getTimeLeft(schedule: Schedule): String {
-        var text = ""
-        if (schedule.enabled) {
-            val now = System.currentTimeMillis()
-            val timeDiff = abs(calculateTimeToRun(schedule, now) - now)     //TODO hg42 why abs ???
-            val days = TimeUnit.MILLISECONDS.toDays(timeDiff).toInt()
-            if (days != 0) {
-                text += requireContext().resources
-                    .getQuantityString(R.plurals.days_left, days, days)
-            }
-            val hours = TimeUnit.MILLISECONDS.toHours(timeDiff).toInt() % 24
-            val minutes = TimeUnit.MILLISECONDS.toMinutes(timeDiff).toInt() % 60
-            text += LocalTime.of(hours, minutes).toString()
-        }
-        return text
     }
 
     private fun refresh(
@@ -292,6 +274,7 @@ class ScheduleSheet() : BaseSheet() {
         val customList by viewModel.customList.collectAsState(emptySet())
         val blockList by viewModel.blockList.collectAsState(emptySet())
         val nestedScrollConnection = rememberNestedScrollInteropConnection()
+        val context = LocalContext.current
 
         traceDebug { "*** recompose schedule <<- ${schedule}" }
 
@@ -310,13 +293,10 @@ class ScheduleSheet() : BaseSheet() {
                         Divider(thickness = 2.dp)
                         Spacer(modifier = Modifier.height(8.dp))
                         Row {
+                            val (absTime, relTime) = getTimeLeft(context, schedule)
                             AnimatedVisibility(visible = schedule.enabled) {
                                 Text(
-                                    text = "${
-                                        stringResource(id = R.string.sched_timeLeft)
-                                    } ${
-                                        getTimeLeft(schedule)
-                                    }"
+                                    text = "⏳ $relTime    🕒 $absTime"
                                 )
                             }
                         }

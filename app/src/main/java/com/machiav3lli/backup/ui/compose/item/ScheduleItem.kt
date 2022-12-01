@@ -23,16 +23,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
-import com.machiav3lli.backup.utils.calculateTimeToRun
-import java.time.LocalTime
-import java.util.concurrent.TimeUnit
-import kotlin.math.abs
+import com.machiav3lli.backup.utils.getTimeLeft
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,6 +38,7 @@ fun ScheduleItem(
 ) {
     val schedule by remember(item) { mutableStateOf(item) }     //TODO hg42 remove remember ???
     val (checked, check) = mutableStateOf(item.enabled)
+    val context = LocalContext.current
 
     Card(
         modifier = Modifier,
@@ -85,27 +81,15 @@ fun ScheduleItem(
                 }
                 Row(modifier = Modifier.fillMaxWidth()) {
                     AnimatedVisibility(visible = schedule.enabled) {
-                        val now = System.currentTimeMillis()
-                        val timeDiff = abs(calculateTimeToRun(schedule, now) - now)
-                        val days = TimeUnit.MILLISECONDS.toDays(timeDiff).toInt()
-                        var timeLeft = stringResource(id = R.string.sched_timeLeft)
-                        if (days != 0) {
-                            timeLeft += " ${
-                                LocalContext.current.resources
-                                    .getQuantityString(R.plurals.days_left, days, days)
-                            }"
-                        }
-                        val hours = TimeUnit.MILLISECONDS.toHours(timeDiff).toInt() % 24
-                        val minutes = TimeUnit.MILLISECONDS.toMinutes(timeDiff).toInt() % 60
-                        timeLeft += " ${LocalTime.of(hours, minutes)}"
+                        val (absTime, relTime) = getTimeLeft(context, schedule)
                         Text(
-                            text = timeLeft,
+                            text = "    🕒 $absTime\n    ⏳ $relTime",
                             modifier = Modifier
                                 .align(Alignment.CenterVertically)
                                 .weight(1f),
                             softWrap = true,
                             overflow = TextOverflow.Ellipsis,
-                            maxLines = 1,
+                            maxLines = 2,
                             style = MaterialTheme.typography.bodySmall
                         )
                     }
