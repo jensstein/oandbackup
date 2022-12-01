@@ -67,14 +67,7 @@ fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
         }
         .toList()
 
-// TODO remove fully
-@Throws(
-    FileUtils.BackupLocationInAccessibleException::class,
-    StorageLocationNotConfiguredException::class
-)
-fun Context.getInstalledPackageList(            // only used in ScheduledActionTask
-    blockList: List<String> = listOf()
-): MutableList<Package> {
+fun Context.getInstalledPackageList()  : MutableList<Package> { // only used in ScheduledActionTask
 
     var packageList: MutableList<Package>
 
@@ -88,10 +81,7 @@ fun Context.getInstalledPackageList(            // only used in ScheduledActionT
         val packageInfoList = pm.getInstalledPackagesWithPermissions()
         packageList = packageInfoList
             .filterNotNull()
-            .filterNot {
-                it.packageName.matches(ignoredPackages)
-                        || blockList.contains(it.packageName)
-            }
+            .filterNot { it.packageName.matches(ignoredPackages) }
             .mapNotNull {
                 try {
                     Package(this, it, backupRoot)

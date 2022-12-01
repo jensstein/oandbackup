@@ -32,7 +32,6 @@ import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.getInstalledPackageList
 import com.machiav3lli.backup.items.Package
-import com.machiav3lli.backup.pref_catchUncaughtException
 import com.machiav3lli.backup.preferences.pref_oldBackups
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
@@ -66,7 +65,7 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         //   so you can use it in the viewModel and in the service as separate instances
 
         val unfilteredList: List<Package> = try {
-            context.getInstalledPackageList(blockList)
+            context.getInstalledPackageList()
         } catch (e: FileUtils.BackupLocationInAccessibleException) {
             Timber.e("Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
             LogsHandler.logErrors(
@@ -124,6 +123,7 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         val selectedItems = unfilteredList
             .filter(predicate)
             .filter(specialPredicate)
+            .filterNot { blockList.contains(it.packageName) }
             .sortedWith { m1: Package, m2: Package ->
                 m1.packageLabel.compareTo(m2.packageLabel, ignoreCase = true)
             }
