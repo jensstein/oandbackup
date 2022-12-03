@@ -1,6 +1,18 @@
 CHANGELOG
 =========
 
+8.2.5 (03.12.2022) +15 Commits & +20 Translations
+------------------
+
+#### Function
+- Fix: Schedules ignoring specials in blocklists
+- Fix: Running schedules twice
+- Add: Fake schedules
+- Add: More tracing prefs
+
+#### UI
+- Fix: Add space to info chips
+
 8.2.4 (25.11.2022) +10 Commits
 ------------------
 
