@@ -33,17 +33,16 @@ import androidx.lifecycle.ViewModel
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.DynamicColorsOptions
 import com.machiav3lli.backup.activities.MainActivityX
-import com.machiav3lli.backup.handler.LogsHandler.Companion.message
+import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.preferences.pref_cancelOnStart
-import com.machiav3lli.backup.preferences.pref_logToSystemLogcat
-import com.machiav3lli.backup.preferences.pref_maxLogLines
-import com.machiav3lli.backup.preferences.traceBusy
-import com.machiav3lli.backup.preferences.traceSection
 import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
+import com.machiav3lli.backup.ui.item.BooleanPref
+import com.machiav3lli.backup.ui.item.IntPref
+import com.machiav3lli.backup.utils.TraceUtils
 import com.machiav3lli.backup.utils.TraceUtils.methodName
 import com.machiav3lli.backup.utils.styleTheme
 import kotlinx.coroutines.MainScope
@@ -51,9 +50,96 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.lang.ref.WeakReference
-import java.text.SimpleDateFormat
-import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
+
+
+//---------------------------------------- developer settings - logging
+
+val pref_catchUncaughtException = BooleanPref(
+    key = "dev-log.catchUncaughtException",
+    summaryId = R.string.prefs_catchuncaughtexception_summary,
+    defaultValue = false
+)
+
+val pref_useLogCatForUncaught = BooleanPref(
+    key = "dev-log.useLogCatForUncaught",
+    summary = "use logcat instead of internal log for uncaught exceptions",
+    defaultValue = false,
+    enableIf = { pref_catchUncaughtException.value }
+)
+
+val pref_maxLogCount = IntPref(
+    key = "dev-log.maxLogCount",
+    summary = "maximum count of log entries",
+    entries = ((1..9 step 1) + (10..100 step 10)).toList(),
+    defaultValue = 20
+)
+
+val pref_maxLogLines = IntPref(
+    key = "dev-log.maxLogLines",
+    summary = "maximum lines in the log (logcat or internal)",
+    entries = ((10..90 step 10) + (100..500 step 50)).toList(),
+    defaultValue = 50
+)
+
+val pref_logToSystemLogcat = BooleanPref(
+    key = "dev-log.logToSystemLogcat",
+    summary = "log to Android logcat, otherwise only internal",
+    defaultValue = false
+)
+
+//---------------------------------------- developer settings - tracing
+
+val pref_trace = BooleanPref(
+    key = "dev-trace.trace",
+    summary = "global switch for all traceXXX options",
+    defaultValue = false
+)
+
+val traceSection = TraceUtils.TracePref(
+    name = "Section",
+    summary = "trace important sections (backup, schedule, etc.)",
+    default = true
+)
+
+val traceSchedule = TraceUtils.TracePrefBold(
+    name = "Schedule",
+    summary = "trace schedules",
+    default = true
+)
+
+val traceFlows = TraceUtils.TracePrefBold(
+    name = "Flows",
+    summary = "trace Kotlin Flows (reactive data streams)",
+    default = true
+)
+
+val tracePrefs = TraceUtils.TracePref(
+    name = "Prefs",
+    summary = "trace preferences",
+    default = true
+)
+
+val traceBusy = TraceUtils.TracePrefBold(
+    name = "Busy",
+    default = true,
+    summary = "trace beginBusy/endBusy (busy indicator)"
+)
+
+val traceBackupProps = TraceUtils.TracePref(
+    name = "BackupProps",
+    summary = "trace backup properties (json)",
+    default = false
+)
+
+val traceDebug = TraceUtils.TracePref(
+    name = "Debug",
+    summary = "trace for debugging purposes (for devs)",
+    default = false
+)
+
+var initializedPrefs = true
+
 
 class OABX : Application() {
 
@@ -65,63 +151,13 @@ class OABX : Application() {
     var work: WorkHandler? = null
 
     // TODO Add database here
-    init {
-        Timber.plant(object : Timber.DebugTree() {
-
-            override fun log(
-                priority: Int, tag: String?, message: String, t: Throwable?,
-            ) {
-                val traceToLogcat = runCatching { pref_logToSystemLogcat.value }.getOrDefault(true)
-                val maxLogLines = runCatching { pref_maxLogLines.value }.getOrDefault(200)
-                //val traceToLogcat = pref_logToSystemLogcat.value
-                if (traceToLogcat)
-                    super.log(priority, "$tag", message, t)
-
-                val prio =
-                    when (priority) {
-                        android.util.Log.VERBOSE -> "V"
-                        android.util.Log.ASSERT  -> "A"
-                        android.util.Log.DEBUG   -> "D"
-                        android.util.Log.ERROR   -> "E"
-                        android.util.Log.INFO    -> "I"
-                        android.util.Log.WARN    -> "W"
-                        else                     -> "?"
-                    }
-                val now = System.currentTimeMillis()
-                val timeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                val date = timeFormat.format(now)
-                try {
-                    synchronized(lastLogMessages) {
-                        lastLogMessages.add("$date $prio $tag : $message")
-                        while (lastLogMessages.size > maxLogLines)
-                            lastLogMessages.removeAt(0)
-                    }
-                } catch (e: Throwable) {
-                    // ignore
-                    lastLogMessages.clear()
-                    lastLogMessages.add("$date E LOG : while adding or limiting log lines")
-                    lastLogMessages.add("$date E LOG : ${message(e, backTrace = true)}")
-                }
-            }
-
-            override fun createStackElementTag(element: StackTraceElement): String {
-                if (element.methodName.startsWith("trace"))
-                    return ""
-                else
-                    return "${
-                        super.createStackElementTag(element)
-                    }.${
-                        element.methodName
-                    }:${
-                        element.lineNumber
-                    }"
-            }
-        })
-    }
 
     // TODO Add BroadcastReceiver for (UN)INSTALL_PACKAGE intents
+
     override fun onCreate() {
+
         super.onCreate()
+
         DynamicColors.applyToActivitiesIfAvailable(
             this,
             DynamicColorsOptions.Builder()
@@ -169,6 +205,66 @@ class OABX : Application() {
         var lastErrorCommand = ""
         var logSections = mutableMapOf<String, Int>().withDefault { 0 }     //TODO hg42 use AtomicInteger? but map is synchronized anyways
 
+        init  {
+
+            initializedPrefs = false
+
+            Timber.plant(object : Timber.DebugTree() {
+
+                override fun log(
+                    priority: Int, tag: String?, message: String, t: Throwable?,
+                ) {
+                    val traceToLogcat = if (initializedPrefs) pref_logToSystemLogcat.value else true
+                    val maxLogLines = if (initializedPrefs) pref_maxLogLines.value else 200
+                    if (traceToLogcat)
+                        super.log(priority, "$tag", message, t)
+
+                    val prio =
+                        when (priority) {
+                            android.util.Log.VERBOSE -> "V"
+                            android.util.Log.ASSERT  -> "A"
+                            android.util.Log.DEBUG   -> "D"
+                            android.util.Log.ERROR   -> "E"
+                            android.util.Log.INFO    -> "I"
+                            android.util.Log.WARN    -> "W"
+                            else                     -> "?"
+                        }
+                    val now = System.currentTimeMillis()
+                    val date = ISO_DATE_TIME_FORMAT.format(now)
+                    try {
+                        synchronized(OABX.lastLogMessages) {
+                            OABX.lastLogMessages.add("$date $prio $tag : $message")
+                            while (OABX.lastLogMessages.size > maxLogLines)
+                                OABX.lastLogMessages.removeAt(0)
+                        }
+                    } catch (e: Throwable) {
+                        // ignore
+                        OABX.lastLogMessages.clear()
+                        OABX.lastLogMessages.add("$date E LOG : while adding or limiting log lines")
+                        OABX.lastLogMessages.add("$date E LOG : ${
+                            LogsHandler.message(
+                                e,
+                                backTrace = true
+                            )
+                        }")
+                    }
+                }
+
+                override fun createStackElementTag(element: StackTraceElement): String {
+                    if (element.methodName.startsWith("trace"))
+                        return "NeoBackup>"
+                    else
+                        return "NeoBackup>${
+                            super.createStackElementTag(element)
+                        }.${
+                            element.methodName
+                        }:${
+                            element.lineNumber
+                        }"
+                }
+            })
+        }
+
         fun beginLogSection(section: String) {
             var count = 0
             synchronized(logSections) {
@@ -176,7 +272,7 @@ class OABX : Application() {
                 logSections[section] = count + 1
                 //if (count == 0 && xxx)  logMessages.clear()           //TODO hg42
             }
-            traceSection { "*** ${"|---".repeat(count-1)}\\ $section" }
+            traceSection { "*** ${"|---".repeat(count)}\\ $section" }
         }
 
         fun endLogSection(section: String) {
@@ -185,7 +281,7 @@ class OABX : Application() {
                 count = logSections.getValue(section)
                 logSections[section] = count - 1
             }
-            traceSection { "*** ${"|---".repeat(count)}/ $section" }
+            traceSection { "*** ${"|---".repeat(count-1)}/ $section" }
             //if (count == 0 && xxx)  ->Log                             //TODO hg42
         }
 
@@ -313,7 +409,7 @@ class OABX : Application() {
         fun beginBusy(name: String? = null) {
             traceBusy {
                 val label = name ?: methodName(1)
-                "*** ${"+---".repeat(_busy.get())}\\ busy $label"
+                "*** ${"|---".repeat(_busy.get())}\\ busy $label"
             }
             busy.value = _busy.accumulateAndGet(+1, Int::plus)
         }
@@ -322,7 +418,7 @@ class OABX : Application() {
             busy.value = _busy.accumulateAndGet(-1, Int::plus)
             traceBusy {
                 val label = name ?: methodName(1)
-                "*** ${"+---".repeat(_busy.get())}/ busy $label"
+                "*** ${"|---".repeat(_busy.get())}/ busy $label"
             }
         }
     }

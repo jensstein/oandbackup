@@ -5,9 +5,9 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.tracePrefs
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import com.machiav3lli.backup.utils.getPrivateSharedPrefs
-import timber.log.Timber
 
 open class Pref(
     var key: String,
@@ -44,8 +44,10 @@ open class Pref(
                 default
             }
 
-        fun setPrefFlag(name: String, value: Boolean, private: Boolean = false) =
+        fun setPrefFlag(name: String, value: Boolean, private: Boolean = false) {
+            if (!private) tracePrefs { "set pref $name = $value" }
             getPrefs(private).edit().putBoolean(name, value).apply().also { onPrefChange() }
+        }
 
         fun prefString(name: String, default: String, private: Boolean = false) =
             try {
@@ -54,8 +56,10 @@ open class Pref(
                 default
             }
 
-        fun setPrefString(name: String, value: String, private: Boolean = false) =
+        fun setPrefString(name: String, value: String, private: Boolean = false) {
+            if (!private) tracePrefs { "set pref $name = '$value'" }
             getPrefs(private).edit().putString(name, value).apply().also { onPrefChange() }
+        }
 
         fun prefInt(name: String, default: Int, private: Boolean = false) =
             try {
@@ -64,8 +68,10 @@ open class Pref(
                 default
             }
 
-        fun setPrefInt(name: String, value: Int, private: Boolean = false) =
+        fun setPrefInt(name: String, value: Int, private: Boolean = false) {
+            if (!private) tracePrefs { "set pref $name = $value" }
             getPrefs(private).edit().putInt(name, value).apply().also { onPrefChange() }
+        }
     }
 
     init {
@@ -78,7 +84,8 @@ open class Pref(
         } catch (e: Throwable) {
             // ignore
         }
-        Timber.d("add pref $group.$key")
+        //Timber.d("add pref $group - $key")
+
         preferences.getOrPut(group) { mutableListOf() }.add(this)
     }
 }

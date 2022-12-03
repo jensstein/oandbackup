@@ -28,9 +28,9 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.preferences.pref_maxLogCount
-import com.machiav3lli.backup.preferences.pref_maxLogLines
-import com.machiav3lli.backup.preferences.pref_useLogCatForUncaught
+import com.machiav3lli.backup.pref_maxLogCount
+import com.machiav3lli.backup.pref_maxLogLines
+import com.machiav3lli.backup.pref_useLogCatForUncaught
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupDir

@@ -23,26 +23,82 @@ import android.content.Context
 import android.content.Intent
 import android.icu.util.Calendar
 import android.os.Build
+import com.machiav3lli.backup.ISO_DATE_TIME_FORMAT
+import com.machiav3lli.backup.ISO_DATE_TIME_FORMAT_MIN
+import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.Schedule
+import com.machiav3lli.backup.preferences.pref_fakeScheduleMin
 import com.machiav3lli.backup.preferences.pref_useAlarmClock
 import com.machiav3lli.backup.preferences.pref_useExactAlarm
-import com.machiav3lli.backup.preferences.traceSchedule
 import com.machiav3lli.backup.services.AlarmReceiver
+import com.machiav3lli.backup.traceSchedule
 import timber.log.Timber
+import java.time.LocalTime
 import java.util.concurrent.TimeUnit
 
 fun calculateTimeToRun(schedule: Schedule, now: Long): Long {
     val c = Calendar.getInstance()
     c.timeInMillis = schedule.timePlaced
-    c[Calendar.HOUR_OF_DAY] = schedule.timeHour
-    c[Calendar.MINUTE] = schedule.timeMinute
-    c[Calendar.SECOND] = 0
-    c[Calendar.MILLISECOND] = 0
-    if (now >= c.timeInMillis)
-        c.add(Calendar.DAY_OF_MONTH, schedule.interval)
+
+    val limitIncrements = 100
+    val minTimeFromNow = TimeUnit.MINUTES.toMillis(1)
+
+    val fakeMin = pref_fakeScheduleMin.value
+    if (fakeMin > 0) {
+        //c[Calendar.HOUR_OF_DAY] = schedule.timeHour
+        c[Calendar.MINUTE] = (c[Calendar.MINUTE]/fakeMin + 1)*fakeMin % 60
+        c[Calendar.SECOND] = 0
+        c[Calendar.MILLISECOND] = 0
+        repeat(limitIncrements) {
+            if (now + minTimeFromNow < c.timeInMillis)
+                return@repeat
+            c.add(Calendar.MINUTE, fakeMin)
+        }
+    } else {
+        c[Calendar.HOUR_OF_DAY] = schedule.timeHour
+        c[Calendar.MINUTE] = schedule.timeMinute
+        c[Calendar.SECOND] = 0
+        c[Calendar.MILLISECOND] = 0
+        repeat(limitIncrements) {
+            if (now + minTimeFromNow < c.timeInMillis)
+                return@repeat
+            c.add(Calendar.DAY_OF_MONTH, schedule.interval)
+        }
+    }
+
+    traceSchedule {
+        "calculateTimeToRun: now: ${
+            ISO_DATE_TIME_FORMAT.format(now)
+        } placed: ${
+            ISO_DATE_TIME_FORMAT.format(schedule.timePlaced)
+        } next: ${
+            ISO_DATE_TIME_FORMAT.format(c.timeInMillis)
+        }"
+    }
     return c.timeInMillis
 }
+
+fun getTimeLeft(context: Context, schedule: Schedule): List<String> {
+    var absTime = ""
+    var relTime = ""
+    if (schedule.enabled) {
+        val now = System.currentTimeMillis()
+        val at = calculateTimeToRun(schedule, now)
+        absTime = ISO_DATE_TIME_FORMAT_MIN.format(at)
+        val timeDiff = at - now
+        val days = TimeUnit.MILLISECONDS.toDays(timeDiff).toInt()
+        if (days != 0) {
+            relTime += context.resources
+                .getQuantityString(R.plurals.days_left, days, days)
+        }
+        val hours = TimeUnit.MILLISECONDS.toHours(timeDiff).toInt() % 24
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(timeDiff).toInt() % 60
+        relTime += LocalTime.of(hours, minutes).toString()
+    }
+    return listOf(absTime, relTime)
+}
+
 
 fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean) {
     if (scheduleId >= 0) {
@@ -54,19 +110,23 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                 val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
                 val now = System.currentTimeMillis()
-                val timeLeft = calculateTimeToRun(schedule, now) - now
+                val timeToRun = calculateTimeToRun(schedule, now)
+                val timeLeft = timeToRun - now
 
                 if (rescheduleBoolean) {
-                    traceSchedule { "re-scheduling $schedule" }
                     schedule = schedule.copy(
                         timePlaced = now,
-                        timeToRun = calculateTimeToRun(schedule, now)
+                        timeToRun = timeToRun
                     )
-                } else if (timeLeft <= TimeUnit.MINUTES.toMillis(1)) {
-                    traceSchedule { "set schedule $schedule" }
-                    schedule = schedule.copy(
-                        timeToRun = now + TimeUnit.MINUTES.toMillis(1)
-                    )
+                    traceSchedule { "re-scheduling $schedule" }
+                } else {
+                    if (timeLeft <= TimeUnit.MINUTES.toMillis(1)) {
+                        schedule = schedule.copy(
+                            timePlaced = now,
+                            timeToRun = now + TimeUnit.MINUTES.toMillis(1)
+                        )
+                        traceSchedule { "!!!!!!!!!! timeLeft < 1 min -> set schedule $schedule" }
+                    }
                 }
                 scheduleDao.update(schedule)
 
@@ -78,23 +138,27 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                     }
                 val pendingIntent = createPendingIntent(context, scheduleId)
                 if (hasPermission && pref_useAlarmClock.value) {
+                    traceSchedule { "alarmManager.setAlarmClock $schedule" }
                     alarmManager.setAlarmClock(
                         AlarmManager.AlarmClockInfo(schedule.timeToRun, null),
                         pendingIntent
                     )
                 } else {
-                    if (hasPermission && pref_useExactAlarm.value)
+                    if (hasPermission && pref_useExactAlarm.value) {
+                        traceSchedule { "alarmManager.setExactAndAllowWhileIdle $schedule" }
                         alarmManager.setExactAndAllowWhileIdle(
                             AlarmManager.RTC_WAKEUP,
                             schedule.timeToRun,
                             pendingIntent
                         )
-                    else
+                    } else {
+                        traceSchedule { "alarmManager.setAndAllowWhileIdle $schedule" }
                         alarmManager.setAndAllowWhileIdle(
                             AlarmManager.RTC_WAKEUP,
                             schedule.timeToRun,
                             pendingIntent
                         )
+                    }
                 }
                 traceSchedule {
                     "schedule starting in: ${

@@ -23,7 +23,9 @@ import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.ui.item.ChipItem
 import com.machiav3lli.backup.ui.item.Legend
 import com.machiav3lli.backup.ui.item.Link
+import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 const val PREFS_SHARED_PRIVATE = "com.machiav3lli.backup"
 const val ADMIN_PREFIX = "!-"
@@ -226,6 +228,15 @@ val legendList = listOf(
     Legend.Media,
     Legend.Updated,
 )
+
+val ISO_DATE_TIME_FORMAT get() : SimpleDateFormat =
+    SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+
+val ISO_DATE_TIME_FORMAT_MIN get() : SimpleDateFormat =
+    SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+
+val ISO_DATE_TIME_FORMAT_MS get() : SimpleDateFormat =
+    SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS", Locale.getDefault())
 
 // must be ISO time format for sane sorting yyyy, MM, dd, ...
 // and only allowed file name characters (on all systems, Windows has the smallest set)

@@ -22,6 +22,7 @@ import android.content.Context
 import android.content.Intent
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.dao.ScheduleDao
+import com.machiav3lli.backup.traceSchedule
 import com.machiav3lli.backup.utils.scheduleAlarm
 import timber.log.Timber
 import java.lang.ref.WeakReference
@@ -44,6 +45,7 @@ class BootReceiver : BroadcastReceiver() {
                 Timber.w("Bootreceiver database thread resources was null")
                 return
             } else {
+                traceSchedule { "boot receiver -> schedule"}
                 scheduleDao.all
                     .filter { it.enabled }
                     .forEach { scheduleAlarm(context, it.id, false) }

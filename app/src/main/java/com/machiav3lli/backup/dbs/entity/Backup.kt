@@ -30,7 +30,7 @@ import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.grantedPermissions
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.preferences.traceBackupProps
+import com.machiav3lli.backup.traceBackupProps
 import com.machiav3lli.backup.utils.LocalDateTimeSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString

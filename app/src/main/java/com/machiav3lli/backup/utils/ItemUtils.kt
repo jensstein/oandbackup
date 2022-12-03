@@ -90,21 +90,21 @@ fun Package.infoChips(): List<InfoChipItem> = listOfNotNull(
     ),
     InfoChipItem(
         flag = CHIP_SIZE_APP,
-        text = stringResource(id = R.string.app_size) + Formatter.formatFileSize(
+        text = stringResource(id = R.string.app_size) + " " + Formatter.formatFileSize(
             LocalContext.current,
             storageStats?.appBytes ?: 0
         ),
     ),
     InfoChipItem(
         flag = CHIP_SIZE_DATA,
-        text = stringResource(id = R.string.data_size) + Formatter.formatFileSize(
+        text = stringResource(id = R.string.data_size) + " " + Formatter.formatFileSize(
             LocalContext.current,
             storageStats?.dataBytes ?: 0
         ),
     ),
     InfoChipItem(
         flag = CHIP_SIZE_CACHE,
-        text = stringResource(id = R.string.cache_size) + Formatter.formatFileSize(
+        text = stringResource(id = R.string.cache_size) + " " + Formatter.formatFileSize(
             LocalContext.current,
             storageStats?.cacheBytes ?: 0
         ),

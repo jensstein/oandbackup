@@ -42,7 +42,7 @@ import java.time.temporal.ChronoUnit
 open class ScheduledActionTask(val context: Context, private val scheduleId: Long) :
     CoroutinesAsyncTask<Void?, String, Triple<String, List<String>, Int>>() {
 
-    override suspend fun doInBackground(vararg params: Void?): Triple<String, List<String>, Int>? {
+    override fun doInBackground(vararg params: Void?): Triple<String, List<String>, Int>? {
 
         val database = ODatabase.getInstance(context)
         val scheduleDao = database.scheduleDao
@@ -65,7 +65,7 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         //   so you can use it in the viewModel and in the service as separate instances
 
         val unfilteredList: List<Package> = try {
-            context.getInstalledPackageList(blockList)
+            context.getInstalledPackageList()
         } catch (e: FileUtils.BackupLocationInAccessibleException) {
             Timber.e("Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
             LogsHandler.logErrors(
@@ -123,6 +123,7 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         val selectedItems = unfilteredList
             .filter(predicate)
             .filter(specialPredicate)
+            .filterNot { blockList.contains(it.packageName) }
             .sortedWith { m1: Package, m2: Package ->
                 m1.packageLabel.compareTo(m2.packageLabel, ignoreCase = true)
             }

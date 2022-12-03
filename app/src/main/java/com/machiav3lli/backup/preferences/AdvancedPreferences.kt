@@ -39,8 +39,6 @@ import com.machiav3lli.backup.ui.item.IntPref
 import com.machiav3lli.backup.ui.item.LaunchPref
 import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.ui.item.StringPref
-import com.machiav3lli.backup.utils.TraceUtils.TracePref
-import com.machiav3lli.backup.utils.TraceUtils.TracePrefBold
 import com.machiav3lli.backup.utils.sortFilterModel
 
 
@@ -344,91 +342,19 @@ val pref_useExpedited = BooleanPref(
     defaultValue = true
 )
 
-//---------------------------------------- developer settings - logging
-
-val pref_catchUncaughtException = BooleanPref(
-    key = "dev-log.catchUncaughtException",
-    summaryId = R.string.prefs_catchuncaughtexception_summary,
-    defaultValue = false
-)
-
-val pref_useLogCatForUncaught = BooleanPref(
-    key = "dev-log.useLogCatForUncaught",
-    summary = "use logcat instead of internal log for uncaught exceptions",
-    defaultValue = false,
-    enableIf = { pref_catchUncaughtException.value }
-)
-
-val pref_maxLogCount = IntPref(
-    key = "dev-log.maxLogCount",
-    summary = "maximum count of log entries",
-    entries = ((1..9 step 1) + (10..100 step 10)).toList(),
-    defaultValue = 20
-)
-
-val pref_maxLogLines = IntPref(
-    key = "dev-log.maxLogLines",
-    summary = "maximum lines in the log (logcat or internal)",
-    entries = ((10..90 step 10) + (100..500 step 50)).toList(),
-    defaultValue = 50
-)
-
-val pref_logToSystemLogcat = BooleanPref(
-    key = "dev-log.logToSystemLogcat",
-    summary = "log to Android logcat, otherwise only internal",
-    defaultValue = false
-)
-
-//---------------------------------------- developer settings - tracing
-
-val pref_trace = BooleanPref(
-    key = "dev-trace.trace",
-    summary = "global switch for all traceXXX options",
-    defaultValue = false
-)
-
-val traceSection = TracePref(
-    name = "Section",
-    summary = "trace important sections (backup, schedule, etc.)",
-    default = true
-)
-
-val traceSchedule = TracePrefBold(
-    name = "Schedule",
-    summary = "trace schedules",
-    default = true
-)
-
-val traceFlows = TracePrefBold(
-    name = "Flows",
-    summary = "trace Kotlin Flows (reactive data streams)",
-    default = true
-)
-
-val traceBusy = TracePrefBold(
-    name = "Busy",
-    default = true,
-    summary = "trace beginBusy/endBusy (busy indicator)"
-)
-
-val traceBackupProps = TracePref(
-    name = "BackupProps",
-    summary = "trace backup properties (json)",
-    default = false
-)
-
-val traceDebug = TracePref(
-    name = "Debug",
-    summary = "trace for debugging purposes (for devs)",
-    default = false
-)
-
 //---------------------------------------- developer settings - faking
 
 val pref_fakeBackupSeconds = IntPref(
     key = "dev-fake.fakeBackupSeconds",
     summary = "[seconds] time for faked backups, 0 = do not fake",
     entries = ((0..9 step 1) + (10..50 step 10) + (60..1200 step 60)).toList(),
+    defaultValue = 0
+)
+
+val pref_fakeScheduleMin = IntPref(
+    key = "dev-fake.fakeScheduleMin",
+    summary = "[minute] run each enabled schedule every x min",
+    entries = (listOf(0) + (3..9 step 1) + (10..60 step 5)).toList(),
     defaultValue = 0
 )
 

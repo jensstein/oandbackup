@@ -17,10 +17,9 @@
  */
 package com.machiav3lli.backup.items
 
+import com.machiav3lli.backup.ISO_DATE_TIME_FORMAT
 import com.machiav3lli.backup.dbs.entity.Backup
-import java.text.SimpleDateFormat
 import java.time.LocalDateTime
-import java.util.*
 
 /**
  * Backup item for either a newly created backup or the original item of the restored backup.
@@ -35,10 +34,6 @@ class ActionResult(
     private val occurrence: LocalDateTime = LocalDateTime.now()
 
     override fun toString(): String {
-        return "${timeFormat.format(occurrence)}: ${app ?: "NoApp"}${if (message.isEmpty()) "" else " $message"}"
-    }
-
-    companion object {
-        val timeFormat = SimpleDateFormat("yyyy/MM/dd - HH:mm:ss", Locale.ENGLISH)
+        return "${ISO_DATE_TIME_FORMAT.format(occurrence)}: ${app ?: "NoApp"}${if (message.isEmpty()) "" else " $message"}"
     }
 }

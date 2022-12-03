@@ -9,6 +9,7 @@ import com.machiav3lli.backup.ACTION_RESCHEDULE
 import com.machiav3lli.backup.ACTION_SCHEDULE
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.dbs.ODatabase
+import com.machiav3lli.backup.traceSchedule
 import com.machiav3lli.backup.utils.scheduleAlarm
 import timber.log.Timber
 import java.text.SimpleDateFormat
@@ -53,7 +54,7 @@ class CommandReceiver : //TODO hg42 how to maintain security?
                     val setTime = time ?: SimpleDateFormat("HH:mm", Locale.getDefault())
                         .format(now + 120)
                     OABX.addInfoText("$command $name $time -> $setTime")
-                    Timber.d("################################################### command intent schedule -------------> name=$name time=$time -> $setTime")
+                    Timber.d("################################################### command intent reschedule -------------> name=$name time=$time -> $setTime")
                     Thread {
                         val scheduleDao = ODatabase.getInstance(context).scheduleDao
                         scheduleDao.getSchedule(name)?.let { schedule ->
@@ -63,6 +64,7 @@ class CommandReceiver : //TODO hg42 how to maintain security?
                                 timeMinute = minute,
                             )
                             scheduleDao.update(newSched)
+                            traceSchedule { "command receiver -> re-schedule"}
                             scheduleAlarm(context, newSched.id, true)
                         }
                     }.start()
