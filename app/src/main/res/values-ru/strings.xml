@@ -144,7 +144,7 @@
     <string name="radio_system">Системные приложения</string>
     <string name="radio_user">Пользовательские приложения</string>
     <string name="radio_updated">Обновлено</string>
-    <string name="apptype_special">Специальная р.к.</string>
+    <string name="apptype_special">Специальная резервная копия</string>
     <string name="intro_permission_batteryoptimization">У приложения могут возникнуть проблемы при создании запланированных р.к. на некоторых прошивках из-за агрессивной оптимизации батареи, например, MIUI, но даже на чистой AOSP может возникнуть такая проблема.</string>
     <string name="intro_permission_usageaccess">Приложению необходимо это разрешение для проверки статистики и размера данных и кэша ваших программ.</string>
     <string name="intro_permission_storage_location">Приложению необходимо расположение для хранения резервных копий. Приложение может понадобиться несколько гигабайт свободного места для полной резервной копии и сильно нагружает файловую систему. Пожалуйста, учтите это, выбирая сетевое хранилище данных.</string>
@@ -158,7 +158,7 @@
     <string name="ignore_battery_optimization_not_supported">К сожалению, это устройство не может игнорировать оптимизацию батареи!</string>
     <string name="ignore_battery_optimization_message">Создание р.к. может иногда останавливаться. Для предотвращения этого, Вам следует выключить оптимизацию батареи</string>
     <string name="empty_filtered_list">Отфильтрованный список пуст.</string>
-    <string name="deleted_backup">Удалить р.к.</string>
+    <string name="deleted_backup">Резервная копия удалена</string>
     <string name="apptype_user">Пользовательское приложение</string>
     <string name="apptype_system">Системное приложение</string>
     <string name="bothBackedUp">APK и данные</string>
@@ -239,7 +239,7 @@
     <string name="fetching_action_list">Загрузка спика приложений для %1$s…</string>
     <string name="help_faq">Часто задаваемые вопросы</string>
     <string name="sched_name">Имя:</string>
-    <string name="prefs_saveappslist_summary">Выводит список приложений в текстовый файл в папке с р.к.</string>
+    <string name="prefs_saveappslist_summary">Записывает список приложений в текстовый файл в каталоге резервного копирования пользователя</string>
     <string name="prefs_saveappslist">Сохранить список приложений</string>
     <string name="prefs_allowdowngrade">Разрешить даунгрейд</string>
     <string name="prefs_allowdowngrade_summary">Позволить восстановление более старой версии приложения (применимо только к версиям для отладки).</string>
@@ -363,4 +363,18 @@
     <string name="prefs_nobackupdata">Бэкап файлов no_backup</string>
     <string name="prefs_tools_terminal">Терминал</string>
     <string name="prefs_nobackupdata_summary">Бэкап файлов в данных, которые помечены как не подлежащие бэкапу</string>
+    <string name="prefs_deviceprotecteddata_rst">Восстановление данных, защищенных устройством</string>
+    <string name="prefs_obbdata_rst">Восстановление файлов obb</string>
+    <string name="prefs_obbdata_rst_summary">Восстанавливает obb-файлы приложения, размещенные на внешнем хранилище (например, /storage/emulated/0/Android/obb/)</string>
+    <string name="prefs_mediadata_rst">Восстановление медиафайлов</string>
+    <string name="prefs_mediadata_rst_summary">Восстанавливает медиафайлы приложения, размещенные на внешнем хранилище (например, /storage/emulated/0/Android/media/)</string>
+    <string name="prefs_externaldata_summary">Резервное копирование данных, размещенных на внешнем накопителе (например, /storage/emulated/0/Android/data/)</string>
+    <string name="prefs_deviceprotecteddata_rst_summary">Восстанавливает данные, помещенные в data/user_de</string>
+    <string name="prefs_externaldata_rst">Восстановление внешних данных</string>
+    <string name="prefs_nobackupdata_rst">Восстановление файлов no_backup</string>
+    <string name="prefs_nobackupdata_rst_summary">Восстановление файлов в данных, которые помечены как не подлежащие резервному копированию</string>
+    <string name="prefs_externaldata_rst_summary">Восстанавливает данные, размещенные на внешнем хранилище (например, /storage/emulated/0/Android/data/)</string>
+    <string name="prefs_deviceprotecteddata_summary">Резервное копирование данных, размещенных в data/user_de</string>
+    <string name="prefs_mediadata_summary">Резервное копирование медиафайлов приложения, размещенных на внешнем хранилище (например, /storage/emulated/0/Android/media/)</string>
+    <string name="prefs_obbdata_summary">Резервное копирование obb-файлов приложения, размещенных на внешнем хранилище (например, /storage/emulated/0/Android/obb/)</string>
 </resources>

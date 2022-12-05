@@ -30,7 +30,7 @@ val vComposeCompiler = "1.3.2"
 val vCompose = "1.3.1"
 val vRoom = "2.5.0-beta02"
 val vNavigation = "2.5.3"
-val vAccompanist = "0.27.1"
+val vAccompanist = "0.28.0"
 val vLibsu = "3.2.1"
 
 val vJunitJupiter = "5.9.1"
@@ -45,8 +45,8 @@ android {
         applicationId = "com.machiav3lli.backup"
         minSdk = 26
         targetSdk = 32
-        versionCode = 8207
-        versionName = "8.2.4"
+        versionCode = 8208
+        versionName = "8.2.5"
         buildConfigField("int", "MAJOR", "8")
         buildConfigField("int", "MINOR", "2")
 
@@ -122,8 +122,8 @@ android {
 
 dependencies {
     //implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$vKotlin")
-    implementation(kotlin("stdlib"))
-    implementation(kotlin("reflect"))
+    implementation(kotlin("stdlib", vKotlin))
+    implementation(kotlin("reflect", vKotlin))
 
     // Libs
     implementation("androidx.room:room-runtime:$vRoom")
@@ -145,7 +145,7 @@ dependencies {
 
     // UI
     implementation("androidx.fragment:fragment-ktx:1.5.4")
-    implementation("com.google.android.material:material:1.8.0-alpha02")
+    implementation("com.google.android.material:material:1.8.0-alpha03")
     implementation("androidx.preference:preference-ktx:1.2.0")
     implementation("androidx.navigation:navigation-fragment-ktx:$vNavigation")
     implementation("androidx.navigation:navigation-ui-ktx:$vNavigation")
