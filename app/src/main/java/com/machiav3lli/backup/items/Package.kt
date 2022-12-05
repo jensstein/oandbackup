@@ -110,10 +110,10 @@ class Package {
                     .find { it.packageName == this.packageName }!!
                     .packageInfo
             } catch (e: Throwable) {
-                Timber.i("$packageName is not installed")
+                //TODO hg42 Timber.i("$packageName is not installed")
                 this.packageInfo = latestBackup?.toAppInfo() ?: run {
                     throw AssertionError(
-                        "Backup History is empty and package is not installed. The package is completely unknown?",
+                        "Backup History is empty and package is not installed. The package is completely unknown?",     //TODO hg42 remove package from database???
                         e
                     )
                 }
@@ -356,7 +356,7 @@ class Package {
 
     val numberOfBackups: Int get() = needBackupList().size
 
-    private val isApp: Boolean
+    val isApp: Boolean
         get() = packageInfo is AppInfo && !packageInfo.isSpecial
 
     val isInstalled: Boolean
@@ -452,8 +452,10 @@ class Package {
         get() = packageInfo.splitSourceDirs
 
     val isUpdated: Boolean
-        get() = latestBackup?.let { backupList.isNotEmpty() && it.versionCode < versionCode }
-            ?: false
+        get() = latestBackup?.let { it.versionCode < versionCode } ?: false
+
+    val isNewOrUpdated: Boolean
+        get() = latestBackup?.let { it.versionCode < versionCode } ?: !isSystem
 
     val hasApk: Boolean
         get() = backupList.any { it.hasApk }

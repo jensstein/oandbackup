@@ -129,7 +129,7 @@ fun HomePage() {
                                                     bp.hasAppData              -> ALT_MODE_DATA
                                                     else                       -> ALT_MODE_UNSET
                                                 }
-                                            }
+                                            } ?: ALT_MODE_BOTH
                                         }
                                         .toCollection(ArrayList())
                                     if (selectedList.isNotEmpty()) {

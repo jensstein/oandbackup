@@ -89,7 +89,7 @@ private fun List<Package>.applySpecialFilter(
     val days = pref_oldBackups.value
     predicate = when (specialFilter) {
         SPECIAL_FILTER_NEW_UPDATED -> { appInfo: Package ->
-            !appInfo.hasBackups || appInfo.isUpdated
+            appInfo.isNewOrUpdated
         }
         SPECIAL_FILTER_NOT_INSTALLED -> { appInfo: Package ->
             !appInfo.isInstalled

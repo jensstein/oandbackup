@@ -56,7 +56,7 @@ class MainViewModel(
     private val appContext: Application
 ) : AndroidViewModel(appContext) {
 
-    //---------------------------------------------------------------------------------------------- FLOWS
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - FLOWS
 
     val blocklist = db.blocklistDao.allFlow
         //------------------------------------------------------------------------------------------ blocklist
@@ -184,7 +184,7 @@ class MainViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     val updatedPackages = notBlockedList
         //------------------------------------------------------------------------------------------ updatedPackages
-        .mapLatest { it.filter(Package::isUpdated).toMutableList() }
+        .mapLatest { it.filter(Package::isNewOrUpdated).toMutableList() }
         .trace { "*** updatedPackages <<- ${it.size}" }
         .stateIn(
             viewModelScope,
@@ -192,7 +192,7 @@ class MainViewModel(
             emptyList()
         )
 
-    //---------------------------------------------------------------------------------------------- FLOWS end
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - FLOWS end
 
 
     // TODO add to interface
