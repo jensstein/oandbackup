@@ -234,6 +234,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                     app.addBackup(backup)
                 else
                     app.deleteBackup(backup)
+                //TODO WECH OABX.main?.viewModel?.updatePackage(app.packageName)   //TODO hg42 structural problem (update database)
             }
         } finally {
             work?.setOperation("end")

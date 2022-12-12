@@ -220,10 +220,12 @@ class MainActivityX : BaseActivity() {
                         traceBold { "******************** freshStart LaunchedEffect(viewModel) ********************" }
                         //TODO hg42 I guess this shouldn't be necessary, but no better solution to start the flow game, yet
                         //TODO indeed it doesn't seem to be necessary with MutableStateFlow under the hood
+                        // keep the compile conditions, even if they are always false if using MutableComposableStateFlow
                         if (viewModel.searchQuery is MutableComposableSharedFlow<*>)
                             viewModel.searchQuery.value = ""
                         if (viewModel.modelSortFilter is MutableComposableSharedFlow<*>)
                             viewModel.modelSortFilter.value = OABX.context.sortFilterModel
+
                         if (pref_refreshOnStart.value)
                             refreshPackages()
                     }
