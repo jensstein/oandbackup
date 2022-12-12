@@ -223,10 +223,11 @@ class MainViewModel(
 
     private suspend fun updateDataOf(packageName: String) =
         withContext(Dispatchers.IO) {
-            OABX.beginBusy("updateDataOf")
-            invalidateCacheForPackage(packageName)
-            val appPackage = packageMap.value[packageName]
             try {
+                OABX.beginBusy("updateDataOf")
+
+                invalidateCacheForPackage(packageName)
+                val appPackage = packageMap.value[packageName]
                 appPackage?.apply {
                     if (pref_usePackageCacheOnUpdate.value) {
                         val new = Package.get(packageName) {
@@ -246,8 +247,9 @@ class MainViewModel(
                 }
             } catch (e: AssertionError) {
                 Timber.w(e.message ?: "")
+            } finally {
+                OABX.endBusy("updateDataOf")
             }
-            OABX.endBusy("updateDataOf")
         }
 
     fun updateExtras(appExtras: AppExtras) {

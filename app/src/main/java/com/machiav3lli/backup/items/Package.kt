@@ -173,28 +173,32 @@ class Package {
         traceBackups { "refreshbackupList: $packageName" }
         invalidateBackupCacheForPackage(packageName)
         val backups = mutableListOf<Backup>()
-        getAppBackupRoot()?.listFiles()  //TODO hg42 create a coroutine version of  listFiles?
-            ?.filter(StorageFile::isPropertyFile)
-            ?.forEach { propFile ->
-                try {
-                    Backup.createFrom(propFile)?.let {
-                        //addBackup(it)       // refresh view immediately? but does not work...
-                        backups.add(it)
+        try {
+            getAppBackupRoot()?.listFiles()  //TODO hg42 create a coroutine version of  listFiles?
+                ?.filter(StorageFile::isPropertyFile)
+                ?.forEach { propFile ->
+                    try {
+                        Backup.createFrom(propFile)?.let {
+                            //addBackup(it)       // refresh view immediately? but does not work...
+                            backups.add(it)
+                        }
+                    } catch (e: Backup.BrokenBackupException) {
+                        val message =
+                            "Incomplete backup or wrong structure found in $propFile"
+                        Timber.w(message)
+                    } catch (e: NullPointerException) {
+                        val message =
+                            "(Null) Incomplete backup or wrong structure found in $propFile"
+                        Timber.w(message)
+                    } catch (e: Throwable) {
+                        val message =
+                            "(catchall) Incomplete backup or wrong structure found in $propFile"
+                        LogsHandler.unhandledException(e, message)
                     }
-                } catch (e: Backup.BrokenBackupException) {
-                    val message =
-                        "Incomplete backup or wrong structure found in $propFile"
-                    Timber.w(message)
-                } catch (e: NullPointerException) {
-                    val message =
-                        "(Null) Incomplete backup or wrong structure found in $propFile"
-                    Timber.w(message)
-                } catch (e: Throwable) {
-                    val message =
-                        "(catchall) Incomplete backup or wrong structure found in $propFile"
-                    LogsHandler.unhandledException(e, message)
                 }
-            }
+        } catch (e: Throwable) {
+            // ignore
+        }
         if (pref_alwaysRefreshBackupList.value) {
             backupList = backups
             backupListDirty = false
