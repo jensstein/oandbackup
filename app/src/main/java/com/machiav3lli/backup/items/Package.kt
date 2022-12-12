@@ -33,7 +33,7 @@ import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.getPackageStorageStats
 import com.machiav3lli.backup.preferences.pref_cachePackages
-import com.machiav3lli.backup.traceBackupProps
+import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupDir
@@ -166,7 +166,7 @@ class Package {
     }
 
     fun refreshBackupList() {
-        traceBackupProps { "refreshbackupList: $packageName" }
+        traceBackups { "refreshbackupList: $packageName" }
         invalidateBackupCacheForPackage(packageName)
         val backups = mutableListOf<Backup>()
         getAppBackupRoot()?.listFiles()  //TODO hg42 create a coroutine version of  listFiles?
@@ -237,10 +237,12 @@ class Package {
     }
 
     fun addBackup(backup: Backup) {
+        traceBackups { "add backup ${backup.packageName} ${backup.backupDate}" }
         backupList = backupList.toList() + backup
     }
 
     fun deleteBackup(backup: Backup) {
+        traceBackups { "delete backup ${backup.packageName} ${backup.backupDate}" }
         if (backup.packageName != packageName) {
             throw RuntimeException("Asked to delete a backup of ${backup.packageName} but this object is for $packageName")
         }
@@ -279,6 +281,7 @@ class Package {
     }
 
     fun rewriteBackupProps(newBackup: Backup) {
+        traceBackups { "rewrite backup ${newBackup.packageName} ${newBackup.backupDate}" }
         if (newBackup.packageName != packageName) {
             throw RuntimeException("Asked to delete a backup of ${newBackup.packageName} but this object is for $packageName")
         }

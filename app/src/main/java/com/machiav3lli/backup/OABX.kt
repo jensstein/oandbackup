@@ -126,6 +126,12 @@ val traceBusy = TraceUtils.TracePrefBold(
     summary = "trace beginBusy/endBusy (busy indicator)"
 )
 
+val traceBackups = TraceUtils.TracePref(
+    name = "Backups",
+    summary = "trace backups",
+    default = true
+)
+
 val traceBackupProps = TraceUtils.TracePref(
     name = "BackupProps",
     summary = "trace backup properties (json)",
