@@ -231,11 +231,11 @@ class Package {
     ): StorageFile? {
         return try {
             when {
-                packageBackupDir != null && packageBackupDir?.exists() == true -> {
-                    packageBackupDir
-                }
                 create -> {
                     packageBackupDir = OABX.context.getBackupDir().ensureDirectory(packageName)
+                    packageBackupDir
+                }
+                packageBackupDir != null && packageBackupDir?.exists() == true -> {
                     packageBackupDir
                 }
                 else -> {
