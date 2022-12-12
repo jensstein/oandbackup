@@ -288,6 +288,12 @@ val pref_useBackupRestoreWithSelection = BooleanPref(
 
 //---------------------------------------- developer settings - implementation alternatives
 
+val pref_alwaysRefreshBackupList = BooleanPref(
+    key = "dev-alt.alwaysRefreshBackupList",
+    summary = "refresh backup list from file system instead of managing it internally",
+    defaultValue = false
+)
+
 val pref_cachePackages = BooleanPref(
     key = "dev-alt.cachePackages",
     summaryId = R.string.prefs_cachepackages_summary,
