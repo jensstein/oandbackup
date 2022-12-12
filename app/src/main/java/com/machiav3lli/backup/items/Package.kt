@@ -247,7 +247,7 @@ class Package {
 
     fun addBackup(backup: Backup) {
         traceBackups { "add backup ${backup.packageName} ${backup.backupDate}" }
-        backupList = backupList.toList() + backup
+        updateBackupList(backupList + backup)
     }
 
     fun deleteBackup(backup: Backup) {
@@ -279,7 +279,7 @@ class Package {
             LogsHandler.unhandledException(e, backup.packageName)
         }
         try {
-            backupList = backupList.toList() - backup
+            updateBackupList(backupList - backup)
             if (backupList.size == 0) {
                 packageBackupDir?.deleteRecursive()
                 packageBackupDir = null
@@ -316,7 +316,7 @@ class Package {
             LogsHandler.unhandledException(e, newBackup.packageName)
         }
         try {
-            backupList = backupList.filterNot { it.backupDate == newBackup.backupDate } + newBackup
+            updateBackupList(backupList.filterNot { it.backupDate == newBackup.backupDate } + newBackup)
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, newBackup.packageName)
         }
