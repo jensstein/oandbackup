@@ -21,6 +21,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import com.machiav3lli.backup.dbs.entity.Backup
+import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
 import com.machiav3lli.backup.items.Package
 import kotlinx.coroutines.flow.Flow
 
@@ -47,7 +48,14 @@ interface BackupDao : BaseDao<Backup> {
     @Transaction
     fun updateList(packageItem: Package) {
         deleteAllOf(packageItem.packageName)
-        insert(*packageItem.backupsNewestFirst.toTypedArray())
+        try {
+            val backups = packageItem.backupsNewestFirst.toTypedArray()
+            if (backups.size > 0)
+                //insert(*backups)
+                replaceInsert(*backups)
+        } catch(e: Throwable) {
+            logException(e)
+        }
     }
 
     @Transaction
