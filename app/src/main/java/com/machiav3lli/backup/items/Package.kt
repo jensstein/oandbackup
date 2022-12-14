@@ -49,7 +49,8 @@ class Package {
     var storageStats: StorageStats? = null
 
     private var backupListDirty = true
-    private var backupList = listOf<Backup>()
+    private var backupListState = mutableStateOf(listOf<Backup>())
+    private var backupList by backupListState
 
     internal constructor(
         context: Context,
