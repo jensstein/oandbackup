@@ -56,7 +56,7 @@ class MainViewModel(
     private val appContext: Application
 ) : AndroidViewModel(appContext) {
 
-    //---------------------------------------------------------------------------------------------- FLOWS
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - FLOWS
 
     val blocklist = db.blocklistDao.allFlow
         //------------------------------------------------------------------------------------------ blocklist
@@ -71,7 +71,7 @@ class MainViewModel(
     val backupsMap = db.backupDao.allFlow
         //------------------------------------------------------------------------------------------ backupsMap
         .mapLatest { it.groupBy(Backup::packageName) }
-        .trace { "*** backupsMap <<- ${it.size}" }
+        .trace { "*** backupsMap <<- p: ${it.size} b: ${it.map { it.value.size }.sum()}" }
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
@@ -91,17 +91,17 @@ class MainViewModel(
 
     val packageList = combine(db.appInfoDao.allFlow, backupsMap) { p, b ->
         //========================================================================================== packageList
-        traceFlows { "******************** database - db: ${p.size} backups: ${b.size}" }
+        traceFlows { "******************** database - db: ${p.size} backups: ${b.map { it.value.size }.sum()}" }
 
-        val list =
+        val pkgs =
             p.toPackageList(
                 appContext,
                 emptyList(),
                 b
             )
 
-        traceFlows { "***** packages ->> ${list.size}" }
-        list
+        traceFlows { "***** packages ->> ${pkgs.size}" }
+        pkgs
     }
         .trace { "*** packageList <<- ${it.size}" }
         .stateIn(
@@ -184,7 +184,7 @@ class MainViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     val updatedPackages = notBlockedList
         //------------------------------------------------------------------------------------------ updatedPackages
-        .mapLatest { it.filter(Package::isUpdated).toMutableList() }
+        .mapLatest { it.filter(Package::isNewOrUpdated).toMutableList() }
         .trace { "*** updatedPackages <<- ${it.size}" }
         .stateIn(
             viewModelScope,
@@ -192,7 +192,7 @@ class MainViewModel(
             emptyList()
         )
 
-    //---------------------------------------------------------------------------------------------- FLOWS end
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - FLOWS end
 
 
     // TODO add to interface
@@ -223,10 +223,11 @@ class MainViewModel(
 
     private suspend fun updateDataOf(packageName: String) =
         withContext(Dispatchers.IO) {
-            OABX.beginBusy("updateDataOf")
-            invalidateCacheForPackage(packageName)
-            val appPackage = packageMap.value[packageName]
             try {
+                OABX.beginBusy("updateDataOf")
+
+                invalidateCacheForPackage(packageName)
+                val appPackage = packageMap.value[packageName]
                 appPackage?.apply {
                     if (pref_usePackageCacheOnUpdate.value) {
                         val new = Package.get(packageName) {
@@ -246,8 +247,9 @@ class MainViewModel(
                 }
             } catch (e: AssertionError) {
                 Timber.w(e.message ?: "")
+            } finally {
+                OABX.endBusy("updateDataOf")
             }
-            OABX.endBusy("updateDataOf")
         }
 
     fun updateExtras(appExtras: AppExtras) {

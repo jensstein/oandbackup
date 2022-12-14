@@ -216,7 +216,7 @@ fun MainPackageContextMenu(
     ) {
         packages.forEach { p ->
             if (select == true) selection[p] = false
-            OABX.addInfoText("$action ${p.packageName}")
+            //OABX.addInfoText("$action ${p.packageName}")
             todo(p)
             select?.let { s -> selection[p] = s }
         }

@@ -32,8 +32,9 @@ import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.getPackageStorageStats
+import com.machiav3lli.backup.preferences.pref_alwaysRefreshBackupList
 import com.machiav3lli.backup.preferences.pref_cachePackages
-import com.machiav3lli.backup.traceBackupProps
+import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupDir
@@ -48,8 +49,7 @@ class Package {
     var storageStats: StorageStats? = null
 
     private var backupListDirty = true
-    private var backupListState = mutableStateOf(listOf<Backup>())
-    private var backupList by backupListState
+    private var backupList = listOf<Backup>()
 
     internal constructor(
         context: Context,
@@ -110,10 +110,10 @@ class Package {
                     .find { it.packageName == this.packageName }!!
                     .packageInfo
             } catch (e: Throwable) {
-                Timber.i("$packageName is not installed")
+                //TODO hg42 Timber.i("$packageName is not installed")
                 this.packageInfo = latestBackup?.toAppInfo() ?: run {
                     throw AssertionError(
-                        "Backup History is empty and package is not installed. The package is completely unknown?",
+                        "Backup History is empty and package is not installed. The package is completely unknown?",     //TODO hg42 remove package from database???
                         e
                     )
                 }
@@ -161,37 +161,50 @@ class Package {
     }
 
     fun updateBackupList(new: List<Backup>) {
-        backupList = new
-        backupListDirty = false
+        if (pref_alwaysRefreshBackupList.value) {
+            refreshBackupList()
+        } else {
+            backupList = new
+            backupListDirty = false
+        }
     }
 
     fun refreshBackupList() {
-        traceBackupProps { "refreshbackupList: $packageName" }
+        traceBackups { "refreshbackupList: $packageName" }
         invalidateBackupCacheForPackage(packageName)
         val backups = mutableListOf<Backup>()
-        getAppBackupRoot()?.listFiles()  //TODO hg42 create a coroutine version of  listFiles?
-            ?.filter(StorageFile::isPropertyFile)
-            ?.forEach { propFile ->
-                try {
-                    Backup.createFrom(propFile)?.let {
-                        //addBackup(it)       // refresh view immediately? but does not work...
-                        backups.add(it)
+        try {
+            getAppBackupRoot()?.listFiles()  //TODO hg42 create a coroutine version of  listFiles?
+                ?.filter(StorageFile::isPropertyFile)
+                ?.forEach { propFile ->
+                    try {
+                        Backup.createFrom(propFile)?.let {
+                            //addBackup(it)       // refresh view immediately? but does not work...
+                            backups.add(it)
+                        }
+                    } catch (e: Backup.BrokenBackupException) {
+                        val message =
+                            "Incomplete backup or wrong structure found in $propFile"
+                        Timber.w(message)
+                    } catch (e: NullPointerException) {
+                        val message =
+                            "(Null) Incomplete backup or wrong structure found in $propFile"
+                        Timber.w(message)
+                    } catch (e: Throwable) {
+                        val message =
+                            "(catchall) Incomplete backup or wrong structure found in $propFile"
+                        LogsHandler.unhandledException(e, message)
                     }
-                } catch (e: Backup.BrokenBackupException) {
-                    val message =
-                        "Incomplete backup or wrong structure found in $propFile"
-                    Timber.w(message)
-                } catch (e: NullPointerException) {
-                    val message =
-                        "(Null) Incomplete backup or wrong structure found in $propFile"
-                    Timber.w(message)
-                } catch (e: Throwable) {
-                    val message =
-                        "(catchall) Incomplete backup or wrong structure found in $propFile"
-                    LogsHandler.unhandledException(e, message)
                 }
-            }
-        updateBackupList(backups)
+        } catch (e: Throwable) {
+            // ignore
+        }
+        if (pref_alwaysRefreshBackupList.value) {
+            backupList = backups
+            backupListDirty = false
+        } else {
+            updateBackupList(backups)
+        }
     }
 
     private fun ensureBackupsLoaded(): List<Backup> {
@@ -218,11 +231,11 @@ class Package {
     ): StorageFile? {
         return try {
             when {
-                packageBackupDir != null && packageBackupDir?.exists() == true -> {
-                    packageBackupDir
-                }
                 create -> {
                     packageBackupDir = OABX.context.getBackupDir().ensureDirectory(packageName)
+                    packageBackupDir
+                }
+                packageBackupDir != null && packageBackupDir?.exists() == true -> {
                     packageBackupDir
                 }
                 else -> {
@@ -237,10 +250,12 @@ class Package {
     }
 
     fun addBackup(backup: Backup) {
-        backupList = backupList.toList() + backup
+        traceBackups { "add backup ${backup.packageName} ${backup.backupDate}" }
+        updateBackupList(backupList + backup)
     }
 
     fun deleteBackup(backup: Backup) {
+        traceBackups { "delete backup ${backup.packageName} ${backup.backupDate}" }
         if (backup.packageName != packageName) {
             throw RuntimeException("Asked to delete a backup of ${backup.packageName} but this object is for $packageName")
         }
@@ -268,7 +283,7 @@ class Package {
             LogsHandler.unhandledException(e, backup.packageName)
         }
         try {
-            backupList = backupList.toList() - backup
+            updateBackupList(backupList - backup)
             if (backupList.size == 0) {
                 packageBackupDir?.deleteRecursive()
                 packageBackupDir = null
@@ -279,6 +294,7 @@ class Package {
     }
 
     fun rewriteBackupProps(newBackup: Backup) {
+        traceBackups { "rewrite backup ${newBackup.packageName} ${newBackup.backupDate}" }
         if (newBackup.packageName != packageName) {
             throw RuntimeException("Asked to delete a backup of ${newBackup.packageName} but this object is for $packageName")
         }
@@ -304,7 +320,7 @@ class Package {
             LogsHandler.unhandledException(e, newBackup.packageName)
         }
         try {
-            backupList = backupList.filterNot { it.backupDate == newBackup.backupDate } + newBackup
+            updateBackupList(backupList.filterNot { it.backupDate == newBackup.backupDate } + newBackup)
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, newBackup.packageName)
         }
@@ -340,7 +356,7 @@ class Package {
 
     val numberOfBackups: Int get() = needBackupList().size
 
-    private val isApp: Boolean
+    val isApp: Boolean
         get() = packageInfo is AppInfo && !packageInfo.isSpecial
 
     val isInstalled: Boolean
@@ -436,8 +452,10 @@ class Package {
         get() = packageInfo.splitSourceDirs
 
     val isUpdated: Boolean
-        get() = latestBackup?.let { backupList.isNotEmpty() && it.versionCode < versionCode }
-            ?: false
+        get() = latestBackup?.let { it.versionCode < versionCode } ?: false
+
+    val isNewOrUpdated: Boolean
+        get() = latestBackup?.let { it.versionCode < versionCode } ?: !isSystem
 
     val hasApk: Boolean
         get() = backupList.any { it.hasApk }

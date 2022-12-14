@@ -38,6 +38,7 @@ import com.machiav3lli.backup.dbs.dao.BackupDao
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.SpecialInfo
+import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
@@ -69,95 +70,99 @@ fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
 
 fun Context.getInstalledPackageList()  : MutableList<Package> { // only used in ScheduledActionTask
 
-    var packageList: MutableList<Package>
+    var packageList: MutableList<Package> = mutableListOf()
 
-    OABX.beginBusy("getInstalledPackageList")
+    try {
+        OABX.beginBusy("getInstalledPackageList")
 
-    val time = measureTimeMillis {
+        val time = measureTimeMillis {
 
-        val pm = packageManager
-        val backupRoot = getBackupDir()
-        val includeSpecial = specialBackupsEnabled
-        val packageInfoList = pm.getInstalledPackagesWithPermissions()
-        packageList = packageInfoList
-            .filterNotNull()
-            .filterNot { it.packageName.matches(ignoredPackages) }
-            .mapNotNull {
-                try {
-                    Package(this, it, backupRoot)
-                } catch (e: AssertionError) {
-                    Timber.e("Could not create Package for ${it}: $e")
-                    null
-                }
-            }
-            .toMutableList()
-
-        if (!OABX.appsSuspendedChecked) {
-            packageList.filter { appPackage ->
-                0 != (OABX.activity?.packageManager
-                    ?.getPackageInfo(appPackage.packageName, 0)
-                    ?.applicationInfo
-                    ?.flags
-                    ?: 0) and ApplicationInfo.FLAG_SUSPENDED
-            }.apply {
-                OABX.main?.whileShowingSnackBar(getString(R.string.supended_apps_cleanup)) {
-                    // cleanup suspended package if lock file found
-                    this.forEach { appPackage ->
-                        runAsRoot("pm unsuspend ${appPackage.packageName}")
+            val pm = packageManager
+            val backupRoot = getBackupDir()
+            val includeSpecial = specialBackupsEnabled
+            val packageInfoList = pm.getInstalledPackagesWithPermissions()
+            packageList = packageInfoList
+                .filterNotNull()
+                .filterNot { it.packageName.matches(ignoredPackages) }
+                .mapNotNull {
+                    try {
+                        Package(this, it, backupRoot)
+                    } catch (e: AssertionError) {
+                        Timber.e("Could not create Package for ${it}: $e")
+                        null
                     }
-                    OABX.appsSuspendedChecked = true
                 }
-            }
-        }
+                .toMutableList()
 
-        // Special Backups must added before the uninstalled packages, because otherwise it would
-        // discover the backup directory and run in a special case where no the directory is empty.
-        // This would mean, that no package info is available – neither from backup.properties
-        // nor from PackageManager.
-        val specialList = mutableListOf<String>()
-        if (includeSpecial) {
-            SpecialInfo.getSpecialPackages(this).forEach {
-                packageList.add(it)
-                specialList.add(it.packageName)
-            }
-        }
-
-        val directoriesInBackupRoot = getBackupPackageDirectories()
-        val backupList = mutableListOf<Backup>()
-        directoriesInBackupRoot
-            .map {
-                it.listFiles()
-                    .filter(StorageFile::isPropertyFile)
-                    .forEach { propFile ->
-                        try {
-                            Backup.createFrom(propFile)?.let(backupList::add)
-                        } catch (e: Backup.BrokenBackupException) {
-                            val message =
-                                "Incomplete backup or wrong structure found in $propFile"
-                            Timber.w(message)
-                        } catch (e: NullPointerException) {
-                            val message =
-                                "(Null) Incomplete backup or wrong structure found in $propFile"
-                            Timber.w(message)
-                        } catch (e: Throwable) {
-                            val message =
-                                "(catchall) Incomplete backup or wrong structure found in $propFile"
-                            LogsHandler.unhandledException(e, message)
+            if (!OABX.appsSuspendedChecked) {
+                packageList.filter { appPackage ->
+                    0 != (OABX.activity?.packageManager
+                        ?.getPackageInfo(appPackage.packageName, 0)
+                        ?.applicationInfo
+                        ?.flags
+                        ?: 0) and ApplicationInfo.FLAG_SUSPENDED
+                }.apply {
+                    OABX.main?.whileShowingSnackBar(getString(R.string.supended_apps_cleanup)) {
+                        // cleanup suspended package if lock file found
+                        this.forEach { appPackage ->
+                            runAsRoot("pm unsuspend ${appPackage.packageName}")
                         }
+                        OABX.appsSuspendedChecked = true
                     }
+                }
             }
-        val backupsMap = backupList.groupBy { it.packageName }
 
-        packageList = packageList.map {
-            it.apply { updateBackupList(backupsMap[it.packageName].orEmpty()) }
-        }.toMutableList()
+            // Special Backups must added before the uninstalled packages, because otherwise it would
+            // discover the backup directory and run in a special case where no the directory is empty.
+            // This would mean, that no package info is available – neither from backup.properties
+            // nor from PackageManager.
+            val specialList = mutableListOf<String>()
+            if (includeSpecial) {
+                SpecialInfo.getSpecialPackages(this).forEach {
+                    packageList.add(it)
+                    specialList.add(it.packageName)
+                }
+            }
+
+            val directoriesInBackupRoot = getBackupPackageDirectories()
+            val backups = mutableListOf<Backup>()
+            directoriesInBackupRoot
+                .map {
+                    it.listFiles()
+                        .filter(StorageFile::isPropertyFile)
+                        .forEach { propFile ->
+                            try {
+                                Backup.createFrom(propFile)?.let(backups::add)
+                            } catch (e: Backup.BrokenBackupException) {
+                                val message =
+                                    "Incomplete backup or wrong structure found in $propFile"
+                                Timber.w(message)
+                            } catch (e: NullPointerException) {
+                                val message =
+                                    "(Null) Incomplete backup or wrong structure found in $propFile"
+                                Timber.w(message)
+                            } catch (e: Throwable) {
+                                val message =
+                                    "(catchall) Incomplete backup or wrong structure found in $propFile"
+                                LogsHandler.unhandledException(e, message)
+                            }
+                        }
+                }
+            val backupsMap = backups.groupBy { it.packageName }
+
+            packageList = packageList.map {
+                it.apply { updateBackupList(backupsMap[it.packageName].orEmpty()) }
+            }.toMutableList()
+        }
+
+        OABX.addInfoText(
+            "getPackageList: ${(time / 1000 + 0.5).toInt()} sec"
+        )
+    } catch(e: Throwable) {
+        logException(e)
+    } finally {
+        OABX.endBusy("getInstalledPackageList")
     }
-
-    OABX.addInfoText(
-        "getPackageList: ${(time / 1000 + 0.5).toInt()} sec"
-    )
-
-    OABX.endBusy("getInstalledPackageList")
 
     return packageList
 }
@@ -173,9 +178,9 @@ fun List<AppInfo>.toPackageList(
 
     var packageList: MutableList<Package> = mutableListOf()
 
-    OABX.beginBusy("toPackageList")
-
     try {
+        OABX.beginBusy("toPackageList")
+
         val includeSpecial = context.specialBackupsEnabled
 
         packageList =
@@ -212,9 +217,9 @@ fun List<AppInfo>.toPackageList(
 
     } catch (e: Throwable) {
         LogsHandler.unhandledException(e)
+    } finally {
+        OABX.endBusy("toPackageList")
     }
-
-    OABX.endBusy("toPackageList")
 
     return packageList
 }
@@ -223,71 +228,76 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
 
     OABX.beginBusy("updateAppTables")
 
-    val pm = packageManager
-    val installedPackages = pm.getInstalledPackagesWithPermissions()
-    val installedNames = installedPackages.map { it.packageName }.toList()
-    val specialPackages = SpecialInfo.getSpecialPackages(this)
-    val specialNames = specialPackages.map { it.packageName }
-    val backups = mutableListOf<Backup>()
+    try {
+        val pm = packageManager
+        val installedPackages = pm.getInstalledPackagesWithPermissions()
+        val installedNames = installedPackages.map { it.packageName }.toList()
+        val specialPackages = SpecialInfo.getSpecialPackages(this)
+        val specialNames = specialPackages.map { it.packageName }
+        val backups = mutableListOf<Backup>()
 
-    if (!OABX.appsSuspendedChecked && pref_backupSuspendApps.value) {
-        installedNames.filter { packageName ->
-            0 != (OABX.activity?.packageManager
-                ?.getPackageInfo(packageName, 0)
-                ?.applicationInfo
-                ?.flags
-                ?: 0) and ApplicationInfo.FLAG_SUSPENDED
-        }.apply {
-            OABX.main?.whileShowingSnackBar(getString(R.string.supended_apps_cleanup)) {
-                // cleanup suspended package if lock file found
-                this.forEach { packageName ->
-                    runAsRoot("pm unsuspend $packageName")
+        if (!OABX.appsSuspendedChecked && pref_backupSuspendApps.value) {
+            installedNames.filter { packageName ->
+                0 != (OABX.activity?.packageManager
+                    ?.getPackageInfo(packageName, 0)
+                    ?.applicationInfo
+                    ?.flags
+                    ?: 0) and ApplicationInfo.FLAG_SUSPENDED
+            }.apply {
+                OABX.main?.whileShowingSnackBar(getString(R.string.supended_apps_cleanup)) {
+                    // cleanup suspended package if lock file found
+                    this.forEach { packageName ->
+                        runAsRoot("pm unsuspend $packageName")
+                    }
+                    OABX.appsSuspendedChecked = true
                 }
-                OABX.appsSuspendedChecked = true
             }
         }
-    }
 
-    val directoriesInBackupRoot = getBackupPackageDirectories()
-    val packagesWithBackup =
-    // Try to create AppInfo objects
-    // if it fails, null the object for filtering in the next step to avoid crashes
-        // filter out previously failed backups
-        directoriesInBackupRoot
-            .filterNot {
-                it.name?.let { name ->
-                    specialNames.contains(name)
-                } ?: true
-            }
-            .mapNotNull {
-                try {
-                    // TODO Add a direct constructor
-                    val pkg = Package(this, it.name!!, it)
-                    pkg.backupsNewestFirst.forEach { backups.add(it) }
-                    pkg
-                } catch (e: AssertionError) {
-                    Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
-                    null
+        val directoriesInBackupRoot = getBackupPackageDirectories()
+        val packagesWithBackup =
+        // Try to create AppInfo objects
+        // if it fails, null the object for filtering in the next step to avoid crashes
+            // filter out previously failed backups
+            directoriesInBackupRoot
+                .filterNot {
+                    it.name?.let { name ->
+                        specialNames.contains(name)
+                    } ?: true
                 }
-            }
-            .toList()
+                .mapNotNull {
+                    try {
+                        // TODO Add a direct constructor
+                        val pkg = Package(this, it.name!!, it)
+                        pkg.backupsNewestFirst.forEach { backups.add(it) }
+                        pkg
+                    } catch (e: AssertionError) {
+                        Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
+                        null
+                    }
+                }
+                .toList()
 
-    specialPackages.forEach {
-        it.refreshBackupList()
-        it.backupsNewestFirst.forEach { backups.add(it) }
+        specialPackages.forEach {
+            it.refreshBackupList()
+            it.backupsNewestFirst.forEach { backups.add(it) }
+        }
+
+        val packagesWithBackupNames = packagesWithBackup.map { it.packageName }
+        val appInfoList =
+            installedPackages
+                .filterNot { it.packageName in packagesWithBackupNames }
+                .map { AppInfo(this, it) }
+                .union(packagesWithBackup.map { it.packageInfo as AppInfo })
+
+        appInfoDao.updateList(*appInfoList.toTypedArray())
+        backupDao.updateList(*backups.toTypedArray())
+
+    } catch(e: Throwable) {
+        logException(e)
+    } finally {
+        OABX.endBusy("updateAppTables")
     }
-
-    val packagesWithBackupNames = packagesWithBackup.map { it.packageName }
-    val appInfoList =
-        installedPackages
-            .filterNot { it.packageName in packagesWithBackupNames }
-            .map { AppInfo(this, it) }
-            .union(packagesWithBackup.map { it.packageInfo as AppInfo })
-
-    appInfoDao.updateList(*appInfoList.toTypedArray())
-    backupDao.updateList(*backups.toTypedArray())
-
-    OABX.endBusy("updateAppTables")
 }
 
 @Throws(
@@ -296,9 +306,9 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
 )
 fun Context.getBackupPackageDirectories(): List<StorageFile> {
 
-    OABX.beginBusy("getBackupPackageDirectories")
-
     try {
+        OABX.beginBusy("getBackupPackageDirectories")
+
         //StorageFile.invalidateCache()     // no -> only invalidate the backups
         val backupRoot = getBackupDir()
         cacheInvalidate(backupRoot)         // only invalidate the backups (TODO but forcing it should probably be somewhere else, e.g. button action)

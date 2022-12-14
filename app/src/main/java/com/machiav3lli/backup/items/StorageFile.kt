@@ -234,7 +234,7 @@ open class StorageFile {
     private fun retrieveDocumentInfo(): DocumentInfo? {
         context?.let { context ->
             val resolver = context.contentResolver
-            var cursor: Cursor? = null
+            val cursor: Cursor? = null
             try {
                 resolver.query(
                     _uri!!,
@@ -616,6 +616,8 @@ open class StorageFile {
                                     unhandledException(e, _uri)
                                 }
                             }
+                        } catch (e: IllegalArgumentException) {
+                            // ignore
                         } catch (e: Throwable) {
                             unhandledException(e, _uri)
                         } finally {

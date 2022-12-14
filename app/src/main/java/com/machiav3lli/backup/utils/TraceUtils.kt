@@ -30,18 +30,18 @@ object TraceUtils {
         traceBold(lazyText())
     }
 
-    open class TracePref(name: String, summary: String, default: Boolean) {
+    open class TracePref(val name: String, summary: String, default: Boolean, enableIf: () -> Boolean = { true }) {
 
         val pref = BooleanPref(
             key = "dev-trace.trace$name",
             summary = summary,
             defaultValue = default,
-            enableIf = { pref_trace.value }
+            enableIf = { pref_trace.value && enableIf() }
         )
 
         open operator fun invoke(lazyText: () -> String) {
             if (pref.value)
-                trace(lazyText)
+                trace("[$name] ${lazyText()}")
         }
     }
 
@@ -50,7 +50,7 @@ object TraceUtils {
 
         override operator fun invoke(lazyText: () -> String) {
             if (pref.value)
-                traceBold(lazyText)
+                traceBold("[$name] ${lazyText()}")
         }
     }
 

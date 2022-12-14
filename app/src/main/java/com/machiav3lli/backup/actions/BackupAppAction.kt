@@ -229,11 +229,13 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 //invalidateCacheForPackage(app.packageName)
                 if (backup == null)
                     backup = backupBuilder.createBackup()
-                // TODO maybe need to handle some emergant props
+                // TODO maybe need to handle some emergent props
                 if (ok)
                     app.addBackup(backup)
                 else
                     app.deleteBackup(backup)
+                //TODO hg42 structural problem (update database)
+                //TODO WECH OABX.main?.viewModel?.updatePackage(app.packageName)
             }
         } finally {
             work?.setOperation("end")

@@ -93,7 +93,7 @@ val pref_logToSystemLogcat = BooleanPref(
 val pref_trace = BooleanPref(
     key = "dev-trace.trace",
     summary = "global switch for all traceXXX options",
-    defaultValue = false
+    defaultValue = BuildConfig.DEBUG
 )
 
 val traceSection = TraceUtils.TracePref(
@@ -124,6 +124,12 @@ val traceBusy = TraceUtils.TracePrefBold(
     name = "Busy",
     default = true,
     summary = "trace beginBusy/endBusy (busy indicator)"
+)
+
+val traceBackups = TraceUtils.TracePref(
+    name = "Backups",
+    summary = "trace backups",
+    default = true
 )
 
 val traceBackupProps = TraceUtils.TracePref(
