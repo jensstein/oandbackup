@@ -71,7 +71,7 @@ class MainViewModel(
     val backupsMap = db.backupDao.allFlow
         //------------------------------------------------------------------------------------------ backupsMap
         .mapLatest { it.groupBy(Backup::packageName) }
-        .trace { "*** backupsMap <<- ${it.size}" }
+        .trace { "*** backupsMap <<- p: ${it.size} b: ${it.map { it.value.size }.sum()}" }
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
@@ -91,17 +91,17 @@ class MainViewModel(
 
     val packageList = combine(db.appInfoDao.allFlow, backupsMap) { p, b ->
         //========================================================================================== packageList
-        traceFlows { "******************** database - db: ${p.size} backups: ${b.size}" }
+        traceFlows { "******************** database - db: ${p.size} backups: ${b.map { it.value.size }.sum()}" }
 
-        val list =
+        val pkgs =
             p.toPackageList(
                 appContext,
                 emptyList(),
                 b
             )
 
-        traceFlows { "***** packages ->> ${list.size}" }
-        list
+        traceFlows { "***** packages ->> ${pkgs.size}" }
+        pkgs
     }
         .trace { "*** packageList <<- ${it.size}" }
         .stateIn(
