@@ -412,6 +412,8 @@ class OABX : Application() {
         var _busy = AtomicInteger(0)
         val busy = mutableStateOf(0)
 
+        val isBusy : Boolean get() = (busy.value > 0)
+
         fun beginBusy(name: String? = null) {
             traceBusy {
                 val label = name ?: methodName(1)

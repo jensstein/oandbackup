@@ -71,7 +71,7 @@ fun HomePage() {
 
     val filteredList by main.viewModel.filteredList.collectAsState(emptyList())
     val updatedPackages by main.viewModel.updatedPackages.collectAsState(emptyList())
-    val updaterVisible = updatedPackages.isNotEmpty()
+    val updaterVisible = ! OABX.isBusy && updatedPackages.filter { it.isNewOrUpdated }.isNotEmpty()
     var updaterExpanded by remember { mutableStateOf(false) }
 
     val batchConfirmListener = object : BatchDialogFragment.ConfirmListener {
