@@ -36,7 +36,6 @@ import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.preferences.pref_maxRetriesPerPackage
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.BackupRestoreHelper
@@ -48,6 +47,7 @@ import com.machiav3lli.backup.handler.getSpecial
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.preferences.pref_maxRetriesPerPackage
 import com.machiav3lli.backup.preferences.pref_useExpedited
 import com.machiav3lli.backup.preferences.pref_useForeground
 import com.machiav3lli.backup.services.CommandReceiver
@@ -127,7 +127,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
 
                 packageItem?.let { pi ->
                     try {
-                        pi.refreshBackupList()  // optional, be up to date when the job is finally executed
+                        pi.refreshBackupList()  // not yet set, be up to date when the job is finally executed
                         OABX.shellHandlerInstance?.let { shellHandler ->
                             actionResult = when {
                                 backupBoolean -> {

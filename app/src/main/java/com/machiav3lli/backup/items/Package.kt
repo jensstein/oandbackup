@@ -27,6 +27,7 @@ import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER_OLD
 import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.SpecialInfo
@@ -37,6 +38,9 @@ import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupDir
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
 
@@ -51,7 +55,7 @@ class Package {
     private var backupListState = mutableStateOf(listOf<Backup>())
     private var backupList by backupListState
 
-    internal constructor(
+    internal constructor(   // toPackageList
         context: Context,
         appInfo: AppInfo,
         backups: List<Backup>? = emptyList()
@@ -60,32 +64,31 @@ class Package {
         this.packageInfo = appInfo
         getAppBackupRoot()
         if (appInfo.installed) refreshStorageStats(context)
-        updateBackupList(backups ?: emptyList())
+        updateBackupList(backups ?: emptyList())    //TODO hg42 ???
         OABX.app.packageCache.put(packageName, this)
     }
 
-    constructor(
-        context: Context,
+    constructor(            // special packages
         specialInfo: SpecialInfo,
         backups: List<Backup>? = emptyList()
     ) {
         packageName = specialInfo.packageName
         this.packageInfo = specialInfo
         getAppBackupRoot()
-        updateBackupList(backups ?: emptyList())
+        updateBackupList(backups ?: emptyList())    //TODO hg42 ???
         OABX.app.packageCache.put(packageName, this)
     }
 
-    constructor(
+    constructor(            // schedule
         context: Context,
-        packageInfo: android.content.pm.PackageInfo,
-        backups: List<Backup>? = emptyList()
+        packageInfo: android.content.pm.PackageInfo
     ) {
         packageName = packageInfo.packageName
         this.packageInfo = AppInfo(context, packageInfo)
         getAppBackupRoot()
         refreshStorageStats(context)
-        updateBackupList(backups ?: emptyList())
+        //updateBackupList(backups ?: emptyList())    //TODO hg42 ???
+        //refreshBackupList()                         // currently in schedule, otherwise here
         OABX.app.packageCache.put(packageName, this)
     }
 
@@ -96,7 +99,7 @@ class Package {
     ) {
         this.packageBackupDir = backupDir
         this.packageName = packageName
-        refreshBackupList()
+        refreshBackupList()                             //TODO hg42 use ensureBackupList() ?
         try {
             val pi = context.packageManager.getPackageInfo(
                 this.packageName,
@@ -165,6 +168,14 @@ class Package {
         backupListDirty = false
     }
 
+    fun updateBackupListAndDatabase(new: List<Backup>) {
+        updateBackupList(new)
+        val pkg = this
+        MainScope().launch(Dispatchers.Default) {
+            ODatabase.getInstance(OABX.context).backupDao.updateList(pkg)
+        }
+    }
+
     fun refreshBackupList() {
         traceBackups { "refreshbackupList: $packageName" }
         invalidateBackupCacheForPackage(packageName)
@@ -195,7 +206,7 @@ class Package {
         } catch (e: Throwable) {
             // ignore
         }
-        updateBackupList(backups)
+        updateBackupListAndDatabase(backups)
     }
 
     private fun ensureBackupsLoaded(): List<Backup> {
@@ -242,7 +253,7 @@ class Package {
 
     fun addBackup(backup: Backup) {
         traceBackups { "add backup ${backup.packageName} ${backup.backupDate}" }
-        updateBackupList(backupList + backup)
+        updateBackupListAndDatabase(backupList + backup)
     }
 
     fun deleteBackup(backup: Backup) {
@@ -274,7 +285,7 @@ class Package {
             LogsHandler.unhandledException(e, backup.packageName)
         }
         try {
-            updateBackupList(backupList - backup)
+            updateBackupListAndDatabase(backupList - backup)
             if (backupList.size == 0) {
                 packageBackupDir?.deleteRecursive()
                 packageBackupDir = null
@@ -311,7 +322,7 @@ class Package {
             LogsHandler.unhandledException(e, newBackup.packageName)
         }
         try {
-            updateBackupList(backupList.filterNot { it.backupDate == newBackup.backupDate } + newBackup)
+            updateBackupListAndDatabase(backupList.filterNot { it.backupDate == newBackup.backupDate } + newBackup) //TODO hg42 ???
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, newBackup.packageName)
         }

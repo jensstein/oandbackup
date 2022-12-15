@@ -110,7 +110,7 @@ open class SpecialInfo : PackageInfo {
                         specialPackages
                             .add(
                                 Package(
-                                    context, SpecialInfo(
+                                    SpecialInfo(
                                         "special.smsmms.json",
                                         specPrefix + context.getString(R.string.spec_smsmmsjson),
                                         Build.VERSION.RELEASE,
@@ -123,7 +123,7 @@ open class SpecialInfo : PackageInfo {
                         specialPackages
                             .add(
                                 Package(
-                                    context, SpecialInfo(
+                                    SpecialInfo(
                                         "special.calllogs.json",
                                         specPrefix + context.getString(R.string.spec_calllogsjson),
                                         Build.VERSION.RELEASE,
@@ -137,7 +137,7 @@ open class SpecialInfo : PackageInfo {
                     specialPackages
                         .add(
                             Package(
-                                context, SpecialInfo(
+                                SpecialInfo(
                                     "special.accounts",
                                     specPrefix + context.getString(R.string.spec_accounts),
                                     Build.VERSION.RELEASE,
@@ -150,7 +150,7 @@ open class SpecialInfo : PackageInfo {
                     specialPackages
                         .add(
                             Package(
-                                context, SpecialInfo(
+                                SpecialInfo(
                                     "special.bluetooth",
                                     specPrefix + context.getString(R.string.spec_bluetooth),
                                     Build.VERSION.RELEASE,
@@ -163,7 +163,7 @@ open class SpecialInfo : PackageInfo {
                     specialPackages
                         .add(
                             Package(
-                                context, SpecialInfo(
+                                SpecialInfo(
                                     "special.data.usage.policy",
                                     specPrefix + context.getString(R.string.spec_data),
                                     Build.VERSION.RELEASE,
@@ -177,7 +177,7 @@ open class SpecialInfo : PackageInfo {
                     specialPackages
                         .add(
                             Package(
-                                context, SpecialInfo(
+                                SpecialInfo(
                                     "special.fingerprint",
                                     specPrefix + context.getString(R.string.spec_fingerprint),
                                     Build.VERSION.RELEASE,
@@ -191,7 +191,7 @@ open class SpecialInfo : PackageInfo {
                     specialPackages
                         .add(
                             Package(
-                                context, SpecialInfo(
+                                SpecialInfo(
                                     "special.wallpaper",
                                     specPrefix + context.getString(R.string.spec_wallpaper),
                                     Build.VERSION.RELEASE,
@@ -211,7 +211,7 @@ open class SpecialInfo : PackageInfo {
                     specialPackages
                         .add(
                             Package(
-                                context, SpecialInfo(
+                                SpecialInfo(
                                     "special.wifi.access.points",
                                     specPrefix + context.getString(R.string.spec_wifiAccessPoints),
                                     Build.VERSION.RELEASE,
