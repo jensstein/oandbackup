@@ -1,9 +1,16 @@
 package research
 
+import android.net.Uri
+import android.os.Bundle
+import android.provider.DocumentsContract
 import androidx.test.platform.app.InstrumentationRegistry
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.dbs.entity.Backup
+import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.RootFile
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.items.getCursorString
+import com.machiav3lli.backup.utils.getBackupDir
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -12,6 +19,8 @@ import timber.log.Timber
 import kotlin.system.measureTimeMillis
 
 class Try_readProperties {
+
+    val backupRoot = "/sdcard/NB"
 
     @Test
     fun test_readText_SAF() {
@@ -47,9 +56,9 @@ class Try_readProperties {
 
     @Test
     fun test_scanReadProperties() {
+        val backups = mutableMapOf<String, MutableList<Backup>>()
         val time = measureTimeMillis {
-            val backups = mutableMapOf<String, MutableList<Backup>>()
-            var backupDir = StorageFile(RootFile("/sdcard/NB"))
+            var backupDir = StorageFile(RootFile(backupRoot))
             var text = ""
             backupDir.listFiles().forEach { packageDir ->
                 val packageName = packageDir.name
@@ -63,10 +72,93 @@ class Try_readProperties {
     }
 
     @Test
-    fun test_scanProperties() {
+    fun test_scanPropertiesSAF() {
         val backups = mutableMapOf<String, MutableList<Backup>>()
         val time = measureTimeMillis {
-            val backupDir = StorageFile(RootFile("/sdcard/NB"))
+            val backupDir = OABX.context.getBackupDir()
+            backupDir.listFiles().forEach { packageDir ->
+                val packageName = packageDir.name
+                val backupList = mutableListOf<Backup>()
+                packageDir.listFiles().forEach { file ->
+                    if (file.isPropertyFile)
+                        Backup.createFrom(file)?.let {
+                            backupList.add(it)
+                        }
+                }
+                if (!backupList.isEmpty())
+                    packageName?.let { backups.put(it, backupList) }
+            }
+        }
+        //val json = Json.encodeToString(backups)
+        //StorageFile(File("/sdcard/test.map")).outputStream()?.write(json.toByteArray())
+        //Timber.i("backups: $json")
+        Timber.i("packages: ${backups.size} backups: ${backups.map { it.value.size }.sum()}")
+        Timber.w("time scanning (create backups): $time ms")
+    }
+
+    @Test
+    fun test_scanPropertiesSAF_querySearchDocuments() {
+        val backups = mutableMapOf<String, MutableList<Backup>>()
+        val backupList = mutableListOf<Backup>()
+        val time = measureTimeMillis {
+            val backupDir = OABX.context.getBackupDir()
+            val treeUri = DocumentsContract
+                .buildDocumentUriUsingTree(backupDir.uri, DocumentsContract.getTreeDocumentId(backupDir.uri))
+
+            val authority = treeUri.authority
+                            //"com.machiav3lli.backup.provider"
+                            //"androidx.core.content.FileProvider"
+                            //"com.android.externalstorage.documents" // this is the value baund to the treeUri
+            val searchUri = DocumentsContract
+                .buildSearchDocumentsUri(
+                    authority,
+                    treeUri.path,
+                    ".properties"
+                )
+
+            val cursor = OABX.context.contentResolver
+                .query(searchUri, null, Bundle.EMPTY, null)
+
+            var documentUri: Uri
+            while (cursor?.moveToNext() == true) {
+                try {
+                    val id = getCursorString(
+                        cursor,
+                        DocumentsContract.Document.COLUMN_DOCUMENT_ID
+                    ) ?: "???"
+                    val name = getCursorString(
+                        cursor,
+                        DocumentsContract.Document.COLUMN_DISPLAY_NAME
+                    ) ?: "???"
+                    documentUri =
+                        DocumentsContract.buildDocumentUriUsingTree(
+                            treeUri,
+                            id
+                        )
+                    val file = StorageFile(null, OABX.context, documentUri, name)
+                    if (file.isPropertyFile)
+                        Backup.createFrom(file)?.let {
+                            backupList.add(it)
+                        }
+                } catch (e: Throwable) {
+                    LogsHandler.unhandledException(e)
+                }
+            }
+        }
+
+        //val json = Json.encodeToString(backups)
+        //StorageFile(File("/sdcard/test.map")).outputStream()?.write(json.toByteArray())
+        //Timber.i("backups: $json")
+        Timber.i("backups: ${backupList.map { it.size }.sum()}")
+        Timber.i("packages: ${backups.size} backups: ${backups.map { it.value.size }.sum()}")
+        Timber.w("time scanning (create backups): $time ms")
+    }
+
+    @Test
+    fun test_scanPropertiesRootFile() {
+        val backups = mutableMapOf<String, MutableList<Backup>>()
+        val time = measureTimeMillis {
+            val backupDir = StorageFile(RootFile(backupRoot))
             backupDir.listFiles().forEach { packageDir ->
                 val packageName = packageDir.name
                 val backupList = mutableListOf<Backup>()
