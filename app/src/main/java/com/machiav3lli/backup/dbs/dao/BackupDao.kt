@@ -51,8 +51,8 @@ interface BackupDao : BaseDao<Backup> {
         try {
             val backups = packageItem.backupsNewestFirst.toTypedArray()
             if (backups.size > 0)
-                //insert(*backups)
-                replaceInsert(*backups)
+                insert(*backups)
+                //replaceInsert(*backups)
         } catch(e: Throwable) {
             logException(e)
         }
