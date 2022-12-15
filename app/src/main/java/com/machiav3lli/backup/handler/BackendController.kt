@@ -68,6 +68,43 @@ fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
         }
         .toList()
 
+fun Context.getAllBackups(): Map<String, List<Backup>> {
+
+    OABX.beginBusy("read backups")
+
+    val directoriesInBackupRoot = getBackupPackageDirectories()
+    val backupList = mutableListOf<Backup>()
+    directoriesInBackupRoot
+        .map {
+            it.listFiles()
+                //TODO hg42 handle bad property files (delete it)
+                //TODO hg42 handle directories without properties file (delete it)
+                .filter(StorageFile::isPropertyFile)
+                .forEach { propFile ->
+                    try {
+                        Backup.createFrom(propFile)?.let(backupList::add)
+                    } catch (e: Backup.BrokenBackupException) {
+                        val message =
+                            "Incomplete backup or wrong structure found in $propFile"
+                        Timber.w(message)
+                    } catch (e: NullPointerException) {
+                        val message =
+                            "(Null) Incomplete backup or wrong structure found in $propFile"
+                        Timber.w(message)
+                    } catch (e: Throwable) {
+                        val message =
+                            "(catchall) Incomplete backup or wrong structure found in $propFile"
+                        LogsHandler.unhandledException(e, message)
+                    }
+                }
+        }
+    val backupsMap = backupList.groupBy { it.packageName }
+
+    OABX.endBusy("read backups")
+
+    return backupsMap
+}
+
 fun Context.getInstalledPackageList()  : MutableList<Package> { // only used in ScheduledActionTask
 
     var packageList: MutableList<Package> = mutableListOf()
@@ -124,31 +161,7 @@ fun Context.getInstalledPackageList()  : MutableList<Package> { // only used in 
                 }
             }
 
-            val directoriesInBackupRoot = getBackupPackageDirectories()
-            val backups = mutableListOf<Backup>()
-            directoriesInBackupRoot
-                .map {
-                    it.listFiles()
-                        .filter(StorageFile::isPropertyFile)
-                        .forEach { propFile ->
-                            try {
-                                Backup.createFrom(propFile)?.let(backups::add)
-                            } catch (e: Backup.BrokenBackupException) {
-                                val message =
-                                    "Incomplete backup or wrong structure found in $propFile"
-                                Timber.w(message)
-                            } catch (e: NullPointerException) {
-                                val message =
-                                    "(Null) Incomplete backup or wrong structure found in $propFile"
-                                Timber.w(message)
-                            } catch (e: Throwable) {
-                                val message =
-                                    "(catchall) Incomplete backup or wrong structure found in $propFile"
-                                LogsHandler.unhandledException(e, message)
-                            }
-                        }
-                }
-            val backupsMap = backups.groupBy { it.packageName }
+            val backupsMap = getAllBackups()
 
             packageList = packageList.map {
                 it.apply { updateBackupList(backupsMap[it.packageName].orEmpty()) }
