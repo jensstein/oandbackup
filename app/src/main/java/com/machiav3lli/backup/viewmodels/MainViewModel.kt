@@ -93,12 +93,7 @@ class MainViewModel(
         //========================================================================================== packageList
         traceFlows { "******************** database - db: ${p.size} backups: ${b.map { it.value.size }.sum()}" }
 
-        val pkgs =
-            p.toPackageList(
-                appContext,
-                emptyList(),
-                b
-            )
+        val pkgs = p.toPackageList(appContext, emptyList(), b)
 
         traceFlows { "***** packages ->> ${pkgs.size}" }
         pkgs
