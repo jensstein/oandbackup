@@ -445,18 +445,17 @@ fun MainPackageContextMenu(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainPackageItem(
-    item: Package,
+    pkg: Package,
     productsList: List<Package>,
     selection: SnapshotStateMap<Package, Boolean>,
     onAction: (Package) -> Unit = {}
 ) {
-    val packageItem by remember(item) { mutableStateOf(item) }      //TODO hg42 remove remember ???
     val visible = productsList
     val selectedAndVisible = visible.filter { selection[it] == true }
-    val imageData by remember(packageItem) {
+    val imageData by remember(pkg) {
         mutableStateOf(
-            if (packageItem.isSpecial) packageItem.packageInfo.icon
-            else "android.resource://${packageItem.packageName}/${packageItem.packageInfo.icon}"
+            if (pkg.isSpecial) pkg.packageInfo.icon
+            else "android.resource://${pkg.packageName}/${pkg.packageInfo.icon}"
         )
     }
 
@@ -473,7 +472,7 @@ fun MainPackageItem(
     ) {
         MainPackageContextMenu(
             expanded = menuExpanded,
-            packageItem = item,
+            packageItem = pkg,
             productsList = productsList,
             selection = selection,
             onAction = onAction
@@ -483,10 +482,10 @@ fun MainPackageItem(
             Modifier
                 .combinedClickable(
                     onClick = {
-                        selection[packageItem] = !(selection[packageItem] == true)
+                        selection[pkg] = !(selection[pkg] == true)
                     },
                     onLongClick = {
-                        selection[packageItem] = true
+                        selection[pkg] = true
                         menuExpanded.value = true
                     }
                 )
@@ -495,16 +494,16 @@ fun MainPackageItem(
                 .combinedClickable(
                     onClick = {
                         if (selectedAndVisible.isEmpty()) {
-                            onAction(packageItem)
+                            onAction(pkg)
                         } else {
-                            selection[packageItem] = !(selection[packageItem] == true)
+                            selection[pkg] = !(selection[pkg] == true)
                         }
                     },
                     onLongClick = {
                         if (selectedAndVisible.isEmpty()) {
-                            selection[packageItem] = !(selection[packageItem] == true)
+                            selection[pkg] = !(selection[pkg] == true)
                         } else {
-                            if (selection[packageItem] == true)
+                            if (selection[pkg] == true)
                                 menuExpanded.value = true
                             else {
                                 //selection[packageItem] = true
@@ -519,20 +518,20 @@ fun MainPackageItem(
 
         Row(
             modifier = rowSelector
-                .background(color = if (selection[packageItem] == true) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
+                .background(color = if (selection[pkg] == true) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
                 .fillMaxWidth()
                 .padding(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            PackageIcon(modifier = iconSelector, item = packageItem, imageData = imageData)
+            PackageIcon(modifier = iconSelector, item = pkg, imageData = imageData)
 
             Column(
                 modifier = Modifier.wrapContentHeight()
             ) {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = packageItem.packageLabel,
+                        text = pkg.packageLabel,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .weight(1f),
@@ -541,11 +540,11 @@ fun MainPackageItem(
                         maxLines = 1,
                         style = MaterialTheme.typography.titleMedium
                     )
-                    PackageLabels(item = packageItem)
+                    PackageLabels(item = pkg)
                 }
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = packageItem.packageName,
+                        text = pkg.packageName,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .weight(1f),
@@ -555,11 +554,11 @@ fun MainPackageItem(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    AnimatedVisibility(visible = packageItem.hasBackups) {
+                    AnimatedVisibility(visible = pkg.hasBackups) {
                         Text(
-                            text = (packageItem.latestBackup?.backupDate?.getFormattedDate(
+                            text = (pkg.latestBackup?.backupDate?.getFormattedDate(
                                 false
-                            ) ?: "") + " • ${packageItem.numberOfBackups}",
+                            ) ?: "") + " • ${pkg.numberOfBackups}",
                             modifier = Modifier.align(Alignment.CenterVertically),
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1,
