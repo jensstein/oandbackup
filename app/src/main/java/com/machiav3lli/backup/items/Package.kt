@@ -32,7 +32,6 @@ import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.getPackageStorageStats
-import com.machiav3lli.backup.preferences.pref_alwaysRefreshBackupList
 import com.machiav3lli.backup.preferences.pref_cachePackages
 import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.utils.FileUtils
@@ -162,12 +161,8 @@ class Package {
     }
 
     fun updateBackupList(new: List<Backup>) {
-        if (pref_alwaysRefreshBackupList.value) {
-            refreshBackupList()
-        } else {
-            backupList = new
-            backupListDirty = false
-        }
+        backupList = new
+        backupListDirty = false
     }
 
     fun refreshBackupList() {
@@ -200,12 +195,7 @@ class Package {
         } catch (e: Throwable) {
             // ignore
         }
-        if (pref_alwaysRefreshBackupList.value) {
-            backupList = backups
-            backupListDirty = false
-        } else {
-            updateBackupList(backups)
-        }
+        updateBackupList(backups)
     }
 
     private fun ensureBackupsLoaded(): List<Backup> {
