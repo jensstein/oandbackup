@@ -153,11 +153,9 @@ fun Context.getInstalledPackageList()  : MutableList<Package> { // only used in 
             // discover the backup directory and run in a special case where no the directory is empty.
             // This would mean, that no package info is available – neither from backup.properties
             // nor from PackageManager.
-            val specialList = mutableListOf<String>()
             if (includeSpecial) {
                 SpecialInfo.getSpecialPackages(this).forEach {
                     packageList.add(it)
-                    specialList.add(it.packageName)
                 }
             }
 
