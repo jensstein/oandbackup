@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -134,11 +135,16 @@ fun BackupItem(
                 var persistent by remember(item.persistent) {
                     mutableStateOf(item.persistent)
                 }
-
-                RoundButton(icon = if (persistent) Phosphor.Lock else Phosphor.LockOpen) {
+                val togglePersistent = {
                     persistent = !persistent
                     rewriteBackup(item.copy(persistent = persistent))
                 }
+
+                if (persistent)
+                    RoundButton(icon = Phosphor.Lock, tint = Color.Red, onClick = togglePersistent)
+                else
+                    RoundButton(icon = Phosphor.LockOpen, onClick = togglePersistent)
+
                 Spacer(modifier = Modifier.weight(1f))
                 ElevatedActionButton(
                     icon = Phosphor.TrashSimple,
