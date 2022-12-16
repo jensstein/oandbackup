@@ -140,6 +140,9 @@ object BackupRestoreHelper {
     }
 
     fun housekeepingPackageBackups(app: Package) {
+
+        app.refreshBackupList()
+
         var numBackupRevisions =
             pref_numBackupRevisions.value
         if (numBackupRevisions == 0) {

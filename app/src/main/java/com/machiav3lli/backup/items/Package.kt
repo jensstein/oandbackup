@@ -99,7 +99,8 @@ class Package {
     ) {
         this.packageBackupDir = backupDir
         this.packageName = packageName
-        refreshBackupList()                             //TODO hg42 use ensureBackupList() ?
+        //refreshBackupList()                             //TODO hg42 use ensureBackupList() ?
+        //ensureBackupList()
         try {
             val pi = context.packageManager.getPackageInfo(
                 this.packageName,
@@ -181,12 +182,11 @@ class Package {
         invalidateBackupCacheForPackage(packageName)
         val backups = mutableListOf<Backup>()
         try {
-            getAppBackupRoot()?.listFiles()  //TODO hg42 create a coroutine version of  listFiles?
+            getAppBackupRoot()?.listFiles()
                 ?.filter(StorageFile::isPropertyFile)
                 ?.forEach { propFile ->
                     try {
                         Backup.createFrom(propFile)?.let {
-                            //addBackup(it)       // refresh view immediately? but does not work...
                             backups.add(it)
                         }
                     } catch (e: Backup.BrokenBackupException) {
@@ -206,7 +206,8 @@ class Package {
         } catch (e: Throwable) {
             // ignore
         }
-        updateBackupListAndDatabase(backups)
+        updateBackupListAndDatabase(backups)  //TODO hg42 ???
+        //updateBackupList(backups)
     }
 
     private fun ensureBackupsLoaded(): List<Backup> {
@@ -253,7 +254,8 @@ class Package {
 
     fun addBackup(backup: Backup) {
         traceBackups { "add backup ${backup.packageName} ${backup.backupDate}" }
-        updateBackupListAndDatabase(backupList + backup)
+        //updateBackupListAndDatabase(backupList + backup)  //TODO hg42
+        refreshBackupList()
     }
 
     fun deleteBackup(backup: Backup) {
@@ -285,7 +287,8 @@ class Package {
             LogsHandler.unhandledException(e, backup.packageName)
         }
         try {
-            updateBackupListAndDatabase(backupList - backup)
+            //updateBackupListAndDatabase(backupList - backup)  //TODO hg42
+            refreshBackupList()
             if (backupList.size == 0) {
                 packageBackupDir?.deleteRecursive()
                 packageBackupDir = null

@@ -228,15 +228,16 @@ class MainViewModel(
                         val new = Package.get(packageName) {
                             Package(appContext, packageName, getAppBackupRoot())
                         }
-                        new.ensureBackupList()
                         new.refreshFromPackageManager(OABX.context)
                         new.refreshStorageStats(OABX.context)
                         if (!isSpecial) db.appInfoDao.update(new.packageInfo as AppInfo)
+                        new.refreshBackupList()
                         db.backupDao.updateList(new)
                     } else {
                         val new = Package(appContext, packageName, getAppBackupRoot())
                         new.refreshFromPackageManager(OABX.context)
                         if (!isSpecial) db.appInfoDao.update(new.packageInfo as AppInfo)
+                        new.refreshBackupList()
                         db.backupDao.updateList(new)
                     }
                 }

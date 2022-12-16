@@ -280,6 +280,7 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
                     try {
                         // TODO Add a direct constructor
                         val pkg = Package(this, it.name!!, it)
+                        pkg.refreshBackupList()
                         pkg.backupsNewestFirst.forEach { backups.add(it) }
                         pkg
                     } catch (e: AssertionError) {
@@ -301,8 +302,8 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
                 .map { AppInfo(this, it) }
                 .union(packagesWithBackup.map { it.packageInfo as AppInfo })
 
-        appInfoDao.updateList(*appInfoList.toTypedArray())
         backupDao.updateList(*backups.toTypedArray())
+        appInfoDao.updateList(*appInfoList.toTypedArray())
 
     } catch(e: Throwable) {
         logException(e)
