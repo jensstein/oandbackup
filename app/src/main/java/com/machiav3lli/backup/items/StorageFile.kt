@@ -401,30 +401,14 @@ open class StorageFile {
         }
     }
 
-    fun createDirectory(displayName: String): StorageFile {
-        val newFile =
-            file?.let {
-                val newDir = RootFile(it, displayName)
-                newDir.mkdirs()
-                StorageFile(this, newDir)
-            } ?: run {
-                StorageFile(
-                    this, context!!,
-                    createFile(
-                        context!!, _uri!!,
-                        DocumentsContract.Document.MIME_TYPE_DIR, displayName
-                    )
-                )
-            }
-        path?.let { cacheFilesAdd(it, newFile) }
-        return newFile
-    }
+    fun createDirectory(displayName: String): StorageFile =
+        createFile(displayName, DocumentsContract.Document.MIME_TYPE_DIR)
 
     fun createFile(
         displayName: String,
         mimeType: String = "application/octet-stream"
     ): StorageFile {
-        val newFile =
+        var newFile =
             file?.let {
                 if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
                     val newDir = RootFile(it, displayName)
@@ -436,12 +420,32 @@ open class StorageFile {
                     StorageFile(this, newFile)
                 }
             } ?: run {
-                StorageFile(
-                    this, context,
-                    createFile(context!!, _uri!!, mimeType, displayName),
-                    displayName
-                )
+                if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
+                    val found = findFile(displayName)
+                    found ?: StorageFile(
+                        this, context,
+                        createFile(context!!, _uri!!, mimeType, displayName),
+                        displayName
+                    )
+                } else {
+                    StorageFile(
+                        this, context,
+                        createFile(context!!, _uri!!, mimeType, displayName),
+                        displayName
+                    )
+                }
+
             }
+        if (newFile.name != displayName) {  // just in case the first find didn't work
+            Timber.w("SAF file duplication: $displayName -> ${newFile.name}")
+            if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
+                val found = findFile(displayName)
+                found?.let {
+                    newFile.delete()
+                    newFile = it
+                }
+            }
+        }
         path?.let { cacheFilesAdd(it, newFile) }
         return newFile
     }
@@ -633,8 +637,9 @@ open class StorageFile {
     }
 
     fun ensureDirectory(dirName: String): StorageFile {
-        return findFile(dirName)
-            ?: createDirectory(dirName)
+        //val dir = findFile(dirName) ?: createDirectory(dirName)   // findFile not necessary any more
+        val dir = createDirectory(dirName)
+        return dir
     }
 
     fun deleteRecursive(): Boolean = when {
