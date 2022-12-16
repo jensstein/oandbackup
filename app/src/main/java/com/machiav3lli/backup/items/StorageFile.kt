@@ -343,7 +343,7 @@ open class StorageFile {
         this.file = file
     }
 
-    constructor(parent: StorageFile, path: String) {    //TODO hg42 where is this used?
+    constructor(parent: StorageFile, path: String) {    //TODO hg42 where is this used? only in tests?
         this.parent = parent
         file = RootFile(parent.file, path)  //TODO hg42 what if it's not a RootFile
     }
