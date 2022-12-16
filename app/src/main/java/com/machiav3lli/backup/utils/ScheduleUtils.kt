@@ -72,6 +72,8 @@ fun calculateTimeToRun(schedule: Schedule, now: Long): Long {
             ISO_DATE_TIME_FORMAT.format(now)
         } placed: ${
             ISO_DATE_TIME_FORMAT.format(schedule.timePlaced)
+        } interval: ${
+            schedule.interval
         } next: ${
             ISO_DATE_TIME_FORMAT.format(c.timeInMillis)
         }"
@@ -119,16 +121,16 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                         timeToRun = timeToRun
                     )
                     traceSchedule { "re-scheduling $schedule" }
+                    scheduleDao.update(schedule)
                 } else {
                     if (timeLeft <= TimeUnit.MINUTES.toMillis(1)) {
                         schedule = schedule.copy(
-                            timePlaced = now,
                             timeToRun = now + TimeUnit.MINUTES.toMillis(1)
                         )
                         traceSchedule { "!!!!!!!!!! timeLeft < 1 min -> set schedule $schedule" }
+                        scheduleDao.update(schedule)
                     }
                 }
-                scheduleDao.update(schedule)
 
                 val hasPermission: Boolean =
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
