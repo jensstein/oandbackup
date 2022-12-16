@@ -39,11 +39,17 @@ import com.machiav3lli.backup.ui.compose.MutableComposableFlow
 import com.machiav3lli.backup.utils.TraceUtils.trace
 import com.machiav3lli.backup.utils.applyFilter
 import com.machiav3lli.backup.utils.sortFilterModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -58,134 +64,160 @@ class MainViewModel(
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - FLOWS
 
-    val blocklist = db.blocklistDao.allFlow
+    val blocklist =
         //------------------------------------------------------------------------------------------ blocklist
-        .trace { "*** blocklist <<- ${it.size}" }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.Eagerly,
-            emptyList()
-        )
+        db.blocklistDao.allFlow
+            .trace { "*** blocklist <<- ${it.size}" }
+            .stateIn(
+                viewModelScope,
+                SharingStarted.Eagerly,
+                emptyList()
+            )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val backupsMap = db.backupDao.allFlow
+    val backupsMap =
         //------------------------------------------------------------------------------------------ backupsMap
-        .mapLatest { it.groupBy(Backup::packageName) }
-        .trace { "*** backupsMap <<- p: ${it.size} b: ${it.map { it.value.size }.sum()}" }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.Eagerly,
-            emptyMap()
-        )
+        db.backupDao.allFlow
+            .conflate()
+            .map { it.groupBy(Backup::packageName) }
+            .trace { "*** backupsMap <<- p: ${it.size} b: ${it.map { it.value.size }.sum()}" }
+            .stateIn(
+                viewModelScope,
+                SharingStarted.Eagerly,
+                emptyMap()
+            )
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val appExtrasMap = db.appExtrasDao.allFlow
-        //------------------------------------------------------------------------------------------ appExtrasMap
-        .mapLatest { it.associateBy(AppExtras::packageName) }
-        .trace { "*** appExtrasMap <<- ${it.size}" }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.Eagerly,
-            emptyMap()
-        )
-
-    val packageList = combine(db.appInfoDao.allFlow, backupsMap) { p, b ->
-        //========================================================================================== packageList
-        traceFlows { "******************** database - db: ${p.size} backups: ${b.map { it.value.size }.sum()}" }
-
-        val pkgs = p.toPackageList(appContext, emptyList(), b)
-
-        traceFlows { "***** packages ->> ${pkgs.size}" }
-        pkgs
+    val backupsUpdate = MutableSharedFlow<Package>()
+    val backupsUpdateScope = CoroutineScope(Dispatchers.IO)
+    init {
+        backupsUpdate
+            .onEach {
+                ODatabase.getInstance(OABX.context).backupDao.updateList(it)
+            }
+            .launchIn(backupsUpdateScope)
     }
-        .trace { "*** packageList <<- ${it.size}" }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.Eagerly,
-            emptyList()
-        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val packageMap = packageList
-        //------------------------------------------------------------------------------------------ packageMap
-        .mapLatest { it.associateBy(Package::packageName) }
-        .trace { "*** packageMap <<- ${it.size}" }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.Eagerly,
-            emptyMap()
-        )
+    val appExtrasMap =
+        //------------------------------------------------------------------------------------------ appExtrasMap
+        db.appExtrasDao.allFlow
+            .mapLatest { it.associateBy(AppExtras::packageName) }
+            .trace { "*** appExtrasMap <<- ${it.size}" }
+            .stateIn(
+                viewModelScope,
+                SharingStarted.Eagerly,
+                emptyMap()
+            )
 
-    val notBlockedList = combine(packageList, blocklist) { p, b ->
-        //========================================================================================== notBlockedList
-        traceFlows {
-                "******************** blocking - list: ${p.size} block: ${
-                    b.joinToString(
-                        ","
-                    )
+    val packageList =
+        //========================================================================================== packageList
+        combine(db.appInfoDao.allFlow, backupsMap) { p, b ->
+
+            traceFlows {
+                "******************** database - db: ${p.size} backups: ${
+                    b.map { it.value.size }.sum()
                 }"
             }
 
-        val block = b.map { it.packageName }
-        val list = p.filterNot { block.contains(it.packageName) }
+            val pkgs = p.toPackageList(appContext, emptyList(), b)
 
-        traceFlows { "***** blocked ->> ${list.size}" }
-        list
-    }
-        .trace { "*** notBlockedList <<- ${it.size}" }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.Eagerly,
-            emptyList()
-        )
-
-    val searchQuery = MutableComposableFlow(
-        //------------------------------------------------------------------------------------------ searchQuery
-        "",
-        viewModelScope,
-        "searchQuery"
-    )
-
-    var modelSortFilter = MutableComposableFlow(
-        //------------------------------------------------------------------------------------------ modelSortFilter
-        OABX.context.sortFilterModel,
-        viewModelScope,
-        "modelSortFilter"
-    )
-
-    val filteredList = combine(notBlockedList, modelSortFilter.flow, searchQuery.flow) { p, f, s ->
-        //========================================================================================== filteredList
-        traceFlows { "******************** filtering - list: ${p.size} filter: $f" }
-
-        val list = p
-            .filter { item: Package ->
-                s.isEmpty() || (
-                        listOf(item.packageName, item.packageLabel)
-                            .any { it.contains(s, ignoreCase = true) }
-                        )
-            }
-            .applyFilter(f, OABX.main!!)
-
-        traceFlows { "***** filtered ->> ${list.size}" }
-        list
-    }
-        .trace { "*** filteredList <<- ${it.size}" }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.Eagerly,
-            emptyList()
-        )
+            traceFlows { "***** packages ->> ${pkgs.size}" }
+            pkgs
+        }
+            .trace { "*** packageList <<- ${it.size}" }
+            .stateIn(
+                viewModelScope,
+                SharingStarted.Eagerly,
+                emptyList()
+            )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val updatedPackages = notBlockedList
-        //------------------------------------------------------------------------------------------ updatedPackages
-        .mapLatest { it.filter(Package::isNewOrUpdated).toMutableList() }
-        .trace { "*** updatedPackages <<- ${it.size}" }
-        .stateIn(
+    val packageMap =
+        //------------------------------------------------------------------------------------------ packageMap
+        packageList
+            .mapLatest { it.associateBy(Package::packageName) }
+            .trace { "*** packageMap <<- ${it.size}" }
+            .stateIn(
+                viewModelScope,
+                SharingStarted.Eagerly,
+                emptyMap()
+            )
+
+    val notBlockedList =
+        //========================================================================================== notBlockedList
+        combine(packageList, blocklist) { p, b ->
+
+            traceFlows {
+                "******************** blocking - list: ${p.size} block: ${
+                    b.joinToString(",")
+                }"
+            }
+
+            val block = b.map { it.packageName }
+            val list = p.filterNot { block.contains(it.packageName) }
+
+            traceFlows { "***** blocked ->> ${list.size}" }
+            list
+        }
+            .trace { "*** notBlockedList <<- ${it.size}" }
+            .stateIn(
+                viewModelScope,
+                SharingStarted.Eagerly,
+                emptyList()
+            )
+
+    val searchQuery =
+        //------------------------------------------------------------------------------------------ searchQuery
+        MutableComposableFlow(
+            "",
             viewModelScope,
-            SharingStarted.Eagerly,
-            emptyList()
+            "searchQuery"
         )
+
+    var modelSortFilter =
+        //------------------------------------------------------------------------------------------ modelSortFilter
+        MutableComposableFlow(
+            OABX.context.sortFilterModel,
+            viewModelScope,
+            "modelSortFilter"
+        )
+
+    val filteredList =
+        //========================================================================================== filteredList
+        combine(notBlockedList, modelSortFilter.flow, searchQuery.flow) { p, f, s ->
+
+            traceFlows { "******************** filtering - list: ${p.size} filter: $f" }
+
+            val list = p
+                .filter { item: Package ->
+                    s.isEmpty() || (
+                            listOf(item.packageName, item.packageLabel)
+                                .any { it.contains(s, ignoreCase = true) }
+                            )
+                }
+                .applyFilter(f, OABX.main!!)
+
+            traceFlows { "***** filtered ->> ${list.size}" }
+            list
+        }
+            .trace { "*** filteredList <<- ${it.size}" }
+            .stateIn(
+                viewModelScope,
+                SharingStarted.Eagerly,
+                emptyList()
+            )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val updatedPackages =
+        //------------------------------------------------------------------------------------------ updatedPackages
+        notBlockedList
+            .mapLatest { it.filter(Package::isNewOrUpdated).toMutableList() }
+            .trace { "*** updatedPackages <<- ${it.size}" }
+            .stateIn(
+                viewModelScope,
+                SharingStarted.Eagerly,
+                emptyList()
+            )
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - FLOWS end
 

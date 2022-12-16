@@ -27,7 +27,6 @@ import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER_OLD
 import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.SpecialInfo
@@ -38,9 +37,6 @@ import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupDir
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
 
@@ -171,10 +167,11 @@ class Package {
 
     fun updateBackupListAndDatabase(new: List<Backup>) {
         updateBackupList(new)
-        val pkg = this
-        MainScope().launch(Dispatchers.Default) {
-            ODatabase.getInstance(OABX.context).backupDao.updateList(pkg)
-        }
+        OABX.main?.viewModel?.backupsUpdate?.tryEmit(this)
+        //val pkg = this
+        //CoroutineScope(Dispatchers.Unconfined).launch {
+        //    ODatabase.getInstance(OABX.context).backupDao.updateList(pkg)
+        //}
     }
 
     fun refreshBackupList() {
