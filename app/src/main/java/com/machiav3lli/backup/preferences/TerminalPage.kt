@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -42,11 +43,15 @@ import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material.icons.rounded.List
 import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -62,12 +67,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.flowlayout.FlowRow
 import com.machiav3lli.backup.BuildConfig
+import com.machiav3lli.backup.ICON_SIZE_SMALL
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.beginBusy
 import com.machiav3lli.backup.OABX.Companion.endBusy
@@ -258,6 +265,7 @@ fun TerminalPage() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean = true) {
 
@@ -266,6 +274,16 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
     val nLines = text.size
     var wrap by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+
+    val fontLineFactor = 1.4     //TODO hg42 factor 1.4 is empiric, how is it correctly?
+    val searchFontFactor = 1.4
+    val fontSize = 10.sp
+    val lineHeightSp = fontSize * fontLineFactor
+    val lineSpacing = 1.dp
+    val lineHeight = with(LocalDensity.current) { lineHeightSp.toDp() }
+    val totalLineHeight = lineHeight + lineSpacing
+
+    var search by remember { mutableStateOf("") }
 
     if (scrollOnAdd)
         LaunchedEffect(nLines) {
@@ -287,12 +305,6 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
                 .ifThen(!wrap) { horizontalScroll(hscroll) }
                 .background(color = Color.Transparent)
         ) {
-            val fontSize = 10.sp
-            val lineHeightSp =
-                fontSize * 1.4     //TODO hg42 factor 1.4 is empiric, how is it correctly?
-            val lineSpacing = 1.dp
-            val lineHeight = with(LocalDensity.current) { lineHeightSp.toDp() }
-            val totalLineHeight = lineHeight + lineSpacing
             SelectionContainerX {
                 LazyColumn(
                     modifier = Modifier
@@ -308,35 +320,43 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
                     state = listState
                 ) {
                     items(text) {
-                        val color =
-                            when {
-                                it.contains("error", ignoreCase = true) -> Color(1f, 0f, 0f)
-                                it.contains("warning", ignoreCase = true) -> Color(1f, 0.5f, 0f)
-                                it.contains("***") -> Color(0f, 1f, 1f)
-                                it.startsWith("===") -> Color(1f, 1f, 0f)
-                                it.startsWith("---") -> Color(0.8f, 0.8f, 0f)
-                                else -> Color.White
-                            }
-                        Text(
-                            if (it == "") " " else it,     //TODO hg42 workaround
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = fontSize,
-                            lineHeight = lineHeightSp,
-                            softWrap = wrap,
-                            color = color,
-                            modifier = Modifier.padding(0.dp)
-                        )
+                        if (it.contains(search, ignoreCase = true)) {
+                            val color =
+                                when {
+                                    it.contains("error", ignoreCase = true) -> Color(1f, 0f, 0f)
+                                    it.contains("warning", ignoreCase = true) -> Color(1f, 0.5f, 0f)
+                                    it.contains("***") -> Color(0f, 1f, 1f)
+                                    it.startsWith("===") -> Color(1f, 1f, 0f)
+                                    it.startsWith("---") -> Color(
+                                        0.8f,
+                                        0.8f,
+                                        0f
+                                    )
+                                    else -> Color.White
+                                }
+                            Text(
+                                if (it == "") " " else it,     //TODO hg42 workaround
+                                fontFamily = FontFamily.Monospace,
+                                fontSize = fontSize,
+                                lineHeight = lineHeightSp,
+                                softWrap = wrap,
+                                color = color,
+                                modifier = Modifier.padding(0.dp)
+                            )
+                        }
                     }
                 }
             }
         }
+
+        val overlayColor = Color(1f, 0.5f, 1f, 0.7f)
 
         @Composable
         fun SmallButton(icon: ImageVector, onClick: () -> Unit) {
             RoundButton(
                 icon = icon,
                 onClick = onClick,
-                tint = Color(1f, 0.5f, 1f, 0.7f)
+                tint = overlayColor
             )
         }
 
@@ -346,6 +366,44 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
                 .background(color = Color.Transparent),
             horizontalArrangement = Arrangement.End
         ) {
+            //val focusManager = LocalFocusManager.current
+
+            TextField(modifier = Modifier
+                .padding(0.dp)
+                , //.weight(1f),
+                value = search,
+                singleLine = true,
+                //placeholder = { Text(text = "search", color = Color.Gray) },
+                colors = TextFieldDefaults.textFieldColors(
+                    textColor = overlayColor,
+                    containerColor = Color.Transparent,
+                    unfocusedLeadingIconColor = overlayColor,
+                    focusedLeadingIconColor = if (search.length > 0) Color.Transparent else overlayColor
+                ),
+                textStyle = TextStyle(fontSize = fontSize*searchFontFactor, lineHeight = lineHeightSp*searchFontFactor),
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Rounded.Search,
+                        contentDescription = "search",
+                        modifier = Modifier.size(ICON_SIZE_SMALL)
+                        //tint = tint,
+                        //contentDescription = description
+                    )
+                },
+                keyboardOptions = KeyboardOptions(
+                    autoCorrect = false,
+                    //imeAction = ImeAction.Done
+                ),
+                //keyboardActions = KeyboardActions(
+                //    onDone = {
+                //        run(command)
+                //        command = ""
+                //    }
+                //),
+                onValueChange = {
+                    search = it
+                }
+            )
             SmallButton(icon = if (wrap) Icons.Rounded.MoreVert else Icons.Rounded.List) {
                 wrap = !wrap
             }
