@@ -272,7 +272,8 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
             // filter out previously failed backups
             directoriesInBackupRoot
                 .filterNot {
-                    it.name?.let { name ->
+                    it.name?.let {
+                        val name = it.substringBefore(" ")    // strip SAF duplicate suffix " (n)"
                         specialNames.contains(name)
                     } ?: true
                 }
