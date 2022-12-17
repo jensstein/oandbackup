@@ -71,7 +71,7 @@ fun HomePage() {
 
     val filteredList by main.viewModel.filteredList.collectAsState(emptyList())
     val updatedPackages by main.viewModel.updatedPackages.collectAsState(emptyList())
-    val updaterVisible = ! OABX.isBusy && updatedPackages.filter { it.isNewOrUpdated }.isNotEmpty()
+    val updaterVisible = ! OABX.isBusy && updatedPackages.any { it.isNewOrUpdated }
     var updaterExpanded by remember { mutableStateOf(false) }
 
     val batchConfirmListener = object : BatchDialogFragment.ConfirmListener {
@@ -85,10 +85,6 @@ fun HomePage() {
     Scaffold(
         containerColor = Color.Transparent,
         floatingActionButton = {
-            // AnimatedVisibility doesn't work with animation,
-            // it hides the button and shows it when clicking the refresh button
-            // none of the "visible" expressions work (hg42)
-            //if (updaterVisible) {
             AnimatedVisibility(
                 modifier = Modifier.padding(start = 28.dp),
                 visible = updaterVisible,
@@ -121,7 +117,7 @@ fun HomePage() {
                                         .map { it.packageInfo }
                                         .toCollection(ArrayList())
                                     val selectedListModes = updatedPackages
-                                        .mapNotNull {
+                                        .map {
                                             it.latestBackup?.let { bp ->
                                                 when {
                                                     bp.hasApk && bp.hasAppData -> ALT_MODE_BOTH
@@ -129,7 +125,7 @@ fun HomePage() {
                                                     bp.hasAppData              -> ALT_MODE_DATA
                                                     else                       -> ALT_MODE_UNSET
                                                 }
-                                            } ?: ALT_MODE_BOTH
+                                            } ?: ALT_MODE_BOTH  // no backup -> try all
                                         }
                                         .toCollection(ArrayList())
                                     if (selectedList.isNotEmpty()) {
