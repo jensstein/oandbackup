@@ -33,6 +33,7 @@ import androidx.lifecycle.ViewModel
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.DynamicColorsOptions
 import com.machiav3lli.backup.activities.MainActivityX
+import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
@@ -44,6 +45,9 @@ import com.machiav3lli.backup.ui.item.BooleanPref
 import com.machiav3lli.backup.ui.item.IntPref
 import com.machiav3lli.backup.utils.TraceUtils
 import com.machiav3lli.backup.utils.TraceUtils.methodName
+import com.machiav3lli.backup.utils.cancelAlarm
+import com.machiav3lli.backup.utils.scheduleAlarm
+import com.machiav3lli.backup.utils.scheduleAlarms
 import com.machiav3lli.backup.utils.styleTheme
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -196,6 +200,8 @@ class OABX : Application() {
             addInfoText("--> long click for big infobox")
             addInfoText("--> click big infobox to close")
         }
+
+        scheduleAlarms()
     }
 
     override fun onTerminate() {

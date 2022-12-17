@@ -46,7 +46,10 @@ import com.machiav3lli.backup.preferences.pref_useExactAlarm
 import com.machiav3lli.backup.services.AlarmReceiver
 import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.traceSchedule
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.LocalTime
 import java.util.concurrent.TimeUnit
@@ -221,6 +224,20 @@ fun cancelAlarm(context: Context, scheduleId: Long) {
     alarmManager.cancel(pendingIntent)
     pendingIntent.cancel()
     traceSchedule { "cancelled schedule with id: $scheduleId" }
+}
+
+fun scheduleAlarms() {
+    CoroutineScope(Dispatchers.Default).launch {
+        val scheduleDao = ODatabase.getInstance(OABX.context).scheduleDao
+        traceSchedule { "schedule alarms" }
+        scheduleDao.all
+            .forEach {
+                if (it.enabled)
+                    scheduleAlarm(OABX.context, it.id, false)
+                else
+                    cancelAlarm(OABX.context, it.id)
+            }
+    }
 }
 
 fun createPendingIntent(context: Context, scheduleId: Long): PendingIntent {
