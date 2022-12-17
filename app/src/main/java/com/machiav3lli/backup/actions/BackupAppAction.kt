@@ -125,6 +125,14 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 preprocessPackage(type = "backup", packageName = app.packageName)
             }
 
+            fun handleException(e: Throwable): ActionResult {
+                val message =
+                    "${e.javaClass.simpleName}: ${e.message}${e.cause?.let { " - ${it.message}" }}"
+                Timber.e("Backup failed due to $message")
+                Timber.d("Backup deleted: ${backupBuilder.backupPath.delete()}")
+                return ActionResult(app, null, message, false)
+            }
+
             try {
                 val fakeSeconds = pref_fakeBackupSeconds.value
                 if (fakeSeconds > 0) {
@@ -204,22 +212,13 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 ok = true
 
             } catch (e: BackupFailedException) {
-                Timber.e("Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
-                Timber.d("Backup deleted: ${backupBuilder.backupPath.delete()}")
-                return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
+                return handleException(e)
             } catch (e: CryptoSetupException) {
-                Timber.e("Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
-                Timber.d("Backup deleted: ${backupBuilder.backupPath.delete()}")
-                return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
+                return handleException(e)
             } catch (e: IOException) {
-                Timber.e("Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
-                Timber.d("Backup deleted: ${backupBuilder.backupPath.delete()}")
-                return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
+                return handleException(e)
             } catch (e: Throwable) {
-                LogsHandler.unhandledException(e, app)
-                Timber.e("Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
-                Timber.d("Backup deleted: ${backupBuilder.backupPath.delete()}")
-                return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
+                return handleException(e)
             } finally {
                 work?.setOperation("fin")
                 if (pauseApp) {
