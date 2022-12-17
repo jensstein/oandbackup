@@ -209,7 +209,7 @@
         <item quantity="other">%d aplikasi yang diperbarui</item>
     </plurals>
     <plurals name="days_left">
-        <item quantity="other">%d hari,</item>
+        <item quantity="other">%d hari</item>
     </plurals>
     <string name="app_info">Informasi-aplikasi</string>
     <string name="launch_app">Luncurkan aplikasi</string>

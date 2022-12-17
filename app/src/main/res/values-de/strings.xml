@@ -210,8 +210,8 @@
     <string name="prefs_disableverification_summary">Deaktiviert diese Entwickleroption beim Wiederherstellen von APKs und aktiviert sie danach wieder. Behebt den Fehler: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
     <string name="prefs_disableverification">App-Überprüfung via USB deaktivieren</string>
     <plurals name="days_left">
-        <item quantity="one">%d Tag,</item>
-        <item quantity="other">%d Tage,</item>
+        <item quantity="one">%d Tag</item>
+        <item quantity="other">%d Tage</item>
     </plurals>
     <string name="help_issues">Bekannte Probleme</string>
     <string name="stats_apps">Apps</string>

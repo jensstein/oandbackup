@@ -205,8 +205,8 @@
     <string name="logs_text_empty">Δεν υπάρχει τίποτα για προβολή!</string>
     <string name="delete_all_backups">Διαγραφή όλων των αντιγράφων</string>
     <plurals name="days_left">
-        <item quantity="one">%d ημέρα,</item>
-        <item quantity="other">%d ημέρες,</item>
+        <item quantity="one">%d ημέρα</item>
+        <item quantity="other">%d ημέρες</item>
     </plurals>
     <string name="prefs_disableverification_summary">Απενεργοποιεί αυτήν την επιλογή προγραμματιστών κατά την επαναφορά εφαρμογών και την επανενεργοποιεί έπειτα. Λύνει το σφάλμα: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
     <string name="prefs_disableverification">Απενεργοποίηση Επαλήθευσης εφαρμογών μέσω USB</string>

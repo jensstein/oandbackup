@@ -208,8 +208,8 @@
         <item quantity="other">%d güncellenmiş uygulamalar</item>
     </plurals>
     <plurals name="days_left">
-        <item quantity="one">%d gün,</item>
-        <item quantity="other">%d günler,</item>
+        <item quantity="one">%d gün</item>
+        <item quantity="other">%d günler</item>
     </plurals>
     <string name="forceKillMessage">Uygulamayı zorla öldürmek istediğinizden emin misiniz\?</string>
     <string name="app_info">Uygulama-bilgisi</string>

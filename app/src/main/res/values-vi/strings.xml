@@ -4,7 +4,7 @@
         <item quantity="other">%d ứng dụng đã cập nhật</item>
     </plurals>
     <plurals name="days_left">
-        <item quantity="other">%d ngày,</item>
+        <item quantity="other">%d ngày</item>
     </plurals>
     <plurals name="sched_interval_formal">
         <item quantity="other">mỗi %d ngày</item>

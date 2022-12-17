@@ -208,7 +208,7 @@
     <string name="prefs_disableverification_summary">还原APKs时会禁用这一开发者选项，在之后便会重新启用。用以解决错误：INSTALL_FAILED_VERIFICATION_FAILURE。</string>
     <string name="prefs_disableverification">禁用通过USB验证应用</string>
     <plurals name="days_left">
-        <item quantity="other">%d 天,</item>
+        <item quantity="other">%d 天</item>
     </plurals>
     <string name="help_issues">已知问题</string>
     <string name="prefs_obbdata">备份 obb 文件</string>

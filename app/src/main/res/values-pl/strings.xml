@@ -202,10 +202,10 @@
     <string name="radio_obbdata">Dane OBB</string>
     <string name="radio_externaldata">Dane zewnętrzne</string>
     <plurals name="days_left">
-        <item quantity="one">%d dzień,</item>
-        <item quantity="few">%d dni,</item>
-        <item quantity="many">%d dni,</item>
-        <item quantity="other">%d dni,</item>
+        <item quantity="one">%d dzień</item>
+        <item quantity="few">%d dni</item>
+        <item quantity="many">%d dni</item>
+        <item quantity="other">%d dni</item>
     </plurals>
     <string name="help_issues">Znane problemy</string>
     <string name="fetching_action_list">Pobieranie listy aplikacji dla %1$s…</string>

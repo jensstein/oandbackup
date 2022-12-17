@@ -215,8 +215,8 @@
         <item quantity="other">joka %d. päivä</item>
     </plurals>
     <plurals name="days_left">
-        <item quantity="one">%d päivä,</item>
-        <item quantity="other">%d päivää,</item>
+        <item quantity="one">%d päivä</item>
+        <item quantity="other">%d päivää</item>
     </plurals>
     <plurals name="updated_apps">
         <item quantity="one">%d päivitetty sovellus</item>

@@ -7,7 +7,7 @@
         <item quantity="other">each %d days</item>
     </plurals>
     <plurals name="days_left">
-        <item quantity="other">%d days,</item>
+        <item quantity="other">%d days</item>
     </plurals>
     <plurals name="updated_apps">
         <item quantity="other">%d updated apps</item>

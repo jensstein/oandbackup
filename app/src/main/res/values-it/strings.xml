@@ -202,9 +202,9 @@
     <string name="radio_externaldata">Dati esterni</string>
     <string name="fetching_action_list">Recupero elenco delle app per %1$s …</string>
     <plurals name="days_left">
-        <item quantity="one">%d giorno,</item>
-        <item quantity="many">%d giorni,</item>
-        <item quantity="other">%d giorni,</item>
+        <item quantity="one">%d giorno</item>
+        <item quantity="many">%d giorni</item>
+        <item quantity="other">%d giorni</item>
     </plurals>
     <string name="intro_permission_batteryoptimization">L\'app può avere alcuni problemi eseguendo backup pianificati su alcune ROM che adottano ottimizzazioni della batteria aggressive, ad es. MIUI, ma anche su vanilla AOSP può capitare un problema del genere.</string>
     <string name="help_issues">Problemi noti</string>
