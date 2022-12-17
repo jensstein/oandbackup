@@ -13,6 +13,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,11 +25,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.entity.Schedule
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.PlayCircle
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.getTimeLeft
+import com.machiav3lli.backup.utils.startSchedule
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,14 +64,15 @@ fun ScheduleItem(
         ) {
             Checkbox(checked = checked,
                 onCheckedChange = {
-                    // schedule.enabled = it
                     check(it)
                     onCheckChanged(schedule, it)
                 }
             )
 
             Column(
-                modifier = Modifier.wrapContentHeight()
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .weight(1f)
             ) {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
@@ -96,6 +104,15 @@ fun ScheduleItem(
                     Spacer(modifier = Modifier.weight(1f))
                     ScheduleTypes(item = schedule)
                 }
+            }
+
+            IconButton(onClick = {
+                startSchedule(schedule)
+            }) {
+                Icon(
+                    imageVector = Phosphor.PlayCircle,
+                    contentDescription = stringResource(id = R.string.sched_startingbackup)
+                )
             }
         }
     }

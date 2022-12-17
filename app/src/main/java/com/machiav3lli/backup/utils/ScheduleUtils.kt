@@ -20,18 +20,26 @@ package com.machiav3lli.backup.utils
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.icu.util.Calendar
 import android.os.Build
+import androidx.appcompat.app.AlertDialog
 import com.machiav3lli.backup.ISO_DATE_TIME_FORMAT
 import com.machiav3lli.backup.ISO_DATE_TIME_FORMAT_MIN
+import com.machiav3lli.backup.MODE_UNSET
+import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.OABX.Companion.getString
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.ODatabase
+import com.machiav3lli.backup.dbs.dao.ScheduleDao
 import com.machiav3lli.backup.dbs.entity.Schedule
+import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.preferences.pref_fakeScheduleMin
 import com.machiav3lli.backup.preferences.pref_useAlarmClock
 import com.machiav3lli.backup.preferences.pref_useExactAlarm
 import com.machiav3lli.backup.services.AlarmReceiver
+import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.traceSchedule
 import timber.log.Timber
 import java.time.LocalTime
@@ -92,7 +100,7 @@ fun getTimeLeft(context: Context, schedule: Schedule): List<String> {
         val days = TimeUnit.MILLISECONDS.toDays(timeDiff).toInt()
         if (days != 0) {
             relTime += context.resources
-                .getQuantityString(R.plurals.days_left, days, days)
+                .getQuantityString(R.plurals.days_left, days, days) + " + "
         }
         val hours = TimeUnit.MILLISECONDS.toHours(timeDiff).toInt() % 24
         val minutes = TimeUnit.MILLISECONDS.toMinutes(timeDiff).toInt() % 60
@@ -196,3 +204,85 @@ fun createPendingIntent(context: Context, scheduleId: Long): PendingIntent {
         PendingIntent.FLAG_IMMUTABLE
     )
 }
+
+
+fun startSchedule(schedule: Schedule) {
+
+    OABX.main?.let {
+
+        val database = ODatabase.getInstance(OABX.context)
+
+        val message = StringBuilder()
+
+        message.append(
+            "\n${getString(R.string.sched_mode)} ${
+                modesToString(
+                    OABX.context,
+                    modeToModes(schedule.mode)
+                )
+            }"
+        )
+        message.append(
+            "\n${getString(R.string.backup_filters)} ${
+                filterToString(
+                    OABX.context,
+                    schedule.filter
+                )
+            }"
+        )
+        message.append(
+            "\n${getString(R.string.other_filters_options)} ${
+                specialFilterToString(
+                    OABX.context,
+                    schedule.specialFilter
+                )
+            }"
+        )
+        // TODO list the CL packages
+        message.append(
+            "\n${getString(R.string.customListTitle)}: ${
+                if (schedule.customList.isNotEmpty()) getString(
+                    R.string.dialogYes
+                ) else getString(R.string.dialogNo)
+            }"
+        )
+        // TODO list the BL packages
+        message.append(
+            "\n${getString(R.string.sched_blocklist)}: ${
+                if (schedule.blockList.isNotEmpty()) getString(
+                    R.string.dialogYes
+                ) else getString(R.string.dialogNo)
+            }"
+        )
+        AlertDialog.Builder(it)
+            .setTitle("${schedule.name}: ${getString(R.string.sched_activateButton)}?")
+            .setMessage(message)
+            .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int ->
+                if (schedule.mode != MODE_UNSET)
+                    StartSchedule(OABX.context, database.scheduleDao, schedule.id).execute()
+            }
+            .setNegativeButton(R.string.dialogCancel) { _: DialogInterface?, _: Int -> }
+            .show()
+    }
+}
+
+internal class StartSchedule(
+    val context: Context,
+    val scheduleDao: ScheduleDao,
+    private val scheduleId: Long
+) :
+    ShellCommands.Command {
+
+    override fun execute() {
+        Thread {
+            val now = System.currentTimeMillis()
+            val serviceIntent = Intent(context, ScheduleService::class.java)
+            scheduleDao.getSchedule(scheduleId)?.let { schedule ->
+                serviceIntent.putExtra("scheduleId", scheduleId)
+                serviceIntent.putExtra("name", schedule.getBatchName(now))
+                context.startService(serviceIntent)
+            }
+        }.start()
+    }
+}
+
