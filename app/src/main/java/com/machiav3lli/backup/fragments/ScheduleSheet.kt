@@ -18,15 +18,10 @@
 package com.machiav3lli.backup.fragments
 
 import android.app.TimePickerDialog
-import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -51,7 +46,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
@@ -59,24 +53,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import com.machiav3lli.backup.EXTRA_SCHEDULE_ID
-import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.ODatabase
-import com.machiav3lli.backup.dbs.dao.ScheduleDao
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.dialogs.IntervalInDaysDialog
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.dialogs.ScheduleNameDialog
-import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.mainFilterChipItems
 import com.machiav3lli.backup.schedSpecialFilterChipItems
 import com.machiav3lli.backup.scheduleBackupModeChipItems
-import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.traceDebug
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
-import com.machiav3lli.backup.ui.compose.icons.phosphor.ArchiveTray
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretDown
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CheckCircle
+import com.machiav3lli.backup.ui.compose.icons.phosphor.PlayCircle
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Prohibit
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
 import com.machiav3lli.backup.ui.compose.item.CheckChip
@@ -89,12 +79,9 @@ import com.machiav3lli.backup.ui.compose.recycler.SelectableChipGroup
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.item.ChipItem
 import com.machiav3lli.backup.utils.cancelAlarm
-import com.machiav3lli.backup.utils.filterToString
-import com.machiav3lli.backup.utils.getTimeLeft
-import com.machiav3lli.backup.utils.modeToModes
-import com.machiav3lli.backup.utils.modesToString
 import com.machiav3lli.backup.utils.specialBackupsEnabled
-import com.machiav3lli.backup.utils.specialFilterToString
+import com.machiav3lli.backup.utils.startSchedule
+import com.machiav3lli.backup.utils.timeLeft
 import com.machiav3lli.backup.viewmodels.ScheduleViewModel
 import java.time.LocalTime
 
@@ -133,80 +120,6 @@ class ScheduleSheet() : BaseSheet() {
         schedule: Schedule,
         rescheduleBoolean: Boolean
     ) = viewModel.updateSchedule(schedule, rescheduleBoolean)
-
-    private fun startSchedule(schedule: Schedule) {
-
-        val message = StringBuilder()
-        message.append(
-            "\n${getString(R.string.sched_mode)} ${
-                modesToString(
-                    requireContext(),
-                    modeToModes(schedule.mode)
-                )
-            }"
-        )
-        message.append(
-            "\n${getString(R.string.backup_filters)} ${
-                filterToString(
-                    requireContext(),
-                    schedule.filter
-                )
-            }"
-        )
-        message.append(
-            "\n${getString(R.string.other_filters_options)} ${
-                specialFilterToString(
-                    requireContext(),
-                    schedule.specialFilter
-                )
-            }"
-        )
-        // TODO list the CL packages
-        message.append(
-            "\n${getString(R.string.customListTitle)}: ${
-                if (schedule.customList.isNotEmpty()) getString(
-                    R.string.dialogYes
-                ) else getString(R.string.dialogNo)
-            }"
-        )
-        // TODO list the BL packages
-        message.append(
-            "\n${getString(R.string.sched_blocklist)}: ${
-                if (schedule.blockList.isNotEmpty()) getString(
-                    R.string.dialogYes
-                ) else getString(R.string.dialogNo)
-            }"
-        )
-        AlertDialog.Builder(requireActivity())
-            .setTitle("${schedule.name}: ${getString(R.string.sched_activateButton)}?")
-            .setMessage(message)
-            .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int ->
-                if (schedule.mode != MODE_UNSET)
-                    StartSchedule(requireContext(), database.scheduleDao, scheduleId).execute()
-            }
-            .setNegativeButton(R.string.dialogCancel) { _: DialogInterface?, _: Int -> }
-            .show()
-    }
-
-    internal class StartSchedule(
-        val context: Context,
-        val scheduleDao: ScheduleDao,
-        private val scheduleId: Long
-    ) :
-        ShellCommands.Command {
-
-        override fun execute() {
-            Thread {
-                val now = System.currentTimeMillis()
-                val serviceIntent = Intent(context, ScheduleService::class.java)
-                scheduleDao.getSchedule(scheduleId)?.let { schedule ->
-                    serviceIntent.putExtra("scheduleId", scheduleId)
-                    serviceIntent.putExtra("name", schedule.getBatchName(now))
-                    context.startService(serviceIntent)
-                }
-            }.start()
-        }
-    }
 
     private fun showNameEditorDialog(schedule: Schedule) {
         ScheduleNameDialog(schedule.name) {
@@ -274,9 +187,9 @@ class ScheduleSheet() : BaseSheet() {
         val customList by viewModel.customList.collectAsState(emptySet())
         val blockList by viewModel.blockList.collectAsState(emptySet())
         val nestedScrollConnection = rememberNestedScrollInteropConnection()
-        val context = LocalContext.current
+        val (absTime, relTime) = timeLeft(schedule).value
 
-        traceDebug { "*** recompose schedule <<- ${schedule}" }
+        //traceDebug { "*** recompose schedule <<- ${schedule}" }
 
         AppTheme {
             Scaffold(
@@ -293,12 +206,11 @@ class ScheduleSheet() : BaseSheet() {
                         Divider(thickness = 2.dp)
                         Spacer(modifier = Modifier.height(8.dp))
                         Row {
-                            val (absTime, relTime) = getTimeLeft(context, schedule)
-                            AnimatedVisibility(visible = schedule.enabled) {
+                            //AnimatedVisibility(visible = schedule.enabled) {  //TODO no, before enabling you want to know what
                                 Text(
                                     text = "⏳ $relTime    🕒 $absTime"
                                 )
-                            }
+                            //}
                         }
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             CheckChip(
@@ -326,7 +238,7 @@ class ScheduleSheet() : BaseSheet() {
                         }
                         ElevatedActionButton(
                             text = stringResource(id = R.string.sched_activateButton),
-                            icon = Phosphor.ArchiveTray,
+                            icon = Phosphor.PlayCircle,
                             fullWidth = true,
                             onClick = { startSchedule(schedule) }
                         )
@@ -428,7 +340,7 @@ class ScheduleSheet() : BaseSheet() {
                     }
 
                     item {
-                        traceDebug { "*** recompose filter ${schedule.filter}" }
+                        //traceDebug { "*** recompose filter ${schedule.filter}" }
                         TitleText(R.string.filter_options)
                         MultiSelectableChipGroup(
                             list = if (requireContext().specialBackupsEnabled)
@@ -438,7 +350,7 @@ class ScheduleSheet() : BaseSheet() {
                             //selectedFlags = schedule.filter
                             selectedFlags = schedule.filter
                         ) { flags, flag ->
-                            traceDebug { "*** onClick filter ${schedule.filter} xor ${flag} -> $flags (${schedule.filter xor flag})" }
+                            //traceDebug { "*** onClick filter ${schedule.filter} xor ${flag} -> $flags (${schedule.filter xor flag})" }
                             refresh(
                                 schedule.copy(filter = flags),
                                 false,
@@ -446,7 +358,7 @@ class ScheduleSheet() : BaseSheet() {
                         }
                     }
                     item {
-                        traceDebug { "*** recompose mode ${schedule.mode}" }
+                        //traceDebug { "*** recompose mode ${schedule.mode}" }
                         TitleText(R.string.sched_mode)
                         MultiSelectableChipGroup(
                             list = scheduleBackupModeChipItems,
@@ -460,7 +372,7 @@ class ScheduleSheet() : BaseSheet() {
                         }
                     }
                     item {
-                        traceDebug { "*** recompose specialFilter ${schedule.specialFilter}" }
+                        //traceDebug { "*** recompose specialFilter ${schedule.specialFilter}" }
                         TitleText(R.string.other_filters_options)
                         SelectableChipGroup(
                             list = schedSpecialFilterChipItems,
