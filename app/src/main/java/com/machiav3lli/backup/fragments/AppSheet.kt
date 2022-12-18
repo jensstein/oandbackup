@@ -168,18 +168,24 @@ class AppSheet() : BaseSheet(), ActionListener {
         val coroutineScope = rememberCoroutineScope()
         val columns = 3
 
-        thePackage?.let { packageInfo ->
-            val imageData by remember(packageInfo) {
+        thePackage?.let { pkg ->
+
+            val backupsMap = requireMainActivity().viewModel.backupsMap.collectAsState()
+            //val backups by remember(backupsMap.value) { mutableStateOf(pkg.backupList) }
+            val backupsList by remember(backupsMap.value) { mutableStateOf(backupsMap.value[pkg.packageName] ?: emptyList()) }
+            val backups = backupsList.sortedByDescending { it.backupDate }
+            val hasBackups = backups.size > 0
+
+            val imageData by remember(pkg) {
                 mutableStateOf(
-                    if (packageInfo.isSpecial) packageInfo.packageInfo.icon
-                    else "android.resource://${packageInfo.packageName}/${packageInfo.packageInfo.icon}"
+                    if (pkg.isSpecial) pkg.packageInfo.icon
+                    else "android.resource://${pkg.packageName}/${pkg.packageInfo.icon}"
                 )
             }
             if (refreshNow) {
-                requireMainActivity().updatePackage(packageInfo.packageName)
+                requireMainActivity().updatePackage(pkg.packageName)
                 viewModel.refreshNow.value = false
             }
-
 
             AppTheme {
                 Scaffold(
@@ -201,7 +207,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                PackageIcon(item = packageInfo, imageData = imageData)
+                                PackageIcon(item = pkg, imageData = imageData)
 
                                 Column(
                                     modifier = Modifier
@@ -210,14 +216,14 @@ class AppSheet() : BaseSheet(), ActionListener {
                                     verticalArrangement = Arrangement.Center
                                 ) {
                                     Text(
-                                        text = packageInfo.packageLabel,
+                                        text = pkg.packageLabel,
                                         softWrap = true,
                                         overflow = TextOverflow.Ellipsis,
                                         maxLines = 1,
                                         style = MaterialTheme.typography.titleMedium
                                     )
                                     Text(
-                                        text = packageInfo.packageName,
+                                        text = pkg.packageName,
                                         softWrap = true,
                                         overflow = TextOverflow.Ellipsis,
                                         maxLines = 1,
@@ -225,7 +231,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 }
-                                AnimatedVisibility(visible = packageInfo.isInstalled && !packageInfo.isSpecial) {
+                                AnimatedVisibility(visible = pkg.isInstalled && !pkg.isSpecial) {
                                     RoundButton(
                                         icon = Phosphor.Info,
                                         modifier = Modifier.fillMaxHeight()
@@ -235,7 +241,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                                         intent.data =
                                             Uri.fromParts(
                                                 "package",
-                                                packageInfo.packageName,
+                                                pkg.packageName,
                                                 null
                                             )
                                         startActivity(intent)
@@ -283,7 +289,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                         contentPadding = PaddingValues(8.dp)
                     ) {
                         item(span = { GridItemSpan(columns) }) {
-                            InfoChipsBlock(list = packageInfo.infoChips())
+                            InfoChipsBlock(list = pkg.infoChips())
                         }
                         item {
                             CardButton(
@@ -293,13 +299,13 @@ class AppSheet() : BaseSheet(), ActionListener {
                                 description = stringResource(id = R.string.global_blocklist_add)
                             ) {
                                 requireMainActivity().viewModel.addToBlocklist(
-                                    packageInfo.packageName
+                                    pkg.packageName
                                 )
                             }
                         }
                         item {
                             val launchIntent = requireContext().packageManager
-                                .getLaunchIntentForPackage(packageInfo.packageName)
+                                .getLaunchIntentForPackage(pkg.packageName)
                             AnimatedVisibility(visible = launchIntent != null) {
                                 CardButton(
                                     modifier = Modifier.fillMaxHeight(),
@@ -314,7 +320,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                             }
                         }
                         item {
-                            AnimatedVisibility(visible = !packageInfo.isSpecial) {
+                            AnimatedVisibility(visible = !pkg.isSpecial) {
                                 CardButton(
                                     modifier = Modifier.fillMaxHeight(),
                                     icon = Icon.Exodus,
@@ -324,7 +330,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                                     requireContext().startActivity(
                                         Intent(
                                             Intent.ACTION_VIEW,
-                                            Uri.parse(exodusUrl(packageInfo.packageName))
+                                            Uri.parse(exodusUrl(pkg.packageName))
                                         )
                                     )
                                 }
@@ -332,7 +338,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                         }
                         item {
                             AnimatedVisibility(
-                                visible = packageInfo.isInstalled && !packageInfo.isSpecial
+                                visible = pkg.isInstalled && !pkg.isSpecial
                             ) {
                                 CardButton(
                                     modifier = Modifier,
@@ -340,31 +346,31 @@ class AppSheet() : BaseSheet(), ActionListener {
                                     tint = colorResource(id = R.color.ic_updated),
                                     description = stringResource(id = R.string.forceKill)
                                 ) {
-                                    showForceKillDialog(packageInfo)
+                                    showForceKillDialog(pkg)
                                 }
                             }
                         }
                         item {
                             AnimatedVisibility(
-                                visible = packageInfo.isInstalled && !packageInfo.isSpecial
+                                visible = pkg.isInstalled && !pkg.isSpecial
                             ) {
                                 CardButton(
                                     modifier = Modifier.fillMaxHeight(),
-                                    icon = if (packageInfo.isDisabled) Phosphor.Leaf
+                                    icon = if (pkg.isDisabled) Phosphor.Leaf
                                     else Phosphor.ProhibitInset,
-                                    tint = if (packageInfo.isDisabled) MaterialTheme.colorScheme.primaryContainer
+                                    tint = if (pkg.isDisabled) MaterialTheme.colorScheme.primaryContainer
                                     else MaterialTheme.colorScheme.tertiaryContainer,
                                     description = stringResource(
-                                        id = if (packageInfo.isDisabled) R.string.enablePackage
+                                        id = if (pkg.isDisabled) R.string.enablePackage
                                         else R.string.disablePackage
                                     ),
-                                    onClick = { showEnableDisableDialog(packageInfo.isDisabled) }
+                                    onClick = { showEnableDisableDialog(pkg.isDisabled) }
                                 )
                             }
                         }
                         item {
                             AnimatedVisibility(
-                                visible = packageInfo.isInstalled && !packageInfo.isSystem,
+                                visible = pkg.isInstalled && !pkg.isSystem,
                             ) {
                                 CardButton(
                                     modifier = Modifier.fillMaxHeight(),
@@ -373,7 +379,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                                     description = stringResource(id = R.string.uninstall),
                                     onClick = {
                                         snackbarHostState.showUninstallDialog(
-                                            packageInfo,
+                                            pkg,
                                             coroutineScope
                                         )
                                     }
@@ -420,16 +426,16 @@ class AppSheet() : BaseSheet(), ActionListener {
                                     modifier = Modifier.fillMaxWidth(),
                                     verticalArrangement = Arrangement.spacedBy(4.dp)
                                 ) {
-                                    AnimatedVisibility(visible = packageInfo.isInstalled || packageInfo.isSpecial) {
+                                    AnimatedVisibility(visible = pkg.isInstalled || pkg.isSpecial) {
                                         ElevatedActionButton(
                                             icon = Phosphor.ArchiveTray,
                                             text = stringResource(id = R.string.backup),
                                             fullWidth = true,
                                             enabled = !snackbarVisible,
-                                            onClick = { showBackupDialog(packageInfo) }
+                                            onClick = { showBackupDialog(pkg) }
                                         )
                                     }
-                                    AnimatedVisibility(visible = packageInfo.hasBackups) {
+                                    AnimatedVisibility(visible = hasBackups) {
                                         ElevatedActionButton(
                                             icon = Phosphor.TrashSimple,
                                             text = stringResource(id = R.string.delete_all_backups),
@@ -438,14 +444,14 @@ class AppSheet() : BaseSheet(), ActionListener {
                                             enabled = !snackbarVisible,
                                             onClick = {
                                                 snackbarHostState.showDeleteAllBackupsDialog(
-                                                    packageInfo,
+                                                    pkg,
                                                     coroutineScope
                                                 )
                                             }
                                         )
                                     }
                                     AnimatedVisibility(
-                                        visible = packageInfo.isInstalled && !packageInfo.isSpecial && ((packageInfo.storageStats?.dataBytes
+                                        visible = pkg.isInstalled && !pkg.isSpecial && ((pkg.storageStats?.dataBytes
                                             ?: 0L) >= 0L)
                                     ) {
                                         ElevatedActionButton(
@@ -453,19 +459,19 @@ class AppSheet() : BaseSheet(), ActionListener {
                                             text = stringResource(id = R.string.clear_cache),
                                             fullWidth = true,
                                             colored = false,
-                                            onClick = { showClearCacheDialog(packageInfo) }
+                                            onClick = { showClearCacheDialog(pkg) }
                                         )
                                     }
                                 }
                             }
                         }
                         this.items(
-                            items = packageInfo.backupsNewestFirst,
+                            items = backups,
                             span = { GridItemSpan(columns) }) {
                             BackupItem(
                                 it,
                                 onRestore = { item ->
-                                    packageInfo.let { app ->
+                                    pkg.let { app ->
                                         if (!app.isSpecial && !app.isInstalled
                                             && !item.hasApk && item.hasAppData
                                         ) {
@@ -487,7 +493,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                                     }
                                 },
                                 onDelete = { item ->
-                                    packageInfo.let { app ->
+                                    pkg.let { app ->
                                         AlertDialog.Builder(requireContext())
                                             .setTitle(app.packageLabel)
                                             .setMessage(R.string.deleteBackupDialogMessage)

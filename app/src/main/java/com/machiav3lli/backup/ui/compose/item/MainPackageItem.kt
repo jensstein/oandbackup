@@ -25,6 +25,7 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -543,6 +544,13 @@ fun MainPackageItem(
                     PackageLabels(item = pkg)
                 }
                 Row(modifier = Modifier.fillMaxWidth()) {
+                    val backupsMap = OABX.main!!.viewModel.backupsMap.collectAsState()
+                    val backupsList by remember(backupsMap.value) { mutableStateOf(backupsMap.value[pkg.packageName] ?: emptyList()) }
+                    val backups = backupsList.sortedByDescending { it.backupDate }
+                    val hasBackups = backups.isNotEmpty()
+                    val latestBackup = backups.firstOrNull()
+                    val nBackups = backups.size
+
                     Text(
                         text = pkg.packageName,
                         modifier = Modifier
@@ -554,11 +562,11 @@ fun MainPackageItem(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    AnimatedVisibility(visible = pkg.hasBackups) {
+                    AnimatedVisibility(visible = hasBackups) {
                         Text(
-                            text = (pkg.latestBackup?.backupDate?.getFormattedDate(
+                            text = (latestBackup?.backupDate?.getFormattedDate(
                                 false
-                            ) ?: "") + " • ${pkg.numberOfBackups}",
+                            ) ?: "") + " • $nBackups",
                             modifier = Modifier.align(Alignment.CenterVertically),
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1,

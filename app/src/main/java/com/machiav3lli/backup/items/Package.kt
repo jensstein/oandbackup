@@ -20,9 +20,6 @@ package com.machiav3lli.backup.items
 import android.app.usage.StorageStats
 import android.content.Context
 import android.content.pm.PackageManager
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER_OLD
 import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES
@@ -47,9 +44,7 @@ class Package {
     private var packageBackupDir: StorageFile? = null
     var storageStats: StorageStats? = null
 
-    private var backupListDirty = true
-    private var backupListState = mutableStateOf(listOf<Backup>())
-    private var backupList by backupListState
+    val backupList get() = OABX.main?.viewModel?.backupsMap?.value?.get(packageName) ?: emptyList()
 
     internal constructor(   // toPackageList
         context: Context,
@@ -161,8 +156,8 @@ class Package {
     }
 
     fun updateBackupList(new: List<Backup>) {
-        backupList = new
-        backupListDirty = false
+        //backupList = new
+        //backupListDirty = false
     }
 
     fun updateBackupListAndDatabase(new: List<Backup>) {
@@ -207,15 +202,15 @@ class Package {
         //updateBackupList(backups)
     }
 
-    private fun ensureBackupsLoaded(): List<Backup> {
-        if (backupListDirty)
-            refreshBackupList()
-        return backupList
-    }
+    //private fun ensureBackupsLoaded(): List<Backup> {
+    //    if (backupListDirty)
+    //        refreshBackupList()
+    //    return backupList
+    //}
 
-    fun ensureBackupList() {
-        ensureBackupsLoaded()
-    }
+    //fun ensureBackupList() {
+    //    ensureBackupsLoaded()
+    //}
 
     private fun needBackupList(): List<Backup> {
         return backupList
@@ -345,10 +340,10 @@ class Package {
     }
 
     val backupsNewestFirst: List<Backup>
-        get() = needBackupList().sortedByDescending { item -> item.backupDate }
+        get() = needBackupList().sortedByDescending { it.backupDate }
 
     val backupsWithoutNewest: List<Backup>
-        get() = needBackupList().sortedBy { item -> item.backupDate }.dropLast(1)
+        get() = needBackupList().sortedBy { it.backupDate }.dropLast(1)
 
     val latestBackup: Backup?
         get() = needBackupList().maxByOrNull { it.backupDate }
