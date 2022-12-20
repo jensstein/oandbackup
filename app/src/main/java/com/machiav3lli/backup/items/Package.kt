@@ -155,18 +155,16 @@ class Package {
         return true
     }
 
-    fun updateBackupList(new: List<Backup>) {
-        //backupList = new
+    fun updateBackupList(backups: List<Backup>) {
+        //backupList = backups
         //backupListDirty = false
     }
 
-    fun updateBackupListAndDatabase(new: List<Backup>) {
-        updateBackupList(new)
-        OABX.main?.viewModel?.backupsUpdate?.tryEmit(this)
-        //val pkg = this
-        //CoroutineScope(Dispatchers.Unconfined).launch {
-        //    ODatabase.getInstance(OABX.context).backupDao.updateList(pkg)
-        //}
+    fun updateBackupListAndDatabase(backups: List<Backup>) {
+        updateBackupList(backups)
+        OABX.main?.viewModel?.backupsUpdate?.tryEmit(
+            Pair(packageName, backups.sortedByDescending { it.backupDate })
+        )
     }
 
     fun refreshBackupList() {

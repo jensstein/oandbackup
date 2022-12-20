@@ -34,19 +34,20 @@ import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.Package.Companion.invalidateCacheForPackage
 import com.machiav3lli.backup.preferences.pref_usePackageCacheOnUpdate
+import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.traceFlows
 import com.machiav3lli.backup.ui.compose.MutableComposableFlow
+import com.machiav3lli.backup.utils.TraceUtils.formatSortedBackups
 import com.machiav3lli.backup.utils.TraceUtils.trace
 import com.machiav3lli.backup.utils.applyFilter
 import com.machiav3lli.backup.utils.sortFilterModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.conflate
-import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
@@ -80,21 +81,45 @@ class MainViewModel(
         db.backupDao.allFlow
             .conflate()
             .map { it.groupBy(Backup::packageName) }
-            .trace { "*** backupsMap <<- p: ${it.size} b: ${it.map { it.value.size }.sum()}" }
+            .trace { "*** backupsMap <<- p=${it.size} b=${it.map { it.value.size }.sum()}" }
+            //.trace { "*** backupsMap <<- p=${it.size} b=${it.map { it.value.size }.sum()} #################### egg ${showSortedBackups(it["com.android.egg"])}" }  // for testing use com.android.egg
             .stateIn(
                 viewModelScope,
                 SharingStarted.Eagerly,
                 emptyMap()
             )
 
-    val backupsUpdate = MutableSharedFlow<Package>()
-    val backupsUpdateScope = CoroutineScope(Dispatchers.IO)
+    /*
+    val backupsUpdate = MutableSharedFlow<Pair<String, List<Backup>>>()
     init {
         backupsUpdate
+            .trace { "*** backupsUpdate <<- ${it.first} ${showSortedBackups(it.second)}" }
             .onEach {
-                ODatabase.getInstance(OABX.context).backupDao.updateList(it)
+                viewModelScope.launch(Dispatchers.IO) {
+                    traceBackups { "*** updating database ---------------------------> ${it.first} ${showSortedBackups(it.second)}" }
+                    ODatabase.getInstance(OABX.context).backupDao.updateList(it.first, it.second.sortedByDescending { it.backupDate })
+                }
             }
-            .launchIn(backupsUpdateScope)
+            .launchIn(viewModelScope)
+    }
+    */
+
+    val backupsUpdate = MutableStateFlow<Pair<String, List<Backup>>?>(null)
+    init {
+        backupsUpdate
+            .filterNotNull()
+            .trace { "*** backupsUpdate <<- ${it.first} ${formatSortedBackups(it.second)}" }
+            .onEach {
+                viewModelScope.launch(Dispatchers.IO) {
+                    traceBackups { "*** updating database ---------------------------> ${it.first} ${formatSortedBackups(it.second)}" }
+                    ODatabase.getInstance(OABX.context).backupDao.updateList(it.first, it.second.sortedByDescending { it.backupDate })
+                }
+            }
+            .stateIn(
+                viewModelScope,
+                SharingStarted.Eagerly,
+                null
+            )
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -212,7 +237,11 @@ class MainViewModel(
         //------------------------------------------------------------------------------------------ updatedPackages
         notBlockedList
             .mapLatest { it.filter(Package::isNewOrUpdated).toMutableList() }
-            .trace { "*** updatedPackages <<- ${it.size}" }
+            .trace {
+                val updated = it.filter(Package::isUpdated)
+                val new = it.filter { it.isNewOrUpdated && ! it.isUpdated }
+                "*** updatedPackages <<- updated: ${updated.map { "${it.packageName}(${it.versionCode}!=${it.latestBackup?.versionCode ?: ""})" }} new: ${new.map { "${it.packageName}(${it.numberOfBackups})" }}"
+            }
             .stateIn(
                 viewModelScope,
                 SharingStarted.Eagerly,
@@ -264,13 +293,11 @@ class MainViewModel(
                         new.refreshStorageStats(OABX.context)
                         if (!isSpecial) db.appInfoDao.update(new.packageInfo as AppInfo)
                         new.refreshBackupList()
-                        db.backupDao.updateList(new)
                     } else {
                         val new = Package(appContext, packageName, getAppBackupRoot())
                         new.refreshFromPackageManager(OABX.context)
                         if (!isSpecial) db.appInfoDao.update(new.packageInfo as AppInfo)
                         new.refreshBackupList()
-                        db.backupDao.updateList(new)
                     }
                 }
             } catch (e: AssertionError) {
