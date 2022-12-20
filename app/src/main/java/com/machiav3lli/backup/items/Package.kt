@@ -514,7 +514,7 @@ class Package {
     }
 
     override fun toString(): String {
-        return "Schedule{" +
+        return "Package{" +
                 "packageName=" + packageName +
                 ", appInfo=" + packageInfo +
                 ", appUri=" + packageBackupDir +

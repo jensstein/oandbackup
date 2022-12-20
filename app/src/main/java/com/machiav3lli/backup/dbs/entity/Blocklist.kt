@@ -70,7 +70,7 @@ class Blocklist(
     }
 
     override fun toString(): String {
-        return "Schedule{" +
+        return "Blocked{" +
                 "id=" + id +
                 ", packageName=" + packageName +
                 ", blocklistId=" + blocklistId +
