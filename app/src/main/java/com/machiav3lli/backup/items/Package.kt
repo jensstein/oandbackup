@@ -33,6 +33,7 @@ import com.machiav3lli.backup.preferences.pref_cachePackages
 import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
+import com.machiav3lli.backup.utils.TraceUtils
 import com.machiav3lli.backup.utils.getBackupDir
 import timber.log.Timber
 import java.io.File
@@ -44,7 +45,15 @@ class Package {
     private var packageBackupDir: StorageFile? = null
     var storageStats: StorageStats? = null
 
-    val backupList get() = OABX.main?.viewModel?.backupsMap?.value?.get(packageName) ?: emptyList()
+    var backupListShortcut = listOf<Backup>()
+    val backupList: List<Backup>
+        get() {
+            val backups = OABX.main?.viewModel?.backupsMap?.value?.get(packageName) ?: emptyList()
+            return if (backupListShortcut.map { it.backupDate } != backups.map { it.backupDate })
+                backupListShortcut
+            else
+                backups
+        }
 
     internal constructor(   // toPackageList
         context: Context,
@@ -55,7 +64,7 @@ class Package {
         this.packageInfo = appInfo
         getAppBackupRoot()
         if (appInfo.installed) refreshStorageStats(context)
-        updateBackupList(backups ?: emptyList())    //TODO hg42 ???
+        updateBackupList(backups ?: emptyList())    //TODO hg42 also database ???
         OABX.app.packageCache.put(packageName, this)
     }
 
@@ -66,7 +75,7 @@ class Package {
         packageName = specialInfo.packageName
         this.packageInfo = specialInfo
         getAppBackupRoot()
-        updateBackupList(backups ?: emptyList())    //TODO hg42 ???
+        updateBackupList(backups ?: emptyList())    //TODO hg42 also database ???
         OABX.app.packageCache.put(packageName, this)
     }
 
@@ -78,8 +87,6 @@ class Package {
         this.packageInfo = AppInfo(context, packageInfo)
         getAppBackupRoot()
         refreshStorageStats(context)
-        //updateBackupList(backups ?: emptyList())    //TODO hg42 ???
-        //refreshBackupList()                         // currently in schedule, otherwise here
         OABX.app.packageCache.put(packageName, this)
     }
 
@@ -90,8 +97,7 @@ class Package {
     ) {
         this.packageBackupDir = backupDir
         this.packageName = packageName
-        //refreshBackupList()                             //TODO hg42 use ensureBackupList() ?
-        //ensureBackupList()
+        //refreshBackupList()                             //TODO hg42 ??? or ensureBackupList?
         try {
             val pi = context.packageManager.getPackageInfo(
                 this.packageName,
@@ -117,17 +123,15 @@ class Package {
         OABX.app.packageCache.put(packageName, this)
     }
 
-    constructor(
+    constructor(            // getInstalledPackageList, packages from PackageManager
         context: Context,
         packageInfo: android.content.pm.PackageInfo,
-        backupRoot: StorageFile?,
-        backups: List<Backup>? = emptyList()
+        backupRoot: StorageFile?
     ) {
         this.packageName = packageInfo.packageName
         this.packageInfo = AppInfo(context, packageInfo)
         this.packageBackupDir = backupRoot?.findFile(packageName)
         refreshStorageStats(context)
-        updateBackupList(backups ?: emptyList())
         OABX.app.packageCache.put(packageName, this)
     }
 
@@ -155,20 +159,46 @@ class Package {
         return true
     }
 
+    //fun waitUntilInSync(backups: List<Backup>) {
+    //    repeat(1000) {
+    //        val toBeAdded = backups.filterNot { it.backupDate in backupList.map { it.backupDate } }
+    //        val toBeDeleted =
+    //            backupList.filterNot { it.backupDate in backups.map { it.backupDate } }
+    //        if (toBeAdded.isEmpty() && toBeDeleted.isEmpty())
+    //            return@repeat
+    //        traceBackups {
+    //            "<$packageName> waitUntilInSync: + ${
+    //                TraceUtils.showSortedBackups(toBeAdded)
+    //            } - ${
+    //                TraceUtils.showSortedBackups(toBeDeleted)
+    //            }"
+    //        }
+    //        Thread.sleep(10)
+    //    }
+    //}
+
     fun updateBackupList(backups: List<Backup>) {
-        //backupList = backups
+        traceBackups { "<$packageName> updateBackupList: ${TraceUtils.formatSortedBackups(backups)}" }
+        backupListShortcut = backups
         //backupListDirty = false
     }
 
     fun updateBackupListAndDatabase(backups: List<Backup>) {
+        traceBackups {
+            "<$packageName> updateBackupListAndDatabase: ${
+                TraceUtils.formatSortedBackups(
+                    backups
+                )
+            }"
+        }
         updateBackupList(backups)
         OABX.main?.viewModel?.backupsUpdate?.tryEmit(
             Pair(packageName, backups.sortedByDescending { it.backupDate })
         )
     }
 
-    fun refreshBackupList() {
-        traceBackups { "refreshbackupList: $packageName" }
+    fun refreshBackupList(): List<Backup> {
+        traceBackups { "<$packageName> refreshbackupList" }
         invalidateBackupCacheForPackage(packageName)
         val backups = mutableListOf<Backup>()
         try {
@@ -197,18 +227,8 @@ class Package {
             // ignore
         }
         updateBackupListAndDatabase(backups)  //TODO hg42 ???
-        //updateBackupList(backups)
+        return backups
     }
-
-    //private fun ensureBackupsLoaded(): List<Backup> {
-    //    if (backupListDirty)
-    //        refreshBackupList()
-    //    return backupList
-    //}
-
-    //fun ensureBackupList() {
-    //    ensureBackupsLoaded()
-    //}
 
     private fun needBackupList(): List<Backup> {
         return backupList
@@ -243,17 +263,17 @@ class Package {
     }
 
     fun addBackup(backup: Backup) {
-        traceBackups { "add backup ${backup.packageName} ${backup.backupDate}" }
-        //updateBackupListAndDatabase(backupList + backup)  //TODO hg42
-        refreshBackupList()
+        traceBackups { "<${backup.packageName}> add backup ${backup.backupDate}" }
+        updateBackupListAndDatabase(backupList + backup)  //TODO hg42
+        //refreshBackupList()
     }
 
     fun deleteBackup(backup: Backup) {
-        traceBackups { "delete backup ${backup.packageName} ${backup.backupDate}" }
+        traceBackups { "<${backup.packageName}> delete backup ${backup.backupDate}" }
         if (backup.packageName != packageName) {
             throw RuntimeException("Asked to delete a backup of ${backup.packageName} but this object is for $packageName")
         }
-        Timber.d("[$packageName] Deleting backup revision $backup")
+        //Timber.d("[$packageName] Deleting backup revision $backup")
         val propertiesFileName = String.format(
             BACKUP_INSTANCE_PROPERTIES,
             BACKUP_DATE_TIME_FORMATTER.format(backup.backupDate),
@@ -277,8 +297,8 @@ class Package {
             LogsHandler.unhandledException(e, backup.packageName)
         }
         try {
-            //updateBackupListAndDatabase(backupList - backup)  //TODO hg42
-            refreshBackupList()
+            updateBackupListAndDatabase(backupList - backup)  //TODO hg42
+            //refreshBackupList()
             if (backupList.size == 0) {
                 packageBackupDir?.deleteRecursive()
                 packageBackupDir = null
@@ -289,11 +309,11 @@ class Package {
     }
 
     fun rewriteBackupProps(newBackup: Backup) {
-        traceBackups { "rewrite backup ${newBackup.packageName} ${newBackup.backupDate}" }
+        traceBackups { "<${newBackup.packageName}> rewrite backup ${newBackup.backupDate}" }
         if (newBackup.packageName != packageName) {
             throw RuntimeException("Asked to delete a backup of ${newBackup.packageName} but this object is for $packageName")
         }
-        Timber.d("[$packageName] Deleting backup revision $newBackup")
+        //Timber.d("[$packageName] Rewriting backup revision $newBackup")
         val propertiesFileName = String.format(
             BACKUP_INSTANCE_PROPERTIES,
             BACKUP_DATE_TIME_FORMATTER.format(newBackup.backupDate),
@@ -315,26 +335,45 @@ class Package {
             LogsHandler.unhandledException(e, newBackup.packageName)
         }
         try {
-            updateBackupListAndDatabase(backupList.filterNot { it.backupDate == newBackup.backupDate } + newBackup) //TODO hg42 ???
+            updateBackupListAndDatabase( //TODO hg42 ???
+                backupList.filterNot { it.backupDate == newBackup.backupDate } + newBackup
+            )
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, newBackup.packageName)
         }
     }
 
     fun deleteAllBackups() {
-        while (backupList.isNotEmpty())
-            deleteBackup(backupList.first())
+        val backups = backupsNewestFirst.toMutableList()
+        while (backups.isNotEmpty())
+            deleteBackup(backups.removeLast())
+        refreshBackupList()
     }
 
     fun deleteOldestBackups(keep: Int) {
-        while (keep < backupList.size && !backupsWithoutNewest.all { it.persistent }) {
-            backupsWithoutNewest.forEach { backup ->
-                if (!backup.persistent && keep < backupList.size) {
-                    Timber.i("[${backup.packageName}] Deleting backup revision ${backup.backupDate}")
-                    deleteBackup(backup)
-                }
+        refreshBackupList()
+        val backups = backupsNewestFirst.toMutableList()
+        traceBackups {
+            "<$packageName> deleteOldestBackups keep=$keep ${
+                TraceUtils.formatBackups(
+                    backups
+                )
+            }"
+        }
+        val deletableBackups = backups.filterNot { it.persistent }.drop(1).toMutableList()
+        while (keep < backups.size && deletableBackups.size > 0) {
+            val backup = deletableBackups.removeLast()
+            backups.remove(backup)
+            deleteBackup(backup)
+            traceBackups {
+                "<$packageName> deleteOldestBackups keep=$keep ${
+                    TraceUtils.formatBackups(
+                        backups
+                    )
+                } - ${TraceUtils.formatBackups(deletableBackups)}"
             }
         }
+        refreshBackupList()
     }
 
     val backupsNewestFirst: List<Backup>

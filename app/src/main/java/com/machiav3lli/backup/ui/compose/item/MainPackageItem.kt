@@ -195,7 +195,8 @@ fun MainPackageContextMenu(
     val selectedAndInstalled = selectedAndVisible.filter { it.isInstalled }
     val selectedWithBackups = selectedAndVisible.filter { it.hasBackups }
 
-    val subMenu = remember { mutableStateOf<(@Composable () -> Unit)?>(null) }  //TODO hg42 var/by ???
+    val subMenu =
+        remember { mutableStateOf<(@Composable () -> Unit)?>(null) }  //TODO hg42 var/by ???
     subMenu.value?.let { it() }
     if (!expanded.value)
         subMenu.value = null
