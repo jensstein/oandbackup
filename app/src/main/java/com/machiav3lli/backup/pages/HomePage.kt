@@ -53,6 +53,7 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.fragments.AppSheet
+import com.machiav3lli.backup.traceCompose
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretDown
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CircleWavyWarning
@@ -71,8 +72,10 @@ fun HomePage() {
 
     val filteredList by main.viewModel.filteredList.collectAsState(emptyList())
     val updatedPackages by main.viewModel.updatedPackages.collectAsState(emptyList())
-    val updaterVisible = ! OABX.isBusy && updatedPackages.any { it.isNewOrUpdated }
+    val updaterVisible = ! OABX.isBusy && updatedPackages.size > 0
     var updaterExpanded by remember { mutableStateOf(false) }
+
+    traceCompose { "HomePage f=${filteredList.size} u=${updatedPackages.size}" }
 
     val batchConfirmListener = object : BatchDialogFragment.ConfirmListener {
         override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {

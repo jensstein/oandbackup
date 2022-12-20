@@ -20,6 +20,7 @@ package com.machiav3lli.backup.items
 import android.app.usage.StorageStats
 import android.content.Context
 import android.content.pm.PackageManager
+import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER_OLD
 import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES
@@ -35,6 +36,7 @@ import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.TraceUtils
 import com.machiav3lli.backup.utils.getBackupDir
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
 
@@ -45,14 +47,13 @@ class Package {
     private var packageBackupDir: StorageFile? = null
     var storageStats: StorageStats? = null
 
-    var backupListShortcut = listOf<Backup>()
-    val backupList: List<Backup>
+    var backupList: List<Backup>
         get() {
-            val backups = OABX.main?.viewModel?.backupsMap?.value?.get(packageName) ?: emptyList()
-            return if (backupListShortcut.map { it.backupDate } != backups.map { it.backupDate })
-                backupListShortcut
-            else
-                backups
+            val backups = OABX.main?.viewModel?.backupsMap?.get(packageName) ?: emptyList()
+            return backups
+        }
+        set(backups: List<Backup>) {
+            OABX.main?.viewModel?.backupsMap?.put(packageName, backups)
         }
 
     internal constructor(   // toPackageList
@@ -159,28 +160,9 @@ class Package {
         return true
     }
 
-    //fun waitUntilInSync(backups: List<Backup>) {
-    //    repeat(1000) {
-    //        val toBeAdded = backups.filterNot { it.backupDate in backupList.map { it.backupDate } }
-    //        val toBeDeleted =
-    //            backupList.filterNot { it.backupDate in backups.map { it.backupDate } }
-    //        if (toBeAdded.isEmpty() && toBeDeleted.isEmpty())
-    //            return@repeat
-    //        traceBackups {
-    //            "<$packageName> waitUntilInSync: + ${
-    //                TraceUtils.showSortedBackups(toBeAdded)
-    //            } - ${
-    //                TraceUtils.showSortedBackups(toBeDeleted)
-    //            }"
-    //        }
-    //        Thread.sleep(10)
-    //    }
-    //}
-
     fun updateBackupList(backups: List<Backup>) {
-        traceBackups { "<$packageName> updateBackupList: ${TraceUtils.formatSortedBackups(backups)}" }
-        backupListShortcut = backups
-        //backupListDirty = false
+        traceBackups { "<$packageName> updateBackupList: ${TraceUtils.formatSortedBackups(backups)} ${TraceUtils.methodName(2)}" }
+        backupList = backups
     }
 
     fun updateBackupListAndDatabase(backups: List<Backup>) {
@@ -189,12 +171,14 @@ class Package {
                 TraceUtils.formatSortedBackups(
                     backups
                 )
-            }"
+            } ${TraceUtils.methodName(2)}"
         }
-        updateBackupList(backups)
-        OABX.main?.viewModel?.backupsUpdate?.tryEmit(
-            Pair(packageName, backups.sortedByDescending { it.backupDate })
-        )
+        backupList = backups
+        OABX.main?.viewModel?.viewModelScope?.launch {
+            OABX.main?.viewModel?.backupsUpdateFlow?.emit(
+                Pair(packageName, backups.sortedByDescending { it.backupDate })
+            )
+        }
     }
 
     fun refreshBackupList(): List<Backup> {
@@ -264,8 +248,8 @@ class Package {
 
     fun addBackup(backup: Backup) {
         traceBackups { "<${backup.packageName}> add backup ${backup.backupDate}" }
-        updateBackupListAndDatabase(backupList + backup)  //TODO hg42
-        //refreshBackupList()
+        updateBackupListAndDatabase(backupList + backup)  // prevents reading file system
+        //refreshBackupList()                                     // or real state of file system
     }
 
     fun deleteBackup(backup: Backup) {
@@ -297,8 +281,8 @@ class Package {
             LogsHandler.unhandledException(e, backup.packageName)
         }
         try {
-            updateBackupListAndDatabase(backupList - backup)  //TODO hg42
-            //refreshBackupList()
+            updateBackupListAndDatabase(backupList - backup)  // prevents reading file system
+            //refreshBackupList()                                     // or real state of file system
             if (backupList.size == 0) {
                 packageBackupDir?.deleteRecursive()
                 packageBackupDir = null
@@ -335,8 +319,10 @@ class Package {
             LogsHandler.unhandledException(e, newBackup.packageName)
         }
         try {
-            updateBackupListAndDatabase( //TODO hg42 ???
-                backupList.filterNot { it.backupDate == newBackup.backupDate } + newBackup
+            updateBackupListAndDatabase(
+                backupList.filterNot {
+                    it.backupDate == newBackup.backupDate
+                } + newBackup
             )
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, newBackup.packageName)
@@ -352,6 +338,9 @@ class Package {
 
     fun deleteOldestBackups(keep: Int) {
         refreshBackupList()
+
+        // the algorithm could eventually be more elegant, without managing two lists,
+        // but it's on the safe side for now
         val backups = backupsNewestFirst.toMutableList()
         traceBackups {
             "<$packageName> deleteOldestBackups keep=$keep ${

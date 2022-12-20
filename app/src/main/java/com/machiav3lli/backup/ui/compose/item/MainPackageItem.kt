@@ -25,8 +25,6 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateMap
@@ -40,6 +38,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.MODE_ALL
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
@@ -54,8 +53,6 @@ import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.TraceUtils
 import com.machiav3lli.backup.utils.getBackupDir
 import com.machiav3lli.backup.utils.getFormattedDate
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -173,7 +170,7 @@ fun openSubMenu(
     subMenu.value = {
         DropdownMenu(
             expanded = true,
-            offset = DpOffset(50.dp, -1000.dp),
+            offset = DpOffset(100.dp, -1000.dp),
             modifier = Modifier.background(MaterialTheme.colorScheme.surfaceColorAtElevation(100.dp)),
             onDismissRequest = { subMenu.value = null }
         ) {
@@ -195,8 +192,9 @@ fun MainPackageContextMenu(
     val selectedAndInstalled = selectedAndVisible.filter { it.isInstalled }
     val selectedWithBackups = selectedAndVisible.filter { it.hasBackups }
 
-    val subMenu =
-        remember { mutableStateOf<(@Composable () -> Unit)?>(null) }  //TODO hg42 var/by ???
+    val subMenu = remember {                                    //TODO hg42 var/by ???
+        mutableStateOf<(@Composable () -> Unit)?>(null)
+    }
     subMenu.value?.let { it() }
     if (!expanded.value)
         subMenu.value = null
@@ -205,7 +203,7 @@ fun MainPackageContextMenu(
         action: String,
         todo: () -> Unit,
     ) {
-        MainScope().launch(Dispatchers.IO) {
+        OABX.main?.viewModel?.viewModelScope?.launch {
             OABX.beginBusy(action)
             todo()
             OABX.endBusy(action)
@@ -343,16 +341,20 @@ fun MainPackageContextMenu(
             DropdownMenuItem(
                 text = { Text(OABX.getString(R.string.restore)) },
                 onClick = {
-                    expanded.value = false
-                    val packages = selectedWithBackups
-                    OABX.main?.startBatchAction(
-                        false,
-                        packages.map { it.packageName },
-                        packages.map { MODE_ALL }
-                    ) {
-                        it.removeObserver(this)
-                        launchEachPackage(packages, "restore") {
-                            selection[it] = false
+                    openSubMenu(subMenu) {
+                        Confirmation {
+                            expanded.value = false
+                            val packages = selectedWithBackups
+                            OABX.main?.startBatchAction(
+                                false,
+                                packages.map { it.packageName },
+                                packages.map { MODE_ALL }
+                            ) {
+                                it.removeObserver(this)
+                                launchEachPackage(packages, "restore") {
+                                    selection[it] = false
+                                }
+                            }
                         }
                     }
                 }
@@ -446,6 +448,16 @@ fun MainPackageContextMenu(
     }
 }
 
+@Composable
+fun PackageIconFromPkg(pkg: Package, modifier: Modifier) {
+
+    val imageData =
+        if (pkg.isSpecial) pkg.packageInfo.icon
+        else "android.resource://${pkg.packageName}/${pkg.packageInfo.icon}"
+
+    PackageIcon(modifier = modifier, item = pkg, imageData = imageData)
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainPackageItem(
@@ -456,12 +468,6 @@ fun MainPackageItem(
 ) {
     val visible = productsList
     val selectedAndVisible = visible.filter { selection[it] == true }
-    val imageData by remember(pkg) {
-        mutableStateOf(
-            if (pkg.isSpecial) pkg.packageInfo.icon
-            else "android.resource://${pkg.packageName}/${pkg.packageInfo.icon}"
-        )
-    }
 
     val menuExpanded = remember { mutableStateOf(false) }
 
@@ -483,7 +489,7 @@ fun MainPackageItem(
             onAction = onAction
         )
 
-        val iconSelector =      //TODO hg42 make this global (but we have closures)
+        val iconSelector =      //TODO hg42 ideally make this global (but we have closures)
             Modifier
                 .combinedClickable(
                     onClick = {
@@ -494,7 +500,7 @@ fun MainPackageItem(
                         menuExpanded.value = true
                     }
                 )
-        val rowSelector =       //TODO hg42 make this global
+        val rowSelector =       //TODO hg42 ideally make this global (but we have closures)
             Modifier
                 .combinedClickable(
                     onClick = {
@@ -529,7 +535,7 @@ fun MainPackageItem(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            PackageIcon(modifier = iconSelector, item = pkg, imageData = imageData)
+            PackageIconFromPkg(pkg = pkg, modifier = iconSelector)
 
             Column(
                 modifier = Modifier.wrapContentHeight()
@@ -547,17 +553,20 @@ fun MainPackageItem(
                     )
                     PackageLabels(item = pkg)
                 }
+
                 Row(modifier = Modifier.fillMaxWidth()) {
 
-                    val backupsMap = OABX.main?.viewModel?.backupsMap?.collectAsState()
-                    val backupsList = backupsMap?.value?.get(pkg.packageName) ?: emptyList()
-                    val backups = backupsList.sortedByDescending { it.backupDate }
-                    val hasBackups = backups.isNotEmpty()
-                    val latestBackup = backups.firstOrNull()
-                    val nBackups = backups.size
+                    val backups = pkg.backupsNewestFirst
+                    val hasBackups = pkg.hasBackups
+                    val latestBackup = pkg.latestBackup
+                    val nBackups = pkg.numberOfBackups
 
                     traceCompose {
                         "<${pkg.packageName}> MainPackageItem.backups ${
+                            TraceUtils.formatBackups(
+                                backups
+                            )
+                        } ${
                             TraceUtils.formatBackups(
                                 backups
                             )

@@ -136,7 +136,7 @@ object TraceUtils {
     // helpers
 
     fun formatBackups(backups: List<Backup>?): String {
-        return "${
+        return "(${backups?.size ?: 0})${
             backups?.map {
                 "${
                     it.backupDate
@@ -149,7 +149,7 @@ object TraceUtils {
     }
 
     fun formatSortedBackups(backups: List<Backup>?): String {
-        return "${
+        return "(${backups?.size ?: 0})${
             backups?.map {
                 "${
                     it.backupDate

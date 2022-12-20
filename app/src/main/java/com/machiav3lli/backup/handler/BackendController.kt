@@ -199,14 +199,16 @@ fun List<AppInfo>.toPackageList(
                 it.packageName.matches(ignoredPackages)
             }
                 .mapNotNull {
-                    try {
+                    val pkg = try {
                         Package.get(it.packageName) {
-                            Package(context, it, backupMap[it.packageName].orEmpty())
+                            Package(context, it)
                         }
                     } catch (e: AssertionError) {
                         Timber.e("Could not create Package for ${it}: $e")
                         null
                     }
+                    pkg?.updateBackupList(backupMap[pkg.packageName].orEmpty())
+                    pkg
                 }
                 .toMutableList()
 

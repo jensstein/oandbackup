@@ -172,11 +172,8 @@ class AppSheet() : BaseSheet(), ActionListener {
 
         thePackage?.let { pkg ->
 
-            val backupsMap = requireMainActivity().viewModel.backupsMap.collectAsState()
-            //val backupsList by remember(backupsMap) { mutableStateOf(backupsMap.value[pkg.packageName] ?: emptyList()) }
-            val backupsList = backupsMap.value[pkg.packageName] ?: emptyList()
-            val backups = backupsList.sortedByDescending { it.backupDate }
-            val hasBackups = backups.size > 0
+            val backups = pkg.backupsNewestFirst
+            val hasBackups = pkg.hasBackups
 
             traceCompose { "AppSheet ${thePackage.packageName} ${TraceUtils.formatBackups(backups)}" }
 
