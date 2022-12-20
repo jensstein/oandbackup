@@ -49,7 +49,9 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.preferences.pref_useBackupRestoreWithSelection
+import com.machiav3lli.backup.traceCompose
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
+import com.machiav3lli.backup.utils.TraceUtils
 import com.machiav3lli.backup.utils.getBackupDir
 import com.machiav3lli.backup.utils.getFormattedDate
 import kotlinx.coroutines.Dispatchers
@@ -462,7 +464,8 @@ fun MainPackageItem(
 
     val menuExpanded = remember { mutableStateOf(false) }
 
-    //Timber.d("recompose MainPackageItem ${packageItem.packageName} ${packageItem.packageInfo.icon} ${imageData.hashCode()}")
+    //traceCompose { "<${pkg.packageName}> MainPackageItem ${pkg.packageInfo.icon} ${imageData.hashCode()}" }
+    traceCompose { "<${pkg.packageName}> MainPackageItem" }
 
     Card(
         modifier = Modifier,
@@ -550,6 +553,14 @@ fun MainPackageItem(
                     val hasBackups = backups.isNotEmpty()
                     val latestBackup = backups.firstOrNull()
                     val nBackups = backups.size
+
+                    traceCompose {
+                        "<${pkg.packageName}> MainPackageItem.backups ${
+                            TraceUtils.formatBackups(
+                                backups
+                            )
+                        }"
+                    }
 
                     Text(
                         text = pkg.packageName,

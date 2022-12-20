@@ -33,7 +33,6 @@ import androidx.lifecycle.ViewModel
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.DynamicColorsOptions
 import com.machiav3lli.backup.activities.MainActivityX
-import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
@@ -45,8 +44,6 @@ import com.machiav3lli.backup.ui.item.BooleanPref
 import com.machiav3lli.backup.ui.item.IntPref
 import com.machiav3lli.backup.utils.TraceUtils
 import com.machiav3lli.backup.utils.TraceUtils.methodName
-import com.machiav3lli.backup.utils.cancelAlarm
-import com.machiav3lli.backup.utils.scheduleAlarm
 import com.machiav3lli.backup.utils.scheduleAlarms
 import com.machiav3lli.backup.utils.styleTheme
 import kotlinx.coroutines.MainScope
@@ -134,6 +131,12 @@ val traceBackups = TraceUtils.TracePref(
     name = "Backups",
     summary = "trace backups",
     default = true
+)
+
+val traceCompose = TraceUtils.TracePref(
+    name = "Compose",
+    summary = "trace recomposition of UI elements",
+    default = false
 )
 
 val traceBackupProps = TraceUtils.TracePref(

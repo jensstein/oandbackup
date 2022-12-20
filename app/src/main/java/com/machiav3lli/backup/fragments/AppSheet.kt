@@ -89,6 +89,7 @@ import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.preferences.pref_useWorkManagerForSingleManualJob
 import com.machiav3lli.backup.tasks.BackupActionTask
 import com.machiav3lli.backup.tasks.RestoreActionTask
+import com.machiav3lli.backup.traceCompose
 import com.machiav3lli.backup.ui.compose.icons.Icon
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.icon.Exodus
@@ -111,6 +112,7 @@ import com.machiav3lli.backup.ui.compose.item.TagsBlock
 import com.machiav3lli.backup.ui.compose.item.TitleText
 import com.machiav3lli.backup.ui.compose.recycler.InfoChipsBlock
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
+import com.machiav3lli.backup.utils.TraceUtils
 import com.machiav3lli.backup.utils.infoChips
 import com.machiav3lli.backup.utils.show
 import com.machiav3lli.backup.utils.showError
@@ -175,6 +177,8 @@ class AppSheet() : BaseSheet(), ActionListener {
             val backupsList by remember(backupsMap.value) { mutableStateOf(backupsMap.value[pkg.packageName] ?: emptyList()) }
             val backups = backupsList.sortedByDescending { it.backupDate }
             val hasBackups = backups.size > 0
+
+            traceCompose { "AppSheet ${thePackage.packageName} ${TraceUtils.formatBackups(backups)}" }
 
             val imageData by remember(pkg) {
                 mutableStateOf(
