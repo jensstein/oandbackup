@@ -547,8 +547,9 @@ fun MainPackageItem(
                     PackageLabels(item = pkg)
                 }
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    val backupsMap = OABX.main!!.viewModel.backupsMap.collectAsState()
-                    val backupsList by remember(backupsMap.value) { mutableStateOf(backupsMap.value[pkg.packageName] ?: emptyList()) }
+
+                    val backupsMap = OABX.main?.viewModel?.backupsMap?.collectAsState()
+                    val backupsList = backupsMap?.value?.get(pkg.packageName) ?: emptyList()
                     val backups = backupsList.sortedByDescending { it.backupDate }
                     val hasBackups = backups.isNotEmpty()
                     val latestBackup = backups.firstOrNull()

@@ -173,8 +173,8 @@ class AppSheet() : BaseSheet(), ActionListener {
         thePackage?.let { pkg ->
 
             val backupsMap = requireMainActivity().viewModel.backupsMap.collectAsState()
-            //val backups by remember(backupsMap.value) { mutableStateOf(pkg.backupList) }
-            val backupsList by remember(backupsMap.value) { mutableStateOf(backupsMap.value[pkg.packageName] ?: emptyList()) }
+            //val backupsList by remember(backupsMap) { mutableStateOf(backupsMap.value[pkg.packageName] ?: emptyList()) }
+            val backupsList = backupsMap.value[pkg.packageName] ?: emptyList()
             val backups = backupsList.sortedByDescending { it.backupDate }
             val hasBackups = backups.size > 0
 
