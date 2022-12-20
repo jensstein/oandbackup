@@ -162,7 +162,7 @@ fun Context.getInstalledPackageList()  : MutableList<Package> { // only used in 
             val backupsMap = getAllBackups()
 
             packageList = packageList.map {
-                it.apply { updateBackupList(backupsMap[it.packageName].orEmpty()) }
+                it.apply { updateBackupListAndDatabase(backupsMap[it.packageName].orEmpty()) }
             }.toMutableList()
         }
 
