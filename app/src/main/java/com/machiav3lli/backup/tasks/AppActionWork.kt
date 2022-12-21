@@ -92,7 +92,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         var packageItem: Package? = null
 
         try {
-            packageItem = Package.get(packageName) {
+            packageItem =
                 context.getSpecial(packageName) ?: run {
                     val foundItem =
                         context.packageManager.getPackageInfo(
@@ -101,7 +101,6 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                         )
                     Package(context, foundItem)
                 }
-            }
         } catch (e: PackageManager.NameNotFoundException) {
             if (packageLabel.isEmpty())
                 packageLabel = packageItem?.packageLabel ?: "NONAME"

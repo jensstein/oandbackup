@@ -288,18 +288,6 @@ val pref_useBackupRestoreWithSelection = BooleanPref(
 
 //---------------------------------------- developer settings - implementation alternatives
 
-val pref_cachePackages = BooleanPref(
-    key = "dev-alt.cachePackages",
-    summaryId = R.string.prefs_cachepackages_summary,
-    defaultValue = true
-)
-
-val pref_usePackageCacheOnUpdate = BooleanPref(
-    key = "dev-alt.usePackageCacheOnUpdate",
-    summaryId = R.string.prefs_usepackagecacheonupdate_summary,
-    defaultValue = false
-)
-
 val pref_restoreAvoidTemporaryCopy = BooleanPref(
     key = "dev-alt.restoreAvoidTemporaryCopy",
     summaryId = R.string.prefs_restoreavoidtempcopy_summary,

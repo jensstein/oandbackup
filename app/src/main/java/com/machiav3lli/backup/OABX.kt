@@ -24,7 +24,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.PowerManager
-import android.util.LruCache
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -36,7 +35,6 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
-import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.preferences.pref_cancelOnStart
 import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
@@ -162,11 +160,6 @@ var initializedPrefs = true
 
 
 class OABX : Application() {
-
-    // packages are an external resource, so handle them as a singleton
-    var packageCache = mutableMapOf<String, Package>()
-    var cache: LruCache<String, MutableList<Package>> =
-        LruCache(10)
 
     var work: WorkHandler? = null
 

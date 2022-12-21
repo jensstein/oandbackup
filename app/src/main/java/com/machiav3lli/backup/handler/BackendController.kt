@@ -200,9 +200,7 @@ fun List<AppInfo>.toPackageList(
             }
                 .mapNotNull {
                     val pkg = try {
-                        Package.get(it.packageName) {
-                            Package(context, it)
-                        }
+                        Package(context, it)
                     } catch (e: AssertionError) {
                         Timber.e("Could not create Package for ${it}: $e")
                         null

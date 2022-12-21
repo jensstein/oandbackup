@@ -30,7 +30,6 @@ import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.getPackageStorageStats
-import com.machiav3lli.backup.preferences.pref_cachePackages
 import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
@@ -66,7 +65,6 @@ class Package {
         getAppBackupRoot()
         if (appInfo.installed) refreshStorageStats(context)
         updateBackupList(backups ?: emptyList())    //TODO hg42 also database ???
-        OABX.app.packageCache.put(packageName, this)
     }
 
     constructor(            // special packages
@@ -77,7 +75,6 @@ class Package {
         this.packageInfo = specialInfo
         getAppBackupRoot()
         updateBackupList(backups ?: emptyList())    //TODO hg42 also database ???
-        OABX.app.packageCache.put(packageName, this)
     }
 
     constructor(            // schedule
@@ -88,7 +85,6 @@ class Package {
         this.packageInfo = AppInfo(context, packageInfo)
         getAppBackupRoot()
         refreshStorageStats(context)
-        OABX.app.packageCache.put(packageName, this)
     }
 
     constructor(
@@ -121,7 +117,6 @@ class Package {
                 }
             }
         }
-        OABX.app.packageCache.put(packageName, this)
     }
 
     constructor(            // getInstalledPackageList, packages from PackageManager
@@ -133,7 +128,6 @@ class Package {
         this.packageInfo = AppInfo(context, packageInfo)
         this.packageBackupDir = backupRoot?.findFile(packageName)
         refreshStorageStats(context)
-        OABX.app.packageCache.put(packageName, this)
     }
 
     fun refreshStorageStats(context: Context): Boolean {
@@ -545,30 +539,21 @@ class Package {
     }
 
     companion object {
-        fun get(packageName: String, creator: () -> Package): Package {
-            if (pref_cachePackages.value)
-                return OABX.app.packageCache[packageName] ?: creator()
-            return creator()
-        }
 
         fun invalidateAllPackages() {
             StorageFile.invalidateCache()
-            OABX.app.packageCache.clear()
         }
 
         fun invalidateCacheForPackage(packageName: String) {
             StorageFile.invalidateCache { it.contains(packageName) }
-            OABX.app.packageCache.remove(packageName)
         }
 
         fun invalidateBackupCacheForPackage(packageName: String) {
             StorageFile.invalidateCache { it.contains(packageName) }
-            OABX.app.packageCache.remove(packageName)
         }
 
         fun invalidateSystemCacheForPackage(packageName: String) {
             StorageFile.invalidateCache { it.contains(packageName) }
-            OABX.app.packageCache.remove(packageName)
         }
     }
 }

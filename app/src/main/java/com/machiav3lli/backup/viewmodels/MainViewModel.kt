@@ -33,7 +33,6 @@ import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.Package.Companion.invalidateCacheForPackage
-import com.machiav3lli.backup.preferences.pref_usePackageCacheOnUpdate
 import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.traceFlows
 import com.machiav3lli.backup.ui.compose.MutableComposableFlow
@@ -276,20 +275,10 @@ class MainViewModel(
                 invalidateCacheForPackage(packageName)
                 val appPackage = packageMap.value[packageName]
                 appPackage?.apply {
-                    if (pref_usePackageCacheOnUpdate.value) {
-                        val new = Package.get(packageName) {
-                            Package(appContext, packageName, getAppBackupRoot())
-                        }
-                        new.refreshFromPackageManager(OABX.context)
-                        new.refreshStorageStats(OABX.context)
-                        if (!isSpecial) db.appInfoDao.update(new.packageInfo as AppInfo)
-                        new.refreshBackupList()
-                    } else {
-                        val new = Package(appContext, packageName, getAppBackupRoot())
-                        new.refreshFromPackageManager(OABX.context)
-                        if (!isSpecial) db.appInfoDao.update(new.packageInfo as AppInfo)
-                        new.refreshBackupList()
-                    }
+                    val new = Package(appContext, packageName, getAppBackupRoot())
+                    new.refreshFromPackageManager(OABX.context)
+                    if (!isSpecial) db.appInfoDao.update(new.packageInfo as AppInfo)
+                    new.refreshBackupList()     //TODO hg42 ??? who calls this? take it from backupsMap?
                 }
             } catch (e: AssertionError) {
                 Timber.w(e.message ?: "")
