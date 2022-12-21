@@ -149,6 +149,19 @@ fun AdvancedPrefsPage() {
 
 //---------------------------------------- developer settings - advanced users
 
+val pref_quickerList = BooleanPref(
+    key = "dev-adv.quickerList",
+    summary = "reduce package list items for quicker usage",
+    defaultValue = false
+)
+
+val pref_iconCrossFade = IntPref(
+    key = "dev-adv.iconCrossFade",
+    summary = "[ms] time for crossfading placeholder to icon",
+    entries = ((0..450 step 50) + (500..2000 step 500)).toList(),
+    defaultValue = 200
+)
+
 val pref_cancelOnStart = BooleanPref(
     key = "dev-adv.cancelOnStart",
     summaryId = R.string.prefs_cancelonstart_summary,
@@ -287,6 +300,18 @@ val pref_useBackupRestoreWithSelection = BooleanPref(
 )
 
 //---------------------------------------- developer settings - implementation alternatives
+
+val pref_altListItem = BooleanPref(
+    key = "dev-alt.altListItem",
+    summary = "alternate package list item implementation",
+    defaultValue = false
+)
+
+val pref_altPackageIcon = BooleanPref(
+    key = "dev-alt.altPackageIcon",
+    summary = "alternate package icon implementation",
+    defaultValue = false
+)
 
 val pref_restoreAvoidTemporaryCopy = BooleanPref(
     key = "dev-alt.restoreAvoidTemporaryCopy",

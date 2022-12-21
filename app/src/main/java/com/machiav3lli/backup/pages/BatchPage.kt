@@ -30,6 +30,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -91,6 +92,11 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                 it.removeObserver(this)
             }
         }
+    }
+
+    val selection = remember { mutableStateMapOf<Package, Boolean>() }
+    filteredList.forEach {
+        selection.putIfAbsent(it, false)
     }
 
     Scaffold(containerColor = Color.Transparent) { paddingValues ->

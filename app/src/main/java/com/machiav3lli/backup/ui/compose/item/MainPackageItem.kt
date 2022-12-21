@@ -25,6 +25,7 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateMap
@@ -39,6 +40,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.machiav3lli.backup.MODE_ALL
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
@@ -47,10 +50,12 @@ import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.preferences.pref_altListItem
+import com.machiav3lli.backup.preferences.pref_altPackageIcon
+import com.machiav3lli.backup.preferences.pref_iconCrossFade
+import com.machiav3lli.backup.preferences.pref_quickerList
 import com.machiav3lli.backup.preferences.pref_useBackupRestoreWithSelection
-import com.machiav3lli.backup.traceCompose
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
-import com.machiav3lli.backup.utils.TraceUtils
 import com.machiav3lli.backup.utils.getBackupDir
 import com.machiav3lli.backup.utils.getFormattedDate
 import kotlinx.coroutines.delay
@@ -449,29 +454,207 @@ fun MainPackageContextMenu(
 }
 
 @Composable
-fun PackageIconFromPkg(pkg: Package, modifier: Modifier) {
+fun PackageIconA(pkg: Package, modifier: Modifier) {
 
     val imageData =
-        if (pkg.isSpecial) pkg.packageInfo.icon
-        else "android.resource://${pkg.packageName}/${pkg.packageInfo.icon}"
+            if (pkg.isSpecial) pkg.packageInfo.icon
+            else "android.resource://${pkg.packageName}/${pkg.packageInfo.icon}"
 
-    PackageIcon(modifier = modifier, item = pkg, imageData = imageData)
+    PackageIcon(item = pkg, imageData = imageData, modifier = modifier)
+}
+
+@Composable
+fun PackageIconB(pkg: Package, modifier: Modifier = Modifier) {
+
+    val imageData =
+            if (pkg.isSpecial) pkg.packageInfo.icon
+            else "android.resource://${pkg.packageName}/${pkg.packageInfo.icon}"
+
+    val model =
+        ImageRequest.Builder(OABX.context)
+            .memoryCacheKey(pkg.packageName)
+            .memoryCachePolicy(CachePolicy.ENABLED)
+            .crossfade(pref_iconCrossFade.value)
+            .data(imageData)
+            .build()
+
+    PackageIcon(item = pkg, model = model, modifier = modifier)
+}
+
+@Composable
+fun PackageIcon(pkg: Package, modifier: Modifier) {
+
+    if (pref_altPackageIcon.value)
+        PackageIconB(pkg = pkg, modifier = modifier)
+    else
+        PackageIconA(pkg = pkg, modifier = modifier)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MainPackageItem(
+fun MainPackageItemA(
     pkg: Package,
     productsList: List<Package>,
     selection: SnapshotStateMap<Package, Boolean>,
     onAction: (Package) -> Unit = {}
 ) {
-    val visible = productsList
+    val useIcons by remember(pref_quickerList.value) { mutableStateOf( ! pref_quickerList.value ) }
 
     val menuExpanded = remember { mutableStateOf(false) }
 
     //traceCompose { "<${pkg.packageName}> MainPackageItem ${pkg.packageInfo.icon} ${imageData.hashCode()}" }
-    traceCompose { "<${pkg.packageName}> MainPackageItem" }
+    //traceCompose { "<${pkg.packageName}> MainPackageItem" }
+
+    Card(
+        modifier = Modifier,
+        shape = RoundedCornerShape(LocalShapes.current.medium),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.Transparent
+        ),
+    ) {
+        if (menuExpanded.value)
+            MainPackageContextMenu(
+                expanded = menuExpanded,
+                packageItem = pkg,
+                productsList = productsList,
+                selection = selection,
+                onAction = onAction
+            )
+
+        val iconSelector =      //TODO hg42 ideally make this global (but we have closures)
+            Modifier
+                .combinedClickable(
+                    onClick = {
+                        selection[pkg] = selection[pkg] != true
+                    },
+                    onLongClick = {
+                        selection[pkg] = true
+                        menuExpanded.value = true
+                    }
+                )
+        val rowSelector =       //TODO hg42 ideally make this global (but we have closures)
+            Modifier
+                .combinedClickable(
+                    onClick = {
+                        if (productsList.none { selection[it] == true }) {
+                            onAction(pkg)
+                        } else {
+                            selection[pkg] = selection[pkg] != true
+                        }
+                    },
+                    onLongClick = {
+                        if (productsList.none { selection[it] == true }) {
+                            selection[pkg] = selection[pkg] != true
+                        } else {
+                            if (selection[pkg] == true)
+                                menuExpanded.value = true
+                            else {
+                                //selection[packageItem] = true
+                                // select from - to ? but the map is not sorted
+                                //selection.entries.forEach {
+                                //
+                                //}
+                            }
+                        }
+                    }
+                )
+
+        Row(
+            modifier = rowSelector
+                .background(
+                    color = if (selection[pkg] == true)
+                        MaterialTheme.colorScheme.primaryContainer
+                    else
+                        Color.Transparent
+                )
+                .fillMaxWidth()
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (useIcons)
+                PackageIcon(pkg = pkg, modifier = iconSelector)
+
+            Column(
+                modifier = Modifier.wrapContentHeight()
+            ) {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = pkg.packageLabel,
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .weight(1f),
+                        softWrap = true,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    if (useIcons)
+                        PackageLabels(item = pkg)
+                }
+
+                Row(modifier = Modifier.fillMaxWidth()) {
+
+                    val hasBackups = pkg.hasBackups
+                    val latestBackup = pkg.latestBackup
+                    val nBackups = pkg.numberOfBackups
+
+                    //traceCompose {
+                    //    "<${pkg.packageName}> MainPackageItem.backups ${
+                    //        TraceUtils.formatBackups(
+                    //            backups
+                    //        )
+                    //    } ${
+                    //        TraceUtils.formatBackups(
+                    //            backups
+                    //        )
+                    //    }"
+                    //}
+
+                    Text(
+                        text = pkg.packageName,
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .weight(1f),
+                        softWrap = true,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    AnimatedVisibility(visible = hasBackups) {
+                        Text(
+                            text = (latestBackup?.backupDate?.getFormattedDate(
+                                false
+                            ) ?: "") + " • $nBackups",
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1,
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                    }
+
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun MainPackageItemB(
+    pkg: Package,
+    productsList: List<Package>,
+    selection: SnapshotStateMap<Package, Boolean>,
+    onAction: (Package) -> Unit = {}
+) {
+    val useIcons by remember(pref_quickerList.value) { mutableStateOf( ! pref_quickerList.value ) }
+
+    val menuExpanded = remember { mutableStateOf(false) }
+
+    //traceCompose { "<${pkg.packageName}> MainPackageItemX ${pkg.packageInfo.icon} ${imageData.hashCode()}" }
+    //traceCompose { "<${pkg.packageName}> MainPackageItemX" }
 
     Card(
         modifier = Modifier,
@@ -504,14 +687,14 @@ fun MainPackageItem(
             Modifier
                 .combinedClickable(
                     onClick = {
-                        if (visible.none { selection[it] == true }) {
+                        if (productsList.none { selection[it] == true }) {
                             onAction(pkg)
                         } else {
                             selection[pkg] = selection[pkg] != true
                         }
                     },
                     onLongClick = {
-                        if (visible.none { selection[it] == true }) {
+                        if (productsList.none { selection[it] == true }) {
                             selection[pkg] = selection[pkg] != true
                         } else {
                             if (selection[pkg] == true)
@@ -529,13 +712,19 @@ fun MainPackageItem(
 
         Row(
             modifier = rowSelector
-                .background(color = if (selection[pkg] == true) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
+                .background(
+                    color = if (selection[pkg] == true)
+                        MaterialTheme.colorScheme.primaryContainer
+                    else
+                        Color.Transparent
+                )
                 .fillMaxWidth()
                 .padding(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            PackageIconFromPkg(pkg = pkg, modifier = iconSelector)
+            if (useIcons)
+                PackageIcon(pkg = pkg, modifier = iconSelector)
 
             Column(
                 modifier = Modifier.wrapContentHeight()
@@ -551,27 +740,27 @@ fun MainPackageItem(
                         maxLines = 1,
                         style = MaterialTheme.typography.titleMedium
                     )
-                    PackageLabels(item = pkg)
+                    if (useIcons)
+                        PackageLabels(item = pkg)
                 }
 
                 Row(modifier = Modifier.fillMaxWidth()) {
 
-                    val backups = pkg.backupsNewestFirst
                     val hasBackups = pkg.hasBackups
                     val latestBackup = pkg.latestBackup
                     val nBackups = pkg.numberOfBackups
 
-                    traceCompose {
-                        "<${pkg.packageName}> MainPackageItem.backups ${
-                            TraceUtils.formatBackups(
-                                backups
-                            )
-                        } ${
-                            TraceUtils.formatBackups(
-                                backups
-                            )
-                        }"
-                    }
+                    //traceCompose {
+                    //    "<${pkg.packageName}> MainPackageItem.backups ${
+                    //        TraceUtils.formatBackups(
+                    //            backups
+                    //        )
+                    //    } ${
+                    //        TraceUtils.formatBackups(
+                    //            backups
+                    //        )
+                    //    }"
+                    //}
 
                     Text(
                         text = pkg.packageName,
@@ -584,6 +773,7 @@ fun MainPackageItem(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+
                     AnimatedVisibility(visible = hasBackups) {
                         Text(
                             text = (latestBackup?.backupDate?.getFormattedDate(
@@ -595,8 +785,22 @@ fun MainPackageItem(
                             style = MaterialTheme.typography.bodySmall,
                         )
                     }
+
                 }
             }
         }
     }
+}
+
+@Composable
+fun MainPackageItem(
+    pkg: Package,
+    productsList: List<Package>,
+    selection: SnapshotStateMap<Package, Boolean>,
+    onAction: (Package) -> Unit = {}
+) {
+    if (pref_altListItem.value)
+        MainPackageItemB(pkg = pkg, productsList = productsList, selection = selection, onAction = onAction)
+    else
+        MainPackageItemA(pkg = pkg, productsList = productsList, selection = selection, onAction = onAction)
 }
