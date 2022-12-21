@@ -467,7 +467,6 @@ fun MainPackageItem(
     onAction: (Package) -> Unit = {}
 ) {
     val visible = productsList
-    val selectedAndVisible = visible.filter { selection[it] == true }
 
     val menuExpanded = remember { mutableStateOf(false) }
 
@@ -481,13 +480,14 @@ fun MainPackageItem(
             containerColor = Color.Transparent
         ),
     ) {
-        MainPackageContextMenu(
-            expanded = menuExpanded,
-            packageItem = pkg,
-            productsList = productsList,
-            selection = selection,
-            onAction = onAction
-        )
+        if (menuExpanded.value)
+            MainPackageContextMenu(
+                expanded = menuExpanded,
+                packageItem = pkg,
+                productsList = productsList,
+                selection = selection,
+                onAction = onAction
+            )
 
         val iconSelector =      //TODO hg42 ideally make this global (but we have closures)
             Modifier
@@ -504,15 +504,15 @@ fun MainPackageItem(
             Modifier
                 .combinedClickable(
                     onClick = {
-                        if (selectedAndVisible.isEmpty()) {
+                        if (visible.none { selection[it] == true }) {
                             onAction(pkg)
                         } else {
-                            selection[pkg] = !(selection[pkg] == true)
+                            selection[pkg] = selection[pkg] != true
                         }
                     },
                     onLongClick = {
-                        if (selectedAndVisible.isEmpty()) {
-                            selection[pkg] = !(selection[pkg] == true)
+                        if (visible.none { selection[it] == true }) {
+                            selection[pkg] = selection[pkg] != true
                         } else {
                             if (selection[pkg] == true)
                                 menuExpanded.value = true
