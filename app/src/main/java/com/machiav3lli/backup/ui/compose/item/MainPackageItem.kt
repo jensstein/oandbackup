@@ -457,8 +457,8 @@ fun MainPackageContextMenu(
 fun PackageIconA(pkg: Package, modifier: Modifier) {
 
     val imageData =
-            if (pkg.isSpecial) pkg.packageInfo.icon
-            else "android.resource://${pkg.packageName}/${pkg.packageInfo.icon}"
+        if (pkg.isSpecial) pkg.packageInfo.icon
+        else "android.resource://${pkg.packageName}/${pkg.packageInfo.icon}"
 
     PackageIcon(item = pkg, imageData = imageData, modifier = modifier)
 }
@@ -467,8 +467,8 @@ fun PackageIconA(pkg: Package, modifier: Modifier) {
 fun PackageIconB(pkg: Package, modifier: Modifier = Modifier) {
 
     val imageData =
-            if (pkg.isSpecial) pkg.packageInfo.icon
-            else "android.resource://${pkg.packageName}/${pkg.packageInfo.icon}"
+        if (pkg.isSpecial) pkg.packageInfo.icon
+        else "android.resource://${pkg.packageName}/${pkg.packageInfo.icon}"
 
     val model =
         ImageRequest.Builder(OABX.context)
@@ -498,7 +498,7 @@ fun MainPackageItemA(
     selection: SnapshotStateMap<String, Boolean>,
     onAction: (Package) -> Unit = {}
 ) {
-    val useIcons by remember(pref_quickerList.value) { mutableStateOf( ! pref_quickerList.value ) }
+    val useIcons by remember(pref_quickerList.value) { mutableStateOf(!pref_quickerList.value) }
 
     val menuExpanded = remember { mutableStateOf(false) }
 
@@ -574,6 +574,17 @@ fun MainPackageItemA(
         ) {
             if (useIcons)
                 PackageIcon(pkg = pkg, modifier = iconSelector)
+            else
+                Text(
+                    text = when {
+                        pkg.isSpecial -> "💲"
+                        !pkg.isInstalled -> "☠"
+                        pkg.isDisabled -> "😷"
+                        pkg.isSystem  -> "🤖"
+                        else          -> "🙂"
+                    },
+                    style = MaterialTheme.typography.headlineMedium
+                )
 
             Column(
                 modifier = Modifier.wrapContentHeight()
@@ -649,7 +660,7 @@ fun MainPackageItemB(
     selection: SnapshotStateMap<String, Boolean>,
     onAction: (Package) -> Unit = {}
 ) {
-    val useIcons by remember(pref_quickerList.value) { mutableStateOf( ! pref_quickerList.value ) }
+    val useIcons by remember(pref_quickerList.value) { mutableStateOf(!pref_quickerList.value) }
 
     val menuExpanded = remember { mutableStateOf(false) }
 
@@ -800,7 +811,17 @@ fun MainPackageItem(
     onAction: (Package) -> Unit = {}
 ) {
     if (pref_altListItem.value)
-        MainPackageItemB(pkg = pkg, productsList = productsList, selection = selection, onAction = onAction)
+        MainPackageItemB(
+            pkg = pkg,
+            productsList = productsList,
+            selection = selection,
+            onAction = onAction
+        )
     else
-        MainPackageItemA(pkg = pkg, productsList = productsList, selection = selection, onAction = onAction)
+        MainPackageItemA(
+            pkg = pkg,
+            productsList = productsList,
+            selection = selection,
+            onAction = onAction
+        )
 }
