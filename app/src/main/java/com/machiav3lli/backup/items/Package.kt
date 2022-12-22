@@ -48,10 +48,12 @@ class Package {
 
     var backupList: List<Backup>
         get() {
-            val backups = OABX.main?.viewModel?.backupsMap?.get(packageName) ?: emptyList()
+            val backups = OABX.main?.viewModel?.backupsMap?.getOrPut(packageName) {
+                refreshBackupList()
+            } ?: emptyList()
             return backups
         }
-        set(backups: List<Backup>) {
+        set(backups) {
             OABX.main?.viewModel?.backupsMap?.put(packageName, backups)
         }
 
@@ -175,8 +177,7 @@ class Package {
         }
     }
 
-    fun refreshBackupList(): List<Backup> {
-        traceBackups { "<$packageName> refreshbackupList" }
+    fun getBackupsFromBackupDir() : List<Backup> {
         invalidateBackupCacheForPackage(packageName)
         val backups = mutableListOf<Backup>()
         try {
@@ -204,7 +205,13 @@ class Package {
         } catch (e: Throwable) {
             // ignore
         }
-        updateBackupListAndDatabase(backups)  //TODO hg42 ???
+        return backups
+    }
+
+    fun refreshBackupList(): List<Backup> {
+        traceBackups { "<$packageName> refreshbackupList" }
+        val backups = getBackupsFromBackupDir()
+        updateBackupListAndDatabase(backups)
         return backups
     }
 
