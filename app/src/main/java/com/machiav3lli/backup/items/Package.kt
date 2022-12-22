@@ -96,7 +96,7 @@ class Package {
     ) {
         this.packageBackupDir = backupDir
         this.packageName = packageName
-        //refreshBackupList()                             //TODO hg42 ??? or ensureBackupList?
+        //refreshBackupList()                             // load lazily below if necessary
         try {
             val pi = context.packageManager.getPackageInfo(
                 this.packageName,
@@ -224,8 +224,8 @@ class Package {
         StorageLocationNotConfiguredException::class
     )
     fun getAppBackupRoot(
-        create: Boolean = false,
-        packageName: String = this.packageName
+        packageName: String = this.packageName,
+        create: Boolean = false
     ): StorageFile? {
         return try {
             when {

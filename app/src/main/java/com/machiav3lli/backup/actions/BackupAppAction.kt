@@ -82,7 +82,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             //invalidateCacheForPackage(app.packageName)    //TODO hg42 ???
             work?.setOperation("pre")
             val appBackupRoot: StorageFile = try {
-                app.getAppBackupRoot(true)!!
+                app.getAppBackupRoot(create = true)!!
             } catch (e: BackupLocationInAccessibleException) {
                 // Usually, this should never happen, but just in case...
                 val realException: Exception =
