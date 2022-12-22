@@ -189,11 +189,11 @@ fun MainPackageContextMenu(
     expanded: MutableState<Boolean>,
     packageItem: Package,
     productsList: List<Package>,
-    selection: SnapshotStateMap<Package, Boolean>,
+    selection: SnapshotStateMap<String, Boolean>,
     onAction: (Package) -> Unit = {}
 ) {
     val visible = productsList
-    val selectedAndVisible = visible.filter { selection[it] == true }
+    val selectedAndVisible = visible.filter { selection[it.packageName] == true }
     val selectedAndInstalled = selectedAndVisible.filter { it.isInstalled }
     val selectedWithBackups = selectedAndVisible.filter { it.hasBackups }
 
@@ -221,11 +221,11 @@ fun MainPackageContextMenu(
         select: Boolean? = true,
         todo: (p: Package) -> Unit = {},
     ) {
-        packages.forEach { p ->
-            if (select == true) selection[p] = false
-            //OABX.addInfoText("$action ${p.packageName}")
-            todo(p)
-            select?.let { s -> selection[p] = s }
+        packages.forEach { pkg ->
+            if (select == true) selection[pkg.packageName] = false
+            //OABX.addInfoText("$action ${pkg.packageName}")
+            todo(pkg)
+            select?.let { s -> selection[pkg.packageName] = s }
         }
     }
 
@@ -291,7 +291,7 @@ fun MainPackageContextMenu(
             onClick = {
                 openSubMenu(subMenu) {
                     SelectionSaveMenu(
-                        selection = selection.filter { it.value }.map { it.key.packageName }
+                        selection = selection.filter { it.value }.map { it.key }
                     ) {
                         expanded.value = false
                         launchEachPackage(selectedAndVisible, "save", select = false) {}
@@ -337,7 +337,7 @@ fun MainPackageContextMenu(
                     ) {
                         it.removeObserver(this)
                         launchEachPackage(packages, "backup") {
-                            selection[it] = false
+                            selection[it.packageName] = false
                         }
                     }
                 }
@@ -357,7 +357,7 @@ fun MainPackageContextMenu(
                             ) {
                                 it.removeObserver(this)
                                 launchEachPackage(packages, "restore") {
-                                    selection[it] = false
+                                    selection[it.packageName] = false
                                 }
                             }
                         }
@@ -495,7 +495,7 @@ fun PackageIcon(pkg: Package, modifier: Modifier) {
 fun MainPackageItemA(
     pkg: Package,
     productsList: List<Package>,
-    selection: SnapshotStateMap<Package, Boolean>,
+    selection: SnapshotStateMap<String, Boolean>,
     onAction: (Package) -> Unit = {}
 ) {
     val useIcons by remember(pref_quickerList.value) { mutableStateOf( ! pref_quickerList.value ) }
@@ -525,10 +525,10 @@ fun MainPackageItemA(
             Modifier
                 .combinedClickable(
                     onClick = {
-                        selection[pkg] = selection[pkg] != true
+                        selection[pkg.packageName] = selection[pkg.packageName] != true
                     },
                     onLongClick = {
-                        selection[pkg] = true
+                        selection[pkg.packageName] = true
                         menuExpanded.value = true
                     }
                 )
@@ -536,17 +536,17 @@ fun MainPackageItemA(
             Modifier
                 .combinedClickable(
                     onClick = {
-                        if (productsList.none { selection[it] == true }) {
+                        if (productsList.none { selection[it.packageName] == true }) {
                             onAction(pkg)
                         } else {
-                            selection[pkg] = selection[pkg] != true
+                            selection[pkg.packageName] = selection[pkg.packageName] != true
                         }
                     },
                     onLongClick = {
-                        if (productsList.none { selection[it] == true }) {
-                            selection[pkg] = selection[pkg] != true
+                        if (productsList.none { selection[it.packageName] == true }) {
+                            selection[pkg.packageName] = selection[pkg.packageName] != true
                         } else {
-                            if (selection[pkg] == true)
+                            if (selection[pkg.packageName] == true)
                                 menuExpanded.value = true
                             else {
                                 //selection[packageItem] = true
@@ -562,7 +562,7 @@ fun MainPackageItemA(
         Row(
             modifier = rowSelector
                 .background(
-                    color = if (selection[pkg] == true)
+                    color = if (selection[pkg.packageName] == true)
                         MaterialTheme.colorScheme.primaryContainer
                     else
                         Color.Transparent
@@ -646,7 +646,7 @@ fun MainPackageItemA(
 fun MainPackageItemB(
     pkg: Package,
     productsList: List<Package>,
-    selection: SnapshotStateMap<Package, Boolean>,
+    selection: SnapshotStateMap<String, Boolean>,
     onAction: (Package) -> Unit = {}
 ) {
     val useIcons by remember(pref_quickerList.value) { mutableStateOf( ! pref_quickerList.value ) }
@@ -676,10 +676,10 @@ fun MainPackageItemB(
             Modifier
                 .combinedClickable(
                     onClick = {
-                        selection[pkg] = !(selection[pkg] == true)
+                        selection[pkg.packageName] = !(selection[pkg.packageName] == true)
                     },
                     onLongClick = {
-                        selection[pkg] = true
+                        selection[pkg.packageName] = true
                         menuExpanded.value = true
                     }
                 )
@@ -687,17 +687,17 @@ fun MainPackageItemB(
             Modifier
                 .combinedClickable(
                     onClick = {
-                        if (productsList.none { selection[it] == true }) {
+                        if (productsList.none { selection[it.packageName] == true }) {
                             onAction(pkg)
                         } else {
-                            selection[pkg] = selection[pkg] != true
+                            selection[pkg.packageName] = selection[pkg.packageName] != true
                         }
                     },
                     onLongClick = {
-                        if (productsList.none { selection[it] == true }) {
-                            selection[pkg] = selection[pkg] != true
+                        if (productsList.none { selection[it.packageName] == true }) {
+                            selection[pkg.packageName] = selection[pkg.packageName] != true
                         } else {
-                            if (selection[pkg] == true)
+                            if (selection[pkg.packageName] == true)
                                 menuExpanded.value = true
                             else {
                                 //selection[packageItem] = true
@@ -713,7 +713,7 @@ fun MainPackageItemB(
         Row(
             modifier = rowSelector
                 .background(
-                    color = if (selection[pkg] == true)
+                    color = if (selection[pkg.packageName] == true)
                         MaterialTheme.colorScheme.primaryContainer
                     else
                         Color.Transparent
@@ -796,7 +796,7 @@ fun MainPackageItemB(
 fun MainPackageItem(
     pkg: Package,
     productsList: List<Package>,
-    selection: SnapshotStateMap<Package, Boolean>,
+    selection: SnapshotStateMap<String, Boolean>,
     onAction: (Package) -> Unit = {}
 ) {
     if (pref_altListItem.value)
