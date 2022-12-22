@@ -478,8 +478,11 @@ class Package {
     val isUpdated: Boolean
         get() = latestBackup?.let { it.versionCode < versionCode } ?: false
 
+    val isNew: Boolean
+        get() = !hasBackups && !isSystem    //TODO && versionCode > lastSeenVersionCode
+
     val isNewOrUpdated: Boolean
-        get() = latestBackup?.let { it.versionCode < versionCode } ?: !isSystem
+        get() = isUpdated || isNew
 
     val hasApk: Boolean
         get() = backupList.any { it.hasApk }
