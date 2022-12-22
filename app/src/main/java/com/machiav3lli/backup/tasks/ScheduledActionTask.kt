@@ -65,7 +65,9 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         //   so you can use it in the viewModel and in the service as separate instances
 
         val unfilteredList: List<Package> = try {
-            context.getInstalledPackageList()
+
+            context.getInstalledPackageList()   // <========================== get the package list
+
         } catch (e: FileUtils.BackupLocationInAccessibleException) {
             Timber.e("Scheduled backup failed due to ${e.javaClass.simpleName}: $e")
             LogsHandler.logErrors(
@@ -87,7 +89,7 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
             launchableAppsList = context.packageManager.queryIntentActivities(mainIntent, 0)
                 .map { it.activityInfo.packageName }
         }
-        val inListed = { packageName: String ->
+        val inCustomList = { packageName: String ->
             customList.isEmpty() or customList.contains(packageName)
         }
         val predicate: (Package) -> Boolean = {
@@ -97,33 +99,34 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         }
         val days = pref_oldBackups.value
         val specialPredicate: (Package) -> Boolean = when (specialFilter) {
-            SPECIAL_FILTER_LAUNCHABLE -> { packageItem: Package ->
-                launchableAppsList.contains(packageItem.packageName) &&
-                        inListed(packageItem.packageName)
+            SPECIAL_FILTER_LAUNCHABLE  -> { pkg: Package ->
+                launchableAppsList.contains(pkg.packageName)
             }
-            SPECIAL_FILTER_NEW_UPDATED -> { packageItem: Package ->
-                (!packageItem.hasBackups || packageItem.isUpdated) &&
-                        inListed(packageItem.packageName)
+            SPECIAL_FILTER_NEW_UPDATED -> { pkg: Package ->
+                ! pkg.hasBackups || pkg.isUpdated
             }
-            SPECIAL_FILTER_OLD -> {
-                { appInfo: Package ->
-                    if (appInfo.hasBackups) {
-                        val lastBackup = appInfo.latestBackup?.backupDate
-                        val diff = ChronoUnit.DAYS.between(lastBackup, LocalDateTime.now())
-                        (diff >= days) && inListed(appInfo.packageName)
-                    } else
-                        false
-                }
+            SPECIAL_FILTER_OLD         -> { pkg: Package ->
+                if (pkg.hasBackups) {
+                    val lastBackup = pkg.latestBackup?.backupDate
+                    val diff = ChronoUnit.DAYS.between(lastBackup, LocalDateTime.now())
+                    (diff >= days)
+                } else
+                    false
             }
-            SPECIAL_FILTER_DISABLED -> { appInfo: Package ->
-                appInfo.isDisabled && inListed(appInfo.packageName)
+            SPECIAL_FILTER_DISABLED    -> { pkg: Package ->
+                pkg.isDisabled
             }
-            else -> { appInfo: Package -> inListed(appInfo.packageName) }
+            else                       -> { pkg: Package ->
+                true
+            }
         }
         val selectedItems = unfilteredList
+            .filter {
+                inCustomList(it.packageName) ||     // prioritize white list before blacklist
+                        ! blockList.contains(it.packageName)
+            }
             .filter(predicate)
-            .filter(specialPredicate)
-            .filterNot { blockList.contains(it.packageName) }
+            .filter(specialPredicate) // filter last, with fewer packages, e.g. old backups is expensive
             .sortedWith { m1: Package, m2: Package ->
                 m1.packageLabel.compareTo(m2.packageLabel, ignoreCase = true)
             }

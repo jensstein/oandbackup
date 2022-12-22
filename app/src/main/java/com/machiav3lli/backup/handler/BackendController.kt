@@ -159,17 +159,18 @@ fun Context.getInstalledPackageList()  : MutableList<Package> { // only used in 
                 }
             }
 
-            val backupsMap = getAllBackups()
-
-            packageList = packageList.map {
-                it.apply { updateBackupListAndDatabase(backupsMap[it.packageName].orEmpty()) }
-            }.toMutableList()
+            // don't get backups here, get them lazily if they are used,
+            // e.g. to filter old backups
+            //val backupsMap = getAllBackups()                              //TODO WECH
+            //packageList = packageList.map {
+            //    it.apply { updateBackupListAndDatabase(backupsMap[it.packageName].orEmpty()) }
+            //}.toMutableList()
         }
 
         OABX.addInfoText(
             "getPackageList: ${(time / 1000 + 0.5).toInt()} sec"
         )
-    } catch(e: Throwable) {
+    } catch (e: Throwable) {
         logException(e)
     } finally {
         OABX.endBusy("getInstalledPackageList")
