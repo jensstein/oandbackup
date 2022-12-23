@@ -47,7 +47,7 @@ import com.machiav3lli.backup.preferences.pref_backupSuspendApps
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupDir
-import com.machiav3lli.backup.utils.getInstalledPackagesWithPermissions
+import com.machiav3lli.backup.utils.getInstalledPackageInfosWithPermissions
 import com.machiav3lli.backup.utils.specialBackupsEnabled
 import timber.log.Timber
 import java.io.IOException
@@ -56,7 +56,7 @@ import kotlin.system.measureTimeMillis
 
 // TODO respect special filter
 fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
-    packageManager.getInstalledPackagesWithPermissions()
+    packageManager.getInstalledPackageInfosWithPermissions()
         .filter { packageInfo: PackageInfo ->
             val isSystem =
                 packageInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == ApplicationInfo.FLAG_SYSTEM
@@ -68,34 +68,25 @@ fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
         }
         .toList()
 
-fun Context.getAllBackups(): Map<String, List<Backup>> {
+fun Context.getBackups(packageName: String = ""): Map<String, List<Backup>> {
 
     OABX.beginBusy("read backups")
 
-    val directoriesInBackupRoot = getBackupPackageDirectories()
     val backupList = mutableListOf<Backup>()
-    directoriesInBackupRoot
+    getBackupDir().listFiles()
+        .filter { it.name?.contains(packageName) ?: true }
+        .filter(StorageFile::isPropertyFile)
+        .forEach { propFile ->
+            Backup.createFrom(propFile)?.let(backupList::add)  //TODO hg42 ?: handleDamagedBackup()
+        }
+    getBackupPackageDirectories()
+        .filter { it.name?.contains(packageName) ?: true }
         .map {
             it.listFiles()
-                //TODO hg42 handle bad property files (delete it)
-                //TODO hg42 handle directories without properties file (delete it)
                 .filter(StorageFile::isPropertyFile)
                 .forEach { propFile ->
-                    try {
-                        Backup.createFrom(propFile)?.let(backupList::add)
-                    } catch (e: Backup.BrokenBackupException) {
-                        val message =
-                            "Incomplete backup or wrong structure found in $propFile"
-                        Timber.w(message)
-                    } catch (e: NullPointerException) {
-                        val message =
-                            "(Null) Incomplete backup or wrong structure found in $propFile"
-                        Timber.w(message)
-                    } catch (e: Throwable) {
-                        val message =
-                            "(catchall) Incomplete backup or wrong structure found in $propFile"
-                        LogsHandler.unhandledException(e, message)
-                    }
+                    Backup.createFrom(propFile)
+                        ?.let(backupList::add)  //TODO hg42 ?: handleDamagedBackup()
                 }
         }
     val backupsMap = backupList.groupBy { it.packageName }
@@ -117,7 +108,7 @@ fun Context.getInstalledPackageList(): MutableList<Package> { // only used in Sc
             val pm = packageManager
             val backupRoot = getBackupDir()
             val includeSpecial = specialBackupsEnabled
-            val packageInfoList = pm.getInstalledPackagesWithPermissions()
+            val packageInfoList = pm.getInstalledPackageInfosWithPermissions()
             packageList = packageInfoList
                 .filterNotNull()
                 .filterNot { it.packageName.matches(ignoredPackages) }
@@ -206,7 +197,7 @@ fun List<AppInfo>.toPackageList(
                         Timber.e("Could not create Package for ${it}: $e")
                         null
                     }
-                    pkg?.updateBackupList(backupMap[pkg.packageName].orEmpty())
+                    //pkg?.updateBackupList(backupMap[pkg.packageName].orEmpty())
                     pkg
                 }
                 .toMutableList()
@@ -220,7 +211,7 @@ fun List<AppInfo>.toPackageList(
         if (includeSpecial) {
             SpecialInfo.getSpecialPackages(context).forEach {
                 if (!blockList.contains(it.packageName)) {
-                    it.updateBackupList(backupMap[it.packageName].orEmpty())
+                    //it.updateBackupList(backupMap[it.packageName].orEmpty())
                     packageList.add(it)
                 }
                 //specialList.add(it.packageName)
@@ -241,11 +232,9 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
     OABX.beginBusy("updateAppTables")
 
     try {
-        val backups = mutableListOf<Backup>()
-
         val pm = packageManager
-        val installedPackages = pm.getInstalledPackagesWithPermissions()
-        val installedNames = installedPackages.map { it.packageName }.toList()
+        val installedPackageInfos = pm.getInstalledPackageInfosWithPermissions()
+        val installedNames = installedPackageInfos.map { it.packageName }.toSet()
 
         if (!OABX.appsSuspendedChecked && pref_backupSuspendApps.value) {
             installedNames.filter { packageName ->
@@ -265,7 +254,10 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
             }
         }
 
-        val backupsMap = getAllBackups()
+        val backups = mutableListOf<Backup>()
+
+        val backupsMap = getBackups()
+        OABX.main?.viewModel?.backupsMap?.clear()
         backupsMap.forEach {
             OABX.main?.viewModel?.backupsMap?.put(it.key, it.value)
             it.value.forEach {
@@ -274,60 +266,26 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
         }
 
         val specialPackages = SpecialInfo.getSpecialPackages(this)
-        val specialNames = specialPackages.map { it.packageName }
-
-        specialPackages.forEach {
-            it.backupList
-            //it.refreshBackupList()
-            //it.backupsNewestFirst.forEach { backups.add(it) }
-        }
-
-        val directoriesInBackupRoot = getBackupPackageDirectories()
-        val packagesWithBackup =
-            directoriesInBackupRoot
-                //TODO hg42 allow SAF duplicate dirs (any location attached by the package name)
-
-                // Try to create AppInfo objects
-                // if it fails, null the object for filtering in the next step to avoid crashes
-                // filter out previously failed backups
-                    
-                // remove special packages
-                .filterNot {
-                    it.name?.let {
-                        val name =
-                            it.substringBefore(" ")    // strip SAF duplicate suffix " (n)"
-                        specialNames.contains(name)
-                    } ?: true
-                }
-
-                // create Package objects and add backups
-                .mapNotNull {
-                    try {
-                        // TODO Add a direct constructor
-                        val pkg = Package(this, it.name!!, it)
-                        //pkg.refreshBackupList()         // loaded lazily below or getAllBackups above
-                        //pkg.backupsNewestFirst.forEach { backups.add(it) }
-                        pkg
-                    } catch (e: AssertionError) {
-                        Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
-                        null
-                    }
-                }
-
-                .toList()
+        val specialNames = specialPackages.map { it.packageName }.toSet()
 
         val uninstalledPackagesWithBackup =
-            backupsMap.keys
-                .filter { it !in installedNames }
-                .map { Package(this, it, StorageFile(getBackupDir(), it)) }
+            (backupsMap.keys - installedNames - specialNames)
+                .mapNotNull {
+                    //try {
+                    //    // TODO Add a direct constructor
+                    //    //val pkg = Package(this, it)
+                    //    //pkg
+                    backupsMap[it]?.maxByOrNull { it.backupDate }?.toAppInfo()
+                    //} catch (e: AssertionError) {
+                    //    Timber.e("Could not process backup folder for uninstalled application in $it: $e")
+                    //    null
+                    //}
+                }
 
-        val packagesWithBackupNames = packagesWithBackup.map { it.packageName }
         val appInfoList =
-            installedPackages
-                .filterNot { it.packageName in packagesWithBackupNames }
+            installedPackageInfos
                 .map { AppInfo(this, it) }
-                //.union(uninstalledPackagesWithBackup.map { it.packageInfo as AppInfo })
-                .union(packagesWithBackup.map { it.packageInfo as AppInfo })
+                .union(uninstalledPackagesWithBackup)
 
         backupDao.updateList(*backups.toTypedArray())
         appInfoDao.updateList(*appInfoList.toTypedArray())

@@ -23,16 +23,21 @@ import android.content.pm.PackageInfo
 import android.os.Build
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER_OLD
 import com.machiav3lli.backup.BACKUP_INSTANCE_DIR
 import com.machiav3lli.backup.BuildConfig
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
 import com.machiav3lli.backup.handler.grantedPermissions
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.traceBackupProps
 import com.machiav3lli.backup.utils.LocalDateTimeSerializer
+import com.machiav3lli.backup.utils.getBackupDir
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -179,9 +184,6 @@ data class Backup constructor(
     val isEncrypted: Boolean
         get() = cipherType != null && cipherType?.isNotEmpty() == true
 
-    fun getBackupInstanceFolder(appBackupDir: StorageFile?): StorageFile? =
-        appBackupDir?.findFile(backupFolderName) ?: appBackupDir?.findFile(backupFolderNameOld)
-
     fun toAppInfo() = AppInfo(
         packageName,
         packageLabel,
@@ -213,7 +215,7 @@ data class Backup constructor(
             '}'
 
     override fun equals(other: Any?): Boolean = when {
-        this === other -> true
+        this === other                      -> true
         javaClass != other?.javaClass
                 || other !is Backup
                 || backupVersionCode != other.backupVersionCode
@@ -241,8 +243,11 @@ data class Backup constructor(
                 || backupFolderName != other.backupFolderName
                 || isEncrypted != other.isEncrypted
                 || permissions != other.permissions
-                || persistent != other.persistent -> false
-        else -> true
+                || persistent != other.persistent
+                || file?.path != other.file?.path
+                || dir?.path != other.dir?.path
+                || tag != other.tag -> false
+        else                        -> true
     }
 
     override fun hashCode(): Int {
@@ -280,6 +285,16 @@ data class Backup constructor(
         cause: Throwable? = null
     ) : Exception(message, cause)
 
+    @Ignore
+    @Transient
+    var file: StorageFile? = null
+    @Ignore
+    @Transient
+    var dir: StorageFile? = null
+    @Ignore
+    @Transient
+    var tag: String? = null
+
     companion object {
 
         fun fromJson(json: String): Backup {
@@ -290,21 +305,44 @@ data class Backup constructor(
         fun createFrom(propertiesFile: StorageFile): Backup? {
             var json = ""
             try {
+
                 json = propertiesFile.readText()
-                return fromJson(json)
+
+                val backup = fromJson(json)
+
+                backup.file = propertiesFile
+                propertiesFile.name?.removeSuffix(".properties")?.let { dirName ->
+                    propertiesFile.parent?.let { parent ->
+                        parent.findFile(dirName)?.let { dir ->
+                            val pkg = "PKG"
+                            backup.tag = dir.path?.let {
+                                it
+                                    .replace(OABX.context.getBackupDir().path ?: "", "")
+                                    .replace(backup.packageName, pkg)
+                                    .replace(
+                                        Regex("""($pkg-)?\d\d\d\d-\d\d-\d\d-\d\d-\d\d-\d\d(-\d\d\d)?-user_\d+"""),
+                                        ""
+                                    )
+                                    .replace(Regex("""[-:\s]+"""), "-")
+                                    .replace(Regex("""/+"""), "/")
+                                    .replace(Regex("""[-]$"""), "")
+                                    .replace(Regex("""^[-/]"""), "")
+                            }
+                            backup.dir = dir
+                        }
+                    }
+                }
+                return backup
+
             } catch (e: FileNotFoundException) {
-                throw BrokenBackupException(
-                    "Cannot open ${propertiesFile.path}",
-                    e
-                )
+                logException(e, "Cannot open ${propertiesFile.path}")
+                return null
             } catch (e: IOException) {
-                throw BrokenBackupException(
-                    "Cannot read ${propertiesFile.path}",
-                    e
-                )
+                logException(e, "Cannot read ${propertiesFile.path}")
+                return null
             } catch (e: Throwable) {
                 LogsHandler.unhandledException(e, "file: ${propertiesFile.path} =\n$json")
-                throw BrokenBackupException("Unable to process ${propertiesFile.path}. [${e.javaClass.canonicalName}] $e\n$json")
+                return null
             }
         }
     }

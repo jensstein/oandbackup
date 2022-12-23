@@ -277,10 +277,10 @@ class MainViewModel(
                 invalidateCacheForPackage(packageName)
                 val appPackage = packageMap.value[packageName]
                 appPackage?.apply {
-                    val new = Package(appContext, packageName, getAppBackupRoot())
+                    val new = Package(appContext, packageName)
                     new.refreshFromPackageManager(OABX.context)
                     if (!isSpecial) db.appInfoDao.update(new.packageInfo as AppInfo)
-                    new.refreshBackupList()     //TODO hg42 ??? who calls this? take it from backupsMap?
+                    //new.refreshBackupList()     //TODO hg42 ??? who calls this? take it from backupsMap?
                 }
             } catch (e: AssertionError) {
                 Timber.w(e.message ?: "")

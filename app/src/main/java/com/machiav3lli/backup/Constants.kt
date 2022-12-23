@@ -229,22 +229,25 @@ val legendList = listOf(
     Legend.Updated,
 )
 
-val ISO_DATE_TIME_FORMAT get() : SimpleDateFormat =
-    SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+val ISO_LIKE_DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss"
+val ISO_LIKE_DATE_TIME_MIN_PATTERN = "yyyy-MM-dd HH:mm"
+val ISO_LIKE_DATE_TIME_MS_PATTERN = "yyyy-MM-dd HH:mm:ss:SSS"
+val FILE_DATE_TIME_MS_PATTERN = "yyyy-MM-dd-HH-mm-ss-SSS"
+val FILE_DATE_TIME_PATTERN = "yyyy-MM-dd-HH-mm-ss"
 
-val ISO_DATE_TIME_FORMAT_MIN get() : SimpleDateFormat =
-    SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+val ISO_DATE_TIME_FORMAT get() = SimpleDateFormat(ISO_LIKE_DATE_TIME_PATTERN, Locale.getDefault())
 
-val ISO_DATE_TIME_FORMAT_MS get() : SimpleDateFormat =
-    SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS", Locale.getDefault())
+val ISO_DATE_TIME_FORMAT_MIN get() = SimpleDateFormat(ISO_LIKE_DATE_TIME_MIN_PATTERN, Locale.getDefault())
+
+val ISO_DATE_TIME_FORMAT_MS get() = SimpleDateFormat(ISO_LIKE_DATE_TIME_MS_PATTERN, Locale.getDefault())
 
 // must be ISO time format for sane sorting yyyy, MM, dd, ...
 // and only allowed file name characters (on all systems, Windows has the smallest set)
-val BACKUP_DATE_TIME_FORMATTER_OLD: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss")
+val BACKUP_DATE_TIME_FORMATTER_OLD = DateTimeFormatter.ofPattern(FILE_DATE_TIME_PATTERN)
 // use millisec, because computers (and users) can be faster than a sec
-val BACKUP_DATE_TIME_FORMATTER: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSS")
+val BACKUP_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(FILE_DATE_TIME_MS_PATTERN)
+
+val BACKUP_DATE_TIME_SHOW_FORMATTER = DateTimeFormatter.ofPattern(ISO_LIKE_DATE_TIME_PATTERN)
 
 val BACKUP_DIRECTORY_INTENT = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
     .addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)

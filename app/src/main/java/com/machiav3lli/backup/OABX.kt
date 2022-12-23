@@ -271,10 +271,10 @@ class OABX : Application() {
                     else
                         return "NeoBackup>${
                             super.createStackElementTag(element)
-                        }.${
-                            element.methodName
                         }:${
                             element.lineNumber
+                        }::${
+                            element.methodName
                         }"
                 }
             })

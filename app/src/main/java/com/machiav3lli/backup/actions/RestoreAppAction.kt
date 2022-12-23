@@ -37,6 +37,7 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRootPipeInColl
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.handler.ShellHandler.UnexpectedCommandResult
+import com.machiav3lli.backup.handler.getBackups
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.RootFile
@@ -79,7 +80,6 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     fun run(
         app: Package,
         backup: Backup,
-        backupDir: StorageFile?,
         backupMode: Int
     ): ActionResult {
         try {
@@ -91,6 +91,12 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                 preprocessPackage(type = "restore", packageName = app.packageName)
             }
             try {
+                val backupDir = backup.dir
+                    ?: run {
+                        val backups = context.getBackups(backup.packageName).get(backup.packageName)
+                        val found = backups?.find { it.backupDate == backup.backupDate }
+                        found?.dir
+                    }
                 if (backupDir != null) {
                     if (backupMode and MODE_APK == MODE_APK) {
                         work?.setOperation("apk")

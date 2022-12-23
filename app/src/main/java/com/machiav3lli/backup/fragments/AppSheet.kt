@@ -514,8 +514,8 @@ class AppSheet() : BaseSheet(), ActionListener {
                                             .show()
                                     }
                                 },
-                                rewriteBackup = { backup ->
-                                    viewModel.rewriteBackup(backup)
+                                rewriteBackup = { backup, changedBackup ->
+                                    viewModel.rewriteBackup(backup, changedBackup)
                                 }
                             )
                         }
@@ -558,12 +558,10 @@ class AppSheet() : BaseSheet(), ActionListener {
                             it.removeObserver(this)
                         }
                     } else {
-                        backup?.let { backupProps: Backup ->
-                            val backupDir =
-                                backupProps.getBackupInstanceFolder(p.getAppBackupRoot())
+                        backup?.let {
                             RestoreActionTask(
                                 p, requireMainActivity(), OABX.shellHandlerInstance!!, mode,
-                                backupProps, backupDir!!, this
+                                it, this
                             ).execute()
                         }
                     }

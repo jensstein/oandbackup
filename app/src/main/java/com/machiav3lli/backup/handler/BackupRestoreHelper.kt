@@ -31,7 +31,6 @@ import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.Package
-import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import com.machiav3lli.backup.preferences.pref_numBackupRevisions
 import com.machiav3lli.backup.tasks.AppActionWork
@@ -86,14 +85,14 @@ object BackupRestoreHelper {
 
     fun restore(
         context: Context, work: AppActionWork?, shellHandler: ShellHandler, appInfo: Package,
-        mode: Int, backupProperties: Backup, backupDir: StorageFile?
+        mode: Int, backup: Backup
     ): ActionResult {
         val action: RestoreAppAction = when {
             appInfo.isSpecial -> RestoreSpecialAction(context, work, shellHandler)
             appInfo.isSystem -> RestoreSystemAppAction(context, work, shellHandler)
             else -> RestoreAppAction(context, work, shellHandler)
         }
-        val result = action.run(appInfo, backupProperties, backupDir, mode)
+        val result = action.run(appInfo, backup, mode)
         Timber.i("[${appInfo.packageName}] Restore succeeded: ${result.succeeded}")
         return result
     }

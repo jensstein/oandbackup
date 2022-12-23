@@ -21,14 +21,12 @@ import android.app.usage.StorageStats
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.lifecycle.viewModelScope
-import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
-import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER_OLD
-import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.handler.getBackups
 import com.machiav3lli.backup.handler.getPackageStorageStats
 import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.utils.FileUtils
@@ -43,7 +41,6 @@ import java.io.File
 class Package {
     var packageName: String
     var packageInfo: com.machiav3lli.backup.dbs.entity.PackageInfo
-    private var packageBackupDir: StorageFile? = null
     var storageStats: StorageStats? = null
 
     var backupList: List<Backup>
@@ -59,24 +56,20 @@ class Package {
 
     internal constructor(   // toPackageList
         context: Context,
-        appInfo: AppInfo,
-        backups: List<Backup>? = emptyList()
+        appInfo: AppInfo
     ) {
         packageName = appInfo.packageName
         this.packageInfo = appInfo
         getAppBackupRoot()
         if (appInfo.installed) refreshStorageStats(context)
-        updateBackupList(backups ?: emptyList())    //TODO hg42 also database ???
     }
 
     constructor(            // special packages
-        specialInfo: SpecialInfo,
-        backups: List<Backup>? = emptyList()
+        specialInfo: SpecialInfo
     ) {
         packageName = specialInfo.packageName
         this.packageInfo = specialInfo
         getAppBackupRoot()
-        updateBackupList(backups ?: emptyList())    //TODO hg42 also database ???
     }
 
     constructor(            // schedule
@@ -91,12 +84,9 @@ class Package {
 
     constructor(
         context: Context,
-        packageName: String,
-        backupDir: StorageFile?,
+        packageName: String
     ) {
-        this.packageBackupDir = backupDir
         this.packageName = packageName
-        //refreshBackupList()                             // load lazily below if necessary
         try {
             val pi = context.packageManager.getPackageInfo(
                 this.packageName,
@@ -128,8 +118,15 @@ class Package {
     ) {
         this.packageName = packageInfo.packageName
         this.packageInfo = AppInfo(context, packageInfo)
-        this.packageBackupDir = backupRoot?.findFile(packageName)
         refreshStorageStats(context)
+    }
+
+    fun runChecked(todo: () -> Unit) {
+        try {
+            todo()
+        } catch (e: Throwable) {
+            LogsHandler.unhandledException(e, packageName)
+        }
     }
 
     fun refreshStorageStats(context: Context): Boolean {
@@ -179,33 +176,8 @@ class Package {
 
     fun getBackupsFromBackupDir() : List<Backup> {
         invalidateBackupCacheForPackage(packageName)
-        val backups = mutableListOf<Backup>()
-        try {
-            getAppBackupRoot()?.listFiles()
-                ?.filter(StorageFile::isPropertyFile)
-                ?.forEach { propFile ->
-                    try {
-                        Backup.createFrom(propFile)?.let {
-                            backups.add(it)
-                        }
-                    } catch (e: Backup.BrokenBackupException) {
-                        val message =
-                            "Incomplete backup or wrong structure found in $propFile"
-                        Timber.w(message)
-                    } catch (e: NullPointerException) {
-                        val message =
-                            "(Null) Incomplete backup or wrong structure found in $propFile"
-                        Timber.w(message)
-                    } catch (e: Throwable) {
-                        val message =
-                            "(catchall) Incomplete backup or wrong structure found in $propFile"
-                        LogsHandler.unhandledException(e, message)
-                    }
-                }
-        } catch (e: Throwable) {
-            // ignore
-        }
-        return backups
+        val backups = OABX.context.getBackups(packageName)  //TODO hg42 may also find glob *packageName* for now
+        return backups[packageName] ?: emptyList()
     }
 
     fun refreshBackupList(): List<Backup> {
@@ -230,15 +202,10 @@ class Package {
         return try {
             when {
                 create -> {
-                    packageBackupDir = OABX.context.getBackupDir().ensureDirectory(packageName)
-                    packageBackupDir
-                }
-                packageBackupDir != null && packageBackupDir?.exists() == true -> {
-                    packageBackupDir
+                    OABX.context.getBackupDir().ensureDirectory(packageName)
                 }
                 else -> {
-                    packageBackupDir = OABX.context.getBackupDir().findFile(packageName)
-                    packageBackupDir
+                    OABX.context.getBackupDir().findFile(packageName)
                 }
             }
         } catch (e: Throwable) {
@@ -249,84 +216,51 @@ class Package {
 
     fun addBackup(backup: Backup) {
         traceBackups { "<${backup.packageName}> add backup ${backup.backupDate}" }
-        updateBackupListAndDatabase(backupList + backup)  // prevents reading file system
-        //refreshBackupList()                                     // or real state of file system
+        // update is not enough, file/dir/tag is missing
+        //updateBackupListAndDatabase(backupList + backup)  // prevents reading file system
+        refreshBackupList()                                     // or real state of file system
     }
 
     fun deleteBackup(backup: Backup) {
         traceBackups { "<${backup.packageName}> delete backup ${backup.backupDate}" }
-        if (backup.packageName != packageName) {
+        if (backup.packageName != packageName) {    //TODO hg42 probably paranoid
             throw RuntimeException("Asked to delete a backup of ${backup.packageName} but this object is for $packageName")
         }
-        //Timber.d("[$packageName] Deleting backup revision $backup")
-        val propertiesFileName = String.format(
-            BACKUP_INSTANCE_PROPERTIES,
-            BACKUP_DATE_TIME_FORMATTER.format(backup.backupDate),
-            backup.profileId
-        )
-        val propertiesFileNameOld = String.format(
-            BACKUP_INSTANCE_PROPERTIES,
-            BACKUP_DATE_TIME_FORMATTER_OLD.format(backup.backupDate),
-            backup.profileId
-        )
-        try {
-            backup.getBackupInstanceFolder(packageBackupDir)?.deleteRecursive()
-        } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, backup.packageName)
+        val parent = backup.file?.parent
+        runChecked { backup.dir?.deleteRecursive() }
+        runChecked { backup.file?.delete() }
+        parent?.let {
+            if (parent.path != OABX.context.getBackupDir().path)
+                runChecked {
+                    if (it.listFiles(noCache = true).isEmpty())
+                        it.delete()
+                }
         }
-        try {
-            packageBackupDir?.findFile(propertiesFileName)?.delete() ?: packageBackupDir?.findFile(
-                propertiesFileNameOld
-            )?.delete()
-        } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, backup.packageName)
-        }
-        try {
-            updateBackupListAndDatabase(backupList - backup)  // prevents reading file system
-            //refreshBackupList()                                     // or real state of file system
-            if (backupList.size == 0) {
-                packageBackupDir?.deleteRecursive()
-                packageBackupDir = null
-            }
-        } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, backup.packageName)
+        runChecked {
+            //updateBackupListAndDatabase(backupList - backup)  // prevents reading file system
+            refreshBackupList()                                     // or real state of file system
         }
     }
 
-    fun rewriteBackupProps(newBackup: Backup) {
-        traceBackups { "<${newBackup.packageName}> rewrite backup ${newBackup.backupDate}" }
-        if (newBackup.packageName != packageName) {
-            throw RuntimeException("Asked to delete a backup of ${newBackup.packageName} but this object is for $packageName")
+    fun rewriteBackup(backup: Backup, changedBackup: Backup) {      //TODO hg42 change to rewriteBackup(backup: Backup, applyParameters)
+        traceBackups { "<${changedBackup.packageName}> rewrite backup ${changedBackup.backupDate}" }
+        changedBackup.file = backup.file
+        changedBackup.dir = backup.dir
+        changedBackup.tag = backup.tag
+        if (changedBackup.packageName != packageName) {             //TODO hg42 probably paranoid
+            throw RuntimeException("Asked to rewrite a backup of ${changedBackup.packageName} but this object is for $packageName")
         }
-        //Timber.d("[$packageName] Rewriting backup revision $newBackup")
-        val propertiesFileName = String.format(
-            BACKUP_INSTANCE_PROPERTIES,
-            BACKUP_DATE_TIME_FORMATTER.format(newBackup.backupDate),
-            newBackup.profileId
-        )
-        val propertiesFileNameOld = String.format(
-            BACKUP_INSTANCE_PROPERTIES,
-            BACKUP_DATE_TIME_FORMATTER_OLD.format(newBackup.backupDate),
-            newBackup.profileId
-        )
-
-        try {
-            packageBackupDir?.findFile(propertiesFileName)?.apply {
-                overwriteText(newBackup.toJSON())
-            } ?: packageBackupDir?.findFile(propertiesFileNameOld)?.apply {
-                overwriteText(newBackup.toJSON())
+        if (changedBackup.backupDate != backup.backupDate) {        //TODO hg42 probably paranoid
+            throw RuntimeException("Asked to rewrite a backup from ${changedBackup.backupDate} but the original backup is from ${backup.backupDate}")
+        }
+        runChecked {
+            backup.file?.apply {
+                overwriteText(changedBackup.toJSON())
             }
-        } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, newBackup.packageName)
         }
-        try {
-            updateBackupListAndDatabase(
-                backupList.filterNot {
-                    it.backupDate == newBackup.backupDate
-                } + newBackup
-            )
-        } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, newBackup.packageName)
+        runChecked {
+            //updateBackupListAndDatabase(backupList - backup + changedBackup)
+            refreshBackupList()
         }
     }
 
@@ -338,7 +272,7 @@ class Package {
     }
 
     fun deleteOldestBackups(keep: Int) {
-        refreshBackupList()
+        refreshBackupList()                 //TODO hg42
 
         // the algorithm could eventually be more elegant, without managing two lists,
         // but it's on the safe side for now
@@ -527,7 +461,6 @@ class Package {
         val pkg = other as Package
         return packageName == pkg.packageName
                 && this.packageInfo == pkg.packageInfo
-                && packageBackupDir == pkg.packageBackupDir
                 && storageStats == pkg.storageStats
                 && backupList == pkg.backupList
     }
@@ -536,7 +469,6 @@ class Package {
         var hash = 7
         hash = 31 * hash + packageName.hashCode()
         hash = 31 * hash + packageInfo.hashCode()
-        hash = 31 * hash + packageBackupDir.hashCode()
         hash = 31 * hash + storageStats.hashCode()
         hash = 31 * hash + backupList.hashCode()
         return hash
@@ -546,7 +478,6 @@ class Package {
         return "Package{" +
                 "packageName=" + packageName +
                 ", appInfo=" + packageInfo +
-                ", appUri=" + packageBackupDir +
                 ", storageStats=" + storageStats +
                 ", backupList=" + backupList +
                 '}'

@@ -42,7 +42,6 @@ import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler.Companion.getVar
 import com.machiav3lli.backup.handler.WorkHandler.Companion.setVar
-import com.machiav3lli.backup.handler.getBackupPackageDirectories
 import com.machiav3lli.backup.handler.getSpecial
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
@@ -74,7 +73,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         if (pref_useForeground.value)
         //if (inputData.getBoolean("immediate", false))
             setForeground(getForegroundInfo())
-            //setForegroundAsync(getForegroundInfo())  //TODO hg42 what's the difference?
+        //setForegroundAsync(getForegroundInfo())  //TODO hg42 what's the difference?
 
         var actionResult: ActionResult? = null
 
@@ -93,32 +92,19 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
 
         try {
             packageItem =
-                context.getSpecial(packageName) ?: run {
-                    val foundItem =
-                        context.packageManager.getPackageInfo(
-                            packageName,
-                            PackageManager.GET_PERMISSIONS
-                        )
-                    Package(context, foundItem)
-                }
+                context.getSpecial(packageName)
+                    ?: run {
+                        val foundItem =
+                            context.packageManager.getPackageInfo(
+                                packageName,
+                                PackageManager.GET_PERMISSIONS
+                            )
+                        Package(context, foundItem)
+                    }
         } catch (e: PackageManager.NameNotFoundException) {
             if (packageLabel.isEmpty())
                 packageLabel = packageItem?.packageLabel ?: "NONAME"
-            val backupDir = context.getBackupPackageDirectories()
-                .find { it.name == packageName }
-            backupDir?.let {
-                try {
-                    packageItem = Package(context, it.name!!, it)
-                } catch (e: AssertionError) {
-                    Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
-                    actionResult = ActionResult(
-                        null,
-                        null,
-                        "Could not process backup folder for uninstalled application in ${it.name}: $e",
-                        false
-                    )
-                }
-            }
+            packageItem = Package(context, packageName)
         }
 
         try {
@@ -134,14 +120,13 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                                         context, this, shellHandler, pi, selectedMode
                                     )
                                 }
-                                else -> {
+                                else          -> {
                                     // Latest backup for now
                                     pi.latestBackup?.let {
                                         BackupRestoreHelper.restore(
                                             context, this,
                                             shellHandler, pi,
-                                            selectedMode, it,
-                                            it.getBackupInstanceFolder(pi.getAppBackupRoot())
+                                            selectedMode, it
                                         )
                                     }
                                 }
@@ -243,7 +228,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             .setContentTitle(
                 when {
                     backupBoolean -> context.getString(com.machiav3lli.backup.R.string.batchbackup)
-                    else -> context.getString(com.machiav3lli.backup.R.string.batchrestore)
+                    else          -> context.getString(com.machiav3lli.backup.R.string.batchrestore)
                 }
             )
             .setSmallIcon(R.drawable.ic_launcher_foreground)

@@ -2,6 +2,8 @@ package com.machiav3lli.backup.ui.compose.item
 
 import android.text.format.Formatter
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,22 +28,26 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.machiav3lli.backup.BACKUP_DATE_TIME_SHOW_FORMATTER
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.entity.Backup
+import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ClockCounterClockwise
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Lock
 import com.machiav3lli.backup.ui.compose.icons.phosphor.LockOpen
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
-import com.machiav3lli.backup.utils.getFormattedDate
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BackupItem(
     item: Backup,
     onRestore: (Backup) -> Unit = { },
     onDelete: (Backup) -> Unit = { },
-    rewriteBackup: (Backup) -> Unit = { },
+    rewriteBackup: (Backup, Backup) -> Unit = { backup, changedBackup -> },
 ) {
+    traceBackups { "dir = ${item.dir?.path ?: "null"}" }
+
     Card(
         modifier = Modifier,
         shape = MaterialTheme.shapes.medium,
@@ -79,54 +85,85 @@ fun BackupItem(
                 BackupLabels(item = item)
             }
             Row(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = item.backupDate.getFormattedDate(true) ?: "",
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .weight(1f),
-                    softWrap = true,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Row(modifier = Modifier
+                    .align(Alignment.Top)
+                    .weight(1f, fill = true)
+                ) {
+                    Text(
+                        text = item.backupDate.format(BACKUP_DATE_TIME_SHOW_FORMATTER),
+                        modifier = Modifier.align(Alignment.Top),
+                        softWrap = true,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 2,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    item.tag?.let {
+                        if (it.isNotEmpty())
+                            Text(
+                                text = " - $it",
+                                modifier = Modifier.align(Alignment.Top),
+                                softWrap = true,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 2,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                    }
+                }
                 Text(
                     text = if (item.backupVersionCode == 0) "old" else "${item.backupVersionCode / 1000}.${item.backupVersionCode % 1000}",
-                    modifier = Modifier.align(Alignment.CenterVertically),
+                    modifier = Modifier.align(Alignment.Top),
                     softWrap = true,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+                AnimatedVisibility(visible = item.isEncrypted) {
+                    val description = "${item.cipherType}"
+                    val showTooltip = remember { mutableStateOf(false) }
+                    if (showTooltip.value) {
+                        Tooltip(description, showTooltip)
+                    }
+                    Text(
+                        text = " - enc",
+                        modifier = Modifier
+                            .combinedClickable(
+                                onClick = {},
+                                onLongClick = { showTooltip.value = true }
+                            )
+                            .align(Alignment.Top),
+                        softWrap = true,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 2,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                AnimatedVisibility(visible = item.isCompressed) {
+                    Text(
+                        text = " - ${item.compressionType?.replace("/", " ")}",
+                        modifier = Modifier.align(Alignment.Top),
+                        softWrap = true,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
                 Text(
-                    text = " - ${Formatter.formatFileSize(LocalContext.current, item.size)}",
+                    text = if (item.backupVersionCode == 0) "" else " - ${
+                        Formatter.formatFileSize(
+                            LocalContext.current,
+                            item.size
+                        )
+                    }",
+                    modifier = Modifier.align(Alignment.Top),
                     maxLines = 1,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                AnimatedVisibility(visible = item.isCompressed) {
-                    Text(
-                        text = " - ${item.compressionType}",
-                        modifier = Modifier.align(Alignment.CenterVertically),
-                        softWrap = true,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-                AnimatedVisibility(visible = item.isEncrypted) {
-                    Text(
-                        text = " - ${item.cipherType}",
-                        modifier = Modifier.align(Alignment.CenterVertically),
-                        softWrap = true,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -137,7 +174,7 @@ fun BackupItem(
                 }
                 val togglePersistent = {
                     persistent = !persistent
-                    rewriteBackup(item.copy(persistent = persistent))
+                    rewriteBackup(item, item.copy(persistent = persistent))
                 }
 
                 if (persistent)
