@@ -36,8 +36,9 @@ val LOG_FOLDER_NAME = "${ADMIN_PREFIX}LOGS"
 val LOG_FOLDER_NAME_ALT = "LOGS"
 
 const val LOG_INSTANCE = "%s.log"
-const val BACKUP_INSTANCE_PROPERTIES = "%s-user_%s.properties"
+const val BACKUP_INSTANCE_REGEX_PATTERN = """\d\d\d\d-\d\d-\d\d-\d\d-\d\d-\d\d(-\d\d\d)?-user_\d+"""
 const val BACKUP_INSTANCE_DIR = "%s-user_%s"
+const val BACKUP_INSTANCE_PROPERTIES = "$BACKUP_INSTANCE_DIR.properties"
 const val EXPORTS_INSTANCE = "%s.scheds"
 
 const val MAIN_DB_NAME = "main.db"

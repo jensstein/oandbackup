@@ -29,6 +29,7 @@ import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER_OLD
 import com.machiav3lli.backup.BACKUP_INSTANCE_DIR
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.BACKUP_INSTANCE_REGEX_PATTERN
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
 import com.machiav3lli.backup.handler.grantedPermissions
@@ -310,19 +311,17 @@ data class Backup constructor(
 
                 val backup = fromJson(json)
 
+                val pkg = "PKG"
+                val regexBackupInstance = Regex("""($pkg-)?$BACKUP_INSTANCE_REGEX_PATTERN""")
                 backup.file = propertiesFile
                 propertiesFile.name?.removeSuffix(".properties")?.let { dirName ->
                     propertiesFile.parent?.let { parent ->
                         parent.findFile(dirName)?.let { dir ->
-                            val pkg = "PKG"
                             backup.tag = dir.path?.let {
                                 it
                                     .replace(OABX.context.getBackupDir().path ?: "", "")
                                     .replace(backup.packageName, pkg)
-                                    .replace(
-                                        Regex("""($pkg-)?\d\d\d\d-\d\d-\d\d-\d\d-\d\d-\d\d(-\d\d\d)?-user_\d+"""),
-                                        ""
-                                    )
+                                    .replace(regexBackupInstance,"")
                                     .replace(Regex("""[-:\s]+"""), "-")
                                     .replace(Regex("""/+"""), "/")
                                     .replace(Regex("""[-]$"""), "")

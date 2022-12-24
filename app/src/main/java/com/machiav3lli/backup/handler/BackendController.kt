@@ -25,6 +25,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Process
 import com.machiav3lli.backup.ADMIN_PREFIX
+import com.machiav3lli.backup.BACKUP_INSTANCE_REGEX_PATTERN
 import com.machiav3lli.backup.EXPORTS_FOLDER_NAME_ALT
 import com.machiav3lli.backup.IGNORED_PERMISSIONS
 import com.machiav3lli.backup.LOG_FOLDER_NAME_ALT
@@ -72,15 +73,18 @@ fun Context.getBackups(packageName: String = ""): Map<String, List<Backup>> {
 
     OABX.beginBusy("read backups")
 
+    val regexBackupInstance = Regex(BACKUP_INSTANCE_REGEX_PATTERN)
+
     val backupList = mutableListOf<Backup>()
     getBackupDir().listFiles()
-        .filter { it.name?.contains(packageName) ?: true }
         .filter(StorageFile::isPropertyFile)
+        .filter { it.name?.contains(packageName) ?: true }
         .forEach { propFile ->
             Backup.createFrom(propFile)?.let(backupList::add)  //TODO hg42 ?: handleDamagedBackup()
         }
     getBackupPackageDirectories()
         .filter { it.name?.contains(packageName) ?: true }
+        .filterNot { it.name?.matches(regexBackupInstance) ?: false }
         .map {
             it.listFiles()
                 .filter(StorageFile::isPropertyFile)
