@@ -79,7 +79,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         var ok = false
         try {
             Timber.i("Backing up: ${app.packageName} [${app.packageLabel}]")
-            //invalidateCacheForPackage(app.packageName)
+            //invalidateCacheForPackage(app.packageName)    //TODO hg42 ???
             work?.setOperation("pre")
             val appBackupRoot: StorageFile = try {
                 app.getAppBackupRoot(true)!!
@@ -123,6 +123,14 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             if (pauseApp) {
                 Timber.d("pre-process package (to avoid file inconsistencies during backup etc.)")
                 preprocessPackage(type = "backup", packageName = app.packageName)
+            }
+
+            fun handleException(e: Throwable): ActionResult {
+                val message =
+                    "${e.javaClass.simpleName}: ${e.message}${e.cause?.let { " - ${it.message}" }}"
+                Timber.e("Backup failed due to $message")
+                Timber.d("Backup deleted: ${backupBuilder.backupPath.delete()}")
+                return ActionResult(app, null, message, false)
             }
 
             try {
@@ -204,29 +212,19 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 ok = true
 
             } catch (e: BackupFailedException) {
-                Timber.e("Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
-                Timber.d("Backup deleted: ${backupBuilder.backupPath.delete()}")
-                return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
+                return handleException(e)
             } catch (e: CryptoSetupException) {
-                Timber.e("Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
-                Timber.d("Backup deleted: ${backupBuilder.backupPath.delete()}")
-                return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
+                return handleException(e)
             } catch (e: IOException) {
-                Timber.e("Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
-                Timber.d("Backup deleted: ${backupBuilder.backupPath.delete()}")
-                return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
+                return handleException(e)
             } catch (e: Throwable) {
-                LogsHandler.unhandledException(e, app)
-                Timber.e("Backup failed due to ${e.javaClass.simpleName}: ${e.message}")
-                Timber.d("Backup deleted: ${backupBuilder.backupPath.delete()}")
-                return ActionResult(app, null, "${e.javaClass.simpleName}: ${e.message}", false)
+                return handleException(e)
             } finally {
                 work?.setOperation("fin")
                 if (pauseApp) {
                     Timber.d("post-process package (to set it back to normal operation)")
                     postprocessPackage(type = "backup", packageName = app.packageName)
                 }
-                //invalidateCacheForPackage(app.packageName)
                 if (backup == null)
                     backup = backupBuilder.createBackup()
                 // TODO maybe need to handle some emergent props
@@ -234,8 +232,6 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                     app.addBackup(backup)
                 else
                     app.deleteBackup(backup)
-                //TODO hg42 structural problem (update database)
-                //TODO WECH OABX.main?.viewModel?.updatePackage(app.packageName)
             }
         } finally {
             work?.setOperation("end")
@@ -485,7 +481,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             // }
             //---------- instead look at error output and ignore some of the messages
             if (code != 0)
-                Timber.i("tar returns: code $code: " + err) // at least log the full error
+                Timber.i("tar returns: code $code: $err") // at least log the full error
             val errLines = err
                 .split("\n")
                 .filterNot { line ->

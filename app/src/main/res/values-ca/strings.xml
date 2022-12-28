@@ -5,8 +5,8 @@
         <item quantity="other">%d aplicacions actualitzades</item>
     </plurals>
     <plurals name="days_left">
-        <item quantity="one">%d dia,</item>
-        <item quantity="other">%d dies,</item>
+        <item quantity="one">%d dia</item>
+        <item quantity="other">%d dies</item>
     </plurals>
     <plurals name="sched_interval_formal">
         <item quantity="one">cada dia</item>

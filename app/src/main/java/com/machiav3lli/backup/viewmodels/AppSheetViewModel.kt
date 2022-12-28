@@ -71,7 +71,7 @@ class AppSheetViewModel(
     )
 
     private var notificationId: Int = System.currentTimeMillis().toInt()
-    val refreshNow = mutableStateOf(false)
+    val refreshNow = mutableStateOf(true)
 
     fun uninstallApp() {
         viewModelScope.launch {

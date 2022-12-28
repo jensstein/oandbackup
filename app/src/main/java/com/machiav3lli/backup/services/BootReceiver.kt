@@ -22,9 +22,7 @@ import android.content.Context
 import android.content.Intent
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.dao.ScheduleDao
-import com.machiav3lli.backup.traceSchedule
-import com.machiav3lli.backup.utils.scheduleAlarm
-import timber.log.Timber
+import com.machiav3lli.backup.utils.scheduleAlarms
 import java.lang.ref.WeakReference
 
 class BootReceiver : BroadcastReceiver() {
@@ -40,16 +38,17 @@ class BootReceiver : BroadcastReceiver() {
         private val scheduleDaoReference: WeakReference<ScheduleDao> = WeakReference(scheduleDao)
 
         override fun run() {
-            val scheduleDao = scheduleDaoReference.get()
-            if (scheduleDao == null) {
-                Timber.w("Bootreceiver database thread resources was null")
-                return
-            } else {
-                traceSchedule { "boot receiver -> schedule"}
-                scheduleDao.all
-                    .filter { it.enabled }
-                    .forEach { scheduleAlarm(context, it.id, false) }
-            }
+            scheduleAlarms()
+            //val scheduleDao = scheduleDaoReference.get()
+            //if (scheduleDao == null) {
+            //    Timber.w("Bootreceiver database thread resources was null")
+            //    return
+            //} else {
+            //    traceSchedule { "boot receiver -> schedule"}
+            //    scheduleDao.all
+            //        .filter { it.enabled }
+            //        .forEach { scheduleAlarm(context, it.id, false) }
+            //}
         }
     }
 }

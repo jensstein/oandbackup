@@ -24,7 +24,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.PowerManager
-import android.util.LruCache
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -36,7 +35,6 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
-import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.preferences.pref_cancelOnStart
 import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
@@ -44,6 +42,7 @@ import com.machiav3lli.backup.ui.item.BooleanPref
 import com.machiav3lli.backup.ui.item.IntPref
 import com.machiav3lli.backup.utils.TraceUtils
 import com.machiav3lli.backup.utils.TraceUtils.methodName
+import com.machiav3lli.backup.utils.scheduleAlarms
 import com.machiav3lli.backup.utils.styleTheme
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -59,6 +58,13 @@ val pref_catchUncaughtException = BooleanPref(
     key = "dev-log.catchUncaughtException",
     summaryId = R.string.prefs_catchuncaughtexception_summary,
     defaultValue = false
+)
+
+val pref_uncaughtExceptionsJumpToPreferences = BooleanPref(
+    key = "dev-log.uncaughtExceptionsJumpToPreferences",
+    summary = "in case of unexpected crashes juimp to preferences (prevent loops if a preference causes this)",
+    defaultValue = false,
+    enableIf = { pref_catchUncaughtException.value }
 )
 
 val pref_useLogCatForUncaught = BooleanPref(
@@ -132,6 +138,12 @@ val traceBackups = TraceUtils.TracePref(
     default = true
 )
 
+val traceCompose = TraceUtils.TracePref(
+    name = "Compose",
+    summary = "trace recomposition of UI elements",
+    default = false
+)
+
 val traceBackupProps = TraceUtils.TracePref(
     name = "BackupProps",
     summary = "trace backup properties (json)",
@@ -148,11 +160,6 @@ var initializedPrefs = true
 
 
 class OABX : Application() {
-
-    // packages are an external resource, so handle them as a singleton
-    var packageCache = mutableMapOf<String, Package>()
-    var cache: LruCache<String, MutableList<Package>> =
-        LruCache(10)
 
     var work: WorkHandler? = null
 
@@ -196,6 +203,8 @@ class OABX : Application() {
             addInfoText("--> long click for big infobox")
             addInfoText("--> click big infobox to close")
         }
+
+        scheduleAlarms()
     }
 
     override fun onTerminate() {
@@ -411,6 +420,8 @@ class OABX : Application() {
 
         var _busy = AtomicInteger(0)
         val busy = mutableStateOf(0)
+
+        val isBusy : Boolean get() = (busy.value > 0)
 
         fun beginBusy(name: String? = null) {
             traceBusy {

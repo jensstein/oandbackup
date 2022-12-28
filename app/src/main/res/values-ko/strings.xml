@@ -216,7 +216,7 @@
         <item quantity="other">매 %d 일</item>
     </plurals>
     <plurals name="days_left">
-        <item quantity="other">%d 일,</item>
+        <item quantity="other">%d 일</item>
     </plurals>
     <plurals name="updated_apps">
         <item quantity="other">%d 개의 업데이트된 앱</item>

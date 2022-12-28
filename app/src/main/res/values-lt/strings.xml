@@ -225,9 +225,9 @@
         <item quantity="other">kas %d dienų</item>
     </plurals>
     <plurals name="days_left">
-        <item quantity="one">%d diena,</item>
-        <item quantity="few">%d dienos,</item>
-        <item quantity="other">%d dienų,</item>
+        <item quantity="one">%d diena</item>
+        <item quantity="few">%d dienos</item>
+        <item quantity="other">%d dienų</item>
     </plurals>
     <string name="home">Pradžia</string>
     <string name="all_data">Tikrinti visus duomenis</string>

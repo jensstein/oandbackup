@@ -162,7 +162,7 @@ fun Context.getInstalledPackageList()  : MutableList<Package> { // only used in 
             val backupsMap = getAllBackups()
 
             packageList = packageList.map {
-                it.apply { updateBackupList(backupsMap[it.packageName].orEmpty()) }
+                it.apply { updateBackupListAndDatabase(backupsMap[it.packageName].orEmpty()) }
             }.toMutableList()
         }
 
@@ -199,14 +199,14 @@ fun List<AppInfo>.toPackageList(
                 it.packageName.matches(ignoredPackages)
             }
                 .mapNotNull {
-                    try {
-                        Package.get(it.packageName) {
-                            Package(context, it, backupMap[it.packageName].orEmpty())
-                        }
+                    val pkg = try {
+                        Package(context, it)
                     } catch (e: AssertionError) {
                         Timber.e("Could not create Package for ${it}: $e")
                         null
                     }
+                    pkg?.updateBackupList(backupMap[pkg.packageName].orEmpty())
+                    pkg
                 }
                 .toMutableList()
 
@@ -272,7 +272,8 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
             // filter out previously failed backups
             directoriesInBackupRoot
                 .filterNot {
-                    it.name?.let { name ->
+                    it.name?.let {
+                        val name = it.substringBefore(" ")    // strip SAF duplicate suffix " (n)"
                         specialNames.contains(name)
                     } ?: true
                 }
@@ -280,6 +281,7 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
                     try {
                         // TODO Add a direct constructor
                         val pkg = Package(this, it.name!!, it)
+                        pkg.refreshBackupList()
                         pkg.backupsNewestFirst.forEach { backups.add(it) }
                         pkg
                     } catch (e: AssertionError) {
@@ -301,8 +303,8 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
                 .map { AppInfo(this, it) }
                 .union(packagesWithBackup.map { it.packageInfo as AppInfo })
 
-        appInfoDao.updateList(*appInfoList.toTypedArray())
         backupDao.updateList(*backups.toTypedArray())
+        appInfoDao.updateList(*appInfoList.toTypedArray())
 
     } catch(e: Throwable) {
         logException(e)

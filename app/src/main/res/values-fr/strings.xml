@@ -205,8 +205,8 @@
     <string name="radio_deviceprotecteddata">Données protégées par l’appareil</string>
     <string name="radio_externaldata">Données externes</string>
     <plurals name="days_left">
-        <item quantity="one">%d jour,</item>
-        <item quantity="other">%d jours,</item>
+        <item quantity="one">%d jour</item>
+        <item quantity="other">%d jours</item>
     </plurals>
     <string name="logs_text_empty">Il n\'y a rien à afficher !</string>
     <string name="delete_all_backups">Supprimer toutes les sauvegardes</string>

@@ -189,9 +189,9 @@
         <item quantity="other">la fiecare %d de zile</item>
     </plurals>
     <plurals name="days_left">
-        <item quantity="one">%d zi,</item>
-        <item quantity="few">%d zile,</item>
-        <item quantity="other">%d de zile,</item>
+        <item quantity="one">%d zi</item>
+        <item quantity="few">%d zile</item>
+        <item quantity="other">%d de zile</item>
     </plurals>
     <string name="disablePackage">Dezactivează aplicația</string>
     <string name="prefs_mediadata">Fă backup fișierelor media</string>

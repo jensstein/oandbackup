@@ -17,6 +17,7 @@
  */
 package com.machiav3lli.backup.activities
 
+import android.content.ComponentName
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -65,6 +66,7 @@ import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.pref_catchUncaughtException
 import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
 import com.machiav3lli.backup.preferences.pref_refreshOnStart
+import com.machiav3lli.backup.pref_uncaughtExceptionsJumpToPreferences
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.ui.compose.MutableComposableSharedFlow
@@ -165,6 +167,13 @@ class MainActivityX : BaseActivity() {
                     Timber.i("\n\n" + "=".repeat(60))
                     LogsHandler.unhandledException(e)
                     LogsHandler.logErrors("uncaught: ${e.message}")
+                    if(pref_uncaughtExceptionsJumpToPreferences.value) {
+                        startActivity(
+                            Intent.makeRestartActivityTask(
+                                ComponentName(this, PrefsActivityX::class.java)
+                            )
+                        )
+                    }
                     object : Thread() {
                         override fun run() {
                             Looper.prepare()

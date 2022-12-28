@@ -209,9 +209,9 @@
     <string name="prefs_disableverification_summary">Desativa esta opção de programador enquanto restaura APKs e a reativa depois. Resolve o erro: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
     <string name="prefs_disableverification">Desativar verificação de aplicações via USB</string>
     <plurals name="days_left">
-        <item quantity="one">%d dia,</item>
+        <item quantity="one">%d dia</item>
         <item quantity="many"></item>
-        <item quantity="other">%d dias,</item>
+        <item quantity="other">%d dias</item>
     </plurals>
     <string name="stats_apps">Aplicações</string>
     <string name="stats_backups">Backups</string>

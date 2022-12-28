@@ -51,7 +51,7 @@ data class Schedule(
     val mode: Int = MODE_APK,
     val specialFilter: Int = SPECIAL_FILTER_ALL,
 
-    val timeToRun: Long = 0,
+    val timeToRun: Long = 0,        //TODO should this be in hashCode and equals ???
 
     val customList: Set<String> = setOf(),
 
@@ -102,6 +102,7 @@ data class Schedule(
                 ", timeMinute=" + timeMinute +
                 ", interval=" + interval +
                 ", timePlaced=" + timePlaced +
+                ", timeToRun=" + timeToRun +
                 ", filter=" + filter +
                 ", mode=" + mode +
                 ", specialFilter=" + specialFilter +

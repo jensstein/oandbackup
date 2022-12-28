@@ -331,9 +331,9 @@
     <string name="prefs_loadingtoasts_summary">прикажи \"toasts\" док се листа учитава</string>
     <string name="write_apps_list_all">Напиши фајл: листа свих апликација</string>
     <plurals name="days_left">
-        <item quantity="one">%d дан,</item>
-        <item quantity="few">%d дани,</item>
-        <item quantity="other">%d дани,</item>
+        <item quantity="one">%d дан</item>
+        <item quantity="few">%d дани</item>
+        <item quantity="other">%d дани</item>
     </plurals>
     <plurals name="sched_interval_formal">
         <item quantity="one">сваки дан</item>

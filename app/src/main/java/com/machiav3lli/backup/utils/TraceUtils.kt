@@ -1,5 +1,6 @@
 package com.machiav3lli.backup.utils
 
+import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.pref_trace
 import com.machiav3lli.backup.traceFlows
 import com.machiav3lli.backup.ui.item.BooleanPref
@@ -30,7 +31,12 @@ object TraceUtils {
         traceBold(lazyText())
     }
 
-    open class TracePref(val name: String, summary: String, default: Boolean, enableIf: () -> Boolean = { true }) {
+    open class TracePref(
+        val name: String,
+        summary: String,
+        default: Boolean,
+        enableIf: () -> Boolean = { true }
+    ) {
 
         val pref = BooleanPref(
             key = "dev-trace.trace$name",
@@ -66,6 +72,7 @@ object TraceUtils {
         //return this
     }
 
+
     // reflection
 
     fun stackFrame(skip: Int = 0): StackTraceElement? {
@@ -87,7 +94,7 @@ object TraceUtils {
                 methodName = frame?.methodName ?: ""
             } while (frame != null && (
                         methodName.contains("trace") ||
-                        methodName.contains("log")
+                                methodName.contains("log")
                         )
             )
             methodName
@@ -108,8 +115,8 @@ object TraceUtils {
                 methodName = frame?.methodName ?: ""
             } while (frame != null && (
                         className.contains("Log") ||
-                        methodName.contains("trace") ||
-                        methodName.contains("log")
+                                methodName.contains("trace") ||
+                                methodName.contains("log")
                         )
             )
             "${className}::${methodName}"
@@ -125,4 +132,33 @@ object TraceUtils {
             "<null>"
     }
 
+
+    // helpers
+
+    fun formatBackups(backups: List<Backup>?): String {
+        return "(${backups?.size ?: 0})${
+            backups?.map {
+                "${
+                    it.backupDate
+                }${
+                    if (it.persistent) "*" else ""
+                }"
+            }
+                ?: ""
+        }"
+    }
+
+    fun formatSortedBackups(backups: List<Backup>?): String {
+        return "(${backups?.size ?: 0})${
+            backups?.map {
+                "${
+                    it.backupDate
+                }${
+                    if (it.persistent) "*" else ""
+                }"
+            }
+                ?.sortedDescending()
+                ?: ""
+        }"
+    }
 }

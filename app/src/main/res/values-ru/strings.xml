@@ -203,10 +203,10 @@
     <string name="prefs_disableverification">Отключить проверку приложений через USB</string>
     <string name="radio_deviceprotecteddata">Защищенные данные устройства</string>
     <plurals name="days_left">
-        <item quantity="one">%d день,</item>
-        <item quantity="few">%d дней,</item>
-        <item quantity="many">%d дней,</item>
-        <item quantity="other">%d дней,</item>
+        <item quantity="one">%d день</item>
+        <item quantity="few">%d дней</item>
+        <item quantity="many">%d дней</item>
+        <item quantity="other">%d дней</item>
     </plurals>
     <string name="delete_all_backups">Удалить все резервные копии</string>
     <string name="radio_externaldata">Внешние данные</string>

@@ -20,39 +20,58 @@ package com.machiav3lli.backup.utils
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.icu.util.Calendar
 import android.os.Build
+import androidx.appcompat.app.AlertDialog
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import com.machiav3lli.backup.ISO_DATE_TIME_FORMAT
 import com.machiav3lli.backup.ISO_DATE_TIME_FORMAT_MIN
+import com.machiav3lli.backup.MODE_UNSET
+import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.OABX.Companion.getString
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.ODatabase
+import com.machiav3lli.backup.dbs.dao.ScheduleDao
 import com.machiav3lli.backup.dbs.entity.Schedule
+import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.preferences.pref_fakeScheduleMin
 import com.machiav3lli.backup.preferences.pref_useAlarmClock
 import com.machiav3lli.backup.preferences.pref_useExactAlarm
 import com.machiav3lli.backup.services.AlarmReceiver
+import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.traceSchedule
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.LocalTime
 import java.util.concurrent.TimeUnit
+import kotlin.math.max
 
 fun calculateTimeToRun(schedule: Schedule, now: Long): Long {
     val c = Calendar.getInstance()
     c.timeInMillis = schedule.timePlaced
 
-    val limitIncrements = 100
+    val limitIncrements = 366/schedule.interval
     val minTimeFromNow = TimeUnit.MINUTES.toMillis(1)
 
     val fakeMin = pref_fakeScheduleMin.value
     if (fakeMin > 0) {
         //c[Calendar.HOUR_OF_DAY] = schedule.timeHour
-        c[Calendar.MINUTE] = (c[Calendar.MINUTE]/fakeMin + 1)*fakeMin % 60
+        c[Calendar.MINUTE] = (c[Calendar.MINUTE] / fakeMin + 1) * fakeMin % 60
         c[Calendar.SECOND] = 0
         c[Calendar.MILLISECOND] = 0
         repeat(limitIncrements) {
-            if (now + minTimeFromNow < c.timeInMillis)
+            if (c.timeInMillis > now + minTimeFromNow)
                 return@repeat
+            traceSchedule { "increment $it * $fakeMin min" }
             c.add(Calendar.MINUTE, fakeMin)
         }
     } else {
@@ -61,8 +80,9 @@ fun calculateTimeToRun(schedule: Schedule, now: Long): Long {
         c[Calendar.SECOND] = 0
         c[Calendar.MILLISECOND] = 0
         repeat(limitIncrements) {
-            if (now + minTimeFromNow < c.timeInMillis)
+            if (c.timeInMillis > now + minTimeFromNow)
                 return@repeat
+            traceSchedule { "increment $it * ${schedule.interval} days" }
             c.add(Calendar.DAY_OF_MONTH, schedule.interval)
         }
     }
@@ -72,6 +92,8 @@ fun calculateTimeToRun(schedule: Schedule, now: Long): Long {
             ISO_DATE_TIME_FORMAT.format(now)
         } placed: ${
             ISO_DATE_TIME_FORMAT.format(schedule.timePlaced)
+        } interval: ${
+            schedule.interval
         } next: ${
             ISO_DATE_TIME_FORMAT.format(c.timeInMillis)
         }"
@@ -79,24 +101,47 @@ fun calculateTimeToRun(schedule: Schedule, now: Long): Long {
     return c.timeInMillis
 }
 
-fun getTimeLeft(context: Context, schedule: Schedule): List<String> {
+val updateInterval = 5_000L
+val useSeconds = true && updateInterval < 60_000
+
+fun calcTimeLeft(schedule: Schedule): List<String> {
     var absTime = ""
     var relTime = ""
-    if (schedule.enabled) {
-        val now = System.currentTimeMillis()
-        val at = calculateTimeToRun(schedule, now)
-        absTime = ISO_DATE_TIME_FORMAT_MIN.format(at)
-        val timeDiff = at - now
-        val days = TimeUnit.MILLISECONDS.toDays(timeDiff).toInt()
-        if (days != 0) {
-            relTime += context.resources
-                .getQuantityString(R.plurals.days_left, days, days)
-        }
-        val hours = TimeUnit.MILLISECONDS.toHours(timeDiff).toInt() % 24
-        val minutes = TimeUnit.MILLISECONDS.toMinutes(timeDiff).toInt() % 60
+    val now = System.currentTimeMillis()
+    val at = calculateTimeToRun(schedule, now)
+    absTime = ISO_DATE_TIME_FORMAT_MIN.format(at)
+    val timeDiff = max(at - now, 0)
+    val days = TimeUnit.MILLISECONDS.toDays(timeDiff).toInt()
+    if (days != 0) {
+        relTime +=
+            OABX.context.resources.getQuantityString(R.plurals.days_left, days, days) +
+                    " + "
+    }
+    val hours = TimeUnit.MILLISECONDS.toHours(timeDiff).toInt() % 24
+    val minutes = TimeUnit.MILLISECONDS.toMinutes(timeDiff).toInt() % 60
+    if (useSeconds) {
+        val seconds = TimeUnit.MILLISECONDS.toSeconds(timeDiff).toInt() % 60
+        relTime += LocalTime.of(hours, minutes, seconds).toString()
+    } else {
         relTime += LocalTime.of(hours, minutes).toString()
     }
     return listOf(absTime, relTime)
+}
+
+@Composable
+fun timeLeft(schedule: Schedule): MutableState<List<String>> {
+    val state = remember(schedule) { mutableStateOf(calcTimeLeft(schedule)) }
+
+    LaunchedEffect(state.value) {
+        val now = System.currentTimeMillis()
+        //traceDebug { "delay ${updateInterval - (now+100) % updateInterval}" }
+        delay(updateInterval - (now+100) % updateInterval)
+        state.value = calcTimeLeft(schedule)
+    }
+
+    //traceDebug { state.value.let { "⏳ ${it[0]}  🕒 ${it[1]}" } }
+
+    return state
 }
 
 
@@ -119,16 +164,16 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                         timeToRun = timeToRun
                     )
                     traceSchedule { "re-scheduling $schedule" }
+                    scheduleDao.update(schedule)
                 } else {
                     if (timeLeft <= TimeUnit.MINUTES.toMillis(1)) {
                         schedule = schedule.copy(
-                            timePlaced = now,
                             timeToRun = now + TimeUnit.MINUTES.toMillis(1)
                         )
                         traceSchedule { "!!!!!!!!!! timeLeft < 1 min -> set schedule $schedule" }
+                        scheduleDao.update(schedule)
                     }
                 }
-                scheduleDao.update(schedule)
 
                 val hasPermission: Boolean =
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -181,6 +226,20 @@ fun cancelAlarm(context: Context, scheduleId: Long) {
     traceSchedule { "cancelled schedule with id: $scheduleId" }
 }
 
+fun scheduleAlarms() {
+    CoroutineScope(Dispatchers.Default).launch {
+        val scheduleDao = ODatabase.getInstance(OABX.context).scheduleDao
+        traceSchedule { "schedule alarms" }
+        scheduleDao.all
+            .forEach {
+                if (it.enabled)
+                    scheduleAlarm(OABX.context, it.id, false)
+                else
+                    cancelAlarm(OABX.context, it.id)
+            }
+    }
+}
+
 fun createPendingIntent(context: Context, scheduleId: Long): PendingIntent {
     val alarmIntent = Intent(context, AlarmReceiver::class.java).apply {
         action = "schedule"
@@ -194,3 +253,85 @@ fun createPendingIntent(context: Context, scheduleId: Long): PendingIntent {
         PendingIntent.FLAG_IMMUTABLE
     )
 }
+
+
+fun startSchedule(schedule: Schedule) {
+
+    OABX.main?.let {
+
+        val database = ODatabase.getInstance(OABX.context)
+
+        val message = StringBuilder()
+
+        message.append(
+            "\n${getString(R.string.sched_mode)} ${
+                modesToString(
+                    OABX.context,
+                    modeToModes(schedule.mode)
+                )
+            }"
+        )
+        message.append(
+            "\n${getString(R.string.backup_filters)} ${
+                filterToString(
+                    OABX.context,
+                    schedule.filter
+                )
+            }"
+        )
+        message.append(
+            "\n${getString(R.string.other_filters_options)} ${
+                specialFilterToString(
+                    OABX.context,
+                    schedule.specialFilter
+                )
+            }"
+        )
+        // TODO list the CL packages
+        message.append(
+            "\n${getString(R.string.customListTitle)}: ${
+                if (schedule.customList.isNotEmpty()) getString(
+                    R.string.dialogYes
+                ) else getString(R.string.dialogNo)
+            }"
+        )
+        // TODO list the BL packages
+        message.append(
+            "\n${getString(R.string.sched_blocklist)}: ${
+                if (schedule.blockList.isNotEmpty()) getString(
+                    R.string.dialogYes
+                ) else getString(R.string.dialogNo)
+            }"
+        )
+        AlertDialog.Builder(it)
+            .setTitle("${schedule.name}: ${getString(R.string.sched_activateButton)}?")
+            .setMessage(message)
+            .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int ->
+                if (schedule.mode != MODE_UNSET)
+                    StartSchedule(OABX.context, database.scheduleDao, schedule.id).execute()
+            }
+            .setNegativeButton(R.string.dialogCancel) { _: DialogInterface?, _: Int -> }
+            .show()
+    }
+}
+
+internal class StartSchedule(
+    val context: Context,
+    val scheduleDao: ScheduleDao,
+    private val scheduleId: Long
+) :
+    ShellCommands.Command {
+
+    override fun execute() {
+        Thread {
+            val now = System.currentTimeMillis()
+            val serviceIntent = Intent(context, ScheduleService::class.java)
+            scheduleDao.getSchedule(scheduleId)?.let { schedule ->
+                serviceIntent.putExtra("scheduleId", scheduleId)
+                serviceIntent.putExtra("name", schedule.getBatchName(now))
+                context.startService(serviceIntent)
+            }
+        }.start()
+    }
+}
+

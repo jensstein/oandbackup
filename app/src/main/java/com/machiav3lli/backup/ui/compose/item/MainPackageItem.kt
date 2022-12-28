@@ -25,7 +25,6 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateMap
@@ -39,6 +38,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.MODE_ALL
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
@@ -48,11 +48,11 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.preferences.pref_useBackupRestoreWithSelection
+import com.machiav3lli.backup.traceCompose
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
+import com.machiav3lli.backup.utils.TraceUtils
 import com.machiav3lli.backup.utils.getBackupDir
 import com.machiav3lli.backup.utils.getFormattedDate
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -170,7 +170,7 @@ fun openSubMenu(
     subMenu.value = {
         DropdownMenu(
             expanded = true,
-            offset = DpOffset(50.dp, -1000.dp),
+            offset = DpOffset(100.dp, -1000.dp),
             modifier = Modifier.background(MaterialTheme.colorScheme.surfaceColorAtElevation(100.dp)),
             onDismissRequest = { subMenu.value = null }
         ) {
@@ -192,7 +192,9 @@ fun MainPackageContextMenu(
     val selectedAndInstalled = selectedAndVisible.filter { it.isInstalled }
     val selectedWithBackups = selectedAndVisible.filter { it.hasBackups }
 
-    val subMenu = remember { mutableStateOf<(@Composable () -> Unit)?>(null) }  //TODO hg42 var/by ???
+    val subMenu = remember {                                    //TODO hg42 var/by ???
+        mutableStateOf<(@Composable () -> Unit)?>(null)
+    }
     subMenu.value?.let { it() }
     if (!expanded.value)
         subMenu.value = null
@@ -201,7 +203,7 @@ fun MainPackageContextMenu(
         action: String,
         todo: () -> Unit,
     ) {
-        MainScope().launch(Dispatchers.IO) {
+        OABX.main?.viewModel?.viewModelScope?.launch {
             OABX.beginBusy(action)
             todo()
             OABX.endBusy(action)
@@ -339,16 +341,20 @@ fun MainPackageContextMenu(
             DropdownMenuItem(
                 text = { Text(OABX.getString(R.string.restore)) },
                 onClick = {
-                    expanded.value = false
-                    val packages = selectedWithBackups
-                    OABX.main?.startBatchAction(
-                        false,
-                        packages.map { it.packageName },
-                        packages.map { MODE_ALL }
-                    ) {
-                        it.removeObserver(this)
-                        launchEachPackage(packages, "restore") {
-                            selection[it] = false
+                    openSubMenu(subMenu) {
+                        Confirmation {
+                            expanded.value = false
+                            val packages = selectedWithBackups
+                            OABX.main?.startBatchAction(
+                                false,
+                                packages.map { it.packageName },
+                                packages.map { MODE_ALL }
+                            ) {
+                                it.removeObserver(this)
+                                launchEachPackage(packages, "restore") {
+                                    selection[it] = false
+                                }
+                            }
                         }
                     }
                 }
@@ -442,27 +448,31 @@ fun MainPackageContextMenu(
     }
 }
 
+@Composable
+fun PackageIconFromPkg(pkg: Package, modifier: Modifier) {
+
+    val imageData =
+        if (pkg.isSpecial) pkg.packageInfo.icon
+        else "android.resource://${pkg.packageName}/${pkg.packageInfo.icon}"
+
+    PackageIcon(modifier = modifier, item = pkg, imageData = imageData)
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainPackageItem(
-    item: Package,
+    pkg: Package,
     productsList: List<Package>,
     selection: SnapshotStateMap<Package, Boolean>,
     onAction: (Package) -> Unit = {}
 ) {
-    val packageItem by remember(item) { mutableStateOf(item) }      //TODO hg42 remove remember ???
     val visible = productsList
     val selectedAndVisible = visible.filter { selection[it] == true }
-    val imageData by remember(packageItem) {
-        mutableStateOf(
-            if (packageItem.isSpecial) packageItem.packageInfo.icon
-            else "android.resource://${packageItem.packageName}/${packageItem.packageInfo.icon}"
-        )
-    }
 
     val menuExpanded = remember { mutableStateOf(false) }
 
-    //Timber.d("recompose MainPackageItem ${packageItem.packageName} ${packageItem.packageInfo.icon} ${imageData.hashCode()}")
+    //traceCompose { "<${pkg.packageName}> MainPackageItem ${pkg.packageInfo.icon} ${imageData.hashCode()}" }
+    traceCompose { "<${pkg.packageName}> MainPackageItem" }
 
     Card(
         modifier = Modifier,
@@ -473,38 +483,38 @@ fun MainPackageItem(
     ) {
         MainPackageContextMenu(
             expanded = menuExpanded,
-            packageItem = item,
+            packageItem = pkg,
             productsList = productsList,
             selection = selection,
             onAction = onAction
         )
 
-        val iconSelector =      //TODO hg42 make this global (but we have closures)
+        val iconSelector =      //TODO hg42 ideally make this global (but we have closures)
             Modifier
                 .combinedClickable(
                     onClick = {
-                        selection[packageItem] = !(selection[packageItem] == true)
+                        selection[pkg] = !(selection[pkg] == true)
                     },
                     onLongClick = {
-                        selection[packageItem] = true
+                        selection[pkg] = true
                         menuExpanded.value = true
                     }
                 )
-        val rowSelector =       //TODO hg42 make this global
+        val rowSelector =       //TODO hg42 ideally make this global (but we have closures)
             Modifier
                 .combinedClickable(
                     onClick = {
                         if (selectedAndVisible.isEmpty()) {
-                            onAction(packageItem)
+                            onAction(pkg)
                         } else {
-                            selection[packageItem] = !(selection[packageItem] == true)
+                            selection[pkg] = !(selection[pkg] == true)
                         }
                     },
                     onLongClick = {
                         if (selectedAndVisible.isEmpty()) {
-                            selection[packageItem] = !(selection[packageItem] == true)
+                            selection[pkg] = !(selection[pkg] == true)
                         } else {
-                            if (selection[packageItem] == true)
+                            if (selection[pkg] == true)
                                 menuExpanded.value = true
                             else {
                                 //selection[packageItem] = true
@@ -519,20 +529,20 @@ fun MainPackageItem(
 
         Row(
             modifier = rowSelector
-                .background(color = if (selection[packageItem] == true) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
+                .background(color = if (selection[pkg] == true) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
                 .fillMaxWidth()
                 .padding(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            PackageIcon(modifier = iconSelector, item = packageItem, imageData = imageData)
+            PackageIconFromPkg(pkg = pkg, modifier = iconSelector)
 
             Column(
                 modifier = Modifier.wrapContentHeight()
             ) {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = packageItem.packageLabel,
+                        text = pkg.packageLabel,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .weight(1f),
@@ -541,11 +551,30 @@ fun MainPackageItem(
                         maxLines = 1,
                         style = MaterialTheme.typography.titleMedium
                     )
-                    PackageLabels(item = packageItem)
+                    PackageLabels(item = pkg)
                 }
+
                 Row(modifier = Modifier.fillMaxWidth()) {
+
+                    val backups = pkg.backupsNewestFirst
+                    val hasBackups = pkg.hasBackups
+                    val latestBackup = pkg.latestBackup
+                    val nBackups = pkg.numberOfBackups
+
+                    traceCompose {
+                        "<${pkg.packageName}> MainPackageItem.backups ${
+                            TraceUtils.formatBackups(
+                                backups
+                            )
+                        } ${
+                            TraceUtils.formatBackups(
+                                backups
+                            )
+                        }"
+                    }
+
                     Text(
-                        text = packageItem.packageName,
+                        text = pkg.packageName,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .weight(1f),
@@ -555,11 +584,11 @@ fun MainPackageItem(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    AnimatedVisibility(visible = packageItem.hasBackups) {
+                    AnimatedVisibility(visible = hasBackups) {
                         Text(
-                            text = (packageItem.latestBackup?.backupDate?.getFormattedDate(
+                            text = (latestBackup?.backupDate?.getFormattedDate(
                                 false
-                            ) ?: "") + " • ${packageItem.numberOfBackups}",
+                            ) ?: "") + " • $nBackups",
                             modifier = Modifier.align(Alignment.CenterVertically),
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1,

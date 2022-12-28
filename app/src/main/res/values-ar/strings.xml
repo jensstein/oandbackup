@@ -188,7 +188,7 @@
         <item quantity="other">%d التطبيقات المحدثة</item>
     </plurals>
     <plurals name="days_left">
-        <item quantity="zero">%d يوم,</item>
+        <item quantity="zero">%d يوم</item>
         <item quantity="one">%d يوم</item>
         <item quantity="two">%d يومين</item>
         <item quantity="few">%d بعض الايام</item>

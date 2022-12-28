@@ -211,8 +211,8 @@
     <string name="prefs_numBackupRevisions_summary">Den eldste revisjonen vil bli slettet når en ny opprettes, sett at nummeret overstiges. Sett det til null for å beholde alle.</string>
     <string name="prefs_numBackupRevisions">Antall sikkeretskopi-revisjoner</string>
     <plurals name="days_left">
-        <item quantity="one">%d dag,</item>
-        <item quantity="other">%d dager,</item>
+        <item quantity="one">%d dag</item>
+        <item quantity="other">%d dager</item>
     </plurals>
     <string name="help_issues">Kjente feil</string>
     <string name="prefs_restoreallpermissions">Gjenopprett med alle tilganger</string>
