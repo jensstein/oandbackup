@@ -1,4 +1,4 @@
 ** OAndBackupX 0.9.6 **
 * Aggiunto controllo per l'aggiornamento
-* Risolto tema coerente
-* Risolto il problema con alcune stringhe
+* Corretto tema coerente
+* Corretto il problema con alcune stringhe

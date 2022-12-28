@@ -1,6 +1,6 @@
 ** OAndBackupX 1.1.0 **
 * Aggiunto: crittografia del backup dei dati
-* Risolto: orari
+* Corretto: orari
 * Aggiornato: formato delle notifiche
 * Ottimizzato alcuni elementi dell'interfaccia utente
 * e prestazioni migliorate

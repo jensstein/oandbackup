@@ -5,6 +5,6 @@
 * Aggiunto: preferenza di blocco biometrico
 * Aggiornato: l'intera interfaccia utente
 * Aggiornato: imposta i dati esterni predefiniti e la preferenza obb su off
-* Risolto: alcuni arresti anomali dell'UI
+* Corretto: alcuni arresti anomali dell'UI
 * Spostato su Affero GPL v3
 e molto altro ancora

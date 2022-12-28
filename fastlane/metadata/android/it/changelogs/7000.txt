@@ -2,6 +2,6 @@
 * Aggiunta: backup dei file multimediali
 * Aggiunta: Extra [Nota e tag]
 * Aggiunta lingue: cinese (tradizionale/Taiwan), portoghese (Brasile), lituano.
-* Aggiornamento: rinnova l'interfaccia utente (material design 3 e nuove icone impostate)
+* Aggiornato: rinnova l'interfaccia utente (material design 3 e nuove icone impostate)
 * Correzione: ripristino di Firefox (@hg42)
 e altro ancora... leggi il changelog completo

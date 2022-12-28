@@ -1,6 +1,6 @@
 ** OAndBackupX 0.9.8 **
-* Risolto: ricorda il filtro
-* Risolto: selezione del valore per i vecchi backup
-* Risolto: elenco filtrato vuoto che causava un arresto anomalo
+* Corretto: ricorda il filtro
+* Corretto: selezione del valore per i vecchi backup
+* Corretto: elenco filtrato vuoto che causava un arresto anomalo
 * Ottimizzato: interfaccia utente dello scheduler
 * Altre modifiche

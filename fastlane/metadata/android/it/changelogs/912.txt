@@ -2,7 +2,7 @@
 * Aggiunto: info collegamento nel foglio dell'app
 * Aggiornato: pugno di elementi dell'interfaccia utente
 * Aggiornato: nuova directory di backup predefinita / OAndBackupX
-* Risolto: comportamento dell'adattatore dopo aver eseguito le azioni
-* Risolto: crash dell'adattatore
+* Corretto: comportamento dell'adattatore dopo aver eseguito le azioni
+* Corretto: crash dell'adattatore
 * Cambiato: dalla pulizia della cache dell'app all'esclusione dal backup (Credito @ icewind1991)
 * Ottimizzato: comportamento di diversi elementi UI
