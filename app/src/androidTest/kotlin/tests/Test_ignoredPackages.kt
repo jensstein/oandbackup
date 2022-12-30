@@ -14,12 +14,26 @@ class Test_ignoredPackages {
 
         for (packageName in
             """
+            com.android.externalstorage.foobar
+            com.android.providers.downloads.foobar
+            android.foobar
+            foobar.android
+            com.android.mtp.foobar
             com.google.android.gm
-            """.trimIndent().split("""\n+""".toRegex()).map { it.trim() }
+            com.google.android.gms.foobar
+            com.google.android.gmsfoobar
+            com.google.android.gsffoobar
+            com.android.shellfoobar
+            com.android.systemui.foobar
+            """.trimIndent().split("\n").map { it.trim() }
         ) {
             assertFalse(
                 "wrong match: $packageName",
                 packageName.matches(ignoredPackages)
+            )
+            assertFalse(
+                "wrong match (contains): $packageName",
+                packageName.contains(ignoredPackages)
             )
         }
     }
@@ -30,6 +44,10 @@ class Test_ignoredPackages {
         assertTrue(
             "does not match: $packageName",
             packageName.matches(doNotStop)
+        )
+        assertTrue(
+            "does not match (contains): $packageName",
+            packageName.contains(doNotStop)
         )
     }
 
@@ -43,16 +61,21 @@ class Test_ignoredPackages {
             android
             com.android.providers.media
             com.android.providers.media.module
+            com.android.providers.media.foobar
             com.android.mtp
             com.google.android.gms
             com.google.android.gsf
             com.android.shell
             com.android.systemui
-            """.trimIndent().split("""\n+""".toRegex()).map { it.trim() }
+            """.trimIndent().split("\n").map { it.trim() }
         ) {
             assertTrue(
                 "does not match: $packageName",
                 packageName.matches(ignoredPackages)
+            )
+            assertTrue(
+                "does not match (contains): $packageName",
+                packageName.contains(ignoredPackages)
             )
         }
     }

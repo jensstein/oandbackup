@@ -162,36 +162,36 @@ abstract class BaseAppAction protected constructor(
             if (utilBox.hasBug("DotDotDir")) "..*" else null
         )
 
-        val ignoredPackages = (
-                """(?x)
+        val ignoredPackages = Regex(
+                """(?x)(^(
                   android
-                | ^com\.(google\.)?android\.shell
-                | ^com\.(google\.)?android\.systemui
-                | ^com\.(google\.)?android\.externalstorage
-                | ^com\.(google\.)?android\.mtp
-                | ^com\.(google\.)?android\.providers\.downloads\.ui
-                | ^com\.(google\.)?android\.gms
-                | ^com\.(google\.)?android\.gsf
-                | ^com\.(google\.)?android\.providers\.media\b.*
-                """
-                ).toRegex()
+                | com\.(google\.)?android\.shell
+                | com\.(google\.)?android\.systemui
+                | com\.(google\.)?android\.externalstorage
+                | com\.(google\.)?android\.mtp
+                | com\.(google\.)?android\.providers\.downloads\.ui
+                | com\.(google\.)?android\.gms
+                | com\.(google\.)?android\.gsf
+                | com\.(google\.)?android\.providers\.media\b.*
+                )$)"""
+        )
 
-        val doNotStop = (
-                """(?x)
+        val doNotStop = Regex(
+                """(?x)(^(                    
                   android
-                | ^com\.(google\.)?android\.shell
-                | ^com\.(google\.)?android\.systemui
-                | ^com\.(google\.)?android\.externalstorage
-                | ^com\.(google\.)?android\.mtp
-                | ^com\.(google\.)?android\.providers\.downloads\.ui
-                | ^com\.(google\.)?android\.gms
-                | ^com\.(google\.)?android\.gsf
-                | ^com\.(google\.)?android\.providers\.media\b.*
-                | ^com\.(google\.)?android\.providers\..*
-                | ^com\.topjohnwu\.magisk
+                | com\.(google\.)?android\.shell
+                | com\.(google\.)?android\.systemui
+                | com\.(google\.)?android\.externalstorage
+                | com\.(google\.)?android\.mtp
+                | com\.(google\.)?android\.providers\.downloads\.ui
+                | com\.(google\.)?android\.gms
+                | com\.(google\.)?android\.gsf
+                | com\.(google\.)?android\.providers\.media\b.*
+                | com\.(google\.)?android\.providers\..*
+                | com\.topjohnwu\.magisk
                 | """ + Regex.escape(BuildConfig.APPLICATION_ID) + """
-                """
-                ).toRegex()
+                )$)"""
+        )
 
         private val preResults = mutableMapOf<String, List<String>>()
 

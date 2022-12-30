@@ -15,6 +15,7 @@ import androidx.compose.animation.shrinkOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -75,6 +76,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
 import coil.request.ImageRequest
 import com.machiav3lli.backup.ICON_SIZE_LARGE
 import com.machiav3lli.backup.ICON_SIZE_MEDIUM
@@ -96,6 +98,7 @@ import com.machiav3lli.backup.SPECIAL_FILTER_OLD
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.preferences.pref_iconCrossFade
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowSquareOut
 import com.machiav3lli.backup.ui.compose.icons.phosphor.AsteriskSimple
@@ -160,6 +163,40 @@ fun PrefIcon(
 fun PackageIcon(
     modifier: Modifier = Modifier,
     item: Package?,
+    painter: AsyncImagePainter
+) {
+    Image(
+        painter = painter,
+        modifier = modifier
+            .size(ICON_SIZE_LARGE)
+            .clip(RoundedCornerShape(LocalShapes.current.medium)),
+        contentDescription = null,
+        contentScale = ContentScale.Crop
+    )
+}
+
+@Composable
+fun PackageIcon(
+    modifier: Modifier = Modifier,
+    item: Package?,
+    model: ImageRequest
+) {
+    AsyncImage(
+        modifier = modifier
+            .size(ICON_SIZE_LARGE)
+            .clip(RoundedCornerShape(LocalShapes.current.medium)),
+        model = model,
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        error = placeholderIconPainter(item),
+        placeholder = placeholderIconPainter(item)
+    )
+}
+
+@Composable
+fun PackageIcon(
+    modifier: Modifier = Modifier,
+    item: Package?,
     imageData: Any
 ) {
     AsyncImage(
@@ -167,7 +204,7 @@ fun PackageIcon(
             .size(ICON_SIZE_LARGE)
             .clip(RoundedCornerShape(LocalShapes.current.medium)),
         model = ImageRequest.Builder(LocalContext.current)
-            .crossfade(true)
+            .crossfade(pref_iconCrossFade.value)
             .data(imageData)
             .build(),
         contentDescription = null,
@@ -182,8 +219,8 @@ fun PackageIcon(
 fun placeholderIconPainter(item: Package?) = painterResource(
     when {
         item?.isSpecial == true -> R.drawable.ic_placeholder_special
-        item?.isSystem == true -> R.drawable.ic_placeholder_system
-        else -> R.drawable.ic_placeholder_user
+        item?.isSystem == true  -> R.drawable.ic_placeholder_system
+        else                    -> R.drawable.ic_placeholder_user
     }
 )
 
@@ -239,12 +276,12 @@ fun ElevatedActionButton(
             contentColor = when {
                 !colored -> MaterialTheme.colorScheme.onSurface
                 positive -> MaterialTheme.colorScheme.onPrimaryContainer
-                else -> MaterialTheme.colorScheme.onTertiaryContainer
+                else     -> MaterialTheme.colorScheme.onTertiaryContainer
             },
             containerColor = when {
                 !colored -> MaterialTheme.colorScheme.surface
                 positive -> MaterialTheme.colorScheme.primaryContainer
-                else -> MaterialTheme.colorScheme.tertiaryContainer
+                else     -> MaterialTheme.colorScheme.tertiaryContainer
             }
         ),
         enabled = enabled,
@@ -261,7 +298,7 @@ fun ElevatedActionButton(
             Text(
                 modifier = when {
                     fullWidth -> Modifier.weight(1f)
-                    else -> Modifier.padding(start = 8.dp)
+                    else      -> Modifier.padding(start = 8.dp)
                 },
                 text = text,
                 textAlign = TextAlign.Center,
@@ -746,15 +783,15 @@ fun PackageLabels(
     ButtonIcon(
         when {
             item.isSpecial -> Phosphor.AsteriskSimple
-            item.isSystem -> Phosphor.Spinner
-            else -> Phosphor.User
+            item.isSystem  -> Phosphor.Spinner
+            else           -> Phosphor.User
         },
         R.string.app_s_type_title,
         tint = when {
             item.isDisabled -> ColorDisabled
-            item.isSpecial -> ColorSpecial
-            item.isSystem -> ColorSystem
-            else -> ColorUser
+            item.isSpecial  -> ColorSpecial
+            item.isSystem   -> ColorSystem
+            else            -> ColorUser
         }
     )
 }
@@ -868,17 +905,17 @@ fun ScheduleFilters(
     AnimatedVisibility(visible = item.specialFilter != SPECIAL_FILTER_ALL) {
         ButtonIcon(
             when (item.specialFilter) {
-                SPECIAL_FILTER_DISABLED -> Phosphor.ProhibitInset
+                SPECIAL_FILTER_DISABLED   -> Phosphor.ProhibitInset
                 SPECIAL_FILTER_LAUNCHABLE -> Phosphor.ArrowSquareOut
-                SPECIAL_FILTER_OLD -> Phosphor.Clock
-                else -> Phosphor.CircleWavyWarning
+                SPECIAL_FILTER_OLD        -> Phosphor.Clock
+                else                      -> Phosphor.CircleWavyWarning
             },
             R.string.app_s_type_title,
             tint = when (item.specialFilter) {
-                SPECIAL_FILTER_DISABLED -> ColorDeData
+                SPECIAL_FILTER_DISABLED   -> ColorDeData
                 SPECIAL_FILTER_LAUNCHABLE -> ColorOBB
-                SPECIAL_FILTER_OLD -> ColorExodus
-                else -> ColorUpdated
+                SPECIAL_FILTER_OLD        -> ColorExodus
+                else                      -> ColorUpdated
             }
         )
     }

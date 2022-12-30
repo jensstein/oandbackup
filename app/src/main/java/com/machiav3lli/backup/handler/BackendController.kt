@@ -105,7 +105,7 @@ fun Context.getAllBackups(): Map<String, List<Backup>> {
     return backupsMap
 }
 
-fun Context.getInstalledPackageList()  : MutableList<Package> { // only used in ScheduledActionTask
+fun Context.getInstalledPackageList(): MutableList<Package> { // only used in ScheduledActionTask
 
     var packageList: MutableList<Package> = mutableListOf()
 
@@ -159,17 +159,18 @@ fun Context.getInstalledPackageList()  : MutableList<Package> { // only used in 
                 }
             }
 
-            val backupsMap = getAllBackups()
-
-            packageList = packageList.map {
-                it.apply { updateBackupListAndDatabase(backupsMap[it.packageName].orEmpty()) }
-            }.toMutableList()
+            // don't get backups here, get them lazily if they are used,
+            // e.g. to filter old backups
+            //val backupsMap = getAllBackups()                              //TODO WECH
+            //packageList = packageList.map {
+            //    it.apply { updateBackupListAndDatabase(backupsMap[it.packageName].orEmpty()) }
+            //}.toMutableList()
         }
 
         OABX.addInfoText(
             "getPackageList: ${(time / 1000 + 0.5).toInt()} sec"
         )
-    } catch(e: Throwable) {
+    } catch (e: Throwable) {
         logException(e)
     } finally {
         OABX.endBusy("getInstalledPackageList")
@@ -240,12 +241,11 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
     OABX.beginBusy("updateAppTables")
 
     try {
+        val backups = mutableListOf<Backup>()
+
         val pm = packageManager
         val installedPackages = pm.getInstalledPackagesWithPermissions()
         val installedNames = installedPackages.map { it.packageName }.toList()
-        val specialPackages = SpecialInfo.getSpecialPackages(this)
-        val specialNames = specialPackages.map { it.packageName }
-        val backups = mutableListOf<Backup>()
 
         if (!OABX.appsSuspendedChecked && pref_backupSuspendApps.value) {
             installedNames.filter { packageName ->
@@ -265,48 +265,74 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
             }
         }
 
+        val backupsMap = getAllBackups()
+        backupsMap.forEach {
+            OABX.main?.viewModel?.backupsMap?.put(it.key, it.value)
+            it.value.forEach {
+                backups.add(it)
+            }
+        }
+
+        val specialPackages = SpecialInfo.getSpecialPackages(this)
+        val specialNames = specialPackages.map { it.packageName }
+
+        specialPackages.forEach {
+            it.backupList
+            //it.refreshBackupList()
+            //it.backupsNewestFirst.forEach { backups.add(it) }
+        }
+
         val directoriesInBackupRoot = getBackupPackageDirectories()
         val packagesWithBackup =
-        // Try to create AppInfo objects
-        // if it fails, null the object for filtering in the next step to avoid crashes
-            // filter out previously failed backups
             directoriesInBackupRoot
+                //TODO hg42 allow SAF duplicate dirs (any location attached by the package name)
+
+                // Try to create AppInfo objects
+                // if it fails, null the object for filtering in the next step to avoid crashes
+                // filter out previously failed backups
+                    
+                // remove special packages
                 .filterNot {
                     it.name?.let {
-                        val name = it.substringBefore(" ")    // strip SAF duplicate suffix " (n)"
+                        val name =
+                            it.substringBefore(" ")    // strip SAF duplicate suffix " (n)"
                         specialNames.contains(name)
                     } ?: true
                 }
+
+                // create Package objects and add backups
                 .mapNotNull {
                     try {
                         // TODO Add a direct constructor
                         val pkg = Package(this, it.name!!, it)
-                        pkg.refreshBackupList()
-                        pkg.backupsNewestFirst.forEach { backups.add(it) }
+                        //pkg.refreshBackupList()         // loaded lazily below or getAllBackups above
+                        //pkg.backupsNewestFirst.forEach { backups.add(it) }
                         pkg
                     } catch (e: AssertionError) {
                         Timber.e("Could not process backup folder for uninstalled application in ${it.name}: $e")
                         null
                     }
                 }
+
                 .toList()
 
-        specialPackages.forEach {
-            it.refreshBackupList()
-            it.backupsNewestFirst.forEach { backups.add(it) }
-        }
+        val uninstalledPackagesWithBackup =
+            backupsMap.keys
+                .filter { it !in installedNames }
+                .map { Package(this, it, StorageFile(getBackupDir(), it)) }
 
         val packagesWithBackupNames = packagesWithBackup.map { it.packageName }
         val appInfoList =
             installedPackages
                 .filterNot { it.packageName in packagesWithBackupNames }
                 .map { AppInfo(this, it) }
+                //.union(uninstalledPackagesWithBackup.map { it.packageInfo as AppInfo })
                 .union(packagesWithBackup.map { it.packageInfo as AppInfo })
 
         backupDao.updateList(*backups.toTypedArray())
         appInfoDao.updateList(*appInfoList.toTypedArray())
 
-    } catch(e: Throwable) {
+    } catch (e: Throwable) {
         logException(e)
     } finally {
         OABX.endBusy("updateAppTables")

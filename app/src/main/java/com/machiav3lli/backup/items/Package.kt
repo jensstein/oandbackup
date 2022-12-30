@@ -48,10 +48,12 @@ class Package {
 
     var backupList: List<Backup>
         get() {
-            val backups = OABX.main?.viewModel?.backupsMap?.get(packageName) ?: emptyList()
+            val backups = OABX.main?.viewModel?.backupsMap?.getOrPut(packageName) {
+                refreshBackupList()
+            } ?: emptyList()
             return backups
         }
-        set(backups: List<Backup>) {
+        set(backups) {
             OABX.main?.viewModel?.backupsMap?.put(packageName, backups)
         }
 
@@ -94,7 +96,7 @@ class Package {
     ) {
         this.packageBackupDir = backupDir
         this.packageName = packageName
-        //refreshBackupList()                             //TODO hg42 ??? or ensureBackupList?
+        //refreshBackupList()                             // load lazily below if necessary
         try {
             val pi = context.packageManager.getPackageInfo(
                 this.packageName,
@@ -175,8 +177,7 @@ class Package {
         }
     }
 
-    fun refreshBackupList(): List<Backup> {
-        traceBackups { "<$packageName> refreshbackupList" }
+    fun getBackupsFromBackupDir() : List<Backup> {
         invalidateBackupCacheForPackage(packageName)
         val backups = mutableListOf<Backup>()
         try {
@@ -204,7 +205,13 @@ class Package {
         } catch (e: Throwable) {
             // ignore
         }
-        updateBackupListAndDatabase(backups)  //TODO hg42 ???
+        return backups
+    }
+
+    fun refreshBackupList(): List<Backup> {
+        traceBackups { "<$packageName> refreshbackupList" }
+        val backups = getBackupsFromBackupDir()
+        updateBackupListAndDatabase(backups)
         return backups
     }
 
@@ -217,8 +224,8 @@ class Package {
         StorageLocationNotConfiguredException::class
     )
     fun getAppBackupRoot(
-        create: Boolean = false,
-        packageName: String = this.packageName
+        packageName: String = this.packageName,
+        create: Boolean = false
     ): StorageFile? {
         return try {
             when {
@@ -471,8 +478,11 @@ class Package {
     val isUpdated: Boolean
         get() = latestBackup?.let { it.versionCode < versionCode } ?: false
 
+    val isNew: Boolean
+        get() = !hasBackups && !isSystem    //TODO && versionCode > lastSeenVersionCode
+
     val isNewOrUpdated: Boolean
-        get() = latestBackup?.let { it.versionCode < versionCode } ?: !isSystem
+        get() = isUpdated || isNew
 
     val hasApk: Boolean
         get() = backupList.any { it.hasApk }

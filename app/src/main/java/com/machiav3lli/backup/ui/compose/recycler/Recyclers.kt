@@ -42,9 +42,9 @@ fun HomePackageRecycler(
     productsList: List<Package>,
     onClick: (Package) -> Unit = {}
 ) {
-    val selection = remember { mutableStateMapOf<Package, Boolean>() }
+    val selection = remember { mutableStateMapOf<String, Boolean>() }
     productsList.forEach {
-        selection.putIfAbsent(it, false)
+        selection.putIfAbsent(it.packageName, false)
     }
     VerticalItemList(modifier = modifier, list = productsList) {
         MainPackageItem(it, productsList, selection, onClick)
