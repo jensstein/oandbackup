@@ -46,9 +46,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -87,8 +85,7 @@ class MainViewModel(
     val backupsMapDb =
         //------------------------------------------------------------------------------------------ backupsMap
         db.backupDao.allFlow
-            .conflate()
-            .map { it.groupBy(Backup::packageName) }
+            .mapLatest { it.groupBy(Backup::packageName) }
             .trace { "*** backupsMapFlow <<- p=${it.size} b=${it.map { it.value.size }.sum()}" }
             //.trace { "*** backupsMap <<- p=${it.size} b=${it.map { it.value.size }.sum()} #################### egg ${showSortedBackups(it["com.android.egg"])}" }  // for testing use com.android.egg
             .stateIn(
@@ -133,6 +130,7 @@ class MainViewModel(
                 emptyMap()
             )
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val packageList =
         //========================================================================================== packageList
         combine(db.appInfoDao.allFlow, backupsMapDb) { p, b ->
@@ -148,6 +146,7 @@ class MainViewModel(
             traceFlows { "***** packages ->> ${pkgs.size}" }
             pkgs
         }
+            .mapLatest { it }
             .trace { "*** packageList <<- ${it.size}" }
             .stateIn(
                 viewModelScope,
@@ -159,8 +158,7 @@ class MainViewModel(
     val packageMap =
         //------------------------------------------------------------------------------------------ packageMap
         packageList
-            .map { it.associateBy(Package::packageName) }
-            .conflate()
+            .mapLatest { it.associateBy(Package::packageName) }
             .trace { "*** packageMap <<- ${it.size}" }
             .stateIn(
                 viewModelScope,
@@ -168,6 +166,7 @@ class MainViewModel(
                 emptyMap()
             )
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val notBlockedList =
         //========================================================================================== notBlockedList
         combine(packageList, blocklist) { p, b ->
@@ -184,7 +183,7 @@ class MainViewModel(
             traceFlows { "***** blocked ->> ${list.size}" }
             list
         }
-            .conflate()
+            .mapLatest { it }
             .trace { "*** notBlockedList <<- ${it.size}" }
             .stateIn(
                 viewModelScope,
@@ -208,6 +207,7 @@ class MainViewModel(
             "modelSortFilter"
         )
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val filteredList =
         //========================================================================================== filteredList
         combine(notBlockedList, modelSortFilter.flow, searchQuery.flow) { p, f, s ->
@@ -226,7 +226,7 @@ class MainViewModel(
             traceFlows { "***** filtered ->> ${list.size}" }
             list
         }
-            .conflate()
+            .mapLatest { it }
             .trace { "*** filteredList <<- ${it.size}" }
             .stateIn(
                 viewModelScope,
