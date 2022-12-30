@@ -35,7 +35,7 @@ object TraceUtils {
         val name: String,
         summary: String,
         default: Boolean,
-        enableIf: () -> Boolean = { true }
+        enableIf: () -> Boolean = { true },
     ) {
 
         val pref = BooleanPref(
@@ -72,6 +72,44 @@ object TraceUtils {
         //return this
     }
 
+
+    // timers
+
+    val nanoTimers = mutableMapOf<String, Long>()
+    val nanoTime   = mutableMapOf<String, Long>()
+    val nanoTiming = mutableMapOf<String, Pair<Float, Long>>()
+
+    fun beginNanoTimer(name: String) {
+        nanoTimers.put(name, System.nanoTime())
+    }
+
+    fun endNanoTimer(name: String): Long {
+        val t = System.nanoTime() - nanoTimers.get(name)!!
+        nanoTime.put(name, t)
+        val (average, n) = nanoTiming.getOrPut(name) { 0f to -3 }
+        //traceBold { "%-16s %10d x %10.0f ns + %10d ns => %10.0f ns".format(name, n, average, t, (average * n + t) / (n + 1)) }
+        if (n < 0L)
+            nanoTiming.put(name, 0f to (n + 1))         // ignore start values
+        else
+            nanoTiming.put(name, ((average * n + t) / (n + 1)) to (n + 1))
+        return t
+    }
+
+    fun listNanoTiming(pattern: String = ""): List<String> {
+        return nanoTiming.filter { (name, value) -> name.contains(pattern) }
+            .map { (name, average_n) ->
+                val (average, n) = average_n
+                "%-40s %6d x %12.6f ms".format(name, n, average/1E6)
+            }
+    }
+
+    fun logNanoTimers(pattern: String = "", title: String = "") {
+        Timber.i("timing: $title -----\\")
+        listNanoTiming(pattern).forEach {
+            Timber.i("timing: $title $it")
+        }
+        Timber.i("timing: $title -----/")
+    }
 
     // reflection
 

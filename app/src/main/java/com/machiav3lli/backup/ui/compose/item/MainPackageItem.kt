@@ -56,6 +56,8 @@ import com.machiav3lli.backup.preferences.pref_iconCrossFade
 import com.machiav3lli.backup.preferences.pref_quickerList
 import com.machiav3lli.backup.preferences.pref_useBackupRestoreWithSelection
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
+import com.machiav3lli.backup.utils.TraceUtils.beginNanoTimer
+import com.machiav3lli.backup.utils.TraceUtils.endNanoTimer
 import com.machiav3lli.backup.utils.getBackupDir
 import com.machiav3lli.backup.utils.getFormattedDate
 import kotlinx.coroutines.delay
@@ -85,7 +87,7 @@ fun Confirmation(
 
 @Composable
 fun Selections(
-    onAction: (StorageFile) -> Unit = {}
+    onAction: (StorageFile) -> Unit = {},
 ) {
     val backupDir = OABX.context.getBackupDir()
     val selectionsDir = backupDir.findFile(SELECTIONS_FOLDER_NAME)
@@ -110,7 +112,7 @@ fun Selections(
 
 @Composable
 fun SelectionLoadMenu(
-    onAction: (List<String>) -> Unit = {}
+    onAction: (List<String>) -> Unit = {},
 ) {
     Selections {
         onAction(it.readText().lines())
@@ -121,7 +123,7 @@ fun SelectionLoadMenu(
 @Composable
 fun SelectionSaveMenu(
     selection: List<String>,
-    onAction: () -> Unit = {}
+    onAction: () -> Unit = {},
 ) {
     val name = remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
@@ -508,6 +510,8 @@ fun MainPackageItemA(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            beginNanoTimer("item.icon")
+
             if (useIcons) PackageIconA(
                 item = pkg,
                 model = iconRequest,
@@ -516,14 +520,16 @@ fun MainPackageItemA(
             else
                 Text(
                     text = when {
-                        pkg.isSpecial -> "💲"
+                        pkg.isSpecial    -> "💲"
                         !pkg.isInstalled -> "☠"
-                        pkg.isDisabled -> "😷"
-                        pkg.isSystem  -> "🤖"
-                        else          -> "🙂"
+                        pkg.isDisabled   -> "😷"
+                        pkg.isSystem     -> "🤖"
+                        else             -> "🙂"
                     },
                     style = MaterialTheme.typography.headlineMedium
                 )
+
+            endNanoTimer("item.icon")
 
             Column(
                 modifier = Modifier.wrapContentHeight()
@@ -539,8 +545,11 @@ fun MainPackageItemA(
                         maxLines = 1,
                         style = MaterialTheme.typography.titleMedium
                     )
-                    if (useIcons)
+                    if (useIcons) {
+                        beginNanoTimer("item.labels")
                         PackageLabels(item = pkg)
+                        endNanoTimer("item.labels")
+                    }
                 }
 
                 Row(modifier = Modifier.fillMaxWidth()) {
@@ -561,6 +570,7 @@ fun MainPackageItemA(
                     //    }"
                     //}
 
+                    beginNanoTimer("item.package")
                     Text(
                         text = pkg.packageName,
                         modifier = Modifier
@@ -572,7 +582,9 @@ fun MainPackageItemA(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+                    endNanoTimer("item.package")
 
+                    beginNanoTimer("item.backup")
                     AnimatedVisibility(visible = hasBackups) {
                         Text(
                             text = (latestBackup?.backupDate?.getFormattedDate(
@@ -584,6 +596,7 @@ fun MainPackageItemA(
                             style = MaterialTheme.typography.bodySmall,
                         )
                     }
+                    endNanoTimer("item.backup")
 
                 }
             }

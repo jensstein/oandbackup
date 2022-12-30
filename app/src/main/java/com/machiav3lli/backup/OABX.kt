@@ -41,6 +41,8 @@ import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.ui.item.BooleanPref
 import com.machiav3lli.backup.ui.item.IntPref
 import com.machiav3lli.backup.utils.TraceUtils
+import com.machiav3lli.backup.utils.TraceUtils.beginNanoTimer
+import com.machiav3lli.backup.utils.TraceUtils.endNanoTimer
 import com.machiav3lli.backup.utils.TraceUtils.methodName
 import com.machiav3lli.backup.utils.scheduleAlarms
 import com.machiav3lli.backup.utils.styleTheme
@@ -130,6 +132,12 @@ val traceBusy = TraceUtils.TracePrefBold(
     name = "Busy",
     default = true,
     summary = "trace beginBusy/endBusy (busy indicator)"
+)
+
+val traceTiming = TraceUtils.TracePrefBold(
+    name = "Timing",
+    default = true,
+    summary = "show code segment timers"
 )
 
 val traceBackups = TraceUtils.TracePref(
@@ -435,13 +443,15 @@ class OABX : Application() {
                 "*** ${"|---".repeat(_busy.get())}\\ busy $label"
             }
             busy.value = _busy.accumulateAndGet(+1, Int::plus)
+            beginNanoTimer("busy.$name")
         }
 
         fun endBusy(name: String? = null) {
+            val time = endNanoTimer("busy.$name")
             busy.value = _busy.accumulateAndGet(-1, Int::plus)
             traceBusy {
                 val label = name ?: methodName(1)
-                "*** ${"|---".repeat(_busy.get())}/ busy $label"
+                "*** ${"|---".repeat(_busy.get())}/ busy $label ${"%.3f".format(time/1E9)} s"
             }
         }
     }

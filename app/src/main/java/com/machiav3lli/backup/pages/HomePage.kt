@@ -55,6 +55,7 @@ import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.traceCompose
+import com.machiav3lli.backup.traceTiming
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretDown
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CircleWavyWarning
@@ -64,6 +65,7 @@ import com.machiav3lli.backup.ui.compose.item.ExpandingFadingVisibility
 import com.machiav3lli.backup.ui.compose.item.MainPackageContextMenu
 import com.machiav3lli.backup.ui.compose.recycler.HomePackageRecycler
 import com.machiav3lli.backup.ui.compose.recycler.UpdatedPackageRecycler
+import com.machiav3lli.backup.utils.TraceUtils.logNanoTimers
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -235,5 +237,7 @@ fun HomePage() {
                 }
             )
         }
+
+        if (traceTiming.pref.value) logNanoTimers("item.", title = "home")
     }
 }
