@@ -30,7 +30,6 @@ import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Blocklist
-import com.machiav3lli.backup.handler.getBackups
 import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.items.Package
@@ -67,7 +66,9 @@ class MainViewModel(
     var backupsMap = mutableMapOf<String, List<Backup>>()
 
     init {
-        appContext.getBackups()
+        // in some cases it's better to do it before everything else starts,
+        // but may be duplicated scanning in others, e.g if cache is cleared in between
+        //appContext.getBackups()
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - FLOWS
