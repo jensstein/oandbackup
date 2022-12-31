@@ -11,6 +11,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
@@ -32,7 +34,7 @@ import com.machiav3lli.backup.ui.compose.item.ButtonIcon
 import com.machiav3lli.backup.ui.item.ChipItem
 
 @Composable
-fun <T> VerticalItemList(
+fun <T : Any> VerticalItemList(
     modifier: Modifier = Modifier.fillMaxSize(),
     list: List<T>?,
     itemKey: ((T) -> Any)? = null,
@@ -54,13 +56,24 @@ fun <T> VerticalItemList(
             )
             else -> {
                 // TODO add scrollbars
+                val state = rememberLazyListState()
+
                 LazyColumn(
+                    state = state,
                     modifier = modifier
                         .testTag("VerticalItemList.Column"),
                     verticalArrangement = Arrangement.Absolute.spacedBy(4.dp),
                     contentPadding = PaddingValues(vertical = 8.dp),
                 ) {
-                    items(items = list, key = itemKey, itemContent = itemContent)
+                    itemsIndexed(
+                        items = list,
+                        itemContent = { _: Int, it: T ->
+                            itemContent(it)
+                        },
+                        key = { index: Int, it: T ->
+                            itemKey?.invoke(it) ?: index
+                        }
+                    )
                 }
             }
         }
