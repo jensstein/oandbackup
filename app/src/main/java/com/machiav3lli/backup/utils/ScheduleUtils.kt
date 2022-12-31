@@ -101,7 +101,7 @@ fun calculateTimeToRun(schedule: Schedule, now: Long): Long {
     return c.timeInMillis
 }
 
-val updateInterval = 5_000L
+val updateInterval = 1_000L
 val useSeconds = true && updateInterval < 60_000
 
 fun calcTimeLeft(schedule: Schedule): List<String> {
