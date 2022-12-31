@@ -18,6 +18,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +33,8 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.PlayCircle
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.startSchedule
 import com.machiav3lli.backup.utils.timeLeft
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,7 +44,8 @@ fun ScheduleItem(
     onCheckChanged: (Schedule, Boolean) -> Unit = { _: Schedule, _: Boolean -> }
 ) {
     val (checked, check) = mutableStateOf(schedule.enabled)
-    val (absTime, relTime) = timeLeft(schedule).value
+    val (absTime, relTime) = timeLeft(schedule, CoroutineScope(Dispatchers.Default))
+        .collectAsState().value
 
     Card(
         modifier = Modifier,

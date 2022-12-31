@@ -83,6 +83,8 @@ import com.machiav3lli.backup.utils.specialBackupsEnabled
 import com.machiav3lli.backup.utils.startSchedule
 import com.machiav3lli.backup.utils.timeLeft
 import com.machiav3lli.backup.viewmodels.ScheduleViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import java.time.LocalTime
 
 class ScheduleSheet() : BaseSheet() {
@@ -187,7 +189,8 @@ class ScheduleSheet() : BaseSheet() {
         val customList by viewModel.customList.collectAsState(emptySet())
         val blockList by viewModel.blockList.collectAsState(emptySet())
         val nestedScrollConnection = rememberNestedScrollInteropConnection()
-        val (absTime, relTime) = timeLeft(schedule).value
+        val (absTime, relTime) = timeLeft(schedule, CoroutineScope(Dispatchers.Default))
+            .collectAsState().value
 
         //traceDebug { "*** recompose schedule <<- ${schedule}" }
 

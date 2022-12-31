@@ -27,9 +27,6 @@ import android.os.Build
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import com.machiav3lli.backup.ISO_DATE_TIME_FORMAT
 import com.machiav3lli.backup.ISO_DATE_TIME_FORMAT_MIN
 import com.machiav3lli.backup.MODE_UNSET
@@ -49,6 +46,7 @@ import com.machiav3lli.backup.traceSchedule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.LocalTime
@@ -104,7 +102,7 @@ fun calculateTimeToRun(schedule: Schedule, now: Long): Long {
 val updateInterval = 1_000L
 val useSeconds = true && updateInterval < 60_000
 
-fun calcTimeLeft(schedule: Schedule): List<String> {
+fun calcTimeLeft(schedule: Schedule): Pair<String, String> {
     var absTime = ""
     var relTime = ""
     val now = System.currentTimeMillis()
@@ -125,18 +123,20 @@ fun calcTimeLeft(schedule: Schedule): List<String> {
     } else {
         relTime += LocalTime.of(hours, minutes).toString()
     }
-    return listOf(absTime, relTime)
+    return Pair(absTime, relTime)
 }
 
 @Composable
-fun timeLeft(schedule: Schedule): MutableState<List<String>> {
-    val state = remember(schedule) { mutableStateOf(calcTimeLeft(schedule)) }
+fun timeLeft(
+    schedule: Schedule,
+    scope: CoroutineScope,
+): MutableStateFlow<Pair<String, String>> {
+    val state = MutableStateFlow(calcTimeLeft(schedule))
 
-    LaunchedEffect(state.value) {
-        val now = System.currentTimeMillis()
+    LaunchedEffect(state) {
         //traceDebug { "delay ${updateInterval - (now+100) % updateInterval}" }
-        delay(updateInterval - (now+100) % updateInterval)
-        state.value = calcTimeLeft(schedule)
+        delay(updateInterval)
+        state.emit(calcTimeLeft(schedule))
     }
 
     //traceDebug { state.value.let { "⏳ ${it[0]}  🕒 ${it[1]}" } }
