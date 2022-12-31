@@ -29,7 +29,7 @@ import com.machiav3lli.backup.handler.LogsHandler.Companion.logErrors
 import com.machiav3lli.backup.handler.LogsHandler.Companion.unhandledException
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
-import com.machiav3lli.backup.utils.getBackupDir
+import com.machiav3lli.backup.utils.getBackupRoot
 import timber.log.Timber
 import java.io.BufferedOutputStream
 import java.io.IOException
@@ -39,9 +39,9 @@ class ExportsHandler(var context: Context) {
     private var exportsDirectory: StorageFile?
 
     init {
-        val backupRootFolder = context.getBackupDir()
-        exportsDirectory = backupRootFolder.ensureDirectory(EXPORTS_FOLDER_NAME)
-        backupRootFolder.findFile(EXPORTS_FOLDER_NAME_ALT)?.let { oldFolder ->
+        val backupRoot = context.getBackupRoot()
+        exportsDirectory = backupRoot.ensureDirectory(EXPORTS_FOLDER_NAME)
+        backupRoot.findFile(EXPORTS_FOLDER_NAME_ALT)?.let { oldFolder ->
             oldFolder.listFiles().forEach {
                 exportsDirectory?.createFile(it.name!!)
                     ?.writeText(it.readText())

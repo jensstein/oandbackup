@@ -50,7 +50,7 @@ import com.machiav3lli.backup.preferences.pref_backupSuspendApps
 import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.traceBackupsScan
 import com.machiav3lli.backup.utils.TraceUtils
-import com.machiav3lli.backup.utils.getBackupDir
+import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.utils.getInstalledPackageInfosWithPermissions
 import com.machiav3lli.backup.utils.specialBackupsEnabled
 import timber.log.Timber
@@ -66,7 +66,7 @@ val regexSpecialFile = Regex(BACKUP_SPECIAL_FILE_REGEX_PATTERN)
 fun scanBackups(
     directory: StorageFile,
     packageName: String = "",
-    rootDir: StorageFile = OABX.context.getBackupDir(),
+    backupRoot: StorageFile = OABX.context.getBackupRoot(),
     level: Int = 0,
     onPropsFile: (StorageFile) -> Unit,
 ) {
@@ -74,7 +74,7 @@ fun scanBackups(
     val files = directory.listFiles()
     val names = files.map { it.name }
 
-    fun formatBackupFile(file: StorageFile) = "${file.path?.replace(rootDir.path ?: "", "")}"
+    fun formatBackupFile(file: StorageFile) = "${file.path?.replace(backupRoot.path ?: "", "")}"
 
     fun traceBackupsScanPackage(todo: () -> String) {
         if (packageName.isNotEmpty())
@@ -152,7 +152,7 @@ fun scanBackups(
                                     scanBackups(
                                         file,
                                         packageName = packageName,
-                                        rootDir = rootDir,
+                                        backupRoot = backupRoot,
                                         level = level + 1,
                                         onPropsFile = onPropsFile
                                     )
@@ -172,7 +172,7 @@ fun scanBackups(
                         scanBackups(
                             file,
                             packageName = packageName,
-                            rootDir = rootDir,
+                            backupRoot = backupRoot,
                             level = level + 1,
                             onPropsFile = onPropsFile
                         )
@@ -190,20 +190,20 @@ fun Context.getBackups(packageName: String = ""): Map<String, List<Backup>> {
 
     val backups = mutableListOf<Backup>()
 
-    val backupDir = getBackupDir()
+    val backupRoot = getBackupRoot()
 
     if (packageName.isEmpty()) {
         invalidateCache {
-            it.startsWith(backupDir.path ?: "")
+            it.startsWith(backupRoot.path ?: "")
         }
     } else {
         invalidateCache {
-            it.startsWith(backupDir.path ?: "") &&
+            it.startsWith(backupRoot.path ?: "") &&
                     it.contains(packageName)
         }
     }
 
-    scanBackups(backupDir, packageName) { propsFile ->
+    scanBackups(backupRoot, packageName) { propsFile ->
         Backup.createFrom(propsFile)
             ?.let(backups::add)
             ?: run {
@@ -246,7 +246,6 @@ fun Context.getInstalledPackageList(): MutableList<Package> { // only used in Sc
         val time = measureTimeMillis {
 
             val pm = packageManager
-            val backupRoot = getBackupDir()
             val includeSpecial = specialBackupsEnabled
             val packageInfoList = pm.getInstalledPackageInfosWithPermissions()
             packageList = packageInfoList
@@ -254,7 +253,7 @@ fun Context.getInstalledPackageList(): MutableList<Package> { // only used in Sc
                 .filterNot { it.packageName.matches(ignoredPackages) }
                 .mapNotNull {
                     try {
-                        Package(this, it, backupRoot)
+                        Package(this, it)
                     } catch (e: AssertionError) {
                         Timber.e("Could not create Package for ${it}: $e")
                         null

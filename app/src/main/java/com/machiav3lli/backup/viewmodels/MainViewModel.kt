@@ -58,7 +58,7 @@ import kotlin.system.measureTimeMillis
 
 class MainViewModel(
     private val db: ODatabase,
-    private val appContext: Application
+    private val appContext: Application,
 ) : AndroidViewModel(appContext) {
 
     var backupsMap = mutableMapOf<String, List<Backup>>()
@@ -70,6 +70,18 @@ class MainViewModel(
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - FLOWS
+
+    // most flows are for complete states, so skipping (conflate, mapLatest) is usually allowed
+    // it's noted otherwise
+    // conflate:
+    //   takes the latest item and processes it completely, then takes the next (latest again)
+    //   if input rate is f_in and processing can run at max rate f_proc,
+    //   then with f_in > f_proc the results will only come out with about f_proc
+    // mapLatest: (use mapLatest { it } as an equivalent form similar to conflate())
+    //   kills processing the item, when a new one comes in
+    //   so, as long as items come in faster than processing time, there won't be results, in short:
+    //   if f_in > f_proc, then there is no output at all
+    //   this is much like processing on idle only
 
     val blocklist =
         //------------------------------------------------------------------------------------------ blocklist
@@ -96,6 +108,8 @@ class MainViewModel(
 
     val backupsUpdateFlow = MutableSharedFlow<Pair<String, List<Backup>>?>()
     val backupsUpdate = backupsUpdateFlow
+        // don't skip anything here (no conflate or map Latest etc.)
+        // we need to process each update as it's the update for a single package
         .filterNotNull()
         .trace { "*** backupsUpdate <<- ${it.first} ${formatSortedBackups(it.second)}" }
         .onEach {
@@ -226,6 +240,7 @@ class MainViewModel(
             traceFlows { "***** filtered ->> ${list.size}" }
             list
         }
+            // if the filter changes we can drop the older filter
             .mapLatest { it }
             .trace { "*** filteredList <<- ${it.size}" }
             .stateIn(
@@ -242,7 +257,13 @@ class MainViewModel(
             .trace {
                 val updated = it.filter(Package::isUpdated)
                 val new = it.filter { it.isNewOrUpdated && !it.isUpdated }
-                "*** updatedPackages <<- updated: (${updated.size})${updated.map { "${it.packageName}(${it.versionCode}!=${it.latestBackup?.versionCode ?: ""})" }} new: (${new.size})${new.map { "${it.packageName}(${it.numberOfBackups})" }}"
+                "*** updatedPackages <<- updated: (${updated.size})${
+                    updated.map {
+                        "${it.packageName}(${it.versionCode}!=${it.latestBackup?.versionCode ?: ""})" 
+                    }
+                } new: (${new.size})${
+                    new.map { "${it.packageName}(${it.numberOfBackups})" }
+                }"
             }
             .stateIn(
                 viewModelScope,
@@ -372,7 +393,7 @@ class MainViewModel(
 
     class Factory(
         private val database: ODatabase,
-        private val application: Application
+        private val application: Application,
     ) : ViewModelProvider.Factory {
         @Suppress("unchecked_cast")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

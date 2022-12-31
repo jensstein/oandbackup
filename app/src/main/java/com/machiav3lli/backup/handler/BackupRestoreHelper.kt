@@ -36,7 +36,7 @@ import com.machiav3lli.backup.preferences.pref_numBackupRevisions
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.getBackupDir
+import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.utils.suCopyFileToDocument
 import timber.log.Timber
 import java.io.FileNotFoundException
@@ -101,7 +101,7 @@ object BackupRestoreHelper {
     fun copySelfApk(context: Context, shell: ShellHandler): Boolean {
         val filename = BuildConfig.APPLICATION_ID + '-' + BuildConfig.VERSION_NAME + ".apk"
         try {
-            val backupRoot = context.getBackupDir()
+            val backupRoot = context.getBackupRoot()
             val apkFile = backupRoot.findFile(filename)
             apkFile?.delete()
             try {

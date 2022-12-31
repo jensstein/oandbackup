@@ -10,7 +10,7 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.RootFile
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.getCursorString
-import com.machiav3lli.backup.utils.getBackupDir
+import com.machiav3lli.backup.utils.getBackupRoot
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -75,8 +75,8 @@ class Try_readProperties {
     fun test_scanPropertiesSAF() {
         val backups = mutableMapOf<String, MutableList<Backup>>()
         val time = measureTimeMillis {
-            val backupDir = OABX.context.getBackupDir()
-            backupDir.listFiles().forEach { packageDir ->
+            val backupRoot = OABX.context.getBackupRoot()
+            backupRoot.listFiles().forEach { packageDir ->
                 val packageName = packageDir.name
                 val backupList = mutableListOf<Backup>()
                 packageDir.listFiles().forEach { file ->
@@ -101,9 +101,9 @@ class Try_readProperties {
         val backups = mutableMapOf<String, MutableList<Backup>>()
         val backupList = mutableListOf<Backup>()
         val time = measureTimeMillis {
-            val backupDir = OABX.context.getBackupDir()
+            val backupRoot = OABX.context.getBackupRoot()
             val treeUri = DocumentsContract
-                .buildDocumentUriUsingTree(backupDir.uri, DocumentsContract.getTreeDocumentId(backupDir.uri))
+                .buildDocumentUriUsingTree(backupRoot.uri, DocumentsContract.getTreeDocumentId(backupRoot.uri))
 
             val authority = treeUri.authority
                             //"com.machiav3lli.backup.provider"
@@ -135,7 +135,7 @@ class Try_readProperties {
                             treeUri,
                             id
                         )
-                    val file = StorageFile(null, documentUri, OABX.context, name)
+                    val file = StorageFile(null, documentUri, name)
                     if (file.isPropertyFile)
                         Backup.createFrom(file)?.let {
                             backupList.add(it)

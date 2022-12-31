@@ -59,7 +59,7 @@ import com.machiav3lli.backup.preferences.pref_useBackupRestoreWithSelection
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.TraceUtils.beginNanoTimer
 import com.machiav3lli.backup.utils.TraceUtils.endNanoTimer
-import com.machiav3lli.backup.utils.getBackupDir
+import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.utils.getFormattedDate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -90,9 +90,9 @@ fun Confirmation(
 fun Selections(
     onAction: (StorageFile) -> Unit = {},
 ) {
-    val backupDir = OABX.context.getBackupDir()
-    val selectionsDir = backupDir.findFile(SELECTIONS_FOLDER_NAME)
-        ?: backupDir.createDirectory(SELECTIONS_FOLDER_NAME)
+    val backupRoot = OABX.context.getBackupRoot()
+    val selectionsDir = backupRoot.findFile(SELECTIONS_FOLDER_NAME)
+        ?: backupRoot.createDirectory(SELECTIONS_FOLDER_NAME)
     val files = selectionsDir.listFiles()
 
     if (files.isEmpty())
@@ -151,9 +151,8 @@ fun SelectionSaveMenu(
                     if (it.endsWith("\n")) {
                         name.value = it.dropLast(1)
                         focusManager.clearFocus()
-                        val backupDir = OABX.context.getBackupDir()
-                        val selectionsDir = backupDir.findFile(SELECTIONS_FOLDER_NAME)
-                            ?: backupDir.createDirectory(SELECTIONS_FOLDER_NAME)
+                        val backupRoot = OABX.context.getBackupRoot()
+                        val selectionsDir = backupRoot.ensureDirectory(SELECTIONS_FOLDER_NAME)
                         selectionsDir.createFile(name.value)
                             .writeText(selection.joinToString("\n"))
                         onAction()

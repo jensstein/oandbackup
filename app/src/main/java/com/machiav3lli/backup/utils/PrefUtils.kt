@@ -159,7 +159,7 @@ val Context.isStorageDirSetAndOk: Boolean
             }
             //val storageDir = StorageFile.fromUri(this, Uri.parse(storageDirPath))
             //storageDir.exists()
-            getBackupDir().exists()  //TODO kind of similar, but throws an exception "root not accessible" in some cases
+            getBackupRoot().exists()  //TODO kind of similar, but throws an exception "root not accessible" in some cases
         } catch (e: Throwable) {
             false
         }

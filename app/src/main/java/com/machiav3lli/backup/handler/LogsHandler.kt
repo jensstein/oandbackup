@@ -33,7 +33,7 @@ import com.machiav3lli.backup.pref_maxLogLines
 import com.machiav3lli.backup.pref_useLogCatForUncaught
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.getBackupDir
+import com.machiav3lli.backup.utils.getBackupRoot
 import timber.log.Timber
 import java.io.BufferedOutputStream
 import java.io.IOException
@@ -46,8 +46,8 @@ class LogsHandler {
 
         @Throws(IOException::class)
         fun writeToLogFile(logText: String) {
-            val backupRootFolder = OABX.context.getBackupDir()
-            val logsDirectory = backupRootFolder.ensureDirectory(LOGS_FOLDER_NAME)
+            val backupRoot = OABX.context.getBackupRoot()
+            val logsDirectory = backupRoot.ensureDirectory(LOGS_FOLDER_NAME)
             val date = LocalDateTime.now()
             val logItem = Log(logText, date)
             val logFileName = String.format(
@@ -68,10 +68,10 @@ class LogsHandler {
         @Throws(IOException::class)
         fun readLogs(): MutableList<Log> {
             val logs = mutableListOf<Log>()
-            val backupRootFolder = OABX.context.getBackupDir()
+            val backupRoot = OABX.context.getBackupRoot()
             StorageFile.invalidateCache { it.contains(LOGS_FOLDER_NAME) }
-            //val logsDirectory = StorageFile(backupRootFolder, LOG_FOLDER_NAME)
-            backupRootFolder.findFile(LOGS_FOLDER_NAME)?.let { logsDir ->
+            //val logsDirectory = StorageFile(backupRoot, LOG_FOLDER_NAME)
+            backupRoot.findFile(LOGS_FOLDER_NAME)?.let { logsDir ->
                 if (logsDir.isDirectory) {
                     logsDir.listFiles().forEach {
                         if (it.isFile) try {
@@ -90,10 +90,10 @@ class LogsHandler {
 
         @Throws(IOException::class)
         fun housekeepingLogs() {
-            val backupRootFolder = OABX.context.getBackupDir()
+            val backupRoot = OABX.context.getBackupRoot()
             StorageFile.invalidateCache { it.contains(LOGS_FOLDER_NAME) }
-            //val logsDirectory = StorageFile(backupRootFolder, LOG_FOLDER_NAME)
-            backupRootFolder.findFile(LOGS_FOLDER_NAME)?.let { logsDir ->
+            //val logsDirectory = StorageFile(backupRoot, LOG_FOLDER_NAME)
+            backupRoot.findFile(LOGS_FOLDER_NAME)?.let { logsDir ->
                 if (logsDir.isDirectory) {
                     // must be ISO time format with sane sorted fields yyyy-mm-dd hh:mm:ss
                     val logs = logsDir.listFiles().sortedByDescending { it.name }
@@ -116,8 +116,8 @@ class LogsHandler {
         }
 
         fun getLogFile(date: LocalDateTime): StorageFile? {
-            val backupRootFolder = OABX.context.getBackupDir()
-            backupRootFolder.findFile(LOGS_FOLDER_NAME)?.let { logsDir ->
+            val backupRoot = OABX.context.getBackupRoot()
+            backupRoot.findFile(LOGS_FOLDER_NAME)?.let { logsDir ->
                 val logFileName = String.format(
                     LOG_INSTANCE,
                     BACKUP_DATE_TIME_FORMATTER.format(date)

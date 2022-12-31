@@ -19,7 +19,7 @@ import java.io.File
 import java.io.IOException
 
 @Throws(BackupLocationInAccessibleException::class, StorageLocationNotConfiguredException::class)
-fun Context.getBackupDir(): StorageFile =
+fun Context.getBackupRoot(): StorageFile =
     StorageFile.fromUri(getBackupDirUri(this))
 
 @Throws(IOException::class)

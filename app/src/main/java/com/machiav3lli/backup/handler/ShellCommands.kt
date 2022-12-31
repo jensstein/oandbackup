@@ -88,7 +88,7 @@ class ShellCommands(private var users: List<String>) {
             command = "mount -o remount,rw /system && ("
             if (!sourceDir.isNullOrEmpty())    // IMPORTANT!!! otherwise removing all in parent(!) directory     //TODO hg42 check plausible path
                 command += " ; $utilBoxQ rm -rf ${quote(sourceDir)}"
-            if (apkSubDir.isNotEmpty())          // IMPORTANT!!! otherwise removing all in parent(!) directory   //TODO hg42 check plausible path
+            if (!apkSubDir.isEmpty())          // IMPORTANT!!! otherwise removing all in parent(!) directory   //TODO hg42 check plausible path
                 command += " ; $utilBoxQ rm -rf ${quote("/system/app/$apkSubDir")}"
             command += ") ; mount -o remount,ro /system"
             if (!dataDir.isNullOrEmpty())      // IMPORTANT!!! otherwise removing all in parent(!) directory    //TODO hg42 check plausible path

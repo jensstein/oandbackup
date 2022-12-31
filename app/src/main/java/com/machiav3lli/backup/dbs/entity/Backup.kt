@@ -34,7 +34,7 @@ import com.machiav3lli.backup.handler.grantedPermissions
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.traceBackupProps
 import com.machiav3lli.backup.utils.LocalDateTimeSerializer
-import com.machiav3lli.backup.utils.getBackupDir
+import com.machiav3lli.backup.utils.getBackupRoot
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.decodeFromString
@@ -322,7 +322,7 @@ data class Backup constructor(
                 backup.dir = dir
                 backup.tag = dir?.path?.let {
                     it
-                        .replace(OABX.context.getBackupDir()?.path ?: "", "")
+                        .replace(OABX.context.getBackupRoot()?.path ?: "", "")
                         .replace(backup.packageName, pkg)
                         .replace(regexBackupInstance, "")
                         .replace(Regex("""[-:\s]+"""), "-")
