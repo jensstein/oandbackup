@@ -1,5 +1,6 @@
 package com.machiav3lli.backup.ui.compose.item
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -88,10 +89,9 @@ fun ScheduleItem(
                     ScheduleFilters(item = schedule)
                 }
                 Row {
-                    Spacer(modifier = Modifier.width(20.dp))
-                    //AnimatedVisibility(visible = schedule.enabled) {  //TODO no, before enabling you want to know what
+                    AnimatedVisibility(visible = schedule.enabled) {
                         Text(
-                            text = "🕒 $absTime\n⏳ $relTime",
+                            text = "🕒 $absTime\n⏳ $relTime", // TODO replace by resource icons
                             modifier = Modifier
                                 .align(Alignment.CenterVertically)
                                 .weight(1f),
@@ -100,8 +100,8 @@ fun ScheduleItem(
                             maxLines = 2,
                             style = MaterialTheme.typography.bodySmall
                         )
-                    //}
-                    Spacer(modifier = Modifier.width(10.dp))
+                    }
+                    Spacer(modifier = Modifier.weight(1f))
                     ScheduleTypes(item = schedule)
                 }
             }
