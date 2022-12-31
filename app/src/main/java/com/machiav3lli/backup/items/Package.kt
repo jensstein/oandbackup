@@ -419,6 +419,10 @@ class Package {
     val devicesProtectedDataPath: String
         get() = if (isApp) (packageInfo as AppInfo).deDataDir ?: "" else ""
 
+    val iconData: Any
+        get() = if (isSpecial) packageInfo.icon
+        else "android.resource://${packageName}/${packageInfo.icon}"
+
     // - [] 1.Try?
     // Uses the context to get own external data directory
     // e.g. /storage/emulated/0/Android/data/com.machiav3lli.backup/files
