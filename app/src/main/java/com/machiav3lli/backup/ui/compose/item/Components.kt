@@ -66,7 +66,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -75,8 +74,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import coil.ImageLoader
 import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
+import coil.imageLoader
 import coil.request.ImageRequest
 import com.machiav3lli.backup.ICON_SIZE_LARGE
 import com.machiav3lli.backup.ICON_SIZE_MEDIUM
@@ -160,26 +161,11 @@ fun PrefIcon(
 }
 
 @Composable
-fun PackageIcon(
+fun PackageIconA(
     modifier: Modifier = Modifier,
     item: Package?,
-    painter: AsyncImagePainter
-) {
-    Image(
-        painter = painter,
-        modifier = modifier
-            .size(ICON_SIZE_LARGE)
-            .clip(RoundedCornerShape(LocalShapes.current.medium)),
-        contentDescription = null,
-        contentScale = ContentScale.Crop
-    )
-}
-
-@Composable
-fun PackageIcon(
-    modifier: Modifier = Modifier,
-    item: Package?,
-    model: ImageRequest
+    model: ImageRequest,
+    imageLoader: ImageLoader,
 ) {
     AsyncImage(
         modifier = modifier
@@ -187,9 +173,9 @@ fun PackageIcon(
             .clip(RoundedCornerShape(LocalShapes.current.medium)),
         model = model,
         contentDescription = null,
-        contentScale = ContentScale.Crop,
-        error = placeholderIconPainter(item),
-        placeholder = placeholderIconPainter(item)
+        contentScale = ContentScale.Fit,
+        error = placeholderIconPainter(item, imageLoader),
+        placeholder = placeholderIconPainter(item, imageLoader)
     )
 }
 
@@ -214,14 +200,17 @@ fun PackageIcon(
     )
 }
 
-
 @Composable
-fun placeholderIconPainter(item: Package?) = painterResource(
+fun placeholderIconPainter(
+    item: Package?,
+    imageLoader: ImageLoader = LocalContext.current.imageLoader
+) = rememberAsyncImagePainter(
     when {
         item?.isSpecial == true -> R.drawable.ic_placeholder_special
         item?.isSystem == true  -> R.drawable.ic_placeholder_system
         else                    -> R.drawable.ic_placeholder_user
-    }
+    },
+    imageLoader = imageLoader,
 )
 
 @Composable

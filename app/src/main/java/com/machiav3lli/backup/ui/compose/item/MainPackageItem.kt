@@ -40,6 +40,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
+import coil.ImageLoader
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.machiav3lli.backup.MODE_ALL
@@ -51,7 +52,6 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.preferences.pref_altListItem
-import com.machiav3lli.backup.preferences.pref_altPackageIcon
 import com.machiav3lli.backup.preferences.pref_iconCrossFade
 import com.machiav3lli.backup.preferences.pref_quickerList
 import com.machiav3lli.backup.preferences.pref_useBackupRestoreWithSelection
@@ -454,7 +454,7 @@ fun MainPackageContextMenu(
 }
 
 @Composable
-fun PackageIconA(pkg: Package, modifier: Modifier) {
+fun PackageIconB(pkg: Package, modifier: Modifier) {
 
     val imageData =
         if (pkg.isSpecial) pkg.packageInfo.icon
@@ -463,42 +463,25 @@ fun PackageIconA(pkg: Package, modifier: Modifier) {
     PackageIcon(item = pkg, imageData = imageData, modifier = modifier)
 }
 
-@Composable
-fun PackageIconB(pkg: Package, modifier: Modifier = Modifier) {
-
-    val imageData =
-        if (pkg.isSpecial) pkg.packageInfo.icon
-        else "android.resource://${pkg.packageName}/${pkg.packageInfo.icon}"
-
-    val model =
-        ImageRequest.Builder(OABX.context)
-            .memoryCacheKey(pkg.packageName)
-            .memoryCachePolicy(CachePolicy.ENABLED)
-            .crossfade(pref_iconCrossFade.value)
-            .data(imageData)
-            .build()
-
-    PackageIcon(item = pkg, model = model, modifier = modifier)
-}
-
-@Composable
-fun PackageIcon(pkg: Package, modifier: Modifier) {
-
-    if (pref_altPackageIcon.value)
-        PackageIconB(pkg = pkg, modifier = modifier)
-    else
-        PackageIconA(pkg = pkg, modifier = modifier)
-}
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainPackageItemA(
     pkg: Package,
     productsList: List<Package>,
     selection: SnapshotStateMap<String, Boolean>,
+    imageLoader: ImageLoader,
     onAction: (Package) -> Unit = {}
 ) {
     val useIcons by remember(pref_quickerList.value) { mutableStateOf(!pref_quickerList.value) }
+    val iconRequest = ImageRequest.Builder(OABX.context)
+        .memoryCacheKey(pkg.packageName)
+        .memoryCachePolicy(CachePolicy.ENABLED)
+        .crossfade(pref_iconCrossFade.value)
+        .size(48)
+        .allowConversionToBitmap(true)
+        .data(pkg.iconData)
+        .build()
+    imageLoader.enqueue(iconRequest)
 
     val menuExpanded = remember { mutableStateOf(false) }
 
@@ -572,8 +555,11 @@ fun MainPackageItemA(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (useIcons)
-                PackageIcon(pkg = pkg, modifier = iconSelector)
+            if (useIcons) PackageIconA(
+                item = pkg,
+                model = iconRequest,
+                imageLoader = imageLoader,
+            )
             else
                 Text(
                     text = when {
@@ -735,7 +721,7 @@ fun MainPackageItemB(
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (useIcons)
-                PackageIcon(pkg = pkg, modifier = iconSelector)
+                PackageIconB(pkg = pkg, modifier = iconSelector)
 
             Column(
                 modifier = Modifier.wrapContentHeight()
@@ -808,6 +794,7 @@ fun MainPackageItem(
     pkg: Package,
     productsList: List<Package>,
     selection: SnapshotStateMap<String, Boolean>,
+    imageLoader: ImageLoader,
     onAction: (Package) -> Unit = {}
 ) {
     if (pref_altListItem.value)
@@ -822,6 +809,7 @@ fun MainPackageItem(
             pkg = pkg,
             productsList = productsList,
             selection = selection,
-            onAction = onAction
+            onAction = onAction,
+            imageLoader = imageLoader,
         )
 }
