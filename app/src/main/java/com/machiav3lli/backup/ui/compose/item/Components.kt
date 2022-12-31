@@ -738,43 +738,43 @@ fun ExpandingFadingVisibility(
 fun PackageLabels(
     item: Package
 ) {
-    AnimatedVisibility(visible = item.isUpdated) {
+    if (item.isUpdated) {
         ButtonIcon(
             Phosphor.CircleWavyWarning, R.string.radio_updated,
             tint = ColorUpdated
         )
     }
-    AnimatedVisibility(visible = item.hasMediaData) {
+    if (item.hasMediaData) {
         ButtonIcon(
             Phosphor.PlayCircle, R.string.radio_mediadata,
             tint = ColorMedia
         )
     }
-    AnimatedVisibility(visible = item.hasObbData) {
+    if (item.hasObbData) {
         ButtonIcon(
             Phosphor.GameController, R.string.radio_obbdata,
             tint = ColorOBB
         )
     }
-    AnimatedVisibility(visible = item.hasExternalData) {
+    if (item.hasExternalData) {
         ButtonIcon(
             Phosphor.FloppyDisk, R.string.radio_externaldata,
             tint = ColorExtDATA
         )
     }
-    AnimatedVisibility(visible = item.hasDevicesProtectedData) {
+    if (item.hasDevicesProtectedData) {
         ButtonIcon(
             Phosphor.ShieldCheckered, R.string.radio_deviceprotecteddata,
             tint = ColorDeData
         )
     }
-    AnimatedVisibility(visible = item.hasAppData) {
+    if (item.hasAppData) {
         ButtonIcon(
             Phosphor.HardDrives, R.string.radio_data,
             tint = ColorData
         )
     }
-    AnimatedVisibility(visible = item.hasApk) {
+    if (item.hasApk) {
         ButtonIcon(
             Phosphor.DiamondsFour, R.string.radio_apk,
             tint = ColorAPK
