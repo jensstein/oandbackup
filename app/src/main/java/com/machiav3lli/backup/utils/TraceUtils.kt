@@ -75,35 +75,52 @@ object TraceUtils {
 
     // timers
 
-    val nanoTimers = mutableMapOf<String, Long>()
-    val nanoTime   = mutableMapOf<String, Long>()
-    val nanoTiming = mutableMapOf<String, Pair<Float, Long>>()
+    var nanoTimers = mutableMapOf<String, Long>()
+    var nanoTime = mutableMapOf<String, Long>()
+    var nanoTiming = mutableMapOf<String, Pair<Float, Long>>()
 
     fun beginNanoTimer(name: String) {
-        nanoTimers.put(name, System.nanoTime())
+        synchronized(nanoTimers) {
+            nanoTimers.put(name, System.nanoTime())
+        }
     }
 
     fun endNanoTimer(name: String): Long {
-        val t = System.nanoTime() - nanoTimers.get(name)!!
-        nanoTime.put(name, t)
-        val (average, n) = nanoTiming.getOrPut(name) { 0f to -3 }
-        //traceBold { "%-16s %10d x %10.0f ns + %10d ns => %10.0f ns".format(name, n, average, t, (average * n + t) / (n + 1)) }
-        if (n < 0L)
-            nanoTiming.put(name, 0f to (n + 1))         // ignore start values
-        else
-            nanoTiming.put(name, ((average * n + t) / (n + 1)) to (n + 1))
-        return t
+        synchronized(nanoTimers) {
+            var t = System.nanoTime()
+            nanoTimers.get(name)?.let {
+                t -= it
+                nanoTime.put(name, t)
+                val (average, n) = nanoTiming.getOrPut(name) { 0f to -3 }
+                if (n < 0L)
+                    nanoTiming.put(name, 0f to (n + 1))         // ignore start values
+                else
+                    nanoTiming.put(name, ((average * n + t) / (n + 1)) to (n + 1))
+                return t
+            }
+            return 0L
+        }
+    }
+
+    fun clearNanoTiming(pattern: String = "") {
+        synchronized(nanoTimers) {
+            nanoTimers = nanoTimers.filterNot { it.key.contains(pattern) }.toMutableMap()
+            nanoTime = nanoTime.filterNot { it.key.contains(pattern) }.toMutableMap()
+            nanoTiming = nanoTiming.filterNot { it.key.contains(pattern) }.toMutableMap()
+        }
     }
 
     fun listNanoTiming(pattern: String = ""): List<String> {
-        return nanoTiming.filter { (name, value) -> name.contains(pattern) }
+        return nanoTiming
+            .toSortedMap()
+            .filterKeys { it.contains(pattern) }
             .map { (name, average_n) ->
                 val (average, n) = average_n
-                "%-40s %6d x %12.6f ms".format(name, n, average/1E6)
+                "%-40s %6d x %12.6f ms".format(name, n, average / 1E6)
             }
     }
 
-    fun logNanoTimers(pattern: String = "", title: String = "") {
+    fun logNanoTiming(pattern: String = "", title: String = "") {
         Timber.i("timing: $title -----\\")
         listNanoTiming(pattern).forEach {
             Timber.i("timing: $title $it")

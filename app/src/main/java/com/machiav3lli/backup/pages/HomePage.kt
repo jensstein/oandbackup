@@ -65,7 +65,7 @@ import com.machiav3lli.backup.ui.compose.item.ExpandingFadingVisibility
 import com.machiav3lli.backup.ui.compose.item.MainPackageContextMenu
 import com.machiav3lli.backup.ui.compose.recycler.HomePackageRecycler
 import com.machiav3lli.backup.ui.compose.recycler.UpdatedPackageRecycler
-import com.machiav3lli.backup.utils.TraceUtils.logNanoTimers
+import com.machiav3lli.backup.utils.TraceUtils.logNanoTiming
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -238,6 +238,6 @@ fun HomePage() {
             )
         }
 
-        if (traceTiming.pref.value) logNanoTimers("item.", title = "home")
+        if (traceTiming.pref.value) logNanoTiming("item.", title = "home")
     }
 }
