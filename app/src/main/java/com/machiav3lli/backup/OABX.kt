@@ -214,8 +214,7 @@ class OABX : Application() {
         MainScope().launch {
             delay(1000)
             addInfoText("--> click title to keep infobox open")
-            addInfoText("--> long click for big infobox")
-            addInfoText("--> click big infobox to close")
+            addInfoText("--> long press title for dev tools")
         }
 
         scheduleAlarms()

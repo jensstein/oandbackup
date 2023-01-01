@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,6 +35,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,12 +45,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -63,12 +63,18 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.preferences.DevPrefGroups
+import com.machiav3lli.backup.preferences.LogsPage
+import com.machiav3lli.backup.preferences.TerminalButton
+import com.machiav3lli.backup.preferences.TerminalPage
+import com.machiav3lli.backup.preferences.TerminalText
 import com.machiav3lli.backup.preferences.pref_showInfoLogBar
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.MagnifyingGlass
 import com.machiav3lli.backup.ui.compose.icons.phosphor.X
 import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.compose.vertical
+import com.machiav3lli.backup.viewmodels.LogViewModel
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -171,6 +177,82 @@ fun GlobalIndicators() {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun DevTools(
+    expanded: MutableState<Boolean>,
+) {
+    var mode by rememberSaveable { mutableStateOf("devsett") }
+
+    val scope = rememberCoroutineScope()
+    val infoText = OABX.getInfoText()
+    val scroll = rememberScrollState(0)
+
+    LaunchedEffect(infoText) {
+        scope.launch {
+            scroll.scrollTo(scroll.maxValue)
+            delay(5000)
+        }
+    }
+
+    Surface(
+        color = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        shape = AbsoluteRoundedCornerShape(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 4.dp, vertical = 4.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .combinedClickable(
+                    onClick = { expanded.value = false },
+                    onLongClick = { mode = "devsett" }
+                )
+            ) {
+                Text(text = mode, modifier = Modifier)
+                Spacer(modifier = Modifier.weight(1f))
+                TerminalButton("    close    ") { expanded.value = false }      //TODO hg42 use weight, add modifier to TerminalButton
+            }
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .combinedClickable(
+                    onClick = { expanded.value = false },
+                    onLongClick = { mode = "devsett" }
+                )
+            ) {
+                TerminalButton(" logs ", important = true) { mode = "logs" }
+                Spacer(modifier = Modifier.weight(1f))
+                TerminalButton(" log ", important = true) { mode = "log" }
+                TerminalButton(" info ", important = true) { mode = "info" }
+                Spacer(modifier = Modifier.weight(1f))
+                TerminalButton(" devsett ", important = true) { mode = "devsett" }
+                Spacer(modifier = Modifier.weight(1f))
+                TerminalButton(" term ", important = true) { mode = "term" }
+            }
+            when (mode) {
+                "log"   ->
+                    TerminalText(OABX.lastLogMessages)      //TODO hg42 there is no keyboard
+                "info"  ->
+                    TerminalText(OABX.infoLines)            //TODO hg42 there is no keyboard
+                "devsett" ->
+                    Column(modifier = Modifier
+                        .verticalScroll(scroll)
+                    ) {
+                        DevPrefGroups()
+                    }
+                "term" ->
+                    TerminalPage()                          //TODO hg42 there is no keyboard
+                "logs" ->
+                    LogsPage(LogViewModel(OABX.app))
+            }
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -180,15 +262,16 @@ fun TopBar(
     actions: @Composable (RowScope.() -> Unit),
 ) {
     var tempShowInfo by remember { mutableStateOf(false) }
-    var longShowInfo by remember { mutableStateOf(false) }
+    var longShowInfo = remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val infoText =
-        if (longShowInfo)
+        if (longShowInfo.value)
             OABX.getInfoText()
         else
             OABX.getInfoText(n = 5, fill = "")
     val scroll = rememberScrollState(0)
-    val showInfo = !longShowInfo && (OABX.showInfo || tempShowInfo) && pref_showInfoLogBar.value
+    val showInfo =
+        !longShowInfo.value && (OABX.showInfo || tempShowInfo) && pref_showInfoLogBar.value
 
     LaunchedEffect(infoText) {
         tempShowInfo = true
@@ -215,7 +298,7 @@ fun TopBar(
                                         tempShowInfo = false
                                 },
                                 onLongClick = {
-                                    longShowInfo = true
+                                    longShowInfo.value = true
                                 }
                             )
                     ) {
@@ -252,7 +335,7 @@ fun TopBar(
                                             tempShowInfo = false
                                     },
                                     onLongClick = {
-                                        longShowInfo = true
+                                        longShowInfo.value = true
                                     }
                                 )
                         )
@@ -270,7 +353,7 @@ fun TopBar(
                                             tempShowInfo = false
                                     },
                                     onLongClick = {
-                                        longShowInfo = true
+                                        longShowInfo.value = true
                                     }
                                 )
                             }
@@ -280,35 +363,9 @@ fun TopBar(
                             style = MaterialTheme.typography.headlineMedium,
                         )
                     }
-                    if (longShowInfo) {
+                    if (longShowInfo.value) {
                         Popup {
-                            Surface(
-                                color = MaterialTheme.colorScheme.surface,
-                                contentColor = MaterialTheme.colorScheme.onSurface,
-                                shape = AbsoluteRoundedCornerShape(16.dp),
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(horizontal = 4.dp, vertical = 4.dp)
-                                    .combinedClickable(
-                                        onClick = {
-                                            longShowInfo = false
-                                            tempShowInfo = false
-                                        }
-                                    )
-                            ) {
-                                Text(
-                                    text = infoText,
-                                    style = MaterialTheme.typography.bodySmall,
-                                    fontSize = 10.0.sp,
-                                    lineHeight = 10.0.sp,
-                                    //color = MaterialTheme.colorScheme.onSurface,
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(horizontal = 16.dp)
-                                        .verticalScroll(scroll)
-                                        .clip(RectangleShape)
-                                )
-                            }
+                            DevTools(expanded = longShowInfo)
                         }
                     }
                 }
@@ -331,7 +388,7 @@ fun ExpandableSearchAction(
     modifier: Modifier = Modifier,
     expanded: Boolean = false,
     onClose: () -> Unit,
-    onQueryChanged: (String) -> Unit
+    onQueryChanged: (String) -> Unit,
 ) {
     val (expanded, onExpanded) = rememberSaveable {
         mutableStateOf(expanded)
@@ -365,7 +422,7 @@ fun ExpandedSearchView(
     modifier: Modifier = Modifier,
     onClose: () -> Unit,
     onExpanded: (Boolean) -> Unit,
-    onQueryChanged: (String) -> Unit
+    onQueryChanged: (String) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
     val textFieldFocusRequester = remember { FocusRequester() }
