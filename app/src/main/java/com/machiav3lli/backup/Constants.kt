@@ -19,7 +19,9 @@ package com.machiav3lli.backup
 
 import android.Manifest
 import android.content.Intent
+import android.provider.DocumentsContract
 import androidx.compose.ui.unit.dp
+import com.machiav3lli.backup.dbs.entity.PackageInfo
 import com.machiav3lli.backup.ui.item.ChipItem
 import com.machiav3lli.backup.ui.item.Legend
 import com.machiav3lli.backup.ui.item.Link
@@ -28,18 +30,35 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 const val PREFS_SHARED_PRIVATE = "com.machiav3lli.backup"
-const val ADMIN_PREFIX = "!-"
-val SELECTIONS_FOLDER_NAME = "${ADMIN_PREFIX}SELECTIONS"
-val EXPORTS_FOLDER_NAME = "${ADMIN_PREFIX}EXPORTS"
-val EXPORTS_FOLDER_NAME_ALT = "EXPORTS"
-val LOG_FOLDER_NAME = "${ADMIN_PREFIX}LOGS"
-val LOG_FOLDER_NAME_ALT = "LOGS"
 
+const val ADMIN_PREFIX = "!-"
+
+val SELECTIONS_FOLDER_NAME_BASE = "SELECTIONS"
+val SELECTIONS_FOLDER_NAME = "$ADMIN_PREFIX$SELECTIONS_FOLDER_NAME_BASE"
+
+val EXPORTS_FOLDER_NAME_BASE = "EXPORTS"
+val EXPORTS_FOLDER_NAME = "$ADMIN_PREFIX$EXPORTS_FOLDER_NAME_BASE"
+val EXPORTS_FOLDER_NAME_ALT = EXPORTS_FOLDER_NAME_BASE
+
+val LOGS_FOLDER_NAME_BASE = "LOGS"
+val LOGS_FOLDER_NAME = "${ADMIN_PREFIX}LOGS"
+val LOGS_FOLDER_NAME_ALT = LOGS_FOLDER_NAME_BASE
+
+const val PROP_NAME = "properties"
 const val LOG_INSTANCE = "%s.log"
 const val BACKUP_INSTANCE_REGEX_PATTERN = """\d\d\d\d-\d\d-\d\d-\d\d-\d\d-\d\d(-\d\d\d)?-user_\d+"""
-const val BACKUP_INSTANCE_DIR = "%s-user_%s"
-const val BACKUP_INSTANCE_PROPERTIES = "$BACKUP_INSTANCE_DIR.properties"
+fun backupInstanceDir(packageInfo: PackageInfo, dateTimeStr: String) = "$dateTimeStr-user_${packageInfo.profileId}"
+fun backupInstanceDirFlat(packageInfo: PackageInfo, dateTimeStr: String) = "${packageInfo.packageName}-$dateTimeStr-user_${packageInfo.profileId}"
+fun backupInstanceProps(packageInfo: PackageInfo, dateTimeStr: String) = "${backupInstanceDir(packageInfo, dateTimeStr)}.$PROP_NAME"
+fun backupInstancePropsFlat(packageInfo: PackageInfo, dateTimeStr: String) = "${backupInstanceDirFlat(packageInfo, dateTimeStr)}.$PROP_NAME"
+const val BACKUP_INSTANCE_PROPERTIES_INDIR = "backup.$PROP_NAME"
+const val BACKUP_PACKAGE_FOLDER_REGEX_PATTERN = """\w+(\.\w+)+"""
+val BACKUP_SPECIAL_FILE_REGEX_PATTERN = """(^\.|^$ADMIN_PREFIX)"""
+val BACKUP_SPECIAL_FOLDER_REGEX_PATTERN = """(^\.|^$ADMIN_PREFIX|$EXPORTS_FOLDER_NAME_BASE|$LOGS_FOLDER_NAME_BASE|$SELECTIONS_FOLDER_NAME_BASE)"""
 const val EXPORTS_INSTANCE = "%s.scheds"
+
+const val MIME_TYPE_FILE = "application/octet-stream"
+const val MIME_TYPE_DIR = DocumentsContract.Document.MIME_TYPE_DIR
 
 const val MAIN_DB_NAME = "main.db"
 const val PACKAGES_LIST_GLOBAL_ID = -1L

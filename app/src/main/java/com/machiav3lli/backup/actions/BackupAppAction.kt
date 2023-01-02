@@ -19,8 +19,6 @@ package com.machiav3lli.backup.actions
 
 import android.annotation.SuppressLint
 import android.content.Context
-import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
-import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES
 import com.machiav3lli.backup.MODE_APK
 import com.machiav3lli.backup.MODE_DATA
 import com.machiav3lli.backup.MODE_DATA_DE
@@ -67,7 +65,6 @@ import org.apache.commons.compress.compressors.gzip.GzipParameters
 import timber.log.Timber
 import java.io.IOException
 import java.io.OutputStream
-import java.nio.charset.StandardCharsets
 
 const val COMPRESSION_ALGORITHM = "gz"
 
@@ -128,8 +125,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             fun handleException(e: Throwable): ActionResult {
                 val message =
                     "${e.javaClass.simpleName}: ${e.message}${e.cause?.let { " - ${it.message}" }}"
-                Timber.e("Backup failed due to $message")
-                Timber.d("Backup deleted: ${backupBuilder.backupPath.delete()}")
+                Timber.e("Backup failed: $message")
                 return ActionResult(app, null, message, false)
             }
 
@@ -207,9 +203,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
 
                 backup = backupBuilder.createBackup()
 
-                saveBackupProperties(appBackupRoot, backup)  //TODO hg42 move to Package
-
-                ok = true
+                ok = saveBackupProperties(backupBuilder.backupPropsFile, backup)
 
             } catch (e: BackupFailedException) {
                 return handleException(e)
@@ -230,8 +224,10 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 // TODO maybe need to handle some emergent props
                 if (ok)
                     app.addBackup(backup)
-                else
+                else {
+                    Timber.d("Backup failed -> deleting it")
                     app.deleteBackup(backup)
+                }
             }
         } finally {
             work?.setOperation("end")
@@ -242,20 +238,23 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
 
     @Throws(IOException::class)
     protected fun saveBackupProperties(
-        packageBackupDir: StorageFile,
+        propertiesFile: StorageFile,
         backup: Backup
-    ) {
-        val propertiesFileName = String.format(
-            BACKUP_INSTANCE_PROPERTIES,
-            BACKUP_DATE_TIME_FORMATTER.format(backup.backupDate), backup.profileId
-        )
-        val propertiesFile = packageBackupDir.createFile(propertiesFileName)
-        propertiesFile.outputStream()?.use { propertiesOut ->
-            propertiesOut.write(
-                backup.toJSON().toByteArray(StandardCharsets.UTF_8)
-            )
+    ) : Boolean {
+        //propertiesFile.parent?.let { dir ->       //TODO WECH
+        //    propertiesFile.name?.let { name ->
+        //        dir.createFile(name)
+        //        propertiesFile.writeText(backup.toJSON())
+        //        Timber.i("Wrote $propertiesFile file for backup: $backup")
+        //        return true
+        //    }
+        //}
+        propertiesFile.createFile()?.let { it ->
+            it.writeText(backup.toJSON())
+            Timber.i("Wrote $it for backup: $backup")
+            return true
         }
-        Timber.i("Wrote $propertiesFile file for backup: $backup")
+        return false
     }
 
     @Throws(IOException::class, CryptoSetupException::class)

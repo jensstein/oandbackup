@@ -301,6 +301,18 @@ val pref_useBackupRestoreWithSelection = BooleanPref(
 
 //---------------------------------------- developer settings - implementation alternatives
 
+val pref_flatStructure = BooleanPref(
+    key = "dev-alt.flatStructure",
+    summary = "use a flat directory structure",
+    defaultValue = false
+)
+
+val pref_propertiesInDir = BooleanPref(
+    key = "dev-alt.propertiesInDir",
+    summary = "store the properties inside the backup directory",
+    defaultValue = false
+)
+
 val pref_altListItem = BooleanPref(
     key = "dev-alt.altListItem",
     summary = "alternate package list item implementation",

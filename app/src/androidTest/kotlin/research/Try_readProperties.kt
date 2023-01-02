@@ -135,7 +135,7 @@ class Try_readProperties {
                             treeUri,
                             id
                         )
-                    val file = StorageFile(null, OABX.context, documentUri, name)
+                    val file = StorageFile(null, documentUri, OABX.context, name)
                     if (file.isPropertyFile)
                         Backup.createFrom(file)?.let {
                             backupList.add(it)

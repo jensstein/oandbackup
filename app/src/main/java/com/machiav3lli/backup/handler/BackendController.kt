@@ -24,14 +24,16 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Process
-import com.machiav3lli.backup.ADMIN_PREFIX
+import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES_INDIR
 import com.machiav3lli.backup.BACKUP_INSTANCE_REGEX_PATTERN
-import com.machiav3lli.backup.EXPORTS_FOLDER_NAME_ALT
+import com.machiav3lli.backup.BACKUP_PACKAGE_FOLDER_REGEX_PATTERN
+import com.machiav3lli.backup.BACKUP_SPECIAL_FILE_REGEX_PATTERN
+import com.machiav3lli.backup.BACKUP_SPECIAL_FOLDER_REGEX_PATTERN
 import com.machiav3lli.backup.IGNORED_PERMISSIONS
-import com.machiav3lli.backup.LOG_FOLDER_NAME_ALT
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.PROP_NAME
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.ignoredPackages
 import com.machiav3lli.backup.dbs.dao.AppInfoDao
@@ -43,10 +45,11 @@ import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.items.StorageFile.Companion.cacheInvalidate
+import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import com.machiav3lli.backup.preferences.pref_backupSuspendApps
-import com.machiav3lli.backup.utils.FileUtils
-import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
+import com.machiav3lli.backup.traceBackups
+import com.machiav3lli.backup.traceBackupsScan
+import com.machiav3lli.backup.utils.TraceUtils
 import com.machiav3lli.backup.utils.getBackupDir
 import com.machiav3lli.backup.utils.getInstalledPackageInfosWithPermissions
 import com.machiav3lli.backup.utils.specialBackupsEnabled
@@ -54,6 +57,170 @@ import timber.log.Timber
 import java.io.IOException
 import java.util.*
 import kotlin.system.measureTimeMillis
+
+val regexBackupInstance = Regex(BACKUP_INSTANCE_REGEX_PATTERN)
+val regexPackageFolder = Regex(BACKUP_PACKAGE_FOLDER_REGEX_PATTERN)
+val regexSpecialFolder = Regex(BACKUP_SPECIAL_FOLDER_REGEX_PATTERN)
+val regexSpecialFile = Regex(BACKUP_SPECIAL_FILE_REGEX_PATTERN)
+
+fun scanBackups(
+    directory: StorageFile,
+    packageName: String = "",
+    rootDir: StorageFile = OABX.context.getBackupDir(),
+    level: Int = 0,
+    onPropsFile: (StorageFile) -> Unit,
+) {
+
+    val files = directory.listFiles()
+    val names = files.map { it.name }
+
+    fun formatBackupFile(file: StorageFile) = "${file.path?.replace(rootDir.path ?: "", "")}"
+
+    fun traceBackupsScanPackage(todo: () -> String) {
+        if (packageName.isNotEmpty())
+            traceBackupsScan(todo)
+    }
+
+    files
+        .forEach { file ->
+            file.name?.let { name ->
+                if (name.contains(regexPackageFolder) ||
+                    name.contains(regexBackupInstance)
+                ) {
+                    if (name.contains(packageName)) {
+                        if (name.contains(regexBackupInstance)) {
+                            traceBackupsScanPackage {
+                                ":::${"|:::".repeat(level)}b     ${
+                                    formatBackupFile(file)
+                                } backupInstance"
+                            }
+                            if (file.isPropertyFile &&
+                                !name.contains(regexSpecialFile)
+                            ) {
+                                traceBackupsScanPackage {
+                                    ":::${"|:::".repeat(level)}>     ${
+                                        formatBackupFile(file)
+                                    } ++++++++++++++++++++ props ok"
+                                }
+                                try {
+                                    onPropsFile(file)
+                                } catch (_: Throwable) {
+                                    if (!name.contains(regexSpecialFile))
+                                        file.renameTo(".ERROR.${file.name}")
+                                }
+                            } else {
+                                if (name.contains(regexPackageFolder) &&
+                                    !name.contains(regexSpecialFolder) &&
+                                    file.isDirectory
+                                ) {
+                                    if ("${file.name}.${PROP_NAME}" !in names)
+                                        try {
+                                            file.findFile(BACKUP_INSTANCE_PROPERTIES_INDIR)
+                                                ?.let {
+                                                    try {
+                                                        onPropsFile(it)
+                                                    } catch (_: Throwable) {
+                                                        // rename the folder, becasue the whole backup is damaged
+                                                        file.name?.let { name ->
+                                                            if (!name.contains(regexSpecialFolder))
+                                                                file.renameTo(".ERROR.${file.name}")
+                                                        }
+                                                    }
+                                                }
+                                        } catch (_: Throwable) {
+                                            file.renameTo(".ERROR.${file.name}")
+                                        }
+                                }
+                            }
+                        } else {
+                            if (file.isPropertyFile &&
+                                !name.contains(regexSpecialFile)
+                            ) {
+                                traceBackupsScanPackage {
+                                    ":::${"|:::".repeat(level)}> ${
+                                        formatBackupFile(file)
+                                    } ++++++++++++++++++++ props ok"
+                                }
+                                onPropsFile(file)
+                            } else {
+                                if (file.isDirectory) {
+                                    traceBackupsScanPackage {
+                                        ":::${"|:::".repeat(level)}/     ${
+                                            formatBackupFile(file)
+                                        } //////////////////// dir ok"
+                                    }
+                                    scanBackups(
+                                        file,
+                                        packageName = packageName,
+                                        rootDir = rootDir,
+                                        level = level + 1,
+                                        onPropsFile = onPropsFile
+                                    )
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    if (!name.contains(regexSpecialFolder) &&
+                        file.isDirectory
+                    ) {
+                        traceBackupsScanPackage {
+                            ":::${"|:::".repeat(level)}F     ${
+                                formatBackupFile(file)
+                            } %%%%%%%%%%%%%%%%%%%% folder ok"
+                        }
+                        scanBackups(
+                            file,
+                            packageName = packageName,
+                            rootDir = rootDir,
+                            level = level + 1,
+                            onPropsFile = onPropsFile
+                        )
+                    }
+
+                }
+            }
+        }
+}
+
+fun Context.getBackups(packageName: String = ""): Map<String, List<Backup>> {
+
+    if (packageName.isEmpty())
+        OABX.beginBusy("getBackups($packageName)")
+
+    val backups = mutableListOf<Backup>()
+
+    val backupDir = getBackupDir()
+
+    if (packageName.isEmpty()) {
+        invalidateCache {
+            it.startsWith(backupDir.path ?: "")
+        }
+    } else {
+        invalidateCache {
+            it.startsWith(backupDir.path ?: "") &&
+                    it.contains(packageName)
+        }
+    }
+
+    scanBackups(backupDir, packageName) { propsFile ->
+        Backup.createFrom(propsFile)
+            ?.let(backups::add)
+            ?: run {
+                throw Exception("props file ${propsFile.path} not loaded")
+            }
+    }
+
+    val backupsMap = backups.groupBy { it.packageName }
+
+    if (packageName.isNotEmpty())
+        traceBackups { "<$packageName> getBackups: ${TraceUtils.formatSortedBackups(backupsMap[packageName])}}" }
+
+    if (packageName.isEmpty())
+        OABX.endBusy("getBackups($packageName)")
+
+    return backupsMap
+}
 
 // TODO respect special filter
 fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
@@ -68,37 +235,6 @@ fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
                     || (if (filter and MAIN_FILTER_USER == MAIN_FILTER_USER) !isSystem && !isIgnored else false)
         }
         .toList()
-
-fun Context.getBackups(packageName: String = ""): Map<String, List<Backup>> {
-
-    OABX.beginBusy("read backups")
-
-    val regexBackupInstance = Regex(BACKUP_INSTANCE_REGEX_PATTERN)
-
-    val backupList = mutableListOf<Backup>()
-    getBackupDir().listFiles()
-        .filter(StorageFile::isPropertyFile)
-        .filter { it.name?.contains(packageName) ?: true }
-        .forEach { propFile ->
-            Backup.createFrom(propFile)?.let(backupList::add)  //TODO hg42 ?: handleDamagedBackup()
-        }
-    getBackupPackageDirectories()
-        .filter { it.name?.contains(packageName) ?: true }
-        .filterNot { it.name?.matches(regexBackupInstance) ?: false }
-        .map {
-            it.listFiles()
-                .filter(StorageFile::isPropertyFile)
-                .forEach { propFile ->
-                    Backup.createFrom(propFile)
-                        ?.let(backupList::add)  //TODO hg42 ?: handleDamagedBackup()
-                }
-        }
-    val backupsMap = backupList.groupBy { it.packageName }
-
-    OABX.endBusy("read backups")
-
-    return backupsMap
-}
 
 fun Context.getInstalledPackageList(): MutableList<Package> { // only used in ScheduledActionTask
 
@@ -180,7 +316,7 @@ fun List<Package>.toAppInfoList(): List<AppInfo> =
 fun List<AppInfo>.toPackageList(
     context: Context,
     blockList: List<String> = listOf(),
-    backupMap: Map<String, List<Backup>> = mapOf()
+    backupMap: Map<String, List<Backup>> = mapOf(),
 ): MutableList<Package> {
 
     var packageList: MutableList<Package> = mutableListOf()
@@ -236,26 +372,33 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
     OABX.beginBusy("updateAppTables")
 
     try {
-        val pm = packageManager
-        val installedPackageInfos = pm.getInstalledPackageInfosWithPermissions()
+        val installedPackageInfos = packageManager.getInstalledPackageInfosWithPermissions()
         val installedNames = installedPackageInfos.map { it.packageName }.toSet()
 
-        if (!OABX.appsSuspendedChecked && pref_backupSuspendApps.value) {
-            installedNames.filter { packageName ->
-                0 != (OABX.activity?.packageManager
-                    ?.getPackageInfo(packageName, 0)
-                    ?.applicationInfo
-                    ?.flags
-                    ?: 0) and ApplicationInfo.FLAG_SUSPENDED
-            }.apply {
-                OABX.main?.whileShowingSnackBar(getString(R.string.supended_apps_cleanup)) {
-                    // cleanup suspended package if lock file found
-                    this.forEach { packageName ->
-                        runAsRoot("pm unsuspend $packageName")
+        try {
+            OABX.beginBusy("unsuspend")
+
+            if (!OABX.appsSuspendedChecked && pref_backupSuspendApps.value) {
+                installedNames.filter { packageName ->
+                    0 != (OABX.activity?.packageManager
+                        ?.getPackageInfo(packageName, 0)
+                        ?.applicationInfo
+                        ?.flags
+                        ?: 0) and ApplicationInfo.FLAG_SUSPENDED
+                }.apply {
+                    OABX.main?.whileShowingSnackBar(getString(R.string.supended_apps_cleanup)) {
+                        // cleanup suspended package if lock file found
+                        this.forEach { packageName ->
+                            runAsRoot("pm unsuspend $packageName")
+                        }
+                        OABX.appsSuspendedChecked = true
                     }
-                    OABX.appsSuspendedChecked = true
                 }
             }
+        } catch (e: Throwable) {
+            logException(e)
+        } finally {
+            OABX.endBusy("unsuspend")
         }
 
         val backups = mutableListOf<Backup>()
@@ -272,27 +415,31 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
         val specialPackages = SpecialInfo.getSpecialPackages(this)
         val specialNames = specialPackages.map { it.packageName }.toSet()
 
+        OABX.beginBusy("uninstalledPackagesWithBackup")
+
         val uninstalledPackagesWithBackup =
             (backupsMap.keys - installedNames - specialNames)
                 .mapNotNull {
-                    //try {
-                    //    // TODO Add a direct constructor
-                    //    //val pkg = Package(this, it)
-                    //    //pkg
                     backupsMap[it]?.maxByOrNull { it.backupDate }?.toAppInfo()
-                    //} catch (e: AssertionError) {
-                    //    Timber.e("Could not process backup folder for uninstalled application in $it: $e")
-                    //    null
-                    //}
                 }
+
+        OABX.endBusy("uninstalledPackagesWithBackup")
+
+        OABX.beginBusy("appInfoList")
 
         val appInfoList =
             installedPackageInfos
                 .map { AppInfo(this, it) }
                 .union(uninstalledPackagesWithBackup)
 
+        OABX.endBusy("appInfoList")
+
+        OABX.beginBusy("dbUpdate")
+
         backupDao.updateList(*backups.toTypedArray())
         appInfoDao.updateList(*appInfoList.toTypedArray())
+
+        OABX.endBusy("dbUpdate")
 
     } catch (e: Throwable) {
         logException(e)
@@ -301,40 +448,10 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
     }
 }
 
-@Throws(
-    FileUtils.BackupLocationInAccessibleException::class,
-    StorageLocationNotConfiguredException::class
-)
-fun Context.getBackupPackageDirectories(): List<StorageFile> {
-
-    try {
-        OABX.beginBusy("getBackupPackageDirectories")
-
-        //StorageFile.invalidateCache()     // no -> only invalidate the backups
-        val backupRoot = getBackupDir()
-        cacheInvalidate(backupRoot)         // only invalidate the backups (TODO but forcing it should probably be somewhere else, e.g. button action)
-        return backupRoot.listFiles()
-            .filter {
-                it.isDirectory &&
-                        it.name != LOG_FOLDER_NAME_ALT &&
-                        it.name != EXPORTS_FOLDER_NAME_ALT &&
-                        !(it.name?.startsWith(ADMIN_PREFIX) ?: false) &&
-                        !(it.name?.startsWith('.') ?: false)
-            }
-            .toList()
-    } catch (e: Throwable) {
-        LogsHandler.unhandledException(e)
-    } finally {
-        OABX.endBusy("getBackupPackageDirectories")
-    }
-
-    return arrayListOf()
-}
-
 @Throws(PackageManager.NameNotFoundException::class)
 fun Context.getPackageStorageStats(
     packageName: String,
-    storageUuid: UUID = packageManager.getApplicationInfo(packageName, 0).storageUuid
+    storageUuid: UUID = packageManager.getApplicationInfo(packageName, 0).storageUuid,
 ): StorageStats? {
     val storageStatsManager = getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager
     return try {

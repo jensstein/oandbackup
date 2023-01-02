@@ -181,8 +181,8 @@ class AppSheet() : BaseSheet(), ActionListener {
                 mutableStateOf(pkg.iconData)
             }
             if (refreshNow) {
-                requireMainActivity().updatePackage(pkg.packageName)
                 viewModel.refreshNow.value = false
+                requireMainActivity().updatePackage(pkg.packageName)
             }
 
             AppTheme {

@@ -136,7 +136,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
     }
 
     private fun statFS(fmt: String): Long {
-        val res = cmd("$utilBoxQ stat -fc '%S $fmt' $quoted").split(" ".toRegex()).toTypedArray()
+        val res = cmd("$utilBoxQ stat -fc '%S $fmt' $quoted").split(" ").toTypedArray()
         return if (res.size != 2) Long.MAX_VALUE else try {
             res[0].toLong() * res[1].toLong()
         } catch (e: NumberFormatException) {

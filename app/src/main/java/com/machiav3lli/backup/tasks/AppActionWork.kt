@@ -134,11 +134,11 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                         }
                         //pi.refreshBackupList()  // who knows what happened in external space?
                     } catch (e: Throwable) {
-                        actionResult = ActionResult(
-                            pi, null,
-                            "not processed: $packageLabel: $e\n${e.stackTrace}", false
-                        )
-                        Timber.w("package: ${pi.packageLabel} result: $e")
+                        val message = "package not processed: $packageName $packageLabel: $e\n${
+                            LogsHandler.message(e, true)
+                        }"
+                        actionResult = ActionResult(pi, null, message, false)
+                        Timber.w(message)
                     }
                 }
             }
@@ -265,7 +265,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             backupBoolean: Boolean,
             notificationId: Int,
             batchName: String,
-            immediate: Boolean
+            immediate: Boolean,
         ): OneTimeWorkRequest {
             val builder = OneTimeWorkRequest.Builder(AppActionWork::class.java)
 

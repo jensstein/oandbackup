@@ -180,7 +180,7 @@ class MainActivityX : BaseActivity() {
                             Looper.loop()
                         }
                     }.start()
-                } catch (e: Throwable) {
+                } catch (_: Throwable) {
                     // ignore
                 } finally {
                     exitProcess(2)

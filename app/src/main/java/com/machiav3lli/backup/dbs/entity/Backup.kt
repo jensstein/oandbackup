@@ -24,13 +24,11 @@ import android.os.Build
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
-import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
-import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER_OLD
-import com.machiav3lli.backup.BACKUP_INSTANCE_DIR
+import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES_INDIR
+import com.machiav3lli.backup.BACKUP_INSTANCE_REGEX_PATTERN
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.BACKUP_INSTANCE_REGEX_PATTERN
-import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.PROP_NAME
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
 import com.machiav3lli.backup.handler.grantedPermissions
 import com.machiav3lli.backup.items.StorageFile
@@ -77,19 +75,6 @@ data class Backup constructor(
     @ColumnInfo(defaultValue = "0")
     var persistent: Boolean = false,
 ) {
-    private val backupFolderNameOld
-        get() = String.format(
-            BACKUP_INSTANCE_DIR,
-            BACKUP_DATE_TIME_FORMATTER_OLD.format(backupDate),
-            profileId
-        )
-    private val backupFolderName
-        get() = String.format(
-            BACKUP_INSTANCE_DIR,
-            BACKUP_DATE_TIME_FORMATTER.format(backupDate),
-            profileId
-        )
-
     constructor(
         context: Context,
         pi: PackageInfo,
@@ -216,7 +201,7 @@ data class Backup constructor(
             '}'
 
     override fun equals(other: Any?): Boolean = when {
-        this === other                      -> true
+        this === other -> true
         javaClass != other?.javaClass
                 || other !is Backup
                 || backupVersionCode != other.backupVersionCode
@@ -241,14 +226,13 @@ data class Backup constructor(
                 || iv != null && !iv.contentEquals(other.iv)
                 || iv == null && other.iv != null
                 || cpuArch != other.cpuArch
-                || backupFolderName != other.backupFolderName
                 || isEncrypted != other.isEncrypted
                 || permissions != other.permissions
                 || persistent != other.persistent
                 || file?.path != other.file?.path
                 || dir?.path != other.dir?.path
-                || tag != other.tag -> false
-        else                        -> true
+                       -> false
+        else           -> true
     }
 
     override fun hashCode(): Int {
@@ -272,10 +256,11 @@ data class Backup constructor(
         result = 31 * result + (cipherType?.hashCode() ?: 0)
         result = 31 * result + (iv?.contentHashCode() ?: 0)
         result = 31 * result + (cpuArch?.hashCode() ?: 0)
-        result = 31 * result + backupFolderName.hashCode()
         result = 31 * result + isEncrypted.hashCode()
         result = 31 * result + permissions.hashCode()
         result = 31 * result + persistent.hashCode()
+        result = 31 * result + file?.path.hashCode()
+        result = 31 * result + dir?.path.hashCode()
         return result
     }
 
@@ -283,15 +268,17 @@ data class Backup constructor(
 
     class BrokenBackupException @JvmOverloads internal constructor(
         message: String?,
-        cause: Throwable? = null
+        cause: Throwable? = null,
     ) : Exception(message, cause)
 
     @Ignore
     @Transient
     var file: StorageFile? = null
+
     @Ignore
     @Transient
     var dir: StorageFile? = null
+
     @Ignore
     @Transient
     var tag: String? = null
@@ -311,36 +298,50 @@ data class Backup constructor(
 
                 val backup = fromJson(json)
 
-                val pkg = "PKG"
+                val pkg = "📦" // "📁"
                 val regexBackupInstance = Regex("""($pkg-)?$BACKUP_INSTANCE_REGEX_PATTERN""")
-                backup.file = propertiesFile
-                propertiesFile.name?.removeSuffix(".properties")?.let { dirName ->
-                    propertiesFile.parent?.let { parent ->
-                        parent.findFile(dirName)?.let { dir ->
-                            backup.tag = dir.path?.let {
-                                it
-                                    .replace(OABX.context.getBackupDir().path ?: "", "")
-                                    .replace(backup.packageName, pkg)
-                                    .replace(regexBackupInstance,"")
-                                    .replace(Regex("""[-:\s]+"""), "-")
-                                    .replace(Regex("""/+"""), "/")
-                                    .replace(Regex("""[-]$"""), "")
-                                    .replace(Regex("""^[-/]"""), "")
+
+                var dir: StorageFile? = null
+                val name = propertiesFile.name
+                var tagSuffix = ""
+                if (name == BACKUP_INSTANCE_PROPERTIES_INDIR) {
+                    dir = propertiesFile.parent
+                    tagSuffix = "🔹"
+                } else {
+                    val baseName = propertiesFile.name?.removeSuffix(".$PROP_NAME")
+                    baseName?.let { dirName ->
+                        propertiesFile.parent?.let { parent ->
+                            parent.findFile(dirName)?.let {
+                                dir = it
                             }
-                            backup.dir = dir
                         }
                     }
                 }
+
+                backup.file = propertiesFile
+                backup.dir = dir
+                backup.tag = dir?.path?.let {
+                    it
+                        .replace(OABX.context.getBackupDir()?.path ?: "", "")
+                        .replace(backup.packageName, pkg)
+                        .replace(regexBackupInstance, "")
+                        .replace(Regex("""[-:\s]+"""), "-")
+                        .replace(Regex("""/+"""), "/")
+                        .replace(Regex("""[-]+$"""), "")
+                        .replace(Regex("""^[-/]+"""), "")
+
+                } + tagSuffix
+
                 return backup
 
             } catch (e: FileNotFoundException) {
-                logException(e, "Cannot open ${propertiesFile.path}")
+                logException(e, "Cannot open ${propertiesFile.path}", backTrace = false)
                 return null
             } catch (e: IOException) {
-                logException(e, "Cannot read ${propertiesFile.path}")
+                logException(e, "Cannot read ${propertiesFile.path}", backTrace = false)
                 return null
             } catch (e: Throwable) {
-                LogsHandler.unhandledException(e, "file: ${propertiesFile.path} =\n$json")
+                logException(e, "file: ${propertiesFile.path} =\n$json", backTrace = false)
                 return null
             }
         }

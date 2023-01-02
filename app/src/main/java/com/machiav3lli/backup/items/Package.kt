@@ -28,6 +28,7 @@ import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.getBackups
 import com.machiav3lli.backup.handler.getPackageStorageStats
+import com.machiav3lli.backup.preferences.pref_flatStructure
 import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
@@ -46,7 +47,8 @@ class Package {
     var backupList: List<Backup>
         get() {
             val backups = OABX.main?.viewModel?.backupsMap?.getOrPut(packageName) {
-                refreshBackupList()
+                //refreshBackupList()
+                getBackupsFromBackupDir()
             } ?: emptyList()
             return backups
         }
@@ -154,7 +156,13 @@ class Package {
     }
 
     fun updateBackupList(backups: List<Backup>) {
-        traceBackups { "<$packageName> updateBackupList: ${TraceUtils.formatSortedBackups(backups)} ${TraceUtils.methodName(2)}" }
+        traceBackups {
+            "<$packageName> updateBackupList: ${TraceUtils.formatSortedBackups(backups)} ${
+                TraceUtils.methodName(
+                    2
+                )
+            }"
+        }
         backupList = backups
     }
 
@@ -174,9 +182,9 @@ class Package {
         }
     }
 
-    fun getBackupsFromBackupDir() : List<Backup> {
-        invalidateBackupCacheForPackage(packageName)
-        val backups = OABX.context.getBackups(packageName)  //TODO hg42 may also find glob *packageName* for now
+    fun getBackupsFromBackupDir(): List<Backup> {
+        val backups =
+            OABX.context.getBackups(packageName)  //TODO hg42 may also find glob *packageName* for now
         return backups[packageName] ?: emptyList()
     }
 
@@ -200,12 +208,16 @@ class Package {
         create: Boolean = false
     ): StorageFile? {
         return try {
-            when {
-                create -> {
-                    OABX.context.getBackupDir().ensureDirectory(packageName)
-                }
-                else -> {
-                    OABX.context.getBackupDir().findFile(packageName)
+            if (pref_flatStructure.value) {
+                OABX.context.getBackupDir()
+            } else {
+                when {
+                    create -> {
+                        OABX.context.getBackupDir().ensureDirectory(packageName)
+                    }
+                    else   -> {
+                        OABX.context.getBackupDir().findFile(packageName)
+                    }
                 }
             }
         } catch (e: Throwable) {
@@ -231,9 +243,10 @@ class Package {
         runChecked { backup.file?.delete() }
         parent?.let {
             if (parent.path != OABX.context.getBackupDir().path)
-                runChecked {
-                    if (it.listFiles(noCache = true).isEmpty())
-                        it.delete()
+                try {
+                    it.delete()     // delete the directory (but never the contents)
+                } catch(_: Throwable) {
+                    // ignore
                 }
         }
         runChecked {
@@ -242,7 +255,10 @@ class Package {
         }
     }
 
-    fun rewriteBackup(backup: Backup, changedBackup: Backup) {      //TODO hg42 change to rewriteBackup(backup: Backup, applyParameters)
+    fun rewriteBackup(
+        backup: Backup,
+        changedBackup: Backup
+    ) {      //TODO hg42 change to rewriteBackup(backup: Backup, applyParameters)
         traceBackups { "<${changedBackup.packageName}> rewrite backup ${changedBackup.backupDate}" }
         changedBackup.file = backup.file
         changedBackup.dir = backup.dir
@@ -268,7 +284,7 @@ class Package {
         val backups = backupsNewestFirst.toMutableList()
         while (backups.isNotEmpty())
             deleteBackup(backups.removeLast())
-        refreshBackupList()
+        //refreshBackupList()
     }
 
     fun deleteOldestBackups(keep: Int) {
@@ -417,7 +433,7 @@ class Package {
         get() = latestBackup?.let { it.versionCode < versionCode } ?: false
 
     val isNew: Boolean
-        get() = !hasBackups && !isSystem    //TODO && versionCode > lastSeenVersionCode
+        get() = !hasBackups && !isSystem    //TODO hg42 && versionCode > lastSeenVersionCode
 
     val isNewOrUpdated: Boolean
         get() = isUpdated || isNew

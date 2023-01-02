@@ -140,7 +140,7 @@ object BackupRestoreHelper {
 
     fun housekeepingPackageBackups(app: Package) {
 
-        //app.refreshBackupList()
+        app.refreshBackupList()
 
         val numBackupRevisions =
             pref_numBackupRevisions.value

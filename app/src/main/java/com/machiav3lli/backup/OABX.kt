@@ -138,15 +138,21 @@ val traceBackups = TraceUtils.TracePref(
     default = true
 )
 
-val traceCompose = TraceUtils.TracePref(
-    name = "Compose",
-    summary = "trace recomposition of UI elements",
+val traceBackupsScan = TraceUtils.TracePref(
+    name = "BackupsScan",
+    summary = "trace scanning of backup directory for properties files",
     default = false
 )
 
 val traceBackupProps = TraceUtils.TracePref(
     name = "BackupProps",
     summary = "trace backup properties (json)",
+    default = false
+)
+
+val traceCompose = TraceUtils.TracePref(
+    name = "Compose",
+    summary = "trace recomposition of UI elements",
     default = false
 )
 
