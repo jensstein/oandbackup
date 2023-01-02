@@ -16,6 +16,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,7 +54,10 @@ fun DevPrefsGroup(prefs: List<Pref>, heading: String) {
 
     Card(
         modifier = Modifier
-            .clickable { expand(!expanded) }
+            .clickable { expand(!expanded) },
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp)
+        )
     ) {
         PrefsGroupHeading(
             heading = heading,
@@ -86,7 +92,9 @@ fun DevPrefGroups() {
     val devNewOptions = Pref.preferences["dev-new"] ?: listOf()
     val devFakeOptions = Pref.preferences["dev-fake"] ?: listOf()
 
-    Column {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
         DevPrefsGroup(prefs = devUserOptions, heading = "advanced users (for those who know)")
         DevPrefsGroup(prefs = devFileOptions, heading = "file handling")
         DevPrefsGroup(prefs = devLogOptions, heading = "logging")
@@ -148,6 +156,7 @@ fun AdvancedPrefsPage() {
             val scroll = rememberScrollState()
             Column(                    //TODO hg42 another workaround for weird animation behavior
                 Modifier
+                    .fillMaxSize()
                     .verticalScroll(scroll)
                     .padding(PaddingValues(8.dp)),
                 verticalArrangement = Arrangement.spacedBy(0.dp)
@@ -193,6 +202,12 @@ val pref_iconCrossFade = IntPref(
     summary = "[ms] time for crossfading placeholder to icon",
     entries = ((0..450 step 50) + (500..2000 step 500)).toList(),
     defaultValue = 200
+)
+
+val pref_allPrefsShouldLookEqual = BooleanPref(
+    key = "dev-adv.allPrefsShouldLookEqual",
+    summary = "all preferences should be worth the same 🙂 regardless of their position in the list, meaning: don't shade backgrounds from top to bottom",
+    defaultValue = false
 )
 
 val pref_cancelOnStart = BooleanPref(
