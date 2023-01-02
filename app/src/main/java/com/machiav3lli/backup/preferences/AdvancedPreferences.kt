@@ -191,9 +191,15 @@ fun AdvancedPrefsPage() {
 
 //---------------------------------------- developer settings - advanced users
 
-val pref_quickerList = BooleanPref(
-    key = "dev-adv.quickerList",
-    summary = "reduce package list items for quicker usage",
+val pref_hidePackageIcon = BooleanPref(
+    key = "dev-adv.hidePackageIcon",
+    summary = "speed up package list by hiding the package icon",
+    defaultValue = false
+)
+
+val pref_hideBackupLabels = BooleanPref(
+    key = "dev-adv.hideBackupLabels",
+    summary = "speed up package list by hiding the backup data type icons (keeps the package type)",
     defaultValue = false
 )
 

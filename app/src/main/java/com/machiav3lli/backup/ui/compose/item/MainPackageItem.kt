@@ -25,7 +25,6 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateMap
@@ -52,8 +51,8 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.preferences.pref_altListItem
+import com.machiav3lli.backup.preferences.pref_hidePackageIcon
 import com.machiav3lli.backup.preferences.pref_iconCrossFade
-import com.machiav3lli.backup.preferences.pref_quickerList
 import com.machiav3lli.backup.preferences.pref_useBackupRestoreWithSelection
 import com.machiav3lli.backup.traceTiming
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
@@ -470,7 +469,6 @@ fun MainPackageItemA(
 ) {
     beginNanoTimer("A.item")
 
-    val useIcons by remember(pref_quickerList.value) { mutableStateOf(!pref_quickerList.value) }
     val iconRequest = ImageRequest.Builder(OABX.context)
         .memoryCacheKey(pkg.packageName)
         .memoryCachePolicy(CachePolicy.ENABLED)
@@ -506,27 +504,12 @@ fun MainPackageItemA(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (useIcons)
+            if (!pref_hidePackageIcon.value)
                 PackageIcon(
                     item = pkg,
                     model = iconRequest,
                     imageLoader = imageLoader
                 )
-            //else {
-            //    beginNanoTimer("pkgIcon.text")
-            //    Text(
-            //        text = when {
-            //            pkg.isSpecial    -> "💲"
-            //            !pkg.isInstalled -> "☠"
-            //            pkg.isDisabled   -> "😷"
-            //            pkg.isSystem     -> "🤖"
-            //            else             -> "🙂"
-            //        },
-            //        modifier = iconSelector,
-            //        style = MaterialTheme.typography.headlineMedium
-            //    )
-            //    endNanoTimer("pkgIcon.text")
-            //}
 
             Column(
                 modifier = Modifier.wrapContentHeight()
@@ -617,7 +600,6 @@ fun MainPackageItemB(
 ) {
     beginNanoTimer("B.item")
 
-    val useIcons = !pref_quickerList.value
     val iconRequest = ImageRequest.Builder(OABX.context)
         .memoryCacheKey(pkg.packageName)
         .memoryCachePolicy(CachePolicy.ENABLED)
@@ -653,13 +635,12 @@ fun MainPackageItemB(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (useIcons) {
+            if (!pref_hidePackageIcon.value)
                 PackageIcon(item = pkg,
                     imageData = pkg.iconData,
                     imageLoader = imageLoader,
                 )
-            }
-
+            
             Column(
                 modifier = Modifier.wrapContentHeight()
             ) {

@@ -105,8 +105,8 @@ import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.preferences.pref_altPackageIcon
+import com.machiav3lli.backup.preferences.pref_hideBackupLabels
 import com.machiav3lli.backup.preferences.pref_iconCrossFade
-import com.machiav3lli.backup.preferences.pref_quickerList
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowSquareOut
 import com.machiav3lli.backup.ui.compose.icons.phosphor.AsteriskSimple
@@ -837,7 +837,8 @@ fun PackageLabels(
 ) {
     beginNanoTimer("pkgLabels")
 
-    if (item.hasBackups && !pref_quickerList.value) {
+    if (!pref_hideBackupLabels.value && item.hasBackups) {
+
         if (item.isUpdated) {
             ButtonIcon(
                 Phosphor.CircleWavyWarning, R.string.radio_updated,
@@ -881,6 +882,7 @@ fun PackageLabels(
             )
         }
     }
+
     ButtonIcon(
         when {
             item.isSpecial -> Phosphor.AsteriskSimple
