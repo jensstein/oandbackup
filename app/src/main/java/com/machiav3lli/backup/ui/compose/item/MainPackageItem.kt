@@ -52,17 +52,21 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.preferences.pref_altListItem
-import com.machiav3lli.backup.preferences.pref_altPackageIcon
 import com.machiav3lli.backup.preferences.pref_iconCrossFade
 import com.machiav3lli.backup.preferences.pref_quickerList
 import com.machiav3lli.backup.preferences.pref_useBackupRestoreWithSelection
+import com.machiav3lli.backup.traceTiming
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.TraceUtils.beginNanoTimer
 import com.machiav3lli.backup.utils.TraceUtils.endNanoTimer
+import com.machiav3lli.backup.utils.TraceUtils.logNanoTiming
+import com.machiav3lli.backup.utils.TraceUtils.nanoTiming
 import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.utils.getFormattedDate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+
+val logEachN = 1000L
 
 val yesNo = listOf(
     "yes" to "no",
@@ -192,7 +196,7 @@ fun MainPackageContextMenu(
     packageItem: Package,
     productsList: List<Package>,
     selection: SnapshotStateMap<String, Boolean>,
-    openSheet: (Package) -> Unit = {}
+    openSheet: (Package) -> Unit = {},
 ) {
     val visible = productsList
     val selectedAndVisible = visible.filter { selection[it.packageName] == true }
@@ -455,43 +459,6 @@ fun MainPackageContextMenu(
     }
 }
 
-@Composable
-fun PackageIconA(pkg: Package, imageLoader: ImageLoader) {
-
-    val imageData =
-        if (pkg.isSpecial) pkg.packageInfo.icon
-        else "android.resource://${pkg.packageName}/${pkg.packageInfo.icon}"
-
-    PackageIcon(pkg = pkg, imageData = imageData, modifier = Modifier, imageLoader = imageLoader)
-}
-
-@Composable
-fun PackageIconB(pkg: Package, imageLoader: ImageLoader) {
-
-    val imageData =
-        if (pkg.isSpecial) pkg.packageInfo.icon
-        else "android.resource://${pkg.packageName}/${pkg.packageInfo.icon}"
-
-    val model =
-        ImageRequest.Builder(OABX.context)
-            .memoryCacheKey(pkg.packageName)
-            .memoryCachePolicy(CachePolicy.ENABLED)
-            .crossfade(pref_iconCrossFade.value)
-            .data(imageData)
-            .build()
-
-    PackageIcon(pkg = pkg, model = model, modifier = Modifier, imageLoader = imageLoader)
-}
-
-@Composable
-fun PackageIcon(pkg: Package, imageLoader: ImageLoader) {
-
-    if (pref_altPackageIcon.value)
-        PackageIconB(pkg = pkg, imageLoader = imageLoader)
-    else
-        PackageIconA(pkg = pkg, imageLoader = imageLoader)
-}
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainPackageItemA(
@@ -501,6 +468,8 @@ fun MainPackageItemA(
     onLongClick: (Package) -> Unit = {},
     onAction: (Package) -> Unit = {},
 ) {
+    beginNanoTimer("A.item")
+
     val useIcons by remember(pref_quickerList.value) { mutableStateOf(!pref_quickerList.value) }
     val iconRequest = ImageRequest.Builder(OABX.context)
         .memoryCacheKey(pkg.packageName)
@@ -537,23 +506,27 @@ fun MainPackageItemA(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            beginNanoTimer("item.icon")
-
             if (useIcons)
-                PackageIcon(pkg = pkg, imageLoader = imageLoader)
-            else
-                Text(
-                    text = when {
-                        pkg.isSpecial    -> "💲"
-                        !pkg.isInstalled -> "☠"
-                        pkg.isDisabled   -> "😷"
-                        pkg.isSystem     -> "🤖"
-                        else             -> "🙂"
-                    },
-                    style = MaterialTheme.typography.headlineMedium
+                PackageIcon(
+                    item = pkg,
+                    model = iconRequest,
+                    imageLoader = imageLoader
                 )
-
-            endNanoTimer("item.icon")
+            //else {
+            //    beginNanoTimer("pkgIcon.text")
+            //    Text(
+            //        text = when {
+            //            pkg.isSpecial    -> "💲"
+            //            !pkg.isInstalled -> "☠"
+            //            pkg.isDisabled   -> "😷"
+            //            pkg.isSystem     -> "🤖"
+            //            else             -> "🙂"
+            //        },
+            //        modifier = iconSelector,
+            //        style = MaterialTheme.typography.headlineMedium
+            //    )
+            //    endNanoTimer("pkgIcon.text")
+            //}
 
             Column(
                 modifier = Modifier.wrapContentHeight()
@@ -569,11 +542,7 @@ fun MainPackageItemA(
                         maxLines = 1,
                         style = MaterialTheme.typography.titleMedium
                     )
-                    if (useIcons) {
-                        beginNanoTimer("item.labels")
-                        PackageLabels(item = pkg)
-                        endNanoTimer("item.labels")
-                    }
+                    PackageLabels(item = pkg)
                 }
 
                 Row(modifier = Modifier.fillMaxWidth()) {
@@ -594,7 +563,7 @@ fun MainPackageItemA(
                     //    }"
                     //}
 
-                    beginNanoTimer("item.package")
+                    beginNanoTimer("A.item.package")
                     Text(
                         text = pkg.packageName,
                         modifier = Modifier
@@ -606,9 +575,9 @@ fun MainPackageItemA(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    endNanoTimer("item.package")
+                    endNanoTimer("A.item.package")
 
-                    beginNanoTimer("item.backup")
+                    beginNanoTimer("A.item.backups")
                     AnimatedVisibility(visible = hasBackups) {
                         Text(
                             text = (latestBackup?.backupDate?.getFormattedDate(
@@ -620,12 +589,21 @@ fun MainPackageItemA(
                             style = MaterialTheme.typography.bodySmall,
                         )
                     }
-                    endNanoTimer("item.backup")
-
+                    endNanoTimer("A.item.backups")
                 }
             }
         }
     }
+
+    endNanoTimer("A.item")
+
+    if (traceTiming.pref.value)
+        nanoTiming["A.item.package"]?.let {
+            if (it.second > 0 && it.second % logEachN == 0L) {
+                logNanoTiming()
+                //clearNanoTiming("A.item")
+            }
+        }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -637,7 +615,18 @@ fun MainPackageItemB(
     onLongClick: (Package) -> Unit = {},
     onAction: (Package) -> Unit = {}
 ) {
-    val useIcons by remember(pref_quickerList.value) { mutableStateOf(!pref_quickerList.value) }
+    beginNanoTimer("B.item")
+
+    val useIcons = !pref_quickerList.value
+    val iconRequest = ImageRequest.Builder(OABX.context)
+        .memoryCacheKey(pkg.packageName)
+        .memoryCachePolicy(CachePolicy.ENABLED)
+        .crossfade(pref_iconCrossFade.value)
+        .size(48)
+        .allowConversionToBitmap(true)
+        .data(pkg.iconData)
+        .build()
+    imageLoader.enqueue(iconRequest)
 
     //traceCompose { "<${pkg.packageName}> MainPackageItemX ${pkg.packageInfo.icon} ${imageData.hashCode()}" }
     //traceCompose { "<${pkg.packageName}> MainPackageItemX" }
@@ -664,8 +653,12 @@ fun MainPackageItemB(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (useIcons)
-                PackageIcon(pkg = pkg, imageLoader = imageLoader)
+            if (useIcons) {
+                PackageIcon(item = pkg,
+                    imageData = pkg.iconData,
+                    imageLoader = imageLoader,
+                )
+            }
 
             Column(
                 modifier = Modifier.wrapContentHeight()
@@ -681,8 +674,9 @@ fun MainPackageItemB(
                         maxLines = 1,
                         style = MaterialTheme.typography.titleMedium
                     )
-                    if (useIcons)
-                        PackageLabels(item = pkg)
+                    beginNanoTimer("B.item.labels")
+                    PackageLabels(item = pkg)
+                    endNanoTimer("B.item.labels")
                 }
 
                 Row(modifier = Modifier.fillMaxWidth()) {
@@ -703,6 +697,7 @@ fun MainPackageItemB(
                     //    }"
                     //}
 
+                    beginNanoTimer("B.item.package")
                     Text(
                         text = pkg.packageName,
                         modifier = Modifier
@@ -714,7 +709,9 @@ fun MainPackageItemB(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+                    endNanoTimer("B.item.package")
 
+                    beginNanoTimer("B.item.backups")
                     AnimatedVisibility(visible = hasBackups) {
                         Text(
                             text = (latestBackup?.backupDate?.getFormattedDate(
@@ -726,11 +723,21 @@ fun MainPackageItemB(
                             style = MaterialTheme.typography.bodySmall,
                         )
                     }
-
+                    endNanoTimer("B.item.backups")
                 }
             }
         }
     }
+
+    endNanoTimer("B.item")
+
+    if (traceTiming.pref.value)
+        nanoTiming["B.item.package"]?.let {
+            if (it.second > 0 && it.second % logEachN == 0L) {
+                logNanoTiming()
+                //clearNanoTiming("B.item")
+            }
+        }
 }
 
 @Composable

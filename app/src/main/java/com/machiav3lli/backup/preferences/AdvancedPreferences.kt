@@ -349,13 +349,13 @@ val pref_propertiesInDir = BooleanPref(
 val pref_altListItem = BooleanPref(
     key = "dev-alt.altListItem",
     summary = "alternate package list item implementation",
-    defaultValue = false
+    defaultValue = true
 )
 
 val pref_altPackageIcon = BooleanPref(
     key = "dev-alt.altPackageIcon",
     summary = "alternate package icon implementation",
-    defaultValue = false
+    defaultValue = true
 )
 
 val pref_restoreAvoidTemporaryCopy = BooleanPref(

@@ -208,7 +208,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                PackageIcon(pkg = pkg, imageData = imageData)
+                                PackageIcon(item = pkg, imageData = imageData)
 
                                 Column(
                                     modifier = Modifier

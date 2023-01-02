@@ -55,7 +55,7 @@ fun UpdatedPackageItem(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            PackageIcon(pkg = item, imageData = imageData)
+            PackageIcon(item = item, imageData = imageData)
 
             Text(
                 text = item.packageLabel,
