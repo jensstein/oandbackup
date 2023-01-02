@@ -107,7 +107,9 @@ fun scanBackups(
                                     onPropsFile(file)
                                 } catch (_: Throwable) {
                                     if (!name.contains(regexSpecialFile))
-                                        file.renameTo(".ERROR.${file.name}")
+                                        runCatching {
+                                            file.renameTo(".ERROR.${file.name}")
+                                        }
                                 }
                             } else {
                                 if (name.contains(regexPackageFolder) &&
@@ -122,9 +124,14 @@ fun scanBackups(
                                                         onPropsFile(it)
                                                     } catch (_: Throwable) {
                                                         // rename the folder, becasue the whole backup is damaged
-                                                        file.name?.let { name ->
-                                                            if (!name.contains(regexSpecialFolder))
-                                                                file.renameTo(".ERROR.${file.name}")
+                                                        runCatching {
+                                                            file.name?.let { name ->
+                                                                if (!name.contains(
+                                                                        regexSpecialFolder
+                                                                    )
+                                                                )
+                                                                    file.renameTo(".ERROR.${file.name}")
+                                                            }
                                                         }
                                                     }
                                                 }
