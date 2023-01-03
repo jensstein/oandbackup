@@ -64,6 +64,7 @@ import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.utils.getFormattedDate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 
 val logEachN = 1000L
 
@@ -211,7 +212,7 @@ fun MainPackageContextMenu(
 
     fun launchPackagesAction(
         action: String,
-        todo: () -> Unit,
+        todo: suspend () -> Unit,
     ) {
         OABX.main?.viewModel?.viewModelScope?.launch {
             OABX.beginBusy(action)
@@ -220,7 +221,7 @@ fun MainPackageContextMenu(
         }
     }
 
-    fun forEachPackage(
+    suspend fun forEachPackage(
         packages: List<Package>,
         action: String,
         select: Boolean? = true,
@@ -228,9 +229,12 @@ fun MainPackageContextMenu(
     ) {
         packages.forEach { pkg ->
             if (select == true) selection[pkg.packageName] = false
+            yield()
             //OABX.addInfoText("$action ${pkg.packageName}")
             todo(pkg)
+            yield()
             select?.let { s -> selection[pkg.packageName] = s }
+            yield()
         }
     }
 
