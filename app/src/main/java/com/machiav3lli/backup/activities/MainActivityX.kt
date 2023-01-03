@@ -66,7 +66,6 @@ import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.pref_catchUncaughtException
 import com.machiav3lli.backup.pref_uncaughtExceptionsJumpToPreferences
 import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
-import com.machiav3lli.backup.preferences.pref_refreshOnStart
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.ui.compose.MutableComposableSharedFlow
@@ -217,9 +216,11 @@ class MainActivityX : BaseActivity() {
                 if (freshStart) {
                     SideEffect {
                         // runs earlier, maybe too early (I guess because it's independent from the view model)
-                        //traceBold { "******************** freshStart Sideffect ********************" }
+                        traceBold { "******************** freshStart Sideffect ********************" }
                         //viewModel.searchQuery.value = ""
                         //viewModel.modelSortFilter.value = OABX.context.sortFilterModel
+
+                        //refreshPackages()     // -> init { refreshList() } in viewModel
                     }
                 }
 
@@ -235,8 +236,7 @@ class MainActivityX : BaseActivity() {
                         if (viewModel.modelSortFilter is MutableComposableSharedFlow<*>)
                             viewModel.modelSortFilter.value = OABX.context.sortFilterModel
 
-                        if (pref_refreshOnStart.value)
-                            refreshPackages()
+                        //refreshPackages()     // -> init { refreshList() } in viewModel
                     }
                 }
 

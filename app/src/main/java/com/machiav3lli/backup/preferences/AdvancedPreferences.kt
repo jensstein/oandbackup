@@ -222,12 +222,6 @@ val pref_cancelOnStart = BooleanPref(
     defaultValue = false
 )
 
-val pref_refreshOnStart = BooleanPref(
-    key = "dev-adv.refreshOnStart",
-    summary = "automatically refresh package list on startup",
-    defaultValue = true
-)
-
 val pref_showInfoLogBar = BooleanPref(
     key = "dev-adv.showInfoLogBar",
     summaryId = R.string.prefs_showinfologbar_summary,

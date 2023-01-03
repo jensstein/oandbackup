@@ -64,9 +64,8 @@ class MainViewModel(
     var backupsMap = mutableMapOf<String, List<Backup>>()
 
     init {
-        // in some cases it's better to do it before everything else starts,
-        // but may be duplicated scanning in others, e.g if cache is cleared in between
-        //appContext.getBackups()
+        // do it early
+        refreshList()
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - FLOWS
@@ -98,7 +97,7 @@ class MainViewModel(
         //------------------------------------------------------------------------------------------ backupsMap
         db.backupDao.allFlow
             .mapLatest { it.groupBy(Backup::packageName) }
-            .trace { "*** backupsMapFlow <<- p=${it.size} b=${it.map { it.value.size }.sum()}" }
+            .trace { "*** backupsMapDb <<- p=${it.size} b=${it.map { it.value.size }.sum()}" }
             //.trace { "*** backupsMap <<- p=${it.size} b=${it.map { it.value.size }.sum()} #################### egg ${showSortedBackups(it["com.android.egg"])}" }  // for testing use com.android.egg
             .stateIn(
                 viewModelScope,
@@ -150,7 +149,7 @@ class MainViewModel(
         combine(db.appInfoDao.allFlow, backupsMapDb) { p, b ->
 
             traceFlows {
-                "******************** database - db: ${p.size} backups: ${
+                "******************** packages - db: ${p.size} backups: ${
                     b.map { it.value.size }.sum()
                 }"
             }
@@ -253,16 +252,13 @@ class MainViewModel(
     val updatedPackages =
         //------------------------------------------------------------------------------------------ updatedPackages
         notBlockedList
+            .trace { "updatePackages? ..." }
             .mapLatest { it.filter(Package::isUpdated).toMutableList() }
             .trace {
-                val updated = it.filter(Package::isUpdated)
-                val new = it.filter { it.isNewOrUpdated && !it.isUpdated }
-                "*** updatedPackages <<- updated: (${updated.size})${
-                    updated.map {
+                "*** updatedPackages <<- updated: (${it.size})${
+                    it.map {
                         "${it.packageName}(${it.versionCode}!=${it.latestBackup?.versionCode ?: ""})" 
                     }
-                } new: (${new.size})${
-                    new.map { "${it.packageName}(${it.numberOfBackups})" }
                 }"
             }
             .stateIn(
