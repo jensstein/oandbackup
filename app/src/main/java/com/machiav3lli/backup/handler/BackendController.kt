@@ -49,7 +49,6 @@ import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import com.machiav3lli.backup.preferences.pref_backupSuspendApps
 import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.traceBackupsScan
-import com.machiav3lli.backup.ui.compose.item.clearIconCache
 import com.machiav3lli.backup.utils.TraceUtils
 import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.utils.getInstalledPackageInfosWithPermissions
@@ -376,8 +375,6 @@ fun List<AppInfo>.toPackageList(
 fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
 
     OABX.beginBusy("updateAppTables")
-
-    clearIconCache()
 
     try {
         val installedPackageInfos = packageManager.getInstalledPackageInfosWithPermissions()

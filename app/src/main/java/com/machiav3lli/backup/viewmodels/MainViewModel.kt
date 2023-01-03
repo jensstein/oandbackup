@@ -37,6 +37,7 @@ import com.machiav3lli.backup.items.Package.Companion.invalidateCacheForPackage
 import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.traceFlows
 import com.machiav3lli.backup.ui.compose.MutableComposableFlow
+import com.machiav3lli.backup.ui.compose.item.limitIconCache
 import com.machiav3lli.backup.utils.TraceUtils.formatSortedBackups
 import com.machiav3lli.backup.utils.TraceUtils.trace
 import com.machiav3lli.backup.utils.applyFilter
@@ -156,6 +157,8 @@ class MainViewModel(
             }
 
             val pkgs = p.toPackageList(appContext, emptyList(), b)
+
+            limitIconCache(pkgs)
 
             traceFlows { "***** packages ->> ${pkgs.size}" }
             pkgs

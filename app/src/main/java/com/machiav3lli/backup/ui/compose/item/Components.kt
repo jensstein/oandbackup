@@ -107,6 +107,7 @@ import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.preferences.pref_altPackageIcon
 import com.machiav3lli.backup.preferences.pref_hideBackupLabels
 import com.machiav3lli.backup.preferences.pref_iconCrossFade
+import com.machiav3lli.backup.traceDebug
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowSquareOut
 import com.machiav3lli.backup.ui.compose.icons.phosphor.AsteriskSimple
@@ -237,6 +238,13 @@ var painterCache = mutableMapOf<Any, Painter>()         //TODO hg42 move somewhe
 
 fun clearIconCache() {                                  //TODO hg42 move somewhere else
     painterCache.clear()
+}
+
+fun limitIconCache(pkgs: List<Package>) {
+    ( painterCache.keys - pkgs.map { it.iconData } ).forEach {
+        traceDebug { "icon remove $it"}
+        painterCache.remove(it)
+    }
 }
 
 fun sizeOfIconCache() = painterCache.size               //TODO hg42 move somewhere else
