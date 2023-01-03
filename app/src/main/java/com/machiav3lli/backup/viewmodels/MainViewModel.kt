@@ -226,7 +226,7 @@ class MainViewModel(
     val updatedPackages =
         //------------------------------------------------------------------------------------------ updatedPackages
         notBlockedList
-            .mapLatest { it.filter(Package::isNewOrUpdated).toMutableList() }
+            .mapLatest { it.filter(Package::isUpdated).toMutableList() }
             .trace {
                 val updated = it.filter(Package::isUpdated)
                 val new = it.filter { it.isNewOrUpdated && !it.isUpdated }

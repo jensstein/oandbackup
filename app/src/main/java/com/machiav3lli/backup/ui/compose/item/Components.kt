@@ -66,7 +66,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -75,8 +74,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import coil.ImageLoader
 import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
+import coil.imageLoader
 import coil.request.ImageRequest
 import com.machiav3lli.backup.ICON_SIZE_LARGE
 import com.machiav3lli.backup.ICON_SIZE_MEDIUM
@@ -160,26 +161,11 @@ fun PrefIcon(
 }
 
 @Composable
-fun PackageIcon(
+fun PackageIconA(
     modifier: Modifier = Modifier,
     item: Package?,
-    painter: AsyncImagePainter
-) {
-    Image(
-        painter = painter,
-        modifier = modifier
-            .size(ICON_SIZE_LARGE)
-            .clip(RoundedCornerShape(LocalShapes.current.medium)),
-        contentDescription = null,
-        contentScale = ContentScale.Crop
-    )
-}
-
-@Composable
-fun PackageIcon(
-    modifier: Modifier = Modifier,
-    item: Package?,
-    model: ImageRequest
+    model: ImageRequest,
+    imageLoader: ImageLoader,
 ) {
     AsyncImage(
         modifier = modifier
@@ -187,9 +173,9 @@ fun PackageIcon(
             .clip(RoundedCornerShape(LocalShapes.current.medium)),
         model = model,
         contentDescription = null,
-        contentScale = ContentScale.Crop,
-        error = placeholderIconPainter(item),
-        placeholder = placeholderIconPainter(item)
+        contentScale = ContentScale.Fit,
+        error = placeholderIconPainter(item, imageLoader),
+        placeholder = placeholderIconPainter(item, imageLoader)
     )
 }
 
@@ -214,14 +200,17 @@ fun PackageIcon(
     )
 }
 
-
 @Composable
-fun placeholderIconPainter(item: Package?) = painterResource(
+fun placeholderIconPainter(
+    item: Package?,
+    imageLoader: ImageLoader = LocalContext.current.imageLoader
+) = rememberAsyncImagePainter(
     when {
         item?.isSpecial == true -> R.drawable.ic_placeholder_special
         item?.isSystem == true  -> R.drawable.ic_placeholder_system
         else                    -> R.drawable.ic_placeholder_user
-    }
+    },
+    imageLoader = imageLoader,
 )
 
 @Composable
@@ -738,43 +727,43 @@ fun ExpandingFadingVisibility(
 fun PackageLabels(
     item: Package
 ) {
-    AnimatedVisibility(visible = item.isUpdated) {
+    if (item.isUpdated) {
         ButtonIcon(
             Phosphor.CircleWavyWarning, R.string.radio_updated,
             tint = ColorUpdated
         )
     }
-    AnimatedVisibility(visible = item.hasMediaData) {
+    if (item.hasMediaData) {
         ButtonIcon(
             Phosphor.PlayCircle, R.string.radio_mediadata,
             tint = ColorMedia
         )
     }
-    AnimatedVisibility(visible = item.hasObbData) {
+    if (item.hasObbData) {
         ButtonIcon(
             Phosphor.GameController, R.string.radio_obbdata,
             tint = ColorOBB
         )
     }
-    AnimatedVisibility(visible = item.hasExternalData) {
+    if (item.hasExternalData) {
         ButtonIcon(
             Phosphor.FloppyDisk, R.string.radio_externaldata,
             tint = ColorExtDATA
         )
     }
-    AnimatedVisibility(visible = item.hasDevicesProtectedData) {
+    if (item.hasDevicesProtectedData) {
         ButtonIcon(
             Phosphor.ShieldCheckered, R.string.radio_deviceprotecteddata,
             tint = ColorDeData
         )
     }
-    AnimatedVisibility(visible = item.hasAppData) {
+    if (item.hasAppData) {
         ButtonIcon(
             Phosphor.HardDrives, R.string.radio_data,
             tint = ColorData
         )
     }
-    AnimatedVisibility(visible = item.hasApk) {
+    if (item.hasApk) {
         ButtonIcon(
             Phosphor.DiamondsFour, R.string.radio_apk,
             tint = ColorAPK

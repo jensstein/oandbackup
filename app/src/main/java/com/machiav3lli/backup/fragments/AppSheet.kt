@@ -178,10 +178,7 @@ class AppSheet() : BaseSheet(), ActionListener {
             traceCompose { "AppSheet ${thePackage.packageName} ${TraceUtils.formatBackups(backups)}" }
 
             val imageData by remember(pkg) {
-                mutableStateOf(
-                    if (pkg.isSpecial) pkg.packageInfo.icon
-                    else "android.resource://${pkg.packageName}/${pkg.packageInfo.icon}"
-                )
+                mutableStateOf(pkg.iconData)
             }
             if (refreshNow) {
                 requireMainActivity().updatePackage(pkg.packageName)

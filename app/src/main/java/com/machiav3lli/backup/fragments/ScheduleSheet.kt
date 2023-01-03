@@ -22,6 +22,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -83,6 +84,8 @@ import com.machiav3lli.backup.utils.specialBackupsEnabled
 import com.machiav3lli.backup.utils.startSchedule
 import com.machiav3lli.backup.utils.timeLeft
 import com.machiav3lli.backup.viewmodels.ScheduleViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import java.time.LocalTime
 
 class ScheduleSheet() : BaseSheet() {
@@ -187,7 +190,8 @@ class ScheduleSheet() : BaseSheet() {
         val customList by viewModel.customList.collectAsState(emptySet())
         val blockList by viewModel.blockList.collectAsState(emptySet())
         val nestedScrollConnection = rememberNestedScrollInteropConnection()
-        val (absTime, relTime) = timeLeft(schedule).value
+        val (absTime, relTime) = timeLeft(schedule, CoroutineScope(Dispatchers.Default))
+            .collectAsState().value
 
         //traceDebug { "*** recompose schedule <<- ${schedule}" }
 
@@ -206,11 +210,9 @@ class ScheduleSheet() : BaseSheet() {
                         Divider(thickness = 2.dp)
                         Spacer(modifier = Modifier.height(8.dp))
                         Row {
-                            //AnimatedVisibility(visible = schedule.enabled) {  //TODO no, before enabling you want to know what
-                                Text(
-                                    text = "⏳ $relTime    🕒 $absTime"
-                                )
-                            //}
+                            AnimatedVisibility(visible = schedule.enabled) {
+                                Text(text = "🕒 $absTime    ⏳ $relTime") // TODO replace by resource icons
+                            }
                         }
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             CheckChip(
