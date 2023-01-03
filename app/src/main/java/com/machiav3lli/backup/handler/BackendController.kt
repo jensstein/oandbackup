@@ -72,7 +72,7 @@ fun scanBackups(
     onPropsFile: (StorageFile) -> Unit,
 ) {
 
-    val files = directory.listFiles()
+    val files = directory.listFiles().drop(0)   // copy
     val names = files.map { it.name }
 
     fun formatBackupFile(file: StorageFile) = "${file.path?.replace(backupRoot.path ?: "", "")}"
@@ -82,113 +82,112 @@ fun scanBackups(
             traceBackupsScan(todo)
     }
 
-    files
-        .forEach { file ->
-            file.name?.let { name ->
-                if (name.contains(regexPackageFolder) ||
-                    name.contains(regexBackupInstance)
-                ) {
-                    if (name.contains(packageName)) {
-                        if (name.contains(regexBackupInstance)) {
+    files.stream().forEach { file ->
+        file.name?.let { name ->
+            if (name.contains(regexPackageFolder) ||
+                name.contains(regexBackupInstance)
+            ) {
+                if (name.contains(packageName)) {
+                    if (name.contains(regexBackupInstance)) {
+                        traceBackupsScanPackage {
+                            ":::${"|:::".repeat(level)}b     ${
+                                formatBackupFile(file)
+                            } backupInstance"
+                        }
+                        if (file.isPropertyFile &&
+                            !name.contains(regexSpecialFile)
+                        ) {
                             traceBackupsScanPackage {
-                                ":::${"|:::".repeat(level)}b     ${
+                                ":::${"|:::".repeat(level)}>     ${
                                     formatBackupFile(file)
-                                } backupInstance"
+                                } ++++++++++++++++++++ props ok"
                             }
-                            if (file.isPropertyFile &&
-                                !name.contains(regexSpecialFile)
+                            try {
+                                onPropsFile(file)
+                            } catch (_: Throwable) {
+                                if (!name.contains(regexSpecialFile))
+                                    runCatching {
+                                        file.renameTo(".ERROR.${file.name}")
+                                    }
+                            }
+                        } else {
+                            if (name.contains(regexPackageFolder) &&
+                                !name.contains(regexSpecialFolder) &&
+                                file.isDirectory
                             ) {
-                                traceBackupsScanPackage {
-                                    ":::${"|:::".repeat(level)}>     ${
-                                        formatBackupFile(file)
-                                    } ++++++++++++++++++++ props ok"
-                                }
-                                try {
-                                    onPropsFile(file)
-                                } catch (_: Throwable) {
-                                    if (!name.contains(regexSpecialFile))
-                                        runCatching {
-                                            file.renameTo(".ERROR.${file.name}")
-                                        }
-                                }
-                            } else {
-                                if (name.contains(regexPackageFolder) &&
-                                    !name.contains(regexSpecialFolder) &&
-                                    file.isDirectory
-                                ) {
-                                    if ("${file.name}.${PROP_NAME}" !in names)
-                                        try {
-                                            file.findFile(BACKUP_INSTANCE_PROPERTIES_INDIR)
-                                                ?.let {
-                                                    try {
-                                                        onPropsFile(it)
-                                                    } catch (_: Throwable) {
-                                                        // rename the folder, becasue the whole backup is damaged
-                                                        runCatching {
-                                                            file.name?.let { name ->
-                                                                if (!name.contains(
-                                                                        regexSpecialFolder
-                                                                    )
+                                if ("${file.name}.${PROP_NAME}" !in names)
+                                    try {
+                                        file.findFile(BACKUP_INSTANCE_PROPERTIES_INDIR)
+                                            ?.let {
+                                                try {
+                                                    onPropsFile(it)
+                                                } catch (_: Throwable) {
+                                                    // rename the folder, becasue the whole backup is damaged
+                                                    runCatching {
+                                                        file.name?.let { name ->
+                                                            if (!name.contains(
+                                                                    regexSpecialFolder
                                                                 )
-                                                                    file.renameTo(".ERROR.${file.name}")
-                                                            }
+                                                            )
+                                                                file.renameTo(".ERROR.${file.name}")
                                                         }
                                                     }
                                                 }
-                                        } catch (_: Throwable) {
-                                            file.renameTo(".ERROR.${file.name}")
-                                        }
-                                }
-                            }
-                        } else {
-                            if (file.isPropertyFile &&
-                                !name.contains(regexSpecialFile)
-                            ) {
-                                traceBackupsScanPackage {
-                                    ":::${"|:::".repeat(level)}> ${
-                                        formatBackupFile(file)
-                                    } ++++++++++++++++++++ props ok"
-                                }
-                                onPropsFile(file)
-                            } else {
-                                if (file.isDirectory) {
-                                    traceBackupsScanPackage {
-                                        ":::${"|:::".repeat(level)}/     ${
-                                            formatBackupFile(file)
-                                        } //////////////////// dir ok"
+                                            }
+                                    } catch (_: Throwable) {
+                                        file.renameTo(".ERROR.${file.name}")
                                     }
-                                    scanBackups(
-                                        file,
-                                        packageName = packageName,
-                                        backupRoot = backupRoot,
-                                        level = level + 1,
-                                        onPropsFile = onPropsFile
-                                    )
+                            }
+                        }
+                    } else {
+                        if (file.isPropertyFile &&
+                            !name.contains(regexSpecialFile)
+                        ) {
+                            traceBackupsScanPackage {
+                                ":::${"|:::".repeat(level)}> ${
+                                    formatBackupFile(file)
+                                } ++++++++++++++++++++ props ok"
+                            }
+                            onPropsFile(file)
+                        } else {
+                            if (file.isDirectory) {
+                                traceBackupsScanPackage {
+                                    ":::${"|:::".repeat(level)}/     ${
+                                        formatBackupFile(file)
+                                    } //////////////////// dir ok"
                                 }
+                                scanBackups(
+                                    file,
+                                    packageName = packageName,
+                                    backupRoot = backupRoot,
+                                    level = level + 1,
+                                    onPropsFile = onPropsFile
+                                )
                             }
                         }
                     }
-                } else {
-                    if (!name.contains(regexSpecialFolder) &&
-                        file.isDirectory
-                    ) {
-                        traceBackupsScanPackage {
-                            ":::${"|:::".repeat(level)}F     ${
-                                formatBackupFile(file)
-                            } %%%%%%%%%%%%%%%%%%%% folder ok"
-                        }
-                        scanBackups(
-                            file,
-                            packageName = packageName,
-                            backupRoot = backupRoot,
-                            level = level + 1,
-                            onPropsFile = onPropsFile
-                        )
-                    }
-
                 }
+            } else {
+                if (!name.contains(regexSpecialFolder) &&
+                    file.isDirectory
+                ) {
+                    traceBackupsScanPackage {
+                        ":::${"|:::".repeat(level)}F     ${
+                            formatBackupFile(file)
+                        } %%%%%%%%%%%%%%%%%%%% folder ok"
+                    }
+                    scanBackups(
+                        file,
+                        packageName = packageName,
+                        backupRoot = backupRoot,
+                        level = level + 1,
+                        onPropsFile = onPropsFile
+                    )
+                }
+
             }
         }
+    }
 }
 
 fun Context.getBackups(packageName: String = ""): Map<String, List<Backup>> {
