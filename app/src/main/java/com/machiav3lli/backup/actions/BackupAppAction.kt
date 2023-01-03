@@ -231,7 +231,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             }
         } finally {
             work?.setOperation("end")
-            Timber.i("$app: Backup done: ${backup ?: app.packageName}")
+            Timber.i("${app.packageName}: Backup done: ${backup}")
         }
         return ActionResult(app, backup, "", true)
     }
