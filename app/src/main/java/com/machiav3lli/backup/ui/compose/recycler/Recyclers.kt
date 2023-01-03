@@ -47,7 +47,11 @@ fun HomePackageRecycler(
     productsList.forEach {
         selection.putIfAbsent(it.packageName, false)
     }
-    VerticalItemList(modifier = modifier, list = productsList) {
+    VerticalItemList(
+        modifier = modifier,
+        list = productsList,
+        itemKey = { it.packageName }
+    ) {
         MainPackageItem(it, selection[it.packageName] ?: false, imageLoader, onLongClick, onClick)
     }
 }
@@ -60,7 +64,8 @@ fun UpdatedPackageRecycler(
 ) {
     HorizontalItemList(
         modifier = modifier,
-        list = productsList
+        list = productsList,
+        itemKey = { it.packageName }
     ) {
         UpdatedPackageItem(it, onClick)
     }
@@ -92,7 +97,11 @@ fun BatchPackageRecycler(
     onDataClick: (Package, Boolean) -> Unit = { _: Package, _: Boolean -> },
     onClick: (Package, Boolean, Boolean) -> Unit = { _: Package, _: Boolean, _: Boolean -> }
 ) {
-    VerticalItemList(modifier = modifier, list = productsList) {
+    VerticalItemList(
+        modifier = modifier,
+        list = productsList,
+        itemKey = { it.packageName }
+    ) {
         BatchPackageItem(
             it,
             restore,
@@ -112,7 +121,10 @@ fun ScheduleRecycler(
     onClick: (Schedule) -> Unit = {},
     onCheckChanged: (Schedule, Boolean) -> Unit = { _: Schedule, _: Boolean -> }
 ) {
-    VerticalItemList(modifier = modifier, list = productsList) {
+    VerticalItemList(
+        modifier = modifier,
+        list = productsList
+    ) {
         ScheduleItem(it, onClick, onCheckChanged)
     }
 }
@@ -124,7 +136,10 @@ fun ExportedScheduleRecycler(
     onImport: (Schedule) -> Unit = {},
     onDelete: (StorageFile) -> Unit = {}
 ) {
-    VerticalItemList(modifier = modifier, list = productsList) {
+    VerticalItemList(
+        modifier = modifier,
+        list = productsList
+    ) {
         ExportedScheduleItem(it.first, it.second, onImport, onDelete)
     }
 }
@@ -136,7 +151,10 @@ fun LogRecycler(
     onShare: (Log) -> Unit = {},
     onDelete: (Log) -> Unit = {}
 ) {
-    VerticalItemList(modifier = modifier, list = productsList) {
+    VerticalItemList(
+        modifier = modifier,
+        list = productsList
+    ) {
         LogItem(it, onShare, onDelete)
     }
 }
