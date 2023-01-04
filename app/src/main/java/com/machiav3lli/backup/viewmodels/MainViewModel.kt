@@ -151,7 +151,7 @@ class MainViewModel(
         combine(db.appInfoDao.allFlow, backupsMapDb) { p, b ->
 
             traceFlows {
-                "******************** packages - db: ${p.size} backups: ${
+                "******************** packages-db: ${p.size} backups-db: ${
                     b.map { it.value.size }.sum()
                 }"
             }

@@ -181,7 +181,7 @@ class Package {
     fun getBackupsFromBackupDir(): List<Backup> {
         val backups =
             OABX.context.getBackups(packageName)  //TODO hg42 may also find glob *packageName* for now
-        return backups[packageName] ?: emptyList()
+        return backups[packageName] ?: emptyList()  // so we need to take the correct package here
     }
 
     fun refreshBackupList(): List<Backup> {
@@ -224,7 +224,8 @@ class Package {
 
     fun addBackup(backup: Backup) {
         traceBackups { "<${backup.packageName}> add backup ${backup.backupDate}" }
-        // update... is not enough, file/dir/tag is only set by creating backup from the file
+        //TODO hg42  update... is not enough, file/dir/tag is only set by creating backup from the file
+        //    file/dir/tag could be added by the caller
         //    don't do that: updateBackupListAndDatabase(backupList + backup)
         refreshBackupList()                                     // or real state of file system
     }
@@ -297,25 +298,18 @@ class Package {
         // the algorithm could eventually be more elegant, without managing two lists,
         // but it's on the safe side for now
         val backups = backupsNewestFirst.toMutableList()
+        val deletableBackups = backups.filterNot { it.persistent }.drop(1).toMutableList()
         traceBackups {
             "<$packageName> deleteOldestBackups keep=$keep ${
                 TraceUtils.formatBackups(
                     backups
                 )
-            }"
+            } --> delete ${TraceUtils.formatBackups(deletableBackups)}"
         }
-        val deletableBackups = backups.filterNot { it.persistent }.drop(1).toMutableList()
         while (keep < backups.size && deletableBackups.size > 0) {
             val backup = deletableBackups.removeLast()
             backups.remove(backup)
-            deleteBackup(backup)
-            traceBackups {
-                "<$packageName> deleteOldestBackups keep=$keep ${
-                    TraceUtils.formatBackups(
-                        backups
-                    )
-                } - ${TraceUtils.formatBackups(deletableBackups)}"
-            }
+            _deleteBackup(backup)
         }
         refreshBackupList()
     }

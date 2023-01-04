@@ -286,7 +286,7 @@ fun Context.getInstalledPackageList(): MutableList<Package> { // only used in Sc
             }
 
             // Special Backups must added before the uninstalled packages, because otherwise it would
-            // discover the backup directory and run in a special case where no the directory is empty.
+            // discover the backup directory and run in a special case where the directory is empty.
             // This would mean, that no package info is available – neither from backup.properties
             // nor from PackageManager.
             if (includeSpecial) {

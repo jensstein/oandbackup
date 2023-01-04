@@ -43,7 +43,7 @@ fun getCursorLong(cursor: Cursor, columnName: String): Long? {
     return cursor.getLongOrNull(index)
 }
 
-/*
+/* hg42: keep in case it's needed later, and yes, I know it could be excluded automatically
 
 fun getCursorInt(cursor: Cursor, columnName: String): Int? {
     val index = cursor.getColumnIndex(columnName)
