@@ -232,6 +232,13 @@ fun DevTools(
                 Spacer(modifier = Modifier.weight(1f))
                 TerminalButton(" devsett ", important = true) { mode = "devsett" }
                 Spacer(modifier = Modifier.weight(1f))
+                TerminalButton("  A  ", important = true) {
+
+                }
+                TerminalButton("  B  ", important = true) {
+
+                }
+                Spacer(modifier = Modifier.weight(1f))
                 TerminalButton(" term ", important = true) { mode = "term" }
             }
             when (mode) {
