@@ -264,7 +264,9 @@ open class StorageFile {
         this.context = context
         this._uri = uri
         name?.let { this.name = it }
-        if (pref_shadowRootFile.value && allowShadowing) {
+        if (false &&        //TODO hg42 temporary until RootFile is fixed
+            pref_shadowRootFile.value && allowShadowing
+        ) {
             fun isValidPath(file: RootFile?): Boolean =
                 file?.let { file.exists() && file.canRead() && file.canWrite() } ?: false
             parent ?: run {
