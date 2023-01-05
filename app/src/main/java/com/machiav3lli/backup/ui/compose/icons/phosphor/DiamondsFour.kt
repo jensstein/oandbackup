@@ -18,8 +18,8 @@ val Phosphor.DiamondsFour: ImageVector
         }
         _diamonds_four = Builder(
             name = "Diamonds-four",
-            defaultWidth = 32.0.dp,
-            defaultHeight = 32.0.dp,
+            defaultWidth = 24.0.dp,
+            defaultHeight = 24.0.dp,
             viewportWidth = 256.0f,
             viewportHeight = 256.0f,
         ).apply {
