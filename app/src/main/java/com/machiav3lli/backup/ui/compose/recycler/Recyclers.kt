@@ -14,8 +14,7 @@ import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -42,15 +41,16 @@ import com.machiav3lli.backup.ui.item.InfoChipItem
 fun HomePackageRecycler(
     modifier: Modifier = Modifier,
     productsList: List<Package>,
-    onClick: (Package) -> Unit = {}
+    selection: SnapshotStateMap<String, Boolean>,
+    onLongClick: (Package) -> Unit = {},
+    onClick: (Package) -> Unit = {},
 ) {
-    val selection = remember { mutableStateMapOf<String, Boolean>() }
     val imageLoader = LocalContext.current.imageLoader
     productsList.forEach {
         selection.putIfAbsent(it.packageName, false)
     }
     VerticalItemList(modifier = modifier, list = productsList) {
-        MainPackageItem(it, productsList, selection, imageLoader, onClick)
+        MainPackageItem(it, selection[it.packageName] ?: false, imageLoader, onLongClick, onClick)
     }
 }
 

@@ -53,6 +53,7 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.fragments.AppSheet
+import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.traceCompose
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretDown
@@ -60,6 +61,7 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.CircleWavyWarning
 import com.machiav3lli.backup.ui.compose.item.ActionButton
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.ExpandingFadingVisibility
+import com.machiav3lli.backup.ui.compose.item.MainPackageContextMenu
 import com.machiav3lli.backup.ui.compose.recycler.HomePackageRecycler
 import com.machiav3lli.backup.ui.compose.recycler.UpdatedPackageRecycler
 
@@ -72,8 +74,11 @@ fun HomePage() {
 
     val filteredList by main.viewModel.filteredList.collectAsState(emptyList())
     val updatedPackages by main.viewModel.updatedPackages.collectAsState(emptyList())
-    val updaterVisible = ! OABX.isBusy && updatedPackages.size > 0
+    val updaterVisible = !OABX.isBusy && updatedPackages.size > 0
     var updaterExpanded by remember { mutableStateOf(false) }
+    val selection = main.viewModel.selection
+    var menuPackage by remember { mutableStateOf<Package?>(null) }
+    val menuExpanded = remember { mutableStateOf(false) }
 
     traceCompose { "HomePage f=${filteredList.size} u=${updatedPackages.size}" }
 
@@ -191,14 +196,44 @@ fun HomePage() {
                 .padding(paddingValues)
                 .fillMaxSize(),
             productsList = filteredList,
+            selection = selection,
+            onLongClick = { item ->
+                if (selection[item.packageName] == true) {
+                    menuPackage = item
+                    menuExpanded.value = true
+                } else {
+                    selection[item.packageName] = selection[item.packageName] != true
+                }
+            },
             onClick = { item ->
-                if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                appSheet = AppSheet(item.packageName)
-                appSheet?.showNow(
-                    main.supportFragmentManager,
-                    "Package ${item.packageName}"
-                )
-            }
+                if (filteredList.none { selection[it.packageName] == true }) {
+                    if (appSheet != null) appSheet?.dismissAllowingStateLoss()
+                    appSheet = AppSheet(item.packageName)
+                    appSheet?.showNow(
+                        main.supportFragmentManager,
+                        "Package ${item.packageName}"
+                    )
+                } else {
+                    selection[item.packageName] = selection[item.packageName] != true
+                }
+            },
         )
+
+        if (menuExpanded.value) menuPackage?.let {
+            MainPackageContextMenu(
+                expanded = menuExpanded,
+                packageItem = it,
+                productsList = filteredList,
+                selection = selection,
+                openSheet = { item ->
+                    if (appSheet != null) appSheet?.dismissAllowingStateLoss()
+                    appSheet = AppSheet(item.packageName)
+                    appSheet?.showNow(
+                        main.supportFragmentManager,
+                        "Package ${item.packageName}"
+                    )
+                }
+            )
+        }
     }
 }

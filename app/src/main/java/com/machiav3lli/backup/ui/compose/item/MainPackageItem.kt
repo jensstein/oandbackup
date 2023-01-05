@@ -190,7 +190,7 @@ fun MainPackageContextMenu(
     packageItem: Package,
     productsList: List<Package>,
     selection: SnapshotStateMap<String, Boolean>,
-    onAction: (Package) -> Unit = {}
+    openSheet: (Package) -> Unit = {}
 ) {
     val visible = productsList
     val selectedAndVisible = visible.filter { selection[it.packageName] == true }
@@ -256,7 +256,7 @@ fun MainPackageContextMenu(
             text = { Text("Open App Sheet") },
             onClick = {
                 expanded.value = false
-                onAction(packageItem)
+                openSheet(packageItem)
             }
         )
 
