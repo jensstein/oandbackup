@@ -454,7 +454,7 @@ fun MainPackageContextMenu(
 }
 
 @Composable
-fun PackageIconB(pkg: Package, modifier: Modifier) {
+fun PackageIconB(pkg: Package, modifier: Modifier = Modifier) {
 
     val imageData =
         if (pkg.isSpecial) pkg.packageInfo.icon
