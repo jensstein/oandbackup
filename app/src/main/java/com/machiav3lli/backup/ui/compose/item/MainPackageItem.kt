@@ -467,10 +467,10 @@ fun PackageIconB(pkg: Package, modifier: Modifier = Modifier) {
 @Composable
 fun MainPackageItemA(
     pkg: Package,
-    productsList: List<Package>,
-    selection: SnapshotStateMap<String, Boolean>,
+    selected: Boolean,
     imageLoader: ImageLoader,
-    onAction: (Package) -> Unit = {}
+    onLongClick: (Package) -> Unit = {},
+    onAction: (Package) -> Unit = {},
 ) {
     val useIcons by remember(pref_quickerList.value) { mutableStateOf(!pref_quickerList.value) }
     val iconRequest = ImageRequest.Builder(OABX.context)
@@ -483,8 +483,6 @@ fun MainPackageItemA(
         .build()
     imageLoader.enqueue(iconRequest)
 
-    val menuExpanded = remember { mutableStateOf(false) }
-
     //traceCompose { "<${pkg.packageName}> MainPackageItem ${pkg.packageInfo.icon} ${imageData.hashCode()}" }
     //traceCompose { "<${pkg.packageName}> MainPackageItem" }
 
@@ -495,60 +493,15 @@ fun MainPackageItemA(
             containerColor = Color.Transparent
         ),
     ) {
-        if (menuExpanded.value)
-            MainPackageContextMenu(
-                expanded = menuExpanded,
-                packageItem = pkg,
-                productsList = productsList,
-                selection = selection,
-                onAction = onAction
-            )
-
-        val iconSelector =      //TODO hg42 ideally make this global (but we have closures)
-            Modifier
-                .combinedClickable(
-                    onClick = {
-                        selection[pkg.packageName] = selection[pkg.packageName] != true
-                    },
-                    onLongClick = {
-                        selection[pkg.packageName] = true
-                        menuExpanded.value = true
-                    }
-                )
-        val rowSelector =       //TODO hg42 ideally make this global (but we have closures)
-            Modifier
-                .combinedClickable(
-                    onClick = {
-                        if (productsList.none { selection[it.packageName] == true }) {
-                            onAction(pkg)
-                        } else {
-                            selection[pkg.packageName] = selection[pkg.packageName] != true
-                        }
-                    },
-                    onLongClick = {
-                        if (productsList.none { selection[it.packageName] == true }) {
-                            selection[pkg.packageName] = selection[pkg.packageName] != true
-                        } else {
-                            if (selection[pkg.packageName] == true)
-                                menuExpanded.value = true
-                            else {
-                                //selection[packageItem] = true
-                                // select from - to ? but the map is not sorted
-                                //selection.entries.forEach {
-                                //
-                                //}
-                            }
-                        }
-                    }
-                )
-
         Row(
-            modifier = rowSelector
+            modifier = Modifier
+                .combinedClickable(
+                    onClick = { onAction(pkg) },
+                    onLongClick = { onLongClick(pkg) }
+                )
                 .background(
-                    color = if (selection[pkg.packageName] == true)
-                        MaterialTheme.colorScheme.primaryContainer
-                    else
-                        Color.Transparent
+                    color = if (selected) MaterialTheme.colorScheme.primaryContainer
+                    else Color.Transparent
                 )
                 .fillMaxWidth()
                 .padding(8.dp),
@@ -642,13 +595,11 @@ fun MainPackageItemA(
 @Composable
 fun MainPackageItemB(
     pkg: Package,
-    productsList: List<Package>,
-    selection: SnapshotStateMap<String, Boolean>,
+    selected: Boolean,
+    onLongClick: (Package) -> Unit = {},
     onAction: (Package) -> Unit = {}
 ) {
     val useIcons by remember(pref_quickerList.value) { mutableStateOf(!pref_quickerList.value) }
-
-    val menuExpanded = remember { mutableStateOf(false) }
 
     //traceCompose { "<${pkg.packageName}> MainPackageItemX ${pkg.packageInfo.icon} ${imageData.hashCode()}" }
     //traceCompose { "<${pkg.packageName}> MainPackageItemX" }
@@ -660,60 +611,15 @@ fun MainPackageItemB(
             containerColor = Color.Transparent
         ),
     ) {
-        if (menuExpanded.value)
-            MainPackageContextMenu(
-                expanded = menuExpanded,
-                packageItem = pkg,
-                productsList = productsList,
-                selection = selection,
-                onAction = onAction
-            )
-
-        val iconSelector =      //TODO hg42 ideally make this global (but we have closures)
-            Modifier
-                .combinedClickable(
-                    onClick = {
-                        selection[pkg.packageName] = !(selection[pkg.packageName] == true)
-                    },
-                    onLongClick = {
-                        selection[pkg.packageName] = true
-                        menuExpanded.value = true
-                    }
-                )
-        val rowSelector =       //TODO hg42 ideally make this global (but we have closures)
-            Modifier
-                .combinedClickable(
-                    onClick = {
-                        if (productsList.none { selection[it.packageName] == true }) {
-                            onAction(pkg)
-                        } else {
-                            selection[pkg.packageName] = selection[pkg.packageName] != true
-                        }
-                    },
-                    onLongClick = {
-                        if (productsList.none { selection[it.packageName] == true }) {
-                            selection[pkg.packageName] = selection[pkg.packageName] != true
-                        } else {
-                            if (selection[pkg.packageName] == true)
-                                menuExpanded.value = true
-                            else {
-                                //selection[packageItem] = true
-                                // select from - to ? but the map is not sorted
-                                //selection.entries.forEach {
-                                //
-                                //}
-                            }
-                        }
-                    }
-                )
-
         Row(
-            modifier = rowSelector
+            modifier = Modifier
+                .combinedClickable(
+                    onClick = { onAction(pkg) },
+                    onLongClick = { onLongClick(pkg) }
+                )
                 .background(
-                    color = if (selection[pkg.packageName] == true)
-                        MaterialTheme.colorScheme.primaryContainer
-                    else
-                        Color.Transparent
+                    color = if (selected) MaterialTheme.colorScheme.primaryContainer
+                    else Color.Transparent
                 )
                 .fillMaxWidth()
                 .padding(8.dp),
@@ -721,7 +627,7 @@ fun MainPackageItemB(
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (useIcons)
-                PackageIconB(pkg = pkg, modifier = iconSelector)
+                PackageIconB(pkg = pkg)
 
             Column(
                 modifier = Modifier.wrapContentHeight()
@@ -792,24 +698,24 @@ fun MainPackageItemB(
 @Composable
 fun MainPackageItem(
     pkg: Package,
-    productsList: List<Package>,
-    selection: SnapshotStateMap<String, Boolean>,
+    selected: Boolean,
     imageLoader: ImageLoader,
-    onAction: (Package) -> Unit = {}
+    onLongClick: (Package) -> Unit = {},
+    onAction: (Package) -> Unit = {},
 ) {
     if (pref_altListItem.value)
         MainPackageItemB(
             pkg = pkg,
-            productsList = productsList,
-            selection = selection,
+            selected = selected,
+            onLongClick = onLongClick,
             onAction = onAction
         )
     else
         MainPackageItemA(
             pkg = pkg,
-            productsList = productsList,
-            selection = selection,
-            onAction = onAction,
+            selected = selected,
             imageLoader = imageLoader,
+            onLongClick = onLongClick,
+            onAction = onAction,
         )
 }
