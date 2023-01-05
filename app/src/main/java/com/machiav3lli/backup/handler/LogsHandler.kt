@@ -18,6 +18,7 @@
 package com.machiav3lli.backup.handler
 
 import android.content.Context
+import android.content.Intent
 import android.os.Process
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BuildConfig
@@ -34,6 +35,8 @@ import com.machiav3lli.backup.pref_useLogCatForUncaught
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupRoot
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.BufferedOutputStream
 import java.io.IOException
@@ -44,25 +47,55 @@ class LogsHandler {
 
     companion object {
 
-        @Throws(IOException::class)
-        fun writeToLogFile(logText: String) {
-            val backupRoot = OABX.context.getBackupRoot()
-            val logsDirectory = backupRoot.ensureDirectory(LOGS_FOLDER_NAME)
-            val date = LocalDateTime.now()
-            val logItem = Log(logText, date)
-            val logFileName = String.format(
-                LOG_INSTANCE,
-                BACKUP_DATE_TIME_FORMATTER.format(date)
-            )
-            logsDirectory.createFile(logFileName).let { logFile ->
-                BufferedOutputStream(logFile.outputStream()).use { logOut ->
-                    logOut.write(
-                        logItem.toJSON().toByteArray(StandardCharsets.UTF_8)
-                    )
-                    //traceDebug { "Wrote $logFile file for $logItem" }
+        suspend fun share(log: Log, asFile: Boolean = true) {
+            withContext(Dispatchers.IO) {
+                try {
+                    getLogFile(log.logDate)?.let { log ->
+                        val text = if (!asFile) log.readText() else ""
+                        if (!asFile and text.isEmpty())
+                            throw Exception("${log.name} is empty or cannot be read")
+                        val sendIntent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            type = "text/json"
+                            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            putExtra(Intent.EXTRA_SUBJECT, "[NeoBackup] ${log.name}")
+                            if (asFile)
+                                putExtra(Intent.EXTRA_STREAM, log.uri)  // send as file
+                            else
+                                putExtra(Intent.EXTRA_TEXT, text)       // send as text
+                        }
+                        val shareIntent = Intent.createChooser(sendIntent, log.name)
+                        OABX.activity?.startActivity(shareIntent)
+                    }
+                } catch (e: Throwable) {
+                    unhandledException(e)
                 }
             }
-            housekeepingLogs()
+        }
+
+        @Throws(IOException::class)
+        fun writeToLogFile(logText: String) : StorageFile? {
+            runCatching {
+                val backupRoot = OABX.context.getBackupRoot()
+                val logsDirectory = backupRoot.ensureDirectory(LOGS_FOLDER_NAME)
+                val date = LocalDateTime.now()
+                val logItem = Log(logText, date)
+                val logFileName = String.format(
+                    LOG_INSTANCE,
+                    BACKUP_DATE_TIME_FORMATTER.format(date)
+                )
+                logsDirectory.createFile(logFileName).let { logFile ->
+                    BufferedOutputStream(logFile.outputStream()).use { logOut ->
+                        logOut.write(
+                            logItem.toJSON().toByteArray(StandardCharsets.UTF_8)
+                        )
+                        //traceDebug { "Wrote $logFile file for $logItem" }
+                    }
+                    housekeepingLogs()
+                    return logFile
+                }
+            }
+            return null
         }
 
         @Throws(IOException::class)
@@ -75,7 +108,7 @@ class LogsHandler {
                 if (logsDir.isDirectory) {
                     logsDir.listFiles().forEach {
                         if (it.isFile) try {
-                            logs.add(Log(it))
+                            logs.add(Log(it))   //TODO hg42 don't throw, but create a dummy log entry, so it can be deleted
                         } catch (e: Throwable) {
                             val message =
                                 "(catchall) Incomplete log or wrong structure found in $it."

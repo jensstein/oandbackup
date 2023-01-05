@@ -18,16 +18,15 @@
 package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
-import android.content.Intent
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.beginBusy
 import com.machiav3lli.backup.OABX.Companion.endBusy
 import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.handler.LogsHandler.Companion.share
 import com.machiav3lli.backup.items.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -59,32 +58,6 @@ class LogViewModel(private val appContext: Application) : AndroidViewModel(appCo
     fun shareLog(log: Log, asFile: Boolean = true) {
         viewModelScope.launch {
             share(log, asFile)
-        }
-    }
-
-    private suspend fun share(log: Log, asFile: Boolean = true) {
-        withContext(Dispatchers.IO) {
-            try {
-                LogsHandler.getLogFile(log.logDate)?.let { log ->
-                    val text = if (!asFile) log.readText() else ""
-                    if (!asFile and text.isEmpty())
-                        throw Exception("${log.name} is empty or cannot be read")
-                    val sendIntent = Intent().apply {
-                        action = Intent.ACTION_SEND
-                        type = "text/*"
-                        flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                        putExtra(Intent.EXTRA_SUBJECT, "[NeoBackup] ${log.name}")
-                        if (asFile)
-                            putExtra(Intent.EXTRA_STREAM, log.uri)  // send as file
-                        else
-                            putExtra(Intent.EXTRA_TEXT, text)       // send as text
-                    }
-                    val shareIntent = Intent.createChooser(sendIntent, log.name)
-                    OABX.activity?.startActivity(shareIntent)
-                }
-            } catch (e: Throwable) {
-                LogsHandler.unhandledException(e)
-            }
         }
     }
 
