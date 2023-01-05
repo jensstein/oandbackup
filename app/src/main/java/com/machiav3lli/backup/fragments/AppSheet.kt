@@ -178,7 +178,10 @@ class AppSheet() : BaseSheet(), ActionListener {
             traceCompose { "AppSheet ${thePackage.packageName} ${TraceUtils.formatBackups(backups)}" }
 
             val imageData by remember(pkg) {
-                mutableStateOf(pkg.iconData)
+                mutableStateOf(
+                    if (pkg.isSpecial) pkg.packageInfo.icon
+                    else "android.resource://${pkg.packageName}/${pkg.packageInfo.icon}"
+                )
             }
             if (refreshNow) {
                 viewModel.refreshNow.value = false
@@ -205,7 +208,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                PackageIcon(item = pkg, imageData = imageData)
+                                PackageIcon(pkg = pkg, imageData = imageData)
 
                                 Column(
                                     modifier = Modifier

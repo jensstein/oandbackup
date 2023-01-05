@@ -161,11 +161,11 @@ fun PrefIcon(
 }
 
 @Composable
-fun PackageIconA(
+fun PackageIcon(
     modifier: Modifier = Modifier,
-    item: Package?,
+    pkg: Package?,
     model: ImageRequest,
-    imageLoader: ImageLoader,
+    imageLoader: ImageLoader = LocalContext.current.imageLoader,
 ) {
     AsyncImage(
         modifier = modifier
@@ -174,16 +174,17 @@ fun PackageIconA(
         model = model,
         contentDescription = null,
         contentScale = ContentScale.Fit,
-        error = placeholderIconPainter(item, imageLoader),
-        placeholder = placeholderIconPainter(item, imageLoader)
+        error = placeholderIconPainter(pkg, imageLoader),
+        placeholder = placeholderIconPainter(pkg, imageLoader)
     )
 }
 
 @Composable
 fun PackageIcon(
     modifier: Modifier = Modifier,
-    item: Package?,
-    imageData: Any
+    pkg: Package?,
+    imageData: Any,
+    imageLoader: ImageLoader = LocalContext.current.imageLoader,
 ) {
     AsyncImage(
         modifier = modifier
@@ -195,8 +196,8 @@ fun PackageIcon(
             .build(),
         contentDescription = null,
         contentScale = ContentScale.Crop,
-        error = placeholderIconPainter(item),
-        placeholder = placeholderIconPainter(item)
+        error = placeholderIconPainter(pkg, imageLoader),
+        placeholder = placeholderIconPainter(pkg, imageLoader)
     )
 }
 

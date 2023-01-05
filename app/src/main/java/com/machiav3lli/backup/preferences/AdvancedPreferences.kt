@@ -319,6 +319,12 @@ val pref_altListItem = BooleanPref(
     defaultValue = false
 )
 
+val pref_altPackageIcon = BooleanPref(
+    key = "dev-alt.altPackageIcon",
+    summary = "alternate package icon implementation",
+    defaultValue = false
+)
+
 val pref_restoreAvoidTemporaryCopy = BooleanPref(
     key = "dev-alt.restoreAvoidTemporaryCopy",
     summaryId = R.string.prefs_restoreavoidtempcopy_summary,

@@ -52,6 +52,7 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.preferences.pref_altListItem
+import com.machiav3lli.backup.preferences.pref_altPackageIcon
 import com.machiav3lli.backup.preferences.pref_iconCrossFade
 import com.machiav3lli.backup.preferences.pref_quickerList
 import com.machiav3lli.backup.preferences.pref_useBackupRestoreWithSelection
@@ -456,13 +457,40 @@ fun MainPackageContextMenu(
 }
 
 @Composable
-fun PackageIconB(pkg: Package, modifier: Modifier = Modifier) {
+fun PackageIconA(pkg: Package, imageLoader: ImageLoader) {
 
     val imageData =
         if (pkg.isSpecial) pkg.packageInfo.icon
         else "android.resource://${pkg.packageName}/${pkg.packageInfo.icon}"
 
-    PackageIcon(item = pkg, imageData = imageData, modifier = modifier)
+    PackageIcon(pkg = pkg, imageData = imageData, modifier = Modifier, imageLoader = imageLoader)
+}
+
+@Composable
+fun PackageIconB(pkg: Package, imageLoader: ImageLoader) {
+
+    val imageData =
+        if (pkg.isSpecial) pkg.packageInfo.icon
+        else "android.resource://${pkg.packageName}/${pkg.packageInfo.icon}"
+
+    val model =
+        ImageRequest.Builder(OABX.context)
+            .memoryCacheKey(pkg.packageName)
+            .memoryCachePolicy(CachePolicy.ENABLED)
+            .crossfade(pref_iconCrossFade.value)
+            .data(imageData)
+            .build()
+
+    PackageIcon(pkg = pkg, model = model, modifier = Modifier, imageLoader = imageLoader)
+}
+
+@Composable
+fun PackageIcon(pkg: Package, imageLoader: ImageLoader) {
+
+    if (pref_altPackageIcon.value)
+        PackageIconB(pkg = pkg, imageLoader = imageLoader)
+    else
+        PackageIconA(pkg = pkg, imageLoader = imageLoader)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -512,11 +540,8 @@ fun MainPackageItemA(
         ) {
             beginNanoTimer("item.icon")
 
-            if (useIcons) PackageIconA(
-                item = pkg,
-                model = iconRequest,
-                imageLoader = imageLoader,
-            )
+            if (useIcons)
+                PackageIcon(pkg = pkg, imageLoader = imageLoader)
             else
                 Text(
                     text = when {
@@ -609,6 +634,7 @@ fun MainPackageItemA(
 fun MainPackageItemB(
     pkg: Package,
     selected: Boolean,
+    imageLoader: ImageLoader,
     onLongClick: (Package) -> Unit = {},
     onAction: (Package) -> Unit = {}
 ) {
@@ -640,7 +666,7 @@ fun MainPackageItemB(
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (useIcons)
-                PackageIconB(pkg = pkg)
+                PackageIcon(pkg = pkg, imageLoader = imageLoader)
 
             Column(
                 modifier = Modifier.wrapContentHeight()
@@ -720,6 +746,7 @@ fun MainPackageItem(
         MainPackageItemB(
             pkg = pkg,
             selected = selected,
+            imageLoader = imageLoader,
             onLongClick = onLongClick,
             onAction = onAction
         )
