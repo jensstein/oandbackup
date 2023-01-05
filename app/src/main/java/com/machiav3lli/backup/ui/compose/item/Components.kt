@@ -15,7 +15,6 @@ import androidx.compose.animation.shrinkOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -34,6 +33,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -493,6 +494,40 @@ fun CheckChip(
                 Text(text = if (checked) stringResource(id = checkedTextId) else stringResource(id = textId))
             }
         }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ActionChip(
+    modifier: Modifier = Modifier,
+    @StringRes textId: Int,
+    icon: ImageVector,
+    positive: Boolean,
+    onClick: () -> Unit = {}
+) {
+    AssistChip(
+        modifier = modifier,
+        label = {
+            Text(text = stringResource(id = textId))
+        },
+        leadingIcon = {
+            Icon(
+                imageVector = icon,
+                contentDescription = stringResource(id = textId)
+            )
+        },
+        shape = MaterialTheme.shapes.large,
+        colors = AssistChipDefaults.assistChipColors(
+            containerColor = if (positive) MaterialTheme.colorScheme.primaryContainer
+            else MaterialTheme.colorScheme.tertiaryContainer,
+            labelColor = if (positive) MaterialTheme.colorScheme.onPrimaryContainer
+            else MaterialTheme.colorScheme.onTertiaryContainer,
+            leadingIconContentColor = if (positive) MaterialTheme.colorScheme.onPrimaryContainer
+            else MaterialTheme.colorScheme.onTertiaryContainer,
+        ),
+        border = null,
+        onClick = onClick
     )
 }
 
