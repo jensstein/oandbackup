@@ -141,7 +141,6 @@ fun ButtonIcon(
     Icon(
         imageVector = icon,
         contentDescription = stringResource(id = textId),
-        modifier = Modifier.size(ICON_SIZE_SMALL),
         tint = tint ?: LocalContentColor.current
     )
 }
@@ -239,7 +238,6 @@ fun ActionButton(
         if (icon != null) {
             if (iconOnSide) Spacer(modifier = Modifier.weight(1f))
             Icon(
-                modifier = Modifier.size(ICON_SIZE_SMALL),
                 imageVector = icon,
                 contentDescription = text
             )
@@ -278,7 +276,6 @@ fun ElevatedActionButton(
     ) {
         if (icon != null) {
             Icon(
-                modifier = Modifier.size(ICON_SIZE_SMALL),
                 imageVector = icon,
                 contentDescription = text
             )
@@ -451,9 +448,7 @@ fun StateChip(
         border = BorderStroke(1.dp, color),
     ) {
         Icon(
-            modifier = Modifier
-                .padding(8.dp)
-                .size(ICON_SIZE_SMALL),
+            modifier = Modifier.padding(8.dp),
             imageVector = icon,
             contentDescription = text
         )

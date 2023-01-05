@@ -71,7 +71,7 @@ val themeItems = mutableMapOf(
 }
 
 val BUTTON_SIZE_MEDIUM = 48.dp
-val ICON_SIZE_SMALL = 24.dp
+val ICON_SIZE_SMALL = 24.dp // Default
 val ICON_SIZE_MEDIUM = 32.dp
 val ICON_SIZE_LARGE = 48.dp
 

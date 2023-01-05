@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import coil.imageLoader
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
-import com.machiav3lli.backup.ICON_SIZE_SMALL
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.Log
@@ -162,7 +160,6 @@ fun InfoChipsBlock(
                         if (chip.icon != null) Icon(
                             imageVector = chip.icon,
                             contentDescription = chip.text,
-                            modifier = Modifier.size(ICON_SIZE_SMALL)
                         )
                     },
                     border = SuggestionChipDefaults.suggestionChipBorder(
@@ -194,7 +191,6 @@ fun InfoChipsBlock(
                     if (chip.icon != null) Icon(
                         imageVector = chip.icon,
                         contentDescription = chip.text,
-                        modifier = Modifier.size(ICON_SIZE_SMALL)
                     )
                 },
                 border = SuggestionChipDefaults.suggestionChipBorder(
