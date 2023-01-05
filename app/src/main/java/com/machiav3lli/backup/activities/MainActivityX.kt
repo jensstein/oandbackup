@@ -64,9 +64,9 @@ import com.machiav3lli.backup.fragments.SortFilterSheet
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.pref_catchUncaughtException
+import com.machiav3lli.backup.pref_uncaughtExceptionsJumpToPreferences
 import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
 import com.machiav3lli.backup.preferences.pref_refreshOnStart
-import com.machiav3lli.backup.pref_uncaughtExceptionsJumpToPreferences
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.ui.compose.MutableComposableSharedFlow
@@ -75,7 +75,7 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowsClockwise
 import com.machiav3lli.backup.ui.compose.icons.phosphor.FunnelSimple
 import com.machiav3lli.backup.ui.compose.icons.phosphor.GearSix
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Prohibit
-import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
+import com.machiav3lli.backup.ui.compose.item.ActionChip
 import com.machiav3lli.backup.ui.compose.item.ExpandableSearchAction
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TopBar
@@ -167,7 +167,7 @@ class MainActivityX : BaseActivity() {
                     Timber.i("\n\n" + "=".repeat(60))
                     LogsHandler.unhandledException(e)
                     LogsHandler.logErrors("uncaught: ${e.message}")
-                    if(pref_uncaughtExceptionsJumpToPreferences.value) {
+                    if (pref_uncaughtExceptionsJumpToPreferences.value) {
                         startActivity(
                             Intent.makeRestartActivityTask(
                                 ComponentName(this, PrefsActivityX::class.java)
@@ -302,10 +302,9 @@ class MainActivityX : BaseActivity() {
                                 modifier = Modifier.padding(horizontal = 8.dp),
                                 horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
-                                ElevatedActionButton(
+                                ActionChip(
                                     icon = Phosphor.Prohibit,
-                                    text = stringResource(id = R.string.sched_blocklist),
-                                    withText = false,
+                                    textId = R.string.sched_blocklist,
                                     positive = false,
                                 ) {
                                     GlobalScope.launch(Dispatchers.IO) {
@@ -325,10 +324,9 @@ class MainActivityX : BaseActivity() {
                                     }
                                 }
                                 Spacer(modifier = Modifier.weight(1f))
-                                ElevatedActionButton(
+                                ActionChip(
                                     icon = Phosphor.FunnelSimple,
-                                    text = stringResource(id = R.string.sort_and_filter),
-                                    withText = false,
+                                    textId = R.string.sort_and_filter,
                                     positive = true,
                                 ) {
                                     sheetSortFilter = SortFilterSheet()
