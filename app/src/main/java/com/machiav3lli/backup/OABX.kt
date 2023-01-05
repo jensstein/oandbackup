@@ -363,7 +363,8 @@ class OABX : Application() {
             }
         }
 
-        val context: Context get() = app.applicationContext
+        var fakeContext: Context? = null
+        val context: Context get() = fakeContext ?: app.applicationContext
         val work: WorkHandler get() = app.work!!
 
         fun getString(resId: Int) = context.getString(resId)
