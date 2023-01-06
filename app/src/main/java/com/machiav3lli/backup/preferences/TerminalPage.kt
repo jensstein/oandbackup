@@ -126,6 +126,85 @@ fun shell(command: String): List<String> {
     }
 }
 
+fun envInfo() =
+    info() +
+    shell("su --help") +
+    shell("echo ${utilBox.name}") +
+    shell("${utilBox.name} --version") +
+    shell("${utilBox.name} --help")
+
+fun logInt() =
+    listOf("--- > last internal log messages") +
+    OABX.lastLogMessages
+
+val maxLogcatLines = 1000
+
+fun logApp() =
+    shell("logcat -d -t ${maxLogcatLines} --pid=${Process.myPid()}")
+
+fun logSys() =
+    shell("logcat -d -t ${maxLogcatLines}")
+
+fun dumpAlarms() =
+    shell("dumpsys alarm | sed -n '/Alarm.*machiav3lli[.]backup/,/PendingIntent/{p}'")
+
+fun accessTest() =
+    shell("echo \"\$(ls /data/user/0/ | wc -l) packages (apk)\"") +
+    shell("echo \"$(ls /data/user/0/ | wc -l) packages (data)\"") +
+    shell("echo \"\$(ls -l /data/misc/ | wc -l) misc data\"")
+
+fun lastErrorPkg(): List<String> {
+    val pkg = OABX.lastErrorPackage
+    return if (pkg.isNotEmpty()) {
+        listOf("--- last error package: $pkg") +
+        shell("ls -l /data/user/0/$pkg") +
+        shell("ls -l /data/user_de/0/$pkg") +
+        shell("ls -l /sdcard/Android/*/$pkg")
+    } else {
+        listOf("--- ? no last error package")
+    }
+}
+
+fun lastErrorCommand(): List<String> {
+    val cmd = OABX.lastErrorCommand
+    return if (cmd.isNotEmpty())
+        listOf(
+            "--- last error command",
+            cmd
+        )
+    else
+        emptyList()
+}
+
+fun supportInfo(): List<String> {
+    beginBusy("supportInfo")
+    val lines =
+        listOf("=== support log", "") +
+        envInfo() +
+        dumpAlarms() +
+        accessTest() +
+        lastErrorPkg() +
+        lastErrorCommand() +
+        logInt() +
+        logApp()
+    endBusy("supportInfo")
+    return lines
+}
+
+fun textLogShare(lines: List<String>) {
+    LogsHandler.writeToLogFile(lines.joinToString("\n"))?.let { file ->
+        Log(file).let { log ->
+            if (lines.isNotEmpty()) {
+                share(log, asFile = true)
+            }
+        }
+    }
+}
+
+fun supportInfoLogShare() {
+    textLogShare(supportInfo())
+}
+
 @Composable
 fun TerminalButton(name: String, important: Boolean = false, action: () -> Unit) {
     val color = if (important)
@@ -165,100 +244,17 @@ fun TerminalPage() {
         }
     }
 
-    fun busy(todo: () -> Unit) {
-        beginBusy()
-        todo()
-        endBusy()
-    }
-
-    fun add(lines: List<String>) {
-        runCatching {
-            focusManager.clearFocus()
+    fun append(lines: List<String>) {
+        launch {
+            runCatching {
+                focusManager.clearFocus()
+            }
+            output.addAll(lines)
         }
-        output.addAll(lines)
     }
 
     fun run(command: String) {
-        add(shell(command))
-    }
-
-    fun envInfo() {
-        add(info())
-        run("su --help")
-        run("echo ${utilBox.name}")
-        run("${utilBox.name} --version")
-        run("${utilBox.name} --help")
-    }
-
-    fun logInt() {
-        add(listOf("--- > last internal log messages"))
-        add(OABX.lastLogMessages)
-    }
-
-    val maxLogcatLines = 1000
-
-    fun logApp() {
-        run("logcat -d -t ${maxLogcatLines} --pid=${Process.myPid()}")
-    }
-
-    fun logSys() {
-        run("logcat -d -t ${maxLogcatLines}")
-    }
-
-    fun dumpAlarms() {
-        run("dumpsys alarm | sed -n '/Alarm.*machiav3lli[.]backup/,/PendingIntent/{p}'")
-    }
-
-    fun accessTest() {
-        run("echo \"\$(ls /data/user/0/ | wc -l) packages (apk)\"")
-        run("echo \"$(ls /data/user/0/ | wc -l) packages (data)\"")
-        run("echo \"\$(ls -l /data/misc/ | wc -l) misc data\"")
-    }
-
-    fun lastErrorPkg() {
-        val pkg = OABX.lastErrorPackage
-        if (pkg.isNotEmpty()) {
-            add(listOf("--- last error package: $pkg"))
-            run("ls -l /data/user/0/$pkg")
-            run("ls -l /data/user_de/0/$pkg")
-            run("ls -l /sdcard/Android/*/$pkg")
-        } else {
-            add(listOf("--- ? no last error package"))
-        }
-    }
-
-    fun lastErrorCommand() {
-        val cmd = OABX.lastErrorCommand
-        if (cmd.isNotEmpty())
-            add(listOf(
-                "--- last error command",
-                cmd
-            ))
-    }
-
-    fun textLogShare() {
-        LogsHandler.writeToLogFile(output.joinToString("\n"))?.let { file ->
-            output.clear()
-            Log(file).let { log ->
-                scope.launch {
-                    share(log, asFile = true)
-                }
-            }
-        }
-    }
-
-    fun supportInfoLogShare() {
-        busy {
-            add(listOf("=== support log", ""))
-            envInfo()
-            dumpAlarms()
-            accessTest()
-            lastErrorPkg()
-            lastErrorCommand()
-            logInt()
-            logApp()
-        }
-        textLogShare()
+        append(shell(command))
     }
 
     Column(verticalArrangement = Arrangement.Top) {
@@ -295,19 +291,19 @@ fun TerminalPage() {
                     .fillMaxWidth()
                     .padding(padding)
             ) {
-                TerminalButton("support->share", important = true) { launch { supportInfoLogShare() } }
-                Spacer(Modifier.width(4.dp))
-                TerminalButton("share", important = true) { launch { textLogShare() } }
+                TerminalButton("SUPPORT", important = true) { launch { supportInfoLogShare() } }
+                Spacer(Modifier.width(8.dp))
+                TerminalButton("share", important = true) { launch { textLogShare(output) } }
                 Spacer(Modifier.width(8.dp))
                 TerminalButton("clear", important = true) { output.clear() }
                 Spacer(Modifier.width(8.dp))
-                TerminalButton("info") { launch { envInfo() } }
-                TerminalButton("log/int") { launch { logInt() } }
-                TerminalButton("log/app") { launch { logApp() } }
-                TerminalButton("log/all") { launch { logSys() } }
-                TerminalButton("alarms") { launch { dumpAlarms() } }
-                TerminalButton("access") { launch { accessTest() } }
-                TerminalButton("errInfo") { launch { lastErrorPkg() ; lastErrorCommand() } }
+                TerminalButton("info") { append(envInfo()) }
+                TerminalButton("log/int") { append(logInt()) }
+                TerminalButton("log/app") { append(logApp()) }
+                TerminalButton("log/all") { append(logSys()) }
+                TerminalButton("alarms") { append(dumpAlarms()) }
+                TerminalButton("access") { append(accessTest()) }
+                TerminalButton("errInfo") { append(lastErrorPkg() + lastErrorCommand()) }
                 TerminalButton("err->cmd") { command = OABX.lastErrorCommand }
                 if (BuildConfig.DEBUG) {
                 }
@@ -318,7 +314,6 @@ fun TerminalPage() {
                 .weight(1f)
                 .padding(0.dp)
                 .fillMaxHeight()
-                .background(color = Color(0.2f, 0.2f, 0.3f))
         ) {
             TerminalText(output, limitLines = 0, scrollOnAdd = true)
         }
@@ -363,7 +358,7 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
                 .fillMaxWidth()
                 .padding(0.dp)
                 .ifThen(!wrap) { horizontalScroll(hscroll) }
-                .background(color = Color.Transparent)
+                .background(color = Color(0.2f, 0.2f, 0.3f))
         ) {
             SelectionContainerX {
                 LazyColumn(
@@ -409,7 +404,7 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
             }
         }
 
-        val overlayColor = Color(1f, 0.5f, 1f, 0.7f)
+        val overlayColor = Color(1f, 0.5f, 1f, 1f)
 
         @Composable
         fun SmallButton(icon: ImageVector, onClick: () -> Unit) {
@@ -456,8 +451,8 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
                 ),
                 //keyboardActions = KeyboardActions(
                 //    onDone = {
-                //        run(command)
-                //        command = ""
+                //        todo
+                //        search = ""
                 //    }
                 //),
                 onValueChange = {

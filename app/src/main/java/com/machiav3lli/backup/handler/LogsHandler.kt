@@ -36,7 +36,8 @@ import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleExceptio
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupRoot
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.BufferedOutputStream
 import java.io.IOException
@@ -47,8 +48,8 @@ class LogsHandler {
 
     companion object {
 
-        suspend fun share(log: Log, asFile: Boolean = true) {
-            withContext(Dispatchers.IO) {
+        fun share(log: Log, asFile: Boolean = true) {
+            MainScope().launch(Dispatchers.Default) {
                 try {
                     getLogFile(log.logDate)?.let { log ->
                         val text = if (!asFile) log.readText() else ""
@@ -74,7 +75,7 @@ class LogsHandler {
         }
 
         @Throws(IOException::class)
-        fun writeToLogFile(logText: String) : StorageFile? {
+        fun writeToLogFile(logText: String): StorageFile? {
             runCatching {
                 val backupRoot = OABX.context.getBackupRoot()
                 val logsDirectory = backupRoot.ensureDirectory(LOGS_FOLDER_NAME)
@@ -219,7 +220,7 @@ class LogsHandler {
             e: Throwable,
             what: Any? = null,
             backTrace: Boolean = false,
-            prefix: String? = null
+            prefix: String? = null,
         ) {
             var whatStr = ""
             if (what != null) {
