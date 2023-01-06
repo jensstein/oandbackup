@@ -19,6 +19,7 @@ package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -286,6 +287,7 @@ class MainViewModel(
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - FLOWS end
 
     val selection = mutableStateMapOf<String, Boolean>()
+    val menuExpanded = mutableStateOf(false)
 
     // TODO add to interface
     fun refreshList() {
