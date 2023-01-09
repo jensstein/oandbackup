@@ -87,6 +87,7 @@ import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.ui.compose.SelectionContainerX
 import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.compose.item.RoundButton
+import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.utils.SystemUtils.getApplicationIssuer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -128,38 +129,49 @@ fun shell(command: String): List<String> {
 
 fun envInfo() =
     info() +
-    shell("su --help") +
-    shell("echo ${utilBox.name}") +
-    shell("${utilBox.name} --version") +
-    shell("${utilBox.name} --help")
+            shell("su --help") +
+            shell("echo ${utilBox.name}") +
+            shell("${utilBox.name} --version") +
+            shell("${utilBox.name} --help")
 
 fun logInt() =
     listOf("--- > last internal log messages") +
-    OABX.lastLogMessages
+            OABX.lastLogMessages
 
-val maxLogcatLines = 1000
+val maxLogcat = "" //""-t 10000"
 
 fun logApp() =
-    shell("logcat -d -t ${maxLogcatLines} --pid=${Process.myPid()}")
+    shell("logcat -d ${maxLogcat} --pid=${Process.myPid()}")
 
 fun logSys() =
-    shell("logcat -d -t ${maxLogcatLines}")
+    shell("logcat -d ${maxLogcat}")
+
+fun dumpPrefs() =
+    Pref.preferences.map {
+        val (group, prefs) = it
+        prefs.map {
+            if (it.private)
+                null
+            else
+                "${it.group}.${it.key} = ${it}"
+        }.filterNotNull()
+    }.flatten()
 
 fun dumpAlarms() =
     shell("dumpsys alarm | sed -n '/Alarm.*machiav3lli[.]backup/,/PendingIntent/{p}'")
 
 fun accessTest() =
     shell("echo \"\$(ls /data/user/0/ | wc -l) packages (apk)\"") +
-    shell("echo \"$(ls /data/user/0/ | wc -l) packages (data)\"") +
-    shell("echo \"\$(ls -l /data/misc/ | wc -l) misc data\"")
+            shell("echo \"$(ls /data/user/0/ | wc -l) packages (data)\"") +
+            shell("echo \"\$(ls -l /data/misc/ | wc -l) misc data\"")
 
 fun lastErrorPkg(): List<String> {
     val pkg = OABX.lastErrorPackage
     return if (pkg.isNotEmpty()) {
         listOf("--- last error package: $pkg") +
-        shell("ls -l /data/user/0/$pkg") +
-        shell("ls -l /data/user_de/0/$pkg") +
-        shell("ls -l /sdcard/Android/*/$pkg")
+                shell("ls -l /data/user/0/$pkg") +
+                shell("ls -l /data/user_de/0/$pkg") +
+                shell("ls -l /sdcard/Android/*/$pkg")
     } else {
         listOf("--- ? no last error package")
     }
@@ -180,13 +192,14 @@ fun supportInfo(): List<String> {
     beginBusy("supportInfo")
     val lines =
         listOf("=== support log", "") +
-        envInfo() +
-        dumpAlarms() +
-        accessTest() +
-        lastErrorPkg() +
-        lastErrorCommand() +
-        logInt() +
-        logApp()
+                envInfo() +
+                dumpPrefs() +
+                dumpAlarms() +
+                accessTest() +
+                lastErrorPkg() +
+                lastErrorCommand() +
+                logInt() +
+                logApp()
     endBusy("supportInfo")
     return lines
 }
@@ -301,6 +314,7 @@ fun TerminalPage() {
                 TerminalButton("log/int") { append(logInt()) }
                 TerminalButton("log/app") { append(logApp()) }
                 TerminalButton("log/all") { append(logSys()) }
+                TerminalButton("prefs") { append(dumpPrefs()) }
                 TerminalButton("alarms") { append(dumpAlarms()) }
                 TerminalButton("access") { append(accessTest()) }
                 TerminalButton("errInfo") { append(lastErrorPkg() + lastErrorCommand()) }

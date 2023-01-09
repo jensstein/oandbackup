@@ -76,6 +76,12 @@ val pref_useLogCatForUncaught = BooleanPref(
     enableIf = { pref_catchUncaughtException.value }
 )
 
+val pref_logToSystemLogcat = BooleanPref(
+    key = "dev-log.logToSystemLogcat",
+    summary = "log to Android logcat, otherwise only internal",
+    defaultValue = false
+)
+
 val pref_maxLogCount = IntPref(
     key = "dev-log.maxLogCount",
     summary = "maximum count of log entries",
@@ -86,14 +92,8 @@ val pref_maxLogCount = IntPref(
 val pref_maxLogLines = IntPref(
     key = "dev-log.maxLogLines",
     summary = "maximum lines in the log (logcat or internal)",
-    entries = ((10..90 step 10) + (100..500 step 50)).toList(),
+    entries = ((10..90 step 10) + (100..450 step 50) + (500..5000 step 500)).toList(),
     defaultValue = 50
-)
-
-val pref_logToSystemLogcat = BooleanPref(
-    key = "dev-log.logToSystemLogcat",
-    summary = "log to Android logcat, otherwise only internal",
-    defaultValue = false
 )
 
 //---------------------------------------- developer settings - tracing
@@ -365,6 +365,7 @@ class OABX : Application() {
 
         var fakeContext: Context? = null
         val context: Context get() = fakeContext ?: app.applicationContext
+
         val work: WorkHandler get() = app.work!!
 
         fun getString(resId: Int) = context.getString(resId)

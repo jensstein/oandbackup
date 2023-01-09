@@ -88,6 +88,8 @@ open class Pref(
 
         preferences.getOrPut(group) { mutableListOf() }.add(this)
     }
+
+    override fun toString(): String = ""
 }
 
 class BooleanPref(
@@ -104,6 +106,7 @@ class BooleanPref(
     var value
         get() = prefFlag(key, defaultValue, private)
         set(value) = setPrefFlag(key, value, private)
+    override fun toString(): String = value.toString()
 }
 
 class IntPref(
@@ -121,6 +124,7 @@ class IntPref(
     var value
         get() = prefInt(key, defaultValue, private)
         set(value) = setPrefInt(key, value, private)
+    override fun toString(): String = value.toString()
 }
 
 open class StringPref(
@@ -137,6 +141,7 @@ open class StringPref(
     open var value
         get() = prefString(key, defaultValue, private)
         set(value) = setPrefString(key, value, private)
+    override fun toString(): String = value.toString()
 }
 
 class PasswordPref(
@@ -153,6 +158,7 @@ class PasswordPref(
     override var value
         get() = prefString(key, defaultValue, private)
         set(value) = setPrefString(key, value, private)
+    override fun toString(): String = value.toString()
 }
 
 class ListPref(
@@ -170,6 +176,7 @@ class ListPref(
     var value
         get() = prefString(key, defaultValue, private)
         set(value) = setPrefString(key, value, private)
+    override fun toString(): String = value.toString()
 }
 
 class EnumPref(
@@ -187,6 +194,7 @@ class EnumPref(
     var value
         get() = prefInt(key, defaultValue, private)
         set(value) = setPrefInt(key, value, private)
+    override fun toString(): String = value.toString()
 }
 
 class LinkPref(
