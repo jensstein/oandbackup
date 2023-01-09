@@ -46,14 +46,11 @@ class Package {
 
     var backupList: List<Backup>
         get() {
-            val backups = OABX.main?.viewModel?.backupsMap?.getOrPut(packageName) {
-                //refreshBackupList()
-                getBackupsFromBackupDir()
-            } ?: emptyList()
+            val backups = OABX.main?.viewModel?.getBackups(packageName) ?: emptyList<Backup>()
             return backups
         }
         set(backups) {
-            OABX.main?.viewModel?.backupsMap?.put(packageName, backups)
+            OABX.main?.let { it.viewModel?.putBackups(packageName, backups) }
         }
 
     internal constructor(

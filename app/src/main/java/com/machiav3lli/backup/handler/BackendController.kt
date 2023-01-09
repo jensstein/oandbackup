@@ -354,7 +354,7 @@ fun List<Package>.toAppInfoList(): List<AppInfo> =
 fun List<AppInfo>.toPackageList(
     context: Context,
     blockList: List<String> = listOf(),
-    backupMap: Map<String, List<Backup>> = mapOf(),
+    backupsMap: Map<String, List<Backup>> = mapOf(),
 ): MutableList<Package> {
 
     var packageList: MutableList<Package> = mutableListOf()
@@ -389,7 +389,7 @@ fun List<AppInfo>.toPackageList(
         if (includeSpecial) {
             SpecialInfo.getSpecialPackages(context).forEach {
                 if (!blockList.contains(it.packageName)) {
-                    //it.updateBackupList(backupMap[it.packageName].orEmpty())
+                    //it.updateBackupList(backupsMap[it.packageName].orEmpty())
                     packageList.add(it)
                 }
                 //specialList.add(it.packageName)
@@ -442,11 +442,14 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
         val backups = mutableListOf<Backup>()
 
         val backupsMap = getBackups()
-        OABX.main?.viewModel?.backupsMap?.clear()
-        backupsMap.forEach {
-            OABX.main?.viewModel?.backupsMap?.put(it.key, it.value)
-            it.value.forEach {
-                backups.add(it)
+
+        OABX.main?.viewModel?.run {
+            clearBackups()
+            backupsMap.forEach {
+                putBackups(it.key, it.value)
+                it.value.forEach {
+                    backups.add(it)
+                }
             }
         }
 
