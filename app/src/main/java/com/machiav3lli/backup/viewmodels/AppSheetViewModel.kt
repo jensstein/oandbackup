@@ -172,15 +172,15 @@ class AppSheetViewModel(
         }
     }
 
-    fun rewriteBackup(newBackup: Backup) {
+    fun rewriteBackup(backup: Backup, changedBackup: Backup) {
         viewModelScope.launch {
-            rewrite(newBackup)
+            rewriteBackupSuspendable(backup, changedBackup)
         }
     }
 
-    private suspend fun rewrite(newBackup: Backup) {
+    private suspend fun rewriteBackupSuspendable(backup: Backup, changedBackup: Backup) {
         withContext(Dispatchers.IO) {
-            thePackage.value?.rewriteBackupProps(newBackup)
+            thePackage.value?.rewriteBackup(backup, changedBackup)
         }
     }
 

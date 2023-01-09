@@ -24,11 +24,10 @@ import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.Package
-import com.machiav3lli.backup.items.StorageFile
 
 class RestoreActionTask(
     appInfo: Package, oAndBackupX: MainActivityX, shellHandler: ShellHandler, restoreMode: Int,
-    private val backup: Backup, private val backupDir: StorageFile,
+    private val backup: Backup,
     appSheet: AppSheet
 ) : BaseActionTask(
     appInfo, oAndBackupX, shellHandler, restoreMode,
@@ -44,7 +43,7 @@ class RestoreActionTask(
         publishProgress()
         result = BackupRestoreHelper.restore(
             mainActivityX, null, shellHandler,
-            app, mode, backup, backupDir
+            app, mode, backup
         )
         return result
     }

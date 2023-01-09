@@ -72,7 +72,7 @@ fun PrefsBuilder(
 
         is LaunchPref -> LaunchPreference(
             pref = pref,
-            summary = null,
+            summary = pref.summary,
             index = index,
             groupSize = size,
             onClick = pref.onClick

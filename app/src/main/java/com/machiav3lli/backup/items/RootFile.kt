@@ -8,7 +8,11 @@ import com.topjohnwu.superuser.ShellUtils
 import com.topjohnwu.superuser.io.SuFile
 import com.topjohnwu.superuser.io.SuFileInputStream
 import com.topjohnwu.superuser.io.SuFileOutputStream
-import java.io.*
+import java.io.File
+import java.io.FileFilter
+import java.io.FilenameFilter
+import java.io.InputStream
+import java.io.OutputStream
 import java.net.URI
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -132,7 +136,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
     }
 
     private fun statFS(fmt: String): Long {
-        val res = cmd("$utilBoxQ stat -fc '%S $fmt' $quoted").split(" ".toRegex()).toTypedArray()
+        val res = cmd("$utilBoxQ stat -fc '%S $fmt' $quoted").split(" ").toTypedArray()
         return if (res.size != 2) Long.MAX_VALUE else try {
             res[0].toLong() * res[1].toLong()
         } catch (e: NumberFormatException) {
@@ -404,7 +408,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
      * Requires command `ls`.
      * @see File.listFiles
      */
-    override fun listFiles(): Array<RootFile>? {
+    override fun listFiles(): Array<RootFile>? {    //TODO hg42 use suGetDetailedDirectoryContents and ShellHandler.FileInfo
         //if (!isDirectory) return null
         return list()?.map {
             RootFile(this, it)

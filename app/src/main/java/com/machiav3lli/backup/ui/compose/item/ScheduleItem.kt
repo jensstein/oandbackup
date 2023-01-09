@@ -1,13 +1,10 @@
 package com.machiav3lli.backup.ui.compose.item
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -89,19 +86,19 @@ fun ScheduleItem(
                     ScheduleFilters(item = schedule)
                 }
                 Row {
-                    AnimatedVisibility(visible = schedule.enabled) {
-                        Text(
-                            text = "🕒 $absTime\n⏳ $relTime", // TODO replace by resource icons
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .weight(1f),
-                            softWrap = true,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 2,
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    }
-                    Spacer(modifier = Modifier.weight(1f))
+                    Text(
+                        text = if (schedule.enabled)
+                            "🕒 $absTime\n⏳ $relTime"    // TODO replace by resource icons
+                        else
+                            "🕒 $absTime",
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .weight(1f),
+                        softWrap = true,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 2,
+                        style = MaterialTheme.typography.bodySmall
+                    )
                     ScheduleTypes(item = schedule)
                 }
             }

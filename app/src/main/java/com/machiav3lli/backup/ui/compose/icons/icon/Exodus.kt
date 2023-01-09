@@ -18,8 +18,8 @@ public val Icon.Exodus: ImageVector
         }
         _Exodus = Builder(
             name = "IcExodusSimple",
-            defaultWidth = 32.0.dp,
-            defaultHeight = 32.0.dp,
+            defaultWidth = 24.0.dp,
+            defaultHeight = 24.0.dp,
             viewportWidth = 612.0f,
             viewportHeight = 612.0f
         ).apply {

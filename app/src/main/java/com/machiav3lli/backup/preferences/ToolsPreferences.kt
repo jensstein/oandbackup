@@ -46,7 +46,7 @@ import com.machiav3lli.backup.ui.item.LinkPref
 import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.utils.FileUtils.invalidateBackupLocation
 import com.machiav3lli.backup.utils.applyFilter
-import com.machiav3lli.backup.utils.getBackupDir
+import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.utils.show
 import com.machiav3lli.backup.utils.sortFilterModel
 import kotlinx.coroutines.CoroutineScope
@@ -299,7 +299,7 @@ fun Context.writeAppsListFile(appsList: List<String>, filteredBoolean: Boolean) 
     val date = LocalDateTime.now()
     val filesText = appsList.joinToString("\n")
     val fileName = "${BACKUP_DATE_TIME_FORMATTER.format(date)}.appslist"
-    val listFile = getBackupDir().createFile(fileName)
+    val listFile = getBackupRoot().createFile(fileName)
     BufferedOutputStream(listFile.outputStream())
         .use { it.write(filesText.toByteArray(StandardCharsets.UTF_8)) }
     showNotification(

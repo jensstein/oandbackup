@@ -31,13 +31,12 @@ import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.Package
-import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import com.machiav3lli.backup.preferences.pref_numBackupRevisions
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
-import com.machiav3lli.backup.utils.getBackupDir
+import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.utils.suCopyFileToDocument
 import timber.log.Timber
 import java.io.FileNotFoundException
@@ -86,14 +85,14 @@ object BackupRestoreHelper {
 
     fun restore(
         context: Context, work: AppActionWork?, shellHandler: ShellHandler, appInfo: Package,
-        mode: Int, backupProperties: Backup, backupDir: StorageFile?
+        mode: Int, backup: Backup
     ): ActionResult {
         val action: RestoreAppAction = when {
             appInfo.isSpecial -> RestoreSpecialAction(context, work, shellHandler)
             appInfo.isSystem -> RestoreSystemAppAction(context, work, shellHandler)
             else -> RestoreAppAction(context, work, shellHandler)
         }
-        val result = action.run(appInfo, backupProperties, backupDir, mode)
+        val result = action.run(appInfo, backup, mode)
         Timber.i("[${appInfo.packageName}] Restore succeeded: ${result.succeeded}")
         return result
     }
@@ -102,7 +101,7 @@ object BackupRestoreHelper {
     fun copySelfApk(context: Context, shell: ShellHandler): Boolean {
         val filename = BuildConfig.APPLICATION_ID + '-' + BuildConfig.VERSION_NAME + ".apk"
         try {
-            val backupRoot = context.getBackupDir()
+            val backupRoot = context.getBackupRoot()
             val apkFile = backupRoot.findFile(filename)
             apkFile?.delete()
             try {
@@ -141,7 +140,7 @@ object BackupRestoreHelper {
 
     fun housekeepingPackageBackups(app: Package) {
 
-        //app.refreshBackupList()
+        app.refreshBackupList()
 
         val numBackupRevisions =
             pref_numBackupRevisions.value

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,7 +38,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowRow
-import com.machiav3lli.backup.ICON_SIZE_SMALL
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.PlusCircle
@@ -101,7 +99,6 @@ fun TagItem(
             Icon(
                 imageVector = icon,
                 contentDescription = stringResource(id = R.string.dialogCancel),
-                modifier = Modifier.size(ICON_SIZE_SMALL)
             )
         },
         onClick = {

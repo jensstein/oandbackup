@@ -28,6 +28,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -52,6 +53,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
@@ -71,6 +73,7 @@ import com.machiav3lli.backup.ui.compose.item.LinkItem
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TitleText
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
+import com.machiav3lli.backup.utils.SystemUtils.getApplicationIssuer
 import com.machiav3lli.backup.utils.gridItems
 import java.io.IOException
 import java.io.InputStream
@@ -111,23 +114,35 @@ class HelpSheet : BaseSheet() {
                             .fillMaxWidth()
                             .height(IntrinsicSize.Min)
                             .padding(horizontal = 8.dp),
-                        verticalAlignment = Alignment.Bottom
+                        verticalAlignment = Alignment.Top
                     ) {
                         Text(
                             text = stringResource(id = R.string.app_name),
                             style = MaterialTheme.typography.headlineMedium,
-                            maxLines = 1
+                            maxLines = 1,
                         )
-                        Text(
-                            text = BuildConfig.VERSION_NAME,
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        Column(
                             modifier = Modifier
                                 .padding(start = 8.dp)
                                 .weight(1f),
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
-                        )
+                        ) {
+                            Text(
+                                text = BuildConfig.VERSION_NAME,
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            LocalContext.current.getApplicationIssuer()?.let {
+                                Text(
+                                    text = "signed by $it",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
                         RoundButton(icon = Phosphor.CaretDown) {
                             dismissAllowingStateLoss()
                         }

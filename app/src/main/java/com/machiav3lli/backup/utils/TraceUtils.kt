@@ -35,7 +35,7 @@ object TraceUtils {
         val name: String,
         summary: String,
         default: Boolean,
-        enableIf: () -> Boolean = { true }
+        enableIf: () -> Boolean = { true },
     ) {
 
         val pref = BooleanPref(
@@ -72,6 +72,61 @@ object TraceUtils {
         //return this
     }
 
+
+    // timers
+
+    var nanoTimers = mutableMapOf<String, Long>()
+    var nanoTime = mutableMapOf<String, Long>()
+    var nanoTiming = mutableMapOf<String, Pair<Float, Long>>()
+
+    fun beginNanoTimer(name: String) {
+        synchronized(nanoTimers) {
+            nanoTimers.put(name, System.nanoTime())
+        }
+    }
+
+    fun endNanoTimer(name: String): Long {
+        synchronized(nanoTimers) {
+            var t = System.nanoTime()
+            nanoTimers.get(name)?.let {
+                t -= it
+                nanoTime.put(name, t)
+                val (average, n) = nanoTiming.getOrPut(name) { 0f to -3 }
+                if (n < 0L)
+                    nanoTiming.put(name, 0f to (n + 1))         // ignore start values
+                else
+                    nanoTiming.put(name, ((average * n + t) / (n + 1)) to (n + 1))
+                return t
+            }
+            return 0L
+        }
+    }
+
+    fun clearNanoTiming(pattern: String = "") {
+        synchronized(nanoTimers) {
+            nanoTimers = nanoTimers.filterNot { it.key.contains(pattern) }.toMutableMap()
+            nanoTime = nanoTime.filterNot { it.key.contains(pattern) }.toMutableMap()
+            nanoTiming = nanoTiming.filterNot { it.key.contains(pattern) }.toMutableMap()
+        }
+    }
+
+    fun listNanoTiming(pattern: String = ""): List<String> {
+        return nanoTiming
+            .toSortedMap()
+            .filterKeys { it.contains(pattern) }
+            .map { (name, average_n) ->
+                val (average, n) = average_n
+                "%-40s %6d x %12.6f ms".format(name, n, average / 1E6)
+            }
+    }
+
+    fun logNanoTiming(pattern: String = "", title: String = "") {
+        Timber.i("timing: $title -----\\")
+        listNanoTiming(pattern).forEach {
+            Timber.i("timing: $title $it")
+        }
+        Timber.i("timing: $title -----/")
+    }
 
     // reflection
 

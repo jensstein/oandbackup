@@ -18,8 +18,8 @@ val Phosphor.Checks: ImageVector
         }
         _checks = Builder(
             name = "Checks",
-            defaultWidth = 32.0.dp,
-            defaultHeight = 32.0.dp,
+            defaultWidth = 24.0.dp,
+            defaultHeight = 24.0.dp,
             viewportWidth = 256.0f,
             viewportHeight = 256.0f,
         ).apply {

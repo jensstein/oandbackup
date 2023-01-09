@@ -79,13 +79,15 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.beginBusy
 import com.machiav3lli.backup.OABX.Companion.endBusy
 import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.handler.LogsHandler.Companion.share
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.Companion.utilBoxInfo
-import com.machiav3lli.backup.pref_maxLogLines
+import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.ui.compose.SelectionContainerX
 import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.compose.item.RoundButton
+import com.machiav3lli.backup.utils.SystemUtils.getApplicationIssuer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -96,8 +98,12 @@ fun info(): List<String> {
     return listOf(
         "",
         "--- > info",
-        "${BuildConfig.APPLICATION_ID} ${BuildConfig.VERSION_NAME}"
-    ) + utilBoxInfo()
+        BuildConfig.APPLICATION_ID,
+        BuildConfig.VERSION_NAME,
+        OABX.context.getApplicationIssuer()?.let { "signed by $it" } ?: "",
+        "",
+        "--- shell utility box"
+    ).filterNotNull() + utilBoxInfo()
 }
 
 fun shell(command: String): List<String> {
@@ -118,6 +124,85 @@ fun shell(command: String): List<String> {
             e.cause?.message
         ).filterNotNull()
     }
+}
+
+fun envInfo() =
+    info() +
+    shell("su --help") +
+    shell("echo ${utilBox.name}") +
+    shell("${utilBox.name} --version") +
+    shell("${utilBox.name} --help")
+
+fun logInt() =
+    listOf("--- > last internal log messages") +
+    OABX.lastLogMessages
+
+val maxLogcatLines = 1000
+
+fun logApp() =
+    shell("logcat -d -t ${maxLogcatLines} --pid=${Process.myPid()}")
+
+fun logSys() =
+    shell("logcat -d -t ${maxLogcatLines}")
+
+fun dumpAlarms() =
+    shell("dumpsys alarm | sed -n '/Alarm.*machiav3lli[.]backup/,/PendingIntent/{p}'")
+
+fun accessTest() =
+    shell("echo \"\$(ls /data/user/0/ | wc -l) packages (apk)\"") +
+    shell("echo \"$(ls /data/user/0/ | wc -l) packages (data)\"") +
+    shell("echo \"\$(ls -l /data/misc/ | wc -l) misc data\"")
+
+fun lastErrorPkg(): List<String> {
+    val pkg = OABX.lastErrorPackage
+    return if (pkg.isNotEmpty()) {
+        listOf("--- last error package: $pkg") +
+        shell("ls -l /data/user/0/$pkg") +
+        shell("ls -l /data/user_de/0/$pkg") +
+        shell("ls -l /sdcard/Android/*/$pkg")
+    } else {
+        listOf("--- ? no last error package")
+    }
+}
+
+fun lastErrorCommand(): List<String> {
+    val cmd = OABX.lastErrorCommand
+    return if (cmd.isNotEmpty())
+        listOf(
+            "--- last error command",
+            cmd
+        )
+    else
+        emptyList()
+}
+
+fun supportInfo(): List<String> {
+    beginBusy("supportInfo")
+    val lines =
+        listOf("=== support log", "") +
+        envInfo() +
+        dumpAlarms() +
+        accessTest() +
+        lastErrorPkg() +
+        lastErrorCommand() +
+        logInt() +
+        logApp()
+    endBusy("supportInfo")
+    return lines
+}
+
+fun textLogShare(lines: List<String>) {
+    LogsHandler.writeToLogFile(lines.joinToString("\n"))?.let { file ->
+        Log(file).let { log ->
+            if (lines.isNotEmpty()) {
+                share(log, asFile = true)
+            }
+        }
+    }
+}
+
+fun supportInfoLogShare() {
+    textLogShare(supportInfo())
 }
 
 @Composable
@@ -153,22 +238,23 @@ fun TerminalPage() {
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
 
-    fun add(lines: List<String>) {
+    fun launch(todo: () -> Unit) {
         scope.launch {
-            try {
+            todo()
+        }
+    }
+
+    fun append(lines: List<String>) {
+        launch {
+            runCatching {
                 focusManager.clearFocus()
-            } catch (_: Throwable) {
             }
             output.addAll(lines)
         }
     }
 
     fun run(command: String) {
-        scope.launch {
-            beginBusy()
-            add(shell(command))
-            endBusy()
-        }
+        append(shell(command))
     }
 
     Column(verticalArrangement = Arrangement.Top) {
@@ -205,50 +291,20 @@ fun TerminalPage() {
                     .fillMaxWidth()
                     .padding(padding)
             ) {
-                TerminalButton("->Log", important = true) {
-                    LogsHandler.writeToLogFile(output.joinToString("\n"))
-                    output.clear()
-                }
-                Spacer(Modifier.width(5.dp))
-                TerminalButton("Clear", important = true) {
-                    output.clear()
-                }
-                Spacer(Modifier.width(5.dp))
-                TerminalButton("info") {
-                    add(info())
-                    run("su --help")
-                    run("echo ${utilBox.name}")
-                    run("${utilBox.name} --version")
-                    run("${utilBox.name} --help")
-                }
-                TerminalButton("log/int") {
-                    add(listOf("--- > last internal log messages"))
-                    add(OABX.lastLogMessages)
-                }
-                TerminalButton("log/app") {
-                    run("logcat -d -t ${pref_maxLogLines.value} --pid=${Process.myPid()}")
-                }
-                TerminalButton("log/all") {
-                    run("logcat -d -t ${pref_maxLogLines.value}")
-                }
-                TerminalButton("access") {
-                    run("echo \"\$(ls /data/user/0/ | wc -l) packages (apk)\"")
-                    run("echo \"$(ls /data/user/0/ | wc -l) packages (data)\"")
-                    run("echo \"\$(ls -l /data/misc/ | wc -l) misc data\"")
-                }
-                TerminalButton("epkg") {
-                    val pkg = OABX.lastErrorPackage
-                    if (pkg != "") {
-                        run("ls -l /data/user/0/$pkg")
-                        run("ls -l /data/user/0/$pkg")
-                        run("ls -l /sdcard/Android/*/$pkg")
-                    } else {
-                        add(listOf("--- ? no last error package"))
-                    }
-                }
-                TerminalButton("ecmd") {
-                    command = OABX.lastErrorCommand
-                }
+                TerminalButton("SUPPORT", important = true) { launch { supportInfoLogShare() } }
+                Spacer(Modifier.width(8.dp))
+                TerminalButton("share", important = true) { launch { textLogShare(output) } }
+                Spacer(Modifier.width(8.dp))
+                TerminalButton("clear", important = true) { output.clear() }
+                Spacer(Modifier.width(8.dp))
+                TerminalButton("info") { append(envInfo()) }
+                TerminalButton("log/int") { append(logInt()) }
+                TerminalButton("log/app") { append(logApp()) }
+                TerminalButton("log/all") { append(logSys()) }
+                TerminalButton("alarms") { append(dumpAlarms()) }
+                TerminalButton("access") { append(accessTest()) }
+                TerminalButton("errInfo") { append(lastErrorPkg() + lastErrorCommand()) }
+                TerminalButton("err->cmd") { command = OABX.lastErrorCommand }
                 if (BuildConfig.DEBUG) {
                 }
             }
@@ -258,7 +314,6 @@ fun TerminalPage() {
                 .weight(1f)
                 .padding(0.dp)
                 .fillMaxHeight()
-                .background(color = Color(0.2f, 0.2f, 0.3f))
         ) {
             TerminalText(output, limitLines = 0, scrollOnAdd = true)
         }
@@ -303,7 +358,7 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
                 .fillMaxWidth()
                 .padding(0.dp)
                 .ifThen(!wrap) { horizontalScroll(hscroll) }
-                .background(color = Color.Transparent)
+                .background(color = Color(0.2f, 0.2f, 0.3f))
         ) {
             SelectionContainerX {
                 LazyColumn(
@@ -323,16 +378,16 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
                         if (it.contains(search, ignoreCase = true)) {
                             val color =
                                 when {
-                                    it.contains("error", ignoreCase = true) -> Color(1f, 0f, 0f)
+                                    it.contains("error", ignoreCase = true)   -> Color(1f, 0f, 0f)
                                     it.contains("warning", ignoreCase = true) -> Color(1f, 0.5f, 0f)
-                                    it.contains("***") -> Color(0f, 1f, 1f)
-                                    it.startsWith("===") -> Color(1f, 1f, 0f)
-                                    it.startsWith("---") -> Color(
+                                    it.contains("***")                        -> Color(0f, 1f, 1f)
+                                    it.startsWith("===")                      -> Color(1f, 1f, 0f)
+                                    it.startsWith("---")                      -> Color(
                                         0.8f,
                                         0.8f,
                                         0f
                                     )
-                                    else -> Color.White
+                                    else                                      -> Color.White
                                 }
                             Text(
                                 if (it == "") " " else it,     //TODO hg42 workaround
@@ -349,7 +404,7 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
             }
         }
 
-        val overlayColor = Color(1f, 0.5f, 1f, 0.7f)
+        val overlayColor = Color(1f, 0.5f, 1f, 1f)
 
         @Composable
         fun SmallButton(icon: ImageVector, onClick: () -> Unit) {
@@ -369,8 +424,7 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
             //val focusManager = LocalFocusManager.current
 
             TextField(modifier = Modifier
-                .padding(0.dp)
-                , //.weight(1f),
+                .padding(0.dp), //.weight(1f),
                 value = search,
                 singleLine = true,
                 //placeholder = { Text(text = "search", color = Color.Gray) },
@@ -380,7 +434,8 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
                     unfocusedLeadingIconColor = overlayColor,
                     focusedLeadingIconColor = if (search.length > 0) Color.Transparent else overlayColor
                 ),
-                textStyle = TextStyle(fontSize = fontSize*searchFontFactor, lineHeight = lineHeightSp*searchFontFactor),
+                textStyle = TextStyle(fontSize = fontSize * searchFontFactor,
+                    lineHeight = lineHeightSp * searchFontFactor),
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Rounded.Search,
@@ -396,8 +451,8 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
                 ),
                 //keyboardActions = KeyboardActions(
                 //    onDone = {
-                //        run(command)
-                //        command = ""
+                //        todo
+                //        search = ""
                 //    }
                 //),
                 onValueChange = {

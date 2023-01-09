@@ -5,6 +5,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,6 +29,7 @@ import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.preferences.ui.PrefsExpandableGroupHeader
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
+import com.machiav3lli.backup.preferences.ui.PrefsGroupHeading
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.AndroidLogo
 import com.machiav3lli.backup.ui.compose.icons.phosphor.AsteriskSimple
@@ -43,6 +49,39 @@ import com.machiav3lli.backup.utils.sortFilterModel
 
 
 @Composable
+fun DevPrefsGroup(prefs: List<Pref>, heading: String) {
+    val (expanded, expand) = remember { mutableStateOf(false) }
+
+    Card(
+        modifier = Modifier
+            .clickable { expand(!expanded) },
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp)
+        )
+    ) {
+        PrefsGroupHeading(
+            heading = heading,
+        )
+
+
+        Column(    //TODO hg42 use a wrapper (e.g. Box) as workaround for weird animation behavior
+            modifier = Modifier
+                .padding(start = 24.dp)
+        ) {
+            AnimatedVisibility(
+                visible = expanded,
+                //enter = EnterTransition.None,
+                //exit = ExitTransition.None
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut(),
+            ) {
+                PrefsGroup(prefs = prefs, heading = heading)
+            }
+        }
+    }
+}
+
+@Composable
 fun DevPrefGroups() {
     val devUserOptions = Pref.preferences["dev-adv"] ?: listOf()
     val devFileOptions = Pref.preferences["dev-file"] ?: listOf()
@@ -53,22 +92,24 @@ fun DevPrefGroups() {
     val devNewOptions = Pref.preferences["dev-new"] ?: listOf()
     val devFakeOptions = Pref.preferences["dev-fake"] ?: listOf()
 
-    Column {
-        PrefsGroup(prefs = devUserOptions, heading = "advanced options (who know)")
-        PrefsGroup(prefs = devFileOptions, heading = "file handling")
-        PrefsGroup(prefs = devLogOptions, heading = "logging")
-        PrefsGroup(prefs = devTraceOptions, heading = "tracing")
-        PrefsGroup(prefs = devHackOptions, heading = "workarounds (hacks)")
-        PrefsGroup(prefs = devNewOptions, heading = "new experimental (for devs)")
-        PrefsGroup(prefs = devAltOptions, heading = "alternates (for devs to compare)")
-        PrefsGroup(prefs = devFakeOptions, heading = "faking (simulated actions)")
+    Column(
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        DevPrefsGroup(prefs = devUserOptions, heading = "advanced users (for those who know)")
+        DevPrefsGroup(prefs = devFileOptions, heading = "file handling")
+        DevPrefsGroup(prefs = devLogOptions, heading = "logging")
+        DevPrefsGroup(prefs = devTraceOptions, heading = "tracing")
+        DevPrefsGroup(prefs = devHackOptions, heading = "workarounds (hacks)")
+        DevPrefsGroup(prefs = devNewOptions, heading = "new experimental (for devs)")
+        DevPrefsGroup(prefs = devAltOptions, heading = "alternates (for devs to compare)")
+        DevPrefsGroup(prefs = devFakeOptions, heading = "faking (simulated actions)")
     }
 }
 
 @Composable
 fun AdvancedPrefsPage() {
     val context = LocalContext.current
-    var (expanded, expand) = remember { mutableStateOf(false) }
+    val (expanded, expand) = remember { mutableStateOf(false) }
 
     val prefs = Pref.preferences["adv"] ?: listOf()
 
@@ -98,7 +139,7 @@ fun AdvancedPrefsPage() {
                     }
                 }
                 item {
-                    Box {                       //TODO hg42 workaround for weird animation behavior
+                    Box {           //TODO hg42 use Box as workaround for weird animation behavior
                         AnimatedVisibility(
                             visible = expanded,
                             //enter = EnterTransition.None,
@@ -113,8 +154,9 @@ fun AdvancedPrefsPage() {
             }
         } else {
             val scroll = rememberScrollState()
-            Column(                             //TODO hg42 another workaround for weird animation behavior
+            Column(                    //TODO hg42 another workaround for weird animation behavior
                 Modifier
+                    .fillMaxSize()
                     .verticalScroll(scroll)
                     .padding(PaddingValues(8.dp)),
                 verticalArrangement = Arrangement.spacedBy(0.dp)
@@ -149,9 +191,15 @@ fun AdvancedPrefsPage() {
 
 //---------------------------------------- developer settings - advanced users
 
-val pref_quickerList = BooleanPref(
-    key = "dev-adv.quickerList",
-    summary = "reduce package list items for quicker usage",
+val pref_hidePackageIcon = BooleanPref(
+    key = "dev-adv.hidePackageIcon",
+    summary = "speed up package list by hiding the package icon",
+    defaultValue = false
+)
+
+val pref_hideBackupLabels = BooleanPref(
+    key = "dev-adv.hideBackupLabels",
+    summary = "speed up package list by hiding the backup data type icons (keeps the package type)",
     defaultValue = false
 )
 
@@ -162,16 +210,16 @@ val pref_iconCrossFade = IntPref(
     defaultValue = 200
 )
 
+val pref_allPrefsShouldLookEqual = BooleanPref(
+    key = "dev-adv.allPrefsShouldLookEqual",
+    summary = "all preferences should be worth the same 🙂 regardless of their position in the list, meaning: don't shade backgrounds from top to bottom",
+    defaultValue = false
+)
+
 val pref_cancelOnStart = BooleanPref(
     key = "dev-adv.cancelOnStart",
     summaryId = R.string.prefs_cancelonstart_summary,
     defaultValue = false
-)
-
-val pref_refreshOnStart = BooleanPref(
-    key = "dev-adv.refreshOnStart",
-    summary = "automatically refresh package list on startup",
-    defaultValue = true
 )
 
 val pref_showInfoLogBar = BooleanPref(
@@ -301,10 +349,28 @@ val pref_useBackupRestoreWithSelection = BooleanPref(
 
 //---------------------------------------- developer settings - implementation alternatives
 
+val pref_flatStructure = BooleanPref(
+    key = "dev-alt.flatStructure",
+    summary = "use a flat directory structure",
+    defaultValue = false
+)
+
+val pref_propertiesInDir = BooleanPref(
+    key = "dev-alt.propertiesInDir",
+    summary = "store the properties inside the backup directory",
+    defaultValue = false
+)
+
 val pref_altListItem = BooleanPref(
     key = "dev-alt.altListItem",
     summary = "alternate package list item implementation",
-    defaultValue = false
+    defaultValue = true
+)
+
+val pref_altPackageIcon = BooleanPref(
+    key = "dev-alt.altPackageIcon",
+    summary = "alternate package icon implementation",
+    defaultValue = true
 )
 
 val pref_restoreAvoidTemporaryCopy = BooleanPref(
@@ -409,7 +475,6 @@ val pref_allowDowngrade = BooleanPref(
     icon = Phosphor.ClockCounterClockwise,
     defaultValue = false
 )
-
 
 
 //---------------------------------------- values that should persist for internal purposes (no UI)

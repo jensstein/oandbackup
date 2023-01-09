@@ -19,11 +19,17 @@ package com.machiav3lli.backup.handler
 
 import android.os.Build
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
-import com.machiav3lli.backup.BACKUP_INSTANCE_DIR
+import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES_INDIR
+import com.machiav3lli.backup.backupInstanceDir
+import com.machiav3lli.backup.backupInstanceDirFlat
+import com.machiav3lli.backup.backupInstanceProps
+import com.machiav3lli.backup.backupInstancePropsFlat
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.PackageInfo
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.preferences.pref_flatStructure
+import com.machiav3lli.backup.preferences.pref_propertiesInDir
 import java.time.LocalDateTime
 
 class BackupBuilder(
@@ -43,12 +49,43 @@ class BackupBuilder(
     private val cpuArch: String = Build.SUPPORTED_ABIS[0]
     private var size: Long = 0L
     val backupPath = ensureBackupPath(backupRoot)
+    val backupPropsFile = getPropsFile(backupRoot)
 
     private fun ensureBackupPath(backupRoot: StorageFile): StorageFile {
+
         val dateTimeStr = BACKUP_DATE_TIME_FORMATTER.format(backupDate)
-        // root/packageName/dateTimeStr-user.userId/
-        return backupRoot
-            .ensureDirectory(String.format(BACKUP_INSTANCE_DIR, dateTimeStr, packageInfo.profileId))
+
+        if (pref_flatStructure.value)
+            return backupRoot
+                .ensureDirectory(
+                    backupInstanceDirFlat(packageInfo, dateTimeStr)
+                )
+        else
+            return backupRoot
+                .ensureDirectory(
+                    backupInstanceDir(packageInfo, dateTimeStr)
+                )
+    }
+
+    private fun getPropsFile(backupRoot: StorageFile): StorageFile {
+
+        val dateTimeStr = BACKUP_DATE_TIME_FORMATTER.format(backupDate)
+
+        if (pref_propertiesInDir.value) {
+            return StorageFile(
+                backupPath,
+                BACKUP_INSTANCE_PROPERTIES_INDIR
+            )
+        } else if (pref_flatStructure.value)
+            return StorageFile(
+                backupRoot,
+                backupInstancePropsFlat(packageInfo, dateTimeStr)
+            )
+        else
+            return StorageFile(
+                backupRoot,
+                backupInstanceProps(packageInfo, dateTimeStr)
+            )
     }
 
     fun setIv(iv: ByteArray) {

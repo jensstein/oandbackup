@@ -19,7 +19,9 @@ package com.machiav3lli.backup
 
 import android.Manifest
 import android.content.Intent
+import android.provider.DocumentsContract
 import androidx.compose.ui.unit.dp
+import com.machiav3lli.backup.dbs.entity.PackageInfo
 import com.machiav3lli.backup.ui.item.ChipItem
 import com.machiav3lli.backup.ui.item.Legend
 import com.machiav3lli.backup.ui.item.Link
@@ -28,17 +30,35 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 const val PREFS_SHARED_PRIVATE = "com.machiav3lli.backup"
-const val ADMIN_PREFIX = "!-"
-val SELECTIONS_FOLDER_NAME = "${ADMIN_PREFIX}SELECTIONS"
-val EXPORTS_FOLDER_NAME = "${ADMIN_PREFIX}EXPORTS"
-val EXPORTS_FOLDER_NAME_ALT = "EXPORTS"
-val LOG_FOLDER_NAME = "${ADMIN_PREFIX}LOGS"
-val LOG_FOLDER_NAME_ALT = "LOGS"
 
+const val ADMIN_PREFIX = "!-"
+
+val SELECTIONS_FOLDER_NAME_BASE = "SELECTIONS"
+val SELECTIONS_FOLDER_NAME = "$ADMIN_PREFIX$SELECTIONS_FOLDER_NAME_BASE"
+
+val EXPORTS_FOLDER_NAME_BASE = "EXPORTS"
+val EXPORTS_FOLDER_NAME = "$ADMIN_PREFIX$EXPORTS_FOLDER_NAME_BASE"
+val EXPORTS_FOLDER_NAME_ALT = EXPORTS_FOLDER_NAME_BASE
+
+val LOGS_FOLDER_NAME_BASE = "LOGS"
+val LOGS_FOLDER_NAME = "${ADMIN_PREFIX}LOGS"
+val LOGS_FOLDER_NAME_ALT = LOGS_FOLDER_NAME_BASE
+
+const val PROP_NAME = "properties"
 const val LOG_INSTANCE = "%s.log"
-const val BACKUP_INSTANCE_PROPERTIES = "%s-user_%s.properties"
-const val BACKUP_INSTANCE_DIR = "%s-user_%s"
+const val BACKUP_INSTANCE_REGEX_PATTERN = """\d\d\d\d-\d\d-\d\d-\d\d-\d\d-\d\d(-\d\d\d)?-user_\d+"""
+fun backupInstanceDir(packageInfo: PackageInfo, dateTimeStr: String) = "$dateTimeStr-user_${packageInfo.profileId}"
+fun backupInstanceDirFlat(packageInfo: PackageInfo, dateTimeStr: String) = "${packageInfo.packageName}-$dateTimeStr-user_${packageInfo.profileId}"
+fun backupInstanceProps(packageInfo: PackageInfo, dateTimeStr: String) = "${backupInstanceDir(packageInfo, dateTimeStr)}.$PROP_NAME"
+fun backupInstancePropsFlat(packageInfo: PackageInfo, dateTimeStr: String) = "${backupInstanceDirFlat(packageInfo, dateTimeStr)}.$PROP_NAME"
+const val BACKUP_INSTANCE_PROPERTIES_INDIR = "backup.$PROP_NAME"
+const val BACKUP_PACKAGE_FOLDER_REGEX_PATTERN = """\w+(\.\w+)+"""
+val BACKUP_SPECIAL_FILE_REGEX_PATTERN = """(^\.|^$ADMIN_PREFIX)"""
+val BACKUP_SPECIAL_FOLDER_REGEX_PATTERN = """(^\.|^$ADMIN_PREFIX|$EXPORTS_FOLDER_NAME_BASE|$LOGS_FOLDER_NAME_BASE|$SELECTIONS_FOLDER_NAME_BASE)"""
 const val EXPORTS_INSTANCE = "%s.scheds"
+
+const val MIME_TYPE_FILE = "application/octet-stream"
+const val MIME_TYPE_DIR = DocumentsContract.Document.MIME_TYPE_DIR
 
 const val MAIN_DB_NAME = "main.db"
 const val PACKAGES_LIST_GLOBAL_ID = -1L
@@ -71,7 +91,7 @@ val themeItems = mutableMapOf(
 }
 
 val BUTTON_SIZE_MEDIUM = 48.dp
-val ICON_SIZE_SMALL = 24.dp
+val ICON_SIZE_SMALL = 24.dp // Default
 val ICON_SIZE_MEDIUM = 32.dp
 val ICON_SIZE_LARGE = 48.dp
 
@@ -229,22 +249,25 @@ val legendList = listOf(
     Legend.Updated,
 )
 
-val ISO_DATE_TIME_FORMAT get() : SimpleDateFormat =
-    SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+val ISO_LIKE_DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss"
+val ISO_LIKE_DATE_TIME_MIN_PATTERN = "yyyy-MM-dd HH:mm"
+val ISO_LIKE_DATE_TIME_MS_PATTERN = "yyyy-MM-dd HH:mm:ss:SSS"
+val FILE_DATE_TIME_MS_PATTERN = "yyyy-MM-dd-HH-mm-ss-SSS"
+val FILE_DATE_TIME_PATTERN = "yyyy-MM-dd-HH-mm-ss"
 
-val ISO_DATE_TIME_FORMAT_MIN get() : SimpleDateFormat =
-    SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+val ISO_DATE_TIME_FORMAT get() = SimpleDateFormat(ISO_LIKE_DATE_TIME_PATTERN, Locale.getDefault())
 
-val ISO_DATE_TIME_FORMAT_MS get() : SimpleDateFormat =
-    SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS", Locale.getDefault())
+val ISO_DATE_TIME_FORMAT_MIN get() = SimpleDateFormat(ISO_LIKE_DATE_TIME_MIN_PATTERN, Locale.getDefault())
+
+val ISO_DATE_TIME_FORMAT_MS get() = SimpleDateFormat(ISO_LIKE_DATE_TIME_MS_PATTERN, Locale.getDefault())
 
 // must be ISO time format for sane sorting yyyy, MM, dd, ...
 // and only allowed file name characters (on all systems, Windows has the smallest set)
-val BACKUP_DATE_TIME_FORMATTER_OLD: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss")
+val BACKUP_DATE_TIME_FORMATTER_OLD = DateTimeFormatter.ofPattern(FILE_DATE_TIME_PATTERN)
 // use millisec, because computers (and users) can be faster than a sec
-val BACKUP_DATE_TIME_FORMATTER: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSS")
+val BACKUP_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(FILE_DATE_TIME_MS_PATTERN)
+
+val BACKUP_DATE_TIME_SHOW_FORMATTER = DateTimeFormatter.ofPattern(ISO_LIKE_DATE_TIME_PATTERN)
 
 val BACKUP_DIRECTORY_INTENT = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
     .addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)

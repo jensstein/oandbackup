@@ -81,11 +81,12 @@ fun PrefsGroup(
 
 @Composable
 fun PrefsGroupHeading(
-    heading: String? = null
+    heading: String? = null,
+    modifier: Modifier = Modifier
 ) = if (heading != null) {
     Column(
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier
+        modifier = modifier
             .height(BUTTON_SIZE_MEDIUM)
             .padding(horizontal = 32.dp)
             .fillMaxWidth(),

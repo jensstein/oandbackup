@@ -25,7 +25,6 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateMap
@@ -52,14 +51,22 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.preferences.pref_altListItem
+import com.machiav3lli.backup.preferences.pref_hidePackageIcon
 import com.machiav3lli.backup.preferences.pref_iconCrossFade
-import com.machiav3lli.backup.preferences.pref_quickerList
 import com.machiav3lli.backup.preferences.pref_useBackupRestoreWithSelection
+import com.machiav3lli.backup.traceTiming
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
-import com.machiav3lli.backup.utils.getBackupDir
+import com.machiav3lli.backup.utils.TraceUtils.beginNanoTimer
+import com.machiav3lli.backup.utils.TraceUtils.endNanoTimer
+import com.machiav3lli.backup.utils.TraceUtils.logNanoTiming
+import com.machiav3lli.backup.utils.TraceUtils.nanoTiming
+import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.utils.getFormattedDate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
+
+val logEachN = 1000L
 
 val yesNo = listOf(
     "yes" to "no",
@@ -85,11 +92,11 @@ fun Confirmation(
 
 @Composable
 fun Selections(
-    onAction: (StorageFile) -> Unit = {}
+    onAction: (StorageFile) -> Unit = {},
 ) {
-    val backupDir = OABX.context.getBackupDir()
-    val selectionsDir = backupDir.findFile(SELECTIONS_FOLDER_NAME)
-        ?: backupDir.createDirectory(SELECTIONS_FOLDER_NAME)
+    val backupRoot = OABX.context.getBackupRoot()
+    val selectionsDir = backupRoot.findFile(SELECTIONS_FOLDER_NAME)
+        ?: backupRoot.createDirectory(SELECTIONS_FOLDER_NAME)
     val files = selectionsDir.listFiles()
 
     if (files.isEmpty())
@@ -110,7 +117,7 @@ fun Selections(
 
 @Composable
 fun SelectionLoadMenu(
-    onAction: (List<String>) -> Unit = {}
+    onAction: (List<String>) -> Unit = {},
 ) {
     Selections {
         onAction(it.readText().lines())
@@ -121,7 +128,7 @@ fun SelectionLoadMenu(
 @Composable
 fun SelectionSaveMenu(
     selection: List<String>,
-    onAction: () -> Unit = {}
+    onAction: () -> Unit = {},
 ) {
     val name = remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
@@ -148,9 +155,8 @@ fun SelectionSaveMenu(
                     if (it.endsWith("\n")) {
                         name.value = it.dropLast(1)
                         focusManager.clearFocus()
-                        val backupDir = OABX.context.getBackupDir()
-                        val selectionsDir = backupDir.findFile(SELECTIONS_FOLDER_NAME)
-                            ?: backupDir.createDirectory(SELECTIONS_FOLDER_NAME)
+                        val backupRoot = OABX.context.getBackupRoot()
+                        val selectionsDir = backupRoot.ensureDirectory(SELECTIONS_FOLDER_NAME)
                         selectionsDir.createFile(name.value)
                             .writeText(selection.joinToString("\n"))
                         onAction()
@@ -190,7 +196,7 @@ fun MainPackageContextMenu(
     packageItem: Package,
     productsList: List<Package>,
     selection: SnapshotStateMap<String, Boolean>,
-    onAction: (Package) -> Unit = {}
+    openSheet: (Package) -> Unit = {},
 ) {
     val visible = productsList
     val selectedAndVisible = visible.filter { selection[it.packageName] == true }
@@ -206,7 +212,7 @@ fun MainPackageContextMenu(
 
     fun launchPackagesAction(
         action: String,
-        todo: () -> Unit,
+        todo: suspend () -> Unit,
     ) {
         OABX.main?.viewModel?.viewModelScope?.launch {
             OABX.beginBusy(action)
@@ -215,7 +221,7 @@ fun MainPackageContextMenu(
         }
     }
 
-    fun forEachPackage(
+    suspend fun forEachPackage(
         packages: List<Package>,
         action: String,
         select: Boolean? = true,
@@ -223,9 +229,12 @@ fun MainPackageContextMenu(
     ) {
         packages.forEach { pkg ->
             if (select == true) selection[pkg.packageName] = false
+            yield()
             //OABX.addInfoText("$action ${pkg.packageName}")
             todo(pkg)
+            yield()
             select?.let { s -> selection[pkg.packageName] = s }
+            yield()
         }
     }
 
@@ -256,7 +265,7 @@ fun MainPackageContextMenu(
             text = { Text("Open App Sheet") },
             onClick = {
                 expanded.value = false
-                onAction(packageItem)
+                openSheet(packageItem)
             }
         )
 
@@ -453,26 +462,17 @@ fun MainPackageContextMenu(
     }
 }
 
-@Composable
-fun PackageIconB(pkg: Package, modifier: Modifier) {
-
-    val imageData =
-        if (pkg.isSpecial) pkg.packageInfo.icon
-        else "android.resource://${pkg.packageName}/${pkg.packageInfo.icon}"
-
-    PackageIcon(item = pkg, imageData = imageData, modifier = modifier)
-}
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainPackageItemA(
     pkg: Package,
-    productsList: List<Package>,
-    selection: SnapshotStateMap<String, Boolean>,
+    selected: Boolean,
     imageLoader: ImageLoader,
-    onAction: (Package) -> Unit = {}
+    onLongClick: (Package) -> Unit = {},
+    onAction: (Package) -> Unit = {},
 ) {
-    val useIcons by remember(pref_quickerList.value) { mutableStateOf(!pref_quickerList.value) }
+    beginNanoTimer("A.item")
+
     val iconRequest = ImageRequest.Builder(OABX.context)
         .memoryCacheKey(pkg.packageName)
         .memoryCachePolicy(CachePolicy.ENABLED)
@@ -482,8 +482,6 @@ fun MainPackageItemA(
         .data(pkg.iconData)
         .build()
     imageLoader.enqueue(iconRequest)
-
-    val menuExpanded = remember { mutableStateOf(false) }
 
     //traceCompose { "<${pkg.packageName}> MainPackageItem ${pkg.packageInfo.icon} ${imageData.hashCode()}" }
     //traceCompose { "<${pkg.packageName}> MainPackageItem" }
@@ -495,81 +493,26 @@ fun MainPackageItemA(
             containerColor = Color.Transparent
         ),
     ) {
-        if (menuExpanded.value)
-            MainPackageContextMenu(
-                expanded = menuExpanded,
-                packageItem = pkg,
-                productsList = productsList,
-                selection = selection,
-                onAction = onAction
-            )
-
-        val iconSelector =      //TODO hg42 ideally make this global (but we have closures)
-            Modifier
-                .combinedClickable(
-                    onClick = {
-                        selection[pkg.packageName] = selection[pkg.packageName] != true
-                    },
-                    onLongClick = {
-                        selection[pkg.packageName] = true
-                        menuExpanded.value = true
-                    }
-                )
-        val rowSelector =       //TODO hg42 ideally make this global (but we have closures)
-            Modifier
-                .combinedClickable(
-                    onClick = {
-                        if (productsList.none { selection[it.packageName] == true }) {
-                            onAction(pkg)
-                        } else {
-                            selection[pkg.packageName] = selection[pkg.packageName] != true
-                        }
-                    },
-                    onLongClick = {
-                        if (productsList.none { selection[it.packageName] == true }) {
-                            selection[pkg.packageName] = selection[pkg.packageName] != true
-                        } else {
-                            if (selection[pkg.packageName] == true)
-                                menuExpanded.value = true
-                            else {
-                                //selection[packageItem] = true
-                                // select from - to ? but the map is not sorted
-                                //selection.entries.forEach {
-                                //
-                                //}
-                            }
-                        }
-                    }
-                )
-
         Row(
-            modifier = rowSelector
+            modifier = Modifier
+                .combinedClickable(
+                    onClick = { onAction(pkg) },
+                    onLongClick = { onLongClick(pkg) }
+                )
                 .background(
-                    color = if (selection[pkg.packageName] == true)
-                        MaterialTheme.colorScheme.primaryContainer
-                    else
-                        Color.Transparent
+                    color = if (selected) MaterialTheme.colorScheme.primaryContainer
+                    else Color.Transparent
                 )
                 .fillMaxWidth()
                 .padding(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (useIcons) PackageIconA(
-                item = pkg,
-                model = iconRequest,
-                imageLoader = imageLoader,
-            )
-            else
-                Text(
-                    text = when {
-                        pkg.isSpecial -> "💲"
-                        !pkg.isInstalled -> "☠"
-                        pkg.isDisabled -> "😷"
-                        pkg.isSystem  -> "🤖"
-                        else          -> "🙂"
-                    },
-                    style = MaterialTheme.typography.headlineMedium
+            if (!pref_hidePackageIcon.value)
+                PackageIcon(
+                    item = pkg,
+                    model = iconRequest,
+                    imageLoader = imageLoader
                 )
 
             Column(
@@ -586,8 +529,7 @@ fun MainPackageItemA(
                         maxLines = 1,
                         style = MaterialTheme.typography.titleMedium
                     )
-                    if (useIcons)
-                        PackageLabels(item = pkg)
+                    PackageLabels(item = pkg)
                 }
 
                 Row(modifier = Modifier.fillMaxWidth()) {
@@ -608,6 +550,7 @@ fun MainPackageItemA(
                     //    }"
                     //}
 
+                    beginNanoTimer("A.item.package")
                     Text(
                         text = pkg.packageName,
                         modifier = Modifier
@@ -619,7 +562,9 @@ fun MainPackageItemA(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+                    endNanoTimer("A.item.package")
 
+                    beginNanoTimer("A.item.backups")
                     AnimatedVisibility(visible = hasBackups) {
                         Text(
                             text = (latestBackup?.backupDate?.getFormattedDate(
@@ -631,24 +576,43 @@ fun MainPackageItemA(
                             style = MaterialTheme.typography.bodySmall,
                         )
                     }
-
+                    endNanoTimer("A.item.backups")
                 }
             }
         }
     }
+
+    endNanoTimer("A.item")
+
+    if (traceTiming.pref.value)
+        nanoTiming["A.item.package"]?.let {
+            if (it.second > 0 && it.second % logEachN == 0L) {
+                logNanoTiming()
+                //clearNanoTiming("A.item")
+            }
+        }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainPackageItemB(
     pkg: Package,
-    productsList: List<Package>,
-    selection: SnapshotStateMap<String, Boolean>,
+    selected: Boolean,
+    imageLoader: ImageLoader,
+    onLongClick: (Package) -> Unit = {},
     onAction: (Package) -> Unit = {}
 ) {
-    val useIcons by remember(pref_quickerList.value) { mutableStateOf(!pref_quickerList.value) }
+    beginNanoTimer("B.item")
 
-    val menuExpanded = remember { mutableStateOf(false) }
+    val iconRequest = ImageRequest.Builder(OABX.context)
+        .memoryCacheKey(pkg.packageName)
+        .memoryCachePolicy(CachePolicy.ENABLED)
+        .crossfade(pref_iconCrossFade.value)
+        .size(48)
+        .allowConversionToBitmap(true)
+        .data(pkg.iconData)
+        .build()
+    imageLoader.enqueue(iconRequest)
 
     //traceCompose { "<${pkg.packageName}> MainPackageItemX ${pkg.packageInfo.icon} ${imageData.hashCode()}" }
     //traceCompose { "<${pkg.packageName}> MainPackageItemX" }
@@ -660,69 +624,27 @@ fun MainPackageItemB(
             containerColor = Color.Transparent
         ),
     ) {
-        if (menuExpanded.value)
-            MainPackageContextMenu(
-                expanded = menuExpanded,
-                packageItem = pkg,
-                productsList = productsList,
-                selection = selection,
-                onAction = onAction
-            )
-
-        val iconSelector =      //TODO hg42 ideally make this global (but we have closures)
-            Modifier
-                .combinedClickable(
-                    onClick = {
-                        selection[pkg.packageName] = !(selection[pkg.packageName] == true)
-                    },
-                    onLongClick = {
-                        selection[pkg.packageName] = true
-                        menuExpanded.value = true
-                    }
-                )
-        val rowSelector =       //TODO hg42 ideally make this global (but we have closures)
-            Modifier
-                .combinedClickable(
-                    onClick = {
-                        if (productsList.none { selection[it.packageName] == true }) {
-                            onAction(pkg)
-                        } else {
-                            selection[pkg.packageName] = selection[pkg.packageName] != true
-                        }
-                    },
-                    onLongClick = {
-                        if (productsList.none { selection[it.packageName] == true }) {
-                            selection[pkg.packageName] = selection[pkg.packageName] != true
-                        } else {
-                            if (selection[pkg.packageName] == true)
-                                menuExpanded.value = true
-                            else {
-                                //selection[packageItem] = true
-                                // select from - to ? but the map is not sorted
-                                //selection.entries.forEach {
-                                //
-                                //}
-                            }
-                        }
-                    }
-                )
-
         Row(
-            modifier = rowSelector
+            modifier = Modifier
+                .combinedClickable(
+                    onClick = { onAction(pkg) },
+                    onLongClick = { onLongClick(pkg) }
+                )
                 .background(
-                    color = if (selection[pkg.packageName] == true)
-                        MaterialTheme.colorScheme.primaryContainer
-                    else
-                        Color.Transparent
+                    color = if (selected) MaterialTheme.colorScheme.primaryContainer
+                    else Color.Transparent
                 )
                 .fillMaxWidth()
                 .padding(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (useIcons)
-                PackageIconB(pkg = pkg, modifier = iconSelector)
-
+            if (!pref_hidePackageIcon.value)
+                PackageIcon(item = pkg,
+                    imageData = pkg.iconData,
+                    imageLoader = imageLoader,
+                )
+            
             Column(
                 modifier = Modifier.wrapContentHeight()
             ) {
@@ -737,8 +659,9 @@ fun MainPackageItemB(
                         maxLines = 1,
                         style = MaterialTheme.typography.titleMedium
                     )
-                    if (useIcons)
-                        PackageLabels(item = pkg)
+                    beginNanoTimer("B.item.labels")
+                    PackageLabels(item = pkg)
+                    endNanoTimer("B.item.labels")
                 }
 
                 Row(modifier = Modifier.fillMaxWidth()) {
@@ -759,6 +682,7 @@ fun MainPackageItemB(
                     //    }"
                     //}
 
+                    beginNanoTimer("B.item.package")
                     Text(
                         text = pkg.packageName,
                         modifier = Modifier
@@ -770,7 +694,9 @@ fun MainPackageItemB(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+                    endNanoTimer("B.item.package")
 
+                    beginNanoTimer("B.item.backups")
                     AnimatedVisibility(visible = hasBackups) {
                         Text(
                             text = (latestBackup?.backupDate?.getFormattedDate(
@@ -782,34 +708,45 @@ fun MainPackageItemB(
                             style = MaterialTheme.typography.bodySmall,
                         )
                     }
-
+                    endNanoTimer("B.item.backups")
                 }
             }
         }
     }
+
+    endNanoTimer("B.item")
+
+    if (traceTiming.pref.value)
+        nanoTiming["B.item.package"]?.let {
+            if (it.second > 0 && it.second % logEachN == 0L) {
+                logNanoTiming()
+                //clearNanoTiming("B.item")
+            }
+        }
 }
 
 @Composable
 fun MainPackageItem(
     pkg: Package,
-    productsList: List<Package>,
-    selection: SnapshotStateMap<String, Boolean>,
+    selected: Boolean,
     imageLoader: ImageLoader,
-    onAction: (Package) -> Unit = {}
+    onLongClick: (Package) -> Unit = {},
+    onAction: (Package) -> Unit = {},
 ) {
     if (pref_altListItem.value)
         MainPackageItemB(
             pkg = pkg,
-            productsList = productsList,
-            selection = selection,
+            selected = selected,
+            imageLoader = imageLoader,
+            onLongClick = onLongClick,
             onAction = onAction
         )
     else
         MainPackageItemA(
             pkg = pkg,
-            productsList = productsList,
-            selection = selection,
-            onAction = onAction,
+            selected = selected,
             imageLoader = imageLoader,
+            onLongClick = onLongClick,
+            onAction = onAction,
         )
 }

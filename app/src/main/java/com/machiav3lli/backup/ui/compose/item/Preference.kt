@@ -33,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.machiav3lli.backup.ICON_SIZE_SMALL
+import com.machiav3lli.backup.preferences.pref_allPrefsShouldLookEqual
 import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.item.BooleanPref
 import com.machiav3lli.backup.ui.item.EnumPref
@@ -54,9 +55,11 @@ fun BasePreference(
     icon: (@Composable () -> Unit)? = null,
     endWidget: (@Composable (isEnabled: Boolean) -> Unit)? = null,
     bottomWidget: (@Composable (isEnabled: Boolean) -> Unit)? = null,
-    onClick: (() -> Unit)? = null
+    onClick: (() -> Unit)? = null,
 ) {
-    var isEnabled by remember { mutableStateOf(pref.enableIf?.invoke() ?: true) }   //TODO hg42 remove remember ???
+    var isEnabled by remember {
+        mutableStateOf(pref.enableIf?.invoke() ?: true)
+    }   //TODO hg42 remove remember ???
 
     SideEffect {
         pref.enableIf?.run {
@@ -79,7 +82,15 @@ fun BasePreference(
                     bottomEnd = if (rank == 1f) 16.dp else 6.dp
                 )
             )
-            .background(MaterialTheme.colorScheme.surfaceColorAtElevation((rank * 24).dp))
+            .background(
+                MaterialTheme.colorScheme
+                    .surfaceColorAtElevation(
+                        if (pref_allPrefsShouldLookEqual.value)
+                            24.dp
+                        else
+                            (rank * 24).dp
+                    )
+            )
             .ifThen(onClick != null) {
                 clickable(enabled = isEnabled, onClick = onClick!!)
             }

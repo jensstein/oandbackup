@@ -19,8 +19,8 @@ import java.io.File
 import java.io.IOException
 
 @Throws(BackupLocationInAccessibleException::class, StorageLocationNotConfiguredException::class)
-fun Context.getBackupDir(): StorageFile =
-    StorageFile.fromUri(this, getBackupDirUri(this))
+fun Context.getBackupRoot(): StorageFile =
+    StorageFile.fromUri(getBackupDirUri(this))
 
 @Throws(IOException::class)
 fun suRecursiveCopyFilesToDocument(
@@ -34,7 +34,7 @@ fun suRecursiveCopyFilesToDocument(
                 .buildUpon()
                 .appendEncodedPath(File(file.filePath).parent)
                 .build()
-            val parentFile = StorageFile.fromUri(context, parentUri)
+            val parentFile = StorageFile.fromUri(parentUri)
             when (file.fileType) {
                 FileType.REGULAR_FILE -> suCopyFileToDocument(file, parentFile)
                 FileType.DIRECTORY -> parentFile.createDirectory(file.filename)

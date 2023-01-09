@@ -134,7 +134,6 @@ fun timeLeft(
     val state = MutableStateFlow(calcTimeLeft(schedule))
 
     LaunchedEffect(state) {
-        //traceDebug { "delay ${updateInterval - (now+100) % updateInterval}" }
         delay(updateInterval)
         state.emit(calcTimeLeft(schedule))
     }

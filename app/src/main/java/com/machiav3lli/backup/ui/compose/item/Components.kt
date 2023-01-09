@@ -34,6 +34,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -63,6 +65,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -76,9 +79,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import coil.ImageLoader
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.imageLoader
 import coil.request.ImageRequest
+import coil.size.Size
 import com.machiav3lli.backup.ICON_SIZE_LARGE
 import com.machiav3lli.backup.ICON_SIZE_MEDIUM
 import com.machiav3lli.backup.ICON_SIZE_SMALL
@@ -99,7 +104,10 @@ import com.machiav3lli.backup.SPECIAL_FILTER_OLD
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.preferences.pref_altPackageIcon
+import com.machiav3lli.backup.preferences.pref_hideBackupLabels
 import com.machiav3lli.backup.preferences.pref_iconCrossFade
+import com.machiav3lli.backup.traceDebug
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowSquareOut
 import com.machiav3lli.backup.ui.compose.icons.phosphor.AsteriskSimple
@@ -128,6 +136,8 @@ import com.machiav3lli.backup.ui.compose.theme.ColorSystem
 import com.machiav3lli.backup.ui.compose.theme.ColorUpdated
 import com.machiav3lli.backup.ui.compose.theme.ColorUser
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
+import com.machiav3lli.backup.utils.TraceUtils.beginNanoTimer
+import com.machiav3lli.backup.utils.TraceUtils.endNanoTimer
 import com.machiav3lli.backup.utils.brighter
 import com.machiav3lli.backup.utils.darker
 import kotlinx.coroutines.delay
@@ -136,21 +146,22 @@ import kotlinx.coroutines.delay
 fun ButtonIcon(
     icon: ImageVector,
     @StringRes textId: Int,
-    tint: Color? = null
+    tint: Color? = null,
 ) {
+    beginNanoTimer("btnIcon")
     Icon(
         imageVector = icon,
         contentDescription = stringResource(id = textId),
-        modifier = Modifier.size(ICON_SIZE_SMALL),
         tint = tint ?: LocalContentColor.current
     )
+    endNanoTimer("btnIcon")
 }
 
 @Composable
 fun PrefIcon(
     icon: ImageVector,
     text: String,
-    tint: Color? = null
+    tint: Color? = null,
 ) {
     Icon(
         imageVector = icon,
@@ -161,12 +172,13 @@ fun PrefIcon(
 }
 
 @Composable
-fun PackageIconA(
+fun PackageIcon(
     modifier: Modifier = Modifier,
     item: Package?,
     model: ImageRequest,
-    imageLoader: ImageLoader,
+    imageLoader: ImageLoader = LocalContext.current.imageLoader,
 ) {
+    beginNanoTimer("pkgIcon.AI")
     AsyncImage(
         modifier = modifier
             .size(ICON_SIZE_LARGE)
@@ -177,34 +189,108 @@ fun PackageIconA(
         error = placeholderIconPainter(item, imageLoader),
         placeholder = placeholderIconPainter(item, imageLoader)
     )
+    endNanoTimer("pkgIcon.AI")
 }
 
 @Composable
 fun PackageIcon(
     modifier: Modifier = Modifier,
     item: Package?,
-    imageData: Any
+    imageData: Any,
+    imageLoader: ImageLoader = LocalContext.current.imageLoader,
 ) {
-    AsyncImage(
-        modifier = modifier
-            .size(ICON_SIZE_LARGE)
-            .clip(RoundedCornerShape(LocalShapes.current.medium)),
-        model = ImageRequest.Builder(LocalContext.current)
-            .crossfade(pref_iconCrossFade.value)
-            .data(imageData)
-            .build(),
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        error = placeholderIconPainter(item),
-        placeholder = placeholderIconPainter(item)
-    )
+    if (pref_altPackageIcon.value) {
+        beginNanoTimer("pkgIcon.rCAIP")
+        Image(
+            modifier = modifier
+                .size(ICON_SIZE_LARGE)
+                .clip(RoundedCornerShape(LocalShapes.current.medium)),
+            painter = cachedAsyncImagePainter(
+                model = imageData,
+                imageLoader = imageLoader,
+                altPainter = placeholderIconPainter(item, imageLoader)
+            ),
+            contentDescription = null,
+            contentScale = ContentScale.Crop
+        )
+        endNanoTimer("pkgIcon.rCAIP")
+    } else {
+        beginNanoTimer("pkgIcon.AIrq")
+        AsyncImage(
+            modifier = modifier
+                .size(ICON_SIZE_LARGE)
+                .clip(RoundedCornerShape(LocalShapes.current.medium)),
+            model = ImageRequest.Builder(LocalContext.current)
+                .crossfade(pref_iconCrossFade.value)
+                .data(imageData)
+                .size(Size.ORIGINAL)
+                .build(),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            error = placeholderIconPainter(item, imageLoader),
+            placeholder = placeholderIconPainter(item, imageLoader)
+        )
+        endNanoTimer("pkgIcon.AIrq")
+    }
+}
+
+var painterCache = mutableMapOf<Any, Painter>()         //TODO hg42 move somewhere else
+
+fun clearIconCache() {                                  //TODO hg42 move somewhere else
+    painterCache.clear()
+}
+
+fun limitIconCache(pkgs: List<Package>) {
+    ( painterCache.keys - pkgs.map { it.iconData } ).forEach {
+        traceDebug { "icon remove $it"}
+        painterCache.remove(it)
+    }
+}
+
+fun sizeOfIconCache() = painterCache.size               //TODO hg42 move somewhere else
+
+@Composable
+fun cachedAsyncImagePainter(
+    model: Any,
+    imageLoader: ImageLoader = LocalContext.current.imageLoader,
+    altPainter: Painter? = null,
+): Painter {
+    beginNanoTimer("rmbrCachedAIP")
+    val painter = painterCache.getOrElse(model) {
+        beginNanoTimer("rmbrAIP")
+        val rememberedPainter =
+            rememberAsyncImagePainter(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(model)
+                    .size(Size.ORIGINAL)
+                    .build(),
+                imageLoader = imageLoader,
+                onState = {
+                    if ( it !is AsyncImagePainter.State.Loading)
+                        it.painter?.let {
+                            painterCache.put(model, it)
+                        } //?: run {
+                        //    altPainter?.let { painterCache.put(model, it) }
+                        //}
+                }
+            )
+        endNanoTimer("rmbrAIP")
+        if (rememberedPainter.state is AsyncImagePainter.State.Success) {
+            //painterCache.put(model, rememberedPainter)
+            rememberedPainter
+        } else {
+            altPainter ?: rememberedPainter
+        }
+    }
+    endNanoTimer("rmbrCachedAIP")
+    return painter
 }
 
 @Composable
 fun placeholderIconPainter(
     item: Package?,
-    imageLoader: ImageLoader = LocalContext.current.imageLoader
-) = rememberAsyncImagePainter(
+    imageLoader: ImageLoader = LocalContext.current.imageLoader,
+) = cachedAsyncImagePainter(
     when {
         item?.isSpecial == true -> R.drawable.ic_placeholder_special
         item?.isSystem == true  -> R.drawable.ic_placeholder_system
@@ -220,7 +306,7 @@ fun ActionButton(
     positive: Boolean = true,
     iconOnSide: Boolean = false,
     icon: ImageVector? = null,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     TextButton(
         modifier = modifier,
@@ -239,7 +325,6 @@ fun ActionButton(
         if (icon != null) {
             if (iconOnSide) Spacer(modifier = Modifier.weight(1f))
             Icon(
-                modifier = Modifier.size(ICON_SIZE_SMALL),
                 imageVector = icon,
                 contentDescription = text
             )
@@ -257,7 +342,7 @@ fun ElevatedActionButton(
     enabled: Boolean = true,
     colored: Boolean = true,
     withText: Boolean = text.isNotEmpty(),
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     ElevatedButton(
         modifier = modifier,
@@ -278,7 +363,6 @@ fun ElevatedActionButton(
     ) {
         if (icon != null) {
             Icon(
-                modifier = Modifier.size(ICON_SIZE_SMALL),
                 imageVector = icon,
                 contentDescription = text
             )
@@ -304,7 +388,7 @@ fun TopBarButton(
         .size(52.dp),
     icon: ImageVector,
     description: String = "",
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     ElevatedButton(
         modifier = modifier,
@@ -328,15 +412,15 @@ fun CardButton(
     icon: ImageVector,
     tint: Color,
     description: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
-    val openPopup = remember { mutableStateOf(false) }
+    val showTooltip = remember { mutableStateOf(false) }
 
     Surface(
         modifier = modifier
             .combinedClickable(
                 onClick = onClick,
-                onLongClick = { openPopup.value = true }
+                onLongClick = { showTooltip.value = true }
             ),
         color = tint.let {
             if (isSystemInDarkTheme()) it.brighter(0.2f)
@@ -360,8 +444,8 @@ fun CardButton(
             )*/
         }
 
-        if (openPopup.value) {
-            Tooltip(description, openPopup)
+        if (showTooltip.value) {
+            Tooltip(description, showTooltip)
         }
     }
 
@@ -411,7 +495,7 @@ fun RoundButton(
     icon: ImageVector,
     tint: Color = MaterialTheme.colorScheme.onBackground,
     description: String = "",
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     IconButton(
         modifier = modifier,
@@ -434,7 +518,7 @@ fun StateChip(
     text: String,
     color: Color,
     checked: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     val openPopup = remember { mutableStateOf(false) }
 
@@ -451,9 +535,7 @@ fun StateChip(
         border = BorderStroke(1.dp, color),
     ) {
         Icon(
-            modifier = Modifier
-                .padding(8.dp)
-                .size(ICON_SIZE_SMALL),
+            modifier = Modifier.padding(8.dp),
             imageVector = icon,
             contentDescription = text
         )
@@ -471,7 +553,7 @@ fun CheckChip(
     textId: Int,
     checkedTextId: Int,
     modifier: Modifier = Modifier,
-    onCheckedChange: (Boolean) -> Unit
+    onCheckedChange: (Boolean) -> Unit,
 ) {
     val (checked, check) = remember(checked) { mutableStateOf(checked) }   //TODO hg42 should probably be removed like for MultiChips
 
@@ -503,6 +585,40 @@ fun CheckChip(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+fun ActionChip(
+    modifier: Modifier = Modifier,
+    @StringRes textId: Int,
+    icon: ImageVector,
+    positive: Boolean,
+    onClick: () -> Unit = {}
+) {
+    AssistChip(
+        modifier = modifier,
+        label = {
+            Text(text = stringResource(id = textId))
+        },
+        leadingIcon = {
+            Icon(
+                imageVector = icon,
+                contentDescription = stringResource(id = textId)
+            )
+        },
+        shape = MaterialTheme.shapes.large,
+        colors = AssistChipDefaults.assistChipColors(
+            containerColor = if (positive) MaterialTheme.colorScheme.primaryContainer
+            else MaterialTheme.colorScheme.tertiaryContainer,
+            labelColor = if (positive) MaterialTheme.colorScheme.onPrimaryContainer
+            else MaterialTheme.colorScheme.onTertiaryContainer,
+            leadingIconContentColor = if (positive) MaterialTheme.colorScheme.onPrimaryContainer
+            else MaterialTheme.colorScheme.onTertiaryContainer,
+        ),
+        border = null,
+        onClick = onClick
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun SwitchChip(
     firstTextId: Int,
     firstIcon: ImageVector,
@@ -517,7 +633,7 @@ fun SwitchChip(
         iconColor = MaterialTheme.colorScheme.onSurface,
         selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
     ),
-    onCheckedChange: (Boolean) -> Unit
+    onCheckedChange: (Boolean) -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -598,7 +714,7 @@ fun SelectableRow(
     modifier: Modifier = Modifier,
     title: String,
     selectedState: MutableState<Boolean>,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -629,7 +745,7 @@ fun SelectableRow(
 fun CheckableRow(
     title: String,
     checkedState: MutableState<Boolean>,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -662,7 +778,7 @@ fun StatefulAnimatedVisibility(
     enterNegative: EnterTransition,
     exitNegative: ExitTransition,
     expandedView: @Composable (AnimatedVisibilityScope.() -> Unit),
-    collapsedView: @Composable (AnimatedVisibilityScope.() -> Unit)
+    collapsedView: @Composable (AnimatedVisibilityScope.() -> Unit),
 ) {
     AnimatedVisibility(
         visible = !currentState,
@@ -682,7 +798,7 @@ fun StatefulAnimatedVisibility(
 fun HorizontalExpandingVisibility(
     expanded: Boolean = false,
     expandedView: @Composable (AnimatedVisibilityScope.() -> Unit),
-    collapsedView: @Composable (AnimatedVisibilityScope.() -> Unit)
+    collapsedView: @Composable (AnimatedVisibilityScope.() -> Unit),
 ) = StatefulAnimatedVisibility(
     currentState = expanded,
     enterPositive = expandHorizontally(expandFrom = Alignment.End),
@@ -697,7 +813,7 @@ fun HorizontalExpandingVisibility(
 fun VerticalFadingVisibility(
     expanded: Boolean = false,
     expandedView: @Composable (AnimatedVisibilityScope.() -> Unit),
-    collapsedView: @Composable (AnimatedVisibilityScope.() -> Unit)
+    collapsedView: @Composable (AnimatedVisibilityScope.() -> Unit),
 ) = StatefulAnimatedVisibility(
     currentState = expanded,
     enterPositive = fadeIn() + expandVertically(expandFrom = Alignment.Bottom),
@@ -712,7 +828,7 @@ fun VerticalFadingVisibility(
 fun ExpandingFadingVisibility(
     expanded: Boolean = false,
     expandedView: @Composable (AnimatedVisibilityScope.() -> Unit),
-    collapsedView: @Composable (AnimatedVisibilityScope.() -> Unit)
+    collapsedView: @Composable (AnimatedVisibilityScope.() -> Unit),
 ) = StatefulAnimatedVisibility(
     currentState = expanded,
     enterPositive = fadeIn() + expandIn(),
@@ -725,50 +841,56 @@ fun ExpandingFadingVisibility(
 
 @Composable
 fun PackageLabels(
-    item: Package
+    item: Package,
 ) {
-    if (item.isUpdated) {
-        ButtonIcon(
-            Phosphor.CircleWavyWarning, R.string.radio_updated,
-            tint = ColorUpdated
-        )
+    beginNanoTimer("pkgLabels")
+
+    if (!pref_hideBackupLabels.value && item.hasBackups) {
+
+        if (item.isUpdated) {
+            ButtonIcon(
+                Phosphor.CircleWavyWarning, R.string.radio_updated,
+                tint = ColorUpdated
+            )
+        }
+        if (item.hasMediaData) {
+            ButtonIcon(
+                Phosphor.PlayCircle, R.string.radio_mediadata,
+                tint = ColorMedia
+            )
+        }
+        if (item.hasObbData) {
+            ButtonIcon(
+                Phosphor.GameController, R.string.radio_obbdata,
+                tint = ColorOBB
+            )
+        }
+        if (item.hasExternalData) {
+            ButtonIcon(
+                Phosphor.FloppyDisk, R.string.radio_externaldata,
+                tint = ColorExtDATA
+            )
+        }
+        if (item.hasDevicesProtectedData) {
+            ButtonIcon(
+                Phosphor.ShieldCheckered, R.string.radio_deviceprotecteddata,
+                tint = ColorDeData
+            )
+        }
+        if (item.hasAppData) {
+            ButtonIcon(
+                Phosphor.HardDrives, R.string.radio_data,
+                tint = ColorData
+            )
+        }
+        if (item.hasApk) {
+            ButtonIcon(
+                Phosphor.DiamondsFour, R.string.radio_apk,
+                tint = ColorAPK
+            )
+        }
     }
-    if (item.hasMediaData) {
-        ButtonIcon(
-            Phosphor.PlayCircle, R.string.radio_mediadata,
-            tint = ColorMedia
-        )
-    }
-    if (item.hasObbData) {
-        ButtonIcon(
-            Phosphor.GameController, R.string.radio_obbdata,
-            tint = ColorOBB
-        )
-    }
-    if (item.hasExternalData) {
-        ButtonIcon(
-            Phosphor.FloppyDisk, R.string.radio_externaldata,
-            tint = ColorExtDATA
-        )
-    }
-    if (item.hasDevicesProtectedData) {
-        ButtonIcon(
-            Phosphor.ShieldCheckered, R.string.radio_deviceprotecteddata,
-            tint = ColorDeData
-        )
-    }
-    if (item.hasAppData) {
-        ButtonIcon(
-            Phosphor.HardDrives, R.string.radio_data,
-            tint = ColorData
-        )
-    }
-    if (item.hasApk) {
-        ButtonIcon(
-            Phosphor.DiamondsFour, R.string.radio_apk,
-            tint = ColorAPK
-        )
-    }
+
     ButtonIcon(
         when {
             item.isSpecial -> Phosphor.AsteriskSimple
@@ -783,11 +905,13 @@ fun PackageLabels(
             else            -> ColorUser
         }
     )
+
+    endNanoTimer("pkgLabels")
 }
 
 @Composable
 fun BackupLabels(
-    item: Backup
+    item: Backup,
 ) {
     AnimatedVisibility(visible = item.hasMediaData) {
         ButtonIcon(
@@ -871,7 +995,7 @@ fun ScheduleTypes(item: Schedule) {
 
 @Composable
 fun ScheduleFilters(
-    item: Schedule
+    item: Schedule,
 ) {
     AnimatedVisibility(visible = item.filter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM) {
         ButtonIcon(
@@ -913,7 +1037,7 @@ fun ScheduleFilters(
 @Composable
 fun TitleText(
     textId: Int,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) = Text(
     text = stringResource(id = textId),
     style = MaterialTheme.typography.titleMedium,
@@ -925,7 +1049,7 @@ fun TitleText(
 fun DoubleVerticalText(
     upperText: String,
     bottomText: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier,
@@ -951,7 +1075,7 @@ fun CardSubRow(
     icon: ImageVector,
     iconColor: Color = MaterialTheme.colorScheme.onBackground,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
     Card(
         modifier = modifier,

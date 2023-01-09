@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -14,15 +13,13 @@ import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.imageLoader
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
-import com.machiav3lli.backup.ICON_SIZE_SMALL
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.Log
@@ -42,15 +39,20 @@ import com.machiav3lli.backup.ui.item.InfoChipItem
 fun HomePackageRecycler(
     modifier: Modifier = Modifier,
     productsList: List<Package>,
-    onClick: (Package) -> Unit = {}
+    selection: SnapshotStateMap<String, Boolean>,
+    onLongClick: (Package) -> Unit = {},
+    onClick: (Package) -> Unit = {},
 ) {
-    val selection = remember { mutableStateMapOf<String, Boolean>() }
     val imageLoader = LocalContext.current.imageLoader
     productsList.forEach {
         selection.putIfAbsent(it.packageName, false)
     }
-    VerticalItemList(modifier = modifier, list = productsList) {
-        MainPackageItem(it, productsList, selection, imageLoader, onClick)
+    VerticalItemList(
+        modifier = modifier,
+        list = productsList,
+        itemKey = { it.packageName }
+    ) {
+        MainPackageItem(it, selection[it.packageName] ?: false, imageLoader, onLongClick, onClick)
     }
 }
 
@@ -62,7 +64,8 @@ fun UpdatedPackageRecycler(
 ) {
     HorizontalItemList(
         modifier = modifier,
-        list = productsList
+        list = productsList,
+        itemKey = { it.packageName }
     ) {
         UpdatedPackageItem(it, onClick)
     }
@@ -94,7 +97,11 @@ fun BatchPackageRecycler(
     onDataClick: (Package, Boolean) -> Unit = { _: Package, _: Boolean -> },
     onClick: (Package, Boolean, Boolean) -> Unit = { _: Package, _: Boolean, _: Boolean -> }
 ) {
-    VerticalItemList(modifier = modifier, list = productsList) {
+    VerticalItemList(
+        modifier = modifier,
+        list = productsList,
+        itemKey = { it.packageName }
+    ) {
         BatchPackageItem(
             it,
             restore,
@@ -114,7 +121,10 @@ fun ScheduleRecycler(
     onClick: (Schedule) -> Unit = {},
     onCheckChanged: (Schedule, Boolean) -> Unit = { _: Schedule, _: Boolean -> }
 ) {
-    VerticalItemList(modifier = modifier, list = productsList) {
+    VerticalItemList(
+        modifier = modifier,
+        list = productsList
+    ) {
         ScheduleItem(it, onClick, onCheckChanged)
     }
 }
@@ -126,7 +136,10 @@ fun ExportedScheduleRecycler(
     onImport: (Schedule) -> Unit = {},
     onDelete: (StorageFile) -> Unit = {}
 ) {
-    VerticalItemList(modifier = modifier, list = productsList) {
+    VerticalItemList(
+        modifier = modifier,
+        list = productsList
+    ) {
         ExportedScheduleItem(it.first, it.second, onImport, onDelete)
     }
 }
@@ -138,7 +151,10 @@ fun LogRecycler(
     onShare: (Log) -> Unit = {},
     onDelete: (Log) -> Unit = {}
 ) {
-    VerticalItemList(modifier = modifier, list = productsList) {
+    VerticalItemList(
+        modifier = modifier,
+        list = productsList
+    ) {
         LogItem(it, onShare, onDelete)
     }
 }
@@ -162,7 +178,6 @@ fun InfoChipsBlock(
                         if (chip.icon != null) Icon(
                             imageVector = chip.icon,
                             contentDescription = chip.text,
-                            modifier = Modifier.size(ICON_SIZE_SMALL)
                         )
                     },
                     border = SuggestionChipDefaults.suggestionChipBorder(
@@ -194,7 +209,6 @@ fun InfoChipsBlock(
                     if (chip.icon != null) Icon(
                         imageVector = chip.icon,
                         contentDescription = chip.text,
-                        modifier = Modifier.size(ICON_SIZE_SMALL)
                     )
                 },
                 border = SuggestionChipDefaults.suggestionChipBorder(
