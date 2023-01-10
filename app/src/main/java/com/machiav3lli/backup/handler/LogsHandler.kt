@@ -115,8 +115,8 @@ class LogsHandler {
                             logs.add(Log(it))   //TODO hg42 don't throw, but create a dummy log entry, so it can be deleted
                         } catch (e: Throwable) {
                             val message =
-                                "(catchall) Incomplete log or wrong structure found in $it."
-                            unhandledException(e, it)
+                                "incomplete log or wrong structure found in $it."
+                            logException(e, it)
                             //no => recursion! logErrors(message)
                         }
                     }
@@ -127,28 +127,33 @@ class LogsHandler {
 
         @Throws(IOException::class)
         fun housekeepingLogs() {
-            val backupRoot = OABX.context.getBackupRoot()
-            StorageFile.invalidateCache { it.contains(LOGS_FOLDER_NAME) }
-            //val logsDirectory = StorageFile(backupRoot, LOG_FOLDER_NAME)
-            backupRoot.findFile(LOGS_FOLDER_NAME)?.let { logsDir ->
-                if (logsDir.isDirectory) {
-                    // must be ISO time format with sane sorted fields yyyy-mm-dd hh:mm:ss
-                    val logs = logsDir.listFiles().sortedByDescending { it.name }
-                    //traceDebug { "logs ${logs.map { it.name ?: "?" }.joinToString(" ")}" }
-                    if (logs.size > pref_maxLogCount.value)
-                        logs.subList(pref_maxLogCount.value, logs.size)
-                            .forEach {
-                                try {
-                                    //traceDebug { "delete ${it.path}" }
-                                    it.delete()
-                                } catch (e: Throwable) {
-                                    val message =
-                                        "(catchall) cannot delete log '${it.path}'"
-                                    unhandledException(e, message)
-                                    //no => recursion! logErrors(message)
+            try {
+                val backupRoot = OABX.context.getBackupRoot()
+                StorageFile.invalidateCache { it.contains(LOGS_FOLDER_NAME) }
+                //val logsDirectory = StorageFile(backupRoot, LOG_FOLDER_NAME)
+                backupRoot.findFile(LOGS_FOLDER_NAME)?.let { logsDir ->
+                    if (logsDir.isDirectory) {
+                        // must be ISO time format with sane sorted fields yyyy-mm-dd hh:mm:ss
+                        val logs = logsDir.listFiles().sortedByDescending { it.name }
+                        //traceDebug { "logs ${logs.map { it.name ?: "?" }.joinToString(" ")}" }
+                        if (logs.size > pref_maxLogCount.value)
+                            logs.subList(pref_maxLogCount.value, logs.size)
+                                .forEach {
+                                    try {
+                                        //traceDebug { "delete ${it.path}" }
+                                        it.delete()
+                                    } catch (e: Throwable) {
+                                        val message =
+                                            "cannot delete log '${it.path}'"
+                                        logException(e, message)    // only log -> no recursion!
+                                    }
                                 }
-                            }
+                    }
                 }
+            } catch (e: Throwable) {
+                val message =
+                    "housekeepingLogs failed"
+                logException(e, message)    // only log -> no recursion!
             }
         }
 
@@ -170,7 +175,7 @@ class LogsHandler {
                 val logText =
                     errors +
                             "\n\n" +
-                            "${BuildConfig.APPLICATION_ID} ${BuildConfig.VERSION_NAME}\n" +
+                            "${BuildConfig.APPLICATION_ID}\n${BuildConfig.VERSION_NAME}\n" +
                             "${utilBox.name} ${utilBox.version} ${
                                 if (utilBox.isKnownVersion) "tested" else "untested"
                             }${
