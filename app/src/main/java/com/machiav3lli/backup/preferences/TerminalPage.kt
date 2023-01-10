@@ -38,12 +38,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.KeyboardArrowDown
-import androidx.compose.material.icons.rounded.KeyboardArrowUp
-import androidx.compose.material.icons.rounded.List
-import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -86,6 +80,12 @@ import com.machiav3lli.backup.handler.ShellHandler.FileInfo.Companion.utilBoxInf
 import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.ui.compose.SelectionContainerX
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowDown
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowUDownLeft
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowUp
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Equals
+import com.machiav3lli.backup.ui.compose.icons.phosphor.MagnifyingGlass
 import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.item.Pref
@@ -451,7 +451,8 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
             //val focusManager = LocalFocusManager.current
 
             TextField(modifier = Modifier
-                .padding(0.dp), //.weight(1f),
+                .padding(0.dp)
+                .weight(1f),
                 value = search,
                 singleLine = true,
                 //placeholder = { Text(text = "search", color = Color.Gray) },
@@ -465,7 +466,7 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
                     lineHeight = lineHeightSp * searchFontFactor),
                 leadingIcon = {
                     Icon(
-                        imageVector = Icons.Rounded.Search,
+                        imageVector = Phosphor.MagnifyingGlass,
                         contentDescription = "search",
                         modifier = Modifier.size(ICON_SIZE_SMALL)
                         //tint = tint,
@@ -486,13 +487,13 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
                     search = it
                 }
             )
-            SmallButton(icon = if (wrap) Icons.Rounded.MoreVert else Icons.Rounded.List) {
+            SmallButton(icon = if (wrap) Phosphor.ArrowUDownLeft else Phosphor.Equals) {
                 wrap = !wrap
             }
-            SmallButton(icon = Icons.Rounded.KeyboardArrowUp) {
+            SmallButton(icon = Phosphor.ArrowUp) {
                 scope.launch { listState.animateScrollToItem(0) }
             }
-            SmallButton(icon = Icons.Rounded.KeyboardArrowDown) {
+            SmallButton(icon = Phosphor.ArrowDown) {
                 scope.launch { listState.animateScrollToItem(text.size) }
             }
         }

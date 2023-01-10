@@ -74,6 +74,7 @@ import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowsClockwise
 import com.machiav3lli.backup.ui.compose.icons.phosphor.FunnelSimple
 import com.machiav3lli.backup.ui.compose.icons.phosphor.GearSix
+import com.machiav3lli.backup.ui.compose.icons.phosphor.List
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Prohibit
 import com.machiav3lli.backup.ui.compose.item.ActionChip
 import com.machiav3lli.backup.ui.compose.item.ExpandableSearchAction
@@ -329,8 +330,9 @@ class MainActivityX : BaseActivity() {
                                     if (nsel > 0 || BuildConfig.DEBUG) {     //TODO hg42 for now, until context menu is official
                                         Spacer(modifier = Modifier.weight(1f))
                                         ActionChip(
-                                            //icon = Phosphor.Hamburger, //TODO
-                                            text = if (nsel > 0) "☰ $nsel" else "☰",
+                                            icon = Phosphor.List,
+                                            text = if (nsel > 0) "$nsel" else "",
+                                            //text = if (nsel > 0) "☰ $nsel" else "☰",
                                             positive = true,
                                         ) {
                                             viewModel.menuExpanded.value = true
