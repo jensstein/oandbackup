@@ -69,13 +69,6 @@ val pref_uncaughtExceptionsJumpToPreferences = BooleanPref(
     enableIf = { pref_catchUncaughtException.value }
 )
 
-val pref_useLogCatForUncaught = BooleanPref(
-    key = "dev-log.useLogCatForUncaught",
-    summary = "use logcat instead of internal log for uncaught exceptions",
-    defaultValue = false,
-    enableIf = { pref_catchUncaughtException.value }
-)
-
 val pref_logToSystemLogcat = BooleanPref(
     key = "dev-log.logToSystemLogcat",
     summary = "log to Android logcat, otherwise only internal",

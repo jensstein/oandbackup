@@ -19,20 +19,15 @@ package com.machiav3lli.backup.handler
 
 import android.content.Context
 import android.content.Intent
-import android.os.Process
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
-import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.LOGS_FOLDER_NAME
 import com.machiav3lli.backup.LOG_INSTANCE
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.pref_autoLogExceptions
 import com.machiav3lli.backup.pref_maxLogCount
-import com.machiav3lli.backup.pref_maxLogLines
-import com.machiav3lli.backup.pref_useLogCatForUncaught
 import com.machiav3lli.backup.preferences.onErrorInfo
 import com.machiav3lli.backup.preferences.textLog
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
@@ -172,29 +167,7 @@ class LogsHandler {
 
         fun logErrors(errors: String) {
             try {
-                val logText =
-                    errors +
-                            "\n\n" +
-                            "${BuildConfig.APPLICATION_ID}\n${BuildConfig.VERSION_NAME}\n" +
-                            "${utilBox.name} ${utilBox.version} ${
-                                if (utilBox.isKnownVersion) "tested" else "untested"
-                            }${
-                                if (utilBox.hasBug("DotDotDir")) " bugDotDotDir" else ""
-                            } -> score ${utilBox.score}" +
-                            "\n\n========== collected messages\n\n" +
-                            OABX.lastLogMessages.joinToString("\n") +
-                            "\n" +
-                            if (pref_useLogCatForUncaught.value)
-                                "\n\n========== logcat\n\n" +
-                                        ShellHandler.runAsRoot(
-                                            "logcat -d -t ${
-                                                pref_maxLogLines.value
-                                            } --pid=${
-                                                Process.myPid()
-                                            }"  // -d = dump and exit
-                                        ).out.joinToString("\n")
-                            else
-                                ""
+                val logText = errors + "\n\n" + onErrorInfo().joinToString("\n")
                 writeToLogFile(logText)
             } catch (e: IOException) {
                 logException(e, backTrace = true)
