@@ -29,9 +29,12 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.pref_autoLogExceptions
 import com.machiav3lli.backup.pref_maxLogCount
 import com.machiav3lli.backup.pref_maxLogLines
 import com.machiav3lli.backup.pref_useLogCatForUncaught
+import com.machiav3lli.backup.preferences.onErrorInfo
+import com.machiav3lli.backup.preferences.textLog
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupRoot
@@ -206,12 +209,17 @@ class LogsHandler {
                     ""
             }${
                 if (e.cause != null)
-                    "\ncause: ${e.cause}"
+                    "\n${e.cause!!::class.simpleName}\ncause: ${e.cause!!.message}"
                 else
                     ""
             }${
                 if (backTrace)
                     "\n${stackTrace(e)}"
+                else
+                    ""
+            }${
+                if (backTrace && e.cause != null)
+                    "\n${stackTrace(e.cause!!)}"
                 else
                     ""
             }"
@@ -221,6 +229,7 @@ class LogsHandler {
             what: Any? = null,
             backTrace: Boolean = false,
             prefix: String? = null,
+            unhandled: Boolean = false,
         ) {
             var whatStr = ""
             if (what != null) {
@@ -231,10 +240,17 @@ class LogsHandler {
                     "$whatStr : "
             }
             Timber.e("$prefix$whatStr\n${message(e, backTrace)}")
+            if (unhandled && pref_autoLogExceptions.value) {
+                textLog(
+                    listOf(
+                        "$whatStr\n${message(e, backTrace)}"
+                    ) + onErrorInfo()
+                )
+            }
         }
 
         fun unhandledException(e: Throwable, what: Any? = null) {
-            logException(e, what, backTrace = true, prefix = "unexpected: ")
+            logException(e, what, backTrace = true, prefix = "unexpected: ", unhandled = true)
         }
 
         fun handleErrorMessages(context: Context, errorText: String?): String? {

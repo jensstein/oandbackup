@@ -84,6 +84,7 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.Companion.utilBoxInfo
 import com.machiav3lli.backup.items.Log
+import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.ui.compose.SelectionContainerX
 import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.compose.item.RoundButton
@@ -188,6 +189,14 @@ fun lastErrorCommand(): List<String> {
         emptyList()
 }
 
+fun onErrorInfo(): List<String> {
+    val lines =
+        listOf("=== onError log", "") +
+                info() +
+                dumpPrefs()
+    return lines
+}
+
 fun supportInfo(): List<String> {
     beginBusy("supportInfo")
     val logs = logInt() + logApp()
@@ -202,6 +211,10 @@ fun supportInfo(): List<String> {
                 logs
     endBusy("supportInfo")
     return lines
+}
+
+fun textLog(lines: List<String>): StorageFile? {
+    return LogsHandler.writeToLogFile(lines.joinToString("\n"))
 }
 
 fun textLogShare(lines: List<String>) {
