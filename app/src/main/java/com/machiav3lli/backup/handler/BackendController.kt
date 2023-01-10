@@ -132,7 +132,7 @@ fun scanBackups(
                             !name.contains(regexSpecialFolder) &&
                             file.isDirectory                                // instance dir
                         ) {
-                            if ("${file.name}.${PROP_NAME}" !in names)
+                            if ("${file.name}.${PROP_NAME}" !in names)               // no dir.properties
                                 try {
                                     file.findFile(BACKUP_INSTANCE_PROPERTIES_INDIR)  // indir props
                                         ?.let {
@@ -144,7 +144,7 @@ fun scanBackups(
                                             try {
                                                 onPropsFile(it)
                                             } catch (_: Throwable) {
-                                                // rename the folder, because the whole backup is damaged
+                                                // rename the dir, because the whole backup is damaged
                                                 runCatching {
                                                     file.name?.let { name ->
                                                         if (!name.contains(
@@ -155,8 +155,10 @@ fun scanBackups(
                                                     }
                                                 }
                                             }
-                                        }
-                                } catch (_: Throwable) {
+                                        } ?: run { // rename the dir, no dir.properties
+                                        file.renameTo(".ERROR.${file.name}")
+                                    }
+                                } catch (_: Throwable) { // rename the dir, no dir.properties
                                     file.renameTo(".ERROR.${file.name}")
                                 }
                         }
