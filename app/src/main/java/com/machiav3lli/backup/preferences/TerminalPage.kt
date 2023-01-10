@@ -190,6 +190,7 @@ fun lastErrorCommand(): List<String> {
 
 fun supportInfo(): List<String> {
     beginBusy("supportInfo")
+    val logs = logInt() + logApp()
     val lines =
         listOf("=== support log", "") +
                 envInfo() +
@@ -198,8 +199,7 @@ fun supportInfo(): List<String> {
                 accessTest() +
                 lastErrorPkg() +
                 lastErrorCommand() +
-                logInt() +
-                logApp()
+                logs
     endBusy("supportInfo")
     return lines
 }
