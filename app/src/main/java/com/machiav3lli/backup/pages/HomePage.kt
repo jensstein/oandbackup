@@ -89,6 +89,7 @@ fun HomePage() {
 
     traceCompose { "HomePage f=${filteredList.size} u=${updatedPackages.size} m=${menuExpanded}" }
 
+    // prefetch icons
     if (filteredList.size > sizeOfIconCache()) {    // includes empty cache and empty filteredList
         beginNanoTimer("prefetchIcons")
         filteredList.forEach { pkg ->

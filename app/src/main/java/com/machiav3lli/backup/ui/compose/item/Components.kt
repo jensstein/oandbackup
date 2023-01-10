@@ -234,16 +234,20 @@ fun PackageIcon(
     }
 }
 
-var painterCache = mutableMapOf<Any, Painter>()         //TODO hg42 move somewhere else
+private var painterCache = mutableMapOf<Any, Painter>()         //TODO hg42 move somewhere else
 
 fun clearIconCache() {                                  //TODO hg42 move somewhere else
-    painterCache.clear()
+    synchronized(painterCache) {
+        painterCache.clear()
+    }
 }
 
 fun limitIconCache(pkgs: List<Package>) {
-    ( painterCache.keys - pkgs.map { it.iconData } ).forEach {
-        traceDebug { "icon remove $it"}
-        painterCache.remove(it)
+    (painterCache.keys - pkgs.map { it.iconData }).forEach {
+        traceDebug { "icon remove $it" }
+        synchronized(painterCache) {
+            painterCache.remove(it)
+        }
     }
 }
 
@@ -256,7 +260,8 @@ fun cachedAsyncImagePainter(
     altPainter: Painter? = null,
 ): Painter {
     beginNanoTimer("rmbrCachedAIP")
-    val painter = painterCache.getOrElse(model) {
+    var painter = synchronized(painterCache) { painterCache.get(model) }
+    if (painter == null) {
         beginNanoTimer("rmbrAIP")
         val rememberedPainter =
             rememberAsyncImagePainter(
@@ -266,20 +271,20 @@ fun cachedAsyncImagePainter(
                     .build(),
                 imageLoader = imageLoader,
                 onState = {
-                    if ( it !is AsyncImagePainter.State.Loading)
+                    if (it !is AsyncImagePainter.State.Loading)
                         it.painter?.let {
-                            painterCache.put(model, it)
+                            synchronized(painterCache) { painterCache.put(model, it) }
                         } //?: run {
-                        //    altPainter?.let { painterCache.put(model, it) }
-                        //}
+                    //    altPainter?.let { synchronized(painterCache) { painterCache.put(model, it) } }
+                    //}
                 }
             )
         endNanoTimer("rmbrAIP")
         if (rememberedPainter.state is AsyncImagePainter.State.Success) {
-            //painterCache.put(model, rememberedPainter)
-            rememberedPainter
+            //synchronized(painterCache) { painterCache.put(model, rememberedPainter) }
+            painter = rememberedPainter
         } else {
-            altPainter ?: rememberedPainter
+            painter = altPainter ?: rememberedPainter
         }
     }
     endNanoTimer("rmbrCachedAIP")
@@ -590,7 +595,7 @@ fun ActionChip(
     @StringRes textId: Int,
     icon: ImageVector,
     positive: Boolean,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
     AssistChip(
         modifier = modifier,
@@ -624,7 +629,7 @@ fun ActionChip(
     text: String = "",
     icon: ImageVector? = null,
     positive: Boolean,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
     AssistChip(
         modifier = modifier,
