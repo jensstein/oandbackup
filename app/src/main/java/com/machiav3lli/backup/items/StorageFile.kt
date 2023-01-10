@@ -271,7 +271,7 @@ open class StorageFile {
         this.parent = parent
         this._uri = uri
         name?.let { this.name = it }
-        if (false &&        //TODO hg42 temporary until RootFile is fixed
+        if (false &&        //TODO hg42 temporary until RootFile speed is fixed (too many directory lists)
             pref_shadowRootFile.value && allowShadowing
         ) {
             fun isValidPath(file: RootFile?): Boolean =
@@ -403,7 +403,7 @@ open class StorageFile {
 
     fun exists(): Boolean =
         file?.exists()
-            ?: ! documentInfo?.id.isNullOrEmpty()
+            ?: !documentInfo?.id.isNullOrEmpty()
 
     val size: Long
         get() = (
@@ -506,6 +506,8 @@ open class StorageFile {
                         false
                 }
         } catch (e: FileNotFoundException) {
+            false
+        } catch (e: IllegalArgumentException) { // can also happen with FileNotFoundException
             false
         } catch (e: Throwable) {
             logException(e, path, backTrace = false)
@@ -622,7 +624,11 @@ open class StorageFile {
     }
 
     @Throws(FileNotFoundException::class)
-    fun listFiles(forceUri: Boolean = false, maxFiles: Int = 0, useCache: Boolean = true): List<StorageFile> {
+    fun listFiles(
+        forceUri: Boolean = false,
+        maxFiles: Int = 0,
+        useCache: Boolean = true,
+    ): List<StorageFile> {
 
         try {
             exists()
@@ -705,7 +711,7 @@ open class StorageFile {
     fun deleteRecursive(): Boolean {
         traceDebug { "######################################## deleteRecursive $path" }
         return when {
-            isFile      ->
+            isFile ->
                 delete()
             isDirectory ->
                 try {
@@ -724,7 +730,7 @@ open class StorageFile {
                     logException(e, path, backTrace = false)
                     false
                 }
-            else        ->
+            else ->
                 false
         }
     }
@@ -783,7 +789,9 @@ open class StorageFile {
         fun invalidateCache(filter: (String) -> Boolean) {
             if (pref_invalidateSelective.value) {
                 try {
-                    invalidateFilters.add(filter)
+                    synchronized(invalidateFilters) {
+                        invalidateFilters.add(filter)
+                    }
                 } catch (_: ArrayIndexOutOfBoundsException) {
                     // ignore
                 }
@@ -794,7 +802,9 @@ open class StorageFile {
         }
 
         fun invalidateCache() {
-            invalidateFilters = mutableListOf({ true })
+            synchronized(invalidateFilters) {
+                invalidateFilters = mutableListOf({ true })
+            }
             cacheCheck() //TODO hg42
         }
 
@@ -805,56 +815,74 @@ open class StorageFile {
         fun cacheGetFiles(id: String): List<StorageFile>? {
             if (pref_cacheFileLists.value) {
                 cacheCheck()
-                return fileListCache[id]
+                return synchronized(fileListCache) {
+                    fileListCache[id]?.drop(0)
+                }
             }
             return null
         }
 
         fun cacheSetFiles(id: String, files: List<StorageFile>) {
-            fileListCache[id] = files.toMutableList()
+            synchronized(fileListCache) {
+                fileListCache[id] = files.toMutableList()
+            }
         }
 
         private fun cacheGetUri(id: String): StorageFile? {
             cacheCheck()
-            return uriStorageFileCache[id]
+            synchronized(uriStorageFileCache) {
+                return uriStorageFileCache[id]
+            }
         }
 
         fun cacheSetUri(id: String, file: StorageFile) {
-            uriStorageFileCache[id] = file
+            synchronized(uriStorageFileCache) {
+                uriStorageFileCache[id] = file
+            }
         }
 
         fun cacheFilesAdd(path: String, file: StorageFile) {
-            fileListCache[path]?.run {
-                //removeAll { it.name == file.name }
-                find { it.name == file.name }?.let { remove(it) }
-                add(file)
-            } ?: run {
-                fileListCache[path] = mutableListOf(file)
+            synchronized(fileListCache) {
+                fileListCache[path]?.run {
+                    //removeAll { it.name == file.name }
+                    find { it.name == file.name }?.let { remove(it) }
+                    add(file)
+                } ?: run {
+                    fileListCache[path] = mutableListOf(file)
+                }
             }
         }
 
         fun cacheFilesRemove(path: String, file: StorageFile?) {
-            file?.let {
-                fileListCache[path]?.run {
-                    removeAll { it.name == file.name }
-                } ?: run {
-                    fileListCache.remove(path)
-                }
-            } ?: fileListCache.remove(path)
+            synchronized(fileListCache) {
+                file?.let {
+                    fileListCache[path]?.run {
+                        removeAll { it.name == file.name }
+                    } ?: run {
+                        fileListCache.remove(path)
+                    }
+                } ?: fileListCache.remove(path)
+            }
         }
 
         private fun cacheCheck() {
             try {
-                while (invalidateFilters.size > 0) {
-                    invalidateFilters.removeFirst().let { isInvalid ->
-                        fileListCache = fileListCache
-                            .toMap()
-                            .filterNot { isInvalid(it.key) }
-                            .toMutableMap()
-                        uriStorageFileCache = uriStorageFileCache
-                            .toMap()
-                            .filterNot { isInvalid(it.key) }
-                            .toMutableMap()
+                synchronized(invalidateFilters) {
+                    while (invalidateFilters.size > 0) {
+                        invalidateFilters.removeFirst().let { isInvalid ->
+                            synchronized(fileListCache) {
+                                fileListCache = fileListCache
+                                    .toMap()
+                                    .filterNot { isInvalid(it.key) }
+                                    .toMutableMap()
+                            }
+                            synchronized(uriStorageFileCache) {
+                                uriStorageFileCache = uriStorageFileCache
+                                    .toMap()
+                                    .filterNot { isInvalid(it.key) }
+                                    .toMutableMap()
+                            }
+                        }
                     }
                 }
             } catch (e: Throwable) {
