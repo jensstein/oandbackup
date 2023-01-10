@@ -342,7 +342,7 @@ fun Context.getInstalledPackageList(): MutableList<Package> { // only used in Sc
             "getPackageList: ${(time / 1000 + 0.5).toInt()} sec"
         )
     } catch (e: Throwable) {
-        logException(e)
+        logException(e, backTrace = true)
     } finally {
         OABX.endBusy("getInstalledPackageList")
     }
@@ -436,7 +436,7 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
                 }
             }
         } catch (e: Throwable) {
-            logException(e)
+            logException(e, backTrace = true)
         } finally {
             OABX.endBusy("unsuspend")
         }
@@ -485,7 +485,7 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
         OABX.endBusy("dbUpdate")
 
     } catch (e: Throwable) {
-        logException(e)
+        logException(e, backTrace = true)
     } finally {
         OABX.endBusy("updateAppTables")
     }

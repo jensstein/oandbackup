@@ -52,7 +52,7 @@ interface BackupDao : BaseDao<Backup> {
                 insert(*backups.toTypedArray())
                 //replaceInsert(*backups)
         } catch(e: Throwable) {
-            logException(e)
+            logException(e, backTrace = true)
         }
     }
 

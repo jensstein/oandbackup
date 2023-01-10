@@ -886,7 +886,7 @@ open class StorageFile {
                     }
                 }
             } catch (e: Throwable) {
-                logException(e, backTrace = false)
+                logException(e, backTrace = true)
             }
         }
 
@@ -898,7 +898,7 @@ open class StorageFile {
                     // noinspection ProhibitedExceptionThrown
                     throw rethrown
                 } catch (e: Throwable) {
-                    logException(e, backTrace = false)
+                    logException(e, backTrace = true)
                 }
             }
         }

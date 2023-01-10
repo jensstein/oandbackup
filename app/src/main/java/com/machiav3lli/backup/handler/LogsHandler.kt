@@ -197,11 +197,11 @@ class LogsHandler {
                                 ""
                 writeToLogFile(logText)
             } catch (e: IOException) {
-                e.printStackTrace()
+                logException(e, backTrace = true)
             } catch (e: StorageLocationNotConfiguredException) {
-                e.printStackTrace()
+                logException(e, backTrace = true)
             } catch (e: BackupLocationInAccessibleException) {
-                e.printStackTrace()
+                logException(e, backTrace = true)
             }
         }
 

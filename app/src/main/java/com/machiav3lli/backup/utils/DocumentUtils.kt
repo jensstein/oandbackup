@@ -41,7 +41,7 @@ fun suRecursiveCopyFilesToDocument(
                 else -> Timber.e("SAF does not support ${file.fileType} for ${file.filePath}")
             }
         } catch (e: Throwable) {
-            LogsHandler.logException(e)
+            LogsHandler.logException(e, backTrace = true)
         }
     }
 }
