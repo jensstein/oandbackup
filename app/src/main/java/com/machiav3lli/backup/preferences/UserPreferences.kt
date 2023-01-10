@@ -28,7 +28,7 @@ import com.machiav3lli.backup.preferences.ui.PrefsGroup
 import com.machiav3lli.backup.secondaryColorItems
 import com.machiav3lli.backup.themeItems
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
-import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowsOutlineVertical
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowsOutLineVertical
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Clock
 import com.machiav3lli.backup.ui.compose.icons.phosphor.EyedropperSample
 import com.machiav3lli.backup.ui.compose.icons.phosphor.FingerprintSimple
@@ -114,7 +114,7 @@ fun UserPrefsPage() {
                 launcher.launch(BACKUP_DIRECTORY_INTENT)
             } else BaseDialog(openDialogCustom = openDialog) {
                 when (dialogsPref) {
-                    pref_languages -> ListDialogUI(
+                    pref_languages         -> ListDialogUI(
                         pref = dialogsPref as ListPref,
                         openDialogCustom = openDialog,
                         onChanged = { context.restartApp() }
@@ -203,7 +203,7 @@ val pref_multilineInfoChips = BooleanPref(
     key = "user.multilineInfoChips",
     titleId = R.string.prefs_multilineinfochips,
     summaryId = R.string.prefs_multilineinfochips_summary,
-    icon = Phosphor.ArrowsOutlineVertical,
+    icon = Phosphor.ArrowsOutLineVertical,
     iconTint = ColorSystem,
     defaultValue = false
 )
