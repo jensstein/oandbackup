@@ -190,10 +190,14 @@ fun lastErrorCommand(): List<String> {
 }
 
 fun onErrorInfo(): List<String> {
+    beginBusy("onErrorInfo")
+    val logs = logInt() + logApp()
     val lines =
         listOf("=== onError log", "") +
                 info() +
-                dumpPrefs()
+                dumpPrefs() +
+                logs
+    endBusy("onErrorInfo")
     return lines
 }
 
