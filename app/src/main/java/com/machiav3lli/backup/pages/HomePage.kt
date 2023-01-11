@@ -22,10 +22,12 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -38,6 +40,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -82,10 +85,11 @@ fun HomePage() {
     var updaterExpanded by remember { mutableStateOf(false) }
     val selection = main.viewModel.selection
     var menuPackage by remember { mutableStateOf<Package?>(null) }
-    val menuExpanded = remember { mutableStateOf(false) }
+    val menuExpanded = main.viewModel.menuExpanded
 
-    traceCompose { "HomePage f=${filteredList.size} u=${updatedPackages.size}" }
+    traceCompose { "HomePage f=${filteredList.size} u=${updatedPackages.size} m=${menuExpanded}" }
 
+    // prefetch icons
     if (filteredList.size > sizeOfIconCache()) {    // includes empty cache and empty filteredList
         beginNanoTimer("prefetchIcons")
         filteredList.forEach { pkg ->
@@ -203,6 +207,7 @@ fun HomePage() {
             }
         }
     ) { paddingValues ->
+
         HomePackageRecycler(
             modifier = Modifier
                 .padding(paddingValues)
@@ -231,21 +236,26 @@ fun HomePage() {
             },
         )
 
-        if (menuExpanded.value) menuPackage?.let {
-            MainPackageContextMenu(
-                expanded = menuExpanded,
-                packageItem = it,
-                productsList = filteredList,
-                selection = selection,
-                openSheet = { item ->
-                    if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                    appSheet = AppSheet(item.packageName)
-                    appSheet?.showNow(
-                        main.supportFragmentManager,
-                        "Package ${item.packageName}"
-                    )
-                }
-            )
+        if (menuExpanded.value) {
+            Box(modifier = Modifier     // necessary to move the menu on the whole screen
+                .fillMaxSize()
+                .wrapContentSize(Alignment.TopStart)
+            ) {
+                MainPackageContextMenu(
+                    expanded = menuExpanded,
+                    packageItem = menuPackage,
+                    productsList = filteredList,
+                    selection = selection,
+                    openSheet = { item ->
+                        if (appSheet != null) appSheet?.dismissAllowingStateLoss()
+                        appSheet = AppSheet(item.packageName)
+                        appSheet?.showNow(
+                            main.supportFragmentManager,
+                            "Package ${item.packageName}"
+                        )
+                    }
+                )
+            }
         }
     }
 }

@@ -19,19 +19,17 @@ package com.machiav3lli.backup.handler
 
 import android.content.Context
 import android.content.Intent
-import android.os.Process
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
-import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.LOGS_FOLDER_NAME
 import com.machiav3lli.backup.LOG_INSTANCE
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.pref_autoLogExceptions
 import com.machiav3lli.backup.pref_maxLogCount
-import com.machiav3lli.backup.pref_maxLogLines
-import com.machiav3lli.backup.pref_useLogCatForUncaught
+import com.machiav3lli.backup.preferences.onErrorInfo
+import com.machiav3lli.backup.preferences.textLog
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.getBackupRoot
@@ -112,8 +110,8 @@ class LogsHandler {
                             logs.add(Log(it))   //TODO hg42 don't throw, but create a dummy log entry, so it can be deleted
                         } catch (e: Throwable) {
                             val message =
-                                "(catchall) Incomplete log or wrong structure found in $it."
-                            unhandledException(e, it)
+                                "incomplete log or wrong structure found in $it."
+                            logException(e, it)
                             //no => recursion! logErrors(message)
                         }
                     }
@@ -124,28 +122,33 @@ class LogsHandler {
 
         @Throws(IOException::class)
         fun housekeepingLogs() {
-            val backupRoot = OABX.context.getBackupRoot()
-            StorageFile.invalidateCache { it.contains(LOGS_FOLDER_NAME) }
-            //val logsDirectory = StorageFile(backupRoot, LOG_FOLDER_NAME)
-            backupRoot.findFile(LOGS_FOLDER_NAME)?.let { logsDir ->
-                if (logsDir.isDirectory) {
-                    // must be ISO time format with sane sorted fields yyyy-mm-dd hh:mm:ss
-                    val logs = logsDir.listFiles().sortedByDescending { it.name }
-                    //traceDebug { "logs ${logs.map { it.name ?: "?" }.joinToString(" ")}" }
-                    if (logs.size > pref_maxLogCount.value)
-                        logs.subList(pref_maxLogCount.value, logs.size)
-                            .forEach {
-                                try {
-                                    //traceDebug { "delete ${it.path}" }
-                                    it.delete()
-                                } catch (e: Throwable) {
-                                    val message =
-                                        "(catchall) cannot delete log '${it.path}'"
-                                    unhandledException(e, message)
-                                    //no => recursion! logErrors(message)
+            try {
+                val backupRoot = OABX.context.getBackupRoot()
+                StorageFile.invalidateCache { it.contains(LOGS_FOLDER_NAME) }
+                //val logsDirectory = StorageFile(backupRoot, LOG_FOLDER_NAME)
+                backupRoot.findFile(LOGS_FOLDER_NAME)?.let { logsDir ->
+                    if (logsDir.isDirectory) {
+                        // must be ISO time format with sane sorted fields yyyy-mm-dd hh:mm:ss
+                        val logs = logsDir.listFiles().sortedByDescending { it.name }
+                        //traceDebug { "logs ${logs.map { it.name ?: "?" }.joinToString(" ")}" }
+                        if (logs.size > pref_maxLogCount.value)
+                            logs.subList(pref_maxLogCount.value, logs.size)
+                                .forEach {
+                                    try {
+                                        //traceDebug { "delete ${it.path}" }
+                                        it.delete()
+                                    } catch (e: Throwable) {
+                                        val message =
+                                            "cannot delete log '${it.path}'"
+                                        logException(e, message)    // only log -> no recursion!
+                                    }
                                 }
-                            }
+                    }
                 }
+            } catch (e: Throwable) {
+                val message =
+                    "housekeepingLogs failed"
+                logException(e, message)    // only log -> no recursion!
             }
         }
 
@@ -164,36 +167,14 @@ class LogsHandler {
 
         fun logErrors(errors: String) {
             try {
-                val logText =
-                    errors +
-                            "\n\n" +
-                            "${BuildConfig.APPLICATION_ID} ${BuildConfig.VERSION_NAME}\n" +
-                            "${utilBox.name} ${utilBox.version} ${
-                                if (utilBox.isKnownVersion) "tested" else "untested"
-                            }${
-                                if (utilBox.hasBug("DotDotDir")) " bugDotDotDir" else ""
-                            } -> score ${utilBox.score}" +
-                            "\n\n========== collected messages\n\n" +
-                            OABX.lastLogMessages.joinToString("\n") +
-                            "\n" +
-                            if (pref_useLogCatForUncaught.value)
-                                "\n\n========== logcat\n\n" +
-                                        ShellHandler.runAsRoot(
-                                            "logcat -d -t ${
-                                                pref_maxLogLines.value
-                                            } --pid=${
-                                                Process.myPid()
-                                            }"  // -d = dump and exit
-                                        ).out.joinToString("\n")
-                            else
-                                ""
+                val logText = errors + "\n\n" + onErrorInfo().joinToString("\n")
                 writeToLogFile(logText)
             } catch (e: IOException) {
-                e.printStackTrace()
+                logException(e, backTrace = true)
             } catch (e: StorageLocationNotConfiguredException) {
-                e.printStackTrace()
+                logException(e, backTrace = true)
             } catch (e: BackupLocationInAccessibleException) {
-                e.printStackTrace()
+                logException(e, backTrace = true)
             }
         }
 
@@ -206,12 +187,17 @@ class LogsHandler {
                     ""
             }${
                 if (e.cause != null)
-                    "\ncause: ${e.cause}"
+                    "\n${e.cause!!::class.simpleName}\ncause: ${e.cause!!.message}"
                 else
                     ""
             }${
                 if (backTrace)
                     "\n${stackTrace(e)}"
+                else
+                    ""
+            }${
+                if (backTrace && e.cause != null)
+                    "\n${stackTrace(e.cause!!)}"
                 else
                     ""
             }"
@@ -221,6 +207,7 @@ class LogsHandler {
             what: Any? = null,
             backTrace: Boolean = false,
             prefix: String? = null,
+            unhandled: Boolean = false,
         ) {
             var whatStr = ""
             if (what != null) {
@@ -231,10 +218,17 @@ class LogsHandler {
                     "$whatStr : "
             }
             Timber.e("$prefix$whatStr\n${message(e, backTrace)}")
+            if (unhandled && pref_autoLogExceptions.value) {
+                textLog(
+                    listOf(
+                        "$whatStr\n${message(e, backTrace)}"
+                    ) + onErrorInfo()
+                )
+            }
         }
 
         fun unhandledException(e: Throwable, what: Any? = null) {
-            logException(e, what, backTrace = true, prefix = "unexpected: ")
+            logException(e, what, backTrace = true, prefix = "unexpected: ", unhandled = true)
         }
 
         fun handleErrorMessages(context: Context, errorText: String?): String? {

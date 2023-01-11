@@ -38,12 +38,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.KeyboardArrowDown
-import androidx.compose.material.icons.rounded.KeyboardArrowUp
-import androidx.compose.material.icons.rounded.List
-import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -84,9 +78,17 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.Companion.utilBoxInfo
 import com.machiav3lli.backup.items.Log
+import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.ui.compose.SelectionContainerX
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowDown
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowUDownLeft
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowUp
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Equals
+import com.machiav3lli.backup.ui.compose.icons.phosphor.MagnifyingGlass
 import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.compose.item.RoundButton
+import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.utils.SystemUtils.getApplicationIssuer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -128,38 +130,49 @@ fun shell(command: String): List<String> {
 
 fun envInfo() =
     info() +
-    shell("su --help") +
-    shell("echo ${utilBox.name}") +
-    shell("${utilBox.name} --version") +
-    shell("${utilBox.name} --help")
+            shell("su --help") +
+            shell("echo ${utilBox.name}") +
+            shell("${utilBox.name} --version") +
+            shell("${utilBox.name} --help")
 
 fun logInt() =
     listOf("--- > last internal log messages") +
-    OABX.lastLogMessages
+            OABX.lastLogMessages
 
-val maxLogcatLines = 1000
+val maxLogcat = "" //""-t 10000"
 
 fun logApp() =
-    shell("logcat -d -t ${maxLogcatLines} --pid=${Process.myPid()}")
+    shell("logcat -d ${maxLogcat} --pid=${Process.myPid()}")
 
 fun logSys() =
-    shell("logcat -d -t ${maxLogcatLines}")
+    shell("logcat -d ${maxLogcat}")
+
+fun dumpPrefs() =
+    Pref.preferences.map {
+        val (group, prefs) = it
+        prefs.map {
+            if (it.private)
+                null
+            else
+                "${it.group}.${it.key} = ${it}"
+        }.filterNotNull()
+    }.flatten()
 
 fun dumpAlarms() =
     shell("dumpsys alarm | sed -n '/Alarm.*machiav3lli[.]backup/,/PendingIntent/{p}'")
 
 fun accessTest() =
     shell("echo \"\$(ls /data/user/0/ | wc -l) packages (apk)\"") +
-    shell("echo \"$(ls /data/user/0/ | wc -l) packages (data)\"") +
-    shell("echo \"\$(ls -l /data/misc/ | wc -l) misc data\"")
+            shell("echo \"$(ls /data/user/0/ | wc -l) packages (data)\"") +
+            shell("echo \"\$(ls -l /data/misc/ | wc -l) misc data\"")
 
 fun lastErrorPkg(): List<String> {
     val pkg = OABX.lastErrorPackage
     return if (pkg.isNotEmpty()) {
         listOf("--- last error package: $pkg") +
-        shell("ls -l /data/user/0/$pkg") +
-        shell("ls -l /data/user_de/0/$pkg") +
-        shell("ls -l /sdcard/Android/*/$pkg")
+                shell("ls -l /data/user/0/$pkg") +
+                shell("ls -l /data/user_de/0/$pkg") +
+                shell("ls -l /sdcard/Android/*/$pkg")
     } else {
         listOf("--- ? no last error package")
     }
@@ -176,19 +189,32 @@ fun lastErrorCommand(): List<String> {
         emptyList()
 }
 
+fun onErrorInfo(): List<String> {
+    val lines =
+        listOf("=== onError log", "") +
+                info() +
+                dumpPrefs()
+    return lines
+}
+
 fun supportInfo(): List<String> {
     beginBusy("supportInfo")
+    val logs = logInt() + logApp()
     val lines =
         listOf("=== support log", "") +
-        envInfo() +
-        dumpAlarms() +
-        accessTest() +
-        lastErrorPkg() +
-        lastErrorCommand() +
-        logInt() +
-        logApp()
+                envInfo() +
+                dumpPrefs() +
+                dumpAlarms() +
+                accessTest() +
+                lastErrorPkg() +
+                lastErrorCommand() +
+                logs
     endBusy("supportInfo")
     return lines
+}
+
+fun textLog(lines: List<String>): StorageFile? {
+    return LogsHandler.writeToLogFile(lines.joinToString("\n"))
 }
 
 fun textLogShare(lines: List<String>) {
@@ -301,6 +327,7 @@ fun TerminalPage() {
                 TerminalButton("log/int") { append(logInt()) }
                 TerminalButton("log/app") { append(logApp()) }
                 TerminalButton("log/all") { append(logSys()) }
+                TerminalButton("prefs") { append(dumpPrefs()) }
                 TerminalButton("alarms") { append(dumpAlarms()) }
                 TerminalButton("access") { append(accessTest()) }
                 TerminalButton("errInfo") { append(lastErrorPkg() + lastErrorCommand()) }
@@ -424,7 +451,8 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
             //val focusManager = LocalFocusManager.current
 
             TextField(modifier = Modifier
-                .padding(0.dp), //.weight(1f),
+                .padding(0.dp)
+                .weight(1f),
                 value = search,
                 singleLine = true,
                 //placeholder = { Text(text = "search", color = Color.Gray) },
@@ -438,7 +466,7 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
                     lineHeight = lineHeightSp * searchFontFactor),
                 leadingIcon = {
                     Icon(
-                        imageVector = Icons.Rounded.Search,
+                        imageVector = Phosphor.MagnifyingGlass,
                         contentDescription = "search",
                         modifier = Modifier.size(ICON_SIZE_SMALL)
                         //tint = tint,
@@ -459,13 +487,13 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
                     search = it
                 }
             )
-            SmallButton(icon = if (wrap) Icons.Rounded.MoreVert else Icons.Rounded.List) {
+            SmallButton(icon = if (wrap) Phosphor.ArrowUDownLeft else Phosphor.Equals) {
                 wrap = !wrap
             }
-            SmallButton(icon = Icons.Rounded.KeyboardArrowUp) {
+            SmallButton(icon = Phosphor.ArrowUp) {
                 scope.launch { listState.animateScrollToItem(0) }
             }
-            SmallButton(icon = Icons.Rounded.KeyboardArrowDown) {
+            SmallButton(icon = Phosphor.ArrowDown) {
                 scope.launch { listState.animateScrollToItem(text.size) }
             }
         }

@@ -19,6 +19,7 @@ package com.machiav3lli.backup.viewmodels
 
 import android.app.Application
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -30,6 +31,7 @@ import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Blocklist
+import com.machiav3lli.backup.handler.getBackups
 import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.items.Package
@@ -64,7 +66,29 @@ class MainViewModel(
     private val appContext: Application,
 ) : AndroidViewModel(appContext) {
 
-    var backupsMap = mutableMapOf<String, List<Backup>>()
+    private var backupsMap = mutableMapOf<String, List<Backup>>()
+
+    fun clearBackups() {
+        synchronized(backupsMap) {
+            backupsMap.clear()
+        }
+    }
+
+    fun putBackups(packageName: String, backups: List<Backup>) {
+        synchronized(backupsMap) {
+            backupsMap.put(packageName, backups)
+        }
+    }
+
+    fun getBackups(packageName: String): List<Backup> {
+        synchronized(backupsMap) {
+            return backupsMap.getOrPut(packageName) {
+                val backups =
+                    OABX.context.getBackups(packageName)  //TODO hg42 may also find glob *packageName* for now
+                backups[packageName] ?: emptyList()  // so we need to take the correct package here
+            }.drop(0)
+        }
+    }
 
     init {
         // do it early
@@ -232,7 +256,7 @@ class MainViewModel(
 
             traceFlows { "******************** filtering - list: ${p.size} filter: $f" }
 
-            while(OABX.isBusy) {
+            while (OABX.isBusy) {
                 traceFlows { "*** filtering wait for not busy" }
                 delay(500)
             }
@@ -264,7 +288,7 @@ class MainViewModel(
         notBlockedList
             .trace { "updatePackages? ..." }
             .onEach {
-                while(OABX.isBusy) {
+                while (OABX.isBusy) {
                     traceFlows { "*** updatePackages wait for not busy" }
                     delay(3000)
                 }
@@ -273,7 +297,7 @@ class MainViewModel(
             .trace {
                 "*** updatedPackages <<- updated: (${it.size})${
                     it.map {
-                        "${it.packageName}(${it.versionCode}!=${it.latestBackup?.versionCode ?: ""})" 
+                        "${it.packageName}(${it.versionCode}!=${it.latestBackup?.versionCode ?: ""})"
                     }
                 }"
             }
@@ -286,6 +310,7 @@ class MainViewModel(
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - FLOWS end
 
     val selection = mutableStateMapOf<String, Boolean>()
+    val menuExpanded = mutableStateOf(false)
 
     // TODO add to interface
     fun refreshList() {

@@ -132,7 +132,7 @@ fun scanBackups(
                             !name.contains(regexSpecialFolder) &&
                             file.isDirectory                                // instance dir
                         ) {
-                            if ("${file.name}.${PROP_NAME}" !in names)
+                            if ("${file.name}.${PROP_NAME}" !in names)               // no dir.properties
                                 try {
                                     file.findFile(BACKUP_INSTANCE_PROPERTIES_INDIR)  // indir props
                                         ?.let {
@@ -144,7 +144,7 @@ fun scanBackups(
                                             try {
                                                 onPropsFile(it)
                                             } catch (_: Throwable) {
-                                                // rename the folder, because the whole backup is damaged
+                                                // rename the dir, because the whole backup is damaged
                                                 runCatching {
                                                     file.name?.let { name ->
                                                         if (!name.contains(
@@ -155,8 +155,10 @@ fun scanBackups(
                                                     }
                                                 }
                                             }
-                                        }
-                                } catch (_: Throwable) {
+                                        } ?: run { // rename the dir, no dir.properties
+                                        file.renameTo(".ERROR.${file.name}")
+                                    }
+                                } catch (_: Throwable) { // rename the dir, no dir.properties
                                     file.renameTo(".ERROR.${file.name}")
                                 }
                         }
@@ -340,7 +342,7 @@ fun Context.getInstalledPackageList(): MutableList<Package> { // only used in Sc
             "getPackageList: ${(time / 1000 + 0.5).toInt()} sec"
         )
     } catch (e: Throwable) {
-        logException(e)
+        logException(e, backTrace = true)
     } finally {
         OABX.endBusy("getInstalledPackageList")
     }
@@ -354,7 +356,7 @@ fun List<Package>.toAppInfoList(): List<AppInfo> =
 fun List<AppInfo>.toPackageList(
     context: Context,
     blockList: List<String> = listOf(),
-    backupMap: Map<String, List<Backup>> = mapOf(),
+    backupsMap: Map<String, List<Backup>> = mapOf(),
 ): MutableList<Package> {
 
     var packageList: MutableList<Package> = mutableListOf()
@@ -389,7 +391,7 @@ fun List<AppInfo>.toPackageList(
         if (includeSpecial) {
             SpecialInfo.getSpecialPackages(context).forEach {
                 if (!blockList.contains(it.packageName)) {
-                    //it.updateBackupList(backupMap[it.packageName].orEmpty())
+                    //it.updateBackupList(backupsMap[it.packageName].orEmpty())
                     packageList.add(it)
                 }
                 //specialList.add(it.packageName)
@@ -434,7 +436,7 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
                 }
             }
         } catch (e: Throwable) {
-            logException(e)
+            logException(e, backTrace = true)
         } finally {
             OABX.endBusy("unsuspend")
         }
@@ -442,11 +444,14 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
         val backups = mutableListOf<Backup>()
 
         val backupsMap = getBackups()
-        OABX.main?.viewModel?.backupsMap?.clear()
-        backupsMap.forEach {
-            OABX.main?.viewModel?.backupsMap?.put(it.key, it.value)
-            it.value.forEach {
-                backups.add(it)
+
+        OABX.main?.viewModel?.run {
+            clearBackups()
+            backupsMap.forEach {
+                putBackups(it.key, it.value)
+                it.value.forEach {
+                    backups.add(it)
+                }
             }
         }
 
@@ -480,7 +485,7 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
         OABX.endBusy("dbUpdate")
 
     } catch (e: Throwable) {
-        logException(e)
+        logException(e, backTrace = true)
     } finally {
         OABX.endBusy("updateAppTables")
     }

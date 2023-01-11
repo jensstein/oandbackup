@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -25,14 +27,18 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
@@ -42,6 +48,7 @@ import androidx.lifecycle.viewModelScope
 import coil.ImageLoader
 import coil.request.CachePolicy
 import coil.request.ImageRequest
+import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.MODE_ALL
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
@@ -65,6 +72,7 @@ import com.machiav3lli.backup.utils.getFormattedDate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
+import kotlin.math.roundToInt
 
 val logEachN = 1000L
 
@@ -86,6 +94,48 @@ fun Confirmation(
     )
     DropdownMenuItem(
         text = { Text(no) },
+        onClick = {}
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TextInput(
+    text: String = "",
+    placeholder: String = "",
+    onAction: (String) -> Unit = {},
+) {
+    val input = remember { mutableStateOf(text) }
+    val focusManager = LocalFocusManager.current
+    val textFieldFocusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(textFieldFocusRequester) {
+        delay(100)
+        textFieldFocusRequester.requestFocus()
+    }
+
+    DropdownMenuItem(
+        text = {
+            OutlinedTextField(
+                modifier = Modifier
+                    .focusRequester(textFieldFocusRequester),
+                value = input.value,
+                placeholder = { Text(text = placeholder, color = Color.Gray) },
+                singleLine = true,
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus()
+                        onAction(input.value)
+                    }
+                ),
+                keyboardOptions = KeyboardOptions(
+                    autoCorrect = false
+                ),
+                onValueChange = {
+                    input.value = it
+                }
+            )
+        },
         onClick = {}
     )
 }
@@ -190,10 +240,16 @@ fun openSubMenu(
     }
 }
 
+fun closeSubMenu(
+    subMenu: MutableState<(@Composable () -> Unit)?>
+) {
+    subMenu.value = null
+}
+
 @Composable
 fun MainPackageContextMenu(
     expanded: MutableState<Boolean>,
-    packageItem: Package,
+    packageItem: Package?,
     productsList: List<Package>,
     selection: SnapshotStateMap<String, Boolean>,
     openSheet: (Package) -> Unit = {},
@@ -207,8 +263,9 @@ fun MainPackageContextMenu(
         mutableStateOf<(@Composable () -> Unit)?>(null)
     }
     subMenu.value?.let { it() }
+
     if (!expanded.value)
-        subMenu.value = null
+        closeSubMenu(subMenu)
 
     fun launchPackagesAction(
         action: String,
@@ -232,9 +289,7 @@ fun MainPackageContextMenu(
             yield()
             //OABX.addInfoText("$action ${pkg.packageName}")
             todo(pkg)
-            yield()
             select?.let { s -> selection[pkg.packageName] = s }
-            yield()
         }
     }
 
@@ -249,31 +304,81 @@ fun MainPackageContextMenu(
         }
     }
 
+    var offsetX by remember { mutableStateOf(0f) }
+    var offsetY by remember { mutableStateOf(0f) }
+
     DropdownMenu(
         expanded = expanded.value,
-        offset = DpOffset(20.dp, 0.dp),
-        modifier = Modifier.background(MaterialTheme.colorScheme.surfaceColorAtElevation(0.dp)),
+        //offset = DpOffset(20.dp, 0.dp),
+        offset = with(LocalDensity.current) { DpOffset(offsetX.roundToInt().toDp(), offsetY.roundToInt().toDp()) },
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(0.dp))
+            .pointerInput(Unit) {
+                detectDragGestures { change, dragAmount ->
+                    change.consume()
+                    offsetX += dragAmount.x
+                    offsetY += dragAmount.y
+                }
+            },
         onDismissRequest = { expanded.value = false }
     ) {
 
-        DropdownMenuItem(
-            enabled = false, onClick = {},
-            text = { Text(packageItem.packageName) }
-        )
+        if (BuildConfig.DEBUG) {
+            val number = remember { mutableStateOf(0) }
+            DropdownMenuItem(
+                text = { Text("test = ${number.value}") },
+                onClick = {
+                    openSubMenu(subMenu) {
+                        TextInput(
+                            text = number.value.toString(),
+                            onAction = {
+                                number.value = it.toInt()
+                                closeSubMenu(subMenu)
+                                //expanded.value = false
+                            }
+                        )
+                    }
+                }
+            )
+        }
 
-        DropdownMenuItem(
-            text = { Text("Open App Sheet") },
-            onClick = {
-                expanded.value = false
-                openSheet(packageItem)
-            }
-        )
+        packageItem?.let {
 
-        Divider() //--------------------------------------------------------------------------------
+            DropdownMenuItem(
+                enabled = false, onClick = {},
+                text = { Text(packageItem.packageName) }
+            )
+
+            DropdownMenuItem(
+                text = { Text("Open App Sheet") },
+                onClick = {
+                    expanded.value = false
+                    openSheet(packageItem)
+                }
+            )
+
+            Divider() //--------------------------------------------------------------------------------
+        }
 
         DropdownMenuItem(
             enabled = false, onClick = {},
             text = { Text("selection:") }
+        )
+
+        DropdownMenuItem(
+            text = { Text("Select Visible") },
+            onClick = {
+                expanded.value = false
+                launchEachPackage(visible, "select", select = true) {}
+            }
+        )
+
+        DropdownMenuItem(
+            text = { Text("Deselect Visible") },
+            onClick = {
+                expanded.value = false
+                launchEachPackage(visible, "deselect", select = false) {}
+            }
         )
 
         DropdownMenuItem(
@@ -309,156 +414,142 @@ fun MainPackageContextMenu(
             }
         )
 
-        Divider() //--------------------------------------------------------------------------------
+        if (selection.count { it.value } > 0) {
 
-        DropdownMenuItem(
-            text = { Text("Select Visible") },
-            onClick = {
-                expanded.value = false
-                launchEachPackage(visible, "select", select = true) {}
-            }
-        )
+            Divider() //--------------------------------------------------------------------------------
 
-        DropdownMenuItem(
-            text = { Text("Deselect Visible") },
-            onClick = {
-                expanded.value = false
-                launchEachPackage(visible, "deselect", select = false) {}
-            }
-        )
-        Divider() //--------------------------------------------------------------------------------
-
-        DropdownMenuItem(
-            enabled = false, onClick = {},
-            text = { Text("${selectedAndVisible.count()} selected items:") }
-        )
-
-        if (pref_useBackupRestoreWithSelection.value) {
             DropdownMenuItem(
-                text = { Text(OABX.getString(R.string.backup)) },
+                enabled = false, onClick = {},
+                text = { Text("${selectedAndVisible.count()} selected items:") }
+            )
+
+            if (pref_useBackupRestoreWithSelection.value) {
+                DropdownMenuItem(
+                    text = { Text(OABX.getString(R.string.backup)) },
+                    onClick = {
+                        expanded.value = false
+                        val packages = selectedAndInstalled
+                        OABX.main?.startBatchAction(
+                            true,
+                            packages.map { it.packageName },
+                            packages.map { MODE_ALL }
+                        ) {
+                            it.removeObserver(this)
+                            launchEachPackage(packages, "backup") {
+                                selection[it.packageName] = false
+                            }
+                        }
+                    }
+                )
+
+                DropdownMenuItem(
+                    text = { Text(OABX.getString(R.string.restore)) },
+                    onClick = {
+                        openSubMenu(subMenu) {
+                            Confirmation {
+                                expanded.value = false
+                                val packages = selectedWithBackups
+                                OABX.main?.startBatchAction(
+                                    false,
+                                    packages.map { it.packageName },
+                                    packages.map { MODE_ALL }
+                                ) {
+                                    it.removeObserver(this)
+                                    launchEachPackage(packages, "restore") {
+                                        selection[it.packageName] = false
+                                    }
+                                }
+                            }
+                        }
+                    }
+                )
+            }
+
+            DropdownMenuItem(
+                text = { Text("Add to Blocklist") },
                 onClick = {
                     expanded.value = false
-                    val packages = selectedAndInstalled
-                    OABX.main?.startBatchAction(
-                        true,
-                        packages.map { it.packageName },
-                        packages.map { MODE_ALL }
-                    ) {
-                        it.removeObserver(this)
-                        launchEachPackage(packages, "backup") {
-                            selection[it.packageName] = false
+                    launchEachPackage(selectedAndVisible, "blocklist <-") {
+                        OABX.main?.viewModel?.addToBlocklist(it.packageName)
+                    }
+                }
+            )
+
+            Divider() //--------------------------------------------------------------------------------
+
+            DropdownMenuItem(
+                text = { Text("Enable") },
+                onClick = {
+                    expanded.value = false
+                    launchEachPackage(selectedAndVisible, "enable") {
+                        runAsRoot("pm enable ${it.packageName}")
+                        Package.invalidateCacheForPackage(it.packageName)
+                    }
+                }
+            )
+
+            DropdownMenuItem(
+                text = { Text("Disable") },
+                onClick = {
+                    openSubMenu(subMenu) {
+                        Confirmation {
+                            expanded.value = false
+                            launchEachPackage(selectedAndVisible, "disable") {
+                                runAsRoot("pm disable ${it.packageName}")
+                                Package.invalidateCacheForPackage(it.packageName)
+                            }
                         }
                     }
                 }
             )
 
             DropdownMenuItem(
-                text = { Text(OABX.getString(R.string.restore)) },
+                text = { Text("Uninstall") },
                 onClick = {
                     openSubMenu(subMenu) {
                         Confirmation {
                             expanded.value = false
-                            val packages = selectedWithBackups
-                            OABX.main?.startBatchAction(
-                                false,
-                                packages.map { it.packageName },
-                                packages.map { MODE_ALL }
-                            ) {
-                                it.removeObserver(this)
-                                launchEachPackage(packages, "restore") {
-                                    selection[it.packageName] = false
-                                }
+                            launchEachPackage(selectedAndVisible, "uninstall") {
+                                runAsRoot("pm uninstall ${it.packageName}")
+                                Package.invalidateCacheForPackage(it.packageName)
+                            }
+                        }
+                    }
+                }
+            )
+
+            Divider() //--------------------------------------------------------------------------------
+
+            DropdownMenuItem(
+                text = { Text("Delete All Backups") },
+                onClick = {
+                    openSubMenu(subMenu) {
+                        Confirmation {
+                            expanded.value = false
+                            launchEachPackage(selectedWithBackups, "delete backups") {
+                                it.deleteAllBackups()
+                                Package.invalidateCacheForPackage(it.packageName)
+                            }
+                        }
+                    }
+                }
+            )
+
+            DropdownMenuItem(
+                text = { Text("Limit Backups") },
+                onClick = {
+                    openSubMenu(subMenu) {
+                        Confirmation {
+                            expanded.value = false
+                            launchEachPackage(selectedWithBackups, "limit backups") {
+                                BackupRestoreHelper.housekeepingPackageBackups(it)
+                                Package.invalidateCacheForPackage(it.packageName)
                             }
                         }
                     }
                 }
             )
         }
-
-        DropdownMenuItem(
-            text = { Text("Add to Blocklist") },
-            onClick = {
-                expanded.value = false
-                launchEachPackage(selectedAndVisible, "blocklist <-") {
-                    OABX.main?.viewModel?.addToBlocklist(it.packageName)
-                }
-            }
-        )
-
-        Divider() //--------------------------------------------------------------------------------
-
-        DropdownMenuItem(
-            text = { Text("Enable") },
-            onClick = {
-                expanded.value = false
-                launchEachPackage(selectedAndVisible, "enable") {
-                    runAsRoot("pm enable ${it.packageName}")
-                    Package.invalidateCacheForPackage(it.packageName)
-                }
-            }
-        )
-
-        DropdownMenuItem(
-            text = { Text("Disable") },
-            onClick = {
-                openSubMenu(subMenu) {
-                    Confirmation {
-                        expanded.value = false
-                        launchEachPackage(selectedAndVisible, "disable") {
-                            runAsRoot("pm disable ${it.packageName}")
-                            Package.invalidateCacheForPackage(it.packageName)
-                        }
-                    }
-                }
-            }
-        )
-
-        DropdownMenuItem(
-            text = { Text("Uninstall") },
-            onClick = {
-                openSubMenu(subMenu) {
-                    Confirmation {
-                        expanded.value = false
-                        launchEachPackage(selectedAndVisible, "uninstall") {
-                            runAsRoot("pm uninstall ${it.packageName}")
-                            Package.invalidateCacheForPackage(it.packageName)
-                        }
-                    }
-                }
-            }
-        )
-
-        Divider() //--------------------------------------------------------------------------------
-
-        DropdownMenuItem(
-            text = { Text("Delete All Backups") },
-            onClick = {
-                openSubMenu(subMenu) {
-                    Confirmation {
-                        expanded.value = false
-                        launchEachPackage(selectedWithBackups, "delete backups") {
-                            it.deleteAllBackups()
-                            Package.invalidateCacheForPackage(it.packageName)
-                        }
-                    }
-                }
-            }
-        )
-
-        DropdownMenuItem(
-            text = { Text("Limit Backups") },
-            onClick = {
-                openSubMenu(subMenu) {
-                    Confirmation {
-                        expanded.value = false
-                        launchEachPackage(selectedWithBackups, "limit backups") {
-                            BackupRestoreHelper.housekeepingPackageBackups(it)
-                            Package.invalidateCacheForPackage(it.packageName)
-                        }
-                    }
-                }
-            }
-        )
     }
 }
 
@@ -600,7 +691,7 @@ fun MainPackageItemB(
     selected: Boolean,
     imageLoader: ImageLoader,
     onLongClick: (Package) -> Unit = {},
-    onAction: (Package) -> Unit = {}
+    onAction: (Package) -> Unit = {},
 ) {
     beginNanoTimer("B.item")
 
@@ -640,11 +731,12 @@ fun MainPackageItemB(
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (!pref_hidePackageIcon.value)
-                PackageIcon(item = pkg,
+                PackageIcon(
+                    item = pkg,
                     imageData = pkg.iconData,
                     imageLoader = imageLoader,
                 )
-            
+
             Column(
                 modifier = Modifier.wrapContentHeight()
             ) {
