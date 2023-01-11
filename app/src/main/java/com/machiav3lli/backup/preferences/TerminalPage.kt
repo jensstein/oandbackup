@@ -139,7 +139,7 @@ fun logInt() =
     listOf("--- > last internal log messages") +
             OABX.lastLogMessages
 
-val maxLogcat = "" //""-t 10000"
+val maxLogcat = "-t 100000"
 
 fun logApp() =
     shell("logcat -d ${maxLogcat} --pid=${Process.myPid()}")
