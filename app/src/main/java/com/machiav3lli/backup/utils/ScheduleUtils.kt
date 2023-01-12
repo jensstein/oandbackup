@@ -69,7 +69,7 @@ fun calculateTimeToRun(schedule: Schedule, now: Long): Long {
         repeat(limitIncrements) {
             if (c.timeInMillis > now + minTimeFromNow)
                 return@repeat
-            traceSchedule { "increment $it * $fakeMin min" }
+            //traceSchedule { "increment $it * $fakeMin min" }
             c.add(Calendar.MINUTE, fakeMin)
         }
     } else {
