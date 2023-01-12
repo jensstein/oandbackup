@@ -74,10 +74,34 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     open fun run(app: Package, backupMode: Int): ActionResult {
         var backup: Backup? = null
         var ok = false
+        val fakeSeconds = pref_fakeBackupSeconds.value
         try {
             Timber.i("Backing up: ${app.packageName} [${app.packageLabel}]")
             //invalidateCacheForPackage(app.packageName)    //TODO hg42 ???
             work?.setOperation("pre")
+
+            if (fakeSeconds > 0) {
+
+                val step = 1000L * 1
+                val startTime = System.currentTimeMillis()
+                do {
+                    val now = System.currentTimeMillis()
+                    val seconds = (now - startTime) / 1000.0
+                    work?.setOperation((seconds / 10).toInt().toString().padStart(3, '0'))
+                    Thread.sleep(step)
+                } while (seconds < fakeSeconds)
+
+                val succeeded = true // random() < 0.75
+
+                return if (succeeded) {
+                    Timber.w("package: ${app.packageName} faking success")
+                    ActionResult(app, null, "faked backup succeeded", true)
+                } else {
+                    Timber.w("package: ${app.packageName} faking failure")
+                    ActionResult(app, null, "faked backup failed", false)
+                }
+            }
+
             val appBackupRoot: StorageFile = try {
                 app.getAppBackupRoot(create = true)!!
             } catch (e: BackupLocationInAccessibleException) {
@@ -130,29 +154,6 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             }
 
             try {
-                val fakeSeconds = pref_fakeBackupSeconds.value
-                if (fakeSeconds > 0) {
-
-                    val step = 1000L * 1
-                    val startTime = System.currentTimeMillis()
-                    do {
-                        val now = System.currentTimeMillis()
-                        val seconds = (now - startTime) / 1000.0
-                        work?.setOperation((seconds / 10).toInt().toString().padStart(3, '0'))
-                        Thread.sleep(step)
-                    } while (seconds < fakeSeconds)
-
-                    val succeeded = true // random() < 0.75
-
-                    return if (succeeded) {
-                        Timber.w("package: ${app.packageName} faking success")
-                        ActionResult(app, null, "faked backup succeeded", true)
-                    } else {
-                        Timber.w("package: ${app.packageName} faking failure")
-                        ActionResult(app, null, "faked backup failed", false)
-                    }
-                }
-
                 if (backupMode and MODE_APK == MODE_APK) {
                     Timber.i("$app: Backing up package")
                     work?.setOperation("apk")
