@@ -216,7 +216,9 @@ fun DevTools(
             ) {
                 Text(text = mode, modifier = Modifier)
                 Spacer(modifier = Modifier.weight(1f))
-                TerminalButton("    close    ") { expanded.value = false }      //TODO hg42 use weight, add modifier to TerminalButton
+                TerminalButton("    close    ") {
+                    expanded.value = false
+                }      //TODO hg42 use weight, add modifier to TerminalButton
             }
             Row(modifier = Modifier
                 .fillMaxWidth()
@@ -242,9 +244,9 @@ fun DevTools(
                 TerminalButton(" term ", important = true) { mode = "term" }
             }
             when (mode) {
-                "log"   ->
+                "log"     ->
                     TerminalText(OABX.lastLogMessages)      //TODO hg42 there is no keyboard
-                "info"  ->
+                "info"    ->
                     TerminalText(OABX.infoLines)            //TODO hg42 there is no keyboard
                 "devsett" ->
                     Column(modifier = Modifier
@@ -252,9 +254,9 @@ fun DevTools(
                     ) {
                         DevPrefGroups()
                     }
-                "term" ->
+                "term"    ->
                     TerminalPage()                          //TODO hg42 there is no keyboard
-                "logs" ->
+                "logs"    ->
                     LogsPage(LogViewModel(OABX.app))
             }
         }
@@ -269,7 +271,7 @@ fun TopBar(
     actions: @Composable (RowScope.() -> Unit),
 ) {
     var tempShowInfo by remember { mutableStateOf(false) }
-    var longShowInfo = remember { mutableStateOf(false) }
+    val longShowInfo = remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val infoText =
         if (longShowInfo.value)
