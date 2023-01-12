@@ -84,8 +84,8 @@ class WorkHandler(appContext: Context) {
     }
 
     fun endBatches() {
-        val delay = 10000L
-        Thread {
+        val delay = 200L //10000L
+        //Thread {
             Timber.d("%%%%% ALL thread start")
 
             Thread.sleep(delay)
@@ -121,7 +121,7 @@ class WorkHandler(appContext: Context) {
                 it.stopSelf()
                 traceBold { "%%%%% ------------------------------------------ service stopped.../" }
             }
-        }.start()
+        //}.start()
     }
 
     fun beginBatch(batchName: String) {
@@ -400,138 +400,142 @@ class WorkHandler(appContext: Context) {
                 //   return@batch
                 //}
 
-                workState.run {
-                    val processed = succeeded + failed
-                    val remaining = running + queued
+                if (!batch.isFinished) {
 
-                    allCount += workCount
-                    allProcessed += processed
-                    allRemaining += remaining
+                    workState.run {
+                        val processed = succeeded + failed
+                        val remaining = running + queued
 
-                    var title = batchName
-                    shortText = "${if (failed > 0) "😡$failed / " else ""}$succeeded / $workCount"
+                        allCount += workCount
+                        allProcessed += processed
+                        allRemaining += remaining
 
-                    if (remaining > 0) {
-                        shortText += " 🏃$running 👭${queued}"
-                    } else {
-                        //shortText += " ${OABX.context.getString(R.string.finished)}"
-                        title += " - ${if (failed == 0) "ok" else "$failed failed"}"
+                        var title = batchName
+                        shortText = "${if (failed > 0) "😡$failed / " else ""}$succeeded / $workCount"
 
-                        Timber.i("%%%%% $batchName isFinished=true")
+                        if (remaining > 0) {
+                            shortText += " 🏃$running 👭${queued}"
+                        } else {
+                            //shortText += " ${OABX.context.getString(R.string.finished)}"
+                            title += " - ${if (failed == 0) "ok" else "$failed failed"}"
 
-                        if (batch.endTime == 0L)
-                            batch.endTime = now
-                        val duration =
-                            ((batch.endTime - batch.startTime) / 1000 + 0.5).toInt()
-                        val min = (duration / 60).toInt()
-                        val sec = duration - min * 60
-                        bigText = "$min min $sec sec"
-                        if (canceled > 0)
-                            bigText += "\n$canceled cancelled"
+                            Timber.i("%%%%% $batchName isFinished=true")
+
+                            if (batch.endTime == 0L)
+                                batch.endTime = now
+                            val duration =
+                                ((batch.endTime - batch.startTime) / 1000 + 0.5).toInt()
+                            val min = (duration / 60).toInt()
+                            val sec = duration - min * 60
+                            bigText = "$min min $sec sec"
+                            if (canceled > 0)
+                                bigText += "\n$canceled cancelled"
+                            if (retries > 0)
+                                bigText += "\n$retries retried"
+                        }
+
                         if (retries > 0)
-                            bigText += "\n$retries retried"
-                    }
+                            shortText += " 🔄$retries"
+                        if (canceled > 0)
+                            shortText += " 🚫$canceled"
 
-                    if (retries > 0)
-                        shortText += " 🔄$retries"
-                    if (canceled > 0)
-                        shortText += " 🚫$canceled"
+                        //bigText = "$shortText\n$bigText"
 
-                    //bigText = "$shortText\n$bigText"
+                        Timber.d("%%%%% $batchName -----------------> $title $shortText")
 
-                    Timber.d("%%%%% $batchName -----------------> $title $shortText")
-
-                    val resultIntent = Intent(appContext, MainActivityX::class.java)
-                    resultIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    val resultPendingIntent = PendingIntent.getActivity(
-                        appContext,
-                        0,
-                        resultIntent,
-                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                    )
-
-                    val htmlFlags =
-                        Html.FROM_HTML_MODE_COMPACT or Html.FROM_HTML_OPTION_USE_CSS_COLORS
-                    val notificationBuilder =
-                        NotificationCompat.Builder(
+                        val resultIntent = Intent(appContext, MainActivityX::class.java)
+                        resultIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+                        val resultPendingIntent = PendingIntent.getActivity(
                             appContext,
-                            classAddress("NotificationHandler")
+                            0,
+                            resultIntent,
+                            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
                         )
-                            .setGroup(BuildConfig.APPLICATION_ID)
-                            .setSortKey("1-$batchName")
-                            .setSmallIcon(R.drawable.ic_launcher_foreground)
-                            .setContentTitle(title)
-                            .setContentText(Html.fromHtml(shortText, htmlFlags))
-                            .setStyle(
-                                NotificationCompat.BigTextStyle()
-                                    .setSummaryText(Html.fromHtml(shortText, htmlFlags))
-                                    .bigText(Html.fromHtml(bigText, htmlFlags))
+
+                        val htmlFlags =
+                            Html.FROM_HTML_MODE_COMPACT or Html.FROM_HTML_OPTION_USE_CSS_COLORS
+                        val notificationBuilder =
+                            NotificationCompat.Builder(
+                                appContext,
+                                classAddress("NotificationHandler")
                             )
-                            .setContentIntent(resultPendingIntent)
-                            .setAutoCancel(true)
-                            .setPriority(NotificationCompat.PRIORITY_MAX)
-                            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                            .setCategory(NotificationCompat.CATEGORY_PROGRESS)
+                                .setGroup(BuildConfig.APPLICATION_ID)
+                                .setSortKey("1-$batchName")
+                                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                                .setContentTitle(title)
+                                .setContentText(Html.fromHtml(shortText, htmlFlags))
+                                .setStyle(
+                                    NotificationCompat.BigTextStyle()
+                                        .setSummaryText(Html.fromHtml(shortText, htmlFlags))
+                                        .bigText(Html.fromHtml(bigText, htmlFlags))
+                                )
+                                .setContentIntent(resultPendingIntent)
+                                .setAutoCancel(true)
+                                .setPriority(NotificationCompat.PRIORITY_MAX)
+                                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                                .setCategory(NotificationCompat.CATEGORY_PROGRESS)
 
-                    if (remaining > 0) {
+                        if (remaining > 0) {
 
-                        val cancelIntent =
-                            Intent(appContext, CommandReceiver::class.java).apply {
-                                action = "cancel"
-                                putExtra("name", batchName)
-                            }
-                        val cancelPendingIntent = PendingIntent.getBroadcast(
-                            appContext,
-                            batchName.hashCode(),
-                            cancelIntent,
-                            PendingIntent.FLAG_IMMUTABLE
+                            val cancelIntent =
+                                Intent(appContext, CommandReceiver::class.java).apply {
+                                    action = "cancel"
+                                    putExtra("name", batchName)
+                                }
+                            val cancelPendingIntent = PendingIntent.getBroadcast(
+                                appContext,
+                                batchName.hashCode(),
+                                cancelIntent,
+                                PendingIntent.FLAG_IMMUTABLE
+                            )
+                            val cancelAllIntent =
+                                Intent(appContext, CommandReceiver::class.java).apply {
+                                    action = "cancel"
+                                    //putExtra("name", "")
+                                }
+                            val cancelAllPendingIntent = PendingIntent.getBroadcast(
+                                appContext,
+                                "<ALL>".hashCode(),
+                                cancelAllIntent,
+                                PendingIntent.FLAG_IMMUTABLE
+                            )
+                            notificationBuilder
+                                .setOngoing(false)
+                                .setSilent(true)
+                                .setProgress(workCount, processed, false)
+                                .addAction(
+                                    R.drawable.ic_close,
+                                    appContext.getString(R.string.dialogCancel),
+                                    cancelPendingIntent
+                                )
+                                .addAction(
+                                    R.drawable.ic_close,
+                                    appContext.getString(R.string.dialogCancelAll),
+                                    cancelAllPendingIntent
+                                )
+                        } else {
+                            notificationBuilder
+                                .setOngoing(false)
+                                .setSilent(true)
+                                .setColor(
+                                    if (failed == 0)
+                                        0x66FF66
+                                    else
+                                        0xFF6666
+                                )
+                        }
+
+                        val notification = notificationBuilder.build()
+                        Timber.d("%%%%%%%%%%%%%%%%%%%%> $batchName ${batch.notificationId} '$shortText' $notification")
+                        OABX.work.notificationManager.notify(
+                            batch.notificationId,
+                            notification
                         )
-                        val cancelAllIntent =
-                            Intent(appContext, CommandReceiver::class.java).apply {
-                                action = "cancel"
-                                //putExtra("name", "")
-                            }
-                        val cancelAllPendingIntent = PendingIntent.getBroadcast(
-                            appContext,
-                            "<ALL>".hashCode(),
-                            cancelAllIntent,
-                            PendingIntent.FLAG_IMMUTABLE
-                        )
-                        notificationBuilder
-                            .setOngoing(true)
-                            .setSilent(true)
-                            .setProgress(workCount, processed, false)
-                            .addAction(
-                                R.drawable.ic_close,
-                                appContext.getString(R.string.dialogCancel),
-                                cancelPendingIntent
-                            )
-                            .addAction(
-                                R.drawable.ic_close,
-                                appContext.getString(R.string.dialogCancelAll),
-                                cancelAllPendingIntent
-                            )
-                    } else {
-                        notificationBuilder
-                            .setOngoing(false)
-                            .setSilent(false)
-                            .setColor(
-                                if (failed == 0)
-                                    0x66FF66
-                                else
-                                    0xFF6666
-                            )
-                    }
 
-                    val notification = notificationBuilder.build()
-                    Timber.d("%%%%%%%%%%%%%%%%%%%%> $batchName ${batch.notificationId} '$shortText' $notification")
-                    OABX.work.notificationManager.notify(
-                        batch.notificationId,
-                        notification
-                    )
-
-                    if (remaining <= 0 && OABX.work.justFinished(batch)) {
-                        OABX.work.endBatch(batchName)
+                        if (remaining <= 0) {
+                            if (OABX.work.justFinished(batch))
+                                OABX.work.endBatch(batchName)
+                        }
                     }
                 }
             }

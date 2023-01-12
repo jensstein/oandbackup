@@ -212,12 +212,13 @@ open class ScheduleService : Service() {
                             .getWorkInfoByIdLiveData(finishWorkRequest.id)
                         finishWorkLiveData.observeForever(object : Observer<WorkInfo> {
                             override fun onChanged(t: WorkInfo?) {
-                                if (t?.state == WorkInfo.State.SUCCEEDED ||
+                                if (t == null ||
+                                    t?.state == WorkInfo.State.SUCCEEDED ||
                                     t?.state == WorkInfo.State.FAILED ||
                                     t?.state == WorkInfo.State.CANCELLED
                                 ) {
                                     traceSchedule {
-                                        "work manager changed to state ${t.state.name} -> re-schedule"
+                                        "work manager changed to state ${t?.state?.name} -> re-schedule"
                                     }
                                     scheduleAlarm(context, scheduleId, true)
                                     OABX.main?.refreshPackages()
