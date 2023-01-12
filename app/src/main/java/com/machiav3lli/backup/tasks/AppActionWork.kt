@@ -48,7 +48,7 @@ import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.preferences.pref_maxRetriesPerPackage
 import com.machiav3lli.backup.preferences.pref_useExpedited
-import com.machiav3lli.backup.preferences.pref_useForeground
+import com.machiav3lli.backup.preferences.pref_useForegroundInJob
 import com.machiav3lli.backup.services.CommandReceiver
 import timber.log.Timber
 
@@ -70,7 +70,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
 
         OABX.wakelock(true)
 
-        if (pref_useForeground.value)
+        if (pref_useForegroundInJob.value)               //TODO hg42 the service already does this?
         //if (inputData.getBoolean("immediate", false))
             setForeground(getForegroundInfo())
         //setForegroundAsync(getForegroundInfo())  //TODO hg42 what's the difference?

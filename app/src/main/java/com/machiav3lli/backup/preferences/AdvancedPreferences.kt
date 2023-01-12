@@ -403,10 +403,16 @@ val pref_useWorkManagerForSingleManualJob = BooleanPref(
     defaultValue = false
 )
 
-val pref_useForeground = BooleanPref(
-    key = "dev-alt.useForeground",
-    summaryId = R.string.prefs_useforeground_summary,
+val pref_useForegroundInService = BooleanPref(
+    key = "dev-alt.useForegroundInService",
+    summary = "use foreground notification in service",
     defaultValue = true
+)
+
+val pref_useForegroundInJob = BooleanPref(
+    key = "dev-alt.useForegroundInJob",
+    summary = "sue foreground notification in each job (per package)",
+    defaultValue = false
 )
 
 val pref_useExpedited = BooleanPref(

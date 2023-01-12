@@ -39,7 +39,7 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.handler.showNotification
-import com.machiav3lli.backup.preferences.pref_useForeground
+import com.machiav3lli.backup.preferences.pref_useForegroundInService
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.tasks.ScheduledActionTask
@@ -63,7 +63,7 @@ open class ScheduleService : Service() {
         OABX.service = this
         this.notificationId = System.currentTimeMillis().toInt()
 
-        if (pref_useForeground.value) {
+        if (pref_useForegroundInService.value) {
             createNotificationChannel()
             createForegroundInfo()
             startForeground(notification.hashCode(), this.notification)
