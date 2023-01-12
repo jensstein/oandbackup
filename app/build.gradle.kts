@@ -144,11 +144,8 @@ dependencies {
     //implementation("com.github.tony19:named-regexp:0.2.6") // regex named groups
 
     // UI
-    implementation("androidx.fragment:fragment-ktx:1.5.4")
     implementation("com.google.android.material:material:1.8.0-alpha03")
     implementation("androidx.preference:preference-ktx:1.2.0")
-    implementation("androidx.navigation:navigation-fragment-ktx:$vNavigation")
-    implementation("androidx.navigation:navigation-ui-ktx:$vNavigation")
 
     // Compose
     implementation("androidx.compose.runtime:runtime:$vCompose")
