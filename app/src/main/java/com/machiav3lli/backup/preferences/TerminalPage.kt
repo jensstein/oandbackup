@@ -115,7 +115,7 @@ fun shell(command: String): List<String> {
         val result = runAsRoot(command)
         return listOf(
             "",
-            "--- # $command -> ${result.code}"
+            "--- # $command${if (!result.isSuccess) " -> ${result.code}" else " -> ok"}"
         ) + result.err.map { "? $it" } + result.out
     } catch (e: Throwable) {
         return listOf(
@@ -162,17 +162,17 @@ fun dumpAlarms() =
     shell("dumpsys alarm | sed -n '/Alarm.*machiav3lli[.]backup/,/PendingIntent/{p}'")
 
 fun accessTest() =
-    shell("echo \"\$(ls /data/user/0/ | wc -l) packages (apk)\"") +
-            shell("echo \"$(ls /data/user/0/ | wc -l) packages (data)\"") +
-            shell("echo \"\$(ls -l /data/misc/ | wc -l) misc data\"")
+    shell("echo \"\$(ls \$ANDROID_DATA/user/0/ | wc -l) packages (apk)\"") +
+            shell("echo \"$(ls \$ANDROID_DATA/user/0/ | wc -l) packages (data)\"") +
+            shell("echo \"\$(ls -l \$ANDROID_DATA/misc/ | wc -l) misc data\"")
 
 fun lastErrorPkg(): List<String> {
     val pkg = OABX.lastErrorPackage
     return if (pkg.isNotEmpty()) {
         listOf("--- last error package: $pkg") +
-                shell("ls -l /data/user/0/$pkg") +
-                shell("ls -l /data/user_de/0/$pkg") +
-                shell("ls -l /sdcard/Android/*/$pkg")
+                shell("ls -l \$ANDROID_DATA/user/0/$pkg") +
+                shell("ls -l \$ANDROID_DATA/user_de/0/$pkg") +
+                shell("ls -l \$EXTERNAL_STORAGE/Android/*/$pkg")
     } else {
         listOf("--- ? no last error package")
     }
@@ -343,8 +343,8 @@ fun TerminalPage() {
         Box(
             modifier = Modifier
                 .weight(1f)
-                .padding(0.dp)
                 .fillMaxHeight()
+                .padding(0.dp)
         ) {
             TerminalText(output, limitLines = 0, scrollOnAdd = true)
         }
@@ -463,12 +463,12 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
                 colors = TextFieldDefaults.textFieldColors(
                     textColor = overlayColor,
                     containerColor = Color.Transparent,
-                    unfocusedLeadingIconColor = overlayColor,
-                    focusedLeadingIconColor = if (search.length > 0) Color.Transparent else overlayColor
+                    unfocusedTrailingIconColor = overlayColor,
+                    focusedTrailingIconColor = overlayColor, //if (search.length > 0) Color.Transparent else overlayColor
                 ),
                 textStyle = TextStyle(fontSize = fontSize * searchFontFactor,
                     lineHeight = lineHeightSp * searchFontFactor),
-                leadingIcon = {
+                trailingIcon = {
                     Icon(
                         imageVector = Phosphor.MagnifyingGlass,
                         contentDescription = "search",
