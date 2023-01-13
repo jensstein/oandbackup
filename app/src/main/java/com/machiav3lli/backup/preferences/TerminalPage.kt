@@ -48,6 +48,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -57,6 +58,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
@@ -115,7 +118,7 @@ fun shell(command: String): List<String> {
         val result = runAsRoot(command)
         return listOf(
             "",
-            "--- # $command -> ${result.code}"
+            "--- # $command${if (!result.isSuccess) " -> ${result.code}" else " -> ok"}"
         ) + result.err.map { "? $it" } + result.out
     } catch (e: Throwable) {
         return listOf(
@@ -139,7 +142,7 @@ fun logInt() =
     listOf("--- > last internal log messages") +
             OABX.lastLogMessages
 
-val maxLogcat = "" //""-t 10000"
+val maxLogcat = "-t 100000"
 
 fun logApp() =
     shell("logcat -d ${maxLogcat} --pid=${Process.myPid()}")
@@ -162,17 +165,17 @@ fun dumpAlarms() =
     shell("dumpsys alarm | sed -n '/Alarm.*machiav3lli[.]backup/,/PendingIntent/{p}'")
 
 fun accessTest() =
-    shell("echo \"\$(ls /data/user/0/ | wc -l) packages (apk)\"") +
-            shell("echo \"$(ls /data/user/0/ | wc -l) packages (data)\"") +
-            shell("echo \"\$(ls -l /data/misc/ | wc -l) misc data\"")
+    shell("echo \"\$(ls \$ANDROID_DATA/user/0/ | wc -l) packages (apk)\"") +
+            shell("echo \"$(ls \$ANDROID_DATA/user/0/ | wc -l) packages (data)\"") +
+            shell("echo \"\$(ls -l \$ANDROID_DATA/misc/ | wc -l) misc data\"")
 
 fun lastErrorPkg(): List<String> {
     val pkg = OABX.lastErrorPackage
     return if (pkg.isNotEmpty()) {
         listOf("--- last error package: $pkg") +
-                shell("ls -l /data/user/0/$pkg") +
-                shell("ls -l /data/user_de/0/$pkg") +
-                shell("ls -l /sdcard/Android/*/$pkg")
+                shell("ls -l \$ANDROID_DATA/user/0/$pkg") +
+                shell("ls -l \$ANDROID_DATA/user_de/0/$pkg") +
+                shell("ls -l \$EXTERNAL_STORAGE/Android/*/$pkg")
     } else {
         listOf("--- ? no last error package")
     }
@@ -190,10 +193,14 @@ fun lastErrorCommand(): List<String> {
 }
 
 fun onErrorInfo(): List<String> {
+    beginBusy("onErrorInfo")
+    val logs = logInt() + logApp()
     val lines =
         listOf("=== onError log", "") +
                 info() +
-                dumpPrefs()
+                dumpPrefs() +
+                logs
+    endBusy("onErrorInfo")
     return lines
 }
 
@@ -263,6 +270,8 @@ fun TerminalPage() {
     var command by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
+    val shellFocusRequester = remember { FocusRequester() }
+    SideEffect { shellFocusRequester.requestFocus() }
 
     fun launch(todo: () -> Unit) {
         scope.launch {
@@ -283,14 +292,17 @@ fun TerminalPage() {
         append(shell(command))
     }
 
-    Column(verticalArrangement = Arrangement.Top) {
+    Column(
+        verticalArrangement = Arrangement.Top
+    ) {
         Column(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.surface)
         ) {
             OutlinedTextField(modifier = Modifier
                 .padding(padding)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .focusRequester(shellFocusRequester),
                 value = command,
                 singleLine = false,
                 placeholder = { Text(text = "shell command", color = Color.Gray) },
@@ -339,8 +351,8 @@ fun TerminalPage() {
         Box(
             modifier = Modifier
                 .weight(1f)
-                .padding(0.dp)
                 .fillMaxHeight()
+                .padding(0.dp)
         ) {
             TerminalText(output, limitLines = 0, scrollOnAdd = true)
         }
@@ -459,12 +471,12 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
                 colors = TextFieldDefaults.textFieldColors(
                     textColor = overlayColor,
                     containerColor = Color.Transparent,
-                    unfocusedLeadingIconColor = overlayColor,
-                    focusedLeadingIconColor = if (search.length > 0) Color.Transparent else overlayColor
+                    unfocusedTrailingIconColor = overlayColor,
+                    focusedTrailingIconColor = overlayColor, //if (search.length > 0) Color.Transparent else overlayColor
                 ),
                 textStyle = TextStyle(fontSize = fontSize * searchFontFactor,
                     lineHeight = lineHeightSp * searchFontFactor),
-                leadingIcon = {
+                trailingIcon = {
                     Icon(
                         imageVector = Phosphor.MagnifyingGlass,
                         contentDescription = "search",
