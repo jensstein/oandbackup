@@ -3,8 +3,8 @@
 * Aggiunto: intro
 * Aggiunto: campo di controllo password crittografia
 * Rimosso: preferenza del percorso Busybox
-* Risolto: mostra data attuale invece dell'ultimo backup
-* Risolto: aggiorna tag degli elementi dopo un nuovo backup
+* Corretto: mostra data attuale invece dell'ultimo backup
+* Corretto: aggiorna tag degli elementi dopo un nuovo backup
 * Aggiornato: traduzioni (norvegese, russo, italiano, francese, olandese, tedesco)
 * Aggiornato: valore predefinito di ordine/filtro su true
 * Aggiornato: imposta blocco biometrico predefinito su off

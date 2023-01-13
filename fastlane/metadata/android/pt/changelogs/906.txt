@@ -1,4 +1,4 @@
 **OAndBackupX 0.9.6**
-* Adicionado verificar atualização
+* Verificar atualização adicionado
 * Tema fixo consistente
-* Corrigido algumas Strings
+* Algumas cadeias corrigidas
