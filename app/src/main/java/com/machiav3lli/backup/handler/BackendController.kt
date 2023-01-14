@@ -49,7 +49,11 @@ import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import com.machiav3lli.backup.preferences.pref_backupSuspendApps
 import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.traceBackupsScan
+import com.machiav3lli.backup.traceTiming
 import com.machiav3lli.backup.utils.TraceUtils
+import com.machiav3lli.backup.utils.TraceUtils.beginNanoTimer
+import com.machiav3lli.backup.utils.TraceUtils.endNanoTimer
+import com.machiav3lli.backup.utils.TraceUtils.logNanoTiming
 import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.utils.getInstalledPackageInfosWithPermissions
 import com.machiav3lli.backup.utils.specialBackupsEnabled
@@ -72,8 +76,10 @@ fun scanBackups(
     cleanup: Boolean = false,
     onPropsFile: (StorageFile) -> Unit,
 ) {
-
+    beginNanoTimer("scanBackups.${if(packageName.isEmpty()) "" else "package."}listFiles")
     val files = directory.listFiles().drop(0)   // copy
+    endNanoTimer("scanBackups.${if(packageName.isEmpty()) "" else "package."}listFiles")
+
     val names = files.map { it.name }
 
     fun formatBackupFile(file: StorageFile) = "${file.path?.replace(backupRoot.path ?: "", "")}"
@@ -121,7 +127,9 @@ fun scanBackups(
                             } ++++++++++++++++++++ props ok"
                         }
                         try {
+                            beginNanoTimer("scanBackups.${if(packageName.isEmpty()) "" else "package."}onPropsFile")
                             onPropsFile(file)
+                            endNanoTimer("scanBackups.${if(packageName.isEmpty()) "" else "package."}onPropsFile")
                         } catch (_: Throwable) {
                             if (!name.contains(regexSpecialFile))
                                 runCatching {
@@ -143,7 +151,9 @@ fun scanBackups(
                                                     } ++++++++++++++++++++ indir props ok"
                                                 }
                                                 try {
+                                                    beginNanoTimer("scanBackups.${if(packageName.isEmpty()) "" else "package."}onPropsFile")
                                                     onPropsFile(it)
+                                                    endNanoTimer("scanBackups.${if(packageName.isEmpty()) "" else "package."}onPropsFile")
                                                 } catch (_: Throwable) {
                                                     // rename the dir, because the backup is damaged
                                                     runCatching {
@@ -178,7 +188,9 @@ fun scanBackups(
                                 formatBackupFile(file)
                             } ++++++++++++++++++++ props ok"
                         }
+                        beginNanoTimer("scanBackups.${if(packageName.isEmpty()) "" else "package."}onPropsFile")
                         onPropsFile(file)
+                        endNanoTimer("scanBackups.${if(packageName.isEmpty()) "" else "package."}onPropsFile")
                     } else {
                         if (file.isDirectory) {
                             traceBackupsScanPackage {
@@ -217,6 +229,9 @@ fun scanBackups(
             }
         }
     }
+
+    if (level == 0 && packageName.isEmpty() && traceTiming.pref.value)
+        logNanoTiming("scanBackups.", "scanBackups")
 }
 
 fun Context.getBackups(

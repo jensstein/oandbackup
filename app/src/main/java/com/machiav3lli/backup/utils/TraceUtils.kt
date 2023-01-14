@@ -3,6 +3,7 @@ package com.machiav3lli.backup.utils
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.pref_trace
 import com.machiav3lli.backup.traceFlows
+import com.machiav3lli.backup.traceTiming
 import com.machiav3lli.backup.ui.item.BooleanPref
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onEach
@@ -121,11 +122,13 @@ object TraceUtils {
     }
 
     fun logNanoTiming(pattern: String = "", title: String = "") {
-        Timber.i("timing: $title -----\\")
-        listNanoTiming(pattern).forEach {
-            Timber.i("timing: $title $it")
+        if (traceTiming.pref.value) {
+            Timber.i("timing: $title -----\\")
+            listNanoTiming(pattern).forEach {
+                Timber.i("timing: $title $it")
+            }
+            Timber.i("timing: $title -----/")
         }
-        Timber.i("timing: $title -----/")
     }
 
     // reflection
