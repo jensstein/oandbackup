@@ -271,7 +271,7 @@ open class StorageFile {
         this.parent = parent
         this._uri = uri
         name?.let { this.name = it }
-        if (false &&        //TODO hg42 temporary until RootFile speed is fixed (too many directory lists)
+        if (//false &&        //TODO hg42 temporary until RootFile speed is fixed (too many directory lists)
             pref_shadowRootFile.value && allowShadowing
         ) {
             fun isValidPath(file: RootFile?): Boolean =
