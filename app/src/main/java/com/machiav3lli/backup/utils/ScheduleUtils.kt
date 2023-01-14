@@ -27,6 +27,7 @@ import android.os.Build
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.ISO_DATE_TIME_FORMAT
 import com.machiav3lli.backup.ISO_DATE_TIME_FORMAT_MIN
 import com.machiav3lli.backup.MODE_UNSET
@@ -37,9 +38,11 @@ import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.dao.ScheduleDao
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.handler.ShellCommands
+import com.machiav3lli.backup.preferences.onErrorInfo
 import com.machiav3lli.backup.preferences.pref_fakeScheduleMin
 import com.machiav3lli.backup.preferences.pref_useAlarmClock
 import com.machiav3lli.backup.preferences.pref_useExactAlarm
+import com.machiav3lli.backup.preferences.textLog
 import com.machiav3lli.backup.services.AlarmReceiver
 import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.traceSchedule
@@ -170,8 +173,16 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                         schedule = schedule.copy(
                             timeToRun = now + TimeUnit.MINUTES.toMillis(1)
                         )
-                        traceSchedule { "!!!!!!!!!! timeLeft < 1 min -> set schedule $schedule" }
                         scheduleDao.update(schedule)
+                        val message =
+                            "**************************************** timeLeft < 1 min -> set schedule $schedule"
+                        traceSchedule { message }
+                        if (BuildConfig.DEBUG || BuildConfig.APPLICATION_ID.contains("hg42"))
+                            textLog(
+                                listOf(
+                                    message
+                                ) + onErrorInfo()
+                            )
                     }
                 }
 
