@@ -44,7 +44,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewModelScope
 import coil.ImageLoader
 import coil.request.CachePolicy
 import coil.request.ImageRequest
@@ -70,6 +69,7 @@ import com.machiav3lli.backup.utils.TraceUtils.logNanoTiming
 import com.machiav3lli.backup.utils.TraceUtils.nanoTiming
 import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.utils.getFormattedDate
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -241,7 +241,7 @@ fun openSubMenu(
 }
 
 fun closeSubMenu(
-    subMenu: MutableState<(@Composable () -> Unit)?>
+    subMenu: MutableState<(@Composable () -> Unit)?>,
 ) {
     subMenu.value = null
 }
@@ -271,7 +271,8 @@ fun MainPackageContextMenu(
         action: String,
         todo: suspend () -> Unit,
     ) {
-        OABX.main?.viewModel?.viewModelScope?.launch {
+        //OABX.main?.viewModel?.viewModelScope?.launch {
+        MainScope().launch {
             try {
                 OABX.beginBusy(action)
                 todo()
@@ -287,9 +288,14 @@ fun MainPackageContextMenu(
         packages: List<Package>,
         action: String,
         select: Boolean? = true,
+        parallel: Boolean = true,
         todo: (p: Package) -> Unit = {},
     ) {
-        packages.stream().parallel().forEach { pkg ->
+        var stream = packages.stream()
+        if (parallel)
+            stream = stream.parallel()
+
+        stream.forEach { pkg ->
             if (select == true) selection[pkg.packageName] = false
             //OABX.addInfoText("$action ${pkg.packageName}")
             todo(pkg)
@@ -301,10 +307,11 @@ fun MainPackageContextMenu(
         packages: List<Package>,
         action: String,
         select: Boolean? = true,
+        parallel: Boolean = true,
         todo: (p: Package) -> Unit = {},
     ) {
         launchPackagesAction(action) {
-            forEachPackage(packages, action, select = select, todo = todo)
+            forEachPackage(packages, action, select = select, parallel = parallel, todo = todo)
         }
     }
 
@@ -314,7 +321,12 @@ fun MainPackageContextMenu(
     DropdownMenu(
         expanded = expanded.value,
         //offset = DpOffset(20.dp, 0.dp),
-        offset = with(LocalDensity.current) { DpOffset(offsetX.roundToInt().toDp(), offsetY.roundToInt().toDp()) },
+        offset = with(LocalDensity.current) {
+            DpOffset(
+                offsetX.roundToInt().toDp(),
+                offsetY.roundToInt().toDp()
+            )
+        },
         modifier = Modifier
             .background(MaterialTheme.colorScheme.surfaceColorAtElevation(0.dp))
             .pointerInput(Unit) {
@@ -439,9 +451,7 @@ fun MainPackageContextMenu(
                             packages.map { MODE_ALL }
                         ) {
                             it.removeObserver(this)
-                            launchEachPackage(packages, "backup") {
-                                selection[it.packageName] = false
-                            }
+                            launchEachPackage(packages, "backup", select = false, parallel = false) {}
                         }
                     }
                 )
@@ -459,9 +469,7 @@ fun MainPackageContextMenu(
                                     packages.map { MODE_ALL }
                                 ) {
                                     it.removeObserver(this)
-                                    launchEachPackage(packages, "restore") {
-                                        selection[it.packageName] = false
-                                    }
+                                    launchEachPackage(packages, "restore", select = false, parallel = false) {}
                                 }
                             }
                         }
@@ -473,7 +481,7 @@ fun MainPackageContextMenu(
                 text = { Text("Add to Blocklist") },
                 onClick = {
                     expanded.value = false
-                    launchEachPackage(selectedAndVisible, "blocklist <-") {
+                    launchEachPackage(selectedAndVisible, "blocklist <-", parallel = false) {
                         OABX.main?.viewModel?.addToBlocklist(it.packageName)
                     }
                 }
@@ -485,7 +493,7 @@ fun MainPackageContextMenu(
                 text = { Text("Enable") },
                 onClick = {
                     expanded.value = false
-                    launchEachPackage(selectedAndVisible, "enable") {
+                    launchEachPackage(selectedAndVisible, "enable", parallel = false) {
                         runAsRoot("pm enable ${it.packageName}")
                         Package.invalidateCacheForPackage(it.packageName)
                     }
@@ -498,7 +506,7 @@ fun MainPackageContextMenu(
                     openSubMenu(subMenu) {
                         Confirmation {
                             expanded.value = false
-                            launchEachPackage(selectedAndVisible, "disable") {
+                            launchEachPackage(selectedAndVisible, "disable", parallel = false) {
                                 runAsRoot("pm disable ${it.packageName}")
                                 Package.invalidateCacheForPackage(it.packageName)
                             }
@@ -513,7 +521,7 @@ fun MainPackageContextMenu(
                     openSubMenu(subMenu) {
                         Confirmation {
                             expanded.value = false
-                            launchEachPackage(selectedAndVisible, "uninstall") {
+                            launchEachPackage(selectedAndVisible, "uninstall", parallel = false) {
                                 runAsRoot("pm uninstall ${it.packageName}")
                                 Package.invalidateCacheForPackage(it.packageName)
                             }
