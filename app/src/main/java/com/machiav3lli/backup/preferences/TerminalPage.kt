@@ -99,12 +99,10 @@ val padding = 5.dp
 
 fun info(): List<String> {
     return listOf(
-        "",
         "--- > info",
         BuildConfig.APPLICATION_ID,
         BuildConfig.VERSION_NAME,
         OABX.context.getApplicationIssuer()?.let { "signed by $it" } ?: "",
-        "",
         "--- shell utility box"
     ).filterNotNull() + utilBoxInfo()
 }
@@ -115,12 +113,10 @@ fun shell(command: String): List<String> {
         //val result = runAsRoot("$env $command")
         val result = runAsRoot(command)
         return listOf(
-            "",
             "--- # $command${if (!result.isSuccess) " -> ${result.code}" else " -> ok"}"
         ) + result.err.map { "? $it" } + result.out
     } catch (e: Throwable) {
         return listOf(
-            "",
             "--- # $command -> ERROR",
             e::class.simpleName,
             e.message,
@@ -143,24 +139,26 @@ fun logInt() =
 val maxLogcat = "-t 100000"
 
 fun logApp() =
-    shell("logcat -d ${maxLogcat} --pid=${Process.myPid()}")
+    shell("logcat -d ${maxLogcat} --pid=${Process.myPid()} | grep -v SHELLOUT:")
 
 fun logSys() =
-    shell("logcat -d ${maxLogcat}")
+    shell("logcat -d ${maxLogcat} | grep -v SHELLOUT:")
 
 fun dumpPrefs() =
-    Pref.preferences.map {
-        val (group, prefs) = it
-        prefs.map {
-            if (it.private)
-                null
-            else
-                "${it.group}.${it.key} = ${it}"
-        }.filterNotNull()
-    }.flatten()
+    listOf("--- preferences") +
+            Pref.preferences.map {
+                val (group, prefs) = it
+                prefs.map {
+                    if (it.private)
+                        null
+                    else
+                        "${it.group}.${it.key} = ${it}"
+                }.filterNotNull()
+            }.flatten()
 
 fun dumpAlarms() =
-    shell("dumpsys alarm | sed -n '/Alarm.*machiav3lli[.]backup/,/PendingIntent/{p}'")
+    listOf("--- alarms") +
+            shell("dumpsys alarm | sed -n '/Alarm.*machiav3lli[.]backup/,/PendingIntent/{p}'")
 
 fun dumpTiming() =
     listOf("--- timing") +
