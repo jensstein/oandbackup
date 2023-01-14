@@ -183,13 +183,14 @@ fun lastErrorPkg(): List<String> {
 
 fun lastErrorCommand(): List<String> {
     val cmd = OABX.lastErrorCommand
-    return if (cmd.isNotEmpty())
+    return if (cmd.isNotEmpty()) {
         listOf(
             "--- last error command",
             cmd
         )
-    else
-        emptyList()
+    } else {
+        listOf("--- ? no last error command")
+    }
 }
 
 fun onErrorInfo(): List<String> {
@@ -200,6 +201,8 @@ fun onErrorInfo(): List<String> {
             listOf("=== onError log", "") +
                     info() +
                     dumpPrefs() +
+                    lastErrorPkg() +
+                    lastErrorCommand() +
                     logs
         return lines
     } finally {
@@ -216,6 +219,7 @@ fun supportInfo(): List<String> {
                     envInfo() +
                     dumpPrefs() +
                     dumpAlarms() +
+                    dumpTiming() +
                     accessTest() +
                     lastErrorPkg() +
                     lastErrorCommand() +
