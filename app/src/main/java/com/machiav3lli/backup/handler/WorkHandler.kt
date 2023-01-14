@@ -319,14 +319,14 @@ class WorkHandler(appContext: Context) {
                     }
 
                     batchesKnown.forEach { (name, otherBatch) ->
-                        if (otherBatch.nFinished > 0 && ! otherBatch.isCanceled && ! batch.isCanceled) {
-                            if (batchName != name) {
-                                if (batchName.substringBeforeLast("@")
-                                    == name.substringBeforeLast("@")
-                                ) {
+                        if (otherBatch.nFinished == 0 && ! otherBatch.isCanceled && ! batch.isCanceled) {
+                            val batchNameStem = batchName.substringBeforeLast("@").trim()
+                            val nameStem = name.substringBeforeLast("@").trim()
+                            if (batchName != name && batchNameStem != "Batch") {
+                                if (batchNameStem == nameStem) {
                                     if (abs(batch.startTime - otherBatch.startTime) < 2 * 60 * 1000L) {
                                         val message =
-                                            "**************************************** DUPLICATE batch detected: $batchName ~= $name --> canceling..."
+                                            "**************************************** DUPLICATE batch detected: $batchName ~= $name ($batchNameStem)--> canceling..."
                                         traceSchedule { message }
                                         textLog(
                                             listOf(
