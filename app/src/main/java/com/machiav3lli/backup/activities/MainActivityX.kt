@@ -25,12 +25,15 @@ import android.os.Looper
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -83,7 +86,6 @@ import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.pref_catchUncaughtException
 import com.machiav3lli.backup.pref_uncaughtExceptionsJumpToPreferences
 import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
-import com.machiav3lli.backup.preferences.pref_busyRotateBackground
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.ui.compose.MutableComposableSharedFlow
@@ -93,7 +95,6 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.FunnelSimple
 import com.machiav3lli.backup.ui.compose.icons.phosphor.GearSix
 import com.machiav3lli.backup.ui.compose.icons.phosphor.List
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Prohibit
-import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.compose.item.ActionChip
 import com.machiav3lli.backup.ui.compose.item.ExpandableSearchAction
 import com.machiav3lli.backup.ui.compose.item.RoundButton
@@ -152,92 +153,154 @@ fun Modifier.angledGradientBackground(colors: List<Color>, degrees: Float, facto
     )
 
 fun Modifier.busyBackground(
-    busy: Int,
     angle: Float,
     color0: Color,
     color1: Color,
     color2: Color,
-    color3: Color,
 ): Modifier {
     val factor = 0.2f
-    return this.then(
-        Modifier
-            .ifThen(busy > 0 && pref_busyRotateBackground.value) {
-                var m =
-                    angledGradientBackground(
-                        listOf(
-                            color0,
-                            color0,
-                            color1,
-                            color0,
-                            color0,
-                            color0,
-                            color0,
-                            color0,
-                            color0,
-                        ), angle, factor
-                    )
-                if (busy > 0)
-                    m = m.angledGradientBackground(
-                        listOf(
-                            color0,
-                            color0,
-                            color0,
-                            color2,
-                            color0,
-                            color0,
-                            color0,
-                            color0,
-                            color0,
-                        ), angle * 1.5f, factor
-                    )
-                if (false && busy > 1)
-                    m = m.angledGradientBackground(
-                        listOf(
-                            color0,
-                            color3,
-                            color0,
-                            color0,
-                            color0,
-                            color0,
-                            color0,
-                            color0,
-                            color0,
-                        ), -angle * 0.75f, factor
-                    )
-                m
-            }
-    )
+    return this
+        .angledGradientBackground(
+            listOf(
+                color0,
+                color0,
+                color1,
+                color0,
+                color0,
+                color0,
+                color0,
+                color0,
+                color0,
+            ), angle, factor
+        )
+        .angledGradientBackground(
+            listOf(
+                color0,
+                color0,
+                color0,
+                color2,
+                color0,
+                color0,
+                color0,
+                color0,
+                color0,
+            ), angle * 1.5f, factor
+        )
+}
+
+fun Modifier.progressBackground(
+    angle: Float,
+    color0: Color,
+    color1: Color,
+    color2: Color,
+): Modifier {
+    val factor = 0.2f
+    return this
+        .angledGradientBackground(
+            listOf(
+                color0,
+                color1,
+                color0,
+                color0,
+                color0,
+                color0,
+                color0,
+                color0,
+                color0,
+            ), angle * 0.75f, factor
+        )
+        .angledGradientBackground(
+            listOf(
+                color0,
+                color0,
+                color1,
+                color0,
+                color0,
+                color0,
+                color0,
+                color0,
+                color0,
+            ), angle * 1.2f, factor
+        )
 }
 
 @Composable
-fun Background(busy: Int = OABX.busy.value, content: @Composable () -> Unit) {
-    var angle by remember { mutableStateOf(70f) }
+fun Background(
+    busy: Int = OABX.busy.value,
+    progress: Boolean = OABX.progress.value.first,
+    content: @Composable () -> Unit,
+) {
     val rounds = 12
-    if (busy > 0)
-        LaunchedEffect(true) {
-            withContext(Dispatchers.Default) {
-                animate(
-                    initialValue = angle,
-                    targetValue = angle + 360f * rounds,
-                    animationSpec = infiniteRepeatable(
-                        animation = tween(10000*rounds, easing = LinearEasing),
-                        repeatMode = RepeatMode.Restart
-                        //repeatMode = RepeatMode.Reverse
-                    )
-                ) { value, _ -> angle = value }
-            }
-        }
     val color0 = Color.Transparent
     val color1 = Color(1.0f, 0.3f, 0.3f, 0.15f)
     val color2 = Color(0.3f, 0.3f, 1.0f, 0.35f)
-    val color3 = Color(0.7f, 0.2f, 0.7f, 0.25f)
+    val color3 = Color(0.3f, 1.0f, 0.3f, 0.25f)
+
+    val inTime = 2000
+    val outTime = 2000
 
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .busyBackground(busy, angle, color0, color1, color2, color3)
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
+        AnimatedVisibility(
+            visible = busy > 0,
+            enter = fadeIn(tween(inTime)),
+            exit = fadeOut(tween(outTime)),
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            var angle by rememberSaveable { mutableStateOf(70f) }
+            LaunchedEffect(true) {
+                withContext(Dispatchers.Default) {
+                    animate(
+                        initialValue = angle,
+                        targetValue = angle + 360f * rounds,
+                        animationSpec = infiniteRepeatable(
+                            animation = tween(10000 * rounds, easing = LinearEasing),
+                            repeatMode = RepeatMode.Restart
+                            //repeatMode = RepeatMode.Reverse
+                        )
+                    ) { value, _ -> angle = value }
+                }
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .busyBackground(angle, color0, color1, color2)
+            ) {
+            }
+        }
+        if (false)   // senseless, doesn't move when backups are running
+            AnimatedVisibility(
+                visible = progress,
+                enter = fadeIn(tween(inTime)),
+                exit = fadeOut(tween(outTime)),
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                var angle by rememberSaveable { mutableStateOf(70f) }
+                LaunchedEffect(true) {
+                    withContext(Dispatchers.Default) {
+                        animate(
+                            initialValue = angle,
+                            targetValue = angle + 360f * rounds,
+                            animationSpec = infiniteRepeatable(
+                                animation = tween(10000 * rounds, easing = LinearEasing),
+                                repeatMode = RepeatMode.Restart
+                                //repeatMode = RepeatMode.Reverse
+                            )
+                        ) { value, _ -> angle = value }
+                    }
+                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .progressBackground(angle, color0, color3, color3)
+                ) {
+                }
+            }
         content()
     }
 }
@@ -245,19 +308,27 @@ fun Background(busy: Int = OABX.busy.value, content: @Composable () -> Unit) {
 @Preview
 @Composable
 fun AnimationPreview() {
-    Background(busy = 3) {
-        Text(
-            """
+    var busy by remember { mutableStateOf(1) }
+    var progress by remember { mutableStateOf(true) }
+    Box {
+        Row {
+            ActionChip(text = "busy $busy", positive = busy > 0) { busy = (busy + 1) % 3 }
+            ActionChip(text = "progress", positive = progress) { progress = !progress }
+        }
+        Background(busy = busy, progress = progress) {
+            Text(
+                """
                 Hello,
                 here I am
                 to conquer
                 the world
             """.trimIndent(),
-            fontSize = 48.sp,
-            modifier = Modifier
-                .fillMaxSize()
-                .wrapContentSize(align = Alignment.Center)
-        )
+                fontSize = 48.sp,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .wrapContentSize(align = Alignment.Center)
+            )
+        }
     }
 }
 
