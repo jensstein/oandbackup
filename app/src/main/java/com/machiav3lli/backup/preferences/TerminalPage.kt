@@ -90,6 +90,7 @@ import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.utils.SystemUtils.getApplicationIssuer
+import com.machiav3lli.backup.utils.TraceUtils.listNanoTiming
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -160,6 +161,10 @@ fun dumpPrefs() =
 
 fun dumpAlarms() =
     shell("dumpsys alarm | sed -n '/Alarm.*machiav3lli[.]backup/,/PendingIntent/{p}'")
+
+fun dumpTiming() =
+    listOf("--- timing") +
+            listNanoTiming()
 
 fun accessTest() =
     shell("echo \"\$(ls \$ANDROID_DATA/user/0/ | wc -l) packages (apk)\"") +
@@ -344,6 +349,7 @@ fun TerminalPage() {
                 TerminalButton("log/all") { append(logSys()) }
                 TerminalButton("prefs") { append(dumpPrefs()) }
                 TerminalButton("alarms") { append(dumpAlarms()) }
+                TerminalButton("timing") { append(dumpTiming()) }
                 TerminalButton("access") { append(accessTest()) }
                 TerminalButton("errInfo") { append(lastErrorPkg() + lastErrorCommand()) }
                 TerminalButton("err->cmd") { command = OABX.lastErrorCommand }
