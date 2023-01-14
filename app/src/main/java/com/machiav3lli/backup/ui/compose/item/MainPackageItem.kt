@@ -595,7 +595,7 @@ fun MainPackageItemA(
                     onLongClick = { onLongClick(pkg) }
                 )
                 .background(
-                    color = if (selected) MaterialTheme.colorScheme.primaryContainer
+                    color = if (selected) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f)
                     else Color.Transparent
                 )
                 .fillMaxWidth()
@@ -726,7 +726,7 @@ fun MainPackageItemB(
                     onLongClick = { onLongClick(pkg) }
                 )
                 .background(
-                    color = if (selected) MaterialTheme.colorScheme.primaryContainer
+                    color = if (selected) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f)
                     else Color.Transparent
                 )
                 .fillMaxWidth()
