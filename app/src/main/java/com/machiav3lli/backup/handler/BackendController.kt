@@ -270,7 +270,7 @@ fun Context.getBackups(
 
         backupsMap = backups.groupBy { it.packageName }
 
-        if (packageName.isNotEmpty())
+        if (false && packageName.isNotEmpty())
             traceBackups {
                 val backups = backupsMap[packageName]
                 "<$packageName> ${
