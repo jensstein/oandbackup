@@ -423,6 +423,13 @@ val pref_useExpedited = BooleanPref(
 
 //---------------------------------------- developer settings - faking
 
+val pref_fakeSchedups = IntPref(
+    key = "dev-fake.fakeSchedups",
+    summary = "count of equal schedules run at once, 1 = do not fake",
+    entries = (1..9).toList(),
+    defaultValue = 1
+)
+
 val pref_fakeBackupSeconds = IntPref(
     key = "dev-fake.fakeBackupSeconds",
     summary = "[seconds] time for faked backups, 0 = do not fake",
