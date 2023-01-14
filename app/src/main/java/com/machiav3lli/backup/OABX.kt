@@ -56,6 +56,24 @@ import java.util.concurrent.atomic.AtomicInteger
 
 //---------------------------------------- developer settings - logging
 
+val pref_maxLogLines = IntPref(
+    key = "dev-log.maxLogLines",
+    summary = "maximum lines in the log (logcat or internal)",
+    entries = ((10..90 step 10) +
+            (100..450 step 50) +
+            (500..1500 step 500) +
+            (2000..5000 step 1000) +
+            (5000..20000 step 5000)).toList(),
+    defaultValue = 50
+)
+
+val pref_maxLogCount = IntPref(
+    key = "dev-log.maxLogCount",
+    summary = "maximum count of log files",
+    entries = ((1..9 step 1) + (10..100 step 10)).toList(),
+    defaultValue = 20
+)
+
 val pref_catchUncaughtException = BooleanPref(
     key = "dev-log.catchUncaughtException",
     summaryId = R.string.prefs_catchuncaughtexception_summary,
@@ -77,22 +95,8 @@ val pref_logToSystemLogcat = BooleanPref(
 
 val pref_autoLogExceptions = BooleanPref(
     key = "dev-log.autoLogExceptions",
-    summary = "create a log for each exception (think about increasing maxLogCount)",
+    summary = "create a log for each exception (increasing maxLogCount may be good)",
     defaultValue = false
-)
-
-val pref_maxLogCount = IntPref(
-    key = "dev-log.maxLogCount",
-    summary = "maximum count of log entries",
-    entries = ((1..9 step 1) + (10..100 step 10)).toList(),
-    defaultValue = 20
-)
-
-val pref_maxLogLines = IntPref(
-    key = "dev-log.maxLogLines",
-    summary = "maximum lines in the log (logcat or internal)",
-    entries = ((10..90 step 10) + (100..450 step 50) + (500..5000 step 500)).toList(),
-    defaultValue = 50
 )
 
 //---------------------------------------- developer settings - tracing
@@ -440,7 +444,7 @@ class OABX : Application() {
         var _busy = AtomicInteger(0)
         val busy = mutableStateOf(0)
 
-        val isBusy : Boolean get() = (busy.value > 0)
+        val isBusy: Boolean get() = (busy.value > 0)
 
         fun beginBusy(name: String? = null) {
             traceBusy {
@@ -456,7 +460,7 @@ class OABX : Application() {
             busy.value = _busy.accumulateAndGet(-1, Int::plus)
             traceBusy {
                 val label = name ?: methodName(1)
-                "*** ${"|---".repeat(_busy.get())}/ busy $label ${"%.3f".format(time/1E9)} s"
+                "*** ${"|---".repeat(_busy.get())}/ busy $label ${"%.3f".format(time / 1E9)} s"
             }
         }
     }

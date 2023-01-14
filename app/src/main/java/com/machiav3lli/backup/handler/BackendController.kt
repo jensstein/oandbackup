@@ -129,8 +129,7 @@ fun scanBackups(
                                 }
                         }
                     } else {
-                        if (//name.contains(regexPackageFolder) &&
-                            !name.contains(regexSpecialFolder) &&
+                        if (!name.contains(regexSpecialFolder) &&
                             file.isDirectory                                // instance dir
                         ) {
                             if ("${file.name}.${PROP_NAME}" !in names) {             // no dir.properties
