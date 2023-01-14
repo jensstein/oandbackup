@@ -26,14 +26,24 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animate
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
@@ -41,10 +51,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.work.OneTimeWorkRequest
@@ -67,6 +83,7 @@ import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.pref_catchUncaughtException
 import com.machiav3lli.backup.pref_uncaughtExceptionsJumpToPreferences
 import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
+import com.machiav3lli.backup.preferences.pref_busyRotateBackground
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.ui.compose.MutableComposableSharedFlow
@@ -76,6 +93,7 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.FunnelSimple
 import com.machiav3lli.backup.ui.compose.icons.phosphor.GearSix
 import com.machiav3lli.backup.ui.compose.icons.phosphor.List
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Prohibit
+import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.compose.item.ActionChip
 import com.machiav3lli.backup.ui.compose.item.ExpandableSearchAction
 import com.machiav3lli.backup.ui.compose.item.RoundButton
@@ -98,8 +116,151 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.max
+import kotlin.math.sin
 import kotlin.system.exitProcess
+
+fun Modifier.angledGradientBackground(colors: List<Color>, degrees: Float, factor: Float = 1f) =
+    this.then(
+        drawBehind {
+
+            val (w, h) = size
+            val dim = max(w, h) * factor
+
+            val degreesNormalised = (degrees % 360).let { if (it < 0) it + 360 else it }
+
+            val alpha = (degreesNormalised * PI / 180).toFloat()
+
+            val centerOffsetX = cos(alpha) * dim / 2
+            val centerOffsetY = sin(alpha) * dim / 2
+
+            drawRect(
+                brush = Brush.linearGradient(
+                    colors = colors,
+                    // negative here so that 0 degrees is left -> right
+                    // and 90 degrees is top -> bottom
+                    start = Offset(center.x - centerOffsetX, center.y - centerOffsetY),
+                    end = Offset(center.x + centerOffsetX, center.y + centerOffsetY)
+                ),
+                size = size
+            )
+        }
+    )
+
+fun Modifier.busyBackground(
+    busy: Int,
+    angle: Float,
+    color0: Color,
+    color1: Color,
+    color2: Color,
+    color3: Color,
+): Modifier {
+    val factor = 0.2f
+    return this.then(
+        Modifier
+            .ifThen(busy > 0 && pref_busyRotateBackground.value) {
+                var m =
+                    angledGradientBackground(
+                        listOf(
+                            color0,
+                            color0,
+                            color1,
+                            color0,
+                            color0,
+                            color0,
+                            color0,
+                            color0,
+                            color0,
+                        ), angle, factor
+                    )
+                if (busy > 0)
+                    m = m.angledGradientBackground(
+                        listOf(
+                            color0,
+                            color0,
+                            color0,
+                            color2,
+                            color0,
+                            color0,
+                            color0,
+                            color0,
+                            color0,
+                        ), angle * 1.5f, factor
+                    )
+                if (false && busy > 1)
+                    m = m.angledGradientBackground(
+                        listOf(
+                            color0,
+                            color3,
+                            color0,
+                            color0,
+                            color0,
+                            color0,
+                            color0,
+                            color0,
+                            color0,
+                        ), -angle * 0.75f, factor
+                    )
+                m
+            }
+    )
+}
+
+@Composable
+fun Background(busy: Int = OABX.busy.value, content: @Composable () -> Unit) {
+    var angle by remember { mutableStateOf(70f) }
+    val rounds = 12
+    if (busy > 0)
+        LaunchedEffect(true) {
+            withContext(Dispatchers.Default) {
+                animate(
+                    initialValue = angle,
+                    targetValue = angle + 360f * rounds,
+                    animationSpec = infiniteRepeatable(
+                        animation = tween(10000*rounds, easing = LinearEasing),
+                        repeatMode = RepeatMode.Restart
+                        //repeatMode = RepeatMode.Reverse
+                    )
+                ) { value, _ -> angle = value }
+            }
+        }
+    val color0 = Color.Transparent
+    val color1 = Color(1.0f, 0.3f, 0.3f, 0.15f)
+    val color2 = Color(0.3f, 0.3f, 1.0f, 0.35f)
+    val color3 = Color(0.7f, 0.2f, 0.7f, 0.25f)
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .busyBackground(busy, angle, color0, color1, color2, color3)
+    ) {
+        content()
+    }
+}
+
+@Preview
+@Composable
+fun AnimationPreview() {
+    Background(busy = 3) {
+        Text(
+            """
+                Hello,
+                here I am
+                to conquer
+                the world
+            """.trimIndent(),
+            fontSize = 48.sp,
+            modifier = Modifier
+                .fillMaxSize()
+                .wrapContentSize(align = Alignment.Center)
+        )
+    }
+}
+
 
 class MainActivityX : BaseActivity() {
 
@@ -242,128 +403,131 @@ class MainActivityX : BaseActivity() {
                     }
                 }
 
-                Scaffold(
-                    containerColor = Color.Transparent,
-                    contentColor = MaterialTheme.colorScheme.onBackground,
-                    topBar = {
-                        if (currentPage.destination == NavItem.Scheduler.destination)
-                            TopBar(
-                                title = stringResource(id = currentPage.title)
-                            ) {
-
-                                RoundButton(
-                                    icon = Phosphor.Prohibit,
-                                    description = stringResource(id = R.string.sched_blocklist)
+                Background {
+                    Scaffold(
+                        containerColor = Color.Transparent,
+                        contentColor = MaterialTheme.colorScheme.onBackground,
+                        topBar = {
+                            if (currentPage.destination == NavItem.Scheduler.destination)
+                                TopBar(
+                                    title = stringResource(id = currentPage.title)
                                 ) {
-                                    GlobalScope.launch(Dispatchers.IO) {
-                                        val blocklistedPackages = viewModel.blocklist.value
-                                            .mapNotNull { it.packageName }
 
-                                        PackagesListDialogFragment(
-                                            blocklistedPackages,
-                                            MAIN_FILTER_DEFAULT,
-                                            true
-                                        ) { newList: Set<String> ->
-                                            viewModel.setBlocklist(newList)
-                                        }.show(
-                                            context.supportFragmentManager,
-                                            "BLOCKLIST_DIALOG"
-                                        )
-                                    }
-                                }
-                                RoundButton(
-                                    description = stringResource(id = R.string.prefs_title),
-                                    icon = Phosphor.GearSix
-                                ) { navController.navigate(NavItem.Settings.destination) }
-                            }
-                        else Column() {
-                            TopBar(title = stringResource(id = currentPage.title)) {
-                                ExpandableSearchAction(
-                                    expanded = searchExpanded,
-                                    query = query,
-                                    onQueryChanged = { newQuery ->
-                                        //if (newQuery != query)  // empty string doesn't work...
-                                        query = newQuery
-                                        viewModel.searchQuery.value = query
-                                    },
-                                    onClose = {
-                                        query = ""
-                                        viewModel.searchQuery.value = ""
-                                    }
-                                )
-                                RoundButton(
-                                    description = stringResource(id = R.string.refresh),
-                                    icon = Phosphor.ArrowsClockwise
-                                ) { refreshPackages() }
-                                RoundButton(
-                                    description = stringResource(id = R.string.prefs_title),
-                                    icon = Phosphor.GearSix
-                                ) { navController.navigate(NavItem.Settings.destination) }
-                            }
-                            Row(
-                                modifier = Modifier.padding(horizontal = 8.dp),
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                ActionChip(
-                                    icon = Phosphor.Prohibit,
-                                    textId = R.string.sched_blocklist,
-                                    positive = false,
-                                ) {
-                                    GlobalScope.launch(Dispatchers.IO) {
-                                        val blocklistedPackages = viewModel.blocklist.value
-                                            .mapNotNull { it.packageName }
+                                    RoundButton(
+                                        icon = Phosphor.Prohibit,
+                                        description = stringResource(id = R.string.sched_blocklist)
+                                    ) {
+                                        GlobalScope.launch(Dispatchers.IO) {
+                                            val blocklistedPackages = viewModel.blocklist.value
+                                                .mapNotNull { it.packageName }
 
-                                        PackagesListDialogFragment(
-                                            blocklistedPackages,
-                                            MAIN_FILTER_DEFAULT,
-                                            true
-                                        ) { newList: Set<String> ->
-                                            viewModel.setBlocklist(newList)
-                                        }.show(
-                                            context.supportFragmentManager,
-                                            "BLOCKLIST_DIALOG"
-                                        )
-                                    }
-                                }
-                                if (currentPage.destination == NavItem.Home.destination) {
-                                    val nsel = viewModel.selection.count { it.value }
-                                    if (nsel > 0 || BuildConfig.DEBUG) {     //TODO hg42 for now, until context menu is official
-                                        Spacer(modifier = Modifier.weight(1f))
-                                        ActionChip(
-                                            icon = Phosphor.List,
-                                            text = if (nsel > 0) "$nsel" else "",
-                                            //text = if (nsel > 0) "☰ $nsel" else "☰",
-                                            positive = true,
-                                        ) {
-                                            viewModel.menuExpanded.value = true
+                                            PackagesListDialogFragment(
+                                                blocklistedPackages,
+                                                MAIN_FILTER_DEFAULT,
+                                                true
+                                            ) { newList: Set<String> ->
+                                                viewModel.setBlocklist(newList)
+                                            }.show(
+                                                context.supportFragmentManager,
+                                                "BLOCKLIST_DIALOG"
+                                            )
                                         }
                                     }
+                                    RoundButton(
+                                        description = stringResource(id = R.string.prefs_title),
+                                        icon = Phosphor.GearSix
+                                    ) { navController.navigate(NavItem.Settings.destination) }
                                 }
-                                Spacer(modifier = Modifier.weight(1f))
-                                ActionChip(
-                                    icon = Phosphor.FunnelSimple,
-                                    textId = R.string.sort_and_filter,
-                                    positive = true,
-                                ) {
-                                    sheetSortFilter = SortFilterSheet()
-                                    sheetSortFilter.showNow(
-                                        supportFragmentManager,
-                                        "SORTFILTER_SHEET"
+                            else Column() {
+                                TopBar(title = stringResource(id = currentPage.title)) {
+                                    ExpandableSearchAction(
+                                        expanded = searchExpanded,
+                                        query = query,
+                                        onQueryChanged = { newQuery ->
+                                            //if (newQuery != query)  // empty string doesn't work...
+                                            query = newQuery
+                                            viewModel.searchQuery.value = query
+                                        },
+                                        onClose = {
+                                            query = ""
+                                            viewModel.searchQuery.value = ""
+                                        }
                                     )
+                                    RoundButton(
+                                        description = stringResource(id = R.string.refresh),
+                                        icon = Phosphor.ArrowsClockwise
+                                    ) { refreshPackages() }
+                                    RoundButton(
+                                        description = stringResource(id = R.string.prefs_title),
+                                        icon = Phosphor.GearSix
+                                    ) { navController.navigate(NavItem.Settings.destination) }
+                                }
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 8.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                ) {
+                                    ActionChip(
+                                        icon = Phosphor.Prohibit,
+                                        textId = R.string.sched_blocklist,
+                                        positive = false,
+                                    ) {
+                                        GlobalScope.launch(Dispatchers.IO) {
+                                            val blocklistedPackages = viewModel.blocklist.value
+                                                .mapNotNull { it.packageName }
+
+                                            PackagesListDialogFragment(
+                                                blocklistedPackages,
+                                                MAIN_FILTER_DEFAULT,
+                                                true
+                                            ) { newList: Set<String> ->
+                                                viewModel.setBlocklist(newList)
+                                            }.show(
+                                                context.supportFragmentManager,
+                                                "BLOCKLIST_DIALOG"
+                                            )
+                                        }
+                                    }
+                                    if (currentPage.destination == NavItem.Home.destination) {
+                                        val nsel = viewModel.selection.count { it.value }
+                                        if (nsel > 0 || BuildConfig.DEBUG) {     //TODO hg42 for now, until context menu is official
+                                            Spacer(modifier = Modifier.weight(1f))
+                                            ActionChip(
+                                                icon = Phosphor.List,
+                                                text = if (nsel > 0) "$nsel" else "",
+                                                //text = if (nsel > 0) "☰ $nsel" else "☰",
+                                                positive = true,
+                                            ) {
+                                                viewModel.menuExpanded.value = true
+                                            }
+                                        }
+                                    }
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    ActionChip(
+                                        icon = Phosphor.FunnelSimple,
+                                        textId = R.string.sort_and_filter,
+                                        positive = true,
+                                    ) {
+                                        sheetSortFilter = SortFilterSheet()
+                                        sheetSortFilter.showNow(
+                                            supportFragmentManager,
+                                            "SORTFILTER_SHEET"
+                                        )
+                                    }
                                 }
                             }
+                        },
+                        bottomBar = {
+                            PagerNavBar(pageItems = pages, pagerState = pagerState)
                         }
-                    },
-                    bottomBar = {
-                        PagerNavBar(pageItems = pages, pagerState = pagerState)
+                    ) { paddingValues ->
+                        MainNavHost(
+                            modifier = Modifier
+                                .padding(paddingValues),
+                            navController = navController,
+                            pagerState,
+                            pages
+                        )
                     }
-                ) { paddingValues ->
-                    MainNavHost(
-                        modifier = Modifier.padding(paddingValues),
-                        navController = navController,
-                        pagerState,
-                        pages
-                    )
                 }
             }
         }
@@ -475,7 +639,7 @@ class MainActivityX : BaseActivity() {
         backupBoolean: Boolean,
         selectedPackages: List<String?>,
         selectedModes: List<Int>,
-        onSuccessfulFinish: Observer<WorkInfo>.(LiveData<WorkInfo>) -> Unit
+        onSuccessfulFinish: Observer<WorkInfo>.(LiveData<WorkInfo>) -> Unit,
     ) {
         val now = System.currentTimeMillis()
         val notificationId = now.toInt()

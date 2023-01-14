@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -98,49 +99,51 @@ class PrefsActivityX : BaseActivity() {
                     }
                 }
 
-                Scaffold(
-                    containerColor = Color.Transparent,
-                    contentColor = MaterialTheme.colorScheme.onBackground,
-                    topBar = {
-                        Column {
-                            TopBar(
-                                title = stringResource(
-                                    id = if (barVisible) currentPage.title
-                                    else navController.currentDestination?.destinationToItem()?.title
-                                        ?: NavItem.Settings.title
-                                )
-                            ) {
-                                RoundButton(
-                                    icon = Phosphor.Info,
-                                    description = stringResource(id = R.string.help),
+                Background {
+                    Scaffold(
+                        containerColor = Color.Transparent,
+                        contentColor = MaterialTheme.colorScheme.onBackground,
+                        topBar = {
+                            Column {
+                                TopBar(
+                                    title = stringResource(
+                                        id = if (barVisible) currentPage.title
+                                        else navController.currentDestination?.destinationToItem()?.title
+                                            ?: NavItem.Settings.title
+                                    )
                                 ) {
-                                    if (helpSheet != null && helpSheet!!.isVisible) helpSheet?.dismissAllowingStateLoss()
-                                    helpSheet = HelpSheet()
-                                    helpSheet!!.showNow(supportFragmentManager, "HELPSHEET")
+                                    RoundButton(
+                                        icon = Phosphor.Info,
+                                        description = stringResource(id = R.string.help),
+                                    ) {
+                                        if (helpSheet != null && helpSheet!!.isVisible) helpSheet?.dismissAllowingStateLoss()
+                                        helpSheet = HelpSheet()
+                                        helpSheet!!.showNow(supportFragmentManager, "HELPSHEET")
+                                    }
                                 }
                             }
+                        },
+                        bottomBar = {
+                            AnimatedVisibility(
+                                barVisible,
+                                enter = slideInVertically { height -> height },
+                                exit = slideOutVertically { height -> height },
+                            ) {
+                                PagerNavBar(pageItems = pages, pagerState = pagerState)
+                            }
                         }
-                    },
-                    bottomBar = {
-                        AnimatedVisibility(
-                            barVisible,
-                            enter = slideInVertically { height -> height },
-                            exit = slideOutVertically { height -> height },
-                        ) {
-                            PagerNavBar(pageItems = pages, pagerState = pagerState)
-                        }
-                    }
-                ) { paddingValues ->
-                    PrefsNavHost(
-                        modifier = Modifier.padding(paddingValues),
-                        navController = navController,
-                        pagerState = pagerState,
-                        pages = pages,
-                        viewModels = listOf(
-                            exportsViewModel,
-                            logsViewModel,
+                    ) { paddingValues ->
+                        PrefsNavHost(
+                            modifier = Modifier.padding(paddingValues),
+                            navController = navController,
+                            pagerState = pagerState,
+                            pages = pages,
+                            viewModels = listOf(
+                                exportsViewModel,
+                                logsViewModel,
+                            )
                         )
-                    )
+                    }
                 }
             }
         }

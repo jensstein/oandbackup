@@ -68,6 +68,7 @@ import com.machiav3lli.backup.preferences.LogsPage
 import com.machiav3lli.backup.preferences.TerminalButton
 import com.machiav3lli.backup.preferences.TerminalPage
 import com.machiav3lli.backup.preferences.TerminalText
+import com.machiav3lli.backup.preferences.pref_busyRotateBackground
 import com.machiav3lli.backup.preferences.pref_showInfoLogBar
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.MagnifyingGlass
@@ -150,30 +151,40 @@ fun TestPreview() {
 }
 
 @Composable
-fun GlobalIndicators() {
-    val busy by remember { OABX.busy }          //TODO hg42 remove remember ???
-    val progress by remember { OABX.progress }  //TODO hg42 remove remember ???
+fun ProgressIndicator() {
+    val progress by remember { OABX.progress }
+    AnimatedVisibility(visible = progress.first) {
+        LinearProgressIndicator(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(5.dp),
+            trackColor = MaterialTheme.colorScheme.surfaceColorAtElevation(10.dp),
+            color = MaterialTheme.colorScheme.primary,
+            progress = max(0.02f, progress.second)
+        )
+    }
+}
 
+@Composable
+fun BusyIndicator() {
+    val busy by remember { OABX.busy }
+    val useIt = !pref_busyRotateBackground.value
+    AnimatedVisibility(visible = useIt && busy > 0) {
+        LinearProgressIndicator(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(5.dp),
+            trackColor = MaterialTheme.colorScheme.surfaceColorAtElevation(10.dp),
+            color = MaterialTheme.colorScheme.secondary,
+        )
+    }
+}
+
+@Composable
+fun GlobalIndicators() {
     Column(verticalArrangement = Arrangement.SpaceEvenly) {
-        AnimatedVisibility(visible = progress.first) {
-            LinearProgressIndicator(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(5.dp),
-                trackColor = MaterialTheme.colorScheme.surfaceColorAtElevation(10.dp),
-                color = MaterialTheme.colorScheme.primary,
-                progress = max(0.02f, progress.second)
-            )
-        }
-        AnimatedVisibility(visible = busy > 0) {
-            LinearProgressIndicator(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(5.dp),
-                trackColor = MaterialTheme.colorScheme.surfaceColorAtElevation(10.dp),
-                color = MaterialTheme.colorScheme.secondary,
-            )
-        }
+        ProgressIndicator()
+        BusyIndicator()
     }
 }
 
