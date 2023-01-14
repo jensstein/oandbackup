@@ -94,6 +94,11 @@ class MainViewModel(
     init {
         // do it early
         refreshList()
+
+        if(OABX.startup) {
+            OABX.startup = false
+            OABX.endBusy("startup")
+        }
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - FLOWS
@@ -257,7 +262,7 @@ class MainViewModel(
 
             traceFlows { "******************** filtering - list: ${p.size} filter: $f" }
 
-            while (OABX.isBusy) {
+            while (OABX.startup || OABX.isBusy) {
                 traceFlows { "*** filtering wait for not busy" }
                 delay(500)
             }
@@ -289,9 +294,9 @@ class MainViewModel(
         notBlockedList
             .trace { "updatePackages? ..." }
             .onEach {
-                while (OABX.isBusy) {
+                while (OABX.startup || OABX.isBusy) {
                     traceFlows { "*** updatePackages wait for not busy" }
-                    delay(3000)
+                    delay(500)
                 }
             }
             .mapLatest { it.filter(Package::isUpdated).toMutableList() }

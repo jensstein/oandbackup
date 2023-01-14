@@ -91,6 +91,13 @@ class PrefsActivityX : BaseActivity() {
                     barVisible = destination.route == NavItem.Settings.destination
                 }
 
+                SideEffect {
+                    if(OABX.startup) {
+                        OABX.startup = false
+                        OABX.endBusy("startup")
+                    }
+                }
+
                 Scaffold(
                     containerColor = Color.Transparent,
                     contentColor = MaterialTheme.colorScheme.onBackground,

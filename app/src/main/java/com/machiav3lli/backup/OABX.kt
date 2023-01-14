@@ -216,6 +216,9 @@ class OABX : Application() {
             addInfoText("--> long press title for dev tools")
         }
 
+        if (startup)    // paranoid
+            beginBusy("startup")
+
         scheduleAlarms()
     }
 
@@ -232,7 +235,9 @@ class OABX : Application() {
         var lastErrorCommand = ""
         var logSections = mutableMapOf<String, Int>().withDefault { 0 }     //TODO hg42 use AtomicInteger? but map is synchronized anyways
 
-        init  {
+        var startup = true
+
+        init {
 
             initializedPrefs = false
 
