@@ -51,6 +51,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.LocalTime
 import java.util.concurrent.TimeUnit
+import kotlin.math.abs
 import kotlin.math.max
 
 fun calculateTimeToRun(schedule: Schedule, now: Long): Long {
@@ -231,10 +232,17 @@ fun scheduleAlarms() {
         traceSchedule { "schedule alarms" }
         scheduleDao.all
             .forEach {
-                if (it.enabled)
-                    scheduleAlarm(OABX.context, it.id, false)
-                else
-                    cancelAlarm(OABX.context, it.id)
+                // do not set or cancel schedules that are just going to be started
+                // (on boot or fresh start from an alarm)
+                // setting this same minute as alarm time will start it immediately
+                //TODO is that documented?
+                //TODO is there a better way to test?
+                if (abs(it.timeToRun - System.currentTimeMillis()) < TimeUnit.MINUTES.toMillis(1)) {
+                    if (it.enabled)
+                        scheduleAlarm(OABX.context, it.id, false)
+                    else
+                        cancelAlarm(OABX.context, it.id)
+                }
             }
     }
 }
