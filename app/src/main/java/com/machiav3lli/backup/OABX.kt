@@ -435,10 +435,10 @@ class OABX : Application() {
         val progress = mutableStateOf(Pair(false, 0f))
 
         fun setProgress(now: Int = 0, max: Int = 0) {
-            if (max > now)  // not ">=", because max can be zero
-                progress.value = Pair(true, 1f * now / max)
+            if (max <= 0)
+                progress.value = Pair(false, 0f)
             else
-                progress.value = Pair(false, 1f)
+                progress.value = Pair(true, 1f * now / max)
         }
 
         var _busy = AtomicInteger(0)

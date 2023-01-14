@@ -99,15 +99,17 @@ fun DefaultPreview() {
                 OABX.beginBusy()
                 OABX.addInfoText("count is $count busy is $busy")
                 delay(1000)
-                count += 1
+                count = (count + 1) % (maxCount + 2)
                 OABX.endBusy()
+                if (count > maxCount)
+                    OABX.setProgress()
                 OABX.addInfoText("count is $count busy is $busy")
                 delay(1000)
             }
         }
     }
 
-    TopBar(title = "Progress $busy", modifier = Modifier.background(color = Color.LightGray)) {
+    TopBar(title = "Busy $busy", modifier = Modifier.background(color = Color.LightGray)) {
         Button(
             onClick = {
                 OABX.beginBusy()
@@ -124,7 +126,10 @@ fun DefaultPreview() {
         }
         Button(
             onClick = {
-                count++
+                count = (count + 1) % (maxCount + 2)
+                OABX.setProgress(count, maxCount)
+                if (count > maxCount)
+                    OABX.setProgress()
                 OABX.addInfoText("test $count")
             }
         ) {
@@ -182,7 +187,11 @@ fun BusyIndicator() {
 
 @Composable
 fun GlobalIndicators() {
-    Column(verticalArrangement = Arrangement.SpaceEvenly) {
+    Column(
+        verticalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
         ProgressIndicator()
         BusyIndicator()
     }
@@ -260,8 +269,9 @@ fun DevTools(
                 "info"    ->
                     TerminalText(OABX.infoLines)            //TODO hg42 there is no keyboard
                 "devsett" ->
-                    Column(modifier = Modifier
-                        .verticalScroll(scroll)
+                    Column(
+                        modifier = Modifier
+                            .verticalScroll(scroll)
                     ) {
                         DevPrefGroups()
                     }
@@ -303,6 +313,7 @@ fun TopBar(
     }
 
     Column {
+        GlobalIndicators()
         TopAppBar(
             modifier = modifier.wrapContentHeight(),
             title = {
@@ -398,7 +409,6 @@ fun TopBar(
             ),
             actions = actions
         )
-        GlobalIndicators()
     }
 }
 
