@@ -201,7 +201,7 @@ fun DevTools(
         shape = AbsoluteRoundedCornerShape(16.dp),
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 4.dp, vertical = 4.dp)
+            .padding(8.dp)
     ) {
         Column(
             modifier = Modifier
@@ -209,6 +209,7 @@ fun DevTools(
         ) {
             Row(modifier = Modifier
                 .fillMaxWidth()
+                .padding(8.dp, 4.dp, 8.dp, 0.dp)
                 .combinedClickable(
                     onClick = { expanded.value = false },
                     onLongClick = { mode = "devsett" }
@@ -222,6 +223,7 @@ fun DevTools(
             }
             Row(modifier = Modifier
                 .fillMaxWidth()
+                .padding(8.dp, 0.dp, 8.dp, 4.dp)
                 .combinedClickable(
                     onClick = { expanded.value = false },
                     onLongClick = { mode = "devsett" }
@@ -233,13 +235,11 @@ fun DevTools(
                 TerminalButton(" info ", important = true) { mode = "info" }
                 Spacer(modifier = Modifier.weight(1f))
                 TerminalButton(" devsett ", important = true) { mode = "devsett" }
-                Spacer(modifier = Modifier.weight(1f))
-                TerminalButton("  A  ", important = true) {
-
-                }
-                TerminalButton("  B  ", important = true) {
-
-                }
+                //Spacer(modifier = Modifier.weight(1f))
+                //TerminalButton("  A  ", important = true) {
+                //}
+                //TerminalButton("  B  ", important = true) {
+                //}
                 Spacer(modifier = Modifier.weight(1f))
                 TerminalButton(" term ", important = true) { mode = "term" }
             }

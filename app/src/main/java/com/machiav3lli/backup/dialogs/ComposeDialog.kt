@@ -63,6 +63,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun BaseDialog(
     openDialogCustom: MutableState<Boolean>,
+    modifier: Modifier = Modifier,
     dialogUI: @Composable (() -> Unit)
 ) {
     Dialog(
