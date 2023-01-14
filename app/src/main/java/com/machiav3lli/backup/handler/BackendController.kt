@@ -69,6 +69,7 @@ fun scanBackups(
     backupRoot: StorageFile = OABX.context.getBackupRoot(),
     level: Int = 0,
     forceTrace: Boolean = false,
+    cleanup: Boolean = false,
     onPropsFile: (StorageFile) -> Unit,
 ) {
 
@@ -124,7 +125,7 @@ fun scanBackups(
                         } catch (_: Throwable) {
                             if (!name.contains(regexSpecialFile))
                                 runCatching {
-                                    file.renameTo(".ERROR.${file.name}")
+                                    if (cleanup) file.renameTo(".ERROR.${file.name}")
                                 }
                         }
                     } else {
@@ -151,19 +152,20 @@ fun scanBackups(
                                                             if (!name.contains(
                                                                     regexSpecialFolder
                                                                 )
-                                                            )
-                                                                file.renameTo(".ERROR.${file.name}")
+                                                            ) {
+                                                                if (cleanup) file.renameTo(".ERROR.${file.name}")
+                                                            }
                                                         }
                                                     }
                                                 }
                                             } ?: run { // rename the dir, no dir.properties
-                                            file.renameTo(".ERROR.${file.name}")
+                                            if (cleanup) file.renameTo(".ERROR.${file.name}")
                                         }
                                     } catch (_: Throwable) { // rename the dir, no dir.properties
-                                        file.renameTo(".ERROR.${file.name}")
+                                        if (cleanup) file.renameTo(".ERROR.${file.name}")
                                     }
                                 } else {
-                                    file.renameTo(".ERROR.${file.name}")
+                                    if (cleanup) file.renameTo(".ERROR.${file.name}")
                                 }
                             }
                         }
