@@ -72,7 +72,6 @@ import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.utils.getFormattedDate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.yield
 import kotlin.math.roundToInt
 
 val logEachN = 1000L
@@ -290,9 +289,8 @@ fun MainPackageContextMenu(
         select: Boolean? = true,
         todo: (p: Package) -> Unit = {},
     ) {
-        packages.forEach { pkg ->
+        packages.stream().parallel().forEach { pkg ->
             if (select == true) selection[pkg.packageName] = false
-            yield()
             //OABX.addInfoText("$action ${pkg.packageName}")
             todo(pkg)
             select?.let { s -> selection[pkg.packageName] = s }
