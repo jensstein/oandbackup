@@ -88,13 +88,9 @@ class WorkHandler(appContext: Context) {
         prune()
     }
 
+    val endDelay = 200L //500L //10000L
+
     fun endBatches() {
-        val delay = 100L //10000L
-
-        Timber.d("%%%%% ALL start")
-
-        Thread.sleep(delay)
-
         Timber.d("%%%%% ALL PRUNE")
         OABX.work.prune()
 
@@ -102,12 +98,11 @@ class WorkHandler(appContext: Context) {
         val longAgo = 24 * 60 * 60 * 1000
         batchesKnown.keys.toList().forEach { // copy the keys, because collection changes now
             batchesKnown[it]?.let { batch ->
-                if (batch.isFinished || it in batchesCanceled) {
+                if (batch.nFinished > 1 || batch.isCanceled) {
                     val now = System.currentTimeMillis()
                     if (now - batch.startTime > longAgo) {
                         Timber.d("%%%%% $it removing...\\")
                         batchesKnown.remove(it)
-                        batchesCanceled.remove(it)
                         Timber.d("%%%%% $it removed..../")
                     }
                 }
@@ -115,9 +110,9 @@ class WorkHandler(appContext: Context) {
         }
         batchPackageVars = mutableMapOf()
 
-        Thread.sleep(delay)
-
         OABX.setProgress()
+
+        Thread.sleep(endDelay)
 
         Timber.d("%%%%% ALL DONE")
         OABX.wakelock(false) // now everything is done
@@ -143,16 +138,8 @@ class WorkHandler(appContext: Context) {
     fun endBatch(batchName: String) {
         batchesStarted--
         Timber.d("%%%%% $batchName end, ${batchesStarted} batches, thread ${Thread.currentThread().id}")
+        Thread.sleep(endDelay)
         OABX.wakelock(false)
-    }
-
-    fun justFinished(batch: BatchState): Boolean {
-        val finished = batch.isFinished
-        if (finished)
-            return false
-        // do only once
-        batch.isFinished = true
-        return true
     }
 
     fun justFinishedAll(): Boolean {
@@ -266,11 +253,11 @@ class WorkHandler(appContext: Context) {
             var notificationId: Int = 0,
             var startTime: Long = 0L,
             var endTime: Long = 0L,
-            var isFinished: Boolean = false,
+            var nFinished: Int = 0,
+            var isCanceled: Boolean = false,
         )
 
         val batchesKnown = mutableMapOf<String, BatchState>()
-        val batchesCanceled = mutableListOf<String>()
         var batchesStarted by mutableStateOf(-1)
         var packagesState = mutableStateMapOf<String, String>()
 
@@ -331,13 +318,13 @@ class WorkHandler(appContext: Context) {
                         batch.endTime = 0L
                     }
 
-                    batchesKnown.forEach { (name, state) ->
-                        if (!state.isFinished && name !in batchesCanceled && batchName !in batchesCanceled) {
+                    batchesKnown.forEach { (name, otherBatch) ->
+                        if (otherBatch.nFinished > 0 && ! otherBatch.isCanceled && ! batch.isCanceled) {
                             if (batchName != name) {
                                 if (batchName.substringBeforeLast("@")
                                     == name.substringBeforeLast("@")
                                 ) {
-                                    if (abs(batch.startTime - state.startTime) < 2 * 60 * 1000L) {
+                                    if (abs(batch.startTime - otherBatch.startTime) < 2 * 60 * 1000L) {
                                         val message =
                                             "**************************************** DUPLICATE batch detected: $batchName ~= $name --> canceling..."
                                         traceSchedule { message }
@@ -346,7 +333,7 @@ class WorkHandler(appContext: Context) {
                                                 message
                                             ) + onErrorInfo()
                                         )
-                                        batchesCanceled.add(batchName)
+                                        batch.isCanceled = true
                                         handler.cancel(batchName)
                                     }
                                 }
@@ -426,13 +413,7 @@ class WorkHandler(appContext: Context) {
 
                 val batch: BatchState = batchesKnown[batchName]!!
 
-                // when the batch is finished, create the notification once and not onGoing anymore
-                //if(batch.isFinished) {
-                //    Timber.i("%%%%% $batchName isFinished --> break")
-                //   return@batch
-                //}
-
-                if (!batch.isFinished) {
+                if (batch.nFinished <= 2) {
 
                     workState.run {
                         val processed = succeeded + failed
@@ -547,15 +528,27 @@ class WorkHandler(appContext: Context) {
                                     cancelAllPendingIntent
                                 )
                         } else {
-                            notificationBuilder
-                                .setOngoing(false)
-                                .setSilent(true)
-                                .setColor(
-                                    if (failed == 0)
-                                        0x66FF66
-                                    else
-                                        0xFF6666
-                                )
+                            if (batch.nFinished == 0)
+                                notificationBuilder
+                                    .setOngoing(false)
+                                    .setSilent(true)
+                                    .setProgress(workCount, processed, false)
+                                    .setColor(
+                                        if (failed == 0)
+                                            0x66FF66
+                                        else
+                                            0xFF6666
+                                    )
+                            else
+                                notificationBuilder
+                                    .setOngoing(false)
+                                    .setSilent(true)
+                                    .setColor(
+                                        if (failed == 0)
+                                            0x66FF66
+                                        else
+                                            0xFF6666
+                                    )
                         }
 
                         val notification = notificationBuilder.build()
@@ -566,8 +559,9 @@ class WorkHandler(appContext: Context) {
                         )
 
                         if (remaining <= 0) {
-                            if (OABX.work.justFinished(batch))
+                            if (batch.nFinished == 0)
                                 OABX.work.endBatch(batchName)
+                            batch.nFinished += 1
                         }
                     }
                 }
