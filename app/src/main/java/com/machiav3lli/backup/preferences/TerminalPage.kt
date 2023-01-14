@@ -190,31 +190,37 @@ fun lastErrorCommand(): List<String> {
 }
 
 fun onErrorInfo(): List<String> {
-    beginBusy("onErrorInfo")
-    val logs = logInt() + logApp()
-    val lines =
-        listOf("=== onError log", "") +
-                info() +
-                dumpPrefs() +
-                logs
-    endBusy("onErrorInfo")
-    return lines
+    try {
+        beginBusy("onErrorInfo")
+        val logs = logInt() + logApp()
+        val lines =
+            listOf("=== onError log", "") +
+                    info() +
+                    dumpPrefs() +
+                    logs
+        return lines
+    } finally {
+        endBusy("onErrorInfo")
+    }
 }
 
 fun supportInfo(): List<String> {
-    beginBusy("supportInfo")
-    val logs = logInt() + logApp()
-    val lines =
-        listOf("=== support log", "") +
-                envInfo() +
-                dumpPrefs() +
-                dumpAlarms() +
-                accessTest() +
-                lastErrorPkg() +
-                lastErrorCommand() +
-                logs
-    endBusy("supportInfo")
-    return lines
+    try {
+        beginBusy("supportInfo")
+        val logs = logInt() + logApp()
+        val lines =
+            listOf("=== support log", "") +
+                    envInfo() +
+                    dumpPrefs() +
+                    dumpAlarms() +
+                    accessTest() +
+                    lastErrorPkg() +
+                    lastErrorCommand() +
+                    logs
+        return lines
+    } finally {
+        endBusy("supportInfo")
+    }
 }
 
 fun textLog(lines: List<String>): StorageFile? {

@@ -223,47 +223,53 @@ fun Context.getBackups(
     trace: Boolean = false,
 ): Map<String, List<Backup>> {
 
+    var backupsMap: Map<String, List<Backup>> = emptyMap()
+
     if (packageName.isEmpty())
         OABX.beginBusy("getBackups($packageName)")
 
-    val backups = mutableListOf<Backup>()
+    try {
+        val backups = mutableListOf<Backup>()
 
-    val backupRoot = getBackupRoot()
+        val backupRoot = getBackupRoot()
 
-    if (packageName.isEmpty()) {
-        invalidateCache {
-            it.startsWith(backupRoot.path ?: "")
-        }
-    } else {
-        invalidateCache {
-            it.startsWith(backupRoot.path ?: "") &&
-                    it.contains(packageName)
-        }
-    }
-
-    scanBackups(backupRoot, packageName, forceTrace = trace) { propsFile ->
-        Backup.createFrom(propsFile)
-            ?.let(backups::add)
-            ?: run {
-                throw Exception("props file ${propsFile.path} not loaded")
+        if (packageName.isEmpty()) {
+            invalidateCache {
+                it.startsWith(backupRoot.path ?: "")
             }
-    }
-
-    val backupsMap = backups.groupBy { it.packageName }
-
-    if (packageName.isNotEmpty())
-        traceBackups {
-            val backups = backupsMap[packageName]
-            "<$packageName> ${
-                if (backups.isNullOrEmpty())
-                    "---"
-                else
-                    "getBackups: ${TraceUtils.formatSortedBackups(backups)}"
-            }"
+        } else {
+            invalidateCache {
+                it.startsWith(backupRoot.path ?: "") &&
+                        it.contains(packageName)
+            }
         }
 
-    if (packageName.isEmpty())
-        OABX.endBusy("getBackups($packageName)")
+        scanBackups(backupRoot, packageName, forceTrace = trace) { propsFile ->
+            Backup.createFrom(propsFile)
+                ?.let(backups::add)
+                ?: run {
+                    throw Exception("props file ${propsFile.path} not loaded")
+                }
+        }
+
+        backupsMap = backups.groupBy { it.packageName }
+
+        if (packageName.isNotEmpty())
+            traceBackups {
+                val backups = backupsMap[packageName]
+                "<$packageName> ${
+                    if (backups.isNullOrEmpty())
+                        "---"
+                    else
+                        TraceUtils.formatSortedBackups(backups)
+                }"
+            }
+    } catch (e: Throwable) {
+        logException(e, backTrace = true)
+    } finally {
+        if (packageName.isEmpty())
+            OABX.endBusy("getBackups($packageName)")
+    }
 
     return backupsMap
 }
@@ -463,31 +469,45 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
         val specialPackages = SpecialInfo.getSpecialPackages(this)
         val specialNames = specialPackages.map { it.packageName }.toSet()
 
-        OABX.beginBusy("uninstalledPackagesWithBackup")
-
         val uninstalledPackagesWithBackup =
-            (backupsMap.keys - installedNames - specialNames)
-                .mapNotNull {
-                    backupsMap[it]?.maxByOrNull { it.backupDate }?.toAppInfo()
-                }
+            try {
+                OABX.beginBusy("uninstalledPackagesWithBackup")
 
-        OABX.endBusy("uninstalledPackagesWithBackup")
-
-        OABX.beginBusy("appInfoList")
+                (backupsMap.keys - installedNames - specialNames)
+                    .mapNotNull {
+                        backupsMap[it]?.maxByOrNull { it.backupDate }?.toAppInfo()
+                    }
+            } catch (e: Throwable) {
+                logException(e, backTrace = true)
+                emptyList()
+            } finally {
+                OABX.endBusy("uninstalledPackagesWithBackup")
+            }
 
         val appInfoList =
-            installedPackageInfos
+            try {
+                OABX.beginBusy("appInfoList")
+
+                installedPackageInfos
                 .map { AppInfo(this, it) }
                 .union(uninstalledPackagesWithBackup)
+            } catch (e: Throwable) {
+                logException(e, backTrace = true)
+                emptyList()
+            } finally {
+                OABX.endBusy("appInfoList")
+            }
 
-        OABX.endBusy("appInfoList")
+        try {
+            OABX.beginBusy("dbUpdate")
 
-        OABX.beginBusy("dbUpdate")
-
-        backupDao.updateList(*backups.toTypedArray())
-        appInfoDao.updateList(*appInfoList.toTypedArray())
-
-        OABX.endBusy("dbUpdate")
+            backupDao.updateList(*backups.toTypedArray())
+            appInfoDao.updateList(*appInfoList.toTypedArray())
+        } catch (e: Throwable) {
+            logException(e, backTrace = true)
+        } finally {
+            OABX.endBusy("dbUpdate")
+        }
 
     } catch (e: Throwable) {
         logException(e, backTrace = true)

@@ -31,6 +31,7 @@ import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Blocklist
+import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.getBackups
 import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.handler.updateAppTables
@@ -321,12 +322,17 @@ class MainViewModel(
 
     private suspend fun recreateAppInfoList() {
         withContext(Dispatchers.Default) {
-            OABX.beginBusy("recreateAppInfoList")
-            val time = measureTimeMillis {
-                appContext.updateAppTables(db.appInfoDao, db.backupDao)
+            try {
+                OABX.beginBusy("recreateAppInfoList")
+                val time = measureTimeMillis {
+                    appContext.updateAppTables(db.appInfoDao, db.backupDao)
+                }
+                OABX.addInfoText("recreateAppInfoList: ${(time / 1000 + 0.5).toInt()} sec")
+            } catch (e: Throwable) {
+                LogsHandler.logException(e, backTrace = true)
+            } finally {
+                OABX.endBusy("recreateAppInfoList")
             }
-            OABX.addInfoText("recreateAppInfoList: ${(time / 1000 + 0.5).toInt()} sec")
-            OABX.endBusy("recreateAppInfoList")
         }
     }
 
@@ -353,6 +359,7 @@ class MainViewModel(
                 }
             } catch (e: AssertionError) {
                 Timber.w(e.message ?: "")
+                null
             } finally {
                 OABX.endBusy("updateDataOf")
             }

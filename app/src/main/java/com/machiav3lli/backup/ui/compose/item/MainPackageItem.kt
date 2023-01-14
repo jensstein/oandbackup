@@ -54,6 +54,7 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.SELECTIONS_FOLDER_NAME
 import com.machiav3lli.backup.handler.BackupRestoreHelper
+import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
@@ -272,9 +273,14 @@ fun MainPackageContextMenu(
         todo: suspend () -> Unit,
     ) {
         OABX.main?.viewModel?.viewModelScope?.launch {
-            OABX.beginBusy(action)
-            todo()
-            OABX.endBusy(action)
+            try {
+                OABX.beginBusy(action)
+                todo()
+            } catch (e: Throwable) {
+                LogsHandler.logException(e, backTrace = true)
+            } finally {
+                OABX.endBusy(action)
+            }
         }
     }
 
