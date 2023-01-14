@@ -86,7 +86,7 @@ fun scanBackups(
                 traceBackupsScan(lazyText)
     }
 
-    files.stream().forEach { file ->
+    files.stream().parallel().forEach { file ->
         val name = file.name ?: ""
         val path = file.path ?: ""
         if (forceTrace)
