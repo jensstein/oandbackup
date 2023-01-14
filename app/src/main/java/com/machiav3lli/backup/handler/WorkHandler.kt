@@ -20,15 +20,19 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.classAddress
+import com.machiav3lli.backup.preferences.onErrorInfo
 import com.machiav3lli.backup.preferences.pref_fakeSchedups
 import com.machiav3lli.backup.preferences.pref_maxRetriesPerPackage
+import com.machiav3lli.backup.preferences.textLog
 import com.machiav3lli.backup.services.CommandReceiver
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
+import com.machiav3lli.backup.traceSchedule
 import com.machiav3lli.backup.utils.TraceUtils.traceBold
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.abs
 
 class WorkHandler(appContext: Context) {
 
@@ -85,44 +89,44 @@ class WorkHandler(appContext: Context) {
     }
 
     fun endBatches() {
-        val delay = 200L //10000L
-        //Thread {
-            Timber.d("%%%%% ALL thread start")
+        val delay = 100L //10000L
 
-            Thread.sleep(delay)
+        Timber.d("%%%%% ALL start")
 
-            Timber.d("%%%%% ALL PRUNE")
-            OABX.work.prune()
+        Thread.sleep(delay)
 
-            // delete all batches started a long time ago (e.g. a day)
-            val longAgo = 24 * 60 * 60 * 1000
-            batchesKnown.keys.toList().forEach { // copy the keys, because collection changes now
-                batchesKnown[it]?.let { batch ->
-                    if (batch.isFinished) {
-                        val now = System.currentTimeMillis()
-                        if (now - batch.startTime > longAgo) {
-                            Timber.d("%%%%% $it removing...\\")
-                            batchesKnown.remove(it)
-                            Timber.d("%%%%% $it removed..../")
-                        }
+        Timber.d("%%%%% ALL PRUNE")
+        OABX.work.prune()
+
+        // delete all batches started a long time ago (e.g. a day)
+        val longAgo = 24 * 60 * 60 * 1000
+        batchesKnown.keys.toList().forEach { // copy the keys, because collection changes now
+            batchesKnown[it]?.let { batch ->
+                if (batch.isFinished || it in batchesCanceled) {
+                    val now = System.currentTimeMillis()
+                    if (now - batch.startTime > longAgo) {
+                        Timber.d("%%%%% $it removing...\\")
+                        batchesKnown.remove(it)
+                        batchesCanceled.remove(it)
+                        Timber.d("%%%%% $it removed..../")
                     }
                 }
             }
-            batchPackageVars = mutableMapOf()
+        }
+        batchPackageVars = mutableMapOf()
 
-            Thread.sleep(delay)
+        Thread.sleep(delay)
 
-            OABX.setProgress()
+        OABX.setProgress()
 
-            Timber.d("%%%%% ALL DONE")
-            OABX.wakelock(false) // now everything is done
+        Timber.d("%%%%% ALL DONE")
+        OABX.wakelock(false) // now everything is done
 
-            OABX.service?.let {
-                traceBold { "%%%%% ------------------------------------------ service stopping...\\" }
-                it.stopSelf()
-                traceBold { "%%%%% ------------------------------------------ service stopped.../" }
-            }
-        //}.start()
+        OABX.service?.let {
+            traceBold { "%%%%% ------------------------------------------ service stopping...\\" }
+            it.stopSelf()
+            traceBold { "%%%%% ------------------------------------------ service stopped.../" }
+        }
     }
 
     fun beginBatch(batchName: String) {
@@ -176,11 +180,11 @@ class WorkHandler(appContext: Context) {
             return if (startTime == 0L)
                 name
             else if (pref_fakeSchedups.value > 1)
-                "$name ${
+                "$name @ ${
                     SimpleDateFormat("EEE HH:mm:ss:SSS", Locale.getDefault()).format(startTime)
                 }"
             else
-                "$name ${
+                "$name @ ${
                     SimpleDateFormat("EEE HH:mm:ss", Locale.getDefault()).format(startTime)
                 }"
         }
@@ -255,17 +259,18 @@ class WorkHandler(appContext: Context) {
             var maxRetries: Int = 0,
             var succeeded: Int = 0,
             var failed: Int = 0,
-            var canceled: Int = 0
+            var canceled: Int = 0,
         )
 
         class BatchState(
             var notificationId: Int = 0,
             var startTime: Long = 0L,
             var endTime: Long = 0L,
-            var isFinished: Boolean = false
+            var isFinished: Boolean = false,
         )
 
         val batchesKnown = mutableMapOf<String, BatchState>()
+        val batchesCanceled = mutableListOf<String>()
         var batchesStarted by mutableStateOf(-1)
         var packagesState = mutableStateMapOf<String, String>()
 
@@ -316,7 +321,6 @@ class WorkHandler(appContext: Context) {
 
                 batchesRunning.getOrPut(batchName) { WorkState() }.run batch@{
 
-                    //val batch: BatchState = batchesKnown[batchName!!]!!
                     val batch: BatchState = batchesKnown.getOrPut(batchName) { BatchState() }
 
                     if (batch.notificationId == 0)
@@ -325,6 +329,29 @@ class WorkHandler(appContext: Context) {
                     if (batch.startTime == 0L) {
                         batch.startTime = now
                         batch.endTime = 0L
+                    }
+
+                    batchesKnown.forEach { (name, state) ->
+                        if (!state.isFinished && name !in batchesCanceled && batchName !in batchesCanceled) {
+                            if (batchName != name) {
+                                if (batchName.substringBeforeLast("@")
+                                    == name.substringBeforeLast("@")
+                                ) {
+                                    if (abs(batch.startTime - state.startTime) < 2 * 60 * 1000L) {
+                                        val message =
+                                            "**************************************** DUPLICATE batch detected: $batchName ~= $name --> canceling..."
+                                        traceSchedule { message }
+                                        textLog(
+                                            listOf(
+                                                message
+                                            ) + onErrorInfo()
+                                        )
+                                        batchesCanceled.add(batchName)
+                                        handler.cancel(batchName)
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     workCount++
@@ -343,7 +370,7 @@ class WorkHandler(appContext: Context) {
                             workFinished++
                             packageName?.let { packagesState.put(it, "OK ") }
                         }
-                        WorkInfo.State.FAILED -> {
+                        WorkInfo.State.FAILED    -> {
                             failed++
                             workFinished++
                             packageName?.let { packagesState.put(it, "BAD") }
@@ -353,22 +380,22 @@ class WorkHandler(appContext: Context) {
                             workFinished++
                             packageName?.let { packagesState.put(it, "STP") }
                         }
-                        WorkInfo.State.ENQUEUED -> {
+                        WorkInfo.State.ENQUEUED  -> {
                             queued++
                             workEnqueued++
                             packageName?.let { packagesState.put(it, "...") }
                         }
-                        WorkInfo.State.BLOCKED -> {
+                        WorkInfo.State.BLOCKED   -> {
                             queued++
                             workBlocked++
                             packageName?.let { packagesState.put(it, "...") }
                         }
-                        WorkInfo.State.RUNNING -> {
+                        WorkInfo.State.RUNNING   -> {
                             workRunning++
                             packageName?.let { packagesState.put(it, operation ?: "...") }
                             when (operation) {
                                 "..." -> queued++
-                                else -> {
+                                else  -> {
                                     running++
                                     val shortPackageName =
                                         packageName
@@ -416,7 +443,8 @@ class WorkHandler(appContext: Context) {
                         allRemaining += remaining
 
                         var title = batchName
-                        shortText = "${if (failed > 0) "😡$failed / " else ""}$succeeded / $workCount"
+                        shortText =
+                            "${if (failed > 0) "😡$failed / " else ""}$succeeded / $workCount"
 
                         if (remaining > 0) {
                             shortText += " 🏃$running 👭${queued}"
@@ -434,9 +462,9 @@ class WorkHandler(appContext: Context) {
                             val sec = duration - min * 60
                             bigText = "$min min $sec sec"
                             if (canceled > 0)
-                                bigText += "\n$canceled cancelled"
+                                bigText += ", $canceled cancelled"
                             if (retries > 0)
-                                bigText += "\n$retries retried"
+                                bigText += ", $retries retried"
                         }
 
                         if (retries > 0)
