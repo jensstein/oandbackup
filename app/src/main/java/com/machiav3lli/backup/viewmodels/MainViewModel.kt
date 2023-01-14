@@ -262,7 +262,7 @@ class MainViewModel(
 
             traceFlows { "******************** filtering - list: ${p.size} filter: $f" }
 
-            while (OABX.startup || OABX.isBusy) {
+            while (OABX.startup /* || OABX.isBusy */) {
                 traceFlows { "*** filtering wait for not busy" }
                 delay(500)
             }
@@ -294,7 +294,7 @@ class MainViewModel(
         notBlockedList
             .trace { "updatePackages? ..." }
             .onEach {
-                while (OABX.startup || OABX.isBusy) {
+                while (OABX.startup /* || OABX.isBusy */) {
                     traceFlows { "*** updatePackages wait for not busy" }
                     delay(500)
                 }
