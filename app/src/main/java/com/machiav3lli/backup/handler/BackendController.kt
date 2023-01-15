@@ -60,12 +60,24 @@ import com.machiav3lli.backup.utils.specialBackupsEnabled
 import timber.log.Timber
 import java.io.IOException
 import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.system.measureTimeMillis
 
 val regexBackupInstance = Regex(BACKUP_INSTANCE_REGEX_PATTERN)
 val regexPackageFolder = Regex(BACKUP_PACKAGE_FOLDER_REGEX_PATTERN)
 val regexSpecialFolder = Regex(BACKUP_SPECIAL_FOLDER_REGEX_PATTERN)
 val regexSpecialFile = Regex(BACKUP_SPECIAL_FILE_REGEX_PATTERN)
+
+val maxThreads = AtomicInteger(0)
+fun checkMaxThreads() {
+    val nThreads = Thread.activeCount()
+    maxThreads.getAndUpdate {
+        if (it < nThreads)
+            nThreads
+        else
+            it
+    }
+}
 
 fun scanBackups(
     directory: StorageFile,
@@ -76,9 +88,14 @@ fun scanBackups(
     cleanup: Boolean = false,
     onPropsFile: (StorageFile) -> Unit,
 ) {
-    beginNanoTimer("scanBackups.${if(packageName.isEmpty()) "" else "package."}listFiles")
+    if (level == 0 && packageName.isEmpty() && traceTiming.pref.value) {
+        checkMaxThreads()
+        traceTiming { "threads max: ${maxThreads.get()} (before)" }
+    }
+
+    beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}listFiles")
     val files = directory.listFiles().drop(0)   // copy
-    endNanoTimer("scanBackups.${if(packageName.isEmpty()) "" else "package."}listFiles")
+    endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}listFiles")
 
     val names = files.map { it.name }
 
@@ -93,6 +110,9 @@ fun scanBackups(
     }
 
     files.stream().parallel().forEach { file ->
+
+        checkMaxThreads()
+
         val name = file.name ?: ""
         val path = file.path ?: ""
         if (forceTrace)
@@ -127,9 +147,9 @@ fun scanBackups(
                             } ++++++++++++++++++++ props ok"
                         }
                         try {
-                            beginNanoTimer("scanBackups.${if(packageName.isEmpty()) "" else "package."}onPropsFile")
+                            beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
                             onPropsFile(file)
-                            endNanoTimer("scanBackups.${if(packageName.isEmpty()) "" else "package."}onPropsFile")
+                            endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
                         } catch (_: Throwable) {
                             if (!name.contains(regexSpecialFile))
                                 runCatching {
@@ -151,9 +171,9 @@ fun scanBackups(
                                                     } ++++++++++++++++++++ indir props ok"
                                                 }
                                                 try {
-                                                    beginNanoTimer("scanBackups.${if(packageName.isEmpty()) "" else "package."}onPropsFile")
+                                                    beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
                                                     onPropsFile(it)
-                                                    endNanoTimer("scanBackups.${if(packageName.isEmpty()) "" else "package."}onPropsFile")
+                                                    endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
                                                 } catch (_: Throwable) {
                                                     // rename the dir, because the backup is damaged
                                                     runCatching {
@@ -188,9 +208,9 @@ fun scanBackups(
                                 formatBackupFile(file)
                             } ++++++++++++++++++++ props ok"
                         }
-                        beginNanoTimer("scanBackups.${if(packageName.isEmpty()) "" else "package."}onPropsFile")
+                        beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
                         onPropsFile(file)
-                        endNanoTimer("scanBackups.${if(packageName.isEmpty()) "" else "package."}onPropsFile")
+                        endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
                     } else {
                         if (file.isDirectory) {
                             traceBackupsScanPackage {
@@ -230,8 +250,10 @@ fun scanBackups(
         }
     }
 
-    if (level == 0 && packageName.isEmpty() && traceTiming.pref.value)
+    if (level == 0 && packageName.isEmpty() && traceTiming.pref.value) {
         logNanoTiming("scanBackups.", "scanBackups")
+        traceTiming { "threads max: ${maxThreads.get()}" }
+    }
 }
 
 fun Context.getBackups(

@@ -77,6 +77,7 @@ import com.machiav3lli.backup.handler.LogsHandler.Companion.share
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.Companion.utilBoxInfo
+import com.machiav3lli.backup.handler.maxThreads
 import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.ui.compose.SelectionContainerX
@@ -169,6 +170,9 @@ fun accessTest() =
             shell("echo \"$(ls \$ANDROID_DATA/user/0/ | wc -l) packages (data)\"") +
             shell("echo \"\$(ls -l \$ANDROID_DATA/misc/ | wc -l) misc data\"")
 
+fun threadsInfo() =
+    listOf("--- threads max: ${maxThreads.get()}")
+
 fun lastErrorPkg(): List<String> {
     val pkg = OABX.lastErrorPackage
     return if (pkg.isNotEmpty()) {
@@ -221,6 +225,7 @@ fun supportInfo(): List<String> {
                     dumpAlarms() +
                     dumpTiming() +
                     accessTest() +
+                    threadsInfo() +
                     lastErrorPkg() +
                     lastErrorCommand() +
                     logs
@@ -352,6 +357,7 @@ fun TerminalPage() {
                 TerminalButton("prefs") { append(dumpPrefs()) }
                 TerminalButton("alarms") { append(dumpAlarms()) }
                 TerminalButton("timing") { append(dumpTiming()) }
+                TerminalButton("threads") { append(threadsInfo()) }
                 TerminalButton("access") { append(accessTest()) }
                 TerminalButton("errInfo") { append(lastErrorPkg() + lastErrorCommand()) }
                 TerminalButton("err->cmd") { command = OABX.lastErrorCommand }
