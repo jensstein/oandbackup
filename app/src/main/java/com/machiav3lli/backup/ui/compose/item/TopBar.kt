@@ -5,6 +5,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -60,6 +61,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dialogs.BaseDialog
@@ -162,7 +164,7 @@ fun ProgressIndicator() {
         LinearProgressIndicator(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(5.dp),
+                .height(4.dp),
             trackColor = MaterialTheme.colorScheme.surfaceColorAtElevation(10.dp),
             color = MaterialTheme.colorScheme.primary,
             progress = max(0.02f, progress.second)
@@ -178,7 +180,7 @@ fun BusyIndicator() {
         LinearProgressIndicator(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(5.dp),
+                .height(4.dp),
             trackColor = MaterialTheme.colorScheme.surfaceColorAtElevation(10.dp),
             color = MaterialTheme.colorScheme.secondary,
         )
@@ -312,8 +314,7 @@ fun TopBar(
         }
     }
 
-    Column {
-        GlobalIndicators()
+    Box { // overlay page and indicators
         TopAppBar(
             modifier = modifier.wrapContentHeight(),
             title = {
@@ -408,6 +409,15 @@ fun TopBar(
                 navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
             ),
             actions = actions
+        )
+
+        GlobalIndicators()  // overlay
+
+        Text(
+            text = "${BuildConfig.VERSION_NAME}",
+            fontSize = 8.sp,
+            modifier = Modifier.fillMaxWidth().wrapContentSize(Alignment.TopCenter),
+            color = Color.Gray
         )
     }
 }
