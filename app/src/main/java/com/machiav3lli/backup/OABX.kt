@@ -97,7 +97,7 @@ val pref_logToSystemLogcat = BooleanPref(
 
 val pref_autoLogExceptions = BooleanPref(
     key = "dev-log.autoLogExceptions",
-    summary = "create a log for each exception (increasing maxLogCount may be good)",
+    summary = "create a log for each unexpected exception",
     defaultValue = false
 )
 
