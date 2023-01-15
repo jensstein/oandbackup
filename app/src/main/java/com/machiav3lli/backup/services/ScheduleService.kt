@@ -39,8 +39,11 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.handler.showNotification
+import com.machiav3lli.backup.pref_autoLogAfterSchedule
 import com.machiav3lli.backup.preferences.pref_fakeSchedups
 import com.machiav3lli.backup.preferences.pref_useForegroundInService
+import com.machiav3lli.backup.preferences.supportInfo
+import com.machiav3lli.backup.preferences.textLog
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.tasks.ScheduledActionTask
@@ -134,6 +137,8 @@ open class ScheduleService : Service() {
         }
 
         if (scheduleId >= 0) {
+
+
             repeat(pref_fakeSchedups.value) { count ->
                 val now = System.currentTimeMillis()
                 scheduledActionTask = object : ScheduledActionTask(baseContext, scheduleId) {
@@ -145,6 +150,17 @@ open class ScheduleService : Service() {
                         var resultsSuccess = true
                         var counter = 0
 
+                        // hg42:
+                        // while it looks reasonable to re-schedule after the job is done,
+                        // it seems to be less problematic to re-schedule *before* doing the job.
+                        // that's because rescheduling would not happen, when
+                        // * not all exceptions catched and jumoing out of the batch
+                        // * the job doesn't finish and just hangs around
+                        // the re-schedule is also more exact
+                        //TODO hg42 it would probably be even better to use
+                        //  the current timeToRun of this schedule as timePlaced in the calculation
+                        scheduleAlarm(context, scheduleId, true)
+
                         if (selectedItems.isEmpty()) {
                             showNotification(
                                 context,
@@ -154,8 +170,8 @@ open class ScheduleService : Service() {
                                 getString(R.string.empty_filtered_list),
                                 false
                             )
-                            traceSchedule { "stop service -> re-schedule" }
-                            scheduleAlarm(context, scheduleId, true)
+                            traceSchedule { "no packages matching -> stop service" }
+                            //scheduleAlarm(context, scheduleId, true)
                             stopService(intent)
                         } else {
                             val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
@@ -224,9 +240,9 @@ open class ScheduleService : Service() {
                                         t?.state == WorkInfo.State.CANCELLED
                                     ) {
                                         traceSchedule {
-                                            "work manager changed to state ${t?.state?.name} -> re-schedule"
+                                            "work manager changed to state ${t?.state?.name}"
                                         }
-                                        scheduleAlarm(context, scheduleId, true)
+                                        //scheduleAlarm(context, scheduleId, true)
                                         OABX.main?.refreshPackages()
                                         finishWorkLiveData.removeObserver(this)
                                         //stopService(intent)
