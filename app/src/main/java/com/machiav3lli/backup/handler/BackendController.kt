@@ -57,6 +57,10 @@ import com.machiav3lli.backup.utils.TraceUtils.logNanoTiming
 import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.utils.getInstalledPackageInfosWithPermissions
 import com.machiav3lli.backup.utils.specialBackupsEnabled
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import java.io.IOException
 import java.util.*
@@ -267,8 +271,6 @@ fun Context.getBackups(
         OABX.beginBusy("getBackups($packageName)")
 
     try {
-        val backups = mutableListOf<Backup>()
-
         val backupRoot = getBackupRoot()
 
         if (packageName.isEmpty()) {
@@ -282,12 +284,18 @@ fun Context.getBackups(
             }
         }
 
-        scanBackups(backupRoot, packageName, forceTrace = trace) { propsFile ->
-            Backup.createFrom(propsFile)
-                ?.let(backups::add)
-                ?: run {
-                    throw Exception("props file ${propsFile.path} not loaded")
+
+        val backups = runBlocking {
+            channelFlow {
+                val producer = this
+                scanBackups(backupRoot, packageName, forceTrace = trace) { propsFile ->
+                    Backup.createFrom(propsFile)
+                        ?.let { runBlocking  { send(it) } }
+                        ?: run {
+                            throw Exception("props file ${propsFile.path} not loaded")
+                        }
                 }
+            }.onEach { traceBackups { "${it.packageName} ${it.backupDate}" } }.toList(mutableListOf())
         }
 
         backupsMap = backups.groupBy { it.packageName }
@@ -527,8 +535,8 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
                 OABX.beginBusy("appInfoList")
 
                 installedPackageInfos
-                .map { AppInfo(this, it) }
-                .union(uninstalledPackagesWithBackup)
+                    .map { AppInfo(this, it) }
+                    .union(uninstalledPackagesWithBackup)
             } catch (e: Throwable) {
                 logException(e, backTrace = true)
                 emptyList()
