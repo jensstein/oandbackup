@@ -20,19 +20,15 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.classAddress
-import com.machiav3lli.backup.preferences.onErrorInfo
 import com.machiav3lli.backup.preferences.pref_fakeSchedups
 import com.machiav3lli.backup.preferences.pref_maxRetriesPerPackage
-import com.machiav3lli.backup.preferences.textLog
 import com.machiav3lli.backup.services.CommandReceiver
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
-import com.machiav3lli.backup.traceSchedule
 import com.machiav3lli.backup.utils.TraceUtils.traceBold
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.abs
 
 class WorkHandler(appContext: Context) {
 
@@ -316,29 +312,6 @@ class WorkHandler(appContext: Context) {
                     if (batch.startTime == 0L) {
                         batch.startTime = now
                         batch.endTime = 0L
-                    }
-
-                    batchesKnown.forEach { (name, otherBatch) ->
-                        if (otherBatch.nFinished == 0 && ! otherBatch.isCanceled && ! batch.isCanceled) {
-                            val batchNameStem = batchName.substringBeforeLast("@").trim()
-                            val nameStem = name.substringBeforeLast("@").trim()
-                            if (batchName != name && batchNameStem != "Batch") {
-                                if (batchNameStem == nameStem) {
-                                    if (abs(batch.startTime - otherBatch.startTime) < 2 * 60 * 1000L) {
-                                        val message =
-                                            "**************************************** DUPLICATE batch detected: $batchName ~= $name ($batchNameStem)--> canceling..."
-                                        traceSchedule { message }
-                                        textLog(
-                                            listOf(
-                                                message
-                                            ) + onErrorInfo()
-                                        )
-                                        batch.isCanceled = true
-                                        handler.cancel(batchName)
-                                    }
-                                }
-                            }
-                        }
                     }
 
                     workCount++
