@@ -69,6 +69,7 @@ import com.machiav3lli.backup.utils.TraceUtils.logNanoTiming
 import com.machiav3lli.backup.utils.TraceUtils.nanoTiming
 import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.utils.getFormattedDate
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -252,7 +253,7 @@ fun launchPackagesAction(
     todo: suspend () -> Unit,
 ) {
     //OABX.main?.viewModel?.viewModelScope?.launch {
-    MainScope().launch {
+    MainScope().launch(Dispatchers.Default) {
         try {
             OABX.beginBusy(action)
             todo()
