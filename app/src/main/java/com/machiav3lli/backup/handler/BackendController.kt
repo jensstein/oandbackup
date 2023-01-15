@@ -33,6 +33,7 @@ import com.machiav3lli.backup.IGNORED_PERMISSIONS
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.OABX.Companion.setBackups
 import com.machiav3lli.backup.PROP_NAME
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.ignoredPackages
@@ -259,7 +260,7 @@ fun scanBackups(
     }
 }
 
-fun Context.getBackups(
+fun Context.findBackups(
     packageName: String = "",
     trace: Boolean = false,
 ): Map<String, List<Backup>> {
@@ -267,7 +268,7 @@ fun Context.getBackups(
     var backupsMap: Map<String, List<Backup>> = emptyMap()
 
     if (packageName.isEmpty())
-        OABX.beginBusy("getBackups")
+        OABX.beginBusy("findBackups")
 
     try {
         val backupRoot = getBackupRoot()
@@ -316,7 +317,7 @@ fun Context.getBackups(
         logException(e, backTrace = true)
     } finally {
         if (packageName.isEmpty())
-            OABX.endBusy("getBackups")
+            OABX.endBusy("findBackups")
     }
 
     return backupsMap
@@ -500,19 +501,11 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
             OABX.endBusy("unsuspend")
         }
 
-        val backups = mutableListOf<Backup>()
 
-        val backupsMap = getBackups()
+        val backupsMap = findBackups()
+        val backups = backupsMap.values.flatten()
 
-        OABX.main?.viewModel?.run {
-            clearBackups()
-            backupsMap.forEach {
-                putBackups(it.key, it.value)
-                it.value.forEach {
-                    backups.add(it)
-                }
-            }
-        }
+        setBackups(backupsMap)
 
         val specialPackages = SpecialInfo.getSpecialPackages(this)
         val specialNames = specialPackages.map { it.packageName }.toSet()

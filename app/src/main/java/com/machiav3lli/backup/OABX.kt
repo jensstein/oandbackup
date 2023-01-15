@@ -32,9 +32,11 @@ import androidx.lifecycle.ViewModel
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.DynamicColorsOptions
 import com.machiav3lli.backup.activities.MainActivityX
+import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
+import com.machiav3lli.backup.handler.findBackups
 import com.machiav3lli.backup.preferences.pref_cancelOnStart
 import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
@@ -463,5 +465,47 @@ class OABX : Application() {
                 "*** ${"|---".repeat(_busy.get())}/ busy $label ${"%.3f".format(time / 1E9)} s"
             }
         }
+
+
+        private var theBackupsMap = mutableMapOf<String, List<Backup>>()
+
+        fun clearBackups(packageName: String? = null) {
+            packageName?.let {
+                synchronized(theBackupsMap) {
+                    theBackupsMap.remove(packageName)
+                }
+            } ?: run {
+                synchronized(theBackupsMap) {
+                    theBackupsMap.clear()
+                }
+            }
+        }
+
+        fun setBackups(backups: Map<String, List<Backup>>) {
+            theBackupsMap.forEach {
+                putBackups(it.key, it.value)
+            }
+            // clear no more existing packages
+            (backups.keys - theBackupsMap.keys).forEach {
+                clearBackups(it)
+            }
+        }
+
+        fun putBackups(packageName: String, backups: List<Backup>) {
+            synchronized(theBackupsMap) {
+                theBackupsMap.put(packageName, backups)
+            }
+        }
+
+        fun getBackups(packageName: String): List<Backup> {
+            synchronized(theBackupsMap) {
+                return theBackupsMap.getOrPut(packageName) {
+                    val backups =
+                        OABX.context.findBackups(packageName)  //TODO hg42 may also find glob *packageName* for now
+                    backups[packageName] ?: emptyList()  // so we need to take the correct package here
+                }.drop(0)  // copy
+            }
+        }
+
     }
 }

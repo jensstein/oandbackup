@@ -32,7 +32,6 @@ import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Blocklist
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.handler.getBackups
 import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.items.Package
@@ -66,30 +65,6 @@ class MainViewModel(
     private val db: ODatabase,
     private val appContext: Application,
 ) : AndroidViewModel(appContext) {
-
-    private var backupsMap = mutableMapOf<String, List<Backup>>()
-
-    fun clearBackups() {
-        synchronized(backupsMap) {
-            backupsMap.clear()
-        }
-    }
-
-    fun putBackups(packageName: String, backups: List<Backup>) {
-        synchronized(backupsMap) {
-            backupsMap.put(packageName, backups)
-        }
-    }
-
-    fun getBackups(packageName: String): List<Backup> {
-        synchronized(backupsMap) {
-            return backupsMap.getOrPut(packageName) {
-                val backups =
-                    OABX.context.getBackups(packageName)  //TODO hg42 may also find glob *packageName* for now
-                backups[packageName] ?: emptyList()  // so we need to take the correct package here
-            }.drop(0)
-        }
-    }
 
     init {
         // do this before the flows start

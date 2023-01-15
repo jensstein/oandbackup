@@ -26,7 +26,7 @@ import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.handler.getBackups
+import com.machiav3lli.backup.handler.findBackups
 import com.machiav3lli.backup.handler.getPackageStorageStats
 import com.machiav3lli.backup.preferences.pref_flatStructure
 import com.machiav3lli.backup.traceBackups
@@ -46,11 +46,11 @@ class Package {
 
     var backupList: List<Backup>
         get() {
-            val backups = OABX.main?.viewModel?.getBackups(packageName) ?: emptyList<Backup>()
+            val backups = OABX.getBackups(packageName) ?: emptyList<Backup>()
             return backups
         }
         set(backups) {
-            OABX.main?.let { it.viewModel?.putBackups(packageName, backups) }
+            OABX.putBackups(packageName, backups)
         }
 
     internal constructor(
@@ -177,7 +177,7 @@ class Package {
 
     fun getBackupsFromBackupDir(): List<Backup> {
         val backups =
-            OABX.context.getBackups(packageName)  //TODO hg42 may also find glob *packageName* for now
+            OABX.context.findBackups(packageName)  //TODO hg42 may also find glob *packageName* for now
         return backups[packageName] ?: emptyList()  // so we need to take the correct package here
     }
 
