@@ -101,6 +101,12 @@ val pref_autoLogExceptions = BooleanPref(
     defaultValue = false
 )
 
+val pref_autoLogAfterSchedule = BooleanPref(
+    key = "dev-log.autoLogAfterSchedule",
+    summary = "create a log after each schedule execution",
+    defaultValue = false
+)
+
 //---------------------------------------- developer settings - tracing
 
 val pref_trace = BooleanPref(

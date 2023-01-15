@@ -263,6 +263,14 @@ open class ScheduleService : Service() {
     }
 
     fun endSchedule(name: String, intent: Intent?) {
+        if (pref_autoLogAfterSchedule.value) {
+            textLog(
+                listOf(
+                    "--- autoLogAfterSchedule $name"
+                ) + supportInfo()
+            )
+        }
+
         OABX.endLogSection("schedule $name")
         runningSchedules--
         // do this globally
