@@ -230,7 +230,7 @@ open class ScheduleService : Service() {
                                         OABX.main?.refreshPackages()
                                         finishWorkLiveData.removeObserver(this)
                                         //stopService(intent)
-                                        stoppedSchedule(intent)
+                                        endSchedule(batchName, intent)
                                     }
                                 }
                             })
@@ -241,9 +241,9 @@ open class ScheduleService : Service() {
                                     .then(finishWorkRequest)
                                     .enqueue()
 
-                                startedSchedule()
+                                beginSchedule(batchName)
                             } else {
-                                stoppedSchedule(intent)
+                                endSchedule(batchName, intent)
                             }
                         }
                         super.onPostExecute(result)
@@ -257,13 +257,13 @@ open class ScheduleService : Service() {
         return START_NOT_STICKY
     }
 
-    fun startedSchedule() {
+    fun beginSchedule(name: String) {
         runningSchedules++
-        beginLogSection("schedule")
+        beginLogSection("schedule $name")
     }
 
-    fun stoppedSchedule(intent: Intent?) {
-        OABX.endLogSection("schedule")
+    fun endSchedule(name: String, intent: Intent?) {
+        OABX.endLogSection("schedule $name")
         runningSchedules--
         // do this globally
         //if (runningSchedules <= 0)
