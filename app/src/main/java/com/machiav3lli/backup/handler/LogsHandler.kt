@@ -47,7 +47,7 @@ class LogsHandler {
     companion object {
 
         fun share(log: Log, asFile: Boolean = true) {
-            MainScope().launch(Dispatchers.Default) {
+            MainScope().launch(Dispatchers.IO) {
                 try {
                     getLogFile(log.logDate)?.let { log ->
                         val text = if (!asFile) log.readText() else ""

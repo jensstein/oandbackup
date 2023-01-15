@@ -115,7 +115,7 @@ class MainViewModel(
         db.blocklistDao.allFlow
             .trace { "*** blocklist <<- ${it.size}" }
             .stateIn(
-                viewModelScope + Dispatchers.Default,
+                viewModelScope + Dispatchers.IO,
                 SharingStarted.Eagerly,
                 emptyList()
             )
@@ -128,7 +128,7 @@ class MainViewModel(
             .trace { "*** backupsMapDb <<- p=${it.size} b=${it.map { it.value.size }.sum()}" }
             //.trace { "*** backupsMap <<- p=${it.size} b=${it.map { it.value.size }.sum()} #################### egg ${showSortedBackups(it["com.android.egg"])}" }  // for testing use com.android.egg
             .stateIn(
-                viewModelScope + Dispatchers.Default,
+                viewModelScope + Dispatchers.IO,
                 SharingStarted.Eagerly,
                 emptyMap()
             )
@@ -154,7 +154,7 @@ class MainViewModel(
             }
         }
         .stateIn(
-            viewModelScope + Dispatchers.Default,
+            viewModelScope + Dispatchers.IO,
             SharingStarted.Eagerly,
             null
         )
@@ -166,7 +166,7 @@ class MainViewModel(
             .mapLatest { it.associateBy(AppExtras::packageName) }
             .trace { "*** appExtrasMap <<- ${it.size}" }
             .stateIn(
-                viewModelScope + Dispatchers.Default,
+                viewModelScope + Dispatchers.IO,
                 SharingStarted.Eagerly,
                 emptyMap()
             )
@@ -192,7 +192,7 @@ class MainViewModel(
             .mapLatest { it }
             .trace { "*** packageList <<- ${it.size}" }
             .stateIn(
-                viewModelScope + Dispatchers.Default,
+                viewModelScope + Dispatchers.IO,
                 SharingStarted.Eagerly,
                 emptyList()
             )
@@ -204,7 +204,7 @@ class MainViewModel(
             .mapLatest { it.associateBy(Package::packageName) }
             .trace { "*** packageMap <<- ${it.size}" }
             .stateIn(
-                viewModelScope + Dispatchers.Default,
+                viewModelScope + Dispatchers.IO,
                 SharingStarted.Eagerly,
                 emptyMap()
             )
@@ -229,7 +229,7 @@ class MainViewModel(
             .mapLatest { it }
             .trace { "*** notBlockedList <<- ${it.size}" }
             .stateIn(
-                viewModelScope + Dispatchers.Default,
+                viewModelScope + Dispatchers.IO,
                 SharingStarted.Eagerly,
                 emptyList()
             )
@@ -238,7 +238,7 @@ class MainViewModel(
         //------------------------------------------------------------------------------------------ searchQuery
         MutableComposableFlow(
             "",
-            viewModelScope + Dispatchers.Default,
+            viewModelScope + Dispatchers.IO,
             "searchQuery"
         )
 
@@ -246,7 +246,7 @@ class MainViewModel(
         //------------------------------------------------------------------------------------------ modelSortFilter
         MutableComposableFlow(
             OABX.context.sortFilterModel,
-            viewModelScope + Dispatchers.Default,
+            viewModelScope + Dispatchers.IO,
             "modelSortFilter"
         )
 
@@ -278,7 +278,7 @@ class MainViewModel(
             .mapLatest { it }
             .trace { "*** filteredList <<- ${it.size}" }
             .stateIn(
-                viewModelScope + Dispatchers.Default,
+                viewModelScope + Dispatchers.IO,
                 SharingStarted.Eagerly,
                 emptyList()
             )
@@ -303,7 +303,7 @@ class MainViewModel(
                 }"
             }
             .stateIn(
-                viewModelScope + Dispatchers.Default,
+                viewModelScope + Dispatchers.IO,
                 SharingStarted.Eagerly,
                 emptyList()
             )

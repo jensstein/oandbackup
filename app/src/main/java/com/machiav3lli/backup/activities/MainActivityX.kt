@@ -253,7 +253,7 @@ fun Background(
         ) {
             var angle by rememberSaveable { mutableStateOf(70f) }
             LaunchedEffect(true) {
-                withContext(Dispatchers.Default) {
+                withContext(Dispatchers.IO) {
                     animate(
                         initialValue = angle,
                         targetValue = angle + 360f * rounds,
@@ -282,7 +282,7 @@ fun Background(
             ) {
                 var angle by rememberSaveable { mutableStateOf(70f) }
                 LaunchedEffect(true) {
-                    withContext(Dispatchers.Default) {
+                    withContext(Dispatchers.IO) {
                         animate(
                             initialValue = angle,
                             targetValue = angle + 360f * rounds,
