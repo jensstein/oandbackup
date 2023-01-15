@@ -47,18 +47,17 @@ import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import com.machiav3lli.backup.preferences.pref_backupSuspendApps
-import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.traceBackupsScan
 import com.machiav3lli.backup.traceTiming
 import com.machiav3lli.backup.utils.TraceUtils
 import com.machiav3lli.backup.utils.TraceUtils.beginNanoTimer
 import com.machiav3lli.backup.utils.TraceUtils.endNanoTimer
+import com.machiav3lli.backup.utils.TraceUtils.formatBackups
 import com.machiav3lli.backup.utils.TraceUtils.logNanoTiming
 import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.utils.getInstalledPackageInfosWithPermissions
 import com.machiav3lli.backup.utils.specialBackupsEnabled
 import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
@@ -268,7 +267,7 @@ fun Context.getBackups(
     var backupsMap: Map<String, List<Backup>> = emptyMap()
 
     if (packageName.isEmpty())
-        OABX.beginBusy("getBackups($packageName)")
+        OABX.beginBusy("getBackups")
 
     try {
         val backupRoot = getBackupRoot()
@@ -284,37 +283,40 @@ fun Context.getBackups(
             }
         }
 
-
         val backups = runBlocking {
             channelFlow {
                 val producer = this
                 scanBackups(backupRoot, packageName, forceTrace = trace) { propsFile ->
                     Backup.createFrom(propsFile)
-                        ?.let { runBlocking  { send(it) } }
+                        ?.let { runBlocking { send(it) } }
                         ?: run {
                             throw Exception("props file ${propsFile.path} not loaded")
                         }
                 }
-            }.onEach { traceBackups { "${it.packageName} ${it.backupDate}" } }.toList(mutableListOf())
+            }
+                //.onEach { traceBackups { "${it.packageName} ${it.backupDate}" } }
+                .toList(mutableListOf())
         }
 
         backupsMap = backups.groupBy { it.packageName }
 
-        if (false && packageName.isNotEmpty())
-            traceBackups {
-                val backups = backupsMap[packageName]
-                "<$packageName> ${
-                    if (backups.isNullOrEmpty())
-                        "---"
-                    else
-                        TraceUtils.formatSortedBackups(backups)
-                }"
+        if (packageName.isEmpty()) {
+            if (backupsMap.size > 0 && OABX.startup) {
+                OABX.startup = false
+                OABX.endBusy("startup")
             }
+        } else {
+            if (OABX.startup)
+                traceBackupsScan { "<$packageName> ********** single scan ${formatBackups(backupsMap[packageName] ?: listOf())}" }
+            else
+                traceBackupsScan { "<$packageName> ********** single scan ${formatBackups(backupsMap[packageName] ?: listOf())}" }
+        }
+        
     } catch (e: Throwable) {
         logException(e, backTrace = true)
     } finally {
         if (packageName.isEmpty())
-            OABX.endBusy("getBackups($packageName)")
+            OABX.endBusy("getBackups")
     }
 
     return backupsMap

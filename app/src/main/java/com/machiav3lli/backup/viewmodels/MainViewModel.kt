@@ -92,13 +92,8 @@ class MainViewModel(
     }
 
     init {
-        // do it early
-        refreshList()
-
-        if(OABX.startup) {
-            OABX.startup = false
-            OABX.endBusy("startup")
-        }
+        // do this before the flows start
+        //OABX.context.getBackups()
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - FLOWS
@@ -296,7 +291,7 @@ class MainViewModel(
             .onEach {
                 while (OABX.startup /* || OABX.isBusy */) {
                     traceFlows { "*** updatePackages wait for not busy" }
-                    delay(500)
+                    delay(3000)
                 }
             }
             .mapLatest { it.filter(Package::isUpdated).toMutableList() }

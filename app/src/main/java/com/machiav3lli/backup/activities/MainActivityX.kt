@@ -454,7 +454,7 @@ class MainActivityX : BaseActivity() {
                         //viewModel.searchQuery.value = ""
                         //viewModel.modelSortFilter.value = OABX.context.sortFilterModel
 
-                        //refreshPackages()     // -> init { refreshList() } in viewModel
+                        refreshPackages()     // -> init { refreshList() } in viewModel
                     }
                 }
 
