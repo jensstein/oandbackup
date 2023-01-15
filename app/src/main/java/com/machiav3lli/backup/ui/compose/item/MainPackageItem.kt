@@ -72,6 +72,7 @@ import com.machiav3lli.backup.utils.getFormattedDate
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import kotlin.math.roundToInt
 
 val logEachN = 1000L
@@ -291,15 +292,21 @@ fun MainPackageContextMenu(
         parallel: Boolean = true,
         todo: (p: Package) -> Unit = {},
     ) {
-        var stream = packages.stream()
-        if (parallel)
-            stream = stream.parallel()
-
-        stream.forEach { pkg ->
-            if (select == true) selection[pkg.packageName] = false
-            //OABX.addInfoText("$action ${pkg.packageName}")
-            todo(pkg)
-            select?.let { s -> selection[pkg.packageName] = s }
+        if (parallel) {
+            packages.stream().parallel().forEach { pkg ->
+                if (select == true) selection[pkg.packageName] = false
+                //OABX.addInfoText("$action ${pkg.packageName}")
+                todo(pkg)
+                select?.let { s -> selection[pkg.packageName] = s }
+            }
+        } else {
+            packages.forEach { pkg ->
+                if (select == true) selection[pkg.packageName] = false
+                //OABX.addInfoText("$action ${pkg.packageName}")
+                todo(pkg)
+                yield()
+                select?.let { s -> selection[pkg.packageName] = s }
+            }
         }
     }
 
@@ -451,7 +458,12 @@ fun MainPackageContextMenu(
                             packages.map { MODE_ALL }
                         ) {
                             it.removeObserver(this)
-                            launchEachPackage(packages, "backup", select = false, parallel = false) {}
+                            launchEachPackage(
+                                packages,
+                                "backup",
+                                select = false,
+                                parallel = false
+                            ) {}
                         }
                     }
                 )
@@ -469,7 +481,12 @@ fun MainPackageContextMenu(
                                     packages.map { MODE_ALL }
                                 ) {
                                     it.removeObserver(this)
-                                    launchEachPackage(packages, "restore", select = false, parallel = false) {}
+                                    launchEachPackage(
+                                        packages,
+                                        "restore",
+                                        select = false,
+                                        parallel = false
+                                    ) {}
                                 }
                             }
                         }
@@ -521,7 +538,11 @@ fun MainPackageContextMenu(
                     openSubMenu(subMenu) {
                         Confirmation {
                             expanded.value = false
-                            launchEachPackage(selectedAndVisible, "uninstall", parallel = false) {
+                            launchEachPackage(
+                                selectedAndVisible,
+                                "uninstall",
+                                parallel = false
+                            ) {
                                 runAsRoot("pm uninstall ${it.packageName}")
                                 Package.invalidateCacheForPackage(it.packageName)
                             }
