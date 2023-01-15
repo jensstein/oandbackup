@@ -53,8 +53,8 @@ class Package {
             OABX.putBackups(packageName, backups)
         }
 
+    // toPackageList
     internal constructor(
-        // toPackageList
         context: Context,
         appInfo: AppInfo,
     ) {
@@ -63,16 +63,16 @@ class Package {
         if (appInfo.installed) refreshStorageStats(context)
     }
 
+    // special packages
     constructor(
-        // special packages
         specialInfo: SpecialInfo,
     ) {
         packageName = specialInfo.packageName
         this.packageInfo = specialInfo
     }
 
+    // schedule, getInstalledPackageList, packages from PackageManager
     constructor(
-        // schedule, getInstalledPackageList, packages from PackageManager
         context: Context,
         packageInfo: android.content.pm.PackageInfo,
     ) {
