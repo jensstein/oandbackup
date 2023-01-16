@@ -516,6 +516,14 @@ fun MainPackageContextMenu(
         )
 
         DropdownMenuItem(
+            text = { Text("Deselect All") },
+            onClick = {
+                expanded.value = false
+                selection.clear()   //TODO hg42 ???
+            }
+        )
+
+        DropdownMenuItem(
             text = { Text("Load") },
             onClick = {
                 openSubMenu(subMenu) {
