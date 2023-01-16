@@ -39,6 +39,7 @@ import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.dao.ScheduleDao
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.handler.ShellCommands
+import com.machiav3lli.backup.pref_autoLogSuspicious
 import com.machiav3lli.backup.preferences.onErrorInfo
 import com.machiav3lli.backup.preferences.pref_fakeScheduleMin
 import com.machiav3lli.backup.preferences.pref_useAlarmClock
@@ -178,7 +179,7 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                         val message =
                             "**************************************** timeLeft < 1 min -> set schedule $schedule"
                         traceSchedule { message }
-                        if (BuildConfig.DEBUG || BuildConfig.APPLICATION_ID.contains("hg42"))
+                        if (BuildConfig.DEBUG || BuildConfig.APPLICATION_ID.contains("hg42") || pref_autoLogSuspicious.value)
                             textLog(
                                 listOf(
                                     message

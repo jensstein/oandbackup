@@ -469,9 +469,9 @@ fun List<AppInfo>.toPackageList(
 
 fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
 
-    OABX.beginBusy("updateAppTables")
-
     try {
+        OABX.beginBusy("updateAppTables")
+
         val installedPackageInfos = packageManager.getInstalledPackageInfosWithPermissions()
         val installedNames = installedPackageInfos.map { it.packageName }.toSet()
 

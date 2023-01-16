@@ -102,6 +102,12 @@ val pref_autoLogExceptions = BooleanPref(
     defaultValue = false
 )
 
+val pref_autoLogSuspicious = BooleanPref(
+    key = "dev-log.autoLogSuspicious",
+    summary = "create a log for each unexpected exception",
+    defaultValue = false
+)
+
 val pref_autoLogAfterSchedule = BooleanPref(
     key = "dev-log.autoLogAfterSchedule",
     summary = "create a log after each schedule execution",

@@ -31,6 +31,7 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import com.machiav3lli.backup.ACTION_CANCEL
 import com.machiav3lli.backup.ACTION_SCHEDULE
+import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.beginLogSection
@@ -41,6 +42,7 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.pref_autoLogAfterSchedule
+import com.machiav3lli.backup.pref_autoLogSuspicious
 import com.machiav3lli.backup.preferences.pref_fakeSchedups
 import com.machiav3lli.backup.preferences.pref_useForegroundInService
 import com.machiav3lli.backup.preferences.supportInfo
@@ -277,12 +279,13 @@ open class ScheduleService : Service() {
         } else {
             val message = "duplicate schedule detected: $scheduleId $name"
             Timber.w(message)
-            textLog(
-                listOf(
-                    message,
-                    "--- autoLogAfterSchedule $scheduleId $name"
-                ) + supportInfo()
-            )
+            if (BuildConfig.DEBUG || BuildConfig.APPLICATION_ID.contains("hg42") || pref_autoLogSuspicious.value)
+                textLog(
+                    listOf(
+                        message,
+                        "--- autoLogAfterSchedule $scheduleId $name"
+                    ) + supportInfo()
+                )
         }
 
         OABX.wakelock(false)
@@ -297,12 +300,13 @@ open class ScheduleService : Service() {
         } else {
             val message = "duplicate schedule detected: $scheduleId $name $details (late)"
             Timber.w(message)
-            textLog(
-                listOf(
-                    message,
-                    "--- autoLogAfterSchedule $scheduleId $name $details"
-                ) + supportInfo()
-            )
+            if (BuildConfig.DEBUG || BuildConfig.APPLICATION_ID.contains("hg42") || pref_autoLogSuspicious.value)
+                textLog(
+                    listOf(
+                        message,
+                        "--- autoLogAfterSchedule $scheduleId $name $details"
+                    ) + supportInfo()
+                )
             false
         }
     }
