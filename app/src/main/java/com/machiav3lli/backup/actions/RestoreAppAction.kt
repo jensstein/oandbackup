@@ -312,7 +312,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                             backup.profileId,
                             packageFiles.sumOf { it.length() })
                     ).let {
-                        val sessionIdPattern = Pattern.compile("(\\d+)")
+                        val sessionIdPattern = Pattern.compile("""(\d+)""")
                         val sessionIdMatcher = sessionIdPattern.matcher(it.out[0])
                         val found = sessionIdMatcher.find()
                         val sessionId = sessionIdMatcher.group(1)?.toInt()
