@@ -233,8 +233,8 @@ class Package {
             throw RuntimeException("Asked to delete a backup of ${backup.packageName} but this object is for $packageName")
         }
         val parent = backup.file?.parent
+        runChecked { backup.file?.delete() }    // first, it could be inside dir
         runChecked { backup.dir?.deleteRecursive() }
-        runChecked { backup.file?.delete() }
         parent?.let {
             if (isPlausiblePath(parent.path))
                 try {
