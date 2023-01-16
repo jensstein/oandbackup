@@ -236,6 +236,7 @@ fun Background(
 
     val inTime = 2000
     val outTime = 2000
+    val turnTime = 20000
 
     Box(
         modifier = Modifier
@@ -256,7 +257,7 @@ fun Background(
                         initialValue = angle,
                         targetValue = angle + 360f * rounds,
                         animationSpec = infiniteRepeatable(
-                            animation = tween(10000 * rounds, easing = LinearEasing),
+                            animation = tween(turnTime * rounds, easing = LinearEasing),
                             repeatMode = RepeatMode.Restart
                             //repeatMode = RepeatMode.Reverse
                         )
@@ -285,7 +286,7 @@ fun Background(
                             initialValue = angle,
                             targetValue = angle + 360f * rounds,
                             animationSpec = infiniteRepeatable(
-                                animation = tween(10000 * rounds, easing = LinearEasing),
+                                animation = tween(turnTime * rounds, easing = LinearEasing),
                                 repeatMode = RepeatMode.Restart
                                 //repeatMode = RepeatMode.Reverse
                             )
