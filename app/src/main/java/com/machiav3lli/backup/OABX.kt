@@ -415,8 +415,8 @@ class OABX : Application() {
 
         // if any background work is to be done
         private var theWakeLock: PowerManager.WakeLock? = null
-        private var wakeLockNested: Int = 0                         //TODO hg42 use AtomicInteger
-        private const val wakeLockTag = "OABX:Application"
+        private var wakeLockNested = AtomicInteger(0)
+        private const val wakeLockTag = "NeoBackup:Application"
 
         // count the nesting levels
         // might be difficult sometimes, because
@@ -424,17 +424,17 @@ class OABX : Application() {
         // e.g. from the receiver to the service
         fun wakelock(aquire: Boolean) {
             if (aquire) {
-                Timber.d("%%%%% $wakeLockTag wakelock aquire (before: $wakeLockNested)")
-                if (++wakeLockNested == 1) {
+                traceDebug { "%%%%% $wakeLockTag wakelock aquire (before: $wakeLockNested)" }
+                if (wakeLockNested.accumulateAndGet(+1, Int::plus) == 1) {
                     val pm = OABX.context.getSystemService(Context.POWER_SERVICE) as PowerManager
                     theWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, wakeLockTag)
                     theWakeLock?.acquire(60 * 60 * 1000L)
-                    Timber.d("%%%%% $wakeLockTag wakelock ACQUIRED")
+                    traceDebug { "%%%%% $wakeLockTag wakelock ACQUIRED" }
                 }
             } else {
-                Timber.d("%%%%% $wakeLockTag wakelock release (before: $wakeLockNested)")
-                if (--wakeLockNested == 0) {
-                    Timber.d("%%%%% $wakeLockTag wakelock RELEASING")
+                traceDebug { "%%%%% $wakeLockTag wakelock release (before: $wakeLockNested)" }
+                if (wakeLockNested.accumulateAndGet(-1, Int::plus) == 0) {
+                    traceDebug { "%%%%% $wakeLockTag wakelock RELEASING" }
                     theWakeLock?.release()
                 }
             }
