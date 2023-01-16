@@ -188,8 +188,6 @@ val traceDebug = TraceUtils.TracePref(
     default = false
 )
 
-var initializedPrefs = true
-
 
 class OABX : Application() {
 
@@ -258,15 +256,13 @@ class OABX : Application() {
 
         init {
 
-            initializedPrefs = false
-
             Timber.plant(object : Timber.DebugTree() {
 
                 override fun log(
                     priority: Int, tag: String?, message: String, t: Throwable?,
                 ) {
-                    val traceToLogcat = if (initializedPrefs) pref_logToSystemLogcat.value else true
-                    val maxLogLines = if (initializedPrefs) pref_maxLogLines.value else 200
+                    val traceToLogcat = try { pref_logToSystemLogcat.value } catch(_: Throwable) { true }
+                    val maxLogLines = try { pref_maxLogLines.value } catch(_: Throwable) { 2000 }
                     if (traceToLogcat)
                         super.log(priority, "$tag", message, t)
 
