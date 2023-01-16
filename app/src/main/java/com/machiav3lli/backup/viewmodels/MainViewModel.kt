@@ -48,7 +48,6 @@ import com.machiav3lli.backup.utils.sortFilterModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -236,10 +235,10 @@ class MainViewModel(
 
             traceFlows { "******************** filtering - list: ${p.size} filter: $f" }
 
-            while (OABX.startup /* || OABX.isBusy */) {
-                traceFlows { "*** filtering wait for not busy" }
-                delay(500)
-            }
+            //while (OABX.startup /* || OABX.isBusy */) {
+            //    traceFlows { "*** filtering wait for not busy" }
+            //    delay(500)
+            //}
 
             val list = p
                 .filter { item: Package ->
@@ -267,12 +266,12 @@ class MainViewModel(
         //------------------------------------------------------------------------------------------ updatedPackages
         notBlockedList
             .trace { "updatePackages? ..." }
-            .onEach {
-                while (OABX.startup /* || OABX.isBusy */) {
-                    traceFlows { "*** updatePackages wait for not busy" }
-                    delay(3000)
-                }
-            }
+            //.onEach {
+            //    while (OABX.startup /* || OABX.isBusy */) {
+            //        traceFlows { "*** updatePackages wait for not busy" }
+            //        delay(500)
+            //    }
+            //}
             .mapLatest { it.filter(Package::isUpdated).toMutableList() }
             .trace {
                 "*** updatedPackages <<- updated: (${it.size})${

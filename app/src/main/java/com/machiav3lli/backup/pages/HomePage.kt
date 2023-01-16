@@ -81,7 +81,7 @@ fun HomePage() {
 
     val filteredList by main.viewModel.filteredList.collectAsState(emptyList())
     val updatedPackages by main.viewModel.updatedPackages.collectAsState(emptyList())
-    val updaterVisible = !OABX.isBusy && updatedPackages.size > 0
+    val updaterVisible = /* !OABX.startup && */ updatedPackages.size > 0
     var updaterExpanded by remember { mutableStateOf(false) }
     val selection = main.viewModel.selection
     var menuPackage by remember { mutableStateOf<Package?>(null) }
