@@ -48,7 +48,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -365,7 +364,7 @@ class MainActivityX : BaseActivity() {
         OABX.activity = this
         OABX.main = this
 
-        val freshStart = (savedInstanceState == null)   //TODO use some lifecycle method?
+        var freshStart = (savedInstanceState == null)   //TODO use some lifecycle method?
 
         Timber.w(
             "======================================== activity ${
@@ -446,18 +445,9 @@ class MainActivityX : BaseActivity() {
                 Timber.d("compose: query = '$query'")
 
                 Timber.d("search: ${viewModel.searchQuery.value} filter: ${viewModel.modelSortFilter.value}")
-                if (freshStart) {
-                    SideEffect {
-                        // runs earlier, maybe too early (I guess because it's independent from the view model)
-                        traceBold { "******************** freshStart Sideffect ********************" }
-                        //viewModel.searchQuery.value = ""
-                        //viewModel.modelSortFilter.value = OABX.context.sortFilterModel
-
-                        refreshPackages()     // -> init { refreshList() } in viewModel
-                    }
-                }
 
                 if (freshStart) {
+                    freshStart = false
                     LaunchedEffect(viewModel) {
                         traceBold { "******************** freshStart LaunchedEffect(viewModel) ********************" }
                         // it isn't necessary with MutableStateFlow under the hood
