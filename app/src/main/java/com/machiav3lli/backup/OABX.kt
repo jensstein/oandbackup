@@ -472,6 +472,7 @@ class OABX : Application() {
             }
         }
 
+        val runningSchedules = mutableMapOf<Long, Boolean>()
 
         private var theBackupsMap = mutableMapOf<String, List<Backup>>()
 

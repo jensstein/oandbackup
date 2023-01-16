@@ -33,6 +33,7 @@ import com.machiav3lli.backup.ISO_DATE_TIME_FORMAT_MIN
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.getString
+import com.machiav3lli.backup.OABX.Companion.runningSchedules
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.dao.ScheduleDao
@@ -61,7 +62,7 @@ fun calculateTimeToRun(schedule: Schedule, now: Long): Long {
     val c = Calendar.getInstance()
     c.timeInMillis = schedule.timePlaced
 
-    val limitIncrements = 366/schedule.interval
+    val limitIncrements = 366 / schedule.interval
     val minTimeFromNow = TimeUnit.MINUTES.toMillis(1)
 
     val fakeMin = pref_fakeScheduleMin.value
@@ -248,7 +249,10 @@ fun scheduleAlarms() {
                 // setting this same minute as alarm time will start it immediately
                 //TODO is that documented?
                 //TODO is there a better way to test?
-                if (abs(it.timeToRun - System.currentTimeMillis()) < TimeUnit.MINUTES.toMillis(1)) {
+                if (abs(it.timeToRun - System.currentTimeMillis())
+                    < TimeUnit.MINUTES.toMillis(1)
+                    || runningSchedules[it.id] != null
+                ) {
                     if (it.enabled)
                         scheduleAlarm(OABX.context, it.id, false)
                     else
@@ -336,7 +340,7 @@ fun startSchedule(schedule: Schedule) {
 internal class StartSchedule(
     val context: Context,
     val scheduleDao: ScheduleDao,
-    private val scheduleId: Long
+    private val scheduleId: Long,
 ) :
     ShellCommands.Command {
 
