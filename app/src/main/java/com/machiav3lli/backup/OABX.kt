@@ -17,6 +17,7 @@
  */
 package com.machiav3lli.backup
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.content.Context
@@ -319,7 +320,7 @@ class OABX : Application() {
             traceSection { "*** ${"|---".repeat(count)}\\ $section" }
         }
 
-        fun endLogSection(section: String) {
+        fun endLogSection(section: String) {    //TODO hg42 timer!
             var count = 0
             synchronized(logSections) {
                 count = logSections.getValue(section)
@@ -379,6 +380,9 @@ class OABX : Application() {
             }
         }
 
+        // "Do not place Android context classes in static fields; this is a memory leak"
+        // but only if a context is assigned, this is only used by Preview (and maybe by Tests)
+        @SuppressLint("StaticFieldLeak")
         var fakeContext: Context? = null
         val context: Context get() = fakeContext ?: app.applicationContext
 
@@ -440,6 +444,8 @@ class OABX : Application() {
             return Build.VERSION.SDK_INT >= sdk
         }
 
+        //------------------------------------------------------------------------------------------ progress
+
         val progress = mutableStateOf(Pair(false, 0f))
 
         fun setProgress(now: Int = 0, max: Int = 0) {
@@ -448,6 +454,8 @@ class OABX : Application() {
             else
                 progress.value = Pair(true, 1f * now / max)
         }
+
+        //------------------------------------------------------------------------------------------ busy
 
         var _busy = AtomicInteger(0)
         val busy = mutableStateOf(0)
@@ -472,7 +480,11 @@ class OABX : Application() {
             }
         }
 
+        //------------------------------------------------------------------------------------------ runningSchedules
+
         val runningSchedules = mutableMapOf<Long, Boolean>()
+
+        //------------------------------------------------------------------------------------------ backups
 
         private var theBackupsMap = mutableMapOf<String, List<Backup>>()
 

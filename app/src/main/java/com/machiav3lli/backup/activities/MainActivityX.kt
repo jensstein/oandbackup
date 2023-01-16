@@ -88,7 +88,6 @@ import com.machiav3lli.backup.pref_uncaughtExceptionsJumpToPreferences
 import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
-import com.machiav3lli.backup.ui.compose.MutableComposableSharedFlow
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowsClockwise
 import com.machiav3lli.backup.ui.compose.icons.phosphor.FunnelSimple
@@ -441,7 +440,7 @@ class MainActivityX : BaseActivity() {
                 val currentPage by remember(pagerState.currentPage) { mutableStateOf(pages[pagerState.currentPage]) }   //TODO hg42 remove remember ???
 
                 var query by rememberSaveable { mutableStateOf(viewModel.searchQuery.value) }
-                //val query by viewModel.searchQuery.flow.collectAsState(viewModel.searchQuery.initial)  // doesn't work with rotate...
+                //val query by viewModel.searchQuery.flow.collectAsState(viewModel.searchQuery.initial)  // doesn't work with rotate (not saveable)...
                 val searchExpanded = query.isNotEmpty()
 
                 Timber.d("compose: query = '$query'")
@@ -460,17 +459,15 @@ class MainActivityX : BaseActivity() {
 
                 if (freshStart) {
                     LaunchedEffect(viewModel) {
-                        // runs later
                         traceBold { "******************** freshStart LaunchedEffect(viewModel) ********************" }
-                        //TODO hg42 I guess this shouldn't be necessary, but no better solution to start the flow game, yet
-                        //TODO indeed it doesn't seem to be necessary with MutableStateFlow under the hood
-                        // keep the compile conditions, even if they are always false if using MutableComposableStateFlow
-                        if (viewModel.searchQuery is MutableComposableSharedFlow<*>)
-                            viewModel.searchQuery.value = ""
-                        if (viewModel.modelSortFilter is MutableComposableSharedFlow<*>)
-                            viewModel.modelSortFilter.value = OABX.context.sortFilterModel
+                        // it isn't necessary with MutableStateFlow under the hood
+                        // keeping the compile conditions, even if they are always false if using MutableComposableStateFlow
+                        //if (viewModel.searchQuery is MutableComposableSharedFlow<*>)
+                        //    viewModel.searchQuery.value = ""
+                        //if (viewModel.modelSortFilter is MutableComposableSharedFlow<*>)
+                        //    viewModel.modelSortFilter.value = OABX.context.sortFilterModel
 
-                        //refreshPackages()     // -> init { refreshList() } in viewModel
+                        //refreshPackages()     // not a good idea -> using init { ... } in viewModel
                     }
                 }
 

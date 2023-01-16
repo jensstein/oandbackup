@@ -308,9 +308,9 @@ fun Context.findBackups(
             }
         } else {
             if (OABX.startup)
-                traceBackupsScan { "<$packageName> ********** single scan ${formatBackups(backupsMap[packageName] ?: listOf())}" }
+                traceBackupsScan { "<$packageName> single scan (DURING STARTUP!!!) ${formatBackups(backupsMap[packageName] ?: listOf())}" }
             else
-                traceBackupsScan { "<$packageName> ********** single scan ${formatBackups(backupsMap[packageName] ?: listOf())}" }
+                traceBackupsScan { "<$packageName> single scan ${formatBackups(backupsMap[packageName] ?: listOf())}" }
         }
         
     } catch (e: Throwable) {
