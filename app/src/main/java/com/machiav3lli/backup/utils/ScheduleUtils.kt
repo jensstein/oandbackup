@@ -56,7 +56,6 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.LocalTime
 import java.util.concurrent.TimeUnit
-import kotlin.math.abs
 import kotlin.math.max
 
 fun calculateTimeToRun(schedule: Schedule, now: Long): Long {
@@ -242,7 +241,7 @@ fun cancelAlarm(context: Context, scheduleId: Long) {
 fun scheduleAlarms() {
     CoroutineScope(Dispatchers.Default).launch {
         val scheduleDao = ODatabase.getInstance(OABX.context).scheduleDao
-        traceSchedule { "schedule alarms" }
+        traceSchedule { "scheduleAlarms" }
         scheduleDao.all
             .forEach {
                 // do not set or cancel schedules that are just going to be started
@@ -250,14 +249,17 @@ fun scheduleAlarms() {
                 // setting this same minute as alarm time will start it immediately
                 //TODO is that documented?
                 //TODO is there a better way to test?
-                if (abs(it.timeToRun - System.currentTimeMillis())
-                    < TimeUnit.MINUTES.toMillis(1)
-                    || runningSchedules[it.id] != null
-                ) {
-                    if (it.enabled)
+                val scheduleAlreadyRuns = runningSchedules[it.id] != null
+                if (scheduleAlreadyRuns) {
+                    traceSchedule { "schedule is already started" }
+                } else {
+                    if (it.enabled) {
+                        traceSchedule { "set alarm for $it" }
                         scheduleAlarm(OABX.context, it.id, false)
-                    else
+                    } else {
+                        traceSchedule { "cancel alarm for $it" }
                         cancelAlarm(OABX.context, it.id)
+                    }
                 }
             }
     }
