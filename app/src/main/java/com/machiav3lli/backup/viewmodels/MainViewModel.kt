@@ -38,6 +38,7 @@ import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.Package.Companion.invalidateCacheForPackage
 import com.machiav3lli.backup.traceBackups
+import com.machiav3lli.backup.traceBackupsScan
 import com.machiav3lli.backup.traceFlows
 import com.machiav3lli.backup.ui.compose.MutableComposableFlow
 import com.machiav3lli.backup.ui.compose.item.limitIconCache
@@ -70,7 +71,11 @@ class MainViewModel(
     init {
         // do this before the flows start
         MainScope().launch(Dispatchers.IO) {
-            appContext.findBackups()
+            val backupsMap = appContext.findBackups()
+            traceBackupsScan { "backups: ${backupsMap.size}" }
+            OABX.endBusy("startup")
+            OABX.setBackups(backupsMap)
+            OABX.startup = false
         }
     }
 

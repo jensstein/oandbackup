@@ -303,8 +303,6 @@ fun Context.findBackups(
 
         if (packageName.isEmpty()) {
             if (backupsMap.size > 0 && OABX.startup) {
-                OABX.startup = false
-                OABX.endBusy("startup")
             }
         } else {
             if (OABX.startup)
