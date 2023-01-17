@@ -503,11 +503,11 @@ class OABX : Application() {
         }
 
         fun setBackups(backups: Map<String, List<Backup>>) {
-            theBackupsMap.forEach {
+            backups.forEach {
                 putBackups(it.key, it.value)
             }
             // clear no more existing packages
-            (backups.keys - theBackupsMap.keys).forEach {
+            (theBackupsMap.keys - backups.keys).forEach {
                 clearBackups(it)
             }
         }
