@@ -505,7 +505,7 @@ class WorkHandler(appContext: Context) {
                                 notificationBuilder
                                     .setOngoing(false)
                                     .setSilent(true)
-                                    //.setProgress(workCount, processed, false)
+                                    .setProgress(workCount, processed, false)
                                     .setColor(
                                         if (failed == 0)
                                             0x66FF66
@@ -516,6 +516,7 @@ class WorkHandler(appContext: Context) {
                                 notificationBuilder
                                     .setOngoing(false)
                                     .setSilent(true)
+                                    .setProgress(workCount, processed, false)
                                     .setColor(
                                         if (failed == 0)
                                             0x66FF66
