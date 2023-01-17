@@ -301,7 +301,7 @@ class MainViewModel(
     private suspend fun recreateAppInfoList() {
         withContext(Dispatchers.Default) {
             try {
-                OABX.beginBusy("recreateAppInfoList")
+                //OABX.beginBusy("recreateAppInfoList")
                 val time = measureTimeMillis {
                     appContext.updateAppTables(db.appInfoDao, db.backupDao)
                 }
@@ -309,7 +309,7 @@ class MainViewModel(
             } catch (e: Throwable) {
                 LogsHandler.logException(e, backTrace = true)
             } finally {
-                OABX.endBusy("recreateAppInfoList")
+                //OABX.endBusy("recreateAppInfoList")
             }
         }
     }
@@ -325,8 +325,6 @@ class MainViewModel(
     private suspend fun updateDataOf(packageName: String) =
         withContext(Dispatchers.IO) {
             try {
-                OABX.beginBusy("updateDataOf")
-
                 invalidateCacheForPackage(packageName)
                 val appPackage = packageMap.value[packageName]
                 appPackage?.apply {
@@ -338,8 +336,6 @@ class MainViewModel(
             } catch (e: AssertionError) {
                 Timber.w(e.message ?: "")
                 null
-            } finally {
-                OABX.endBusy("updateDataOf")
             }
         }
 

@@ -476,7 +476,7 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
         val installedNames = installedPackageInfos.map { it.packageName }.toSet()
 
         try {
-            OABX.beginBusy("unsuspend")
+            beginNanoTimer("unsuspend")
 
             if (!OABX.appsSuspendedChecked && pref_backupSuspendApps.value) {
                 installedNames.filter { packageName ->
@@ -498,7 +498,7 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
         } catch (e: Throwable) {
             logException(e, backTrace = true)
         } finally {
-            OABX.endBusy("unsuspend")
+            endNanoTimer("unsuspend")
         }
 
 
@@ -512,7 +512,7 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
 
         val uninstalledPackagesWithBackup =
             try {
-                OABX.beginBusy("uninstalledPackagesWithBackup")
+                beginNanoTimer("uninstalledPackagesWithBackup")
 
                 (backupsMap.keys - installedNames - specialNames)
                     .mapNotNull {
@@ -522,12 +522,12 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
                 logException(e, backTrace = true)
                 emptyList()
             } finally {
-                OABX.endBusy("uninstalledPackagesWithBackup")
+                endNanoTimer("uninstalledPackagesWithBackup")
             }
 
         val appInfoList =
             try {
-                OABX.beginBusy("appInfoList")
+                beginNanoTimer("appInfoList")
 
                 installedPackageInfos
                     .map { AppInfo(this, it) }
@@ -536,18 +536,18 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
                 logException(e, backTrace = true)
                 emptyList()
             } finally {
-                OABX.endBusy("appInfoList")
+                endNanoTimer("appInfoList")
             }
 
         try {
-            OABX.beginBusy("dbUpdate")
+            beginNanoTimer("dbUpdate")
 
             backupDao.updateList(*backups.toTypedArray())
             appInfoDao.updateList(*appInfoList.toTypedArray())
         } catch (e: Throwable) {
             logException(e, backTrace = true)
         } finally {
-            OABX.endBusy("dbUpdate")
+            endNanoTimer("dbUpdate")
         }
 
     } catch (e: Throwable) {

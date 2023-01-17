@@ -70,8 +70,6 @@ import com.google.accompanist.flowlayout.FlowRow
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.ICON_SIZE_SMALL
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.OABX.Companion.beginBusy
-import com.machiav3lli.backup.OABX.Companion.endBusy
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.LogsHandler.Companion.share
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
@@ -199,7 +197,6 @@ fun lastErrorCommand(): List<String> {
 
 fun onErrorInfo(): List<String> {
     try {
-        beginBusy("onErrorInfo")
         val logs = logInt() + logApp()
         val lines =
             listOf("=== onError log", "") +
@@ -210,13 +207,11 @@ fun onErrorInfo(): List<String> {
                     logs
         return lines
     } finally {
-        endBusy("onErrorInfo")
     }
 }
 
 fun supportInfo(): List<String> {
     try {
-        beginBusy("supportInfo")
         val logs = logInt() + logApp()
         val lines =
             listOf("=== support log", "") +
@@ -231,7 +226,6 @@ fun supportInfo(): List<String> {
                     logs
         return lines
     } finally {
-        endBusy("supportInfo")
     }
 }
 

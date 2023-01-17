@@ -23,8 +23,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.machiav3lli.backup.OABX.Companion.beginBusy
-import com.machiav3lli.backup.OABX.Companion.endBusy
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.LogsHandler.Companion.share
 import com.machiav3lli.backup.items.Log
@@ -43,7 +41,7 @@ class LogViewModel(private val appContext: Application) : AndroidViewModel(appCo
     fun refreshList() {
         viewModelScope.launch {
             try {
-                beginBusy("Log refreshList")
+                //beginBusy("Log refreshList")        // don't, it can be prevented by compose
                 logsList.apply {
                     clear()
                     addAll(recreateLogsList())
@@ -51,7 +49,7 @@ class LogViewModel(private val appContext: Application) : AndroidViewModel(appCo
             } catch (e: Throwable) {
                 LogsHandler.logException(e, backTrace = true)
             } finally {
-                endBusy("Log refreshList")
+                //endBusy("Log refreshList")        // don't, it can be prevented by compose
             }
         }
     }
