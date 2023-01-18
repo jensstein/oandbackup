@@ -59,7 +59,7 @@ import kotlinx.coroutines.plus
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import kotlin.reflect.*
-import kotlin.system.measureTimeMillis
+import kotlin.system.measureNanoTime
 
 class MainViewModel(
     private val db: ODatabase,
@@ -289,10 +289,10 @@ class MainViewModel(
         withContext(Dispatchers.Default) {
             try {
                 //OABX.beginBusy("recreateAppInfoList")
-                val time = measureTimeMillis {
+                val time = measureNanoTime {
                     appContext.updateAppTables(db.appInfoDao, db.backupDao)
                 }
-                OABX.addInfoText("recreateAppInfoList: ${(time / 1000 + 0.5).toInt()} sec")
+                OABX.addInfoText("recreateAppInfoList: ${"%.3f".format(time / 1E9)} sec")
             } catch (e: Throwable) {
                 LogsHandler.logException(e, backTrace = true)
             } finally {
