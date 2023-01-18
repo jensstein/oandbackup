@@ -34,10 +34,6 @@ class LogViewModel(private val appContext: Application) : AndroidViewModel(appCo
 
     var logsList = mutableStateListOf<Log>()
 
-    init {
-        refreshList()
-    }
-
     fun refreshList() {
         viewModelScope.launch {
             try {

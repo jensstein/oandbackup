@@ -37,7 +37,7 @@ fun LogsPage(viewModel: LogViewModel) {
 
     val logs = remember(viewModel) { viewModel.logsList }
 
-    LaunchedEffect(true) {
+    LaunchedEffect(viewModel) {
         viewModel.refreshList()
     }
 
