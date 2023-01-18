@@ -87,7 +87,7 @@ import java.lang.Float.max
 @Composable
 fun DefaultPreview() {
     var count by remember { mutableStateOf(0) }
-    val busy by remember { OABX.busy }      //TODO hg42 remove remember ???
+    val busy by remember { OABX.busy }
 
     val maxCount = 4
 
@@ -176,7 +176,7 @@ fun ProgressIndicator() {
 fun BusyIndicator() {
     val busy by remember { OABX.busy }
     val useIt = !pref_busyRotateBackground.value
-    AnimatedVisibility(visible = useIt && busy > 0) {
+    AnimatedVisibility(visible = useIt && busy) {
         LinearProgressIndicator(
             modifier = Modifier
                 .fillMaxWidth()
@@ -416,7 +416,9 @@ fun TopBar(
         Text(
             text = "${BuildConfig.VERSION_NAME}",
             fontSize = 8.sp,
-            modifier = Modifier.fillMaxWidth().wrapContentSize(Alignment.TopCenter),
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentSize(Alignment.TopCenter),
             color = Color.Gray
         )
     }

@@ -32,13 +32,11 @@ import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Blocklist
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.handler.findBackups
 import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.Package.Companion.invalidateCacheForPackage
 import com.machiav3lli.backup.traceBackups
-import com.machiav3lli.backup.traceBackupsScan
 import com.machiav3lli.backup.traceFlows
 import com.machiav3lli.backup.ui.compose.MutableComposableFlow
 import com.machiav3lli.backup.ui.compose.item.limitIconCache
@@ -48,7 +46,6 @@ import com.machiav3lli.backup.utils.applyFilter
 import com.machiav3lli.backup.utils.sortFilterModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -70,13 +67,6 @@ class MainViewModel(
 
     init {
         // do this before the flows start
-        MainScope().launch(Dispatchers.IO) {
-            val backupsMap = appContext.findBackups()
-            traceBackupsScan { "backups: ${backupsMap.size}" }
-            OABX.endBusy("startup")
-            OABX.setBackups(backupsMap)
-            OABX.startup = false
-        }
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - FLOWS
@@ -257,7 +247,7 @@ class MainViewModel(
             traceFlows { "***** filtered ->> ${list.size}" }
             list
         }
-            // if the filter changes we can drop the older filter
+            // if the filter changes we can drop the older filters
             .mapLatest { it }
             .trace { "*** filteredList <<- ${it.size}" }
             .stateIn(
@@ -271,13 +261,13 @@ class MainViewModel(
         //------------------------------------------------------------------------------------------ updatedPackages
         notBlockedList
             .trace { "updatePackages? ..." }
-            //.onEach {
-            //    while (OABX.startup /* || OABX.isBusy */) {
-            //        traceFlows { "*** updatePackages wait for not busy" }
-            //        delay(500)
-            //    }
-            //}
-            .mapLatest { it.filter(Package::isUpdated).toMutableList() }
+            .mapLatest {
+                //while (OABX.startup /* || OABX.isBusy */) {
+                //    traceFlows { "*** updatePackages waiting for end of startup" }
+                //    delay(500)
+                //}
+                it.filter(Package::isUpdated).toMutableList()
+            }
             .trace {
                 "*** updatedPackages <<- updated: (${it.size})${
                     it.map {

@@ -48,6 +48,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -186,48 +187,12 @@ fun Modifier.busyBackground(
         )
 }
 
-fun Modifier.progressBackground(
-    angle: Float,
-    color0: Color,
-    color1: Color,
-    color2: Color,
-): Modifier {
-    val factor = 0.2f
-    return this
-        .angledGradientBackground(
-            listOf(
-                color0,
-                color1,
-                color0,
-                color0,
-                color0,
-                color0,
-                color0,
-                color0,
-                color0,
-            ), angle * 0.75f, factor
-        )
-        .angledGradientBackground(
-            listOf(
-                color0,
-                color0,
-                color1,
-                color0,
-                color0,
-                color0,
-                color0,
-                color0,
-                color0,
-            ), angle * 1.2f, factor
-        )
-}
-
 @Composable
 fun Background(
-    busy: Int = OABX.busy.value,
-    progress: Boolean = OABX.progress.value.first,
+    busy: State<Boolean>? = null,
     content: @Composable () -> Unit,
 ) {
+    val isBusy by remember { busy ?: OABX.busy }
     val rounds = 12
     val color0 = Color.Transparent
     val color1 = Color(1.0f, 0.3f, 0.3f, 0.15f)
@@ -244,7 +209,7 @@ fun Background(
         contentAlignment = Alignment.Center
     ) {
         AnimatedVisibility(
-            visible = busy > 0,
+            visible = isBusy,
             enter = fadeIn(tween(inTime)),
             exit = fadeOut(tween(outTime)),
             modifier = Modifier
@@ -271,35 +236,7 @@ fun Background(
             ) {
             }
         }
-        if (false)   // senseless, doesn't move when backups are running
-            AnimatedVisibility(
-                visible = progress,
-                enter = fadeIn(tween(inTime)),
-                exit = fadeOut(tween(outTime)),
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                var angle by rememberSaveable { mutableStateOf(70f) }
-                LaunchedEffect(true) {
-                    withContext(Dispatchers.IO) {
-                        animate(
-                            initialValue = angle,
-                            targetValue = angle + 360f * rounds,
-                            animationSpec = infiniteRepeatable(
-                                animation = tween(turnTime * rounds, easing = LinearEasing),
-                                repeatMode = RepeatMode.Restart
-                                //repeatMode = RepeatMode.Reverse
-                            )
-                        ) { value, _ -> angle = value }
-                    }
-                }
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .progressBackground(angle, color0, color3, color3)
-                ) {
-                }
-            }
+
         content()
     }
 }
@@ -307,14 +244,13 @@ fun Background(
 @Preview
 @Composable
 fun AnimationPreview() {
-    var busy by remember { mutableStateOf(1) }
+    var busy = remember { mutableStateOf(true) }
     var progress by remember { mutableStateOf(true) }
     Box {
         Row {
-            ActionChip(text = "busy $busy", positive = busy > 0) { busy = (busy + 1) % 3 }
-            ActionChip(text = "progress", positive = progress) { progress = !progress }
+            ActionChip(text = "busy ${busy.value}", positive = busy.value) { busy.value = ! busy.value }
         }
-        Background(busy = busy, progress = progress) {
+        Background(busy = busy) {
             Text(
                 """
                 Hello,

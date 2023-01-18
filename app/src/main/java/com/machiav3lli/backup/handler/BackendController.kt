@@ -33,6 +33,7 @@ import com.machiav3lli.backup.IGNORED_PERMISSIONS
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.OABX.Companion.hitBusy
 import com.machiav3lli.backup.OABX.Companion.setBackups
 import com.machiav3lli.backup.PROP_NAME
 import com.machiav3lli.backup.R
@@ -115,7 +116,9 @@ fun scanBackups(
 
     files.stream().parallel().forEach { file ->
 
-        checkMaxThreads()
+        //checkMaxThreads()
+
+        hitBusy()
 
         val name = file.name ?: ""
         val path = file.path ?: ""

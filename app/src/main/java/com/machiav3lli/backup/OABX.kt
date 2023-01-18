@@ -49,6 +49,8 @@ import com.machiav3lli.backup.utils.TraceUtils.endNanoTimer
 import com.machiav3lli.backup.utils.TraceUtils.methodName
 import com.machiav3lli.backup.utils.scheduleAlarms
 import com.machiav3lli.backup.utils.styleTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -119,7 +121,7 @@ val pref_autoLogAfterSchedule = BooleanPref(
 val pref_trace = BooleanPref(
     key = "dev-trace.trace",
     summary = "global switch for all traceXXX options",
-    defaultValue = BuildConfig.DEBUG
+    defaultValue = BuildConfig.DEBUG || BuildConfig.APPLICATION_ID.contains("hg42")
 )
 
 val traceSection = TraceUtils.TracePref(
@@ -237,6 +239,14 @@ class OABX : Application() {
             beginBusy("startup")
 
         scheduleAlarms()
+
+        MainScope().launch(Dispatchers.IO) {
+            val backupsMap = findBackups()
+            traceBackupsScan { "backups: ${backupsMap.size}" }
+            setBackups(backupsMap)
+            endBusy("startup")
+            startup = false
+        }
     }
 
     override fun onTerminate() {
@@ -279,21 +289,23 @@ class OABX : Application() {
                     val now = System.currentTimeMillis()
                     val date = ISO_DATE_TIME_FORMAT.format(now)
                     try {
-                        synchronized(OABX.lastLogMessages) {
-                            OABX.lastLogMessages.add("$date $prio $tag : $message")
-                            while (OABX.lastLogMessages.size > maxLogLines)
-                                OABX.lastLogMessages.removeAt(0)
+                        synchronized(lastLogMessages) {
+                            lastLogMessages.add("$date $prio $tag : $message")
+                            while (lastLogMessages.size > maxLogLines)
+                                lastLogMessages.removeAt(0)
                         }
                     } catch (e: Throwable) {
                         // ignore
-                        OABX.lastLogMessages.clear()
-                        OABX.lastLogMessages.add("$date E LOG : while adding or limiting log lines")
-                        OABX.lastLogMessages.add("$date E LOG : ${
-                            LogsHandler.message(
-                                e,
-                                backTrace = true
-                            )
-                        }")
+                        lastLogMessages.clear()
+                        lastLogMessages.add("$date E LOG : while adding or limiting log lines")
+                        lastLogMessages.add(
+                            "$date E LOG : ${
+                                LogsHandler.message(
+                                    e,
+                                    backTrace = true
+                                )
+                            }"
+                        )
                     }
                 }
 
@@ -328,7 +340,7 @@ class OABX : Application() {
                 count = logSections.getValue(section)
                 logSections[section] = count - 1
             }
-            traceSection { "*** ${"|---".repeat(count-1)}/ $section" }
+            traceSection { "*** ${"|---".repeat(count - 1)}/ $section" }
             //if (count == 0 && xxx)  ->Log                             //TODO hg42
         }
 
@@ -428,7 +440,7 @@ class OABX : Application() {
             if (aquire) {
                 traceDebug { "%%%%% $wakeLockTag wakelock aquire (before: $wakeLockNested)" }
                 if (wakeLockNested.accumulateAndGet(+1, Int::plus) == 1) {
-                    val pm = OABX.context.getSystemService(Context.POWER_SERVICE) as PowerManager
+                    val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
                     theWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, wakeLockTag)
                     theWakeLock?.acquire(60 * 60 * 1000L)
                     traceDebug { "%%%%% $wakeLockTag wakelock ACQUIRED" }
@@ -459,26 +471,51 @@ class OABX : Application() {
 
         //------------------------------------------------------------------------------------------ busy
 
-        var _busy = AtomicInteger(0)
-        val busy = mutableStateOf(0)
+        var busyCountDown = AtomicInteger(0)
+        val busyTick = 250L
+        var busy = mutableStateOf(false)
 
-        val isBusy: Boolean get() = (busy.value > 0)
+        init {
+            CoroutineScope(Dispatchers.IO).launch {
+                while(true) {
+                    delay(busyTick)
+                    busyCountDown.getAndUpdate {
+                        if (it > 0) {
+                            val new = it - 1
+                            if (new == 0)
+                                busy.value = false
+                            else
+                                if(busy.value == false)
+                                    busy.value = true
+                            new
+                        } else
+                            it
+                    }
+                }
+            }
+        }
+
+        fun hitBusy(state: Boolean = false) {
+            //beginNanoTimer("busy.hitBusy")
+            busyCountDown.set((1000L/busyTick).toInt())
+            //endNanoTimer("busy.hitBusy")
+        }
 
         fun beginBusy(name: String? = null) {
             traceBusy {
                 val label = name ?: methodName(1)
-                "*** ${"|---".repeat(_busy.get())}\\ busy $label"
+                "*** \\ busy $label"
             }
-            busy.value = _busy.accumulateAndGet(+1, Int::plus)
+            hitBusy(true)
             beginNanoTimer("busy.$name")
         }
 
         fun endBusy(name: String? = null) {
             val time = endNanoTimer("busy.$name")
-            busy.value = _busy.accumulateAndGet(-1, Int::plus)
+            hitBusy()
             traceBusy {
                 val label = name ?: methodName(1)
-                "*** ${"|---".repeat(_busy.get())}/ busy $label ${"%.3f".format(time / 1E9)} s"
+                "*** / busy $label ${"%.3f".format(time / 1E9)} s"
             }
         }
 
@@ -522,7 +559,7 @@ class OABX : Application() {
             synchronized(theBackupsMap) {
                 return theBackupsMap.getOrPut(packageName) {
                     val backups =
-                        OABX.context.findBackups(packageName)  //TODO hg42 may also find glob *packageName* for now
+                        context.findBackups(packageName)  //TODO hg42 may also find glob *packageName* for now
                     backups[packageName] ?: emptyList()  // so we need to take the correct package here
                 }.drop(0)  // copy
             }
