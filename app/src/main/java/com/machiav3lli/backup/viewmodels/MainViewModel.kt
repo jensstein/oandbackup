@@ -230,11 +230,6 @@ class MainViewModel(
 
             traceFlows { "******************** filtering - list: ${p.size} filter: $f" }
 
-            //while (OABX.startup /* || OABX.isBusy */) {
-            //    traceFlows { "*** filtering wait for not busy" }
-            //    delay(500)
-            //}
-
             val list = p
                 .filter { item: Package ->
                     s.isEmpty() || (
@@ -261,13 +256,7 @@ class MainViewModel(
         //------------------------------------------------------------------------------------------ updatedPackages
         notBlockedList
             .trace { "updatePackages? ..." }
-            .mapLatest {
-                //while (OABX.startup /* || OABX.isBusy */) {
-                //    traceFlows { "*** updatePackages waiting for end of startup" }
-                //    delay(500)
-                //}
-                it.filter(Package::isUpdated).toMutableList()
-            }
+            .mapLatest { it.filter(Package::isUpdated).toMutableList() }
             .trace {
                 "*** updatedPackages <<- updated: (${it.size})${
                     it.map {

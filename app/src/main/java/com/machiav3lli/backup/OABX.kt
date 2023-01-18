@@ -235,16 +235,19 @@ class OABX : Application() {
             addInfoText("--> long press title for dev tools")
         }
 
+        val startupMsg = "---------------------------------------- startup" // ensure it's the same
+
         if (startup)    // paranoid
-            beginBusy("startup")
+            beginBusy(startupMsg)
 
         scheduleAlarms()
 
         MainScope().launch(Dispatchers.IO) {
             val backupsMap = findBackups()
-            traceBackupsScan { "backups: ${backupsMap.size}" }
+            traceBackupsScan { "*** --------------------> backups: ${backupsMap.size}" }
             setBackups(backupsMap)
-            endBusy("startup")
+            val time = endBusy(startupMsg)
+            addInfoText("startup: ${"%.3f".format(time / 1E9)} sec")
             startup = false
         }
     }
@@ -287,7 +290,7 @@ class OABX : Application() {
                             else                     -> "?"
                         }
                     val now = System.currentTimeMillis()
-                    val date = ISO_DATE_TIME_FORMAT.format(now)
+                    val date = ISO_DATE_TIME_FORMAT_MS.format(now)
                     try {
                         synchronized(lastLogMessages) {
                             lastLogMessages.add("$date $prio $tag : $message")
@@ -510,13 +513,14 @@ class OABX : Application() {
             beginNanoTimer("busy.$name")
         }
 
-        fun endBusy(name: String? = null) {
+        fun endBusy(name: String? = null): Long {
             val time = endNanoTimer("busy.$name")
             hitBusy()
             traceBusy {
                 val label = name ?: methodName(1)
-                "*** / busy $label ${"%.3f".format(time / 1E9)} s"
+                "*** / busy $label ${"%.3f".format(time / 1E9)} sec"
             }
+            return time
         }
 
         //------------------------------------------------------------------------------------------ runningSchedules
