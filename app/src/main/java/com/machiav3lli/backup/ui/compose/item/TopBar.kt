@@ -199,23 +199,55 @@ fun GlobalIndicators() {
     }
 }
 
+@Composable
+fun DevInfoTab() {
+
+    var recompose by remember { mutableStateOf(0) }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(recompose) {
+        scope.launch {
+            delay(1000)
+            recompose += 1
+        }
+    }
+
+    TerminalText(OABX.infoLines)
+}
+
+@Composable
+fun DevLogTab() {
+
+    var recompose by remember { mutableStateOf(0) }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(recompose) {
+        scope.launch {
+            delay(1000)
+            recompose += 1
+        }
+    }
+
+    TerminalText(OABX.lastLogMessages)
+}
+
+@Composable
+fun DevSettingsTab() {
+    val scroll = rememberScrollState(0)
+    Column(
+        modifier = Modifier
+            .verticalScroll(scroll)
+    ) {
+        DevPrefGroups()
+    }
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DevTools(
     expanded: MutableState<Boolean>,
 ) {
-    var mode by rememberSaveable { mutableStateOf("devsett") }
-
-    val scope = rememberCoroutineScope()
-    val infoText = OABX.getInfoText()
-    val scroll = rememberScrollState(0)
-
-    LaunchedEffect(infoText) {
-        scope.launch {
-            scroll.scrollTo(scroll.maxValue)
-            delay(5000)
-        }
-    }
+    var tab by rememberSaveable { mutableStateOf("devsett") }
 
     Surface(
         color = MaterialTheme.colorScheme.surface,
@@ -234,10 +266,10 @@ fun DevTools(
                 .padding(8.dp, 4.dp, 8.dp, 0.dp)
                 .combinedClickable(
                     onClick = { expanded.value = false },
-                    onLongClick = { mode = "devsett" }
+                    onLongClick = { tab = "devsett" }
                 )
             ) {
-                Text(text = mode, modifier = Modifier)
+                Text(text = tab, modifier = Modifier)
                 Spacer(modifier = Modifier.weight(1f))
                 TerminalButton("    close    ") {
                     expanded.value = false
@@ -248,39 +280,29 @@ fun DevTools(
                 .padding(8.dp, 0.dp, 8.dp, 4.dp)
                 .combinedClickable(
                     onClick = { expanded.value = false },
-                    onLongClick = { mode = "devsett" }
+                    onLongClick = { tab = "devsett" }
                 )
             ) {
-                TerminalButton(" logs ", important = true) { mode = "logs" }
+                TerminalButton(" logs ", important = true) { tab = "logs" }
                 Spacer(modifier = Modifier.weight(1f))
-                TerminalButton(" log ", important = true) { mode = "log" }
-                TerminalButton(" info ", important = true) { mode = "info" }
+                TerminalButton(" log ", important = true) { tab = "log" }
+                TerminalButton(" info ", important = true) { tab = "info" }
                 Spacer(modifier = Modifier.weight(1f))
-                TerminalButton(" devsett ", important = true) { mode = "devsett" }
+                TerminalButton(" devsett ", important = true) { tab = "devsett" }
                 //Spacer(modifier = Modifier.weight(1f))
                 //TerminalButton("  A  ", important = true) {
                 //}
                 //TerminalButton("  B  ", important = true) {
                 //}
                 Spacer(modifier = Modifier.weight(1f))
-                TerminalButton(" term ", important = true) { mode = "term" }
+                TerminalButton(" term ", important = true) { tab = "term" }
             }
-            when (mode) {
-                "log"     ->
-                    TerminalText(OABX.lastLogMessages)      //TODO hg42 there is no keyboard
-                "info"    ->
-                    TerminalText(OABX.infoLines)            //TODO hg42 there is no keyboard
-                "devsett" ->
-                    Column(
-                        modifier = Modifier
-                            .verticalScroll(scroll)
-                    ) {
-                        DevPrefGroups()
-                    }
-                "term"    ->
-                    TerminalPage()                          //TODO hg42 there is no keyboard
-                "logs"    ->
-                    LogsPage(LogViewModel(OABX.app))
+            when (tab) {
+                "log"     -> DevLogTab()
+                "info"    -> DevInfoTab()
+                "devsett" -> DevSettingsTab()
+                "term"    -> TerminalPage()
+                "logs"    -> LogsPage(LogViewModel(OABX.app))
             }
         }
     }

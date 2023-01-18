@@ -1,7 +1,10 @@
 package com.machiav3lli.backup.ui.compose
 
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layout
 import com.machiav3lli.backup.preferences.pref_useSelectableText
@@ -101,3 +104,23 @@ class MutableComposableStateFlow<T>(
 
 //typealias MutableComposableFlow<T> = MutableComposableSharedFlow<T>
 typealias MutableComposableFlow<T> = MutableComposableStateFlow<T>
+
+
+@Composable
+fun LazyListState.isAtTop() = remember {
+    derivedStateOf {
+        firstVisibleItemIndex == 0 && firstVisibleItemScrollOffset == 0
+    }
+}.value
+
+@Composable
+fun LazyListState.isAtBottom() = remember {
+    derivedStateOf {
+        try {
+            layoutInfo.visibleItemsInfo.last().index >= layoutInfo.totalItemsCount - 1
+        } catch(_: Throwable) {
+            true
+        }
+    }
+}.value
+

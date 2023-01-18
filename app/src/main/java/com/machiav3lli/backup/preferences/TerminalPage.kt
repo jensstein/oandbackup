@@ -86,6 +86,8 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowUp
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Equals
 import com.machiav3lli.backup.ui.compose.icons.phosphor.MagnifyingGlass
 import com.machiav3lli.backup.ui.compose.ifThen
+import com.machiav3lli.backup.ui.compose.isAtBottom
+import com.machiav3lli.backup.ui.compose.isAtTop
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.utils.SystemUtils.getApplicationIssuer
@@ -376,9 +378,9 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
 
     val hscroll = rememberScrollState()
     val listState = rememberLazyListState()
-    val nLines = text.size
     var wrap by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+    var autoScroll by remember { mutableStateOf(scrollOnAdd) }
 
     val fontLineFactor = 1.4     //TODO hg42 factor 1.4 is empiric, how is it correctly?
     val searchFontFactor = 1.4
@@ -390,10 +392,16 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
 
     var search by remember { mutableStateOf("") }
 
-    if (scrollOnAdd)
-        LaunchedEffect(nLines) {
-            listState.animateScrollToItem(index = nLines)
+    if (scrollOnAdd) {
+        if (autoScroll) {
+            LaunchedEffect(text.size) {
+                listState.scrollToItem(index = text.size)
+                autoScroll = true
+            }
         }
+    }
+
+    autoScroll = listState.isAtBottom()
 
     Box(
         modifier = Modifier
@@ -428,16 +436,16 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
                         if (it.contains(search, ignoreCase = true)) {
                             val color =
                                 when {
-                                    it.contains("error", ignoreCase = true)   -> Color(1f, 0f, 0f)
+                                    it.contains("error", ignoreCase = true) -> Color(1f, 0f, 0f)
                                     it.contains("warning", ignoreCase = true) -> Color(1f, 0.5f, 0f)
-                                    it.contains("***")                        -> Color(0f, 1f, 1f)
-                                    it.startsWith("===")                      -> Color(1f, 1f, 0f)
-                                    it.startsWith("---")                      -> Color(
+                                    it.contains("***") -> Color(0f, 1f, 1f)
+                                    it.startsWith("===") -> Color(1f, 1f, 0f)
+                                    it.startsWith("---") -> Color(
                                         0.8f,
                                         0.8f,
                                         0f
                                     )
-                                    else                                      -> Color.White
+                                    else -> Color.White
                                 }
                             Text(
                                 if (it == "") " " else it,     //TODO hg42 workaround
@@ -457,11 +465,11 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
         val overlayColor = Color(1f, 0.5f, 1f, 1f)
 
         @Composable
-        fun SmallButton(icon: ImageVector, onClick: () -> Unit) {
+        fun SmallButton(icon: ImageVector, tint: Color = overlayColor, onClick: () -> Unit) {
             RoundButton(
                 icon = icon,
                 onClick = onClick,
-                tint = overlayColor
+                tint = tint
             )
         }
 
@@ -485,8 +493,10 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
                     unfocusedTrailingIconColor = overlayColor,
                     focusedTrailingIconColor = overlayColor, //if (search.length > 0) Color.Transparent else overlayColor
                 ),
-                textStyle = TextStyle(fontSize = fontSize * searchFontFactor,
-                    lineHeight = lineHeightSp * searchFontFactor),
+                textStyle = TextStyle(
+                    fontSize = fontSize * searchFontFactor,
+                    lineHeight = lineHeightSp * searchFontFactor
+                ),
                 trailingIcon = {
                     Icon(
                         imageVector = Phosphor.MagnifyingGlass,
@@ -513,11 +523,16 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
             SmallButton(icon = if (wrap) Phosphor.ArrowUDownLeft else Phosphor.Equals) {
                 wrap = !wrap
             }
-            SmallButton(icon = Phosphor.ArrowUp) {
-                scope.launch { listState.animateScrollToItem(0) }
+            SmallButton(icon = Phosphor.ArrowUp,
+                tint = if (listState.isAtTop()) Color.Transparent else overlayColor
+            ) {
+                scope.launch { listState.scrollToItem(0) }
             }
-            SmallButton(icon = Phosphor.ArrowDown) {
-                scope.launch { listState.animateScrollToItem(text.size) }
+            SmallButton(icon = Phosphor.ArrowDown,
+                tint = if (listState.isAtBottom()) Color.Transparent else overlayColor
+            ) {
+                autoScroll = true
+                scope.launch { listState.scrollToItem(text.size) }
             }
         }
     }
