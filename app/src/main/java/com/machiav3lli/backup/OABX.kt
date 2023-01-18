@@ -230,7 +230,6 @@ class OABX : Application() {
         work?.prune()
 
         MainScope().launch {
-            delay(1000)
             addInfoText("--> click title to keep infobox open")
             addInfoText("--> long press title for dev tools")
         }
@@ -327,26 +326,6 @@ class OABX : Application() {
             })
         }
 
-        fun beginLogSection(section: String) {
-            var count = 0
-            synchronized(logSections) {
-                count = logSections.getValue(section)
-                logSections[section] = count + 1
-                //if (count == 0 && xxx)  logMessages.clear()           //TODO hg42
-            }
-            traceSection { "*** ${"|---".repeat(count)}\\ $section" }
-        }
-
-        fun endLogSection(section: String) {    //TODO hg42 timer!
-            var count = 0
-            synchronized(logSections) {
-                count = logSections.getValue(section)
-                logSections[section] = count - 1
-            }
-            traceSection { "*** ${"|---".repeat(count - 1)}/ $section" }
-            //if (count == 0 && xxx)  ->Log                             //TODO hg42
-        }
-
         // app should always be created
         var appRef: WeakReference<OABX> = WeakReference(null)
         val app: OABX get() = appRef.get()!!
@@ -407,6 +386,12 @@ class OABX : Application() {
 
         fun getString(resId: Int) = context.getString(resId)
 
+        fun minSDK(sdk: Int): Boolean {
+            return Build.VERSION.SDK_INT >= sdk
+        }
+
+        //------------------------------------------------------------------------------------------ infoText
+
         var infoLines = mutableStateListOf<String>()
 
         val nInfoLines = 100
@@ -429,6 +414,8 @@ class OABX : Application() {
                     lines.add(fill)
             return lines.joinToString("\n")
         }
+
+        //------------------------------------------------------------------------------------------ wakelock
 
         // if any background work is to be done
         private var theWakeLock: PowerManager.WakeLock? = null
@@ -457,10 +444,6 @@ class OABX : Application() {
             }
         }
 
-        fun minSDK(sdk: Int): Boolean {
-            return Build.VERSION.SDK_INT >= sdk
-        }
-
         //------------------------------------------------------------------------------------------ progress
 
         val progress = mutableStateOf(Pair(false, 0f))
@@ -470,6 +453,30 @@ class OABX : Application() {
                 progress.value = Pair(false, 0f)
             else
                 progress.value = Pair(true, 1f * now / max)
+        }
+
+        //------------------------------------------------------------------------------------------ section
+
+        fun beginLogSection(section: String) {
+            var count = 0
+            synchronized(logSections) {
+                count = logSections.getValue(section)
+                logSections[section] = count + 1
+                //if (count == 0 && xxx)  logMessages.clear()           //TODO hg42
+            }
+            traceSection { "*** ${"|---".repeat(count)}\\ $section" }
+            beginNanoTimer("section.$section")
+        }
+
+        fun endLogSection(section: String) {    //TODO hg42 timer!
+            val time = endNanoTimer("section.$section")
+            var count = 0
+            synchronized(logSections) {
+                count = logSections.getValue(section)
+                logSections[section] = count - 1
+            }
+            traceSection { "*** ${"|---".repeat(count - 1)}/ $section ${"%.3f".format(time / 1E9)} sec" }
+            //if (count == 0 && xxx)  ->Log                             //TODO hg42
         }
 
         //------------------------------------------------------------------------------------------ busy
