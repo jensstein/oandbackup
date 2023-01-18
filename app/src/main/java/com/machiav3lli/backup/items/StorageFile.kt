@@ -495,7 +495,7 @@ open class StorageFile {
     }
 
     fun delete(): Boolean {     // only empty directories by design, that's a task for deleteRecursive
-        traceDebug { "######################################## delete $path" }
+        traceDebug { "########## delete $path" }
         val ok = try {
             file?.delete()
                 ?: run {
@@ -709,7 +709,7 @@ open class StorageFile {
     }
 
     fun deleteRecursive(): Boolean {
-        traceDebug { "######################################## deleteRecursive $path" }
+        traceDebug { "########## deleteRecursive $path" }
         return when {
             isFile ->
                 delete()
