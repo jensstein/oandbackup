@@ -560,7 +560,7 @@ class OABX : Application() {
         }
 
         fun getBackups(packageName: String): List<Backup> {
-            synchronized(theBackupsMap) {
+            synchronized(theBackupsMap) {       // could be synchronized for a shorter time
                 return theBackupsMap.getOrPut(packageName) {
                     val backups =
                         context.findBackups(packageName)  //TODO hg42 may also find glob *packageName* for now
@@ -569,5 +569,10 @@ class OABX : Application() {
             }
         }
 
+        fun emptyBackupsForMissingPackages(packageNames: List<String>) {
+            (packageNames - theBackupsMap.keys).forEach {
+                putBackups(it, emptyList())
+            }
+        }
     }
 }
