@@ -168,7 +168,13 @@ val traceBackups = TraceUtils.TracePref(
 
 val traceBackupsScan = TraceUtils.TracePref(
     name = "BackupsScan",
-    summary = "trace scanning of backup directory for properties files",
+    summary = "trace scanning of backup directory for properties files (for scanning with package name)",
+    default = false
+)
+
+val traceBackupsScanAll = TraceUtils.TracePref(
+    name = "BackupsScanAll",
+    summary = "trace scanning of backup directory for properties files (for complete scan)",
     default = false
 )
 
@@ -243,8 +249,7 @@ class OABX : Application() {
 
         MainScope().launch(Dispatchers.IO) {
             val backupsMap = findBackups()
-            traceBackupsScan { "*** --------------------> backups: ${backupsMap.size}" }
-            setBackups(backupsMap)
+            traceBackupsScan { "*** --------------------> packages: ${backupsMap.keys.size} backups: ${backupsMap.values.flatten().size}" }
             val time = endBusy(startupMsg)
             addInfoText("startup: ${"%.3f".format(time / 1E9)} sec")
             startup = false

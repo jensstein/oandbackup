@@ -25,7 +25,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.OABX.Companion.emptyBackupsForMissingPackages
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.AppExtras
@@ -155,8 +154,6 @@ class MainViewModel(
                     b.map { it.value.size }.sum()
                 }"
             }
-
-            emptyBackupsForMissingPackages(p.map { it.packageName })
 
             val pkgs = p.toPackageList(appContext, emptyList(), b)
 

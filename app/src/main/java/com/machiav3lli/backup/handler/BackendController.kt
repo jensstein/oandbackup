@@ -50,6 +50,7 @@ import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import com.machiav3lli.backup.preferences.pref_backupSuspendApps
 import com.machiav3lli.backup.traceBackupsScan
+import com.machiav3lli.backup.traceBackupsScanAll
 import com.machiav3lli.backup.traceTiming
 import com.machiav3lli.backup.utils.TraceUtils
 import com.machiav3lli.backup.utils.TraceUtils.beginNanoTimer
@@ -112,6 +113,8 @@ fun scanBackups(
         else
             if (packageName.isNotEmpty())
                 traceBackupsScan(lazyText)
+            else
+                traceBackupsScanAll(lazyText)
     }
 
     files.stream().parallel().forEach { file ->
@@ -305,8 +308,18 @@ fun Context.findBackups(
         backupsMap = backups.groupBy { it.packageName }
 
         if (packageName.isEmpty()) {
-            if (backupsMap.size > 0 && OABX.startup) {
-            }
+            // preset installed packages that don't have backups with empty backups lists
+            // this prevents scanning them again when a package needs it's backups later
+            // doing it here also avoids setting all packages to empty lists when findbackups fails
+            // so there is a chance that scanning for backups of a single package will work later
+
+            val installedPackageInfos = packageManager.getInstalledPackageInfosWithPermissions()
+            val installedNames = installedPackageInfos.map { it.packageName }
+
+            setBackups(backupsMap)
+
+            OABX.emptyBackupsForMissingPackages(installedNames)
+
         } else {
             if (OABX.startup)
                 traceBackupsScan { "<$packageName> single scan (DURING STARTUP!!!) ${formatBackups(backupsMap[packageName] ?: listOf())}" }
@@ -505,8 +518,6 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
 
         val backupsMap = findBackups()
         val backups = backupsMap.values.flatten()
-
-        setBackups(backupsMap)
 
         val specialPackages = SpecialInfo.getSpecialPackages(this)
         val specialNames = specialPackages.map { it.packageName }.toSet()
