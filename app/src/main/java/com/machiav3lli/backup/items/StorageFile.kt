@@ -799,6 +799,33 @@ open class StorageFile {
             cacheCheck()    // non-lazy seems to be better
         }
 
+        private fun cacheCheck() {
+            try {
+                synchronized(invalidateFilters) {
+                    while (invalidateFilters.size > 0) {
+                        invalidateFilters.removeFirst().let { isInvalid ->
+                            //beginNanoTimer("checkCache")
+                            synchronized(fileListCache) {
+                                fileListCache = fileListCache
+                                    .toMap()
+                                    .filterNot { isInvalid(it.key) }
+                                    .toMutableMap()
+                            }
+                            synchronized(uriStorageFileCache) {
+                                uriStorageFileCache = uriStorageFileCache
+                                    .toMap()
+                                    .filterNot { isInvalid(it.key) }
+                                    .toMutableMap()
+                            }
+                            //endNanoTimer("checkCache")
+                        }
+                    }
+                }
+            } catch (e: Throwable) {
+                logException(e, backTrace = true)
+            }
+        }
+
         fun cacheInvalidate(storageFile: StorageFile) {
             storageFile.path?.let { path -> invalidateCache { it.startsWith(path) } }
         }
@@ -853,31 +880,6 @@ open class StorageFile {
                         fileListCache.remove(path)
                     }
                 } ?: fileListCache.remove(path)
-            }
-        }
-
-        private fun cacheCheck() {
-            try {
-                synchronized(invalidateFilters) {
-                    while (invalidateFilters.size > 0) {
-                        invalidateFilters.removeFirst().let { isInvalid ->
-                            synchronized(fileListCache) {
-                                fileListCache = fileListCache
-                                    .toMap()
-                                    .filterNot { isInvalid(it.key) }
-                                    .toMutableMap()
-                            }
-                            synchronized(uriStorageFileCache) {
-                                uriStorageFileCache = uriStorageFileCache
-                                    .toMap()
-                                    .filterNot { isInvalid(it.key) }
-                                    .toMutableMap()
-                            }
-                        }
-                    }
-                }
-            } catch (e: Throwable) {
-                logException(e, backTrace = true)
             }
         }
 

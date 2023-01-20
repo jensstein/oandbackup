@@ -33,6 +33,7 @@ import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.TraceUtils
+import com.machiav3lli.backup.utils.backupDirConfigured
 import com.machiav3lli.backup.utils.getBackupRoot
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -465,22 +466,37 @@ class Package {
 
     companion object {
 
-        fun invalidateAllPackages() {
-            StorageFile.invalidateCache()
+        fun invalidateCacheForPackage(packageName: String = "") {
+            if (packageName.isEmpty())
+                StorageFile.invalidateCache()
+            else
+                StorageFile.invalidateCache {
+                    it.contains(packageName)            // also matches *packageName* !
+                }
         }
 
-        fun invalidateCacheForPackage(packageName: String) {
-            StorageFile.invalidateCache { it.contains(packageName) }
+        fun invalidateBackupCacheForPackage(packageName: String = "") {
+            if (packageName.isEmpty())
+                StorageFile.invalidateCache {
+                    it.startsWith(OABX.context.backupDirConfigured)
+                }
+            else
+                StorageFile.invalidateCache {
+                    it.startsWith(OABX.context.backupDirConfigured) &&
+                            it.contains(packageName)
+                }
         }
 
-        fun invalidateBackupCacheForPackage(packageName: String) {
-            StorageFile.invalidateCache { it.contains(packageName) }
-            //TODO hg42 && it.startsWith(OABX.context.getBackupRoot().path)  // too slow
-        }
-
-        fun invalidateSystemCacheForPackage(packageName: String) {
-            StorageFile.invalidateCache { it.contains(packageName) }
-            //TODO hg42 && ! it.startsWith(OABX.context.getBackupRoot().path)  // too slow
+        fun invalidateSystemCacheForPackage(packageName: String = "") {
+            if (packageName.isEmpty())
+                StorageFile.invalidateCache {
+                    !it.startsWith(OABX.context.backupDirConfigured)
+                }
+            else
+                StorageFile.invalidateCache {
+                    !it.startsWith(OABX.context.backupDirConfigured) &&
+                            it.contains(packageName)
+                }
         }
     }
 }

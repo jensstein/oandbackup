@@ -46,8 +46,8 @@ import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.items.Package.Companion.invalidateBackupCacheForPackage
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import com.machiav3lli.backup.preferences.pref_backupSuspendApps
 import com.machiav3lli.backup.traceBackupsScan
 import com.machiav3lli.backup.traceBackupsScanAll
@@ -277,18 +277,9 @@ fun Context.findBackups(
         OABX.beginBusy("findBackups")
 
     try {
-        val backupRoot = getBackupRoot()
+        invalidateBackupCacheForPackage(packageName)
 
-        if (packageName.isEmpty()) {
-            invalidateCache {
-                it.startsWith(backupRoot.path ?: "")
-            }
-        } else {
-            invalidateCache {
-                it.startsWith(backupRoot.path ?: "") &&
-                        it.contains(packageName)
-            }
-        }
+        val backupRoot = getBackupRoot()
 
         val backups = runBlocking {
             channelFlow {

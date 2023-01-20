@@ -62,7 +62,7 @@ object FileUtils {
      */
     fun invalidateBackupLocation() {
         backupLocation = null
-        Package.invalidateAllPackages()
+        Package.invalidateBackupCacheForPackage()
         SpecialInfo.clearCache()
         OABX.main?.viewModel?.refreshList()     // immediately rebuild package list
     }
