@@ -577,8 +577,12 @@ fun MainPackageContextMenu(
             DropdownMenuItem(
                 text = { Text("Add to Blocklist") },
                 onClick = {
-                    expanded.value = false
-                    launchToBlocklist(selectedVisible)
+                    openSubMenu(subMenu) {
+                        Confirmation {
+                            expanded.value = false
+                            launchToBlocklist(selectedVisible)
+                        }
+                    }
                 }
             )
 
