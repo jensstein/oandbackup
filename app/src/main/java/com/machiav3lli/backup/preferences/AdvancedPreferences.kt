@@ -353,12 +353,6 @@ val pref_propertiesInDir = BooleanPref(
     defaultValue = false
 )
 
-val pref_altPackageIcon = BooleanPref(
-    key = "dev-alt.altPackageIcon",
-    summary = "alternate package icon implementation",
-    defaultValue = true
-)
-
 val pref_busyRotateBackground = BooleanPref(
     key = "dev-alt.busyRotateBackground",
     summary = "alternate animation for busy condition",
