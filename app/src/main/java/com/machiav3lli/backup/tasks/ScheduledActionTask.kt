@@ -50,12 +50,10 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         val blockList = globalBlocklist.plus(customBlocklist)
 
         //TODO hg42 the whole filter mechanics should be the same for app and service
-        //   how to do that with flows? flows are "instances" not "classes"
-        //   this would need a class that contains all the flows,
-        //   so you can use it in the viewModel and in the service as separate instances
 
         val unfilteredPackages: List<Package> = try {
 
+            // findBackups not necessary, it's done in OABX.onCreate
             context.getInstalledPackageList()   // <========================== get the package list
 
         } catch (e: FileUtils.BackupLocationInAccessibleException) {

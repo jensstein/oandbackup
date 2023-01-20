@@ -240,7 +240,7 @@ class OABX : Application() {
             addInfoText("--> long press title for dev tools")
         }
 
-        val startupMsg = "---------------------------------------- startup" // ensure it's the same
+        val startupMsg = "******************** startup" // ensure it's the same for begin/end
 
         if (startup)    // paranoid
             beginBusy(startupMsg)

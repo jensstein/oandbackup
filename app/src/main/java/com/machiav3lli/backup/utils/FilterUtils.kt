@@ -220,6 +220,8 @@ private fun List<Package>.applySort(sort: Int, sortAsc: Boolean): List<Package> 
 
 fun filterToString(context: Context, filter: Int): String {
     val activeFilters = possibleMainFilters.filter { it and filter == it }
+    //TODO this looks wrong to me ??? what about system+special etc.?
+    //  it probably needs to be like activeFilters.map { User/System/Special }.joinToString("+")
     return when {
         activeFilters.size == 2                     -> context.getString(R.string.radio_all)
         activeFilters.contains(MAIN_FILTER_USER)    -> context.getString(R.string.radio_user)
