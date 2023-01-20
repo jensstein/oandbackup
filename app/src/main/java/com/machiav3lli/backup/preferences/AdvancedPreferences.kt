@@ -306,12 +306,6 @@ val pref_cacheFileLists = BooleanPref(
 
 //---------------------------------------- developer settings - workarounds
 
-val pref_useSelectableText = BooleanPref(
-    key = "dev-hack.useSelectableText",
-    summary = "enable text selection (works better now, still with workaround)",
-    defaultValue = false
-)
-
 val pref_delayBeforeRefreshAppInfo = IntPref(
     key = "dev-hack.delayBeforeRefreshAppInfo",
     summaryId = R.string.prefs_delaybeforerefreshappinfo_summary,

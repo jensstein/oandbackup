@@ -7,7 +7,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layout
-import com.machiav3lli.backup.preferences.pref_useSelectableText
 import com.machiav3lli.backup.traceFlows
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -38,10 +37,8 @@ fun Modifier.ifThen(boolean: Boolean, modifier: Modifier.() -> Modifier): Modifi
 
 @Composable
 fun SelectionContainerX(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
-    if (pref_useSelectableText.value)
-        SelectionContainer(modifier = modifier, content = content)
-    else
-        content()
+    SelectionContainer(modifier = modifier, content = content)
+    //content()
 }
 
 
