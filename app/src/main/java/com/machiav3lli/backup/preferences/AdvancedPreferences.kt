@@ -191,12 +191,6 @@ fun AdvancedPrefsPage() {
 
 //---------------------------------------- developer settings - advanced users
 
-val pref_hidePackageIcon = BooleanPref(
-    key = "dev-adv.hidePackageIcon",
-    summary = "speed up package list by hiding the package icon",
-    defaultValue = false
-)
-
 val pref_hideBackupLabels = BooleanPref(
     key = "dev-adv.hideBackupLabels",
     summary = "speed up package list by hiding the backup data type icons (keeps the package type)",

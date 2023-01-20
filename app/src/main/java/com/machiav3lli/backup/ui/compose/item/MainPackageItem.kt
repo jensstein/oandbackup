@@ -58,7 +58,6 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.preferences.pref_hidePackageIcon
 import com.machiav3lli.backup.preferences.pref_iconCrossFade
 import com.machiav3lli.backup.traceTiming
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
@@ -694,12 +693,11 @@ fun MainPackageItem(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (!pref_hidePackageIcon.value)
-                PackageIcon(
-                    item = pkg,
-                    imageData = pkg.iconData,
-                    imageLoader = imageLoader,
-                )
+            PackageIcon(
+                item = pkg,
+                imageData = pkg.iconData,
+                imageLoader = imageLoader,
+            )
 
             Column(
                 modifier = Modifier.wrapContentHeight()
