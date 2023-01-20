@@ -19,7 +19,6 @@ import com.machiav3lli.backup.preferences.pref_allowShadowingDefault
 import com.machiav3lli.backup.preferences.pref_cacheFileLists
 import com.machiav3lli.backup.preferences.pref_cacheUris
 import com.machiav3lli.backup.preferences.pref_shadowRootFile
-import com.machiav3lli.backup.preferences.pref_useColumnNameSAF
 import com.machiav3lli.backup.traceDebug
 import com.machiav3lli.backup.utils.suRecursiveCopyFilesToDocument
 import timber.log.Timber
@@ -673,10 +672,7 @@ open class StorageFile {
                                             docInfo.id
                                         )
                                     val file =
-                                        if (pref_useColumnNameSAF.value)
-                                            StorageFile(this, documentUri, docInfo.name)
-                                        else
-                                            StorageFile(this, documentUri)
+                                        StorageFile(this, documentUri, docInfo.name)
                                     file.documentInfo = docInfo
                                     results.add(file)
                                     if (maxFiles > 0 && maxFiles >= results.size)

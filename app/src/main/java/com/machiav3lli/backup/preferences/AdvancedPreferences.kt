@@ -377,12 +377,6 @@ val pref_restoreAvoidTemporaryCopy = BooleanPref(
     defaultValue = false
 )
 
-val pref_useColumnNameSAF = BooleanPref(
-    key = "dev-alt.useColumnNameSAF",
-    summaryId = R.string.prefs_usecolumnnamesaf_summary,
-    defaultValue = true
-)
-
 val pref_useFindLs = BooleanPref(
     key = "dev-alt.useFindLs",
     summaryId = R.string.prefs_usefindls_summary,
