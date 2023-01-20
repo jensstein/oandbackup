@@ -353,12 +353,6 @@ val pref_propertiesInDir = BooleanPref(
     defaultValue = false
 )
 
-val pref_altListItem = BooleanPref(
-    key = "dev-alt.altListItem",
-    summary = "alternate package list item implementation",
-    defaultValue = true
-)
-
 val pref_altPackageIcon = BooleanPref(
     key = "dev-alt.altPackageIcon",
     summary = "alternate package icon implementation",

@@ -58,7 +58,6 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.preferences.pref_altListItem
 import com.machiav3lli.backup.preferences.pref_hidePackageIcon
 import com.machiav3lli.backup.preferences.pref_iconCrossFade
 import com.machiav3lli.backup.traceTiming
@@ -651,138 +650,7 @@ fun MainPackageContextMenu(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MainPackageItemA(
-    pkg: Package,
-    selected: Boolean,
-    imageLoader: ImageLoader,
-    onLongClick: (Package) -> Unit = {},
-    onAction: (Package) -> Unit = {},
-) {
-    beginNanoTimer("A.item")
-
-    val iconRequest = ImageRequest.Builder(OABX.context)
-        .memoryCacheKey(pkg.packageName)
-        .memoryCachePolicy(CachePolicy.ENABLED)
-        .crossfade(pref_iconCrossFade.value)
-        .size(48)
-        .allowConversionToBitmap(true)
-        .data(pkg.iconData)
-        .build()
-    imageLoader.enqueue(iconRequest)
-
-    //traceCompose { "<${pkg.packageName}> MainPackageItem ${pkg.packageInfo.icon} ${imageData.hashCode()}" }
-    //traceCompose { "<${pkg.packageName}> MainPackageItem" }
-
-    Card(
-        modifier = Modifier,
-        shape = RoundedCornerShape(LocalShapes.current.medium),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent
-        ),
-    ) {
-        Row(
-            modifier = Modifier
-                .combinedClickable(
-                    onClick = { onAction(pkg) },
-                    onLongClick = { onLongClick(pkg) }
-                )
-                .background(
-                    color = if (selected) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f)
-                    else Color.Transparent
-                )
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (!pref_hidePackageIcon.value)
-                PackageIcon(
-                    item = pkg,
-                    model = iconRequest,
-                    imageLoader = imageLoader
-                )
-
-            Column(
-                modifier = Modifier.wrapContentHeight()
-            ) {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        text = pkg.packageLabel,
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .weight(1f),
-                        softWrap = true,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    PackageLabels(item = pkg)
-                }
-
-                Row(modifier = Modifier.fillMaxWidth()) {
-
-                    val hasBackups = pkg.hasBackups
-                    val latestBackup = pkg.latestBackup
-                    val nBackups = pkg.numberOfBackups
-
-                    //traceCompose {
-                    //    "<${pkg.packageName}> MainPackageItem.backups ${
-                    //        TraceUtils.formatBackups(
-                    //            backups
-                    //        )
-                    //    } ${
-                    //        TraceUtils.formatBackups(
-                    //            backups
-                    //        )
-                    //    }"
-                    //}
-
-                    beginNanoTimer("A.item.package")
-                    Text(
-                        text = pkg.packageName,
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .weight(1f),
-                        softWrap = true,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    endNanoTimer("A.item.package")
-
-                    beginNanoTimer("A.item.backups")
-                    AnimatedVisibility(visible = hasBackups) {
-                        Text(
-                            text = (latestBackup?.backupDate?.getFormattedDate(
-                                false
-                            ) ?: "") + " • $nBackups",
-                            modifier = Modifier.align(Alignment.CenterVertically),
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1,
-                            style = MaterialTheme.typography.bodySmall,
-                        )
-                    }
-                    endNanoTimer("A.item.backups")
-                }
-            }
-        }
-    }
-
-    endNanoTimer("A.item")
-
-    if (traceTiming.pref.value)
-        nanoTiming["A.item.package"]?.let {
-            if (it.second > 0 && it.second % logEachN == 0L) {
-                logNanoTiming()
-                //clearNanoTiming("A.item")
-            }
-        }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun MainPackageItemB(
+fun MainPackageItem(
     pkg: Package,
     selected: Boolean,
     imageLoader: ImageLoader,
@@ -911,30 +779,4 @@ fun MainPackageItemB(
                 //clearNanoTiming("B.item")
             }
         }
-}
-
-@Composable
-fun MainPackageItem(
-    pkg: Package,
-    selected: Boolean,
-    imageLoader: ImageLoader,
-    onLongClick: (Package) -> Unit = {},
-    onAction: (Package) -> Unit = {},
-) {
-    if (pref_altListItem.value)
-        MainPackageItemB(
-            pkg = pkg,
-            selected = selected,
-            imageLoader = imageLoader,
-            onLongClick = onLongClick,
-            onAction = onAction
-        )
-    else
-        MainPackageItemA(
-            pkg = pkg,
-            selected = selected,
-            imageLoader = imageLoader,
-            onLongClick = onLongClick,
-            onAction = onAction,
-        )
 }
