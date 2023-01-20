@@ -18,7 +18,6 @@ import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.preferences.pref_allowShadowingDefault
 import com.machiav3lli.backup.preferences.pref_cacheFileLists
 import com.machiav3lli.backup.preferences.pref_cacheUris
-import com.machiav3lli.backup.preferences.pref_invalidateSelective
 import com.machiav3lli.backup.preferences.pref_shadowRootFile
 import com.machiav3lli.backup.preferences.pref_useColumnNameSAF
 import com.machiav3lli.backup.traceDebug
@@ -787,25 +786,21 @@ open class StorageFile {
         }
 
         fun invalidateCache(filter: (String) -> Boolean) {
-            if (pref_invalidateSelective.value) {
-                try {
-                    synchronized(invalidateFilters) {
-                        invalidateFilters.add(filter)
-                    }
-                } catch (_: ArrayIndexOutOfBoundsException) {
-                    // ignore
+            try {
+                synchronized(invalidateFilters) {
+                    invalidateFilters.add(filter)
                 }
-                cacheCheck() //TODO hg42
-            } else {
-                invalidateCache()
+            } catch (_: ArrayIndexOutOfBoundsException) {
+                // ignore
             }
+            cacheCheck()    // non-lazy seems to be better
         }
 
         fun invalidateCache() {
             synchronized(invalidateFilters) {
                 invalidateFilters = mutableListOf({ true })
             }
-            cacheCheck() //TODO hg42
+            cacheCheck()    // non-lazy seems to be better
         }
 
         fun cacheInvalidate(storageFile: StorageFile) {

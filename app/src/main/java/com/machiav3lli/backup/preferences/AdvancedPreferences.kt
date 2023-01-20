@@ -377,12 +377,6 @@ val pref_restoreAvoidTemporaryCopy = BooleanPref(
     defaultValue = false
 )
 
-val pref_invalidateSelective = BooleanPref(
-    key = "dev-alt.invalidateSelective",
-    summaryId = R.string.prefs_invalidateselective_summary,
-    defaultValue = true
-)
-
 val pref_useColumnNameSAF = BooleanPref(
     key = "dev-alt.useColumnNameSAF",
     summaryId = R.string.prefs_usecolumnnamesaf_summary,
