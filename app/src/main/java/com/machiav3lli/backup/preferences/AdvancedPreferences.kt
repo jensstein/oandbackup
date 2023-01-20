@@ -377,12 +377,6 @@ val pref_restoreAvoidTemporaryCopy = BooleanPref(
     defaultValue = false
 )
 
-val pref_useFindLs = BooleanPref(
-    key = "dev-alt.useFindLs",
-    summaryId = R.string.prefs_usefindls_summary,
-    defaultValue = true
-)
-
 val pref_useWorkManagerForSingleManualJob = BooleanPref(
     key = "dev-alt.useWorkManagerForSingleManualJob",
     summary = "also queue single manual jobs from app sheet (note they are added at the end of the queue for now)",

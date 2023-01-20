@@ -23,7 +23,6 @@ import androidx.core.text.isDigitsOnly
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.Companion.utilBoxInfo
-import com.machiav3lli.backup.preferences.pref_useFindLs
 import com.machiav3lli.backup.utils.BUFFER_SIZE
 import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
 import com.topjohnwu.superuser.Shell
@@ -245,9 +244,8 @@ class ShellHandler {
         recursive: Boolean,
         parent: String? = null
     ): List<FileInfo> {
-        val useFindLs = pref_useFindLs.value
         val shellResult =
-            if (recursive && useFindLs)
+            if (recursive)
                 runAsRoot("$utilBoxQ find ${quote(path)} -print0 | $utilBoxQ xargs -0 ls -bdAll")
             else
                 runAsRoot("$utilBoxQ ls -bAll ${quote(path)}")
@@ -257,19 +255,6 @@ class ShellHandler {
             .filter { !it.startsWith("total") }
             .mapNotNull { FileInfo.fromLsOutput(it, null, path) }
             .toMutableList()
-        if (recursive && !useFindLs) {
-            val directories = result
-                .filter { it.fileType == FileType.DIRECTORY }
-                .toTypedArray()
-            directories.forEach { dir ->
-                result.addAll(
-                    suGetDetailedDirectoryContents(
-                        dir.absolutePath, true,
-                        if (parent != null) "$parent/${dir.filename}" else dir.filename
-                    )
-                )
-            }
-        }
         return result
     }
 
