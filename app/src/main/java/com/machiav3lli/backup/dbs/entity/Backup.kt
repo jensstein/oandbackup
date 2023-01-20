@@ -299,7 +299,7 @@ data class Backup constructor(
                 val backup = fromJson(json)
 
                 val pkg = "📦" // "📁"
-                val regexBackupInstance = Regex("""($pkg-)?$BACKUP_INSTANCE_REGEX_PATTERN""")
+                val regexBackupInstance = Regex("""($pkg@)?$BACKUP_INSTANCE_REGEX_PATTERN""")
 
                 var dir: StorageFile? = null
                 val name = propertiesFile.name
@@ -327,7 +327,7 @@ data class Backup constructor(
                         .replace(regexBackupInstance, "")
                         .replace(Regex("""[-:\s]+"""), "-")
                         .replace(Regex("""/+"""), "/")
-                        .replace(Regex("""[-]+$"""), "")
+                        .replace(Regex("""[-]+$"""), "-")
                         .replace(Regex("""^[-/]+"""), "")
 
                 } + tagSuffix
