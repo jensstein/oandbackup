@@ -75,6 +75,7 @@ import com.machiav3lli.backup.handler.LogsHandler.Companion.share
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.Companion.utilBoxInfo
+import com.machiav3lli.backup.handler.findBackups
 import com.machiav3lli.backup.handler.maxThreads
 import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.items.StorageFile
@@ -357,6 +358,7 @@ fun TerminalPage() {
                 TerminalButton("access") { append(accessTest()) }
                 TerminalButton("errInfo") { append(lastErrorPkg() + lastErrorCommand()) }
                 TerminalButton("err->cmd") { command = OABX.lastErrorCommand }
+                TerminalButton("findBackups") { OABX.context.findBackups(forceTrace = true) }
                 if (BuildConfig.DEBUG) {
                 }
             }

@@ -268,7 +268,7 @@ fun scanBackups(
 
 fun Context.findBackups(
     packageName: String = "",
-    trace: Boolean = false,
+    forceTrace: Boolean = false,
 ): Map<String, List<Backup>> {
 
     var backupsMap: Map<String, List<Backup>> = emptyMap()
@@ -284,7 +284,7 @@ fun Context.findBackups(
         val backups = runBlocking {
             channelFlow {
                 val producer = this
-                scanBackups(backupRoot, packageName, forceTrace = trace) { propsFile ->
+                scanBackups(backupRoot, packageName, forceTrace = forceTrace) { propsFile ->
                     Backup.createFrom(propsFile)
                         ?.let { runBlocking { send(it) } }
                         ?: run {
