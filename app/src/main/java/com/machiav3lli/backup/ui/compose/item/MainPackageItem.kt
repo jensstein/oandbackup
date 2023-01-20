@@ -46,7 +46,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import coil.ImageLoader
-import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.MODE_ALL
@@ -58,7 +57,6 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.preferences.pref_iconCrossFade
 import com.machiav3lli.backup.traceTiming
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.TraceUtils.beginNanoTimer
@@ -656,12 +654,12 @@ fun MainPackageItem(
     onLongClick: (Package) -> Unit = {},
     onAction: (Package) -> Unit = {},
 ) {
-    beginNanoTimer("B.item")
+    beginNanoTimer("item")
 
     val iconRequest = ImageRequest.Builder(OABX.context)
-        .memoryCacheKey(pkg.packageName)
-        .memoryCachePolicy(CachePolicy.ENABLED)
-        .crossfade(pref_iconCrossFade.value)
+        //.memoryCacheKey(pkg.packageName)
+        //.memoryCachePolicy(CachePolicy.ENABLED)
+        //.crossfade(true)
         .size(48)
         .allowConversionToBitmap(true)
         .data(pkg.iconData)
@@ -713,9 +711,9 @@ fun MainPackageItem(
                         maxLines = 1,
                         style = MaterialTheme.typography.titleMedium
                     )
-                    beginNanoTimer("B.item.labels")
+                    beginNanoTimer("item.labels")
                     PackageLabels(item = pkg)
-                    endNanoTimer("B.item.labels")
+                    endNanoTimer("item.labels")
                 }
 
                 Row(modifier = Modifier.fillMaxWidth()) {
@@ -736,7 +734,7 @@ fun MainPackageItem(
                     //    }"
                     //}
 
-                    beginNanoTimer("B.item.package")
+                    beginNanoTimer("item.package")
                     Text(
                         text = pkg.packageName,
                         modifier = Modifier
@@ -748,9 +746,9 @@ fun MainPackageItem(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    endNanoTimer("B.item.package")
+                    endNanoTimer("item.package")
 
-                    beginNanoTimer("B.item.backups")
+                    beginNanoTimer("item.backups")
                     AnimatedVisibility(visible = hasBackups) {
                         Text(
                             text = (latestBackup?.backupDate?.getFormattedDate(
@@ -762,19 +760,19 @@ fun MainPackageItem(
                             style = MaterialTheme.typography.bodySmall,
                         )
                     }
-                    endNanoTimer("B.item.backups")
+                    endNanoTimer("item.backups")
                 }
             }
         }
     }
 
-    endNanoTimer("B.item")
+    endNanoTimer("item")
 
     if (traceTiming.pref.value)
-        nanoTiming["B.item.package"]?.let {
+        nanoTiming["item.package"]?.let {
             if (it.second > 0 && it.second % logEachN == 0L) {
                 logNanoTiming()
-                //clearNanoTiming("B.item")
+                //clearNanoTiming("item")
             }
         }
 }

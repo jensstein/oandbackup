@@ -197,13 +197,6 @@ val pref_hideBackupLabels = BooleanPref(
     defaultValue = false
 )
 
-val pref_iconCrossFade = IntPref(
-    key = "dev-adv.iconCrossFade",
-    summary = "[ms] time for crossfading placeholder to icon",
-    entries = ((0..450 step 50) + (500..2000 step 500)).toList(),
-    defaultValue = 200
-)
-
 val pref_allPrefsShouldLookEqual = BooleanPref(
     key = "dev-adv.allPrefsShouldLookEqual",
     summary = "all preferences should be worth the same 🙂 regardless of their position in the list, meaning: don't shade backgrounds from top to bottom",
