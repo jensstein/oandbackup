@@ -32,6 +32,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
+import androidx.compose.runtime.toMutableStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -60,7 +61,6 @@ import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.preferences.pref_altListItem
 import com.machiav3lli.backup.preferences.pref_hidePackageIcon
 import com.machiav3lli.backup.preferences.pref_iconCrossFade
-import com.machiav3lli.backup.preferences.pref_useBackupRestoreWithSelection
 import com.machiav3lli.backup.traceTiming
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.TraceUtils.beginNanoTimer
@@ -247,6 +247,169 @@ fun closeSubMenu(
     subMenu.value = null
 }
 
+fun launchPackagesAction(
+    action: String,
+    todo: suspend () -> Unit,
+) {
+    //OABX.main?.viewModel?.viewModelScope?.launch {
+    MainScope().launch {
+        try {
+            OABX.beginBusy(action)
+            todo()
+        } catch (e: Throwable) {
+            LogsHandler.logException(e, backTrace = true)
+        } finally {
+            OABX.endBusy(action)
+        }
+    }
+}
+
+suspend fun forEachPackage(
+    packages: List<Package>,
+    action: String,
+    selection: SnapshotStateMap<String, Boolean> = selectionOrAll(packages),
+    select: Boolean? = true,
+    parallel: Boolean = true,
+    todo: (p: Package) -> Unit = {},
+) {
+    if (parallel) {
+        packages.stream().parallel().forEach { pkg ->
+            if (select == true) selection[pkg.packageName] = false
+            //OABX.addInfoText("$action ${pkg.packageName}")
+            todo(pkg)
+            select?.let { s -> selection[pkg.packageName] = s }
+        }
+    } else {
+        packages.forEach { pkg ->
+            if (select == true) selection[pkg.packageName] = false
+            //OABX.addInfoText("$action ${pkg.packageName}")
+            todo(pkg)
+            yield()
+            select?.let { s -> selection[pkg.packageName] = s }
+        }
+    }
+}
+
+fun selectionOrAll(packages: List<Package>) =
+    OABX.main?.viewModel?.selection ?: packages.map { it.packageName to true }.toMutableStateMap()
+
+fun launchEachPackage(
+    packages: List<Package>,
+    action: String,
+    selection: SnapshotStateMap<String, Boolean> = selectionOrAll(packages),
+    select: Boolean? = true,
+    parallel: Boolean = true,
+    todo: (p: Package) -> Unit = {},
+) {
+    launchPackagesAction(action) {
+        forEachPackage(
+            packages = packages,
+            action = action,
+            selection = selection,
+            select = select,
+            parallel = parallel,
+            todo = todo
+        )
+    }
+}
+
+fun List<Package>.withBackups() = filter { it.hasBackups }
+fun List<Package>.installed() = filter { it.isInstalled }
+
+fun launchSelect(packages: List<Package>) {
+    launchEachPackage(packages, "select", select = true) {}
+}
+
+fun launchDeselect(packages: List<Package>) {
+    launchEachPackage(packages, "deselect", select = false) {}
+}
+
+fun launchReplaceSelection(packages: List<Package>, selection: List<String>) {
+    launchPackagesAction("load") {
+        forEachPackage(packages, "deselect", select = false)
+        forEachPackage(
+            packages.filter { selection.contains(it.packageName) },
+            "select",
+            select = true
+        )
+    }
+}
+
+fun launchBackup(packages: List<Package>) {
+    val selectedAndInstalled = packages.installed()
+    OABX.main?.startBatchAction(
+        true,
+        selectedAndInstalled.map { it.packageName },
+        selectedAndInstalled.map { MODE_ALL }
+    ) {
+        it.removeObserver(this)
+        launchEachPackage(
+            selectedAndInstalled,
+            "backup",
+            select = false,
+            parallel = false
+        ) {}
+    }
+}
+
+fun launchRestore(packages: List<Package>) {
+    val packagesWithBackups = packages.withBackups()
+    OABX.main?.startBatchAction(
+        false,
+        packagesWithBackups.map { it.packageName },
+        packagesWithBackups.map { MODE_ALL }
+    ) {
+        it.removeObserver(this)
+        launchEachPackage(
+            packagesWithBackups,
+            "restore",
+            select = false,
+            parallel = false
+        ) {}
+    }
+}
+
+fun launchToBlocklist(packages: List<Package>) {
+    launchEachPackage(packages, "blocklist <-", parallel = false) {
+        OABX.main?.viewModel?.addToBlocklist(it.packageName)
+    }
+}
+
+fun launchEnable(packages: List<Package>) {
+    launchEachPackage(packages, "enable", parallel = false) {
+        runAsRoot("pm enable ${it.packageName}")
+        Package.invalidateCacheForPackage(it.packageName)
+    }
+}
+
+fun launchDisable(packages: List<Package>) {
+    launchEachPackage(packages, "disable", parallel = false) {
+        runAsRoot("pm disable ${it.packageName}")
+        Package.invalidateCacheForPackage(it.packageName)
+    }
+}
+
+fun launchUninstall(packages: List<Package>) {
+    launchEachPackage(packages,"uninstall", parallel = false) {
+        runAsRoot("pm uninstall ${it.packageName}")
+        Package.invalidateCacheForPackage(it.packageName)
+    }
+}
+
+fun launchDeleteBackups(packages: List<Package>) {
+    launchEachPackage(packages.withBackups(), "delete backups") {
+        it.deleteAllBackups()
+        Package.invalidateCacheForPackage(it.packageName)
+    }
+}
+
+fun launchLimitBackups(packages: List<Package>) {
+    launchEachPackage(packages.withBackups(), "limit backups") {
+        BackupRestoreHelper.housekeepingPackageBackups(it)
+        Package.invalidateCacheForPackage(it.packageName)
+    }
+}
+
 @Composable
 fun MainPackageContextMenu(
     expanded: MutableState<Boolean>,
@@ -256,9 +419,10 @@ fun MainPackageContextMenu(
     openSheet: (Package) -> Unit = {},
 ) {
     val visible = productsList
-    val selectedAndVisible = visible.filter { selection[it.packageName] == true }
-    val selectedAndInstalled = selectedAndVisible.filter { it.isInstalled }
-    val selectedWithBackups = selectedAndVisible.filter { it.hasBackups }
+
+    fun List<Package>.selected() = filter { selection[it.packageName] == true }
+
+    val selectedVisible by remember { mutableStateOf(visible.selected()) }   // freeze selection
 
     val subMenu = remember {                                    //TODO hg42 var/by ???
         mutableStateOf<(@Composable () -> Unit)?>(null)
@@ -267,60 +431,6 @@ fun MainPackageContextMenu(
 
     if (!expanded.value)
         closeSubMenu(subMenu)
-
-    fun launchPackagesAction(
-        action: String,
-        todo: suspend () -> Unit,
-    ) {
-        //OABX.main?.viewModel?.viewModelScope?.launch {
-        MainScope().launch {
-            try {
-                OABX.beginBusy(action)
-                todo()
-            } catch (e: Throwable) {
-                LogsHandler.logException(e, backTrace = true)
-            } finally {
-                OABX.endBusy(action)
-            }
-        }
-    }
-
-    suspend fun forEachPackage(
-        packages: List<Package>,
-        action: String,
-        select: Boolean? = true,
-        parallel: Boolean = true,
-        todo: (p: Package) -> Unit = {},
-    ) {
-        if (parallel) {
-            packages.stream().parallel().forEach { pkg ->
-                if (select == true) selection[pkg.packageName] = false
-                //OABX.addInfoText("$action ${pkg.packageName}")
-                todo(pkg)
-                select?.let { s -> selection[pkg.packageName] = s }
-            }
-        } else {
-            packages.forEach { pkg ->
-                if (select == true) selection[pkg.packageName] = false
-                //OABX.addInfoText("$action ${pkg.packageName}")
-                todo(pkg)
-                yield()
-                select?.let { s -> selection[pkg.packageName] = s }
-            }
-        }
-    }
-
-    fun launchEachPackage(
-        packages: List<Package>,
-        action: String,
-        select: Boolean? = true,
-        parallel: Boolean = true,
-        todo: (p: Package) -> Unit = {},
-    ) {
-        launchPackagesAction(action) {
-            forEachPackage(packages, action, select = select, parallel = parallel, todo = todo)
-        }
-    }
 
     var offsetX by remember { mutableStateOf(0f) }
     var offsetY by remember { mutableStateOf(0f) }
@@ -392,7 +502,7 @@ fun MainPackageContextMenu(
             text = { Text("Select Visible") },
             onClick = {
                 expanded.value = false
-                launchEachPackage(visible, "select", select = true) {}
+                launchSelect(visible)
             }
         )
 
@@ -400,7 +510,7 @@ fun MainPackageContextMenu(
             text = { Text("Deselect Visible") },
             onClick = {
                 expanded.value = false
-                launchEachPackage(visible, "deselect", select = false) {}
+                launchDeselect(visible)
             }
         )
 
@@ -408,16 +518,9 @@ fun MainPackageContextMenu(
             text = { Text("Load") },
             onClick = {
                 openSubMenu(subMenu) {
-                    SelectionLoadMenu { selection ->
+                    SelectionLoadMenu { selectionLoaded ->
                         expanded.value = false
-                        launchPackagesAction("load") {
-                            forEachPackage(selectedAndVisible, "deselect", select = false)
-                            forEachPackage(
-                                visible.filter { selection.contains(it.packageName) },
-                                "select",
-                                select = true
-                            )
-                        }
+                        launchReplaceSelection(selectedVisible, selectionLoaded)
                     }
                 }
             }
@@ -431,7 +534,7 @@ fun MainPackageContextMenu(
                         selection = selection.filter { it.value }.map { it.key }
                     ) {
                         expanded.value = false
-                        launchEachPackage(selectedAndVisible, "save", select = false) {}
+                        launchSelect(selectedVisible)
                     }
                 }
             }
@@ -443,64 +546,34 @@ fun MainPackageContextMenu(
 
             DropdownMenuItem(
                 enabled = false, onClick = {},
-                text = { Text("${selectedAndVisible.count()} selected items:") }
+                text = { Text("${selectedVisible.count()} selected items:") }
             )
 
-            if (pref_useBackupRestoreWithSelection.value) {
-                DropdownMenuItem(
-                    text = { Text(OABX.getString(R.string.backup)) },
-                    onClick = {
-                        expanded.value = false
-                        val packages = selectedAndInstalled
-                        OABX.main?.startBatchAction(
-                            true,
-                            packages.map { it.packageName },
-                            packages.map { MODE_ALL }
-                        ) {
-                            it.removeObserver(this)
-                            launchEachPackage(
-                                packages,
-                                "backup",
-                                select = false,
-                                parallel = false
-                            ) {}
-                        }
-                    }
-                )
+            DropdownMenuItem(
+                text = { Text(OABX.getString(R.string.backup)) },
+                onClick = {
+                    expanded.value = false
+                    launchBackup(selectedVisible)
+                }
+            )
 
-                DropdownMenuItem(
-                    text = { Text(OABX.getString(R.string.restore)) },
-                    onClick = {
-                        openSubMenu(subMenu) {
-                            Confirmation {
-                                expanded.value = false
-                                val packages = selectedWithBackups
-                                OABX.main?.startBatchAction(
-                                    false,
-                                    packages.map { it.packageName },
-                                    packages.map { MODE_ALL }
-                                ) {
-                                    it.removeObserver(this)
-                                    launchEachPackage(
-                                        packages,
-                                        "restore",
-                                        select = false,
-                                        parallel = false
-                                    ) {}
-                                }
-                            }
+            DropdownMenuItem(
+                text = { Text(OABX.getString(R.string.restore)) },
+                onClick = {
+                    openSubMenu(subMenu) {
+                        Confirmation {
+                            expanded.value = false
+                            launchRestore(selectedVisible)
                         }
                     }
-                )
-            }
+                }
+            )
 
             DropdownMenuItem(
                 text = { Text("Add to Blocklist") },
                 onClick = {
                     expanded.value = false
-                    launchEachPackage(selectedAndVisible, "blocklist <-", parallel = false) {
-                        OABX.main?.viewModel?.addToBlocklist(it.packageName)
-                    }
+                    launchToBlocklist(selectedVisible)
                 }
             )
 
@@ -510,10 +583,7 @@ fun MainPackageContextMenu(
                 text = { Text("Enable") },
                 onClick = {
                     expanded.value = false
-                    launchEachPackage(selectedAndVisible, "enable", parallel = false) {
-                        runAsRoot("pm enable ${it.packageName}")
-                        Package.invalidateCacheForPackage(it.packageName)
-                    }
+                    launchEnable(selectedVisible)
                 }
             )
 
@@ -523,10 +593,7 @@ fun MainPackageContextMenu(
                     openSubMenu(subMenu) {
                         Confirmation {
                             expanded.value = false
-                            launchEachPackage(selectedAndVisible, "disable", parallel = false) {
-                                runAsRoot("pm disable ${it.packageName}")
-                                Package.invalidateCacheForPackage(it.packageName)
-                            }
+                            launchDisable(selectedVisible)
                         }
                     }
                 }
@@ -538,14 +605,7 @@ fun MainPackageContextMenu(
                     openSubMenu(subMenu) {
                         Confirmation {
                             expanded.value = false
-                            launchEachPackage(
-                                selectedAndVisible,
-                                "uninstall",
-                                parallel = false
-                            ) {
-                                runAsRoot("pm uninstall ${it.packageName}")
-                                Package.invalidateCacheForPackage(it.packageName)
-                            }
+                            launchUninstall(selectedVisible)
                         }
                     }
                 }
@@ -559,10 +619,7 @@ fun MainPackageContextMenu(
                     openSubMenu(subMenu) {
                         Confirmation {
                             expanded.value = false
-                            launchEachPackage(selectedWithBackups, "delete backups") {
-                                it.deleteAllBackups()
-                                Package.invalidateCacheForPackage(it.packageName)
-                            }
+                            launchDeleteBackups(selectedVisible)
                         }
                     }
                 }
@@ -574,10 +631,7 @@ fun MainPackageContextMenu(
                     openSubMenu(subMenu) {
                         Confirmation {
                             expanded.value = false
-                            launchEachPackage(selectedWithBackups, "limit backups") {
-                                BackupRestoreHelper.housekeepingPackageBackups(it)
-                                Package.invalidateCacheForPackage(it.packageName)
-                            }
+                            launchLimitBackups(selectedVisible)
                         }
                     }
                 }

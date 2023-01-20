@@ -339,14 +339,6 @@ val pref_refreshAppInfoTimeout = IntPref(
     defaultValue = 30
 )
 
-//---------------------------------------- developer settings - new features for testing
-
-val pref_useBackupRestoreWithSelection = BooleanPref(
-    key = "dev-new.useBackupRestoreWithSelection",
-    summary = "selection context menu shows allows 'Backup' and 'Restore' (both work on apk and data)",
-    defaultValue = false
-)
-
 //---------------------------------------- developer settings - implementation alternatives
 
 val pref_flatStructure = BooleanPref(
