@@ -92,13 +92,13 @@ fun DevPrefGroups() {
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         DevPrefsGroup(prefs = devUserOptions, heading = "advanced users (for those who know)")
-        DevPrefsGroup(prefs = devFileOptions, heading = "file handling")
+        DevPrefsGroup(prefs = devHackOptions, heading = "workarounds (hacks)")
         DevPrefsGroup(prefs = devLogOptions, heading = "logging")
         DevPrefsGroup(prefs = devTraceOptions, heading = "tracing")
-        DevPrefsGroup(prefs = devHackOptions, heading = "workarounds (hacks)")
+        DevPrefsGroup(prefs = devFileOptions, heading = "file handling")
+        DevPrefsGroup(prefs = devFakeOptions, heading = "faking (simulated actions)")
         DevPrefsGroup(prefs = devNewOptions, heading = "new experimental (for devs)")
         DevPrefsGroup(prefs = devAltOptions, heading = "alternates (for devs to compare)")
-        DevPrefsGroup(prefs = devFakeOptions, heading = "faking (simulated actions)")
     }
 }
 
