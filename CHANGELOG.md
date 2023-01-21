@@ -1,6 +1,134 @@
 CHANGELOG
 =========
 
+next version
+------------
+
+#### Usability / UX
+
+- add confirmation to context menu "add to blocklist"
+- the busy progress bar was replaced by a more calm background animation
+- improved list speed and cached/prefetched icons
+- improved list loading speed (for details see Function section)
+- option to hide the backup data type icons for faster scrolling
+    - &rarr; `advanced/devsettings/advanced/hideBackupLabels`
+
+#### UI
+
+- fix duplicate entries in LogPage
+
+#### Function
+
+- duplicated schedules should be solved
+    - it's not easy to test all situations and takes one day for each test under real world conditions
+    - detects if the schedule to be started is already running at three stages
+    - automatically saves a log (if autoLogSuspicious is enabled)
+- fix thread safety (@hg42: on my extensions)
+- use parallel processing where appropriate (e.g. it greatly improves list loading)
+- fix searching a second time for backups of packages that don't have backups
+- busy (indicator) logic reimplemented (the former logic could hang the app in some cases)
+
+- add an experimental flatStructure scheme, where
+
+    `the.package.name/YYYY-MM-DD-hh-mm-ss-mmm-user_x*`
+    
+    is substituted by
+
+    `the.package.name@YYYY-MM-DD-hh-mm-ss-mmm-user_x*`
+
+    so all backups are stored flat in the backup folder.
+
+    You find flatStructure in
+
+    - &rarr; `advanced/devsettings/alternatives`
+
+    It is not enabled by default, because it may still change it's format and the last word isn't spoken, maybe official in 9.0 or even dropped, there are also some possible alternatives.
+
+    Theoretically, this should result in faster scanning because it reduces the number of directory scans, and it actually worked.
+
+    flatStructure might be especially helpful, if you are using remote backup locations.
+
+    However, current measurements are more like it doesn't matter much, because the parallel processing
+    changed the game and remote access seems to focus more on file reading (properties files) instead of directory scanning.
+    Though this might be heavily dependent on the remote file service. In my (@hg42) tests it was ssh on local network using extRact (which uses rclone). 
+
+    Note: it uses `@` as separator instead of the former `-`
+
+- the backups are now scanned differently, which allows to
+    - collect backups from subfolders (experimental, don't rely on it, though it's easy to chnage it back)
+    - backups that were renamed (e.g. by bug + SAF design problem)
+    - handle different backups schemes
+    
+    **Note: all backups found are handled by housekeeping. If you used renaming backups to protect them (which was never supported inside the backup location, because it disturbs file management), they may now be subject to housekeeping, so save them elsewhere.** 
+
+    The different variants of backups are marked (in AppSheet), basically by
+
+    - replacing `the.package.name` by `📦` and
+    - removing the `YYYY-MM-DD-hh-mm-ss-mmm-user_x` part
+  
+    so it looks like this:
+    
+    - *nothing shown*
+    
+        a "standard" flat backup
+    
+        &rarr; `the.package.name@YYYY-MM-DD-hh-mm-ss-mmm-user_x`
+    
+    - **`somefolder/`**
+    
+        a flat backup, but in a folder
+    
+        &rarr; `somefolder/the.package.name@YYYY-MM-DD-hh-mm-ss-mmm-user_x`
+    
+    - **`📦-`**
+    
+        a flat backup with the former "-" separator
+    
+        &rarr; `the.package.name-YYYY-MM-DD-hh-mm-ss-mmm-user_x`
+    
+    - **`📦/`**
+    
+        classic backup with package folder
+    
+        &rarr; `the.package.name/YYYY-MM-DD-hh-mm-ss-mmm-user_x`
+    
+    - **`somefolder/📦/`**
+    
+        the same inside a folder
+    
+        &rarr; `somefolder/the.package.name/YYYY-MM-DD-hh-mm-ss-mmm-user_x`
+    
+    - **`pre%📦%suf/`**
+    
+        the same with "pre%" before the package name and "%suf" after it
+    
+        &rarr; `pre%the.package.name%suf/YYYY-MM-DD-hh-mm-ss-mmm-user_x`
+    
+    - **`📦 (1)/`**
+    
+        a package folder with a duplicate created (falsely) by SAF problem
+    
+        &rarr; `the.package.name (1)/YYYY-MM-DD-hh-mm-ss-mmm-user_x`
+    
+
+#### Troubleshooting
+
+- DevTools: for trouble shooting / power users that have showInfoLogBar enabled:
+    - long press on Title will show the DevTools popup for faster access to dev settings, log, terminal and other tools
+- DevTools: add log autoscroll
+- option to autosave a log if an unexpected exception happens, even if it is catched later, so we get better info from the inner circles  
+    - &rarr; `advanced/devsettings/logging/autoLogExceptions`
+- option to autosave a support log after each schedule, because it's difficult to do this manually
+    - &rarr; `advanced/devsettings/logging/autoLogAfterSchedule`
+- option to autosave a support log on suspicious events, e.g. duplicate schedules
+    - situations that are not necessarily an error, only "interesting" sometimes to have a look at
+    - &rarr; `advanced/devsettings/logging/autoLogSuspicious`
+- `SUPPORT` button in the terminal, that can create the interesting infos as a new log item and opens share menu in one go
+- `share` button saves the text in the terminal and opens share menu 
+    - if you want to review it, cancel the menu and goto the "View the log" tool instead, you can still share from there
+
+
+
 8.2.5 (03.12.2022) +15 Commits & +20 Translations
 ------------------
 
