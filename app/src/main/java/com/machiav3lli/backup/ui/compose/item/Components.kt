@@ -121,6 +121,7 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.ProhibitInset
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ShieldCheckered
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Spinner
 import com.machiav3lli.backup.ui.compose.icons.phosphor.User
+import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.compose.theme.ColorAPK
 import com.machiav3lli.backup.ui.compose.theme.ColorData
 import com.machiav3lli.backup.ui.compose.theme.ColorDeData
@@ -608,12 +609,19 @@ fun ActionChip(
     text: String = "",
     icon: ImageVector? = null,
     positive: Boolean,
+    fullWidth: Boolean = false,
     onClick: () -> Unit = {},
 ) {
     AssistChip(
         modifier = modifier,
         label = {
-            Text(text = text)
+            Text(
+                modifier = Modifier.ifThen(fullWidth) {
+                    fillMaxWidth()
+                },
+                text = text,
+                textAlign = TextAlign.Center,
+            )
         },
         leadingIcon = {
             icon?.let {
