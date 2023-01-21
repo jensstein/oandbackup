@@ -189,12 +189,12 @@ class SplashActivity : BaseActivity() {
         if (!persist_beenWelcomed.value) {
             startActivity(introIntent)
         } else if (hasStoragePermissions &&
-            isStorageDirSetAndOk &&
-            checkSMSMMSPermission &&
-            checkCallLogsPermission &&
-            checkContactsPermission &&
-            checkUsageStatsPermission &&
-            (persist_ignoreBatteryOptimization.value
+                   isStorageDirSetAndOk &&
+                   checkSMSMMSPermission &&
+                   checkCallLogsPermission &&
+                   checkContactsPermission &&
+                   checkUsageStatsPermission &&
+                   (persist_ignoreBatteryOptimization.value
                     || powerManager.isIgnoringBatteryOptimizations(packageName))
         ) {
             introIntent.putExtra(classAddress(".fragmentNumber"), 3)

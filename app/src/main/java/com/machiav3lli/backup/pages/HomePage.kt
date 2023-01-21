@@ -252,9 +252,10 @@ fun HomePage() {
         )
 
         if (menuExpanded.value) {
-            Box(modifier = Modifier     // necessary to move the menu on the whole screen
-                .fillMaxSize()
-                .wrapContentSize(Alignment.TopStart)
+            Box(
+                modifier = Modifier     // necessary to move the menu on the whole screen
+                    .fillMaxSize()
+                    .wrapContentSize(Alignment.TopStart)
             ) {
                 MainPackageContextMenu(
                     expanded = menuExpanded,

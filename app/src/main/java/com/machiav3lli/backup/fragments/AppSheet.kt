@@ -257,7 +257,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                             }
                             AnimatedVisibility(visible = snackbarVisible) {
                                 Text(
-                                    text = snackbarText.toString(),
+                                    text = snackbarText,
                                     color = MaterialTheme.colorScheme.primary,
                                     style = MaterialTheme.typography.titleMedium,
                                     textAlign = TextAlign.Center,
