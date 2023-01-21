@@ -61,7 +61,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dialogs.BaseDialog
@@ -415,17 +414,7 @@ fun TopBar(
             ),
             actions = actions
         )
-
-        GlobalIndicators()  // overlay
-
-        Text(
-            text = "${BuildConfig.VERSION_NAME}",
-            fontSize = 8.sp,
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentSize(Alignment.TopCenter),
-            color = Color.Gray
-        )
+        GlobalIndicators()
     }
 }
 
