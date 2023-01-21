@@ -69,6 +69,7 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.CheckCircle
 import com.machiav3lli.backup.ui.compose.icons.phosphor.PlayCircle
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Prohibit
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
+import com.machiav3lli.backup.ui.compose.item.ActionChip
 import com.machiav3lli.backup.ui.compose.item.CheckChip
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.MorphableTextField
@@ -323,7 +324,7 @@ class ScheduleSheet() : BaseSheet() {
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
-                            ElevatedActionButton(
+                            ActionChip(
                                 icon = Phosphor.CheckCircle,
                                 text = stringResource(id = R.string.customListTitle),
                                 positive = customList.isNotEmpty(),
@@ -331,7 +332,7 @@ class ScheduleSheet() : BaseSheet() {
                                 modifier = Modifier.weight(1f),
                                 onClick = { showCustomListDialog(schedule) }
                             )
-                            ElevatedActionButton(
+                            ActionChip(
                                 icon = Phosphor.Prohibit,
                                 text = stringResource(id = R.string.sched_blocklist),
                                 positive = blockList.isNotEmpty(),
