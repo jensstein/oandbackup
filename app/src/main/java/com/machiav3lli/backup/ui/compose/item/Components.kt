@@ -919,10 +919,11 @@ fun PackageLabels(
         },
         R.string.app_s_type_title,
         tint = when {
-            item.isDisabled -> ColorDisabled
-            item.isSpecial  -> ColorSpecial
-            item.isSystem   -> ColorSystem
-            else            -> ColorUser
+            !item.isInstalled -> ColorDisabled
+            item.isDisabled   -> ColorDisabled
+            item.isSpecial    -> ColorSpecial
+            item.isSystem     -> ColorSystem
+            else              -> ColorUser
         }
     )
 
