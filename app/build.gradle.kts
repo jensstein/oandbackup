@@ -21,10 +21,10 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
-    kotlin("plugin.serialization").version("1.7.20")
+    kotlin("plugin.serialization").version("1.8.0")
 }
 
-val vKotlin = "1.7.20"
+val vKotlin = "1.8.0"
 val vComposeCompiler = "1.3.2"
 
 val vCompose = "1.3.1"
