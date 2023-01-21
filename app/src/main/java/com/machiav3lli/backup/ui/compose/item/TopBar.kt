@@ -70,7 +70,6 @@ import com.machiav3lli.backup.preferences.LogsPage
 import com.machiav3lli.backup.preferences.TerminalButton
 import com.machiav3lli.backup.preferences.TerminalPage
 import com.machiav3lli.backup.preferences.TerminalText
-import com.machiav3lli.backup.preferences.pref_busyRotateBackground
 import com.machiav3lli.backup.preferences.pref_showInfoLogBar
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.MagnifyingGlass
@@ -173,21 +172,6 @@ fun ProgressIndicator() {
 }
 
 @Composable
-fun BusyIndicator() {
-    val busy by remember { OABX.busy }
-    val useIt = !pref_busyRotateBackground.value
-    AnimatedVisibility(visible = useIt && busy) {
-        LinearProgressIndicator(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(4.dp),
-            trackColor = MaterialTheme.colorScheme.surfaceColorAtElevation(10.dp),
-            color = MaterialTheme.colorScheme.secondary,
-        )
-    }
-}
-
-@Composable
 fun GlobalIndicators() {
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
@@ -195,7 +179,6 @@ fun GlobalIndicators() {
             .fillMaxWidth()
     ) {
         ProgressIndicator()
-        BusyIndicator()
     }
 }
 

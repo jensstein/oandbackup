@@ -334,12 +334,6 @@ val pref_propertiesInDir = BooleanPref(
     defaultValue = false
 )
 
-val pref_busyRotateBackground = BooleanPref(
-    key = "dev-alt.busyRotateBackground",
-    summary = "alternate animation for busy condition",
-    defaultValue = true
-)
-
 val pref_restoreAvoidTemporaryCopy = BooleanPref(
     key = "dev-alt.restoreAvoidTemporaryCopy",
     summaryId = R.string.prefs_restoreavoidtempcopy_summary,
