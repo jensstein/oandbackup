@@ -25,18 +25,18 @@ plugins {
 }
 
 val vKotlin = "1.8.0"
-val vComposeCompiler = "1.3.2"
+val vComposeCompiler = "1.4.0"
 
 val vCompose = "1.3.1"
-val vRoom = "2.5.0-beta02"
+val vRoom = "2.5.0"
 val vNavigation = "2.5.3"
 val vAccompanist = "0.28.0"
 val vLibsu = "5.0.4"
 //val vIconics = "5.3.4"
 
-val vJunitJupiter = "5.9.1"
-val vAndroidxTest = "1.4.0"
-val vAndroidxTestExt = "1.1.4"
+val vJunitJupiter = "5.9.2"
+val vAndroidxTest = "1.5.0"
+val vAndroidxTestExt = "1.1.5"
 
 android {
     namespace = "com.machiav3lli.backup"
@@ -145,7 +145,7 @@ dependencies {
     //implementation("com.github.tony19:named-regexp:0.2.6") // regex named groups
 
     // UI
-    implementation("com.google.android.material:material:1.8.0-alpha03")
+    implementation("com.google.android.material:material:1.8.0-rc01")
     implementation("androidx.preference:preference-ktx:1.2.0")
 
     // Compose
