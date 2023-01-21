@@ -50,6 +50,7 @@ import com.machiav3lli.backup.ui.compose.item.TopBar
 import com.machiav3lli.backup.ui.compose.navigation.NavItem
 import com.machiav3lli.backup.ui.compose.navigation.PagerNavBar
 import com.machiav3lli.backup.ui.compose.navigation.PrefsNavHost
+import com.machiav3lli.backup.ui.compose.recycler.BusyBackground
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.destinationToItem
 import com.machiav3lli.backup.utils.setCustomTheme
@@ -91,7 +92,7 @@ class PrefsActivityX : BaseActivity() {
                     barVisible = destination.route == NavItem.Settings.destination
                 }
 
-                Background {
+                BusyBackground {
                     Scaffold(
                         containerColor = Color.Transparent,
                         contentColor = MaterialTheme.colorScheme.onBackground,
