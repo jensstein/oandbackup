@@ -42,7 +42,7 @@ data class Schedule(
     val id: Long = 0,
     val enabled: Boolean = false,
     val name: String = "New Schedule",
-    val timeHour: Int = 0,
+    val timeHour: Int = 12,
     val timeMinute: Int = 0,
     val interval: Int = 1,
     val timePlaced: Long = System.currentTimeMillis(),
