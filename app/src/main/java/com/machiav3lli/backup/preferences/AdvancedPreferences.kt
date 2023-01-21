@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
@@ -54,29 +55,24 @@ fun DevPrefsGroup(prefs: List<Pref>, heading: String) {
 
     Card(
         modifier = Modifier
+            .clip(CardDefaults.shape)
             .clickable { expand(!expanded) },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp)
         )
     ) {
-        PrefsGroupHeading(
-            heading = heading,
-        )
-
-
-        Column(    //TODO hg42 use a wrapper (e.g. Box) as workaround for weird animation behavior
-            modifier = Modifier
-                .padding(start = 24.dp)
+        PrefsGroupHeading(heading = heading)
+        AnimatedVisibility(
+            visible = expanded,
+            modifier = Modifier.padding(
+                start = 12.dp,
+                end = 12.dp,
+                bottom = 12.dp,
+            ),
+            enter = expandVertically() + fadeIn(),
+            exit = shrinkVertically() + fadeOut(),
         ) {
-            AnimatedVisibility(
-                visible = expanded,
-                //enter = EnterTransition.None,
-                //exit = ExitTransition.None
-                enter = expandVertically() + fadeIn(),
-                exit = shrinkVertically() + fadeOut(),
-            ) {
-                PrefsGroup(prefs = prefs, heading = heading)
-            }
+            PrefsGroup(prefs = prefs, heading = heading)
         }
     }
 }
