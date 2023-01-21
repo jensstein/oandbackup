@@ -321,8 +321,10 @@ fun Context.findBackups(
     } catch (e: Throwable) {
         logException(e, backTrace = true)
     } finally {
-        if (packageName.isEmpty())
-            OABX.endBusy("findBackups")
+        if (packageName.isEmpty()) {
+            val time = OABX.endBusy("findBackups")
+            OABX.addInfoText("findBackups: ${"%.3f".format(time / 1E9)} sec")
+        }
     }
 
     return backupsMap
