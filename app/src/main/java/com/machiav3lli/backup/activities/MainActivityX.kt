@@ -55,7 +55,6 @@ import androidx.work.WorkManager
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
-import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.addInfoText
@@ -75,7 +74,6 @@ import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowsClockwise
 import com.machiav3lli.backup.ui.compose.icons.phosphor.FunnelSimple
 import com.machiav3lli.backup.ui.compose.icons.phosphor.GearSix
-import com.machiav3lli.backup.ui.compose.icons.phosphor.List
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Prohibit
 import com.machiav3lli.backup.ui.compose.item.ActionChip
 import com.machiav3lli.backup.ui.compose.item.ExpandableSearchAction
@@ -382,20 +380,6 @@ class MainActivityX : BaseActivity() {
                                                 context.supportFragmentManager,
                                                 "BLOCKLIST_DIALOG"
                                             )
-                                        }
-                                    }
-                                    if (currentPage.destination == NavItem.Home.destination) {
-                                        val nsel = viewModel.selection.count { it.value }
-                                        if (nsel > 0 || BuildConfig.DEBUG) {     //TODO hg42 for now, until context menu is official
-                                            Spacer(modifier = Modifier.weight(1f))
-                                            ActionChip(
-                                                icon = Phosphor.List,
-                                                text = if (nsel > 0) "$nsel" else "",
-                                                //text = if (nsel > 0) "☰ $nsel" else "☰",
-                                                positive = true,
-                                            ) {
-                                                viewModel.menuExpanded.value = true
-                                            }
                                         }
                                     }
                                     Spacer(modifier = Modifier.weight(1f))

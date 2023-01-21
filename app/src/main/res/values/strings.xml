@@ -400,4 +400,5 @@
     <string name="add_tag">Add new tag</string>
     <string name="edit_note">Edit note</string>
     <string name="prefs_tools_terminal">Terminal</string>
+    <string name="context_menu">Context menu</string>
 </resources>

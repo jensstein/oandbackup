@@ -17,9 +17,6 @@
  */
 package com.machiav3lli.backup.pages
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -61,6 +58,7 @@ import com.machiav3lli.backup.traceCompose
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretDown
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CircleWavyWarning
+import com.machiav3lli.backup.ui.compose.icons.phosphor.List
 import com.machiav3lli.backup.ui.compose.item.ActionButton
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.ExpandingFadingVisibility
@@ -81,9 +79,10 @@ fun HomePage() {
 
     val filteredList by main.viewModel.filteredList.collectAsState(emptyList())
     val updatedPackages by main.viewModel.updatedPackages.collectAsState(emptyList())
-    val updaterVisible = updatedPackages.size > 0
+    val updaterVisible by remember(updatedPackages) { mutableStateOf(updatedPackages.isNotEmpty()) }
     var updaterExpanded by remember { mutableStateOf(false) }
     val selection = main.viewModel.selection
+    val selected = selection.filter { it.value }
     var menuPackage by remember { mutableStateOf<Package?>(null) }
     val menuExpanded = main.viewModel.menuExpanded
 
@@ -109,101 +108,117 @@ fun HomePage() {
     Scaffold(
         containerColor = Color.Transparent,
         floatingActionButton = {
-            AnimatedVisibility(
-                modifier = Modifier.padding(start = 28.dp),
-                visible = updaterVisible,
-                enter = EnterTransition.None,
-                exit = ExitTransition.None
-            ) {
-                ExpandingFadingVisibility(
-                    expanded = updaterExpanded,
-                    expandedView = {
-                        Column(
-                            modifier = Modifier
-                                .shadow(
-                                    elevation = 6.dp,
-                                    MaterialTheme.shapes.large
-                                )
-                                .background(
-                                    MaterialTheme.colorScheme.surface,
-                                    MaterialTheme.shapes.large
-                                )
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(horizontal = 8.dp),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                ActionButton(
-                                    modifier = Modifier.weight(1f),
-                                    text = stringResource(id = R.string.backup_all_updated),
-                                ) {
-                                    val selectedList = updatedPackages
-                                        .map { it.packageInfo }
-                                        .toCollection(ArrayList())
-                                    val selectedListModes = updatedPackages
-                                        .map {
-                                            it.latestBackup?.let { bp ->
-                                                when {
-                                                    bp.hasApk && bp.hasAppData -> ALT_MODE_BOTH
-                                                    bp.hasApk                  -> ALT_MODE_APK
-                                                    bp.hasAppData              -> ALT_MODE_DATA
-                                                    else                       -> ALT_MODE_UNSET
-                                                }
-                                            } ?: ALT_MODE_BOTH  // no backup -> try all
-                                        }
-                                        .toCollection(ArrayList())
-                                    if (selectedList.isNotEmpty()) {
-                                        BatchDialogFragment(
-                                            true,
-                                            selectedList,
-                                            selectedListModes,
-                                            batchConfirmListener
-                                        )
-                                            .show(
-                                                main.supportFragmentManager,
-                                                "DialogFragment"
-                                            )
-                                    }
-                                }
-                                ElevatedActionButton(
-                                    text = "",
-                                    icon = Phosphor.CaretDown,
-                                    withText = false
-                                ) {
-                                    updaterExpanded = !updaterExpanded
-                                }
-                            }
-                            UpdatedPackageRecycler(
-                                productsList = updatedPackages,
-                                onClick = { item ->
-                                    if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                                    appSheet = AppSheet(item.packageName)
-                                    appSheet?.showNow(
-                                        main.supportFragmentManager,
-                                        "Package ${item.packageName}"
-                                    )
-                                }
-                            )
-                        }
-                    },
-                    collapsedView = {
-                        val text = pluralStringResource(
-                            id = R.plurals.updated_apps,
-                            count = updatedPackages.size,
-                            updatedPackages.size
-                        )
+            if (selected.isNotEmpty() || updaterVisible) {
+                Row(
+                    modifier = Modifier.padding(start = 28.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    if ((!updaterVisible || !updaterExpanded) && selected.isNotEmpty()) {
                         ExtendedFloatingActionButton(
-                            text = { Text(text = text) },
+                            text = { Text(text = selected.size.toString()) },
                             icon = {
                                 Icon(
-                                    imageVector = if (updaterExpanded) Phosphor.CaretDown else Phosphor.CircleWavyWarning,
-                                    contentDescription = text
+                                    imageVector = Phosphor.List,
+                                    contentDescription = stringResource(id = R.string.context_menu)
                                 )
                             },
-                            onClick = { updaterExpanded = !updaterExpanded }
+                            onClick = {
+                                menuExpanded.value = true
+                            },
                         )
                     }
-                )
+                    if (updaterVisible) {
+                        ExpandingFadingVisibility(
+                            expanded = updaterExpanded,
+                            expandedView = {
+                                Column(
+                                    modifier = Modifier
+                                        .shadow(
+                                            elevation = 6.dp,
+                                            MaterialTheme.shapes.large
+                                        )
+                                        .background(
+                                            MaterialTheme.colorScheme.surface,
+                                            MaterialTheme.shapes.large
+                                        )
+                                ) {
+                                    Row(
+                                        modifier = Modifier.padding(horizontal = 8.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
+                                        ActionButton(
+                                            modifier = Modifier.weight(1f),
+                                            text = stringResource(id = R.string.backup_all_updated),
+                                        ) {
+                                            val selectedList = updatedPackages
+                                                .map { it.packageInfo }
+                                                .toCollection(ArrayList())
+                                            val selectedListModes = updatedPackages
+                                                .map {
+                                                    it.latestBackup?.let { bp ->
+                                                        when {
+                                                            bp.hasApk && bp.hasAppData -> ALT_MODE_BOTH
+                                                            bp.hasApk                  -> ALT_MODE_APK
+                                                            bp.hasAppData              -> ALT_MODE_DATA
+                                                            else                       -> ALT_MODE_UNSET
+                                                        }
+                                                    } ?: ALT_MODE_BOTH  // no backup -> try all
+                                                }
+                                                .toCollection(ArrayList())
+                                            if (selectedList.isNotEmpty()) {
+                                                BatchDialogFragment(
+                                                    true,
+                                                    selectedList,
+                                                    selectedListModes,
+                                                    batchConfirmListener
+                                                )
+                                                    .show(
+                                                        main.supportFragmentManager,
+                                                        "DialogFragment"
+                                                    )
+                                            }
+                                        }
+                                        ElevatedActionButton(
+                                            text = "",
+                                            icon = Phosphor.CaretDown,
+                                            withText = false
+                                        ) {
+                                            updaterExpanded = !updaterExpanded
+                                        }
+                                    }
+                                    UpdatedPackageRecycler(
+                                        productsList = updatedPackages,
+                                        onClick = { item ->
+                                            if (appSheet != null) appSheet?.dismissAllowingStateLoss()
+                                            appSheet = AppSheet(item.packageName)
+                                            appSheet?.showNow(
+                                                main.supportFragmentManager,
+                                                "Package ${item.packageName}"
+                                            )
+                                        }
+                                    )
+                                }
+                            },
+                            collapsedView = {
+                                val text = pluralStringResource(
+                                    id = R.plurals.updated_apps,
+                                    count = updatedPackages.size,
+                                    updatedPackages.size
+                                )
+                                ExtendedFloatingActionButton(
+                                    text = { Text(text = text) },
+                                    icon = {
+                                        Icon(
+                                            imageVector = if (updaterExpanded) Phosphor.CaretDown else Phosphor.CircleWavyWarning,
+                                            contentDescription = text
+                                        )
+                                    },
+                                    onClick = { updaterExpanded = !updaterExpanded }
+                                )
+                            }
+                        )
+                    }
+                }
             }
         }
     ) { paddingValues ->
