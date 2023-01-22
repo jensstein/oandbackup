@@ -33,6 +33,7 @@ import androidx.lifecycle.ViewModel
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.DynamicColorsOptions
 import com.machiav3lli.backup.activities.MainActivityX
+import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
@@ -201,8 +202,6 @@ class OABX : Application() {
 
     var work: WorkHandler? = null
 
-    // TODO Add database here
-
     // TODO Add BroadcastReceiver for (UN)INSTALL_PACKAGE intents
 
     override fun onCreate() {
@@ -216,6 +215,7 @@ class OABX : Application() {
                 .build()
         )
         appRef = WeakReference(this)
+        db = ODatabase.getInstance(applicationContext)
 
         initShellHandler()
 
@@ -373,6 +373,15 @@ class OABX : Application() {
 
         var shellHandlerInstance: ShellHandler? = null
             private set
+
+        var dbRef: WeakReference<ODatabase> = WeakReference(null)
+        var db: ODatabase
+            get() {
+                return dbRef.get() ?: ODatabase.getInstance(context)
+            }
+            set(dbInstance) {
+                dbRef = WeakReference(dbInstance)
+            }
 
         fun initShellHandler(): Boolean {
             return try {
