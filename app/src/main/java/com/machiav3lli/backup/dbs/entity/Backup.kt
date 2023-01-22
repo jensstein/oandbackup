@@ -275,13 +275,35 @@ data class Backup constructor(
     @Transient
     var file: StorageFile? = null
 
-    @Ignore
-    @Transient
-    var dir: StorageFile? = null
+    val dir: StorageFile?
+        get() = if (file?.name == BACKUP_INSTANCE_PROPERTIES_INDIR) {
+            file?.parent
+        } else {
+            val baseName = file?.name?.removeSuffix(".$PROP_NAME")
+            baseName?.let { dirName ->
+                file?.parent?.let { parent ->
+                    parent.findFile(dirName)?.let {
+                        it
+                    }
+                }
+            }
+        }
 
-    @Ignore
-    @Transient
-    var tag: String? = null
+    val tag: String
+        get() {
+            val pkg = "📦" // "📁"
+            return dir?.path?.let {
+                it
+                    .replace(OABX.context.getBackupRoot()?.path ?: "", "")
+                    .replace(packageName, pkg)
+                    .replace(Regex("""($pkg@)?$BACKUP_INSTANCE_REGEX_PATTERN"""), "")
+                    .replace(Regex("""[-:\s]+"""), "-")
+                    .replace(Regex("""/+"""), "/")
+                    .replace(Regex("""[-]+$"""), "-")
+                    .replace(Regex("""^[-/]+"""), "")
+
+            } + if (dir?.name == BACKUP_INSTANCE_PROPERTIES_INDIR) "🔹" else ""
+        }
 
     companion object {
 
@@ -298,39 +320,9 @@ data class Backup constructor(
 
                 val backup = fromJson(json)
 
-                val pkg = "📦" // "📁"
-                val regexBackupInstance = Regex("""($pkg@)?$BACKUP_INSTANCE_REGEX_PATTERN""")
-
                 var dir: StorageFile? = null
-                val name = propertiesFile.name
-                var tagSuffix = ""
-                if (name == BACKUP_INSTANCE_PROPERTIES_INDIR) {
-                    dir = propertiesFile.parent
-                    tagSuffix = "🔹"
-                } else {
-                    val baseName = propertiesFile.name?.removeSuffix(".$PROP_NAME")
-                    baseName?.let { dirName ->
-                        propertiesFile.parent?.let { parent ->
-                            parent.findFile(dirName)?.let {
-                                dir = it
-                            }
-                        }
-                    }
-                }
 
                 backup.file = propertiesFile
-                backup.dir = dir
-                backup.tag = dir?.path?.let {
-                    it
-                        .replace(OABX.context.getBackupRoot()?.path ?: "", "")
-                        .replace(backup.packageName, pkg)
-                        .replace(regexBackupInstance, "")
-                        .replace(Regex("""[-:\s]+"""), "-")
-                        .replace(Regex("""/+"""), "/")
-                        .replace(Regex("""[-]+$"""), "-")
-                        .replace(Regex("""^[-/]+"""), "")
-
-                } + tagSuffix
 
                 return backup
 

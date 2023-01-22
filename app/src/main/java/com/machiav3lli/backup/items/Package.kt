@@ -261,8 +261,6 @@ class Package {
     ) {      //TODO hg42 change to rewriteBackup(backup: Backup, applyParameters)
         traceBackups { "<${changedBackup.packageName}> rewrite backup ${changedBackup.backupDate}" }
         changedBackup.file = backup.file
-        changedBackup.dir = backup.dir
-        changedBackup.tag = backup.tag
         if (changedBackup.packageName != packageName) {             //TODO hg42 probably paranoid
             throw RuntimeException("Asked to rewrite a backup of ${changedBackup.packageName} but this object is for $packageName")
         }
