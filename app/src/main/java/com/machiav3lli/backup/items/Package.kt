@@ -33,7 +33,6 @@ import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.TraceUtils
-import com.machiav3lli.backup.utils.backupDirConfigured
 import com.machiav3lli.backup.utils.getBackupRoot
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -478,11 +477,11 @@ class Package {
         fun invalidateBackupCacheForPackage(packageName: String = "") {
             if (packageName.isEmpty())
                 StorageFile.invalidateCache {
-                    it.startsWith(backupDirConfigured)
+                    true //it.startsWith(backupDirConfigured)
                 }
             else
                 StorageFile.invalidateCache {
-                    it.startsWith(backupDirConfigured) &&
+                    //it.startsWith(backupDirConfigured) &&
                     it.contains(packageName)
                 }
         }
@@ -490,11 +489,12 @@ class Package {
         fun invalidateSystemCacheForPackage(packageName: String = "") {
             if (packageName.isEmpty())
                 StorageFile.invalidateCache {
-                    !it.startsWith(backupDirConfigured)
+                    true //!it.startsWith(backupDirConfigured)
                 }
             else
                 StorageFile.invalidateCache {
-                    !it.startsWith(backupDirConfigured) && it.contains(packageName)
+                    //!it.startsWith(backupDirConfigured) &&
+                            it.contains(packageName)
                 }
         }
     }
