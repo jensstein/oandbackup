@@ -31,9 +31,7 @@ import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Blocklist
-import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.toPackageList
-import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.Package.Companion.invalidateCacheForPackage
 import com.machiav3lli.backup.traceBackups
@@ -58,7 +56,6 @@ import kotlinx.coroutines.plus
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import kotlin.reflect.*
-import kotlin.system.measureNanoTime
 
 class MainViewModel(
     private val db: ODatabase,
@@ -274,29 +271,6 @@ class MainViewModel(
 
     val selection = mutableStateMapOf<String, Boolean>()
     val menuExpanded = mutableStateOf(false)
-
-    // TODO add to interface
-    fun refreshList() {
-        viewModelScope.launch {
-            recreateAppInfoList()
-        }
-    }
-
-    private suspend fun recreateAppInfoList() {
-        withContext(Dispatchers.Default) {
-            try {
-                //OABX.beginBusy("recreateAppInfoList")
-                val time = measureNanoTime {
-                    appContext.updateAppTables()
-                }
-                OABX.addInfoText("recreateAppInfoList: ${"%.3f".format(time / 1E9)} sec")
-            } catch (e: Throwable) {
-                LogsHandler.logException(e, backTrace = true)
-            } finally {
-                //OABX.endBusy("recreateAppInfoList")
-            }
-        }
-    }
 
     fun updatePackage(packageName: String) {
         viewModelScope.launch {
