@@ -119,9 +119,9 @@ fun AdvancedPrefsPage() {
                 item {
                     PrefsGroup(prefs = prefs) { pref ->
                         if (pref == pref_enableSpecialBackups) {
-                            val newModel = context.sortFilterModel
+                            val newModel = sortFilterModel
                             newModel.mainFilter = newModel.mainFilter and MAIN_FILTER_DEFAULT
-                            context.sortFilterModel = newModel
+                            sortFilterModel = newModel
                         }
                     }
                 }
@@ -159,9 +159,9 @@ fun AdvancedPrefsPage() {
             ) {
                 PrefsGroup(prefs = prefs) { pref ->
                     if (pref == pref_enableSpecialBackups) {
-                        val newModel = context.sortFilterModel
+                        val newModel = sortFilterModel
                         newModel.mainFilter = newModel.mainFilter and MAIN_FILTER_DEFAULT
-                        context.sortFilterModel = newModel
+                        sortFilterModel = newModel
                     }
                 }
                 PrefsExpandableGroupHeader(

@@ -68,7 +68,7 @@ fun UserPrefsPage() {
     val context = LocalContext.current
     val openDialog = remember { mutableStateOf(false) }
     var dialogsPref by remember { mutableStateOf<Pref?>(null) }
-    var backupDir by remember { mutableStateOf(context.backupDirConfigured) }   //TODO hg42 remember ???
+    var backupDir by remember { mutableStateOf(backupDirConfigured) }   //TODO hg42 remember ???
 
     val prefs = Pref.preferences["user"] ?: listOf()
 
@@ -78,7 +78,7 @@ fun UserPrefsPage() {
                 result.data?.let {
                     val uri = it.data ?: return@let
                     val oldDir = try {
-                        context.backupDirConfigured
+                        backupDirConfigured
                     } catch (e: StorageLocationNotConfiguredException) {
                         "" // Can be ignored, this is about to set the path
                     }
@@ -89,7 +89,7 @@ fun UserPrefsPage() {
                                 )
                         context.contentResolver.takePersistableUriPermission(uri, flags)
                         Timber.i("setting uri $uri")
-                        backupDir = context.setBackupDir(uri)
+                        backupDir = setBackupDir(uri)
                     }
                 }
             }
@@ -196,7 +196,7 @@ val pref_biometricLock = BooleanPref(
     icon = Phosphor.FingerprintSimple,
     iconTint = ColorDeData,
     defaultValue = false,
-    enableIf = { OABX.context.isBiometricLockAvailable() && OABX.context.isDeviceLockEnabled() }
+    enableIf = { OABX.context.isBiometricLockAvailable() && isDeviceLockEnabled() }
 )
 
 val pref_multilineInfoChips = BooleanPref(

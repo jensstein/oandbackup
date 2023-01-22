@@ -218,7 +218,7 @@ class MainViewModel(
     var modelSortFilter =
         //------------------------------------------------------------------------------------------ modelSortFilter
         MutableComposableFlow(
-            OABX.context.sortFilterModel,
+            sortFilterModel,
             viewModelScope + Dispatchers.IO,
             "modelSortFilter"
         )

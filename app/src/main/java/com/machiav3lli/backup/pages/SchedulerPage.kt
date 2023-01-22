@@ -62,7 +62,7 @@ fun SchedulerPage(viewModel: SchedulerViewModel) {
                         contentDescription = stringResource(id = R.string.sched_add)
                     )
                 },
-                onClick = { viewModel.addSchedule(context.specialBackupsEnabled) }
+                onClick = { viewModel.addSchedule(specialBackupsEnabled) }
             )
         }
     ) { paddingValues ->

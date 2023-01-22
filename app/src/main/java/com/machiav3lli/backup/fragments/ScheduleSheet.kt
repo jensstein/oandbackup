@@ -345,7 +345,7 @@ class ScheduleSheet() : BaseSheet() {
                         //traceDebug { "*** recompose filter ${schedule.filter}" }
                         TitleText(R.string.filter_options)
                         MultiSelectableChipGroup(
-                            list = if (requireContext().specialBackupsEnabled)
+                            list = if (specialBackupsEnabled)
                                 mainFilterChipItems
                             else
                                 mainFilterChipItems.minus(ChipItem.Special),

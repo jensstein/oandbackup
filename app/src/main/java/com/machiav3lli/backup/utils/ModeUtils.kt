@@ -36,15 +36,15 @@ fun altModeToMode(context: Context, mode: Int, backupBoolean: Boolean) = when (m
     else -> {
         var dataMode = if (mode == ALT_MODE_BOTH) 0b11000 else MODE_DATA
         if (backupBoolean) {
-            if (context.isBackupDeviceProtectedData) dataMode = dataMode or MODE_DATA_DE
-            if (context.isBackupExternalData) dataMode = dataMode or MODE_DATA_EXT
-            if (context.isBackupObbData) dataMode = dataMode or MODE_DATA_OBB
-            if (context.isBackupMediaData) dataMode = dataMode or MODE_DATA_MEDIA
+            if (isBackupDeviceProtectedData) dataMode = dataMode or MODE_DATA_DE
+            if (isBackupExternalData) dataMode = dataMode or MODE_DATA_EXT
+            if (isBackupObbData) dataMode = dataMode or MODE_DATA_OBB
+            if (isBackupMediaData) dataMode = dataMode or MODE_DATA_MEDIA
         } else {
-            if (context.isRestoreDeviceProtectedData) dataMode = dataMode or MODE_DATA_DE
-            if (context.isRestoreExternalData) dataMode = dataMode or MODE_DATA_EXT
-            if (context.isRestoreObbData) dataMode = dataMode or MODE_DATA_OBB
-            if (context.isRestoreMediaData) dataMode = dataMode or MODE_DATA_MEDIA
+            if (isRestoreDeviceProtectedData) dataMode = dataMode or MODE_DATA_DE
+            if (isRestoreExternalData) dataMode = dataMode or MODE_DATA_EXT
+            if (isRestoreObbData) dataMode = dataMode or MODE_DATA_OBB
+            if (isRestoreMediaData) dataMode = dataMode or MODE_DATA_MEDIA
         }
         dataMode
     }
@@ -52,12 +52,12 @@ fun altModeToMode(context: Context, mode: Int, backupBoolean: Boolean) = when (m
 
 fun backupModeIfActive(context: Context, mode: Int) = when {
     mode == MODE_APK -> MODE_APK
-    mode == MODE_DATA -> MODE_DATA
-    mode == MODE_DATA_DE && context.isBackupDeviceProtectedData -> MODE_DATA_DE
-    mode == MODE_DATA_EXT && context.isBackupExternalData -> MODE_DATA_EXT
-    mode == MODE_DATA_OBB && context.isBackupObbData -> MODE_DATA_OBB
-    mode == MODE_DATA_MEDIA && context.isBackupMediaData -> MODE_DATA_MEDIA
-    else -> MODE_UNSET
+    mode == MODE_DATA                                     -> MODE_DATA
+    mode == MODE_DATA_DE && isBackupDeviceProtectedData -> MODE_DATA_DE
+    mode == MODE_DATA_EXT && isBackupExternalData        -> MODE_DATA_EXT
+    mode == MODE_DATA_OBB && isBackupObbData     -> MODE_DATA_OBB
+    mode == MODE_DATA_MEDIA && isBackupMediaData -> MODE_DATA_MEDIA
+    else                                         -> MODE_UNSET
 }
 
 fun modeToModes(mode: Int): List<Int> = possibleSchedModes

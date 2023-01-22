@@ -96,29 +96,29 @@ fun Context.getPrivateSharedPrefs(): SharedPreferences {
     )
 }
 
-fun Context.getCryptoSalt(): ByteArray {
+fun getCryptoSalt(): ByteArray {
     val userSalt = persist_salt.value
     return if (userSalt.isNotEmpty()) {
         userSalt.toByteArray(StandardCharsets.UTF_8)
     } else FALLBACK_SALT
 }
 
-fun Context.isEncryptionEnabled(): Boolean =
+fun isEncryptionEnabled(): Boolean =
     pref_encryption.value && getEncryptionPassword().isNotEmpty()
 
-fun Context.getEncryptionPassword(): String = pref_password.value
+fun getEncryptionPassword(): String = pref_password.value
 
-fun Context.isCompressionEnabled(): Boolean =
+fun isCompressionEnabled(): Boolean =
     getCompressionLevel() > 0 // && compression algorithm != null
 
-fun Context.getCompressionLevel() = pref_compressionLevel.value
+fun getCompressionLevel() = pref_compressionLevel.value
 
-fun Context.isDeviceLockEnabled(): Boolean = pref_deviceLock.value
+fun isDeviceLockEnabled(): Boolean = pref_deviceLock.value
 
 fun Context.isDeviceLockAvailable(): Boolean =
     (getSystemService(KeyguardManager::class.java) as KeyguardManager).isDeviceSecure
 
-fun Context.isBiometricLockEnabled(): Boolean = pref_biometricLock.value
+fun isBiometricLockEnabled(): Boolean = pref_biometricLock.value
 
 fun Context.isBiometricLockAvailable(): Boolean =
     BiometricManager.from(this).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) ==
@@ -131,7 +131,7 @@ fun Context.isBiometricLockAvailable(): Boolean =
  * @return user configured location
  * @throws StorageLocationNotConfiguredException if the value is not set
  */
-val Context.backupDirConfigured: String
+val backupDirConfigured: String
     @Throws(StorageLocationNotConfiguredException::class)
     get() {
         val location = pref_pathBackupFolder.value
@@ -141,7 +141,7 @@ val Context.backupDirConfigured: String
         return location
     }
 
-fun Context.setBackupDir(value: Uri): String {
+fun setBackupDir(value: Uri): String {
     val fullUri = DocumentsContract
         .buildDocumentUriUsingTree(value, DocumentsContract.getTreeDocumentId(value))
     pref_pathBackupFolder.value = fullUri.toString()
@@ -421,40 +421,40 @@ fun Context.checkBatteryOptimization(powerManager: PowerManager)
         || powerManager.isIgnoringBatteryOptimizations(packageName)
 
 
-val Context.isBackupDeviceProtectedData: Boolean
+val isBackupDeviceProtectedData: Boolean
     get() = pref_backupDeviceProtectedData.value
 
-val Context.isBackupExternalData: Boolean
+val isBackupExternalData: Boolean
     get() = pref_backupExternalData.value
 
-val Context.isBackupObbData: Boolean
+val isBackupObbData: Boolean
     get() = pref_backupObbData.value
 
-val Context.isBackupMediaData: Boolean
+val isBackupMediaData: Boolean
     get() = pref_backupMediaData.value
 
-val Context.isRestoreDeviceProtectedData: Boolean
+val isRestoreDeviceProtectedData: Boolean
     get() = pref_restoreDeviceProtectedData.value
 
-val Context.isRestoreExternalData: Boolean
+val isRestoreExternalData: Boolean
     get() = pref_restoreExternalData.value
 
-val Context.isRestoreObbData: Boolean
+val isRestoreObbData: Boolean
     get() = pref_restoreObbData.value
 
-val Context.isRestoreMediaData: Boolean
+val isRestoreMediaData: Boolean
     get() = pref_restoreMediaData.value
 
-val Context.isDisableVerification: Boolean
+val isDisableVerification: Boolean
     get() = pref_disableVerification.value
 
-val Context.isRestoreAllPermissions: Boolean
+val isRestoreAllPermissions: Boolean
     get() = pref_giveAllPermissions.value
 
-val Context.isAllowDowngrade: Boolean
+val isAllowDowngrade: Boolean
     get() = pref_allowDowngrade.value
 
-var Context.sortFilterModel: SortFilterModel
+var sortFilterModel: SortFilterModel
     get() {
         val sortFilterModel: SortFilterModel
         val sortFilterPref = persist_sortFilter.value
@@ -488,13 +488,13 @@ var styleSecondary: Int
         pref_appSecondaryColor.value = value
     }
 
-var Context.language: String
+var language: String
     get() = pref_languages.value
     set(value) {
         pref_languages.value = value
     }
 
-var Context.specialBackupsEnabled: Boolean
+var specialBackupsEnabled: Boolean
     get() = pref_enableSpecialBackups.value
     set(value) {
         pref_enableSpecialBackups.value = value

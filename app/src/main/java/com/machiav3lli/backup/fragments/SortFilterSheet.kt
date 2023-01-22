@@ -100,8 +100,13 @@ class SortFilterSheet() : BaseSheet() {
     fun SortFilterPage() {
         val nestedScrollConnection = rememberNestedScrollInteropConnection()
         val packageList by requireMainActivity().viewModel.notBlockedList.collectAsState()
-        var model by rememberSaveable { mutableStateOf(requireContext().sortFilterModel) }
-        fun currentStats() = getStats(packageList.applyFilter(model, OABX.context))  //TODO hg42 use central function for all the filtering
+        var model by rememberSaveable { mutableStateOf(sortFilterModel) }
+        fun currentStats() = getStats(
+            packageList.applyFilter(
+                model,
+                OABX.context,
+            )
+        )  //TODO hg42 use central function for all the filtering
 
         AppTheme {
             Scaffold(
@@ -127,7 +132,7 @@ class SortFilterSheet() : BaseSheet() {
                                 fullWidth = true,
                                 positive = false,
                                 onClick = {
-                                    requireContext().sortFilterModel = SortFilterModel()
+                                    sortFilterModel = SortFilterModel()
                                     dismissAllowingStateLoss()
                                 }
                             )
@@ -138,7 +143,7 @@ class SortFilterSheet() : BaseSheet() {
                                 fullWidth = true,
                                 positive = true,
                                 onClick = {
-                                    requireContext().sortFilterModel = model
+                                    sortFilterModel = model
                                     dismissAllowingStateLoss()
                                 }
                             )
@@ -206,7 +211,7 @@ class SortFilterSheet() : BaseSheet() {
                     item {
                         TitleText(R.string.filter_options)
                         MultiSelectableChipGroup(
-                            list = if (requireContext().specialBackupsEnabled) mainFilterChipItems
+                            list = if (specialBackupsEnabled) mainFilterChipItems
                             else mainFilterChipItems.minus(ChipItem.Special),
                             selectedFlags = model.mainFilter
                         ) { flags, flag ->

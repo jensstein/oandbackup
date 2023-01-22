@@ -25,7 +25,6 @@ import com.machiav3lli.backup.MODE_DATA_DE
 import com.machiav3lli.backup.MODE_DATA_EXT
 import com.machiav3lli.backup.MODE_DATA_MEDIA
 import com.machiav3lli.backup.MODE_DATA_OBB
-import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.app
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.BackupBuilder
@@ -192,10 +191,10 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                     backupBuilder.setHasMediaData(backupCreated)
                 }
 
-                if (context.isCompressionEnabled()) {
+                if (isCompressionEnabled()) {
                     backupBuilder.setCompressionType(COMPRESSION_ALGORITHM)
                 }
-                if (context.isEncryptionEnabled()) {
+                if (isEncryptionEnabled()) {
                     backupBuilder.setCipherType(CIPHER_ALGORITHM)
                 }
                 StorageFile.cacheInvalidate(backupInstanceDir)
@@ -266,25 +265,25 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         compress: Boolean,
         iv: ByteArray?
     ) {
-        val password = context.getEncryptionPassword()
-        val shouldCompress = compress && context.isCompressionEnabled()
+        val password = getEncryptionPassword()
+        val shouldCompress = compress && isCompressionEnabled()
 
         Timber.i("Creating $dataType backup via API")
         val backupFilename = getBackupArchiveFilename(
             dataType,
             shouldCompress,
-            iv != null && context.isEncryptionEnabled()
+            iv != null && isEncryptionEnabled()
         )
         val backupFile = backupInstanceDir.createFile(backupFilename)
 
         var outStream: OutputStream = backupFile.outputStream()!!
 
-        if (iv != null && password.isNotEmpty() && context.isEncryptionEnabled()) {
-            outStream = outStream.encryptStream(password, context.getCryptoSalt(), iv)
+        if (iv != null && password.isNotEmpty() && isEncryptionEnabled()) {
+            outStream = outStream.encryptStream(password, getCryptoSalt(), iv)
         }
 
         if (shouldCompress) {
-            val compressionLevel = context.getCompressionLevel()
+            val compressionLevel = getCompressionLevel()
             val gzipParams = GzipParameters()
             gzipParams.compressionLevel = compressionLevel
 
@@ -426,25 +425,25 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         if (!ShellUtils.fastCmdResult("test -d ${quote(sourcePath)}"))
             return false
 
-        val password = context.getEncryptionPassword()
-        val shouldCompress = compress && context.isCompressionEnabled()
+        val password = getEncryptionPassword()
+        val shouldCompress = compress && isCompressionEnabled()
 
         Timber.i("Creating $dataType backup via tar")
         val backupFilename = getBackupArchiveFilename(
             dataType,
             shouldCompress,
-            iv != null && context.isEncryptionEnabled()
+            iv != null && isEncryptionEnabled()
         )
         val backupFile = backupInstanceDir.createFile(backupFilename)
 
         var outStream: OutputStream = backupFile.outputStream()!!
 
-        if (iv != null && password.isNotEmpty() && context.isEncryptionEnabled()) {
-            outStream = outStream.encryptStream(password, context.getCryptoSalt(), iv)
+        if (iv != null && password.isNotEmpty() && isEncryptionEnabled()) {
+            outStream = outStream.encryptStream(password, getCryptoSalt(), iv)
         }
 
         if (shouldCompress) {
-            val compressionLevel = context.getCompressionLevel()
+            val compressionLevel = getCompressionLevel()
             val gzipParams = GzipParameters()
             gzipParams.compressionLevel = compressionLevel
 
@@ -558,7 +557,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             dataType,
             backupInstanceDir,
             app.dataPath,
-            OABX.context.isCompressionEnabled(),
+            isCompressionEnabled(),
             iv
         )
     }
@@ -576,7 +575,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 dataType,
                 backupInstanceDir,
                 app.getExternalDataPath(context),
-                OABX.context.isCompressionEnabled(),
+                isCompressionEnabled(),
                 iv
             )
         } catch (ex: BackupFailedException) {
@@ -606,7 +605,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 dataType,
                 backupInstanceDir,
                 app.getObbFilesPath(context),
-                OABX.context.isCompressionEnabled(),
+                isCompressionEnabled(),
                 iv
             )
         } catch (ex: BackupFailedException) {
@@ -636,7 +635,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 dataType,
                 backupInstanceDir,
                 app.getMediaFilesPath(context),
-                OABX.context.isCompressionEnabled(),
+                isCompressionEnabled(),
                 iv
             )
         } catch (ex: BackupFailedException) {
@@ -666,7 +665,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 dataType,
                 backupInstanceDir,
                 app.devicesProtectedDataPath,
-                OABX.context.isCompressionEnabled(),
+                isCompressionEnabled(),
                 iv
             )
         } catch (ex: BackupFailedException) {

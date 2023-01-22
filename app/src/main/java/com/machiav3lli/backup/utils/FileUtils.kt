@@ -43,7 +43,7 @@ object FileUtils {
     @Throws(StorageLocationNotConfiguredException::class, BackupLocationInAccessibleException::class)
     fun getBackupDirUri(context: Context): Uri {
         if (backupLocation == null) {
-            val storageRoot = context.backupDirConfigured
+            val storageRoot = backupDirConfigured
             if (storageRoot.isEmpty()) {
                 throw StorageLocationNotConfiguredException()
             }

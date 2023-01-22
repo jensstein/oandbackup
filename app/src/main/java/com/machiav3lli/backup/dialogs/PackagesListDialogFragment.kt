@@ -57,7 +57,7 @@ class PackagesListDialogFragment(
         val checkedIndexes = arrayListOf<Boolean>()
         val selections = mutableListOf<Int>()
         var i = 0
-        if (requireContext().specialBackupsEnabled && filter and MAIN_FILTER_SPECIAL == MAIN_FILTER_SPECIAL) {
+        if (specialBackupsEnabled && filter and MAIN_FILTER_SPECIAL == MAIN_FILTER_SPECIAL) {
             var specialInfos = SpecialInfo.getSpecialPackages(OABX.app)
             specialInfos = specialInfos.sortedWith { ai1: Package, ai2: Package ->
                 val b1 = selectedPackages.contains(ai1.packageName)

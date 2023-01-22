@@ -429,7 +429,7 @@ fun List<AppInfo>.toPackageList(
     try {
         OABX.beginBusy("toPackageList")
 
-        val includeSpecial = context.specialBackupsEnabled
+        val includeSpecial = specialBackupsEnabled
 
         packageList =
             this.filterNot {

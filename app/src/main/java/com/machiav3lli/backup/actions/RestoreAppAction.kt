@@ -294,7 +294,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                 )
             }
             val sb = StringBuilder()
-            val disableVerification = context.isDisableVerification
+            val disableVerification = isDisableVerification
 
             // disable verify apps over usb
             if (disableVerification)
@@ -353,7 +353,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             success = runAsRoot(sb.toString()).isSuccess // TODO integrate permissionsResult too
 
             val permissionsCmd = mutableListOf<String>()
-            if (!context.isRestoreAllPermissions && pref_restorePermissions.value) {
+            if (!isRestoreAllPermissions && pref_restorePermissions.value) {
                 backup.permissions
                     .filterNot { it.isEmpty() }
                     .forEach { p ->
@@ -444,10 +444,10 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     ): InputStream {
         var inputStream: InputStream = BufferedInputStream(archive.inputStream()!!)
         if (isEncrypted) {
-            val password = context.getEncryptionPassword()
-            if (iv != null && password.isNotEmpty() && context.isEncryptionEnabled()) {
+            val password = getEncryptionPassword()
+            if (iv != null && password.isNotEmpty() && isEncryptionEnabled()) {
                 Timber.d("Decryption enabled")
-                inputStream = inputStream.decryptStream(password, context.getCryptoSalt(), iv)
+                inputStream = inputStream.decryptStream(password, getCryptoSalt(), iv)
             }
         }
         if (isCompressed) {
@@ -1015,8 +1015,8 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             "|",
             "pm", "install",
             basePackageName?.let { "-p $basePackageName" },
-            if (context.isRestoreAllPermissions) "-g" else null,
-            if (context.isAllowDowngrade) "-d" else null,
+            if (isRestoreAllPermissions) "-g" else null,
+            if (isAllowDowngrade) "-d" else null,
             "-i ${pref_installationPackage.value}",
             "-t",
             "-r",
@@ -1035,8 +1035,8 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             "--user", profileId,
             "-r",
             "-t",
-            if (context.isRestoreAllPermissions) "-g" else null,
-            if (context.isAllowDowngrade) "-d" else null,
+            if (isRestoreAllPermissions) "-g" else null,
+            if (isAllowDowngrade) "-d" else null,
             "-S", sumSize
         ).joinToString(" ")
 
