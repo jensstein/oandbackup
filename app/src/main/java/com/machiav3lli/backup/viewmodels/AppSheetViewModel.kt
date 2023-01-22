@@ -133,7 +133,6 @@ class AppSheetViewModel(
     fun deleteBackup(backup: Backup) {
         viewModelScope.launch {
             delete(backup)
-            refreshNow.value = true
         }
     }
 
@@ -146,7 +145,6 @@ class AppSheetViewModel(
     fun deleteAllBackups() {
         viewModelScope.launch {
             deleteAll()
-            refreshNow.value = true
         }
     }
 
