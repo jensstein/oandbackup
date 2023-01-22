@@ -76,7 +76,7 @@
     <string name="disablePackageTitle">Disabilita app per gli utenti</string>
     <string name="prefs_title">Preferenze</string>
     <string name="prefs_acquirewakelock">Impedisci la modalità sleep</string>
-    <string name="prefs_acquirewakelock_summary">Acquisisce un wakelock durante le operazioni batch per impedire la sospensione. Accelera notevolmente backup e ripristini, ma consuma più energia.</string>
+    <string name="prefs_acquirewakelock_summary">Acquisisce un blocco del risveglio durante le operazioni in serie per impedire la sospensione. Accelera notevolmente backup e ripristini, ma consuma più energia.</string>
     <string name="prefs_pathbackupfolder">Cartella di backup</string>
     <string name="prefs_oldbackups">Filtra backup per età</string>
     <!--prefs_summaryOldBackups: the quoted filter title is @string/showOldBackups-->
@@ -177,7 +177,7 @@
     <string name="prefs_passwordconfirmation">Conferma password di crittografia</string>
     <string name="prefs_advanced">Preferenze avanzate</string>
     <string name="radio_updated">Aggiornato</string>
-    <string name="intro_welcome_message">Neo Backup (precedentemente OAndBackupX) è un fork del famoso OAndBackup con l\'obiettivo di portare OAndBackup a 202X e parte della suite Neo Applications. Per ora l\'app è stata tutta riscritta, il prossimo passo sarebbe renderla robusta e aggiungere alcune features pianificate da molto tempo che potrebbero semplificare il flusso di lavoro di salvataggio/ripristino su ogni dispostivo.
+    <string name="intro_welcome_message">Neo Backup (precedentemente OAndBackupX) è un fork del famoso OAndBackup con l\'obiettivo di portare OAndBackup a 202X e parte della suite Neo Applications. Per ora l\'app è stata tutta riscritta, il prossimo passo sarebbe renderla robusta e aggiungere alcune features pianificate da molto tempo che potrebbero semplificare il flusso di lavoro di salvataggio/ripristino su ogni dispositivo.
 \nPertanto tutti i tipi di contributo sono benvenuti.
 \n
 \nOra riguardo alle funzionalità dell\'app:
