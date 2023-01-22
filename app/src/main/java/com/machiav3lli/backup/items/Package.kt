@@ -176,9 +176,8 @@ class Package {
     }
 
     fun getBackupsFromBackupDir(): List<Backup> {
-        val backups =
-            OABX.context.findBackups(packageName)  //TODO hg42 may also find glob *packageName* for now
-        return backups[packageName] ?: emptyList()  // so we need to take the correct package here
+        // TODO hg42 may also find glob *packageName* for now so we need to take the correct package
+        return OABX.context.findBackups(packageName)[packageName] ?: emptyList()
     }
 
     fun refreshBackupList(): List<Backup> {
@@ -306,7 +305,12 @@ class Package {
             backups.remove(backup)
             _deleteBackup(backup)
         }
-        refreshBackupList()
+        backupList = backups
+        OABX.main?.viewModel?.viewModelScope?.launch {
+            OABX.main?.viewModel?.backupsUpdateFlow?.emit(
+                Pair(packageName, backups.sortedByDescending { it.backupDate })
+            )
+        }
     }
 
     val backupsNewestFirst: List<Backup>
@@ -492,7 +496,7 @@ class Package {
             else
                 StorageFile.invalidateCache {
                     //!it.startsWith(backupDirConfigured) &&
-                            it.contains(packageName)
+                    it.contains(packageName)
                 }
         }
     }

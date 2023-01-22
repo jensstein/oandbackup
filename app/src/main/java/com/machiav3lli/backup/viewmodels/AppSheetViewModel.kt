@@ -46,7 +46,7 @@ class AppSheetViewModel(
     app: Package?,
     private val database: ODatabase,
     private var shellCommands: ShellCommands,
-    private val appContext: Application
+    private val appContext: Application,
 ) : AndroidViewModel(appContext) {
 
     var thePackage = flow<Package?> { app }.stateIn(
@@ -203,7 +203,7 @@ class AppSheetViewModel(
         private val packageInfo: Package?,
         private val database: ODatabase,
         private val shellCommands: ShellCommands,
-        private val application: Application
+        private val application: Application,
     ) : ViewModelProvider.Factory {
         @Suppress("unchecked_cast")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

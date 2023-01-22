@@ -102,7 +102,7 @@ fun scanBackups(
     }
 
     beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}listFiles")
-    val files = directory.listFiles().drop(0)   // copy
+    val files = directory.listFiles().toList()   // copy
     endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}listFiles")
 
     val names = files.map { it.name }

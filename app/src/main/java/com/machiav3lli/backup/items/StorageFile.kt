@@ -394,14 +394,14 @@ open class StorageFile {
 
     val isDirectory: Boolean
         get() = file?.isDirectory
-            ?: (documentInfo?.mimeType == MIME_TYPE_DIR)
+                ?: (documentInfo?.mimeType == MIME_TYPE_DIR)
 
     val isPropertyFile: Boolean
         get() = name?.endsWith(".$PROP_NAME") ?: false
 
     fun exists(): Boolean =
         file?.exists()
-            ?: !documentInfo?.id.isNullOrEmpty()
+        ?: !documentInfo?.id.isNullOrEmpty()
 
     val size: Long
         get() = (
@@ -496,13 +496,13 @@ open class StorageFile {
         traceDebug { "########## delete $path" }
         val ok = try {
             file?.delete()
-                ?: run {
-                    // don't delete if any file inside
-                    if (listFiles(maxFiles = 1, useCache = false).size == 0)
-                        DocumentsContract.deleteDocument(context.contentResolver, _uri!!)
-                    else
-                        false
-                }
+            ?: run {
+                // don't delete if any file inside
+                if (listFiles(maxFiles = 1, useCache = false).isEmpty())
+                    DocumentsContract.deleteDocument(context.contentResolver, _uri!!)
+                else
+                    false
+            }
         } catch (e: FileNotFoundException) {
             false
         } catch (e: IllegalArgumentException) { // can also happen with FileNotFoundException
@@ -549,10 +549,10 @@ open class StorageFile {
     fun readText(): String {
         return try {
             file?.readText()
-                ?: run {
-                    inputStream()?.reader()?.readText()
-                        ?: ""
-                }
+            ?: run {
+                inputStream()?.reader()?.readText()
+                ?: ""
+            }
         } catch (e: FileNotFoundException) {
             logException(e, path, backTrace = false)
             ""
@@ -579,7 +579,7 @@ open class StorageFile {
         if (exists())   //TODO CAUTION: deletes COMPLETE parent directory, if file does not exist
             delete()    //TODO no clue why! it was reproducible, only change this if 100% proved
         return parent?.createFile(name!!)
-            ?.writeText(text) ?: false
+                   ?.writeText(text) ?: false
     }
 
     fun findUri(displayName: String): Uri? {
@@ -708,7 +708,7 @@ open class StorageFile {
     fun deleteRecursive(): Boolean {
         traceDebug { "########## deleteRecursive $path" }
         return when {
-            isFile ->
+            isFile      ->
                 delete()
             isDirectory ->
                 try {
@@ -727,7 +727,7 @@ open class StorageFile {
                     logException(e, path, backTrace = false)
                     false
                 }
-            else ->
+            else        ->
                 false
         }
     }
@@ -755,10 +755,10 @@ open class StorageFile {
             if (pref_cacheUris.value) {
                 cacheCheck()
                 return cacheGetUri(uri.toString())
-                    ?: StorageFile(
-                        null,
-                        uri
-                    )
+                       ?: StorageFile(
+                           null,
+                           uri
+                       )
             } else {
                 return StorageFile(
                     null,

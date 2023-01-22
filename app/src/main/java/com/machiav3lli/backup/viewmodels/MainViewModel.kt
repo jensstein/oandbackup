@@ -123,7 +123,8 @@ class MainViewModel(
                 }
                 db.backupDao.updateList(
                     it.first,
-                    it.second.sortedByDescending { it.backupDate })
+                    it.second.sortedByDescending { it.backupDate },
+                )
             }
         }
         .stateIn(
