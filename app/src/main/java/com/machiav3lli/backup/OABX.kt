@@ -247,13 +247,15 @@ class OABX : Application() {
 
         scheduleAlarms()
 
-        MainScope().launch(Dispatchers.IO) {
+        //MainScope().launch(Dispatchers.IO) {
+        Thread {
             val backupsMap = findBackups()
             traceBackupsScan { "*** --------------------> packages: ${backupsMap.keys.size} backups: ${backupsMap.values.flatten().size}" }
             val time = endBusy(startupMsg)
             addInfoText("startup: ${"%.3f".format(time / 1E9)} sec")
             startup = false
-        }
+        }.start()
+        //}
     }
 
     override fun onTerminate() {
