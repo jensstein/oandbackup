@@ -249,10 +249,7 @@ class OABX : Application() {
 
         scheduleAlarms()
 
-        //TODO test
-        //MainScope()
-        //GlobalScope.launch(Dispatchers.IO) {
-        Thread {
+        MainScope().launch(Dispatchers.IO) {
             var backupsMap: Map<String, List<Backup>> = emptyMap()
             try {
                 backupsMap = findBackups()
@@ -264,8 +261,7 @@ class OABX : Application() {
                 addInfoText("startup: ${"%.3f".format(time / 1E9)} sec")
                 startup = false
             }
-        }.start()
-        //}
+        }
     }
 
     override fun onTerminate() {
