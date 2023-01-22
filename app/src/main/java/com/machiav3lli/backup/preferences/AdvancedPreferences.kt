@@ -5,25 +5,15 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
@@ -82,53 +72,12 @@ fun AdvancedPrefsPage() {
     val prefs = Pref.preferences["adv"] ?: listOf()
 
     AppTheme {
-        if (true) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                item {
-                    PrefsGroup(prefs = prefs) { pref ->
-                        if (pref == pref_enableSpecialBackups) {
-                            val newModel = sortFilterModel
-                            newModel.mainFilter = newModel.mainFilter and MAIN_FILTER_DEFAULT
-                            sortFilterModel = newModel
-                        }
-                    }
-                }
-                item {
-                    PrefsExpandableGroupHeader(
-                        titleId = R.string.prefs_dev_settings,
-                        summaryId = R.string.prefs_dev_settings_summary,
-                        icon = Phosphor.Warning
-                    ) {
-                        expand(!expanded)
-                    }
-                }
-                item {
-                    Box {           //TODO hg42 use Box as workaround for weird animation behavior
-                        AnimatedVisibility(
-                            visible = expanded,
-                            //enter = EnterTransition.None,
-                            //exit = ExitTransition.None
-                            enter = expandVertically() + fadeIn(),
-                            exit = shrinkVertically() + fadeOut()
-                        ) {
-                            DevPrefGroups()
-                        }
-                    }
-                }
-            }
-        } else {
-            val scroll = rememberScrollState()
-            Column(                    //TODO hg42 another workaround for weird animation behavior
-                Modifier
-                    .fillMaxSize()
-                    .verticalScroll(scroll)
-                    .padding(PaddingValues(8.dp)),
-                verticalArrangement = Arrangement.spacedBy(0.dp)
-            ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            item {
                 PrefsGroup(prefs = prefs) { pref ->
                     if (pref == pref_enableSpecialBackups) {
                         val newModel = sortFilterModel
@@ -136,6 +85,8 @@ fun AdvancedPrefsPage() {
                         sortFilterModel = newModel
                     }
                 }
+            }
+            item {
                 PrefsExpandableGroupHeader(
                     titleId = R.string.prefs_dev_settings,
                     summaryId = R.string.prefs_dev_settings_summary,
@@ -143,15 +94,19 @@ fun AdvancedPrefsPage() {
                 ) {
                     expand(!expanded)
                 }
-                AnimatedVisibility(
-                    visible = expanded,
-                    //enter = EnterTransition.None,
-                    //exit = ExitTransition.None
-                    enter = expandVertically() + fadeIn(),
-                    exit = shrinkVertically() + fadeOut()
-                ) {
-                    DevPrefGroups()
-                }
+            }
+            item {
+                //Box {  // hg42: use Box as workaround for weird animation behavior  //TODO hg42 seems to be fixed now? //TODO wech
+                    AnimatedVisibility(
+                        visible = expanded,
+                        //enter = EnterTransition.None,
+                        //exit = ExitTransition.None
+                        enter = expandVertically() + fadeIn(),
+                        exit = shrinkVertically() + fadeOut()
+                    ) {
+                        DevPrefGroups()
+                    }
+                //}
             }
         }
     }
