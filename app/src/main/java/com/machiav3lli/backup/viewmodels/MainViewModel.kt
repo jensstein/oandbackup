@@ -235,7 +235,7 @@ class MainViewModel(
                     s.isEmpty() || (
                             listOf(item.packageName, item.packageLabel)
                                 .any { it.contains(s, ignoreCase = true) }
-                            )
+                                   )
                 }
                 .applyFilter(f, OABX.main!!)
 
@@ -287,7 +287,7 @@ class MainViewModel(
             try {
                 //OABX.beginBusy("recreateAppInfoList")
                 val time = measureNanoTime {
-                    appContext.updateAppTables(db.appInfoDao, db.backupDao)
+                    appContext.updateAppTables()
                 }
                 OABX.addInfoText("recreateAppInfoList: ${"%.3f".format(time / 1E9)} sec")
             } catch (e: Throwable) {

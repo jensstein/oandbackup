@@ -192,21 +192,21 @@ fun Activity.requireStorageLocation(activityResultLauncher: ActivityResultLaunch
 
 val Context.hasStoragePermissions: Boolean
     get() = when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ->
+        OABX.minSDK(Build.VERSION_CODES.R) ->
             Environment.isExternalStorageManager()
-        else ->
+        else                               ->
             checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) ==
                     PackageManager.PERMISSION_GRANTED
     }
 
 fun Activity.getStoragePermission() {
     when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
+        OABX.minSDK(Build.VERSION_CODES.R) -> {
             val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
             intent.data = Uri.parse("package:$packageName")
             startActivity(intent)
         }
-        else -> {
+        else                               -> {
             requireWriteStoragePermission()
             requireReadStoragePermission()
         }
@@ -288,7 +288,7 @@ val Context.checkSMSMMSPermission: Boolean
         }
         val appOps = (getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)
         val mode = when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
+            OABX.minSDK(Build.VERSION_CODES.Q) ->
                 appOps.unsafeCheckOpNoThrow(
                     AppOpsManager.OPSTR_READ_SMS,
                     Process.myUid(),
@@ -296,19 +296,19 @@ val Context.checkSMSMMSPermission: Boolean
                 )
             // Done this way because on (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
             // it always says that the permission is granted even though it is not
-            else -> AppOpsManager.MODE_DEFAULT
+            else                               -> AppOpsManager.MODE_DEFAULT
         }
         return if (mode == AppOpsManager.MODE_DEFAULT) {
             (checkCallingOrSelfPermission(Manifest.permission.READ_SMS) ==
-                    PackageManager.PERMISSION_GRANTED &&
-                    checkCallingOrSelfPermission(Manifest.permission.SEND_SMS) ==
-                    PackageManager.PERMISSION_GRANTED &&
-                    checkCallingOrSelfPermission(Manifest.permission.RECEIVE_SMS) ==
-                    PackageManager.PERMISSION_GRANTED &&
-                    checkCallingOrSelfPermission(Manifest.permission.RECEIVE_MMS) ==
-                    PackageManager.PERMISSION_GRANTED &&
-                    checkCallingOrSelfPermission(Manifest.permission.RECEIVE_WAP_PUSH) ==
-                    PackageManager.PERMISSION_GRANTED)
+             PackageManager.PERMISSION_GRANTED &&
+             checkCallingOrSelfPermission(Manifest.permission.SEND_SMS) ==
+             PackageManager.PERMISSION_GRANTED &&
+             checkCallingOrSelfPermission(Manifest.permission.RECEIVE_SMS) ==
+             PackageManager.PERMISSION_GRANTED &&
+             checkCallingOrSelfPermission(Manifest.permission.RECEIVE_MMS) ==
+             PackageManager.PERMISSION_GRANTED &&
+             checkCallingOrSelfPermission(Manifest.permission.RECEIVE_WAP_PUSH) ==
+             PackageManager.PERMISSION_GRANTED)
         } else {
             mode == AppOpsManager.MODE_ALLOWED
         }
@@ -338,7 +338,7 @@ val Context.checkCallLogsPermission: Boolean
         }
         val appOps = (getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)
         val mode = when {
-            Build.VERSION.SDK_INT > Build.VERSION_CODES.Q ->
+            OABX.minSDK(Build.VERSION_CODES.Q) ->
                 appOps.unsafeCheckOpNoThrow(
                     AppOpsManager.OPSTR_READ_CALL_LOG,
                     Process.myUid(),
@@ -346,13 +346,13 @@ val Context.checkCallLogsPermission: Boolean
                 )
             // Done this way because on (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q)
             // it always says that the permission is granted even though it is not
-            else -> AppOpsManager.MODE_DEFAULT
+            else                               -> AppOpsManager.MODE_DEFAULT
         }
         return if (mode == AppOpsManager.MODE_DEFAULT) {
             (checkCallingOrSelfPermission(Manifest.permission.READ_CALL_LOG) ==
-                    PackageManager.PERMISSION_GRANTED &&
-                    checkCallingOrSelfPermission(Manifest.permission.WRITE_CALL_LOG) ==
-                    PackageManager.PERMISSION_GRANTED)
+             PackageManager.PERMISSION_GRANTED &&
+             checkCallingOrSelfPermission(Manifest.permission.WRITE_CALL_LOG) ==
+             PackageManager.PERMISSION_GRANTED)
         } else {
             mode == AppOpsManager.MODE_ALLOWED
         }
@@ -380,7 +380,7 @@ val Context.checkContactsPermission: Boolean
         }
         val appOps = (getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)
         val mode = when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
+            OABX.minSDK(Build.VERSION_CODES.Q) ->
                 appOps.unsafeCheckOpNoThrow(
                     AppOpsManager.OPSTR_READ_CONTACTS,
                     Process.myUid(),
@@ -388,7 +388,7 @@ val Context.checkContactsPermission: Boolean
                 )
             // Done this way because on (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
             // it always says that the permission is granted even though it is not
-            else -> AppOpsManager.MODE_DEFAULT
+            else                               -> AppOpsManager.MODE_DEFAULT
         }
         return if (mode == AppOpsManager.MODE_DEFAULT) {
             checkCallingOrSelfPermission(Manifest.permission.READ_CONTACTS) ==
@@ -402,13 +402,13 @@ val Context.checkUsageStatsPermission: Boolean
     get() {
         val appOps = (getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)
         val mode = when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
+            OABX.minSDK(Build.VERSION_CODES.Q) ->
                 appOps.unsafeCheckOpNoThrow(
                     AppOpsManager.OPSTR_GET_USAGE_STATS,
                     Process.myUid(),
                     packageName
                 )
-            else ->
+            else                               ->
                 appOps.checkOpNoThrow(  //TODO 'checkOpNoThrow(String, Int, String): Int' is deprecated. Deprecated in Java. @machiav3lli not replaceable without increasing minSDK as the two functions have different minSDK
                     AppOpsManager.OPSTR_GET_USAGE_STATS,
                     Process.myUid(),
@@ -425,7 +425,7 @@ val Context.checkUsageStatsPermission: Boolean
 
 fun Context.checkBatteryOptimization(powerManager: PowerManager)
         : Boolean = persist_ignoreBatteryOptimization.value
-        || powerManager.isIgnoringBatteryOptimizations(packageName)
+                    || powerManager.isIgnoringBatteryOptimizations(packageName)
 
 
 val isBackupDeviceProtectedData: Boolean
@@ -508,23 +508,23 @@ var specialBackupsEnabled: Boolean
     }
 
 fun Context.getLocaleOfCode(localeCode: String): Locale = when {
-    localeCode.isEmpty() -> resources.configuration.locales[0]
+    localeCode.isEmpty()      -> resources.configuration.locales[0]
     localeCode.contains("-r") -> Locale(
         localeCode.substring(0, 2),
         localeCode.substring(4)
     )
-    localeCode.contains("_") -> Locale(
+    localeCode.contains("_")  -> Locale(
         localeCode.substring(0, 2),
         localeCode.substring(3)
     )
-    else -> Locale(localeCode)
+    else                      -> Locale(localeCode)
 }
 
 fun Context.getLanguageList() =
     mapOf(PREFS_LANGUAGES_DEFAULT to resources.getString(R.string.prefs_language_system)) +
-            BuildConfig.DETECTED_LOCALES
-                .sorted()
-                .associateWith { translateLocale(getLocaleOfCode(it)) }
+    BuildConfig.DETECTED_LOCALES
+        .sorted()
+        .associateWith { translateLocale(getLocaleOfCode(it)) }
 
 private fun translateLocale(locale: Locale): String {
     val country = locale.getDisplayCountry(locale)

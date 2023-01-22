@@ -34,7 +34,7 @@ import com.machiav3lli.backup.utils.specialBackupsEnabled
 class PackagesListDialogFragment(
     private val selectedPackages: List<String>,
     val filter: Int, private val isBlocklist: Boolean,
-    private val onPackagesListChanged: (newList: Set<String>) -> Unit
+    private val onPackagesListChanged: (newList: Set<String>) -> Unit,
 ) : DialogFragment() {
 
     override fun onCreateDialog(savedInstance: Bundle?): Dialog {

@@ -58,7 +58,6 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.dialogs.IntervalInDaysDialog
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
-import com.machiav3lli.backup.dialogs.ScheduleNameDialog
 import com.machiav3lli.backup.mainFilterChipItems
 import com.machiav3lli.backup.schedSpecialFilterChipItems
 import com.machiav3lli.backup.scheduleBackupModeChipItems
@@ -102,7 +101,7 @@ class ScheduleSheet() : BaseSheet() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val viewModelFactory = ScheduleViewModel.Factory(
             scheduleId,
@@ -119,17 +118,8 @@ class ScheduleSheet() : BaseSheet() {
 
     private fun refresh(
         schedule: Schedule,
-        rescheduleBoolean: Boolean
+        rescheduleBoolean: Boolean,
     ) = viewModel.updateSchedule(schedule, rescheduleBoolean)
-
-    private fun showNameEditorDialog(schedule: Schedule) {
-        ScheduleNameDialog(schedule.name) {
-            refresh(
-                schedule.copy(name = it),
-                rescheduleBoolean = false
-            )
-        }.show(requireActivity().supportFragmentManager, "SCHEDULENAME_DIALOG")
-    }
 
     private fun showTimePickerDialog(schedule: Schedule) {
         TimePickerDialog(

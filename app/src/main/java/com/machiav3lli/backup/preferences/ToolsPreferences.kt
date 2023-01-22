@@ -128,7 +128,7 @@ val pref_batchDelete = LinkPref(
 
 private fun Context.onClickUninstalledBackupsDelete(
     snackbarHostState: SnackbarHostState,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ): Boolean {
     val deleteList = ArrayList<Package>()
     val message = StringBuilder()
@@ -201,7 +201,7 @@ val pref_copySelfApk = LinkPref(
 
 private fun Context.onClickCopySelf(
     snackbarHostState: SnackbarHostState,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ): Boolean {
     try {
         GlobalScope.launch(Dispatchers.IO) {
@@ -263,7 +263,7 @@ val pref_saveAppsList = LinkPref(
 
 private fun Context.onClickSaveAppsList(
     snackbarHostState: SnackbarHostState,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ): Boolean {
     val packageList = OABX.main?.viewModel?.packageList?.value ?: emptyList()
     if (packageList.isNotEmpty()) {

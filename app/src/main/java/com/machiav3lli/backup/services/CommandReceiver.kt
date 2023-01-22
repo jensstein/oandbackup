@@ -24,13 +24,13 @@ class CommandReceiver : //TODO hg42 how to maintain security?
         val command = intent.action
         Timber.i("Command: command $command")
         when (command) {
-            ACTION_CANCEL -> {
+            ACTION_CANCEL     -> {
                 val batchName = intent.getStringExtra("name")
                 Timber.d("################################################### command intent cancel -------------> name=$batchName")
                 OABX.addInfoText("$command $batchName")
                 OABX.work.cancel(batchName)
             }
-            ACTION_SCHEDULE -> {
+            ACTION_SCHEDULE   -> {
                 intent.getStringExtra("name")?.let { name ->
                     OABX.addInfoText("$command $name")
                     Timber.d("################################################### command intent schedule -------------> name=$name")
@@ -63,17 +63,17 @@ class CommandReceiver : //TODO hg42 how to maintain security?
                                 timeMinute = minute,
                             )
                             scheduleDao.update(newSched)
-                            traceSchedule { "command receiver -> re-schedule"}
+                            traceSchedule { "command receiver -> re-schedule" }
                             scheduleAlarm(context, newSched.id, true)
                         }
                     }.start()
                 }
             }
-            ACTION_CRASH -> {
+            ACTION_CRASH      -> {
                 throw Exception("this is a crash via command intent")
             }
-            null -> {}
-            else -> {
+            null              -> {}
+            else              -> {
                 OABX.addInfoText("Command: command '$command'")
             }
         }

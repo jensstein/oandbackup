@@ -35,7 +35,6 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.getString
 import com.machiav3lli.backup.OABX.Companion.runningSchedules
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.dao.ScheduleDao
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.handler.ShellCommands
@@ -105,7 +104,7 @@ fun calculateTimeToRun(schedule: Schedule, now: Long): Long {
 }
 
 val updateInterval = 1_000L
-val useSeconds = true && updateInterval < 60_000
+val useSeconds = updateInterval < 60_000
 
 fun calcTimeLeft(schedule: Schedule): Pair<String, String> {
     var absTime = ""
@@ -117,8 +116,7 @@ fun calcTimeLeft(schedule: Schedule): Pair<String, String> {
     val days = TimeUnit.MILLISECONDS.toDays(timeDiff).toInt()
     if (days != 0) {
         relTime +=
-            OABX.context.resources.getQuantityString(R.plurals.days_left, days, days) +
-                    " + "
+            "${OABX.context.resources.getQuantityString(R.plurals.days_left, days, days)} + "
     }
     val hours = TimeUnit.MILLISECONDS.toHours(timeDiff).toInt() % 24
     val minutes = TimeUnit.MILLISECONDS.toMinutes(timeDiff).toInt() % 60

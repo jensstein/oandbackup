@@ -66,10 +66,10 @@ val pref_maxLogLines = IntPref(
     key = "dev-log.maxLogLines",
     summary = "maximum lines in the log (logcat or internal)",
     entries = ((10..90 step 10) +
-            (100..450 step 50) +
-            (500..1500 step 500) +
-            (2000..5000 step 1000) +
-            (5000..20000 step 5000)).toList(),
+               (100..450 step 50) +
+               (500..1500 step 500) +
+               (2000..5000 step 1000) +
+               (5000..20000 step 5000)).toList(),
     defaultValue = 50
 )
 
@@ -269,7 +269,8 @@ class OABX : Application() {
         val lastLogMessages = mutableListOf<String>()
         var lastErrorPackage = ""
         var lastErrorCommand = ""
-        var logSections = mutableMapOf<String, Int>().withDefault { 0 }     //TODO hg42 use AtomicInteger? but map is synchronized anyways
+        var logSections = mutableMapOf<String, Int>()
+            .withDefault { 0 }     //TODO hg42 use AtomicInteger? but map is synchronized anyways
 
         var startup = true
 
@@ -280,8 +281,16 @@ class OABX : Application() {
                 override fun log(
                     priority: Int, tag: String?, message: String, t: Throwable?,
                 ) {
-                    val traceToLogcat = try { pref_logToSystemLogcat.value } catch(_: Throwable) { true }
-                    val maxLogLines = try { pref_maxLogLines.value } catch(_: Throwable) { 2000 }
+                    val traceToLogcat = try {
+                        pref_logToSystemLogcat.value
+                    } catch (_: Throwable) {
+                        true
+                    }
+                    val maxLogLines = try {
+                        pref_maxLogLines.value
+                    } catch (_: Throwable) {
+                        2000
+                    }
                     if (traceToLogcat)
                         super.log(priority, "$tag", message, t)
 
@@ -503,7 +512,7 @@ class OABX : Application() {
 
         init {
             CoroutineScope(Dispatchers.IO).launch {
-                while(true) {
+                while (true) {
                     delay(busyTick)
                     busyCountDown.getAndUpdate {
                         if (it > 0) {
@@ -511,7 +520,7 @@ class OABX : Application() {
                             if (new == 0)
                                 busy.value = false
                             else
-                                if(busy.value == false)
+                                if (busy.value == false)
                                     busy.value = true
                             new
                         } else
@@ -523,7 +532,7 @@ class OABX : Application() {
 
         fun hitBusy(state: Boolean = false) {
             //beginNanoTimer("busy.hitBusy")
-            busyCountDown.set((1000L/busyTick).toInt())
+            busyCountDown.set((1000L / busyTick).toInt())
             //endNanoTimer("busy.hitBusy")
         }
 
@@ -587,7 +596,8 @@ class OABX : Application() {
                 return theBackupsMap.getOrPut(packageName) {
                     val backups =
                         context.findBackups(packageName)  //TODO hg42 may also find glob *packageName* for now
-                    backups[packageName] ?: emptyList()  // so we need to take the correct package here
+                    backups[packageName]
+                    ?: emptyList()  // so we need to take the correct package here
                 }.drop(0)  // copy
             }
         }

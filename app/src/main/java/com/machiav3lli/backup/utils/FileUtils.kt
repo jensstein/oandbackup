@@ -46,7 +46,10 @@ object FileUtils {
      *
      * @return URI to OABX storage directory
      */
-    @Throws(StorageLocationNotConfiguredException::class, BackupLocationInAccessibleException::class)
+    @Throws(
+        StorageLocationNotConfiguredException::class,
+        BackupLocationInAccessibleException::class
+    )
     fun getBackupDirUri(context: Context): Uri {
         if (backupLocation == null) {
             val storageRoot = backupDirConfigured

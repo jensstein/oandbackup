@@ -80,7 +80,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     fun run(
         app: Package,
         backup: Backup,
-        backupMode: Int
+        backupMode: Int,
     ): ActionResult {
         try {
             Timber.i("Restoring: ${app.packageName} [${app.packageLabel}]")
@@ -92,11 +92,12 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             }
             try {
                 val backupDir = backup.dir
-                    ?: run {
-                        val backups = context.findBackups(backup.packageName).get(backup.packageName)
-                        val found = backups?.find { it.backupDate == backup.backupDate }
-                        found?.dir
-                    }
+                                ?: run {
+                                    val backups =
+                                        context.findBackups(backup.packageName)[backup.packageName]
+                                    val found = backups?.find { it.backupDate == backup.backupDate }
+                                    found?.dir
+                                }
                 if (backupDir != null) {
                     if (backupMode and MODE_APK == MODE_APK) {
                         work?.setOperation("apk")
@@ -128,7 +129,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                                 extractErrorMessage(cause.shellResult)
                             }"
                         }
-                        else -> {
+                        else                           -> {
                             "${e.javaClass.simpleName}: ${e.message}"
                         }
                     }
@@ -155,7 +156,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         app: Package,
         backup: Backup,
         backupDir: StorageFile,
-        backupMode: Int
+        backupMode: Int,
     ) {
         if (!isPlausiblePath(app.dataPath, app.packageName))
             refreshAppInfo(context, app)    // wait for valid paths
@@ -221,7 +222,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         val apkTargetPath = File(backup.sourceDir ?: BASE_APK_FILENAME)
         val baseApkName = apkTargetPath.name
         val baseApkFile = backupDir.findFile(baseApkName)
-            ?: throw RestoreFailedException("$baseApkName is missing in backup", null)
+                          ?: throw RestoreFailedException("$baseApkName is missing in backup", null)
         Timber.d("[$packageName] Found $baseApkName in backup archive")
         val splitApksInBackup: Array<StorageFile> = try {
             backupDir.listFiles()
@@ -327,7 +328,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                         }
                     }
                 }
-                else -> {
+                else                              -> {
                     // Install main package
                     sb.append(
                         getPackageInstallCommand(
@@ -413,16 +414,16 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     private fun genericRestoreDataByCopying(
         targetPath: String,
         backupInstanceDir: StorageFile,
-        what: String
+        what: String,
     ) {
         try {
             val backupDirToRestore = backupInstanceDir.findFile(what)
-                ?: throw RestoreFailedException(
-                    String.format(
-                        LOG_DIR_IS_MISSING_CANNOT_RESTORE,
-                        what
-                    )
-                )
+                                     ?: throw RestoreFailedException(
+                                         String.format(
+                                             LOG_DIR_IS_MISSING_CANNOT_RESTORE,
+                                             what
+                                         )
+                                     )
             suRecursiveCopyFileFromDocument(backupDirToRestore, targetPath)
         } catch (e: IOException) {
             throw RestoreFailedException("Could not read the input file due to IOException", e)
@@ -440,7 +441,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         archive: StorageFile,
         isCompressed: Boolean,
         isEncrypted: Boolean,
-        iv: ByteArray?
+        iv: ByteArray?,
     ): InputStream {
         var inputStream: InputStream = BufferedInputStream(archive.inputStream()!!)
         if (isEncrypted) {
@@ -465,7 +466,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         isEncrypted: Boolean,
         iv: ByteArray?,
         cachePath: File?,
-        forceOldVersion: Boolean = false
+        forceOldVersion: Boolean = false,
     ) {
         // Check if the archive exists, uncompressTo can also throw FileNotFoundException
         if (!archive.exists()) {
@@ -536,7 +537,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         targetPath: String,
         isCompressed: Boolean,
         isEncrypted: Boolean,
-        iv: ByteArray?
+        iv: ByteArray?,
     ) {
         RootFile(targetPath).let { targetDir ->
             // Check if the archive exists, uncompressTo can also throw FileNotFoundException
@@ -583,8 +584,8 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                         .split("\n")
                         .filterNot { line ->
                             line.isBlank()
-                                    || line.contains("tar: unknown file type") // e.g. socket 140000
-                                    || line.contains("tar: had errors") // summary at the end
+                            || line.contains("tar: unknown file type") // e.g. socket 140000
+                            || line.contains("tar: had errors") // summary at the end
                         }
                     if (errLines.isNotEmpty()) {
                         val errFiltered = errLines.joinToString("\n")
@@ -625,7 +626,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         isEncrypted: Boolean,
         iv: ByteArray?,
         cachePath: File?,
-        forceOldVersion: Boolean = false
+        forceOldVersion: Boolean = false,
     ) {
         Timber.i("${OABX.app.packageName} -> $targetPath")
         if (!forceOldVersion && pref_restoreTarCmd.value) {
@@ -651,21 +652,22 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         }
     }
 
-    fun getOwnerGroupContextWithWorkaround( // TODO hg42 this is the best I could come up with for now
-            app: Package,
-            extractTo: String
+    fun getOwnerGroupContextWithWorkaround(
+        // TODO hg42 this is the best I could come up with for now
+        app: Package,
+        extractTo: String,
     ): Array<String> {
         val uidgidcon = try {
             shell.suGetOwnerGroupContext(extractTo)
-        } catch(e: Throwable) {
+        } catch (e: Throwable) {
             val fromParent = shell.suGetOwnerGroupContext(File(extractTo).parent!!)
             val fromData = shell.suGetOwnerGroupContext(app.dataPath)
             arrayOf(
                 fromData[0],    // user from app data
                 fromParent[1],  // group is independent of app
                 fromParent[2]   // context is independent of app //TODO hg42 really? some seem to be restricted to app? or may be they should...
-                                // note: restorecon does not work, because it sets storage_file instead of media_rw_data_file
-                                // (returning "?" here would choose restorecon)
+                // note: restorecon does not work, because it sets storage_file instead of media_rw_data_file
+                // (returning "?" here would choose restorecon)
             )
         }
         return uidgidcon
@@ -675,7 +677,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     private fun genericRestorePermissions(
         dataType: String,
         targetPath: String,
-        uidgidcon: Array<String>
+        uidgidcon: Array<String>,
     ) {
         try {
             val (uid, gid, con) = uidgidcon
@@ -693,11 +695,11 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             // assuming target exists, otherwise we should not enter this function, it's guarded outside
             val target = RootFile(targetPath).absolutePath
             val chownTargets = topLevelFiles
-                    .filterNot { it in DATA_EXCLUDED_CACHE_DIRS }
-                    .map { s -> RootFile(targetPath, s).absolutePath }
+                .filterNot { it in DATA_EXCLUDED_CACHE_DIRS }
+                .map { s -> RootFile(targetPath, s).absolutePath }
             val cacheTargets = topLevelFiles
-                    .filter { it in DATA_EXCLUDED_CACHE_DIRS }
-                    .map { s -> RootFile(targetPath, s).absolutePath }
+                .filter { it in DATA_EXCLUDED_CACHE_DIRS }
+                .map { s -> RootFile(targetPath, s).absolutePath }
             Timber.d("Changing owner and group to $uid:$gid for $target and recursive for $chownTargets")
             Timber.d("Changing owner and group to $uid:$gidCache for cache $cacheTargets")
             Timber.d("Changing selinux context to $con for $target")
@@ -719,9 +721,10 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             //}
             fun commandChown(uid: String, gid: String, target: String): String {
                 return "$utilBoxQ chown $uid:$gid ${
-                            quote(target)
-                        }"
+                    quote(target)
+                }"
             }
+
             fun commandChownMultiRec(uid: String, gid: String, targets: List<String>): String? {
                 return if (targets.isNotEmpty())
                     "$utilBoxQ chown -R $uid:$gid ${
@@ -730,12 +733,14 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                 else
                     null
             }
+
             fun commandChcon(con: String, target: String): String? {
                 return if (con == "?") //TODO hg42: when does it happen? maybe if selinux not supported on storage?
                     null // "" ; restorecon -RF -v ${quote(target)}"  //TODO hg42 doesn't seem to work, probably because selinux unsupported in this case
                 else
                     "chcon -R -h -v '$con' ${quote(target)}"
             }
+
             val command = listOf(
                 commandChown(uid, gid, target),
                 commandChownMultiRec(uid, gid, chownTargets),
@@ -759,7 +764,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     open fun restoreData(
         app: Package,
         backup: Backup,
-        backupDir: StorageFile
+        backupDir: StorageFile,
     ) {
         val dataType = BACKUP_DIR_DATA
         val backupFilename = getBackupArchiveFilename(
@@ -769,12 +774,12 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         )
         Timber.d(LOG_EXTRACTING_S, backup.packageName, backupFilename)
         val backupArchive = backupDir.findFile(backupFilename)
-            ?: throw RestoreFailedException(
-                String.format(
-                    LOG_BACKUP_ARCHIVE_MISSING,
-                    backupFilename
-                )
-            )
+                            ?: throw RestoreFailedException(
+                                String.format(
+                                    LOG_BACKUP_ARCHIVE_MISSING,
+                                    backupFilename
+                                )
+                            )
         val extractTo = app.dataPath
         if (!isPlausiblePath(extractTo, app.packageName))
             throw RestoreFailedException(
@@ -807,7 +812,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     open fun restoreDeviceProtectedData(
         app: Package,
         backup: Backup,
-        backupDir: StorageFile
+        backupDir: StorageFile,
     ) {
         val dataType = BACKUP_DIR_DEVICE_PROTECTED_FILES
         val backupFilename = getBackupArchiveFilename(
@@ -817,12 +822,12 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         )
         Timber.d(LOG_EXTRACTING_S, backup.packageName, backupFilename)
         val backupArchive = backupDir.findFile(backupFilename)
-            ?: throw RestoreFailedException(
-                String.format(
-                    LOG_BACKUP_ARCHIVE_MISSING,
-                    backupFilename
-                )
-            )
+                            ?: throw RestoreFailedException(
+                                String.format(
+                                    LOG_BACKUP_ARCHIVE_MISSING,
+                                    backupFilename
+                                )
+                            )
         val extractTo = app.devicesProtectedDataPath
         if (!isPlausiblePath(extractTo, app.packageName))
             throw RestoreFailedException(
@@ -855,7 +860,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     open fun restoreExternalData(
         app: Package,
         backup: Backup,
-        backupDir: StorageFile
+        backupDir: StorageFile,
     ) {
         val dataType = BACKUP_DIR_EXTERNAL_FILES
         val backupFilename = getBackupArchiveFilename(
@@ -865,12 +870,12 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         )
         Timber.d(LOG_EXTRACTING_S, backup.packageName, backupFilename)
         val backupArchive = backupDir.findFile(backupFilename)
-            ?: throw RestoreFailedException(
-                String.format(
-                    LOG_BACKUP_ARCHIVE_MISSING,
-                    backupFilename
-                )
-            )
+                            ?: throw RestoreFailedException(
+                                String.format(
+                                    LOG_BACKUP_ARCHIVE_MISSING,
+                                    backupFilename
+                                )
+                            )
         val extractTo = app.getExternalDataPath(context)
         if (!isPlausiblePath(extractTo, app.packageName))
             throw RestoreFailedException(
@@ -899,7 +904,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     open fun restoreObbData(
         app: Package,
         backup: Backup,
-        backupDir: StorageFile
+        backupDir: StorageFile,
     ) {
         val extractTo = app.getObbFilesPath(context)
         if (!isPlausiblePath(extractTo, app.packageName))
@@ -925,12 +930,12 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             )
             Timber.d(LOG_EXTRACTING_S, backup.packageName, backupFilename)
             val backupArchive = backupDir.findFile(backupFilename)
-                ?: throw RestoreFailedException(
-                    String.format(
-                        LOG_BACKUP_ARCHIVE_MISSING,
-                        backupFilename
-                    )
-                )
+                                ?: throw RestoreFailedException(
+                                    String.format(
+                                        LOG_BACKUP_ARCHIVE_MISSING,
+                                        backupFilename
+                                    )
+                                )
 
             val uidgidcon = getOwnerGroupContextWithWorkaround(app, extractTo)
             genericRestoreFromArchive(
@@ -954,7 +959,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     open fun restoreMediaData(
         app: Package,
         backup: Backup,
-        backupDir: StorageFile
+        backupDir: StorageFile,
     ) {
         val extractTo = app.getMediaFilesPath(context)
         if (!isPlausiblePath(extractTo, app.packageName))
@@ -980,12 +985,12 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             )
             Timber.d(LOG_EXTRACTING_S, backup.packageName, backupFilename)
             val backupArchive = backupDir.findFile(backupFilename)
-                ?: throw RestoreFailedException(
-                    String.format(
-                        LOG_BACKUP_ARCHIVE_MISSING,
-                        backupFilename
-                    )
-                )
+                                ?: throw RestoreFailedException(
+                                    String.format(
+                                        LOG_BACKUP_ARCHIVE_MISSING,
+                                        backupFilename
+                                    )
+                                )
 
             val uidgidcon = getOwnerGroupContextWithWorkaround(app, extractTo)
             genericRestoreFromArchive(
@@ -1008,7 +1013,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     private fun getPackageInstallCommand(
         apkPath: RootFile,
         profileId: Int,
-        basePackageName: String? = null
+        basePackageName: String? = null,
     ): String =
         listOfNotNull(
             "cat", quote(apkPath.absolutePath),
@@ -1027,7 +1032,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
 
     private fun getSessionCreateCommand(
         profileId: Int,
-        sumSize: Long
+        sumSize: Long,
     ): String =
         listOfNotNull(
             "pm", "install-create",
@@ -1042,7 +1047,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
 
     private fun getSessionWriteCommand(
         apkPath: RootFile,
-        sessionId: Int
+        sessionId: Int,
     ): String =
         listOfNotNull(
             "cat", quote(apkPath.absolutePath),
@@ -1055,7 +1060,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
 
 
     private fun getSessionCommitCommand(
-        sessionId: Int
+        sessionId: Int,
     ): String =
         listOfNotNull(
             "pm", "install-commit", sessionId
@@ -1094,8 +1099,8 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
 
     private fun isPlausiblePackageInfo(app: Package): Boolean {
         return app.dataPath.isNotBlank()
-                && app.apkPath.isNotBlank()
-                && app.devicesProtectedDataPath.isNotBlank()
+               && app.apkPath.isNotBlank()
+               && app.devicesProtectedDataPath.isNotBlank()
     }
 
     private fun isPlausiblePath(path: String, packageName: String): Boolean {

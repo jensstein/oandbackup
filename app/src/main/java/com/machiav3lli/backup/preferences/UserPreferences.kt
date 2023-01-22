@@ -33,7 +33,6 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.Clock
 import com.machiav3lli.backup.ui.compose.icons.phosphor.EyedropperSample
 import com.machiav3lli.backup.ui.compose.icons.phosphor.FingerprintSimple
 import com.machiav3lli.backup.ui.compose.icons.phosphor.FolderNotch
-import com.machiav3lli.backup.ui.compose.icons.phosphor.FunnelSimple
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Lock
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Swatches
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TextAa
@@ -86,7 +85,7 @@ fun UserPrefsPage() {
                         val flags = it.flags and (
                                 Intent.FLAG_GRANT_READ_URI_PERMISSION or
                                         Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                                )
+                                                 )
                         context.contentResolver.takePersistableUriPermission(uri, flags)
                         Timber.i("setting uri $uri")
                         backupDir = setBackupDir(uri)
@@ -114,14 +113,16 @@ fun UserPrefsPage() {
                 launcher.launch(BACKUP_DIRECTORY_INTENT)
             } else BaseDialog(openDialogCustom = openDialog) {
                 when (dialogsPref) {
-                    pref_languages         -> ListDialogUI(
+                    pref_languages,
+                    -> ListDialogUI(
                         pref = dialogsPref as ListPref,
                         openDialogCustom = openDialog,
                         onChanged = { context.restartApp() }
                     )
                     pref_appTheme,
                     pref_appAccentColor,
-                    pref_appSecondaryColor -> EnumDialogUI(
+                    pref_appSecondaryColor,
+                    -> EnumDialogUI(
                         pref = dialogsPref as EnumPref,
                         openDialogCustom = openDialog,
                         onChanged = {

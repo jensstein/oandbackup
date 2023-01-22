@@ -285,9 +285,9 @@ fun Context.findBackups(
                 scanBackups(backupRoot, packageName, forceTrace = forceTrace) { propsFile ->
                     Backup.createFrom(propsFile)
                         ?.let { runBlocking { send(it) } }
-                        ?: run {
-                            throw Exception("props file ${propsFile.path} not loaded")
-                        }
+                    ?: run {
+                        throw Exception("props file ${propsFile.path} not loaded")
+                    }
                 }
             }
                 //.onEach { traceBackups { "${it.packageName} ${it.backupDate}" } }
@@ -311,11 +311,17 @@ fun Context.findBackups(
 
         } else {
             if (OABX.startup)
-                traceBackupsScan { "<$packageName> single scan (DURING STARTUP!!!) ${formatBackups(backupsMap[packageName] ?: listOf())}" }
+                traceBackupsScan {
+                    "<$packageName> single scan (DURING STARTUP!!!) ${
+                        formatBackups(
+                            backupsMap[packageName] ?: listOf()
+                        )
+                    }"
+                }
             else
                 traceBackupsScan { "<$packageName> single scan ${formatBackups(backupsMap[packageName] ?: listOf())}" }
         }
-        
+
     } catch (e: Throwable) {
         logException(e, backTrace = true)
     } finally {
@@ -338,7 +344,7 @@ fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
             if (isIgnored)
                 Timber.i("ignored package: ${packageInfo.packageName}")
             (if (filter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM) isSystem && !isIgnored else false)
-                    || (if (filter and MAIN_FILTER_USER == MAIN_FILTER_USER) !isSystem && !isIgnored else false)
+            || (if (filter and MAIN_FILTER_USER == MAIN_FILTER_USER) !isSystem && !isIgnored else false)
         }
         .toList()
 
@@ -370,10 +376,10 @@ fun Context.getInstalledPackageList(): MutableList<Package> { // only used in Sc
             if (!OABX.appsSuspendedChecked) {
                 packageList.filter { appPackage ->
                     0 != (OABX.activity?.packageManager
-                        ?.getPackageInfo(appPackage.packageName, 0)
-                        ?.applicationInfo
-                        ?.flags
-                        ?: 0) and ApplicationInfo.FLAG_SUSPENDED
+                              ?.getPackageInfo(appPackage.packageName, 0)
+                              ?.applicationInfo
+                              ?.flags
+                          ?: 0) and ApplicationInfo.FLAG_SUSPENDED
                 }.apply {
                     OABX.main?.whileShowingSnackBar(getString(R.string.supended_apps_cleanup)) {
                         // cleanup suspended package if lock file found
@@ -486,10 +492,10 @@ fun Context.updateAppTables() {
             if (!OABX.appsSuspendedChecked && pref_backupSuspendApps.value) {
                 installedNames.filter { packageName ->
                     0 != (OABX.activity?.packageManager
-                        ?.getPackageInfo(packageName, 0)
-                        ?.applicationInfo
-                        ?.flags
-                        ?: 0) and ApplicationInfo.FLAG_SUSPENDED
+                              ?.getPackageInfo(packageName, 0)
+                              ?.applicationInfo
+                              ?.flags
+                          ?: 0) and ApplicationInfo.FLAG_SUSPENDED
                 }.apply {
                     OABX.main?.whileShowingSnackBar(getString(R.string.supended_apps_cleanup)) {
                         // cleanup suspended package if lock file found
@@ -583,5 +589,5 @@ fun Context.getSpecial(packageName: String) = SpecialInfo.getSpecialPackages(thi
 val PackageInfo.grantedPermissions: List<String>
     get() = requestedPermissions?.filterIndexed { index, perm ->
         requestedPermissionsFlags[index] and PackageInfo.REQUESTED_PERMISSION_GRANTED == PackageInfo.REQUESTED_PERMISSION_GRANTED &&
-                perm !in IGNORED_PERMISSIONS
+        perm !in IGNORED_PERMISSIONS
     }.orEmpty()

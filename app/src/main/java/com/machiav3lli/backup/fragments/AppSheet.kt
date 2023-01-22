@@ -144,7 +144,7 @@ class AppSheet() : BaseSheet(), ActionListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         mPackage = requireMainActivity().viewModel.packageMap.value[packageName]
         users = savedInstanceState?.getStringArrayList(BUNDLE_USERS) ?: ArrayList()
@@ -452,7 +452,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                                     }
                                     AnimatedVisibility(
                                         visible = pkg.isInstalled && !pkg.isSpecial && ((pkg.storageStats?.dataBytes
-                                            ?: 0L) >= 0L)
+                                                                                         ?: 0L) >= 0L)
                                     ) {
                                         ElevatedActionButton(
                                             icon = Phosphor.TrashSimple,
@@ -530,7 +530,7 @@ class AppSheet() : BaseSheet(), ActionListener {
     override fun onActionCalled(
         actionType: ActionType?,
         mode: Int,
-        backup: Backup?
+        backup: Backup?,
     ) {
         viewModel.thePackage.value?.let { p ->
             when {
@@ -612,7 +612,7 @@ class AppSheet() : BaseSheet(), ActionListener {
 
     private fun SnackbarHostState.showUninstallDialog(
         app: Package,
-        coroutineScope: CoroutineScope
+        coroutineScope: CoroutineScope,
     ) {
         AlertDialog.Builder(requireContext())
             .setTitle(app.packageLabel)
@@ -635,7 +635,7 @@ class AppSheet() : BaseSheet(), ActionListener {
 
     fun SnackbarHostState.showDeleteAllBackupsDialog(
         app: Package,
-        coroutineScope: CoroutineScope
+        coroutineScope: CoroutineScope,
     ) {
         AlertDialog.Builder(requireContext())
             .setTitle(app.packageLabel)
@@ -681,7 +681,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                             " "
                         )
                     }
-                    else -> {
+                    else                                        -> {
                         cause?.message ?: "unknown error"
                     }
                 }

@@ -39,7 +39,8 @@ class PackageUnInstalledReceiver : BroadcastReceiver() {
             Package.invalidateSystemCacheForPackage(packageName)
             when (intent.action.orEmpty()) {
                 Intent.ACTION_PACKAGE_ADDED,
-                Intent.ACTION_PACKAGE_REPLACED -> {
+                Intent.ACTION_PACKAGE_REPLACED,
+                -> {
                     context.packageManager.getPackageInfo(
                         packageName,
                         PackageManager.GET_PERMISSIONS
