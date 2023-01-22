@@ -72,7 +72,11 @@ import com.machiav3lli.backup.preferences.pref_restoreDeviceProtectedData
 import com.machiav3lli.backup.preferences.pref_restoreExternalData
 import com.machiav3lli.backup.preferences.pref_restoreMediaData
 import com.machiav3lli.backup.preferences.pref_restoreObbData
+import com.machiav3lli.backup.utils.FileUtils.invalidateBackupLocation
 import com.topjohnwu.superuser.Shell
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.nio.charset.StandardCharsets
 import java.util.*
 
@@ -145,9 +149,12 @@ fun setBackupDir(value: Uri): String {
     val fullUri = DocumentsContract
         .buildDocumentUriUsingTree(value, DocumentsContract.getTreeDocumentId(value))
     pref_pathBackupFolder.value = fullUri.toString()
-    OABX.main?.refreshPackages()
+    //if (OABX.main != null) OABX.main?.refreshPackages()
+    //else
+    CoroutineScope(Dispatchers.IO).launch {
+        invalidateBackupLocation()
+    }
     return fullUri.toString()
-    //FileUtils.invalidateBackupLocation()
 }
 
 val Context.isStorageDirSetAndOk: Boolean

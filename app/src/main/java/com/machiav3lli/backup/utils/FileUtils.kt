@@ -22,10 +22,16 @@ import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.dbs.entity.SpecialInfo
+import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.items.Package
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 import java.nio.file.attribute.PosixFilePermission
 import java.nio.file.attribute.PosixFilePermissions
+import kotlin.system.measureNanoTime
 
 object FileUtils {
     private var backupLocation: Uri? = null
@@ -64,7 +70,17 @@ object FileUtils {
         backupLocation = null
         Package.invalidateBackupCacheForPackage()
         SpecialInfo.clearCache()
-        OABX.main?.viewModel?.refreshList()     // immediately rebuild package list
+        if (OABX.main != null) OABX.main?.viewModel?.refreshList() // immediately rebuild package list
+        else CoroutineScope(Dispatchers.Default).launch {
+            try {
+                val time = measureNanoTime {
+                    OABX.activity?.updateAppTables()
+                }
+                OABX.addInfoText("recreateAppInfoList: ${"%.3f".format(time / 1E9)} sec")
+            } catch (e: Throwable) {
+                LogsHandler.logException(e, backTrace = true)
+            }
+        }
     }
 
     fun getName(fullPath: String): String {
