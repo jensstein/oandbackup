@@ -617,5 +617,11 @@ class OABX : Application() {
                 putBackups(it, emptyList())
             }
         }
+
+        fun emptyBackupsForAllPackages(packageNames: List<String>) {
+            packageNames.forEach {
+                putBackups(it, emptyList())
+            }
+        }
     }
 }

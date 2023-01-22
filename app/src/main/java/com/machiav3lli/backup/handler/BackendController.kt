@@ -47,6 +47,7 @@ import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.Package.Companion.invalidateBackupCacheForPackage
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.preferences.pref_backupSuspendApps
+import com.machiav3lli.backup.preferences.pref_earlyEmptyBackups
 import com.machiav3lli.backup.traceBackupsScan
 import com.machiav3lli.backup.traceBackupsScanAll
 import com.machiav3lli.backup.traceTiming
@@ -277,8 +278,18 @@ fun Context.findBackups(
 
     var backupsMap: Map<String, List<Backup>> = emptyMap()
 
-    if (packageName.isEmpty())
+    var installedPackageInfos: List<PackageInfo> = emptyList()
+    var installedNames: List<String> = emptyList()
+
+    if (packageName.isEmpty()) {
         OABX.beginBusy("findBackups")
+
+        installedPackageInfos = packageManager.getInstalledPackageInfosWithPermissions()
+        installedNames = installedPackageInfos.map { it.packageName }
+
+        if(pref_earlyEmptyBackups.value)
+            OABX.emptyBackupsForAllPackages(installedNames)
+    }
 
     try {
         invalidateBackupCacheForPackage(packageName)
@@ -308,8 +319,8 @@ fun Context.findBackups(
             // doing it here also avoids setting all packages to empty lists when findbackups fails
             // so there is a chance that scanning for backups of a single package will work later
 
-            val installedPackageInfos = packageManager.getInstalledPackageInfosWithPermissions()
-            val installedNames = installedPackageInfos.map { it.packageName }
+            //TODO wech val installedPackageInfos = packageManager.getInstalledPackageInfosWithPermissions()
+            //TODO wech val installedNames = installedPackageInfos.map { it.packageName }
 
             setBackups(backupsMap)
 
@@ -568,7 +579,8 @@ fun Context.updateAppTables() {
     } catch (e: Throwable) {
         logException(e, backTrace = true)
     } finally {
-        OABX.endBusy("updateAppTables")
+        val time = OABX.endBusy("updateAppTables")
+        OABX.addInfoText("updateAppTables: ${"%.3f".format(time / 1E9)} sec")
     }
 }
 

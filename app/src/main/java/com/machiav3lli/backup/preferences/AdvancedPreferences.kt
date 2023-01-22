@@ -245,10 +245,16 @@ val pref_refreshAppInfoTimeout = IntPref(
 
 //---------------------------------------- developer settings - implementation alternatives
 
+val pref_earlyEmptyBackups = BooleanPref(
+    key = "dev-alt.earlyEmptyBackups",
+    summary = "empty backup lists for installed packages early, to prevent single scanning",
+    defaultValue = true
+)
+
 val prev_flowsWaitForStartup = BooleanPref(
     key = "dev-alt.flowsWaitForStartup",
-    summary = "database/filter flows do not start before full scan for backups is finished (faster)",
-    defaultValue = true
+    summary = "database/filter flows do not start before full scan for backups is finished (faster, probably use this or earlyEmptyBackups)",
+    defaultValue = false
 )
 
 val pref_flatStructure = BooleanPref(
