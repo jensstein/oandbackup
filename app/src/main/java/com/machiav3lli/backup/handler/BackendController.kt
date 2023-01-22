@@ -38,8 +38,6 @@ import com.machiav3lli.backup.OABX.Companion.setBackups
 import com.machiav3lli.backup.PROP_NAME
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.ignoredPackages
-import com.machiav3lli.backup.dbs.dao.AppInfoDao
-import com.machiav3lli.backup.dbs.dao.BackupDao
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.SpecialInfo
@@ -474,7 +472,7 @@ fun List<AppInfo>.toPackageList(
     return packageList
 }
 
-fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
+fun Context.updateAppTables() {
 
     try {
         OABX.beginBusy("updateAppTables")
@@ -547,8 +545,8 @@ fun Context.updateAppTables(appInfoDao: AppInfoDao, backupDao: BackupDao) {
         try {
             beginNanoTimer("dbUpdate")
 
-            backupDao.updateList(*backups.toTypedArray())
-            appInfoDao.updateList(*appInfoList.toTypedArray())
+            OABX.db.backupDao.updateList(*backups.toTypedArray())
+            OABX.db.appInfoDao.updateList(*appInfoList.toTypedArray())
         } catch (e: Throwable) {
             logException(e, backTrace = true)
         } finally {

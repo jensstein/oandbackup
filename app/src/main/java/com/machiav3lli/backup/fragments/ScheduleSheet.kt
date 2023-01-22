@@ -53,8 +53,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import com.machiav3lli.backup.EXTRA_SCHEDULE_ID
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.dialogs.IntervalInDaysDialog
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
@@ -90,7 +90,6 @@ import java.time.LocalTime
 
 class ScheduleSheet() : BaseSheet() {
     private lateinit var viewModel: ScheduleViewModel
-    private lateinit var database: ODatabase
 
     constructor(scheduleId: Long) : this() {
         arguments = Bundle().apply {
@@ -105,10 +104,9 @@ class ScheduleSheet() : BaseSheet() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        database = ODatabase.getInstance(requireContext())
         val viewModelFactory = ScheduleViewModel.Factory(
             scheduleId,
-            database.scheduleDao,
+            OABX.db.scheduleDao,
             requireActivity().application
         )
         viewModel = ViewModelProvider(this, viewModelFactory)[ScheduleViewModel::class.java]

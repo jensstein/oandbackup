@@ -20,7 +20,7 @@ package com.machiav3lli.backup.services
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.machiav3lli.backup.dbs.ODatabase
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.dbs.dao.ScheduleDao
 import com.machiav3lli.backup.utils.scheduleAlarms
 import java.lang.ref.WeakReference
@@ -29,7 +29,7 @@ class BootReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
-            val scheduleDao = ODatabase.getInstance(context).scheduleDao
+            val scheduleDao = OABX.db.scheduleDao
             Thread(DatabaseRunnable(context, scheduleDao)).start()
         } else return
     }

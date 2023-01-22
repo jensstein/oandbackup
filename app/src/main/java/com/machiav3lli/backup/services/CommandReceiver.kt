@@ -8,7 +8,6 @@ import com.machiav3lli.backup.ACTION_CRASH
 import com.machiav3lli.backup.ACTION_RESCHEDULE
 import com.machiav3lli.backup.ACTION_SCHEDULE
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.traceSchedule
 import com.machiav3lli.backup.utils.scheduleAlarm
 import timber.log.Timber
@@ -38,7 +37,7 @@ class CommandReceiver : //TODO hg42 how to maintain security?
                     Thread {
                         val now = System.currentTimeMillis()
                         val serviceIntent = Intent(context, ScheduleService::class.java)
-                        val scheduleDao = ODatabase.getInstance(context).scheduleDao
+                        val scheduleDao = OABX.db.scheduleDao
                         scheduleDao.getSchedule(name)?.let { schedule ->
                             serviceIntent.putExtra("scheduleId", schedule.id)
                             serviceIntent.putExtra("name", schedule.getBatchName(now))
@@ -56,7 +55,7 @@ class CommandReceiver : //TODO hg42 how to maintain security?
                     OABX.addInfoText("$command $name $time -> $setTime")
                     Timber.d("################################################### command intent reschedule -------------> name=$name time=$time -> $setTime")
                     Thread {
-                        val scheduleDao = ODatabase.getInstance(context).scheduleDao
+                        val scheduleDao = OABX.db.scheduleDao
                         scheduleDao.getSchedule(name)?.let { schedule ->
                             val (hour, minute) = setTime.split(":").map { it.toInt() }
                             val newSched = schedule.copy(

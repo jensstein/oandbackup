@@ -76,7 +76,6 @@ import com.machiav3lli.backup.BUNDLE_USERS
 import com.machiav3lli.backup.EXTRA_PACKAGE_NAME
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dialogs.BackupDialogFragment
 import com.machiav3lli.backup.dialogs.RestoreDialogFragment
@@ -125,7 +124,7 @@ class AppSheet() : BaseSheet(), ActionListener {
     val viewModel: AppSheetViewModel by viewModels {
         AppSheetViewModel.Factory(
             mPackage,
-            ODatabase.getInstance(requireContext()),
+            OABX.db,
             ShellCommands(users),
             requireActivity().application
         )

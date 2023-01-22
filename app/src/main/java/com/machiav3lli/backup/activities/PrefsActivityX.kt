@@ -41,7 +41,6 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.fragments.HelpSheet
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Info
@@ -60,7 +59,7 @@ import com.machiav3lli.backup.viewmodels.LogViewModel
 class PrefsActivityX : BaseActivity() {
     private var helpSheet: HelpSheet? = null
     private val exportsViewModel: ExportsViewModel by viewModels {
-        ExportsViewModel.Factory(ODatabase.getInstance(applicationContext).scheduleDao, application)
+        ExportsViewModel.Factory(OABX.db.scheduleDao, application)
     }
     private val logsViewModel: LogViewModel by viewModels {
         LogViewModel.Factory(application)

@@ -59,7 +59,6 @@ import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.addInfoText
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.fragments.BatchPrefsSheet
 import com.machiav3lli.backup.fragments.SortFilterSheet
@@ -173,7 +172,7 @@ class MainActivityX : BaseActivity() {
     private val crScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 
     val viewModel by viewModels<MainViewModel> {
-        MainViewModel.Factory(ODatabase.getInstance(OABX.context), application)
+        MainViewModel.Factory(OABX.db, application)
     }
     val backupViewModel: BatchViewModel by viewModels {
         BatchViewModel.Factory(application)
@@ -182,10 +181,7 @@ class MainActivityX : BaseActivity() {
         BatchViewModel.Factory(application)
     }
     val schedulerViewModel: SchedulerViewModel by viewModels {
-        SchedulerViewModel.Factory(
-            ODatabase.getInstance(applicationContext).scheduleDao,
-            application
-        )
+        SchedulerViewModel.Factory(OABX.db.scheduleDao, application)
     }
 
     private lateinit var sheetSortFilter: SortFilterSheet

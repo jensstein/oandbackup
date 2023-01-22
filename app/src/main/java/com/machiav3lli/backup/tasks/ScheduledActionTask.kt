@@ -19,8 +19,8 @@ package com.machiav3lli.backup.tasks
 
 import android.content.Context
 import com.machiav3lli.backup.MODE_UNSET
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
-import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.getInstalledPackageList
 import com.machiav3lli.backup.items.Package
@@ -34,7 +34,7 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
 
     override fun doInBackground(vararg params: Void?): Triple<String, List<String>, Int>? {
 
-        val database = ODatabase.getInstance(context)
+        val database = OABX.db
         val scheduleDao = database.scheduleDao
         val blacklistDao = database.blocklistDao
 

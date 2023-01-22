@@ -121,7 +121,7 @@ class MainViewModel(
                         )
                     }"
                 }
-                ODatabase.getInstance(OABX.context).backupDao.updateList(
+                db.backupDao.updateList(
                     it.first,
                     it.second.sortedByDescending { it.backupDate })
             }

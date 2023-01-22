@@ -152,7 +152,7 @@ fun timeLeft(
 fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean) {
     if (scheduleId >= 0) {
         Thread {
-            val scheduleDao = ODatabase.getInstance(context).scheduleDao
+            val scheduleDao = OABX.db.scheduleDao
             var schedule = scheduleDao.getSchedule(scheduleId)
             if (schedule?.enabled == true) {
 
@@ -240,7 +240,7 @@ fun cancelAlarm(context: Context, scheduleId: Long) {
 
 fun scheduleAlarms() {
     CoroutineScope(Dispatchers.Default).launch {
-        val scheduleDao = ODatabase.getInstance(OABX.context).scheduleDao
+        val scheduleDao = OABX.db.scheduleDao
         traceSchedule { "scheduleAlarms" }
         scheduleDao.all
             .forEach {
@@ -284,7 +284,7 @@ fun startSchedule(schedule: Schedule) {
 
     OABX.main?.let {
 
-        val database = ODatabase.getInstance(OABX.context)
+        val database = OABX.db
 
         val message = StringBuilder()
 
