@@ -30,7 +30,7 @@ import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.preferences.ui.PrefsExpandableGroupHeader
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
-import com.machiav3lli.backup.preferences.ui.PrefsGroupHeading
+import com.machiav3lli.backup.preferences.ui.PrefsGroupCollapsed
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.AndroidLogo
 import com.machiav3lli.backup.ui.compose.icons.phosphor.AsteriskSimple
@@ -50,34 +50,6 @@ import com.machiav3lli.backup.utils.sortFilterModel
 
 
 @Composable
-fun DevPrefsGroup(prefs: List<Pref>, heading: String) {
-    val (expanded, expand) = remember { mutableStateOf(false) }
-
-    Card(
-        modifier = Modifier
-            .clip(CardDefaults.shape)
-            .clickable { expand(!expanded) },
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp)
-        )
-    ) {
-        PrefsGroupHeading(heading = heading)
-        AnimatedVisibility(
-            visible = expanded,
-            modifier = Modifier.padding(
-                start = 12.dp,
-                end = 12.dp,
-                bottom = 12.dp,
-            ),
-            enter = expandVertically() + fadeIn(),
-            exit = shrinkVertically() + fadeOut(),
-        ) {
-            PrefsGroup(prefs = prefs, heading = heading)
-        }
-    }
-}
-
-@Composable
 fun DevPrefGroups() {
     val devUserOptions = Pref.preferences["dev-adv"] ?: listOf()
     val devFileOptions = Pref.preferences["dev-file"] ?: listOf()
@@ -91,14 +63,14 @@ fun DevPrefGroups() {
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        DevPrefsGroup(prefs = devUserOptions, heading = "advanced users (for those who know)")
-        DevPrefsGroup(prefs = devHackOptions, heading = "workarounds (hacks)")
-        DevPrefsGroup(prefs = devLogOptions, heading = "logging")
-        DevPrefsGroup(prefs = devTraceOptions, heading = "tracing")
-        DevPrefsGroup(prefs = devFileOptions, heading = "file handling")
-        DevPrefsGroup(prefs = devFakeOptions, heading = "faking (simulated actions)")
-        DevPrefsGroup(prefs = devNewOptions, heading = "new experimental (for devs)")
-        DevPrefsGroup(prefs = devAltOptions, heading = "alternates (for devs to compare)")
+        PrefsGroupCollapsed(prefs = devUserOptions, heading = "advanced users (for those who know)")
+        PrefsGroupCollapsed(prefs = devHackOptions, heading = "workarounds (hacks)")
+        PrefsGroupCollapsed(prefs = devLogOptions, heading = "logging")
+        PrefsGroupCollapsed(prefs = devTraceOptions, heading = "tracing")
+        PrefsGroupCollapsed(prefs = devFileOptions, heading = "file handling")
+        PrefsGroupCollapsed(prefs = devFakeOptions, heading = "faking (simulated actions)")
+        PrefsGroupCollapsed(prefs = devNewOptions, heading = "new experimental (for devs)")
+        PrefsGroupCollapsed(prefs = devAltOptions, heading = "alternates (for devs to compare)")
     }
 }
 
