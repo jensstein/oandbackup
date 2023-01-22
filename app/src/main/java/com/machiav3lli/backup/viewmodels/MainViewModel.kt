@@ -108,6 +108,7 @@ class MainViewModel(
         // don't skip anything here (no conflate or map Latest etc.)
         // we need to process each update as it's the update for a single package
         .filterNotNull()
+        //.buffer(UNLIMITED)   // use in case the flow isn't collected, yet, e.g. if using Lazily
         .trace { "*** backupsUpdate <<- ${it.first} ${formatSortedBackups(it.second)}" }
         .onEach {
             viewModelScope.launch(Dispatchers.IO) {
@@ -153,6 +154,7 @@ class MainViewModel(
             }
 
             val pkgs = p.toPackageList(appContext, emptyList(), b)
+            //val pkgs = p.toPackageList(appContext, emptyList(), getBackups())     //TODO hg42 always use the current packages instead of slow turna around from db?
 
             limitIconCache(pkgs)
 
