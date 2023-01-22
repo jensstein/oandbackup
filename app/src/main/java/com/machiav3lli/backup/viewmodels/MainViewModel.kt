@@ -34,7 +34,7 @@ import com.machiav3lli.backup.dbs.entity.Blocklist
 import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.Package.Companion.invalidateCacheForPackage
-import com.machiav3lli.backup.preferences.prev_flowsWaitForStartup
+import com.machiav3lli.backup.preferences.pref_flowsWaitForStartup
 import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.traceFlows
 import com.machiav3lli.backup.ui.compose.MutableComposableFlow
@@ -231,7 +231,7 @@ class MainViewModel(
 
             traceFlows { "******************** filtering - list: ${p.size} filter: $f" }
 
-            if (prev_flowsWaitForStartup.value)
+            if (pref_flowsWaitForStartup.value)
                 while (OABX.startup /* || OABX.isBusy */) {
                     traceFlows { "*** filtering waiting for end of startup" }
                     delay(500)
@@ -264,7 +264,7 @@ class MainViewModel(
         notBlockedList
             .trace { "updatePackages? ..." }
             .mapLatest {
-                if (prev_flowsWaitForStartup.value)
+                if (pref_flowsWaitForStartup.value)
                     while (OABX.startup /* || OABX.isBusy */) {
                         traceFlows { "*** updatePackages waiting for end of startup" }
                         delay(500)
