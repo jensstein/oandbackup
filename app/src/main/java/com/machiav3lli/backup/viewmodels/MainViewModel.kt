@@ -34,6 +34,7 @@ import com.machiav3lli.backup.dbs.entity.Blocklist
 import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.Package.Companion.invalidateCacheForPackage
+import com.machiav3lli.backup.preferences.prev_flowsWaitForStartup
 import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.traceFlows
 import com.machiav3lli.backup.ui.compose.MutableComposableFlow
@@ -44,6 +45,7 @@ import com.machiav3lli.backup.utils.applyFilter
 import com.machiav3lli.backup.utils.sortFilterModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -229,12 +231,18 @@ class MainViewModel(
 
             traceFlows { "******************** filtering - list: ${p.size} filter: $f" }
 
+            if (prev_flowsWaitForStartup.value)
+                while (OABX.startup /* || OABX.isBusy */) {
+                    traceFlows { "*** filtering waiting for end of startup" }
+                    delay(500)
+                }
+
             val list = p
                 .filter { item: Package ->
                     s.isEmpty() || (
                             listOf(item.packageName, item.packageLabel)
                                 .any { it.contains(s, ignoreCase = true) }
-                                   )
+                            )
                 }
                 .applyFilter(f, OABX.main!!)
 
@@ -255,7 +263,14 @@ class MainViewModel(
         //------------------------------------------------------------------------------------------ updatedPackages
         notBlockedList
             .trace { "updatePackages? ..." }
-            .mapLatest { it.filter(Package::isUpdated).toMutableList() }
+            .mapLatest {
+                if (prev_flowsWaitForStartup.value)
+                    while (OABX.startup /* || OABX.isBusy */) {
+                        traceFlows { "*** updatePackages waiting for end of startup" }
+                        delay(500)
+                    }
+                it.filter(Package::isUpdated).toMutableList()
+            }
             .trace {
                 "*** updatedPackages <<- updated: (${it.size})${
                     it.map {

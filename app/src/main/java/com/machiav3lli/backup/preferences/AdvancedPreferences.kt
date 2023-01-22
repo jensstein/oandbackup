@@ -245,6 +245,12 @@ val pref_refreshAppInfoTimeout = IntPref(
 
 //---------------------------------------- developer settings - implementation alternatives
 
+val prev_flowsWaitForStartup = BooleanPref(
+    key = "dev-alt.flowsWaitForStartup",
+    summary = "database/filter flows do not start before full scan for backups is finished (faster)",
+    defaultValue = true
+)
+
 val pref_flatStructure = BooleanPref(
     key = "dev-alt.flatStructure",
     summary = "use a flat directory structure",
