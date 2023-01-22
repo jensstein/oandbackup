@@ -163,6 +163,7 @@ class AppSheet() : BaseSheet(), ActionListener {
         val snackbarText by viewModel.snackbarText.flow.collectAsState("")
         val appExtras by viewModel.appExtras.collectAsState()
         val refreshNow by viewModel.refreshNow
+        val dismissNow by viewModel.dismissNow
         val snackbarHostState = remember { SnackbarHostState() }
         val snackbarVisible = snackbarText.isNotEmpty()
         val nestedScrollConnection = rememberNestedScrollInteropConnection()
@@ -186,6 +187,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                 viewModel.refreshNow.value = false
                 requireMainActivity().updatePackage(pkg.packageName)
             }
+            if (dismissNow) dismissAllowingStateLoss()
 
             AppTheme {
                 Scaffold(

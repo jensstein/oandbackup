@@ -72,6 +72,7 @@ class AppSheetViewModel(
 
     private var notificationId: Int = System.currentTimeMillis().toInt()
     val refreshNow = mutableStateOf(true)
+    val dismissNow = mutableStateOf(false)
 
     fun uninstallApp() {
         viewModelScope.launch {
@@ -89,6 +90,10 @@ class AppSheetViewModel(
                         mPackage.packageName, mPackage.apkPath,
                         mPackage.dataPath, mPackage.isSystem
                     )
+                    if (mPackage.backupList.isEmpty()) {
+                        database.appInfoDao.deleteAllOf(mPackage.packageName)
+                        dismissNow.value = true
+                    }
                     showNotification(
                         appContext,
                         MainActivityX::class.java,
@@ -138,7 +143,13 @@ class AppSheetViewModel(
 
     private suspend fun delete(backup: Backup) {
         withContext(Dispatchers.IO) {
-            thePackage.value?.deleteBackup(backup)
+            thePackage.value?.let { pkg ->
+                deleteBackup(backup)
+                if (!pkg.isInstalled && pkg.backupList.isEmpty()) {
+                    database.appInfoDao.deleteAllOf(pkg.packageName)
+                    dismissNow.value = true
+                }
+            }
         }
     }
 
@@ -150,7 +161,13 @@ class AppSheetViewModel(
 
     private suspend fun deleteAll() {
         withContext(Dispatchers.IO) {
-            thePackage.value?.deleteAllBackups()
+            thePackage.value?.let { pkg ->
+                pkg.deleteAllBackups()
+                if (!pkg.isInstalled && pkg.backupList.isEmpty()) {
+                    database.appInfoDao.deleteAllOf(pkg.packageName)
+                    dismissNow.value = true
+                }
+            }
         }
     }
 
