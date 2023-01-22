@@ -511,8 +511,10 @@ open class StorageFile {
             logException(e, path, backTrace = false)
             false
         }
-        if (ok)
+        if (ok) {
             path?.let { cacheFilesRemove(it, this) }
+            parent?.let { cacheInvalidate(it) }
+        }
         return ok
     }
 
