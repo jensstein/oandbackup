@@ -7,4 +7,4 @@
 * Aggiunto: ordina per dimensione dati
 * Aggiunto: suggerimenti per tutte le icone
 * Aggiunto: cancella il pulsante Cache su AppSheet
-* Aggiunta: finestra di avviso sull'abilitazione di Encrylption
+* Aggiunto: finestra di avviso sull'abilitazione di Encrylption
