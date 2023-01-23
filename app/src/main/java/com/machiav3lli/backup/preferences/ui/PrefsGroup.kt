@@ -1,6 +1,11 @@
 package com.machiav3lli.backup.preferences.ui
 
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,8 +23,11 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,10 +42,39 @@ import com.machiav3lli.backup.ui.compose.item.PrefIcon
 import com.machiav3lli.backup.ui.item.Pref
 
 @Composable
+fun PrefsGroupCollapsed(prefs: List<Pref>, heading: String) {
+    val (expanded, expand) = remember { mutableStateOf(false) }
+
+    if (prefs.size > 0)
+        Card(
+            modifier = Modifier
+                .clip(CardDefaults.shape)
+                .clickable { expand(!expanded) },
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp)
+            )
+        ) {
+            PrefsGroupHeading(heading = heading)
+            AnimatedVisibility(
+                visible = expanded,
+                modifier = Modifier.padding(
+                    start = 12.dp,
+                    end = 12.dp,
+                    bottom = 12.dp,
+                ),
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut(),
+            ) {
+                PrefsGroup(prefs = prefs, heading = null)
+            }
+        }
+}
+
+@Composable
 fun PrefsGroup(
     modifier: Modifier = Modifier,
     heading: String? = null,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     PrefsGroupHeading(heading)
     CompositionLocalProvider(
@@ -82,24 +119,27 @@ fun PrefsGroup(
 @Composable
 fun PrefsGroupHeading(
     heading: String? = null,
-    modifier: Modifier = Modifier
-) = if (heading != null) {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        modifier = modifier
-            .height(BUTTON_SIZE_MEDIUM)
-            .padding(horizontal = 32.dp)
-            .fillMaxWidth(),
-    ) {
-        Text(
-            text = heading,
-            style = MaterialTheme.typography.headlineMedium,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground
-        )
+    modifier: Modifier = Modifier,
+) =
+    if (heading != null) {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            modifier = modifier
+                .height(BUTTON_SIZE_MEDIUM)
+                .padding(horizontal = 32.dp)
+                .fillMaxWidth(),
+        ) {
+            Text(
+                text = heading,
+                style = MaterialTheme.typography.headlineMedium,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
+    } else {
+        Spacer(modifier = Modifier.requiredHeight(8.dp))
     }
-} else Spacer(modifier = Modifier.requiredHeight(8.dp))
 
 
 @Composable
@@ -108,7 +148,7 @@ fun PrefsExpandableGroupHeader(
     @StringRes titleId: Int,
     @StringRes summaryId: Int = -1,
     icon: ImageVector,
-    onClick: (() -> Unit)
+    onClick: (() -> Unit),
 ) {
     Divider(thickness = 2.dp)
     Spacer(modifier = Modifier.height(8.dp))

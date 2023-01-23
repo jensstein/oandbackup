@@ -33,7 +33,6 @@ import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import com.machiav3lli.backup.utils.TraceUtils
-import com.machiav3lli.backup.utils.backupDirConfigured
 import com.machiav3lli.backup.utils.getBackupRoot
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -177,9 +176,8 @@ class Package {
     }
 
     fun getBackupsFromBackupDir(): List<Backup> {
-        val backups =
-            OABX.context.findBackups(packageName)  //TODO hg42 may also find glob *packageName* for now
-        return backups[packageName] ?: emptyList()  // so we need to take the correct package here
+        // TODO hg42 may also find glob *packageName* for now so we need to take the correct package
+        return OABX.context.findBackups(packageName)[packageName] ?: emptyList()
     }
 
     fun refreshBackupList(): List<Backup> {
@@ -262,8 +260,6 @@ class Package {
     ) {      //TODO hg42 change to rewriteBackup(backup: Backup, applyParameters)
         traceBackups { "<${changedBackup.packageName}> rewrite backup ${changedBackup.backupDate}" }
         changedBackup.file = backup.file
-        changedBackup.dir = backup.dir
-        changedBackup.tag = backup.tag
         if (changedBackup.packageName != packageName) {             //TODO hg42 probably paranoid
             throw RuntimeException("Asked to rewrite a backup of ${changedBackup.packageName} but this object is for $packageName")
         }
@@ -309,7 +305,12 @@ class Package {
             backups.remove(backup)
             _deleteBackup(backup)
         }
-        refreshBackupList()
+        backupList = backups
+        OABX.main?.viewModel?.viewModelScope?.launch {
+            OABX.main?.viewModel?.backupsUpdateFlow?.emit(
+                Pair(packageName, backups.sortedByDescending { it.backupDate })
+            )
+        }
     }
 
     val backupsNewestFirst: List<Backup>
@@ -478,11 +479,11 @@ class Package {
         fun invalidateBackupCacheForPackage(packageName: String = "") {
             if (packageName.isEmpty())
                 StorageFile.invalidateCache {
-                    it.startsWith(backupDirConfigured)
+                    true //it.startsWith(backupDirConfigured)
                 }
             else
                 StorageFile.invalidateCache {
-                    it.startsWith(backupDirConfigured) &&
+                    //it.startsWith(backupDirConfigured) &&
                     it.contains(packageName)
                 }
         }
@@ -490,11 +491,12 @@ class Package {
         fun invalidateSystemCacheForPackage(packageName: String = "") {
             if (packageName.isEmpty())
                 StorageFile.invalidateCache {
-                    !it.startsWith(backupDirConfigured)
+                    true //!it.startsWith(backupDirConfigured)
                 }
             else
                 StorageFile.invalidateCache {
-                    !it.startsWith(backupDirConfigured) && it.contains(packageName)
+                    //!it.startsWith(backupDirConfigured) &&
+                    it.contains(packageName)
                 }
         }
     }

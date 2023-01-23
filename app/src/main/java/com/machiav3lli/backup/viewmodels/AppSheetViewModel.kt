@@ -46,7 +46,7 @@ class AppSheetViewModel(
     app: Package?,
     private val database: ODatabase,
     private var shellCommands: ShellCommands,
-    private val appContext: Application
+    private val appContext: Application,
 ) : AndroidViewModel(appContext) {
 
     var thePackage = flow<Package?> { app }.stateIn(
@@ -72,6 +72,7 @@ class AppSheetViewModel(
 
     private var notificationId: Int = System.currentTimeMillis().toInt()
     val refreshNow = mutableStateOf(true)
+    val dismissNow = mutableStateOf(false)
 
     fun uninstallApp() {
         viewModelScope.launch {
@@ -89,6 +90,10 @@ class AppSheetViewModel(
                         mPackage.packageName, mPackage.apkPath,
                         mPackage.dataPath, mPackage.isSystem
                     )
+                    if (mPackage.backupList.isEmpty()) {
+                        database.appInfoDao.deleteAllOf(mPackage.packageName)
+                        dismissNow.value = true
+                    }
                     showNotification(
                         appContext,
                         MainActivityX::class.java,
@@ -133,26 +138,36 @@ class AppSheetViewModel(
     fun deleteBackup(backup: Backup) {
         viewModelScope.launch {
             delete(backup)
-            refreshNow.value = true
         }
     }
 
     private suspend fun delete(backup: Backup) {
         withContext(Dispatchers.IO) {
-            thePackage.value?.deleteBackup(backup)
+            thePackage.value?.let { pkg ->
+                deleteBackup(backup)
+                if (!pkg.isInstalled && pkg.backupList.isEmpty()) {
+                    database.appInfoDao.deleteAllOf(pkg.packageName)
+                    dismissNow.value = true
+                }
+            }
         }
     }
 
     fun deleteAllBackups() {
         viewModelScope.launch {
             deleteAll()
-            refreshNow.value = true
         }
     }
 
     private suspend fun deleteAll() {
         withContext(Dispatchers.IO) {
-            thePackage.value?.deleteAllBackups()
+            thePackage.value?.let { pkg ->
+                pkg.deleteAllBackups()
+                if (!pkg.isInstalled && pkg.backupList.isEmpty()) {
+                    database.appInfoDao.deleteAllOf(pkg.packageName)
+                    dismissNow.value = true
+                }
+            }
         }
     }
 
@@ -188,7 +203,7 @@ class AppSheetViewModel(
         private val packageInfo: Package?,
         private val database: ODatabase,
         private val shellCommands: ShellCommands,
-        private val application: Application
+        private val application: Application,
     ) : ViewModelProvider.Factory {
         @Suppress("unchecked_cast")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

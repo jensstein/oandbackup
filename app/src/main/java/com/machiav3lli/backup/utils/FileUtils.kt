@@ -73,13 +73,12 @@ object FileUtils {
         backupLocation = null
         Package.invalidateBackupCacheForPackage()
         SpecialInfo.clearCache()
-        if (OABX.main != null) OABX.main?.viewModel?.refreshList() // immediately rebuild package list
-        else CoroutineScope(Dispatchers.Default).launch {
+        CoroutineScope(Dispatchers.Default).launch {
             try {
                 val time = measureNanoTime {
-                    OABX.activity?.updateAppTables()
+                    OABX.context.updateAppTables()
                 }
-                OABX.addInfoText("recreateAppInfoList: ${"%.3f".format(time / 1E9)} sec")
+                OABX.addInfoText("invalidateBackupLocation: ${"%.3f".format(time / 1E9)} sec")
             } catch (e: Throwable) {
                 LogsHandler.logException(e, backTrace = true)
             }

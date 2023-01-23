@@ -47,6 +47,7 @@ import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.Package.Companion.invalidateBackupCacheForPackage
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.preferences.pref_backupSuspendApps
+import com.machiav3lli.backup.preferences.pref_earlyEmptyBackups
 import com.machiav3lli.backup.traceBackupsScan
 import com.machiav3lli.backup.traceBackupsScanAll
 import com.machiav3lli.backup.traceTiming
@@ -58,7 +59,10 @@ import com.machiav3lli.backup.utils.TraceUtils.logNanoTiming
 import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.utils.getInstalledPackageInfosWithPermissions
 import com.machiav3lli.backup.utils.specialBackupsEnabled
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
@@ -98,7 +102,7 @@ fun scanBackups(
     }
 
     beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}listFiles")
-    val files = directory.listFiles().drop(0)   // copy
+    val files = directory.listFiles().toList()   // copy
     endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}listFiles")
 
     val names = files.map { it.name }
@@ -115,145 +119,148 @@ fun scanBackups(
                 traceBackupsScanAll(lazyText)
     }
 
-    files.stream().parallel().forEach { file ->
+    //files.stream().parallel().forEach { file ->    // works, but the stream lib seems to have a bug, hanging in a wait(-1)
+    runBlocking {
+        files.asFlow().flowOn(Dispatchers.IO).collect { file ->
 
-        //checkMaxThreads()
+            //checkMaxThreads()
 
-        hitBusy()
+            hitBusy()
 
-        val name = file.name ?: ""
-        val path = file.path ?: ""
-        if (forceTrace)
-            traceBackupsScanPackage {
-                ":::${"|:::".repeat(level)}?     ${
-                    formatBackupFile(file)
-                } file"
-            }
-        if (name.contains(regexPackageFolder) ||
-            name.contains(regexBackupInstance)                      // backup
-        ) {
+            val name = file.name ?: ""
+            val path = file.path ?: ""
             if (forceTrace)
                 traceBackupsScanPackage {
-                    ":::${"|:::".repeat(level)}B     ${
+                    ":::${"|:::".repeat(level)}?     ${
                         formatBackupFile(file)
-                    } backup"
+                    } file"
                 }
-            if (path.contains(packageName)) {
-                if (name.contains(regexBackupInstance)                  // instance
-                ) {
-                    traceBackupsScanPackage {
-                        ":::${"|:::".repeat(level)}i     ${
-                            formatBackupFile(file)
-                        } instance"
-                    }
-                    if (file.isPropertyFile &&                              // instance props
-                        !name.contains(regexSpecialFile)
-                    ) {
-                        traceBackupsScanPackage {
-                            ":::${"|:::".repeat(level)}>     ${
-                                formatBackupFile(file)
-                            } ++++++++++++++++++++ props ok"
-                        }
-                        try {
-                            beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
-                            onPropsFile(file)
-                            endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
-                        } catch (_: Throwable) {
-                            if (!name.contains(regexSpecialFile))
-                                runCatching {
-                                    if (cleanup) file.renameTo(".ERROR.${file.name}")
-                                }
-                        }
-                    } else {
-                        if (!name.contains(regexSpecialFolder) &&
-                            file.isDirectory                                // instance dir
-                        ) {
-                            if ("${file.name}.${PROP_NAME}" !in names) {             // no dir.properties
-                                if (name.contains(regexPackageFolder)) {
-                                    try {
-                                        file.findFile(BACKUP_INSTANCE_PROPERTIES_INDIR)  // indir props
-                                            ?.let {
-                                                traceBackupsScanPackage {
-                                                    ":::${"|:::".repeat(level)}>     ${
-                                                        formatBackupFile(it)
-                                                    } ++++++++++++++++++++ indir props ok"
-                                                }
-                                                try {
-                                                    beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
-                                                    onPropsFile(it)
-                                                    endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
-                                                } catch (_: Throwable) {
-                                                    // rename the dir, because the backup is damaged
-                                                    runCatching {
-                                                        file.name?.let { name ->
-                                                            if (!name.contains(
-                                                                    regexSpecialFolder
-                                                                )
-                                                            ) {
-                                                                if (cleanup) file.renameTo(".ERROR.${file.name}")
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            } ?: run { // rename the dir, no dir.properties
-                                            if (cleanup) file.renameTo(".ERROR.${file.name}")
-                                        }
-                                    } catch (_: Throwable) { // rename the dir, no dir.properties
-                                        if (cleanup) file.renameTo(".ERROR.${file.name}")
-                                    }
-                                } else {
-                                    if (cleanup) file.renameTo(".ERROR.${file.name}")
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    if (file.isPropertyFile &&
-                        !name.contains(regexSpecialFile)                // classic props
-                    ) {
-                        traceBackupsScanPackage {
-                            ":::${"|:::".repeat(level)}> ${
-                                formatBackupFile(file)
-                            } ++++++++++++++++++++ props ok"
-                        }
-                        beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
-                        onPropsFile(file)
-                        endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
-                    } else {
-                        if (file.isDirectory) {
-                            traceBackupsScanPackage {
-                                ":::${"|:::".repeat(level)}/     ${
-                                    formatBackupFile(file)
-                                } //////////////////// dir ok"
-                            }
-                            scanBackups(
-                                file,
-                                packageName = packageName,
-                                backupRoot = backupRoot,
-                                level = level + 1,
-                                onPropsFile = onPropsFile
-                            )
-                        }
-                    }
-                }
-            }
-        } else {
-            if (!name.contains(regexSpecialFolder) &&
-                file.isDirectory                                    // folder
+            if (name.contains(regexPackageFolder) ||
+                name.contains(regexBackupInstance)                      // backup
             ) {
                 if (forceTrace)
                     traceBackupsScanPackage {
-                        ":::${"|:::".repeat(level)}F     ${
+                        ":::${"|:::".repeat(level)}B     ${
                             formatBackupFile(file)
-                        } /\\/\\/\\/\\/\\/\\/\\/\\/\\/\\ folder ok"
+                        } backup"
                     }
-                scanBackups(
-                    file,
-                    packageName = packageName,
-                    backupRoot = backupRoot,
-                    level = level + 1,
-                    onPropsFile = onPropsFile
-                )
+                if (path.contains(packageName)) {
+                    if (name.contains(regexBackupInstance)                  // instance
+                    ) {
+                        traceBackupsScanPackage {
+                            ":::${"|:::".repeat(level)}i     ${
+                                formatBackupFile(file)
+                            } instance"
+                        }
+                        if (file.isPropertyFile &&                              // instance props
+                            !name.contains(regexSpecialFile)
+                        ) {
+                            traceBackupsScanPackage {
+                                ":::${"|:::".repeat(level)}>     ${
+                                    formatBackupFile(file)
+                                } ++++++++++++++++++++ props ok"
+                            }
+                            try {
+                                beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
+                                onPropsFile(file)
+                                endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
+                            } catch (_: Throwable) {
+                                if (!name.contains(regexSpecialFile))
+                                    runCatching {
+                                        if (cleanup) file.renameTo(".ERROR.${file.name}")
+                                    }
+                            }
+                        } else {
+                            if (!name.contains(regexSpecialFolder) &&
+                                file.isDirectory                                // instance dir
+                            ) {
+                                if ("${file.name}.${PROP_NAME}" !in names) {             // no dir.properties
+                                    if (name.contains(regexPackageFolder)) {
+                                        try {
+                                            file.findFile(BACKUP_INSTANCE_PROPERTIES_INDIR)  // indir props
+                                                ?.let {
+                                                    traceBackupsScanPackage {
+                                                        ":::${"|:::".repeat(level)}>     ${
+                                                            formatBackupFile(it)
+                                                        } ++++++++++++++++++++ indir props ok"
+                                                    }
+                                                    try {
+                                                        beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
+                                                        onPropsFile(it)
+                                                        endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
+                                                    } catch (_: Throwable) {
+                                                        // rename the dir, because the backup is damaged
+                                                        runCatching {
+                                                            file.name?.let { name ->
+                                                                if (!name.contains(
+                                                                        regexSpecialFolder
+                                                                    )
+                                                                ) {
+                                                                    if (cleanup) file.renameTo(".ERROR.${file.name}")
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                } ?: run { // rename the dir, no dir.properties
+                                                if (cleanup) file.renameTo(".ERROR.${file.name}")
+                                            }
+                                        } catch (_: Throwable) { // rename the dir, no dir.properties
+                                            if (cleanup) file.renameTo(".ERROR.${file.name}")
+                                        }
+                                    } else {
+                                        if (cleanup) file.renameTo(".ERROR.${file.name}")
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if (file.isPropertyFile &&
+                            !name.contains(regexSpecialFile)                // classic props
+                        ) {
+                            traceBackupsScanPackage {
+                                ":::${"|:::".repeat(level)}> ${
+                                    formatBackupFile(file)
+                                } ++++++++++++++++++++ props ok"
+                            }
+                            beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
+                            onPropsFile(file)
+                            endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
+                        } else {
+                            if (file.isDirectory) {
+                                traceBackupsScanPackage {
+                                    ":::${"|:::".repeat(level)}/     ${
+                                        formatBackupFile(file)
+                                    } //////////////////// dir ok"
+                                }
+                                scanBackups(
+                                    file,
+                                    packageName = packageName,
+                                    backupRoot = backupRoot,
+                                    level = level + 1,
+                                    onPropsFile = onPropsFile
+                                )
+                            }
+                        }
+                    }
+                }
+            } else {
+                if (!name.contains(regexSpecialFolder) &&
+                    file.isDirectory                                    // folder
+                ) {
+                    if (forceTrace)
+                        traceBackupsScanPackage {
+                            ":::${"|:::".repeat(level)}F     ${
+                                formatBackupFile(file)
+                            } /\\/\\/\\/\\/\\/\\/\\/\\/\\/\\ folder ok"
+                        }
+                    scanBackups(
+                        file,
+                        packageName = packageName,
+                        backupRoot = backupRoot,
+                        level = level + 1,
+                        onPropsFile = onPropsFile
+                    )
+                }
             }
         }
     }
@@ -271,8 +278,18 @@ fun Context.findBackups(
 
     var backupsMap: Map<String, List<Backup>> = emptyMap()
 
-    if (packageName.isEmpty())
+    var installedPackageInfos: List<PackageInfo> = emptyList()
+    var installedNames: List<String> = emptyList()
+
+    if (packageName.isEmpty()) {
         OABX.beginBusy("findBackups")
+
+        installedPackageInfos = packageManager.getInstalledPackageInfosWithPermissions()
+        installedNames = installedPackageInfos.map { it.packageName }
+
+        if(pref_earlyEmptyBackups.value)
+            OABX.emptyBackupsForAllPackages(installedNames)
+    }
 
     try {
         invalidateBackupCacheForPackage(packageName)
@@ -302,8 +319,8 @@ fun Context.findBackups(
             // doing it here also avoids setting all packages to empty lists when findbackups fails
             // so there is a chance that scanning for backups of a single package will work later
 
-            val installedPackageInfos = packageManager.getInstalledPackageInfosWithPermissions()
-            val installedNames = installedPackageInfos.map { it.packageName }
+            //TODO wech val installedPackageInfos = packageManager.getInstalledPackageInfosWithPermissions()
+            //TODO wech val installedNames = installedPackageInfos.map { it.packageName }
 
             setBackups(backupsMap)
 
@@ -562,7 +579,8 @@ fun Context.updateAppTables() {
     } catch (e: Throwable) {
         logException(e, backTrace = true)
     } finally {
-        OABX.endBusy("updateAppTables")
+        val time = OABX.endBusy("updateAppTables")
+        OABX.addInfoText("updateAppTables: ${"%.3f".format(time / 1E9)} sec")
     }
 }
 

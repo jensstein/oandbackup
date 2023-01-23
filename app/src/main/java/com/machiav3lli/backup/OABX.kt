@@ -36,6 +36,7 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.handler.LogsHandler.Companion.unhandledException
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.handler.findBackups
@@ -66,10 +67,11 @@ val pref_maxLogLines = IntPref(
     key = "dev-log.maxLogLines",
     summary = "maximum lines in the log (logcat or internal)",
     entries = ((10..90 step 10) +
-               (100..450 step 50) +
-               (500..1500 step 500) +
-               (2000..5000 step 1000) +
-               (5000..20000 step 5000)).toList(),
+            (100..450 step 50) +
+            (500..1500 step 500) +
+            (2000..5000 step 1000) +
+            (5000..20000 step 5000)
+            ).toList(),
     defaultValue = 50
 )
 
@@ -247,15 +249,19 @@ class OABX : Application() {
 
         scheduleAlarms()
 
-        //MainScope().launch(Dispatchers.IO) {
-        Thread {
-            val backupsMap = findBackups()
-            traceBackupsScan { "*** --------------------> packages: ${backupsMap.keys.size} backups: ${backupsMap.values.flatten().size}" }
-            val time = endBusy(startupMsg)
-            addInfoText("startup: ${"%.3f".format(time / 1E9)} sec")
-            startup = false
-        }.start()
-        //}
+        MainScope().launch(Dispatchers.IO) {
+            var backupsMap: Map<String, List<Backup>> = emptyMap()
+            try {
+                backupsMap = findBackups()
+            } catch (e: Throwable) {
+                unhandledException(e)
+            } finally {
+                traceBackupsScan { "*** --------------------> packages: ${backupsMap.keys.size} backups: ${backupsMap.values.flatten().size}" }
+                val time = endBusy(startupMsg)
+                addInfoText("startup: ${"%.3f".format(time / 1E9)} sec")
+                startup = false
+            }
+        }
     }
 
     override fun onTerminate() {
@@ -563,6 +569,10 @@ class OABX : Application() {
 
         private var theBackupsMap = mutableMapOf<String, List<Backup>>()
 
+        fun getBackups(): Map<String, List<Backup>> {
+            synchronized(theBackupsMap) { return theBackupsMap }
+        }
+
         fun clearBackups(packageName: String? = null) {
             packageName?.let {
                 synchronized(theBackupsMap) {
@@ -597,13 +607,19 @@ class OABX : Application() {
                     val backups =
                         context.findBackups(packageName)  //TODO hg42 may also find glob *packageName* for now
                     backups[packageName]
-                    ?: emptyList()  // so we need to take the correct package here
+                        ?: emptyList()  // so we need to take the correct package here
                 }.drop(0)  // copy
             }
         }
 
         fun emptyBackupsForMissingPackages(packageNames: List<String>) {
             (packageNames - theBackupsMap.keys).forEach {
+                putBackups(it, emptyList())
+            }
+        }
+
+        fun emptyBackupsForAllPackages(packageNames: List<String>) {
+            packageNames.forEach {
                 putBackups(it, emptyList())
             }
         }

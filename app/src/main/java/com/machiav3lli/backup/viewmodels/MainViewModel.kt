@@ -31,11 +31,10 @@ import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Blocklist
-import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.toPackageList
-import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.Package.Companion.invalidateCacheForPackage
+import com.machiav3lli.backup.preferences.pref_flowsWaitForStartup
 import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.traceFlows
 import com.machiav3lli.backup.ui.compose.MutableComposableFlow
@@ -46,6 +45,7 @@ import com.machiav3lli.backup.utils.applyFilter
 import com.machiav3lli.backup.utils.sortFilterModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -58,7 +58,6 @@ import kotlinx.coroutines.plus
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import kotlin.reflect.*
-import kotlin.system.measureNanoTime
 
 class MainViewModel(
     private val db: ODatabase,
@@ -111,6 +110,7 @@ class MainViewModel(
         // don't skip anything here (no conflate or map Latest etc.)
         // we need to process each update as it's the update for a single package
         .filterNotNull()
+        //.buffer(UNLIMITED)   // use in case the flow isn't collected, yet, e.g. if using Lazily
         .trace { "*** backupsUpdate <<- ${it.first} ${formatSortedBackups(it.second)}" }
         .onEach {
             viewModelScope.launch(Dispatchers.IO) {
@@ -123,7 +123,8 @@ class MainViewModel(
                 }
                 db.backupDao.updateList(
                     it.first,
-                    it.second.sortedByDescending { it.backupDate })
+                    it.second.sortedByDescending { it.backupDate },
+                )
             }
         }
         .stateIn(
@@ -156,6 +157,7 @@ class MainViewModel(
             }
 
             val pkgs = p.toPackageList(appContext, emptyList(), b)
+            //val pkgs = p.toPackageList(appContext, emptyList(), getBackups())     //TODO hg42 always use the current packages instead of slow turna around from db?
 
             limitIconCache(pkgs)
 
@@ -230,12 +232,18 @@ class MainViewModel(
 
             traceFlows { "******************** filtering - list: ${p.size} filter: $f" }
 
+            if (pref_flowsWaitForStartup.value)
+                while (OABX.startup /* || OABX.isBusy */) {
+                    traceFlows { "*** filtering waiting for end of startup" }
+                    delay(500)
+                }
+
             val list = p
                 .filter { item: Package ->
                     s.isEmpty() || (
                             listOf(item.packageName, item.packageLabel)
                                 .any { it.contains(s, ignoreCase = true) }
-                                   )
+                            )
                 }
                 .applyFilter(f, OABX.main!!)
 
@@ -256,7 +264,14 @@ class MainViewModel(
         //------------------------------------------------------------------------------------------ updatedPackages
         notBlockedList
             .trace { "updatePackages? ..." }
-            .mapLatest { it.filter(Package::isUpdated).toMutableList() }
+            .mapLatest {
+                if (pref_flowsWaitForStartup.value)
+                    while (OABX.startup /* || OABX.isBusy */) {
+                        traceFlows { "*** updatePackages waiting for end of startup" }
+                        delay(500)
+                    }
+                it.filter(Package::isUpdated).toMutableList()
+            }
             .trace {
                 "*** updatedPackages <<- updated: (${it.size})${
                     it.map {
@@ -274,29 +289,6 @@ class MainViewModel(
 
     val selection = mutableStateMapOf<String, Boolean>()
     val menuExpanded = mutableStateOf(false)
-
-    // TODO add to interface
-    fun refreshList() {
-        viewModelScope.launch {
-            recreateAppInfoList()
-        }
-    }
-
-    private suspend fun recreateAppInfoList() {
-        withContext(Dispatchers.Default) {
-            try {
-                //OABX.beginBusy("recreateAppInfoList")
-                val time = measureNanoTime {
-                    appContext.updateAppTables()
-                }
-                OABX.addInfoText("recreateAppInfoList: ${"%.3f".format(time / 1E9)} sec")
-            } catch (e: Throwable) {
-                LogsHandler.logException(e, backTrace = true)
-            } finally {
-                //OABX.endBusy("recreateAppInfoList")
-            }
-        }
-    }
 
     fun updatePackage(packageName: String) {
         viewModelScope.launch {

@@ -82,9 +82,10 @@ fun BackupItem(
                 BackupLabels(item = item)
             }
             Row(modifier = Modifier.fillMaxWidth()) {
-                Row(modifier = Modifier
-                    .align(Alignment.Top)
-                    .weight(1f, fill = true)
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.Top)
+                        .weight(1f, fill = true)
                 ) {
                     Text(
                         text = item.backupDate.format(BACKUP_DATE_TIME_SHOW_FORMATTER),
@@ -95,18 +96,16 @@ fun BackupItem(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    item.tag?.let {
-                        if (it.isNotEmpty())
-                            Text(
-                                text = " - $it",
-                                modifier = Modifier.align(Alignment.Top),
-                                softWrap = true,
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 2,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                    }
+                    if (item.tag.isNotEmpty())
+                        Text(
+                            text = " - ${item.tag}",
+                            modifier = Modifier.align(Alignment.Top),
+                            softWrap = true,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 2,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                 }
                 Text(
                     text = if (item.backupVersionCode == 0) "old" else "${item.backupVersionCode / 1000}.${item.backupVersionCode % 1000}",
