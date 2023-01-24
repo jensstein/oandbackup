@@ -113,20 +113,6 @@ fun HomePage() {
                     modifier = Modifier.padding(start = 28.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    if ((!updaterVisible || !updaterExpanded) && selected.isNotEmpty()) {
-                        ExtendedFloatingActionButton(
-                            text = { Text(text = selected.size.toString()) },
-                            icon = {
-                                Icon(
-                                    imageVector = Phosphor.List,
-                                    contentDescription = stringResource(id = R.string.context_menu)
-                                )
-                            },
-                            onClick = {
-                                menuExpanded.value = true
-                            },
-                        )
-                    }
                     if (updaterVisible) {
                         ExpandingFadingVisibility(
                             expanded = updaterExpanded,
@@ -216,6 +202,20 @@ fun HomePage() {
                                     onClick = { updaterExpanded = !updaterExpanded }
                                 )
                             }
+                        )
+                    }
+                    if ((!updaterVisible || !updaterExpanded) && selected.isNotEmpty()) {
+                        ExtendedFloatingActionButton(
+                            text = { Text(text = selected.size.toString()) },
+                            icon = {
+                                Icon(
+                                    imageVector = Phosphor.List,
+                                    contentDescription = stringResource(id = R.string.context_menu)
+                                )
+                            },
+                            onClick = {
+                                menuExpanded.value = true
+                            },
                         )
                     }
                 }
