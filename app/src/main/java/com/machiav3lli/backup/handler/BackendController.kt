@@ -35,7 +35,6 @@ import com.machiav3lli.backup.MAIN_FILTER_USER
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.hitBusy
 import com.machiav3lli.backup.OABX.Companion.setBackups
-import com.machiav3lli.backup.PROP_NAME
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.ignoredPackages
 import com.machiav3lli.backup.dbs.entity.AppInfo
@@ -50,6 +49,7 @@ import com.machiav3lli.backup.preferences.pref_backupSuspendApps
 import com.machiav3lli.backup.preferences.pref_earlyEmptyBackups
 import com.machiav3lli.backup.traceBackupsScan
 import com.machiav3lli.backup.traceBackupsScanAll
+import com.machiav3lli.backup.traceDebug
 import com.machiav3lli.backup.traceTiming
 import com.machiav3lli.backup.utils.TraceUtils
 import com.machiav3lli.backup.utils.TraceUtils.beginNanoTimer
@@ -60,19 +60,22 @@ import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.utils.getInstalledPackageInfosWithPermissions
 import com.machiav3lli.backup.utils.specialBackupsEnabled
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import java.io.IOException
 import java.util.*
+import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.system.measureTimeMillis
@@ -89,6 +92,7 @@ fun clearThreadStats() {
         usedThreadsByName.clear()
     }
 }
+
 fun checkThreadStats() {
     val nThreads = Thread.activeCount()
     maxThreads.getAndUpdate {
@@ -98,18 +102,36 @@ fun checkThreadStats() {
             it
     }
     synchronized(usedThreadsByName) {
-        usedThreadsByName.getOrPut(Thread.currentThread().name) { AtomicInteger(0) }.getAndUpdate { it + 1 }
+        usedThreadsByName.getOrPut(Thread.currentThread().name) { AtomicInteger(0) }
+            .getAndIncrement()
     }
 }
 
-val pool = Executors.newFixedThreadPool(1).asCoroutineDispatcher()
+val numCores = Runtime.getRuntime().availableProcessors()
+
+val pool = when (1) {
+
+    // force hang for recursive scanning
+    0    -> Executors.newFixedThreadPool(1).asCoroutineDispatcher()
+
+    // may hang for recursive scanning because threads are limited
+    0    -> Executors.newFixedThreadPool(numCores).asCoroutineDispatcher()
+
+    // unlimited threads!
+    0    -> Executors.newCachedThreadPool().asCoroutineDispatcher()
+
+    // creates many threads (~65)
+    else -> Dispatchers.IO
+
+    //TODO hg42 it's still not clear, if non-recursive scanning prevents hanging
+}
 
 suspend fun scanBackups(
     directory: StorageFile,
     packageName: String = "",
     backupRoot: StorageFile = OABX.context.getBackupRoot(),
     level: Int = 0,
-    forceTrace: Boolean = true,
+    forceTrace: Boolean = false,
     cleanup: Boolean = false,
     onPropsFile: suspend (StorageFile) -> Unit,
 ) {
@@ -118,25 +140,30 @@ suspend fun scanBackups(
         traceTiming { "threads max: ${maxThreads.get()} (before)" }
     }
 
-    beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}listFiles")
-    val files = directory.listFiles().toList()   // copy
-    endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}listFiles")
-
-    val names = files.map { it.name }
+    val queueProps = false
 
     fun formatBackupFile(file: StorageFile) = "${file.path?.replace(backupRoot.path ?: "", "")}"
 
     fun traceBackupsScanPackage(lazyText: () -> String) {
-        if (forceTrace)
-            TraceUtils.trace("[BackupsScan] ${lazyText()}")
-        else
+        if (forceTrace) {
+            if (packageName.isNotEmpty())
+                TraceUtils.trace("[BackupsScanAll] ${lazyText()}")
+            else
+                TraceUtils.trace("[BackupsScan] ${lazyText()}")
+        } else {
             if (packageName.isNotEmpty())
                 traceBackupsScan(lazyText)
             else
                 traceBackupsScanAll(lazyText)
+        }
     }
 
-    val processFile: suspend (StorageFile) -> Unit = { file ->
+    val files = ConcurrentLinkedQueue<StorageFile>()
+    val propsFiles = ConcurrentLinkedQueue<StorageFile>()
+
+    files.addAll(directory.listFiles())
+
+    suspend fun processFile(file:  StorageFile, collector: FlowCollector<StorageFile>? = null): Unit {
 
         checkThreadStats()
 
@@ -176,9 +203,13 @@ suspend fun scanBackups(
                             } ++++++++++++++++++++ props ok"
                         }
                         try {
-                            beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
-                            onPropsFile(file)
-                            endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
+                            if (queueProps) {
+                                propsFiles.add(file)
+                            } else {
+                                beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
+                                onPropsFile(file)
+                                endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
+                            }
                         } catch (_: Throwable) {
                             if (!name.contains(regexSpecialFile))
                                 runCatching {
@@ -189,7 +220,7 @@ suspend fun scanBackups(
                         if (!name.contains(regexSpecialFolder) &&
                             file.isDirectory                                // instance dir
                         ) {
-                            if ("${file.name}.${PROP_NAME}" !in names) {             // no dir.properties
+                            if (false) { //TODO hg42  && "${file.name}.${PROP_NAME}" !in names) {             // no dir.properties
                                 if (name.contains(regexPackageFolder)) {
                                     try {
                                         file.findFile(BACKUP_INSTANCE_PROPERTIES_INDIR)  // indir props
@@ -200,9 +231,13 @@ suspend fun scanBackups(
                                                     } ++++++++++++++++++++ indir props ok"
                                                 }
                                                 try {
-                                                    beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
-                                                    onPropsFile(it)
-                                                    endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
+                                                    if (queueProps) {
+                                                        propsFiles.add(it)
+                                                    } else {
+                                                        beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
+                                                        onPropsFile(it)
+                                                        endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
+                                                    }
                                                 } catch (_: Throwable) {
                                                     // rename the dir, because the backup is damaged
                                                     runCatching {
@@ -237,9 +272,13 @@ suspend fun scanBackups(
                                 formatBackupFile(file)
                             } ++++++++++++++++++++ props ok"
                         }
-                        beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
-                        onPropsFile(file)
-                        endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
+                        if (queueProps) {
+                            propsFiles.add(file)
+                        } else {
+                            beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
+                            onPropsFile(file)
+                            endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
+                        }
                     } else {
                         if (file.isDirectory) {
                             traceBackupsScanPackage {
@@ -247,13 +286,10 @@ suspend fun scanBackups(
                                     formatBackupFile(file)
                                 } //////////////////// dir ok"
                             }
-                            scanBackups(
-                                file,
-                                packageName = packageName,
-                                backupRoot = backupRoot,
-                                level = level + 1,
-                                onPropsFile = onPropsFile
-                            )
+                            file.listFiles().forEach {
+                                collector?.run { emit(it) } ?: files.offer(it)
+                            }
+                            traceDebug { "queue: $files" }
                         }
                     }
                 }
@@ -268,33 +304,77 @@ suspend fun scanBackups(
                             formatBackupFile(file)
                         } /\\/\\/\\/\\/\\/\\/\\/\\/\\/\\ folder ok"
                     }
-                scanBackups(
-                    file,
-                    packageName = packageName,
-                    backupRoot = backupRoot,
-                    level = level + 1,
-                    onPropsFile = onPropsFile
-                )
+                file.listFiles().forEach {
+                    collector?.run { emit(it) } ?: files.offer(it)
+                }
             }
         }
     }
-    //val pool = Dispatchers.IO
-    val scope = CoroutineScope(pool)
-    val y = true
-    val n = false
-    if (n) files.stream().parallel().forEach { runBlocking { processFile(it) } }                    // best,  8 threads
-    if (n) runBlocking { files.asFlow().onEach(processFile).flowOn(pool).collect {} }               // slow,  7 threads with IO, most used once, one used 900 times
-    if (n) runBlocking  { files.asFlow().collect { launch(pool) { processFile(it) } } }             // best, 63 threads with IO
-    if (n) files.asFlow().onEach { processFile(it) }.collect {}                                     // slow,  1 thread with IO
-    if (n) files.asFlow().map { scope.launch(pool) { processFile(it) } }.collect { it.join() }      // slow, 19 threads with IO
-    if (n) files.map { scope.launch(pool) { processFile(it) } }.joinAll()                           // best, 66 threads with IO
-    if (y) runBlocking  { files.forEach { launch(pool) { processFile(it) } } }                      // best, 63 threads with IO
 
-    if (level == 0 && packageName.isEmpty() && traceTiming.pref.value) {
-        logNanoTiming("scanBackups.", "scanBackups")
-        traceTiming { "threads max: ${maxThreads.get()}" }
-        val threads = synchronized(usedThreadsByName) { usedThreadsByName }.filter { true }
-        traceTiming { "threads used: (${threads.size})${threads.values}" }
+    val scope = CoroutineScope(pool)
+    when (1) {
+
+        0 -> files.parallelStream()
+            .forEach { runBlocking { processFile(it) } }                // best,  8 threads, may hang
+        // may hang for recursive scanning because threads are limited
+
+        0 -> files.stream().parallel()
+            .forEach { runBlocking { processFile(it) } }                // best,  8 threads, may hang
+        // may hang for recursive scanning because threads are limited
+
+        0 -> runBlocking {
+            files.asFlow().onEach { processFile(it) }.flowOn(pool).collect {}
+        }                                                               // slow,  7 threads with IO,
+        // most used once, one used 900 times
+
+        0 -> runBlocking {
+            files.asFlow().collect { launch(pool) { processFile(it) } }
+        }                                                               // best, 63 threads with IO
+
+        0 -> files.asFlow().onEach { processFile(it) }
+            .collect {}                                                 // slow,  1 thread with IO
+
+        0 -> files.asFlow().map { scope.launch(pool) { processFile(it) } }
+            .collect { it.join() }                                      // slow, 19 threads with IO
+
+        0 -> files.map { scope.launch(pool) { processFile(it) } }
+            .joinAll()                                                  // best, 66 threads with IO
+
+        0 -> runBlocking {
+            files.forEach { launch(pool) { processFile(it) } }
+        }                                                               // best, 63 threads with IO
+
+        0 -> runBlocking {
+            files.iterator().forEach { launch(pool) { processFile(it) } }
+        }                                                               // best, 65 threads with IO
+
+        1 -> runBlocking {
+            val filesFlow = flow {
+                while (
+                    files.isNotEmpty() ||
+                    run {
+                        //TODO hg42 seems to be necessary, because the items are added via launch
+                        //  (which in turn is necessary to be fast)
+                        //  though it is not totally clear why it happens, the launch reasoning
+                        //  seems only to be valid if it's the last package
+                        //  how can we do this better?
+                        //  I tried to emit the directory files directly to this flow,
+                        //  but doesn't seem to work with processFile
+                        //  probably the FlowCollector must be given to processFile
+                        delay(250)
+                        files.isNotEmpty()
+                    }
+                ) {
+                    val file = files.remove()
+                    emit(file)
+                }
+            }
+            filesFlow.collect {
+                launch(pool) {
+                    processFile(it)
+                }
+            }
+        }                                                               // best, 65 threads with IO
     }
 }
 
@@ -303,18 +383,25 @@ fun Context.findBackups(
     forceTrace: Boolean = false,
 ): Map<String, List<Backup>> {
 
-    var backupsMap: Map<String, List<Backup>> = emptyMap()
+    val backupsMap: MutableMap<String, MutableList<Backup>> = mutableMapOf()
 
-    var installedPackageInfos: List<PackageInfo> = emptyList()
     var installedNames: List<String> = emptyList()
 
     if (packageName.isEmpty()) {
         OABX.beginBusy("findBackups")
 
-        installedPackageInfos = packageManager.getInstalledPackageInfosWithPermissions()
-        installedNames = installedPackageInfos.map { it.packageName }
+        // preset installed packages with empty backups lists
+        // this prevents scanning them again when a package needs it's backups later
+        // doing it here also avoids setting all packages to empty lists when findbackups fails
+        // so there is a chance that scanning for backups of a single package will work later
 
-        if(pref_earlyEmptyBackups.value)
+        //val installedPackages = getInstalledPackageList()   // too slow (2-3 sec)
+        val installedPackages = packageManager.getInstalledPackageInfosWithPermissions()
+        val specialInfo = SpecialInfo.getSpecialPackages(this)
+        installedNames =
+            installedPackages.map { it.packageName } + specialInfo.map { it.packageName }
+
+        if (pref_earlyEmptyBackups.value)
             OABX.emptyBackupsForAllPackages(installedNames)
 
         clearThreadStats()
@@ -325,37 +412,35 @@ fun Context.findBackups(
 
         val backupRoot = getBackupRoot()
 
-        val backups = runBlocking {
-            channelFlow {
-                val producer = this
-                scanBackups(backupRoot, packageName, forceTrace = forceTrace) { propsFile ->
-                    Backup.createFrom(propsFile)
-                        ?.let {
-                            //traceDebug { "send ${it.packageName}/${it.backupDate}" }
-                            send(it)
-                        }
-                    ?: run {
-                        throw Exception("props file ${propsFile.path} not loaded")
+        val count = AtomicInteger(0)
+
+        when (1) {
+            1 -> {
+                runBlocking {
+                    scanBackups(backupRoot, packageName, forceTrace = forceTrace) { propsFile ->
+                        count.getAndIncrement()
+                        Backup.createFrom(propsFile)
+                            ?.let {
+                                traceDebug { "put ${it.packageName}/${it.backupDate}" }
+                                synchronized(backupsMap) {
+                                    backupsMap.getOrPut(it.packageName) { mutableListOf() }.add(it)
+                                }
+                            }
+                            ?: run {
+                                throw Exception("props file ${propsFile.path} not loaded")
+                            }
                     }
                 }
             }
-                //.onEach { traceBackups { "---> ${it.packageName} ${it.backupDate}" } }
-                .toList(mutableListOf())
         }
 
-        backupsMap = backups.groupBy { it.packageName }
+        traceDebug { "-----------------------------------------> backups: $count" }
 
         if (packageName.isEmpty()) {
-            // preset installed packages that don't have backups with empty backups lists
-            // this prevents scanning them again when a package needs it's backups later
-            // doing it here also avoids setting all packages to empty lists when findbackups fails
-            // so there is a chance that scanning for backups of a single package will work later
-
-            //TODO wech val installedPackageInfos = packageManager.getInstalledPackageInfosWithPermissions()
-            //TODO wech val installedNames = installedPackageInfos.map { it.packageName }
 
             setBackups(backupsMap)
 
+            // preset installed packages that don't have backups with empty backups lists
             OABX.emptyBackupsForMissingPackages(installedNames)
 
         } else {
@@ -377,6 +462,14 @@ fun Context.findBackups(
         if (packageName.isEmpty()) {
             val time = OABX.endBusy("findBackups")
             OABX.addInfoText("findBackups: ${"%.3f".format(time / 1E9)} sec")
+
+            if (traceTiming.pref.value) {
+                logNanoTiming("scanBackups.", "scanBackups")
+                traceTiming { "threads max: ${maxThreads.get()}" }
+                val threads =
+                    synchronized(usedThreadsByName) { usedThreadsByName }.toMap()
+                traceTiming { "threads used: (${threads.size})${threads.values}" }
+            }
         }
     }
 
@@ -393,7 +486,7 @@ fun Context.getPackageInfoList(filter: Int): List<PackageInfo> =
             if (isIgnored)
                 Timber.i("ignored package: ${packageInfo.packageName}")
             (if (filter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM) isSystem && !isIgnored else false)
-            || (if (filter and MAIN_FILTER_USER == MAIN_FILTER_USER) !isSystem && !isIgnored else false)
+                    || (if (filter and MAIN_FILTER_USER == MAIN_FILTER_USER) !isSystem && !isIgnored else false)
         }
         .toList()
 
@@ -422,23 +515,23 @@ fun Context.getInstalledPackageList(): MutableList<Package> { // only used in Sc
                 }
                 .toMutableList()
 
-            if (!OABX.appsSuspendedChecked) {
-                packageList.filter { appPackage ->
-                    0 != (OABX.activity?.packageManager
-                              ?.getPackageInfo(appPackage.packageName, 0)
-                              ?.applicationInfo
-                              ?.flags
-                          ?: 0) and ApplicationInfo.FLAG_SUSPENDED
-                }.apply {
-                    OABX.main?.whileShowingSnackBar(getString(R.string.supended_apps_cleanup)) {
-                        // cleanup suspended package if lock file found
-                        this.forEach { appPackage ->
-                            runAsRoot("pm unsuspend ${appPackage.packageName}")
-                        }
-                        OABX.appsSuspendedChecked = true
-                    }
-                }
-            }
+            //if (!OABX.appsSuspendedChecked) { //TODO move somewhere else
+            //    packageList.filter { appPackage ->
+            //        0 != (OABX.activity?.packageManager
+            //            ?.getPackageInfo(appPackage.packageName, 0)
+            //            ?.applicationInfo
+            //            ?.flags
+            //            ?: 0) and ApplicationInfo.FLAG_SUSPENDED
+            //    }.apply {
+            //        OABX.main?.whileShowingSnackBar(getString(R.string.supended_apps_cleanup)) {
+            //            // cleanup suspended package if lock file found
+            //            this.forEach { appPackage ->
+            //                runAsRoot("pm unsuspend ${appPackage.packageName}")
+            //            }
+            //            OABX.appsSuspendedChecked = true
+            //        }
+            //    }
+            //}
 
             // Special Backups must added before the uninstalled packages, because otherwise it would
             // discover the backup directory and run in a special case where the directory is empty.
@@ -541,10 +634,10 @@ fun Context.updateAppTables() {
             if (!OABX.appsSuspendedChecked && pref_backupSuspendApps.value) {
                 installedNames.filter { packageName ->
                     0 != (OABX.activity?.packageManager
-                              ?.getPackageInfo(packageName, 0)
-                              ?.applicationInfo
-                              ?.flags
-                          ?: 0) and ApplicationInfo.FLAG_SUSPENDED
+                        ?.getPackageInfo(packageName, 0)
+                        ?.applicationInfo
+                        ?.flags
+                        ?: 0) and ApplicationInfo.FLAG_SUSPENDED
                 }.apply {
                     OABX.main?.whileShowingSnackBar(getString(R.string.supended_apps_cleanup)) {
                         // cleanup suspended package if lock file found
@@ -639,5 +732,5 @@ fun Context.getSpecial(packageName: String) = SpecialInfo.getSpecialPackages(thi
 val PackageInfo.grantedPermissions: List<String>
     get() = requestedPermissions?.filterIndexed { index, perm ->
         requestedPermissionsFlags[index] and PackageInfo.REQUESTED_PERMISSION_GRANTED == PackageInfo.REQUESTED_PERMISSION_GRANTED &&
-        perm !in IGNORED_PERMISSIONS
+                perm !in IGNORED_PERMISSIONS
     }.orEmpty()
