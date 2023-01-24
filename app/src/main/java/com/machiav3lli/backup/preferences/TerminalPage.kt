@@ -47,6 +47,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -309,6 +310,12 @@ fun TerminalPage() {
 
     fun run(command: String) {
         append(shell(command))
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            shell("exit")
+        }
     }
 
     Column(
