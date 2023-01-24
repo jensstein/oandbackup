@@ -54,7 +54,7 @@ class ShellHandler {
         var name: String = "",
         var version: String = "0.0.0",
         var reason: String = "",
-        var score: Int = 0
+        var score: Int = 0,
     ) {
         var bugs = mutableMapOf<String, Boolean>()
 
@@ -84,7 +84,8 @@ class ShellHandler {
                             }
                         } catch (e: Throwable) {
                             bugs["unSpec"] = true
-                            score = score.mod(1_00_00_00_0)  //TODO hg42 fatal? when can this happen?
+                            score =
+                                score.mod(1_00_00_00_0)  //TODO hg42 fatal? when can this happen?
                             LogsHandler.unhandledException(e)
                         }
                     }
@@ -98,28 +99,28 @@ class ShellHandler {
             version = version.replace(Regex("""-android$"""), "")
             semver = Semver(version, Semver.SemverType.NPM)
             if (semver.satisfies("=0.0.0")) {
-                score =                    0
+                score = 0
             } else {
-                score +=           1_00_00_0 * (semver.major ?: 0)
-                score +=              1_00_0 * (semver.minor ?: 0)
-                score +=                 1_0 * (semver.patch ?: 0)
+                score += 1_00_00_0 * (semver.major ?: 0)
+                score += 1_00_0 * (semver.minor ?: 0)
+                score += 1_0 * (semver.patch ?: 0)
 
                 if (!name.contains("vendor")) {
-                    score +=               1
+                    score += 1
                 }
                 if (!name.contains("stock")) {
-                    score +=               1
+                    score += 1
                 }
                 if (name.contains("ext")) {
-                    score +=               2
+                    score += 2
                 }
                 if (name.contains("local")) {
-                    score +=   10_00_00_00_0
+                    score += 10_00_00_00_0
                 }
 
                 if (semver.satisfies(verKnown)) {
                     isKnownVersion = true
-                    score +=    1_00_00_00_0
+                    score += 1_00_00_00_0
                 }
 
                 bugDetectors.forEach { it.value(it.key, this) }
@@ -208,7 +209,11 @@ class ShellHandler {
     }
 
     @Throws(ShellCommandFailedException::class, UnexpectedCommandResult::class)
-    fun suGetFileInfo(path: String, parent: String? = null, utilBoxQ: String = ShellHandler.utilBoxQ): FileInfo {
+    fun suGetFileInfo(
+        path: String,
+        parent: String? = null,
+        utilBoxQ: String = ShellHandler.utilBoxQ,
+    ): FileInfo {
         val shellResult = runAsRoot("$utilBoxQ ls -bdAll ${quote(path)}")
         val relativeParent = parent ?: ""
         val result = shellResult.out.asSequence()
@@ -238,7 +243,7 @@ class ShellHandler {
     fun suGetDetailedDirectoryContents(
         path: String,
         recursive: Boolean,
-        parent: String? = null
+        parent: String? = null,
     ): List<FileInfo> {
         val shellResult =
             if (recursive)
@@ -278,7 +283,7 @@ class ShellHandler {
 
     class ShellCommandFailedException(
         @field:Transient val shellResult: Shell.Result,
-        val command: String
+        val command: String,
     ) : Exception()
 
     class UnexpectedCommandResult(message: String, val shellResult: Shell.Result?) :
@@ -301,7 +306,7 @@ class ShellHandler {
         val group: String,
         var fileMode: Int,
         var fileSize: Long,
-        var fileModTime: Date
+        var fileModTime: Date,
     ) {
         val absolutePath: String = "$absoluteParent/$filePath"
 
@@ -371,16 +376,16 @@ class ShellHandler {
                         match.groups[1]?.value ?: "?" // "?" cannot happen because it matched
                     when (matched) {
                         """\""" -> """\"""
-                        "a" -> "\u0007"
-                        "b" -> "\u0008"
-                        "e" -> "\u001b"
-                        "f" -> "\u000c"
-                        "n" -> "\u000a"
-                        "r" -> "\u000d"
-                        "t" -> "\u0009"
-                        "v" -> "\u000b"
-                        " " -> " "
-                        else -> (((matched[0].digitToInt() * 8) + matched[1].digitToInt()) * 8 + matched[2].digitToInt()).toChar()
+                        "a"     -> "\u0007"
+                        "b"     -> "\u0008"
+                        "e"     -> "\u001b"
+                        "f"     -> "\u000c"
+                        "n"     -> "\u000a"
+                        "r"     -> "\u000d"
+                        "t"     -> "\u0009"
+                        "v"     -> "\u000b"
+                        " "     -> " "
+                        else    -> (((matched[0].digitToInt() * 8) + matched[1].digitToInt()) * 8 + matched[2].digitToInt()).toChar()
                             .toString()
                     }
                 }
@@ -395,7 +400,7 @@ class ShellHandler {
             fun fromLsOutput(
                 lsLine: String,
                 parentPath: String?,
-                absoluteParent: String
+                absoluteParent: String,
             ): FileInfo? {
                 var parent = absoluteParent
                 // Expecting something like this (with whitespace) from
@@ -638,10 +643,10 @@ class ShellHandler {
         @Throws(ShellCommandFailedException::class)
         private fun runShellCommand(
             shell: RunnableShellCommand,
-            command: String
+            command: String,
         ): Shell.Result {
             // defining stdout and stderr on our own
-            // otherwise we would have to set set the flag redirect stderr to stdout:
+            // otherwise we would have to set the flag redirect stderr to stdout:
             // Shell.Config.setFlags(Shell.FLAG_REDIRECT_STDERR);
             // stderr is used for logging, so it's better not to call an application that does that
             // and keeps quiet
@@ -669,8 +674,8 @@ class ShellHandler {
 
         fun runAsRootPipeInCollectErr(
             inStream: InputStream,
-            command: String
-        ) : Pair<Int, String> {
+            command: String,
+        ): Pair<Int, String> {
             Timber.i("SHELL: $command")
 
             return runBlocking(Dispatchers.IO) {
@@ -704,16 +709,16 @@ class ShellHandler {
         }
 
         fun runAsRootPipeOutCollectErr(
-                outStream: OutputStream,
-                command: String
-        ) : Pair<Int, String> {
+            outStream: OutputStream,
+            command: String,
+        ): Pair<Int, String> {
             Timber.i("SHELL: $command")
 
             return runBlocking(Dispatchers.IO) {
 
                 val process = Runtime.getRuntime().exec(suCommand)
 
-                val shellIn  = process.outputStream
+                val shellIn = process.outputStream
                 val shellOut = process.inputStream
                 val shellErr = process.errorStream
 
@@ -771,11 +776,12 @@ class ShellHandler {
             return err.isNotEmpty() && err[0].contains("no such file or directory", true)
         }
 
-        val suCommand get() =
-            if (isMountMaster)
-                "su --mount-master 0"
-            else
-                "su 0"
+        val suCommand
+            get() =
+                if (isMountMaster)
+                    "su --mount-master 0"
+                else
+                    "su 0"
 
         @Throws(IOException::class)
         fun quirkLibsuReadFileWorkaround(inputFile: FileInfo, output: OutputStream) {
