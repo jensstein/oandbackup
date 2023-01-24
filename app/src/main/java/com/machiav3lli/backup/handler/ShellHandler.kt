@@ -138,11 +138,7 @@ class ShellHandler {
 
     init {
         Shell.enableVerboseLogging = BuildConfig.DEBUG
-        val builder = Shell.Builder.create()
-            .setFlags(Shell.FLAG_MOUNT_MASTER)
-            .setTimeout(20)
-        //.setInitializers(BusyBoxInstaller::class.java)
-        Shell.setDefaultBuilder(builder)
+        Shell.setDefaultBuilder(shellDefaultBuilder())
         Shell.getShell()
 
         Timber.i("is root         = ${Shell.isAppGrantedRoot()}")
@@ -615,6 +611,13 @@ class ShellHandler {
         val SCRIPTS_SUBDIR = "scripts"
         val EXCLUDE_CACHE_FILE = "tar_EXCLUDE_CACHE"
         val EXCLUDE_FILE = "tar_EXCLUDE"
+
+        fun shellDefaultBuilder() =
+            Shell.Builder.create()
+                .setFlags(Shell.FLAG_MOUNT_MASTER)
+                .setTimeout(20)
+        //.setInitializers(BusyBoxInstaller::class.java)
+
 
         interface RunnableShellCommand {
             fun runCommand(command: String): Shell.Job
