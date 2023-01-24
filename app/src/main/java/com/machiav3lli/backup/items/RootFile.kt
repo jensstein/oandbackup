@@ -464,19 +464,19 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
 
 
         fun open(pathname: String): File {
-            return if (Shell.rootAccess()) RootFile(pathname) else File(pathname)
+            return if (Shell.isAppGrantedRoot() == true) RootFile(pathname) else File(pathname)
         }
 
         fun open(parent: String?, child: String): File {
-            return if (Shell.rootAccess()) RootFile(parent, child) else File(parent, child)
+            return if (Shell.isAppGrantedRoot() == true) RootFile(parent, child) else File(parent, child)
         }
 
         fun open(parent: File?, child: String): File {
-            return if (Shell.rootAccess()) RootFile(parent, child) else File(parent, child)
+            return if (Shell.isAppGrantedRoot() == true) RootFile(parent, child) else File(parent, child)
         }
 
         fun open(uri: URI): File {
-            return if (Shell.rootAccess()) RootFile(uri) else File(uri)
+            return if (Shell.isAppGrantedRoot() == true) RootFile(uri) else File(uri)
         }
     }
 }

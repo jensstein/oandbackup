@@ -145,7 +145,7 @@ class ShellHandler {
         Shell.setDefaultBuilder(builder)
         Shell.getShell()
 
-        Timber.i("is root         = ${Shell.rootAccess()}")     //TODO hg42 use Shell.isAppGrantedRoot() (also at other places)
+        Timber.i("is root         = ${Shell.isAppGrantedRoot()}")
         Timber.i("is mount-master = $isMountMaster")
 
         utilBoxes = mutableListOf<UtilBox>()
