@@ -97,17 +97,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
-val padding = 5.dp
-
-fun info(): List<String> {
-    return listOf(
-        "--- > info",
-        BuildConfig.APPLICATION_ID,
-        BuildConfig.VERSION_NAME,
-        OABX.context.getApplicationIssuer()?.let { "signed by $it" } ?: "",
-        "--- shell utility box"
-    ).filterNotNull() + utilBoxInfo()
-}
+//var terminalShell = shellDefaultBuilder().build()
 
 fun shell(command: String): List<String> {
     try {
@@ -125,6 +115,16 @@ fun shell(command: String): List<String> {
             e.cause?.message
         ).filterNotNull()
     }
+}
+
+fun info(): List<String> {
+    return listOf(
+        "--- > info",
+        BuildConfig.APPLICATION_ID,
+        BuildConfig.VERSION_NAME,
+        OABX.context.getApplicationIssuer()?.let { "signed by $it" } ?: "",
+        "--- shell utility box"
+    ).filterNotNull() + utilBoxInfo()
 }
 
 fun envInfo() =
@@ -157,6 +157,10 @@ fun dumpPrefs() =
                         "${it.group}.${it.key} = ${it}"
                 }.filterNotNull()
             }.flatten()
+
+fun dumpEnv() =
+    listOf("--- environment") +
+            shell("set")
 
 fun dumpAlarms() =
     listOf("--- alarms") +
@@ -205,6 +209,7 @@ fun onErrorInfo(): List<String> {
             listOf("=== onError log", "") +
                     info() +
                     dumpPrefs() +
+                    dumpEnv() +
                     lastErrorPkg() +
                     lastErrorCommand() +
                     logs
@@ -220,6 +225,7 @@ fun supportInfo(): List<String> {
             listOf("=== support log", "") +
                     envInfo() +
                     dumpPrefs() +
+                    dumpEnv() +
                     dumpAlarms() +
                     dumpTiming() +
                     accessTest() +
@@ -284,6 +290,7 @@ fun TerminalPage() {
     val focusManager = LocalFocusManager.current
     //val shellFocusRequester = remember { FocusRequester() }
     //SideEffect { shellFocusRequester.requestFocus() }
+    val padding = 5.dp
 
     fun launch(todo: () -> Unit) {
         scope.launch {
@@ -347,11 +354,12 @@ fun TerminalPage() {
                 Spacer(Modifier.width(8.dp))
                 TerminalButton("clear", important = true) { output.clear() }
                 Spacer(Modifier.width(8.dp))
-                TerminalButton("info") { append(envInfo()) }
                 TerminalButton("log/int") { append(logInt()) }
                 TerminalButton("log/app") { append(logApp()) }
                 TerminalButton("log/all") { append(logSys()) }
+                TerminalButton("info") { append(envInfo()) }
                 TerminalButton("prefs") { append(dumpPrefs()) }
+                TerminalButton("env") { append(dumpEnv()) }
                 TerminalButton("alarms") { append(dumpAlarms()) }
                 TerminalButton("timing") { append(dumpTiming()) }
                 TerminalButton("threads") { append(threadsInfo()) }
