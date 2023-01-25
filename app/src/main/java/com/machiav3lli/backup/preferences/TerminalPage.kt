@@ -26,17 +26,20 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -47,6 +50,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -63,6 +67,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -77,6 +82,7 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.Companion.utilBoxInfo
 import com.machiav3lli.backup.handler.findBackups
 import com.machiav3lli.backup.handler.maxThreads
+import com.machiav3lli.backup.handler.usedThreadsByName
 import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.ui.compose.SelectionContainerX
@@ -86,6 +92,7 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowUDownLeft
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowUp
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Equals
 import com.machiav3lli.backup.ui.compose.icons.phosphor.MagnifyingGlass
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Play
 import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.compose.isAtBottom
 import com.machiav3lli.backup.ui.compose.isAtTop
@@ -97,17 +104,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
-val padding = 5.dp
-
-fun info(): List<String> {
-    return listOf(
-        "--- > info",
-        BuildConfig.APPLICATION_ID,
-        BuildConfig.VERSION_NAME,
-        OABX.context.getApplicationIssuer()?.let { "signed by $it" } ?: "",
-        "--- shell utility box"
-    ).filterNotNull() + utilBoxInfo()
-}
+//var terminalShell = shellDefaultBuilder().build()
 
 fun shell(command: String): List<String> {
     try {
@@ -127,6 +124,16 @@ fun shell(command: String): List<String> {
     }
 }
 
+fun info(): List<String> {
+    return listOf(
+        "------ info",
+        BuildConfig.APPLICATION_ID,
+        BuildConfig.VERSION_NAME,
+        OABX.context.getApplicationIssuer()?.let { "signed by $it" } ?: "",
+        "------ shell utility box"
+    ).filterNotNull() + utilBoxInfo()
+}
+
 fun envInfo() =
     info() +
             shell("su --help") +
@@ -135,7 +142,7 @@ fun envInfo() =
             shell("${utilBox.name} --help")
 
 fun logInt() =
-    listOf("--- > last internal log messages") +
+    listOf("------ last internal log messages") +
             OABX.lastLogMessages
 
 val maxLogcat = "-t 100000"
@@ -147,7 +154,7 @@ fun logSys() =
     shell("logcat -d ${maxLogcat} | grep -v SHELLOUT:")
 
 fun dumpPrefs() =
-    listOf("--- preferences") +
+    listOf("------ preferences") +
             Pref.preferences.map {
                 val (group, prefs) = it
                 prefs.map {
@@ -158,43 +165,58 @@ fun dumpPrefs() =
                 }.filterNotNull()
             }.flatten()
 
+fun dumpEnv() =
+    listOf("------ environment") +
+            shell("set")
+
 fun dumpAlarms() =
-    listOf("--- alarms") +
+    listOf("------ alarms") +
             shell("dumpsys alarm | sed -n '/Alarm.*machiav3lli[.]backup/,/PendingIntent/{p}'")
 
 fun dumpTiming() =
-    listOf("--- timing") +
+    listOf("------ timing") +
             listNanoTiming()
 
 fun accessTest() =
-    shell("echo \"\$(ls \$ANDROID_DATA/user/0/ | wc -l) packages (apk)\"") +
-            shell("echo \"$(ls \$ANDROID_DATA/user/0/ | wc -l) packages (data)\"") +
-            shell("echo \"\$(ls -l \$ANDROID_DATA/misc/ | wc -l) misc data\"")
+    listOf("------ access") +
+            listOf("- data") +
+            shell("echo \"\$(ls \$ANDROID_DATA/user/0/ | wc -l) packages\"") +
+            shell("ls -dAlZ \$ANDROID_DATA/user/0/") +
+            listOf("- apk") +
+            shell("echo \"$(ls \$ANDROID_DATA/app/ | wc -l) packages\"") +
+            shell("ls -dAlZ \$ANDROID_DATA/app/") +
+            listOf("- misc") +
+            shell("echo \"\$(ls -l \$ANDROID_DATA/misc/ | wc -l) misc data\"") +
+            shell("ls -dAlZ \$ANDROID_DATA/misc/")
 
-fun threadsInfo() =
-    listOf("--- threads max: ${maxThreads.get()}")
+fun threadsInfo(): List<String> {
+    val threads =
+        synchronized(usedThreadsByName) { usedThreadsByName }.toMap()
+    return listOf(
+        "------ threads",
+        "max: ${maxThreads.get()}",
+        "used: (${threads.size})${threads.values}",
+    )
+}
 
 fun lastErrorPkg(): List<String> {
     val pkg = OABX.lastErrorPackage
     return if (pkg.isNotEmpty()) {
-        listOf("--- last error package: $pkg") +
+        listOf("------ last error package: $pkg") +
                 shell("ls -l \$ANDROID_DATA/user/0/$pkg") +
                 shell("ls -l \$ANDROID_DATA/user_de/0/$pkg") +
                 shell("ls -l \$EXTERNAL_STORAGE/Android/*/$pkg")
     } else {
-        listOf("--- ? no last error package")
+        listOf("------ ? no last error package")
     }
 }
 
 fun lastErrorCommand(): List<String> {
-    val cmd = OABX.lastErrorCommand
-    return if (cmd.isNotEmpty()) {
-        listOf(
-            "--- last error command",
-            cmd
-        )
+    val cmds = OABX.lastErrorCommands
+    return if (cmds.isNotEmpty()) {
+        listOf("------ last error command") + cmds
     } else {
-        listOf("--- ? no last error command")
+        listOf("------ ? no last error command")
     }
 }
 
@@ -205,6 +227,7 @@ fun onErrorInfo(): List<String> {
             listOf("=== onError log", "") +
                     info() +
                     dumpPrefs() +
+                    dumpEnv() +
                     lastErrorPkg() +
                     lastErrorCommand() +
                     logs
@@ -220,6 +243,7 @@ fun supportInfo(): List<String> {
             listOf("=== support log", "") +
                     envInfo() +
                     dumpPrefs() +
+                    dumpEnv() +
                     dumpAlarms() +
                     dumpTiming() +
                     accessTest() +
@@ -262,13 +286,15 @@ fun TerminalButton(name: String, important: Boolean = false, action: () -> Unit)
         MaterialTheme.colorScheme.onSurfaceVariant
     SmallFloatingActionButton(
         modifier = Modifier
-            .wrapContentWidth(),
+            .wrapContentWidth()
+            .wrapContentHeight()
+            .padding(2.dp, 0.dp),
         containerColor = color,
         onClick = action
     ) {
         Text(
             modifier = Modifier
-                .padding(3.dp),
+                .padding(2.dp, 0.dp),
             text = name,
             color = textColor
         )
@@ -284,6 +310,7 @@ fun TerminalPage() {
     val focusManager = LocalFocusManager.current
     //val shellFocusRequester = remember { FocusRequester() }
     //SideEffect { shellFocusRequester.requestFocus() }
+    val padding = 4.dp
 
     fun launch(todo: () -> Unit) {
         scope.launch {
@@ -304,6 +331,12 @@ fun TerminalPage() {
         append(shell(command))
     }
 
+    DisposableEffect(Unit) {
+        onDispose {
+            shell("exit")
+        }
+    }
+
     Column(
         verticalArrangement = Arrangement.Top
     ) {
@@ -318,22 +351,30 @@ fun TerminalPage() {
                 value = command,
                 singleLine = false,
                 placeholder = { Text(text = "shell command", color = Color.Gray) },
-                keyboardOptions = KeyboardOptions(
-                    autoCorrect = false,
-                    //imeAction = ImeAction.Done
-                ),
-                //keyboardActions = KeyboardActions(
-                //    onDone = {
-                //        run(command)
-                //        command = ""
-                //    }
-                //),
-                onValueChange = {
-                    if (it.endsWith("\n")) {
+                trailingIcon = {
+                    RoundButton(icon = Phosphor.Play) {
+                        command.removeSuffix("\n")
                         run(command)
                         command = ""
-                    } else
-                        command = it
+                    }
+                },
+                keyboardOptions = KeyboardOptions(
+                    autoCorrect = false,
+                    imeAction = ImeAction.Go
+                ),
+                keyboardActions = KeyboardActions(
+                    onGo = {
+                        command.removeSuffix("\n")
+                        run(command)
+                        command = ""
+                    }
+                ),
+                onValueChange = {
+                    //if (it.endsWith("\n")) {
+                    //    run(command)
+                    //    command = ""
+                    //} else
+                    command = it
                 }
             )
             FlowRow(
@@ -347,17 +388,24 @@ fun TerminalPage() {
                 Spacer(Modifier.width(8.dp))
                 TerminalButton("clear", important = true) { output.clear() }
                 Spacer(Modifier.width(8.dp))
-                TerminalButton("info") { append(envInfo()) }
                 TerminalButton("log/int") { append(logInt()) }
                 TerminalButton("log/app") { append(logApp()) }
                 TerminalButton("log/all") { append(logSys()) }
+                TerminalButton("info") { append(envInfo()) }
                 TerminalButton("prefs") { append(dumpPrefs()) }
+                TerminalButton("env") { append(dumpEnv()) }
                 TerminalButton("alarms") { append(dumpAlarms()) }
                 TerminalButton("timing") { append(dumpTiming()) }
                 TerminalButton("threads") { append(threadsInfo()) }
                 TerminalButton("access") { append(accessTest()) }
                 TerminalButton("errInfo") { append(lastErrorPkg() + lastErrorCommand()) }
-                TerminalButton("err->cmd") { command = OABX.lastErrorCommand }
+                TerminalButton("err->cmd") {
+                    command =
+                        if (OABX.lastErrorCommands.isNotEmpty())
+                            OABX.lastErrorCommands.first()
+                        else
+                            "no error command"
+                }
                 TerminalButton("findBackups") { OABX.context.findBackups(forceTrace = true) }
                 if (BuildConfig.DEBUG) {
                 }
@@ -366,7 +414,7 @@ fun TerminalPage() {
         Box(
             modifier = Modifier
                 .weight(1f)
-                .fillMaxHeight()
+                .fillMaxSize()
                 .padding(0.dp)
         ) {
             TerminalText(output, limitLines = 0, scrollOnAdd = true)
@@ -376,7 +424,12 @@ fun TerminalPage() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean = true) {
+fun TerminalText(
+    text: List<String>,
+    modifier: Modifier = Modifier,
+    limitLines: Int = 0,
+    scrollOnAdd: Boolean = true,
+) {
 
     val hscroll = rememberScrollState()
     val listState = rememberLazyListState()
@@ -406,31 +459,32 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
     autoScroll = listState.isAtBottom()
 
     Box(
-        modifier = Modifier
-            .ifThen(limitLines == 0) { fillMaxHeight() }
+        modifier = modifier
+            .ifThen(limitLines == 0) { Modifier.fillMaxHeight() }
             .fillMaxWidth()
             .background(color = Color.Transparent),
         contentAlignment = Alignment.BottomEnd
     ) {
         Box(
             modifier = Modifier
-                .ifThen(limitLines == 0) { fillMaxHeight() }
                 .fillMaxWidth()
+                .ifThen(limitLines == 0) { fillMaxHeight() }
                 .padding(0.dp)
                 .ifThen(!wrap) { horizontalScroll(hscroll) }
                 .background(color = Color(0.2f, 0.2f, 0.3f))
         ) {
-            SelectionContainerX {
+            SelectionContainerX(modifier = Modifier.fillMaxWidth()) {
                 LazyColumn(
                     modifier = Modifier
-                        .padding(8.dp, 0.dp, 0.dp, 0.dp)
+                        .fillMaxWidth()
                         .ifThen(limitLines == 0) { fillMaxHeight() }
                         .ifThen(limitLines > 0) {
                             heightIn(
                                 0.dp,
                                 totalLineHeight * limitLines + lineSpacing
                             )
-                        },
+                        }
+                        .padding(8.dp, 0.dp, 0.dp, 0.dp),
                     verticalArrangement = Arrangement.spacedBy(lineSpacing),
                     state = listState
                 ) {
@@ -456,7 +510,9 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
                                 lineHeight = lineHeightSp,
                                 softWrap = wrap,
                                 color = color,
-                                modifier = Modifier.padding(0.dp)
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(0.dp)
                             )
                         }
                     }
@@ -525,12 +581,14 @@ fun TerminalText(text: List<String>, limitLines: Int = 0, scrollOnAdd: Boolean =
             SmallButton(icon = if (wrap) Phosphor.ArrowUDownLeft else Phosphor.Equals) {
                 wrap = !wrap
             }
-            SmallButton(icon = Phosphor.ArrowUp,
+            SmallButton(
+                icon = Phosphor.ArrowUp,
                 tint = if (listState.isAtTop()) Color.Transparent else overlayColor
             ) {
                 scope.launch { listState.scrollToItem(0) }
             }
-            SmallButton(icon = Phosphor.ArrowDown,
+            SmallButton(
+                icon = Phosphor.ArrowDown,
                 tint = if (listState.isAtBottom()) Color.Transparent else overlayColor
             ) {
                 autoScroll = true
@@ -556,11 +614,11 @@ fun Preview_TerminalText() {
 
     val text = remember {
         mutableStateListOf(
-            "aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa.",
-            "bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb.",
-            "cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc.",
-            "dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd.",
-            "eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee.",
+            //"aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa.",
+            //"bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb.",
+            //"cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc cccc.",
+            //"dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd dddd.",
+            //"eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee eeee.",
             "=== yyy",
             "--- xxx",
             "*** zzz",

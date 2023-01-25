@@ -58,6 +58,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.lang.ref.WeakReference
+import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicInteger
 
 
@@ -272,9 +273,33 @@ class OABX : Application() {
 
     companion object {
 
-        val lastLogMessages = mutableListOf<String>()
+        val lastLogMessages = ConcurrentLinkedQueue<String>()
+        fun addLogMessage(message: String) {
+            val maxLogLines = try {
+                pref_maxLogLines.value
+            } catch (_: Throwable) {
+                2000
+            }
+            lastLogMessages.add(message)
+            val size = lastLogMessages.size
+            val nDelete = size-maxLogLines
+            if (nDelete > 0)
+                repeat(nDelete) {
+                    lastLogMessages.remove()
+                }
+        }
         var lastErrorPackage = ""
-        var lastErrorCommand = ""
+        var lastErrorCommands = ConcurrentLinkedQueue<String>()
+        fun addErrorCommand(command: String) {
+            val maxErrorCommands = 10
+            lastErrorCommands.add(command)
+            val size = lastErrorCommands.size
+            val nDelete = size-maxErrorCommands
+            if (nDelete > 0)
+                repeat(nDelete) {
+                    lastErrorCommands.remove()
+                }
+        }
         var logSections = mutableMapOf<String, Int>()
             .withDefault { 0 }     //TODO hg42 use AtomicInteger? but map is synchronized anyways
 
@@ -292,11 +317,6 @@ class OABX : Application() {
                     } catch (_: Throwable) {
                         true
                     }
-                    val maxLogLines = try {
-                        pref_maxLogLines.value
-                    } catch (_: Throwable) {
-                        2000
-                    }
                     if (traceToLogcat)
                         super.log(priority, "$tag", message, t)
 
@@ -313,23 +333,21 @@ class OABX : Application() {
                     val now = System.currentTimeMillis()
                     val date = ISO_DATE_TIME_FORMAT_MS.format(now)
                     try {
-                        synchronized(lastLogMessages) {
-                            lastLogMessages.add("$date $prio $tag : $message")
-                            while (lastLogMessages.size > maxLogLines)
-                                lastLogMessages.removeAt(0)
-                        }
+                        addLogMessage("$date $prio $tag : $message")
                     } catch (e: Throwable) {
                         // ignore
-                        lastLogMessages.clear()
-                        lastLogMessages.add("$date E LOG : while adding or limiting log lines")
-                        lastLogMessages.add(
-                            "$date E LOG : ${
-                                LogsHandler.message(
-                                    e,
-                                    backTrace = true
-                                )
-                            }"
-                        )
+                        runCatching {
+                            lastLogMessages.clear()
+                            addLogMessage("$date E LOG : while adding or limiting log lines")
+                            addLogMessage(
+                                "$date E LOG : ${
+                                    LogsHandler.message(
+                                        e,
+                                        backTrace = true
+                                    )
+                                }"
+                            )
+                        }
                     }
                 }
 

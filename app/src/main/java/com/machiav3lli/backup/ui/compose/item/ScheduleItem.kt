@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
-import com.machiav3lli.backup.ui.compose.icons.phosphor.PlayCircle
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Play
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.startSchedule
 import com.machiav3lli.backup.utils.timeLeft
@@ -107,7 +107,7 @@ fun ScheduleItem(
                 startSchedule(schedule)
             }) {
                 Icon(
-                    imageVector = Phosphor.PlayCircle,
+                    imageVector = Phosphor.Play,
                     contentDescription = stringResource(id = R.string.sched_startingbackup)
                 )
             }

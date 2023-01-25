@@ -1,23 +1,25 @@
 #!/usr/bin/ruby
 
-folder = "adjusted"
+from = "phosphor-original"
+to = "adjusted"
 
 begin
-  Dir.mkdir(folder)
+  Dir.mkdir(to)
 rescue
 end
 
 count = 0
 
-Dir.glob("*.kt").each { |file|
+Dir.glob("#{from}/*.kt").each { |file|
 
   name = File.basename(file).delete_suffix(".kt")
 
   camel = name.gsub(/-(\w)/) { $1.upcase }
   small = name.downcase
   snake = small.gsub("-", "_")
+  target = "#{to}/#{camel}.kt"
 
-  puts "#{file} -> #{name} -> #{camel} / #{small} / #{snake}"
+  puts "#{file} -> #{name} -> #{camel} / #{small} / #{snake} -> #{target}"
 
   text = File.open(file).read
 
@@ -51,7 +53,7 @@ fun #{camel}Preview() {
     )
 }
 "
-  File.open("#{folder}/#{camel}.kt", "w").puts text
+  File.open(target, "w").puts text
 
   count+=1
   if count > 1 then

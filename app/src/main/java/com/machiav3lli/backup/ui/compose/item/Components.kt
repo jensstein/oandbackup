@@ -224,9 +224,11 @@ fun clearIconCache() {                                  //TODO hg42 move somewhe
 
 fun limitIconCache(pkgs: List<Package>) {
     (painterCache.keys - pkgs.map { it.iconData }).forEach {
-        traceDebug { "icon remove $it" }
-        synchronized(painterCache) {
-            painterCache.remove(it)
+        if (it !is Int) {
+            traceDebug { "icon remove $it" }
+            synchronized(painterCache) {
+                painterCache.remove(it)
+            }
         }
     }
 }
