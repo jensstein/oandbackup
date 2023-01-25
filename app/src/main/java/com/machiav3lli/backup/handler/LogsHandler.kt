@@ -240,5 +240,23 @@ class LogsHandler {
                 else         -> errorText
             }
         }
+
+        fun <T> catchExceptions(todo: () -> T): T? {
+            return try {
+                todo()
+            } catch (e: Throwable) {
+                unhandledException(e)
+                null
+            }
+        }
+
+        suspend fun <T> catchSuspendExceptions(todo: suspend () -> T): T? {
+            return try {
+                todo()
+            } catch (e: Throwable) {
+                unhandledException(e)
+                null
+            }
+        }
     }
 }
