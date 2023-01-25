@@ -64,10 +64,6 @@ class MainViewModel(
     private val appContext: Application,
 ) : AndroidViewModel(appContext) {
 
-    init {
-        // do this before the flows start
-    }
-
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - FLOWS
 
     // most flows are for complete states, so skipping (conflate, mapLatest) is usually allowed

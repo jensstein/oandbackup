@@ -598,16 +598,6 @@ fun TerminalText(
     }
 }
 
-
-@Preview
-@Composable
-fun Preview_Terminal() {
-
-    Box(modifier = Modifier.height(600.dp)) {
-        TerminalPage()
-    }
-}
-
 @Preview
 @Composable
 fun Preview_TerminalText() {
@@ -640,10 +630,24 @@ fun Preview_TerminalText() {
     Box(
         modifier = Modifier
             //.height(500.dp)
+            //.width(500.dp)
             .padding(0.dp)
             .background(color = Color(0.2f, 0.2f, 0.3f))
     ) {
         TerminalText(text, limitLines = 20, scrollOnAdd = false)
+    }
+}
+
+@Preview
+@Composable
+fun Preview_Terminal() {
+
+    Box(
+        modifier = Modifier
+            .height(500.dp)
+        //.width(500.dp)
+    ) {
+        TerminalPage()
     }
 }
 

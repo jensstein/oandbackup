@@ -132,7 +132,7 @@ class AppSheetViewModel(
     }
 
     fun getUsers(): Array<String> {
-        return shellCommands.getUsers()?.toTypedArray() ?: arrayOf()
+        return shellCommands.getUsers().toTypedArray()
     }
 
     fun deleteBackup(backup: Backup) {

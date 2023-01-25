@@ -175,7 +175,13 @@ class AppSheet() : BaseSheet(), ActionListener {
             val backups = pkg.backupsNewestFirst
             val hasBackups = pkg.hasBackups
 
-            traceCompose { "AppSheet ${thePackage.packageName} ${TraceUtils.formatBackups(backups)}" }
+            traceCompose {
+                "AppSheet ${thePackage.packageName} ${
+                    TraceUtils.formatBackups(
+                        backups
+                    )
+                }"
+            }
 
             val imageData by remember(pkg) {
                 mutableStateOf(
@@ -453,8 +459,9 @@ class AppSheet() : BaseSheet(), ActionListener {
                                         )
                                     }
                                     AnimatedVisibility(
-                                        visible = pkg.isInstalled && !pkg.isSpecial && ((pkg.storageStats?.dataBytes
-                                                                                         ?: 0L) >= 0L)
+                                        visible = pkg.isInstalled &&
+                                                !pkg.isSpecial &&
+                                                ((pkg.storageStats?.dataBytes ?: 0L) >= 0L)
                                     ) {
                                         ElevatedActionButton(
                                             icon = Phosphor.TrashSimple,

@@ -46,7 +46,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import coil.ImageLoader
-import coil.request.ImageRequest
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.MODE_ALL
 import com.machiav3lli.backup.OABX
@@ -658,17 +657,8 @@ fun MainPackageItem(
     onLongClick: (Package) -> Unit = {},
     onAction: (Package) -> Unit = {},
 ) {
+    //beginBusy("item")
     beginNanoTimer("item")
-
-    val iconRequest = ImageRequest.Builder(OABX.context)
-        //.memoryCacheKey(pkg.packageName)
-        //.memoryCachePolicy(CachePolicy.ENABLED)
-        //.crossfade(true)
-        .size(48)
-        .allowConversionToBitmap(true)
-        .data(pkg.iconData)
-        .build()
-    imageLoader.enqueue(iconRequest)
 
     //traceCompose { "<${pkg.packageName}> MainPackageItemX ${pkg.packageInfo.icon} ${imageData.hashCode()}" }
     //traceCompose { "<${pkg.packageName}> MainPackageItemX" }
@@ -771,6 +761,7 @@ fun MainPackageItem(
     }
 
     endNanoTimer("item")
+    //endBusy("item")
 
     if (traceTiming.pref.value)
         nanoTiming["item.package"]?.let {

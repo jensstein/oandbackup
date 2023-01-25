@@ -186,12 +186,11 @@ fun GlobalIndicators() {
 fun DevInfoTab() {
 
     var recompose by remember { mutableStateOf(0) }
-    val scope = rememberCoroutineScope()
 
     LaunchedEffect(recompose) {
-        scope.launch {
+        launch {
             delay(1000)
-            recompose += 1
+            recompose++
         }
     }
 
@@ -202,22 +201,22 @@ fun DevInfoTab() {
 fun DevLogTab() {
 
     var recompose by remember { mutableStateOf(0) }
-    val scope = rememberCoroutineScope()
-    val text = remember(OABX.lastLogMessages) { OABX.lastLogMessages.toList() }
 
     LaunchedEffect(recompose) {
-        scope.launch {
+        launch {
             delay(1000)
-            recompose += 1
+            recompose++
         }
     }
 
-    TerminalText(text)
+    TerminalText(OABX.lastLogMessages.toList())
 }
 
 @Composable
 fun DevSettingsTab() {
+
     val scroll = rememberScrollState(0)
+
     Column(
         modifier = Modifier
             .verticalScroll(scroll)

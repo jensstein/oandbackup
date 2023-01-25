@@ -223,6 +223,7 @@ fun clearIconCache() {                                  //TODO hg42 move somewhe
 }
 
 fun limitIconCache(pkgs: List<Package>) {
+    beginNanoTimer("limitIconCache")
     (painterCache.keys - pkgs.map { it.iconData }).forEach {
         if (it !is Int) {
             traceDebug { "icon remove $it" }
@@ -231,6 +232,7 @@ fun limitIconCache(pkgs: List<Package>) {
             }
         }
     }
+    endNanoTimer("limitIconCache")
 }
 
 fun sizeOfIconCache() = painterCache.size               //TODO hg42 move somewhere else
@@ -245,20 +247,20 @@ fun cachedAsyncImagePainter(
     var painter = synchronized(painterCache) { painterCache.get(model) }
     if (painter == null) {
         beginNanoTimer("rmbrAIP")
+        val request =
+            ImageRequest.Builder(LocalContext.current)
+                .data(model)
+                .size(Size.ORIGINAL)
+                .build()
         val rememberedPainter =
             rememberAsyncImagePainter(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(model)
-                    .size(Size.ORIGINAL)
-                    .build(),
+                model = request,
                 imageLoader = imageLoader,
                 onState = {
                     if (it !is AsyncImagePainter.State.Loading)
                         it.painter?.let {
                             synchronized(painterCache) { painterCache.put(model, it) }
-                        } //?: run {
-                    //    altPainter?.let { synchronized(painterCache) { painterCache.put(model, it) } }
-                    //}
+                        }
                 }
             )
         endNanoTimer("rmbrAIP")
