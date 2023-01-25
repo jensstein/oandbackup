@@ -79,14 +79,25 @@ fun HomePage() {
 
     val filteredList by main.viewModel.filteredList.collectAsState(emptyList())
     val updatedPackages by main.viewModel.updatedPackages.collectAsState(emptyList())
-    val updaterVisible by remember(updatedPackages) { mutableStateOf(updatedPackages.isNotEmpty()) }
+    //val updaterVisible by remember(updatedPackages) { mutableStateOf(updatedPackages.isNotEmpty()) }
+    val updaterVisible = updatedPackages.isNotEmpty()  // recompose is already triggered above
     var updaterExpanded by remember { mutableStateOf(false) }
     val selection = main.viewModel.selection
     val selected = selection.filter { it.value }
     var menuPackage by remember { mutableStateOf<Package?>(null) }
     val menuExpanded = main.viewModel.menuExpanded
 
-    traceCompose { "HomePage f=${filteredList.size} u=${updatedPackages.size} m=${menuExpanded}" }
+    traceCompose {
+        "HomePage filtered=${
+            filteredList.size
+        } updated=${
+            updatedPackages.size
+        }->${
+            if (updaterVisible) "visible" else "hidden"
+        } menu=${
+            menuExpanded.value
+        }"
+    }
 
     // prefetch icons
     if (filteredList.size > sizeOfIconCache()) {    // includes empty cache and empty filteredList
