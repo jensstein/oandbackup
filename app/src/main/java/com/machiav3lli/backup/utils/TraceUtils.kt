@@ -86,17 +86,19 @@ object TraceUtils {
         }
     }
 
+    val warmup = 3L
+
     fun endNanoTimer(name: String): Long {
         synchronized(nanoTimers) {
             var t = System.nanoTime()
             nanoTimers.get(name)?.let {
                 t -= it
                 nanoTime.put(name, t)
-                val (average, n) = nanoTiming.getOrPut(name) { 0f to -3 }
+                val (average, n) = nanoTiming.getOrPut(name) { 0f to -warmup }
                 if (n < 0L)
-                    nanoTiming.put(name, 0f to (n + 1))         // ignore start values
+                    nanoTiming.put(name, t.toFloat() to (n + 1)) // on warmup use single time
                 else
-                    nanoTiming.put(name, ((average * n + t) / (n + 1)) to (n + 1))
+                    nanoTiming.put(name, ((average * n + t) / (n + 1)) to (n + 1)) // resets for n=0
                 return t
             }
             return 0L
