@@ -70,6 +70,7 @@ import com.machiav3lli.backup.preferences.TerminalButton
 import com.machiav3lli.backup.preferences.TerminalPage
 import com.machiav3lli.backup.preferences.TerminalText
 import com.machiav3lli.backup.preferences.pref_showInfoLogBar
+import com.machiav3lli.backup.preferences.supportInfoLogShare
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.MagnifyingGlass
 import com.machiav3lli.backup.ui.compose.icons.phosphor.X
@@ -266,6 +267,8 @@ fun DevTools(
                     onLongClick = { tab = "devsett" }
                 )
             ) {
+                TerminalButton("SUPPORT", important = true) { MainScope().launch { supportInfoLogShare() } }
+                Spacer(modifier = Modifier.weight(1f))
                 TerminalButton(" logs ", important = true) { tab = "logs" }
                 Spacer(modifier = Modifier.weight(1f))
                 TerminalButton(" log ", important = true) { tab = "log" }
