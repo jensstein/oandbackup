@@ -65,7 +65,7 @@ import com.machiav3lli.backup.traceDebug
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretDown
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CheckCircle
-import com.machiav3lli.backup.ui.compose.icons.phosphor.PlayCircle
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Play
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Prohibit
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
 import com.machiav3lli.backup.ui.compose.item.ActionChip
@@ -230,7 +230,7 @@ class ScheduleSheet() : BaseSheet() {
                         }
                         ElevatedActionButton(
                             text = stringResource(id = R.string.sched_activateButton),
-                            icon = Phosphor.PlayCircle,
+                            icon = Phosphor.Play,
                             fullWidth = true,
                             onClick = { startSchedule(schedule) }
                         )
