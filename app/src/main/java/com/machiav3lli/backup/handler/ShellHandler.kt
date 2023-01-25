@@ -22,6 +22,7 @@ import android.os.Environment.DIRECTORY_DOCUMENTS
 import androidx.core.text.isDigitsOnly
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.OABX.Companion.addErrorCommand
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.Companion.utilBoxInfo
 import com.machiav3lli.backup.utils.BUFFER_SIZE
 import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
@@ -187,7 +188,7 @@ class ShellHandler {
         } catch (e: Throwable) {
             LogsHandler.unhandledException(e, "utilBox detection failed miserable")
         }
-        OABX.lastErrorCommand = ""  // ignore fails while searching for utilBox
+        OABX.lastErrorCommands.clear()  // ignore fails while searching for utilBox
 
         utilBoxes.sortByDescending { it.score }
 
@@ -656,7 +657,7 @@ class ShellHandler {
             val result = shell.runCommand(command).to(stdout, stderr).exec()
             Timber.d("Command(s) $command ended with ${result.code}")
             if (!result.isSuccess) {
-                OABX.lastErrorCommand = command
+                addErrorCommand(command)
                 throw ShellCommandFailedException(result, command)
             }
             return result
@@ -702,7 +703,7 @@ class ShellHandler {
                 val code = process.exitValue()
 
                 if (code != 0)
-                    OABX.lastErrorCommand = command
+                    addErrorCommand(command)
 
                 (code to err)
             }
@@ -741,7 +742,7 @@ class ShellHandler {
                 val code = process.exitValue()
 
                 if (code != 0)
-                    OABX.lastErrorCommand = command
+                    addErrorCommand(command)
 
                 (code to err)
             }

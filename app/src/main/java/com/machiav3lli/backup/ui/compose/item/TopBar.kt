@@ -202,6 +202,7 @@ fun DevLogTab() {
 
     var recompose by remember { mutableStateOf(0) }
     val scope = rememberCoroutineScope()
+    val text = remember(OABX.lastLogMessages) { OABX.lastLogMessages.toList() }
 
     LaunchedEffect(recompose) {
         scope.launch {
@@ -210,7 +211,7 @@ fun DevLogTab() {
         }
     }
 
-    TerminalText(OABX.lastLogMessages)
+    TerminalText(text)
 }
 
 @Composable
