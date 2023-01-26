@@ -36,7 +36,7 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.handler.LogsHandler.Companion.unhandledException
+import com.machiav3lli.backup.handler.LogsHandler.Companion.unexpectedException
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.handler.findBackups
@@ -255,7 +255,7 @@ class OABX : Application() {
             try {
                 backupsMap = findBackups()
             } catch (e: Throwable) {
-                unhandledException(e)
+                unexpectedException(e)
             } finally {
                 traceBackupsScan { "*** --------------------> packages: ${backupsMap.keys.size} backups: ${backupsMap.values.flatten().size}" }
                 val time = endBusy(startupMsg)

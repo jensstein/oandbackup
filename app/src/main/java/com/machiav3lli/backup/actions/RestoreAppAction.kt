@@ -516,7 +516,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                 e
             )
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e)
+            LogsHandler.unexpectedException(e)
             throw RestoreFailedException("Could not restore a file due to a failed root command", e)
         } finally {
             // Clean up the temporary directory if it was initialized
@@ -608,7 +608,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                     e
                 )
             } catch (e: Throwable) {
-                LogsHandler.unhandledException(e)
+                LogsHandler.unexpectedException(e)
                 throw RestoreFailedException(
                     "Could not restore a file due to a failed root command",
                     e

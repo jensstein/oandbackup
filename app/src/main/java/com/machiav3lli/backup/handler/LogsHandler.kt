@@ -67,7 +67,7 @@ class LogsHandler {
                         OABX.activity?.startActivity(shareIntent)
                     }
                 } catch (e: Throwable) {
-                    unhandledException(e)
+                    unexpectedException(e)
                 }
             }
         }
@@ -227,7 +227,7 @@ class LogsHandler {
             }
         }
 
-        fun unhandledException(e: Throwable, what: Any? = null) {
+        fun unexpectedException(e: Throwable, what: Any? = null) {
             logException(e, what, backTrace = true, prefix = "unexpected: ", unhandled = true)
         }
 
@@ -245,7 +245,7 @@ class LogsHandler {
             return try {
                 todo()
             } catch (e: Throwable) {
-                unhandledException(e)
+                unexpectedException(e)
                 null
             }
         }
@@ -254,7 +254,7 @@ class LogsHandler {
             return try {
                 todo()
             } catch (e: Throwable) {
-                unhandledException(e)
+                unexpectedException(e)
                 null
             }
         }

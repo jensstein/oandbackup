@@ -123,7 +123,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                     false
                 )
             } catch (e: Throwable) {
-                LogsHandler.unhandledException(e, app)
+                LogsHandler.unexpectedException(e, app)
                 // Usually, this should never happen, but just in case...
                 val realException: Exception =
                     BackupFailedException(STORAGE_LOCATION_INACCESSIBLE, e)
@@ -338,7 +338,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 Timber.e("$app: Could not backup apk $apk: $e")
                 throw BackupFailedException("Could not backup apk $apk", e)
             } catch (e: Throwable) {
-                LogsHandler.unhandledException(e, app)
+                LogsHandler.unexpectedException(e, app)
                 throw BackupFailedException("Could not backup apk $apk", e)
             }
         }
@@ -358,7 +358,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         } catch (e: ShellCommandFailedException) {
             throw BackupFailedException("Could not list contents of $sourcePath", e)
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, sourcePath)
+            LogsHandler.unexpectedException(e, sourcePath)
             throw BackupFailedException("Could not list contents of $sourcePath", e)
         }
     }
@@ -395,7 +395,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             throw BackupFailedException(message, e)
         } catch (e: Throwable) {
             val message = "${e.javaClass.canonicalName} occurred on $dataType backup: $e"
-            LogsHandler.unhandledException(e, message)
+            LogsHandler.unexpectedException(e, message)
             throw BackupFailedException(message, e)
         }
         return true
@@ -511,7 +511,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             result = true
         } catch (e: Throwable) {
             val message = "${e.javaClass.canonicalName} occurred on $dataType backup: $e"
-            LogsHandler.unhandledException(e, message)
+            LogsHandler.unexpectedException(e, message)
             throw BackupFailedException(message, e)
         } finally {
             Timber.d("Done compressing. Closing $backupFilename")

@@ -141,7 +141,7 @@ class Try_readProperties {
                             backupList.add(it)
                         }
                 } catch (e: Throwable) {
-                    LogsHandler.unhandledException(e)
+                    LogsHandler.unexpectedException(e)
                 }
             }
         }

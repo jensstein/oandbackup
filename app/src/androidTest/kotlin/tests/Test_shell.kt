@@ -41,7 +41,7 @@ class Test_shell {
             } catch (e: OutOfMemoryError) {
                 LogsHandler.logException(e, "length: $length")
             } catch (e: Throwable) {
-                LogsHandler.unhandledException(e, "length: $length err: ${shellResult?.err}")
+                LogsHandler.unexpectedException(e, "length: $length err: ${shellResult?.err}")
             }
             return false
         }

@@ -612,7 +612,7 @@ fun List<AppInfo>.toPackageList(
         }
 
     } catch (e: Throwable) {
-        LogsHandler.unhandledException(e)
+        LogsHandler.unexpectedException(e)
     } finally {
         OABX.endBusy("toPackageList")
     }
@@ -721,7 +721,7 @@ fun Context.getPackageStorageStats(
         Timber.e("Could not retrieve storage stats of $packageName: $e")
         null
     } catch (e: Throwable) {
-        LogsHandler.unhandledException(e, packageName)
+        LogsHandler.unexpectedException(e, packageName)
         null
     }
 }

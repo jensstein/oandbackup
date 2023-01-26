@@ -229,7 +229,7 @@ class MainActivityX : BaseActivity() {
             Thread.setDefaultUncaughtExceptionHandler { _, e ->
                 try {
                     Timber.i("\n\n" + "=".repeat(60))
-                    LogsHandler.unhandledException(e)
+                    LogsHandler.unexpectedException(e)
                     LogsHandler.logErrors("uncaught: ${e.message}")
                     if (pref_uncaughtExceptionsJumpToPreferences.value) {
                         startActivity(

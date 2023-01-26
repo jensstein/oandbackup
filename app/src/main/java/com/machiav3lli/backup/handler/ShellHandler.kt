@@ -87,7 +87,7 @@ class ShellHandler {
                             bugs["unSpec"] = true
                             score =
                                 score.mod(1_00_00_00_0)  //TODO hg42 fatal? when can this happen?
-                            LogsHandler.unhandledException(e)
+                            LogsHandler.unexpectedException(e)
                         }
                     }
                 }
@@ -186,7 +186,7 @@ class ShellHandler {
                 }
             }
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, "utilBox detection failed miserable")
+            LogsHandler.unexpectedException(e, "utilBox detection failed miserable")
         }
         OABX.lastErrorCommands.clear()  // ignore fails while searching for utilBox
 
@@ -544,7 +544,7 @@ class ShellHandler {
                         )
                     }
                 } catch (e: Throwable) {
-                    LogsHandler.unhandledException(e, filePath)
+                    LogsHandler.unexpectedException(e, filePath)
                 }
                 var linkName: String? = null
                 var fileSize: Long = 0

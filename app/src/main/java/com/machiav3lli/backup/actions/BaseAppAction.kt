@@ -91,7 +91,7 @@ abstract class BaseAppAction protected constructor(
         } catch (e: ShellCommandFailedException) {
             Timber.w("$type $packageName: cannot preprocess: ${e.shellResult.err.joinToString(" ")}")
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e)
+            LogsHandler.unexpectedException(e)
         }
     }
 
@@ -123,7 +123,7 @@ abstract class BaseAppAction protected constructor(
         } catch (e: ShellCommandFailedException) {
             Timber.w("$type $packageName: cannot postprocess: ${e.shellResult.err.joinToString(" ")}")
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e)
+            LogsHandler.unexpectedException(e)
         }
     }
 

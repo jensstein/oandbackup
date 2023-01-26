@@ -143,7 +143,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                 }
             }
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, packageLabel)
+            LogsHandler.unexpectedException(e, packageLabel)
         }
 
         val succeeded = actionResult?.succeeded ?: false

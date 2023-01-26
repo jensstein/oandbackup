@@ -84,7 +84,7 @@ class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHa
                             )
                         )
                     } catch (e: ShellCommandFailedException) {
-                        LogsHandler.unhandledException(e)
+                        LogsHandler.unexpectedException(e)
                         continue  //TODO hg42: avoid checking the error message text for now
                         //TODO hg42: alternative implementation, better replaced this by API, when root permissions available, e.g. via Shizuku
                         //    if(e.shellResult.err.toString().contains("No such file or directory", ignoreCase = true))
@@ -111,7 +111,7 @@ class BackupSpecialAction(context: Context, work: AppActionWork?, shell: ShellHa
             Timber.e("$app: Backup Special Data failed: $error")
             throw BackupFailedException(error, e)
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, app)
+            LogsHandler.unexpectedException(e, app)
             throw BackupFailedException("unhandled exception", e)
         }
         if (app.packageName == "special.smsmms.json" || app.packageName == "special.calllogs.json") {

@@ -114,7 +114,7 @@ class Package {
         try {
             todo()
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e, packageName)
+            LogsHandler.unexpectedException(e, packageName)
         }
     }
 
@@ -213,7 +213,7 @@ class Package {
                 }
             }
         } catch (e: Throwable) {
-            LogsHandler.unhandledException(e)
+            LogsHandler.unexpectedException(e)
             null
         }
     }

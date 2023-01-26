@@ -26,7 +26,7 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.PrefsActivityX
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logErrors
-import com.machiav3lli.backup.handler.LogsHandler.Companion.unhandledException
+import com.machiav3lli.backup.handler.LogsHandler.Companion.unexpectedException
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import com.machiav3lli.backup.utils.getBackupRoot
@@ -87,7 +87,7 @@ class ExportsHandler(var context: Context) {
                 logErrors(message)
             } catch (e: Throwable) {
                 val message = "(catchall) Incomplete schedule or wrong structure found in ${it}."
-                unhandledException(e, it)
+                unexpectedException(e, it)
                 logErrors(message)
             }
         }

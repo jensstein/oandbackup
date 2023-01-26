@@ -12,7 +12,7 @@ import com.machiav3lli.backup.MIME_TYPE_FILE
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PROP_NAME
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
-import com.machiav3lli.backup.handler.LogsHandler.Companion.unhandledException
+import com.machiav3lli.backup.handler.LogsHandler.Companion.unexpectedException
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.preferences.pref_allowShadowingDefault
@@ -129,7 +129,7 @@ fun Uri.exists(context: Context): Boolean {
     } catch (e: IllegalArgumentException) {
         false
     } catch (e: Throwable) {
-        unhandledException(e, this)
+        unexpectedException(e, this)
         false
     } finally {
         closeQuietly(cursor)
@@ -143,7 +143,7 @@ private fun closeQuietly(closeable: AutoCloseable?) {
         } catch (rethrown: RuntimeException) {
             throw rethrown
         } catch (e: Throwable) {
-            unhandledException(e)
+            unexpectedException(e)
         }
     }
 }
@@ -252,7 +252,7 @@ open class StorageFile {
                 }
             }
         } catch (e: Throwable) {
-            unhandledException(e, "$this")
+            unexpectedException(e, "$this")
         } finally {
             //cursor?.let { closeQuietly(it) }
             cursor?.close()
