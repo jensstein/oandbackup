@@ -447,21 +447,27 @@ class OABX : Application() {
         var showInfo by mutableStateOf(false)
 
         fun clearInfoText() {
-            infoLines = mutableStateListOf()
+            synchronized(infoLines) {
+                infoLines = mutableStateListOf()
+            }
         }
 
         fun addInfoText(value: String) {
-            infoLines.add(value)
-            if (infoLines.size > nInfoLines)
-                infoLines.drop(1)
+            synchronized(infoLines) {
+                infoLines.add(value)
+                if (infoLines.size > nInfoLines)
+                    infoLines.drop(1)
+            }
         }
 
         fun getInfoText(n: Int = nInfoLines, fill: String? = null): String {
-            val lines = infoLines.takeLast(n).toMutableList()
-            if (fill != null)
-                while (lines.size < n)
-                    lines.add(fill)
-            return lines.joinToString("\n")
+            synchronized(infoLines) {
+                val lines = infoLines.takeLast(n).toMutableList()
+                if (fill != null)
+                    while (lines.size < n)
+                        lines.add(fill)
+                return lines.joinToString("\n")
+            }
         }
 
         //------------------------------------------------------------------------------------------ wakelock
