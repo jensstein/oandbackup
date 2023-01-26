@@ -1,4 +1,4 @@
-package automation
+package tests_ui
 
 import androidx.compose.ui.test.ComposeTimeoutException
 import androidx.compose.ui.test.SemanticsMatcher

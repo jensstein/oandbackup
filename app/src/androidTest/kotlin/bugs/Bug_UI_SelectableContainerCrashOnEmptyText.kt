@@ -1,4 +1,4 @@
-package com.example.myapplication
+package bugs
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
@@ -23,7 +23,7 @@ import org.junit.runner.RunWith
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 @RunWith(AndroidJUnit4::class)
-class Bug_Compose_SelectableContainerCrashOnEmptyText {
+class Bug_UI_SelectableContainerCrashOnEmptyText {
 
     val durationSwipe = 500L
     val durationLongPress = 500L
