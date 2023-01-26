@@ -31,10 +31,10 @@ import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Blocklist
+import com.machiav3lli.backup.handler.backupsLocked
 import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.Package.Companion.invalidateCacheForPackage
-import com.machiav3lli.backup.preferences.pref_flowsWaitForStartup
 import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.traceFlows
 import com.machiav3lli.backup.ui.compose.MutableComposableFlow
@@ -45,10 +45,10 @@ import com.machiav3lli.backup.utils.applyFilter
 import com.machiav3lli.backup.utils.sortFilterModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
@@ -226,24 +226,28 @@ class MainViewModel(
         //========================================================================================== filteredList
         combine(notBlockedList, modelSortFilter.flow, searchQuery.flow) { p, f, s ->
 
-            traceFlows { "******************** filtering - list: ${p.size} filter: $f" }
+            var list = emptyList<Package>()
 
-            if (pref_flowsWaitForStartup.value)
-                while (OABX.startup /* || OABX.isBusy */) {
-                    traceFlows { "*** filtering waiting for end of startup" }
-                    delay(500)
-                }
+            if (backupsLocked.get()) {
 
-            val list = p
-                .filter { item: Package ->
-                    s.isEmpty() || (
-                            listOf(item.packageName, item.packageLabel)
-                                .any { it.contains(s, ignoreCase = true) }
-                            )
-                }
-                .applyFilter(f, OABX.main!!)
+                traceFlows { "******************** filtering - locked" }
 
-            traceFlows { "***** filtered ->> ${list.size}" }
+            } else {
+
+                traceFlows { "******************** filtering - list: ${p.size} filter: $f" }
+
+                list = p
+                    .filter { item: Package ->
+                        s.isEmpty() || (
+                                listOf(item.packageName, item.packageLabel)
+                                    .any { it.contains(s, ignoreCase = true) }
+                                )
+                    }
+                    .applyFilter(f, OABX.main!!)
+
+                traceFlows { "***** filtered ->> ${list.size}" }
+            }
+
             list
         }
             // if the filter changes we can drop the older filters
@@ -259,13 +263,9 @@ class MainViewModel(
     val updatedPackages =
         //------------------------------------------------------------------------------------------ updatedPackages
         notBlockedList
+            .filterNot { backupsLocked.get() }
             .trace { "updatePackages? ..." }
             .mapLatest {
-                if (pref_flowsWaitForStartup.value)
-                    while (OABX.startup /* || OABX.isBusy */) {
-                        traceFlows { "*** updatePackages waiting for end of startup" }
-                        delay(500)
-                    }
                 it.filter(Package::isUpdated).toMutableList()
             }
             .trace {

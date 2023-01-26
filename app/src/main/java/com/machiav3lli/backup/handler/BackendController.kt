@@ -77,6 +77,7 @@ import java.io.IOException
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.system.measureTimeMillis
 
@@ -289,7 +290,7 @@ suspend fun scanBackups(
                             file.listFiles().forEach {
                                 collector?.run { emit(it) } ?: files.offer(it)
                             }
-                            traceDebug { "queue: $files" }
+                            //traceDebug { "queue: $files" }
                         }
                     }
                 }
@@ -378,6 +379,8 @@ suspend fun scanBackups(
     }
 }
 
+val backupsLocked = AtomicBoolean(false)
+
 fun Context.findBackups(
     packageName: String = "",
     forceTrace: Boolean = false,
@@ -387,27 +390,30 @@ fun Context.findBackups(
 
     var installedNames: List<String> = emptyList()
 
-    if (packageName.isEmpty()) {
-        OABX.beginBusy("findBackups")
-
-        // preset installed packages with empty backups lists
-        // this prevents scanning them again when a package needs it's backups later
-        // doing it here also avoids setting all packages to empty lists when findbackups fails
-        // so there is a chance that scanning for backups of a single package will work later
-
-        //val installedPackages = getInstalledPackageList()   // too slow (2-3 sec)
-        val installedPackages = packageManager.getInstalledPackageInfosWithPermissions()
-        val specialInfo = SpecialInfo.getSpecialPackages(this)
-        installedNames =
-            installedPackages.map { it.packageName } + specialInfo.map { it.packageName }
-
-        if (pref_earlyEmptyBackups.value)
-            OABX.emptyBackupsForAllPackages(installedNames)
-
-        clearThreadStats()
-    }
-
     try {
+        if (packageName.isEmpty()) {
+
+            backupsLocked.set(true)
+
+            OABX.beginBusy("findBackups")
+
+            // preset installed packages with empty backups lists
+            // this prevents scanning them again when a package needs it's backups later
+            // doing it here also avoids setting all packages to empty lists when findbackups fails
+            // so there is a chance that scanning for backups of a single package will work later
+
+            //val installedPackages = getInstalledPackageList()   // too slow (2-3 sec)
+            val installedPackages = packageManager.getInstalledPackageInfosWithPermissions()
+            val specialInfo = SpecialInfo.getSpecialPackages(this)
+            installedNames =
+                installedPackages.map { it.packageName } + specialInfo.map { it.packageName }
+
+            if (pref_earlyEmptyBackups.value)
+                OABX.emptyBackupsForAllPackages(installedNames)
+
+            clearThreadStats()
+        }
+
         invalidateBackupCacheForPackage(packageName)
 
         val backupRoot = getBackupRoot()
@@ -421,7 +427,7 @@ fun Context.findBackups(
                         count.getAndIncrement()
                         Backup.createFrom(propsFile)
                             ?.let {
-                                traceDebug { "put ${it.packageName}/${it.backupDate}" }
+                                //traceDebug { "put ${it.packageName}/${it.backupDate}" }
                                 synchronized(backupsMap) {
                                     backupsMap.getOrPut(it.packageName) { mutableListOf() }.add(it)
                                 }
@@ -460,6 +466,7 @@ fun Context.findBackups(
         logException(e, backTrace = true)
     } finally {
         if (packageName.isEmpty()) {
+            backupsLocked.set(false)
             val time = OABX.endBusy("findBackups")
             OABX.addInfoText("findBackups: ${"%.3f".format(time / 1E9)} sec")
 
