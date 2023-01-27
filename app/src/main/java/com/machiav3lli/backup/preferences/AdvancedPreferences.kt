@@ -114,6 +114,12 @@ fun AdvancedPrefsPage() {
 
 //---------------------------------------- developer settings - advanced users
 
+val pref_menuButtonAlwaysVisible = BooleanPref(
+    key = "dev-adv.menuButtonAlwaysVisible",
+    summary = "also show context menu button when selection is empty",
+    defaultValue = false
+)
+
 val pref_hideBackupLabels = BooleanPref(
     key = "dev-adv.hideBackupLabels",
     summary = "speed up package list by hiding the backup data type icons (keeps the package type)",

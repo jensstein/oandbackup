@@ -54,6 +54,7 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.preferences.pref_menuButtonAlwaysVisible
 import com.machiav3lli.backup.traceCompose
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretDown
@@ -79,13 +80,13 @@ fun HomePage() {
 
     val filteredList by main.viewModel.filteredList.collectAsState(emptyList())
     val updatedPackages by main.viewModel.updatedPackages.collectAsState(emptyList())
-    //val updaterVisible by remember(updatedPackages) { mutableStateOf(updatedPackages.isNotEmpty()) }
     val updaterVisible = updatedPackages.isNotEmpty()  // recompose is already triggered above
     var updaterExpanded by remember { mutableStateOf(false) }
     val selection = main.viewModel.selection
     val selected = selection.filter { it.value }
     var menuPackage by remember { mutableStateOf<Package?>(null) }
     val menuExpanded = main.viewModel.menuExpanded
+    val menuButtonAlwaysVisible = pref_menuButtonAlwaysVisible.value
 
     traceCompose {
         "HomePage filtered=${
@@ -96,7 +97,7 @@ fun HomePage() {
             if (updaterVisible) "visible" else "hidden"
         } menu=${
             menuExpanded.value
-        }"
+        } always=${menuButtonAlwaysVisible}"
     }
 
     // prefetch icons
@@ -119,7 +120,7 @@ fun HomePage() {
     Scaffold(
         containerColor = Color.Transparent,
         floatingActionButton = {
-            if (selected.isNotEmpty() || updaterVisible) {
+            if (selected.isNotEmpty() || updaterVisible || menuButtonAlwaysVisible) {
                 Row(
                     modifier = Modifier.padding(start = 28.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -215,7 +216,9 @@ fun HomePage() {
                             }
                         )
                     }
-                    if ((!updaterVisible || !updaterExpanded) && selected.isNotEmpty()) {
+                    if (! (updaterVisible && updaterExpanded) &&
+                        (selected.isNotEmpty() || menuButtonAlwaysVisible)
+                    ) {
                         ExtendedFloatingActionButton(
                             text = { Text(text = selected.size.toString()) },
                             icon = {
