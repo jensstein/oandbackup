@@ -57,6 +57,7 @@ import com.machiav3lli.backup.handler.LogsHandler.Companion.unexpectedException
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.traceContextMenu
 import com.machiav3lli.backup.traceTiming
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.SystemUtils.numCores
@@ -260,7 +261,7 @@ val menuPool = when(1) {
     0    -> Executors.newFixedThreadPool(1).asCoroutineDispatcher()
 
     // may hang for recursive invocation because threads are limited
-    0    -> Executors.newFixedThreadPool(numCores).asCoroutineDispatcher()
+    1    -> Executors.newFixedThreadPool(numCores).asCoroutineDispatcher()
 
     // unlimited threads!
     0    -> Executors.newCachedThreadPool().asCoroutineDispatcher()
@@ -301,14 +302,14 @@ suspend fun forEachPackage(
     if (parallel) {
         runParallel(packages, scope = menuScope, pool = menuPool) {
             if (select == true) selection[it.packageName] = false
-            //OABX.addInfoText("$action ${it.packageName}")
+            traceContextMenu { "$action ${it.packageName}" }
             todo(it)
             select?.let { selected -> selection[it.packageName] = selected }
         }
     } else {
         packages.forEach {
             if (select == true) selection[it.packageName] = false
-            //OABX.addInfoText("$action ${it.packageName}")
+            traceContextMenu { "$action ${it.packageName}" }
             todo(it)
             yield()
             select?.let { selected -> selection[it.packageName] = selected }

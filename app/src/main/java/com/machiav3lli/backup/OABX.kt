@@ -188,6 +188,12 @@ val traceBackupProps = TraceUtils.TracePref(
     default = false
 )
 
+val traceContextMenu = TraceUtils.TracePref(
+    name = "ContextMenu",
+    summary = "trace context menu actions and events",
+    default = false
+)
+
 val traceCompose = TraceUtils.TracePref(
     name = "Compose",
     summary = "trace recomposition of UI elements",
