@@ -73,7 +73,7 @@ open class Log {
             )
         } catch (e: Throwable) {
             LogsHandler.unexpectedException(e, logFile)
-            throw Backup.BrokenBackupException("Unable to process $logFile. [${e.javaClass.canonicalName}] $e")
+            throw Backup.BrokenBackupException("Unable to process $logFile. (${e.javaClass.canonicalName}) $e")
         }
     }
 

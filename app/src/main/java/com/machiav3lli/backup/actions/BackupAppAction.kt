@@ -75,7 +75,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         var ok = false
         val fakeSeconds = pref_fakeBackupSeconds.value
         try {
-            Timber.i("Backing up: ${app.packageName} [${app.packageLabel}]")
+            Timber.i("Backing up: ${app.packageName} (${app.packageLabel})")
             //invalidateCacheForPackage(app.packageName)    //TODO hg42 ???
             work?.setOperation("pre")
 
@@ -316,13 +316,13 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
 
     @Throws(BackupFailedException::class)
     protected open fun backupPackage(app: Package, backupInstanceDir: StorageFile) {
-        Timber.i("[${app.packageName}] Backup package apks")
+        Timber.i("<${app.packageName}> Backup package apks")
         var apksToBackup = arrayOf(app.apkPath)
         if (app.apkSplits.isEmpty()) {
-            Timber.d("[${app.packageName}] The app is a normal apk")
+            Timber.d("<${app.packageName}> The app is a normal apk")
         } else {
             apksToBackup += app.apkSplits.drop(0)
-            Timber.d("[${app.packageName}] Package is split into ${apksToBackup.size} apks")
+            Timber.d("<${app.packageName}> Package is split into ${apksToBackup.size} apks")
         }
         Timber.d(
             "[%s] Backing up package (%d apks: %s)",

@@ -83,7 +83,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         backupMode: Int,
     ): ActionResult {
         try {
-            Timber.i("Restoring: ${app.packageName} [${app.packageLabel}]")
+            Timber.i("Restoring: ${app.packageName} (${app.packageLabel})")
             work?.setOperation("pre")
             val killApp = pref_restoreKillApps.value
             if (killApp) {
@@ -161,39 +161,39 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         if (!isPlausiblePath(app.dataPath, app.packageName))
             refreshAppInfo(context, app)    // wait for valid paths
         if (backup.hasAppData && backupMode and MODE_DATA == MODE_DATA) {
-            Timber.i("[${backup.packageName}] Restoring app's data")
+            Timber.i("<${backup.packageName}> Restoring app's data")
             work?.setOperation("dat")
             restoreData(app, backup, backupDir)
         } else {
-            Timber.i("[${backup.packageName}] Skip restoring app's data; not part of the backup or restore mode")
+            Timber.i("<${backup.packageName}> Skip restoring app's data; not part of the backup or restore mode")
         }
         if (backup.hasDevicesProtectedData && backupMode and MODE_DATA_DE == MODE_DATA_DE) {
-            Timber.i("[${backup.packageName}] Restoring app's device-protected data")
+            Timber.i("<${backup.packageName}> Restoring app's device-protected data")
             work?.setOperation("prt")
             restoreDeviceProtectedData(app, backup, backupDir)
         } else {
-            Timber.i("[${backup.packageName}] Skip restoring app's device protected data; not part of the backup or restore mode")
+            Timber.i("<${backup.packageName}> Skip restoring app's device protected data; not part of the backup or restore mode")
         }
         if (backup.hasExternalData && backupMode and MODE_DATA_EXT == MODE_DATA_EXT) {
-            Timber.i("[${backup.packageName}] Restoring app's external data")
+            Timber.i("<${backup.packageName}> Restoring app's external data")
             work?.setOperation("ext")
             restoreExternalData(app, backup, backupDir)
         } else {
-            Timber.i("[${backup.packageName}] Skip restoring app's external data; not part of the backup or restore mode")
+            Timber.i("<${backup.packageName}> Skip restoring app's external data; not part of the backup or restore mode")
         }
         if (backup.hasObbData && backupMode and MODE_DATA_OBB == MODE_DATA_OBB) {
-            Timber.i("[${backup.packageName}] Restoring app's obb files")
+            Timber.i("<${backup.packageName}> Restoring app's obb files")
             work?.setOperation("obb")
             restoreObbData(app, backup, backupDir)
         } else {
-            Timber.i("[${backup.packageName}] Skip restoring app's obb files; not part of the backup or restore mode")
+            Timber.i("<${backup.packageName}> Skip restoring app's obb files; not part of the backup or restore mode")
         }
         if (backup.hasMediaData && backupMode and MODE_DATA_MEDIA == MODE_DATA_MEDIA) {
-            Timber.i("[${backup.packageName}] Restoring app's media files")
+            Timber.i("<${backup.packageName}> Restoring app's media files")
             work?.setOperation("med")
             restoreMediaData(app, backup, backupDir)
         } else {
-            Timber.i("[${backup.packageName}] Skip restoring app's media files; not part of the backup or restore mode")
+            Timber.i("<${backup.packageName}> Skip restoring app's media files; not part of the backup or restore mode")
         }
     }
 
@@ -218,12 +218,12 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     @Throws(RestoreFailedException::class)
     open fun restorePackage(backupDir: StorageFile, backup: Backup) {
         val packageName = backup.packageName
-        Timber.i("[$packageName] Restoring from $backupDir")
+        Timber.i("<$packageName> Restoring from $backupDir")
         val apkTargetPath = File(backup.sourceDir ?: BASE_APK_FILENAME)
         val baseApkName = apkTargetPath.name
         val baseApkFile = backupDir.findFile(baseApkName)
                           ?: throw RestoreFailedException("$baseApkName is missing in backup", null)
-        Timber.d("[$packageName] Found $baseApkName in backup archive")
+        Timber.d("<$packageName> Found $baseApkName in backup archive")
         val splitApksInBackup: Array<StorageFile> = try {
             backupDir.listFiles()
                 .filter { it.name?.endsWith(".apk") == true } // Only apks are relevant (first because it's a cheap test)
@@ -238,7 +238,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         // Copy all apk paths into a single array
         var apksToRestore = arrayOf(baseApkFile)
         if (splitApksInBackup.isEmpty()) {
-            Timber.d("[$packageName] The backup does not contain split apks")
+            Timber.d("<$packageName> The backup does not contain split apks")
         } else {
             apksToRestore += splitApksInBackup.drop(0) // drop(0) means clone
             Timber.i("[%s] Package is splitted into %d apks", packageName, apksToRestore.size)
@@ -278,7 +278,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             // copy apks to staging dir
             apksToRestore.forEach { apkFile ->
                 // The file must be touched before it can be written for some reason...
-                Timber.d("[$packageName] Copying ${apkFile.name} to staging dir")
+                Timber.d("<$packageName> Copying ${apkFile.name} to staging dir")
                 runAsRoot(
                     "touch ${
                         quote(
@@ -384,7 +384,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         } finally {
             // Cleanup only in case of failure, otherwise it's already included
             if (!success)
-                Timber.i("[$packageName] Restore unsuccessful")
+                Timber.i("<$packageName> Restore unsuccessful")
             val command =
                 "$utilBoxQ rm ${
                     quoteMultiple(
@@ -400,7 +400,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                 runAsRoot(command)
             } catch (e: ShellCommandFailedException) {
                 Timber.w(
-                    "[$packageName] Cleanup after failure failed: ${
+                    "<$packageName> Cleanup after failure failed: ${
                         e.shellResult.err.joinToString(
                             "; "
                         )
@@ -1088,7 +1088,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                 throw PackageManagerDataIncompleteException(maxWaitMs / 1000L)
             }
             if (timeWaitedMs > 0) {
-                Timber.d("[${app.packageName}] PackageManager returned invalid data paths, attempt $attemptNo, waited ${timeWaitedMs / 1000L} of $maxWaitMs seconds")
+                Timber.d("<${app.packageName}> PackageManager returned invalid data paths, attempt $attemptNo, waited ${timeWaitedMs / 1000L} of $maxWaitMs seconds")
                 Thread.sleep(sleepTimeMs)
             }
             app.refreshFromPackageManager(context)

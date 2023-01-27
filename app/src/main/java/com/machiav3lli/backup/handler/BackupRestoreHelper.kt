@@ -57,9 +57,9 @@ object BackupRestoreHelper {
         val action: BackupAppAction = when {
             packageItem.isSpecial -> {
                 if (reBackupMode and MODE_APK == MODE_APK) {
-                    Timber.e("[${packageItem.packageName}] Special Backup called with MODE_APK or MODE_BOTH. Masking invalid settings.")
+                    Timber.e("<${packageItem.packageName}> Special Backup called with MODE_APK or MODE_BOTH. Masking invalid settings.")
                     reBackupMode = reBackupMode and MODE_DATA
-                    Timber.d("[${packageItem.packageName}] New backup mode: $reBackupMode")
+                    Timber.d("<${packageItem.packageName}> New backup mode: $reBackupMode")
                 }
                 BackupSpecialAction(context, work, shell)
             }
@@ -67,15 +67,15 @@ object BackupRestoreHelper {
                 BackupAppAction(context, work, shell)
             }
         }
-        Timber.d("[${packageItem.packageName}] Using ${action.javaClass.simpleName} class")
+        Timber.d("<${packageItem.packageName}> Using ${action.javaClass.simpleName} class")
 
         // create the new backup
         val result = action.run(packageItem, reBackupMode)
 
         if (result.succeeded)
-            Timber.i("[${packageItem.packageName}] Backup succeeded: ${result.succeeded}")
+            Timber.i("<${packageItem.packageName}> Backup succeeded: ${result.succeeded}")
         else {
-            Timber.i("[${packageItem.packageName}] Backup FAILED: ${result.succeeded} ${result.message}")
+            Timber.i("<${packageItem.packageName}> Backup FAILED: ${result.succeeded} ${result.message}")
         }
 
         housekeepingPackageBackups(packageItem)
@@ -93,7 +93,7 @@ object BackupRestoreHelper {
             else -> RestoreAppAction(context, work, shellHandler)
         }
         val result = action.run(appInfo, backup, mode)
-        Timber.i("[${appInfo.packageName}] Restore succeeded: ${result.succeeded}")
+        Timber.i("<${appInfo.packageName}> Restore succeeded: ${result.succeeded}")
         return result
     }
 
@@ -145,7 +145,7 @@ object BackupRestoreHelper {
         val numBackupRevisions =
             pref_numBackupRevisions.value
         if (numBackupRevisions == 0) {
-            Timber.i("[${app.packageName}] Infinite backup revisions configured. Not deleting any backup.")
+            Timber.i("<${app.packageName}> Infinite backup revisions configured. Not deleting any backup.")
             return
         }
 

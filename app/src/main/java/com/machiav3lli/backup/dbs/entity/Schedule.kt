@@ -139,7 +139,7 @@ data class Schedule(
                 )
             } catch (e: Throwable) {
                 LogsHandler.unexpectedException(e, exportFile.path)
-                throw Backup.BrokenBackupException("Unable to process ${exportFile.name} at ${exportFile.path}. [${e.javaClass.canonicalName}] $e")
+                throw Backup.BrokenBackupException("Unable to process ${exportFile.name} at ${exportFile.path}. (${e.javaClass.canonicalName}) $e")
             }
         }
 
