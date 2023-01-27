@@ -34,4 +34,6 @@ object SystemUtils {
         }
         return null
     }
+
+    val numCores = Runtime.getRuntime().availableProcessors()
 }
