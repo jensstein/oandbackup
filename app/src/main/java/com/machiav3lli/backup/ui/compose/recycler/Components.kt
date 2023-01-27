@@ -304,7 +304,8 @@ fun BusyBackground(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            var angle by rememberSaveable { mutableStateOf(70f) }
+            //var angle by rememberSaveable { mutableStateOf(70f) }
+            var angle by rememberSaveable { mutableStateOf(System.currentTimeMillis() % turnTime * 360f / turnTime) }
             LaunchedEffect(true) {
                 withContext(Dispatchers.IO) {
                     animate(
