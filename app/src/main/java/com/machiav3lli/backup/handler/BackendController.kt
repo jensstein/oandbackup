@@ -61,9 +61,7 @@ import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.utils.getInstalledPackageInfosWithPermissions
 import com.machiav3lli.backup.utils.specialBackupsEnabled
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -306,32 +304,20 @@ suspend fun scanBackups(
         }
     }
 
-    val scanScope = MainScope()
-
-    runBlocking {
-        val filesFlow = flow {
-            while (
-                files.isNotEmpty() ||
-                run {
-                    //TODO hg42 seems to be necessary, because the items are added via launch
-                    //  (which in turn is necessary to be fast)
-                    //  though it is not totally clear why it happens, the launch reasoning
-                    //  seems only to be valid if it's the last package
-                    //  how can we do this better?
-                    //  I tried to emit the directory files directly to this flow,
-                    //  but doesn't seem to work with processFile
-                    //  probably the FlowCollector must be given to processFile
-                    delay(500)
-                    files.isNotEmpty()
+    while (files.isNotEmpty()) {
+        traceBackupsScan { "queue filled ${files.size}" }
+        runBlocking { // joins jobs, so launched jobs that queue files are finished, before checking the queue
+            val filesFlow = flow {
+                while (files.isNotEmpty()) {
+                    val file = files.remove()
+                    emit(file)
                 }
-            ) {
-                val file = files.remove()
-                emit(file)
+                traceBackupsScan { "queue empty" }
             }
-        }
-        filesFlow.collect {
-            launch(scanPool) {
-                processFile(it)
+            filesFlow.collect {
+                launch(scanPool) {
+                    processFile(it)
+                }
             }
         }
     }
