@@ -138,15 +138,15 @@ suspend fun scanBackups(
 
     fun traceBackupsScanPackage(lazyText: () -> String) {
         if (forceTrace) {
-            if (packageName.isNotEmpty())
+            if (packageName.isEmpty())
                 TraceUtils.trace("[BackupsScanAll] ${lazyText()}")
             else
                 TraceUtils.trace("[BackupsScan] ${lazyText()}")
         } else {
-            if (packageName.isNotEmpty())
-                traceBackupsScan(lazyText)
-            else
+            if (packageName.isEmpty())
                 traceBackupsScanAll(lazyText)
+            else
+                traceBackupsScan(lazyText)
         }
     }
 
@@ -304,14 +304,16 @@ suspend fun scanBackups(
     }
 
     while (files.isNotEmpty()) {
-        traceBackupsScan { "queue filled ${files.size}" }
+        if (packageName.isEmpty())
+            traceBackupsScanPackage { "queue filled ${files.size}" }
         runBlocking { // joins jobs, so launched jobs that queue files are finished, before checking the queue
             val filesFlow = flow {
                 while (files.isNotEmpty()) {
                     val file = files.remove()
                     emit(file)
                 }
-                traceBackupsScan { "queue empty" }
+                if (packageName.isEmpty())
+                    traceBackupsScanPackage { "queue empty" }
             }
             filesFlow.collect {
                 launch(scanPool) {
