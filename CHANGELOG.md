@@ -4,8 +4,11 @@ CHANGELOG
 next version
 ------------
 
+
 #### Usability / UX
 
+- workaround for floating buttons hiding info (scroll a bit more at bottom)
+- add menuButtonAlwaysVisible
 - add confirmation to context menu "add to blocklist"
 - the busy progress bar was replaced by a more calm background animation
 - improved list speed and cached/prefetched icons
@@ -15,10 +18,24 @@ next version
 
 #### UI
 
+- add menu item "Deselect Not Visible" (for programmers: this is an AND function)
+- enable backup/restore in context menu
+    (note, there is no question about data types, yet, it uses the configured default,
+     restore has a confirmation, need to add "..." to such entries)
 - fix duplicate entries in LogPage
 
 #### Function
 
+- fix menu "Load" not working (and others that didn't select after action)
+- run only numCores threads in parallel on menu actions
+    (avoids stopping actions in the middle of the list)
+- fix parallel scanning, which could stop before end (no more timeout necessary)
+- fix single delete not working in app sheet
+    (it actually created an endless loop that blocks the thread,
+     if doing this often you had a bunch of threads running full speed)
+- queue based scanning instead of recursive, reduces memory consumption
+    and prevents hanging on no more threads available (e.g. with parallelStream)
+- blocking other parts until full scan is ready
 - duplicated schedules should be solved
     - it's not easy to test all situations and takes one day for each test under real world conditions
     - detects if the schedule to be started is already running at three stages
