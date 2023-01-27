@@ -125,11 +125,11 @@ object TraceUtils {
 
     fun logNanoTiming(pattern: String = "", title: String = "") {
         if (traceTiming.pref.value) {
-            traceTiming { "$title -----\\" }
+            traceTiming { """$title -----\""" }
             listNanoTiming(pattern).forEach {
                 traceTiming { "$title $it" }
             }
-            traceTiming { "$title -----/" }
+            traceTiming { """$title -----/""" }
         }
     }
 

@@ -519,7 +519,7 @@ class OABX : Application() {
                 logSections[section] = count + 1
                 //if (count == 0 && xxx)  logMessages.clear()           //TODO hg42
             }
-            traceSection { "*** ${"|---".repeat(count)}\\ $section" }
+            traceSection { """*** ${"|---".repeat(count)}\ $section""" }
             beginNanoTimer("section.$section")
         }
 
@@ -569,7 +569,7 @@ class OABX : Application() {
         fun beginBusy(name: String? = null) {
             traceBusy {
                 val label = name ?: methodName(1)
-                "*** \\ busy $label"
+                """*** \ busy $label"""
             }
             hitBusy(true)
             beginNanoTimer("busy.$name")

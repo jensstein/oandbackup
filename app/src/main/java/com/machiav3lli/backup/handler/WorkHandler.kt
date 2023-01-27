@@ -97,9 +97,9 @@ class WorkHandler(appContext: Context) {
                 if (batch.nFinished > 1 || batch.isCanceled) {
                     val now = System.currentTimeMillis()
                     if (now - batch.startTime > longAgo) {
-                        Timber.d("%%%%% $it removing...\\")
+                        Timber.d("""%%%%% $it removing...\""")
                         batchesKnown.remove(it)
-                        Timber.d("%%%%% $it removed..../")
+                        Timber.d("""%%%%% $it removed..../""")
                     }
                 }
             }
@@ -114,9 +114,9 @@ class WorkHandler(appContext: Context) {
         OABX.wakelock(false) // now everything is done
 
         OABX.service?.let {
-            traceBold { "%%%%% ------------------------------------------ service stopping...\\" }
+            traceBold { """%%%%% ------------------------------------------ service stopping...\""" }
             it.stopSelf()
-            traceBold { "%%%%% ------------------------------------------ service stopped.../" }
+            traceBold { """%%%%% ------------------------------------------ service stopped.../""" }
         }
     }
 

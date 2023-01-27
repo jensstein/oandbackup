@@ -132,7 +132,7 @@ class Test_ShellHandler {
                 fileInfo.filePath
         )
         assertEquals(
-				"/data/data/org.fdroid.fdroid/files/My|#\$%^&*[](){}'\"`:;?<~>,.file",
+				"""/data/data/org.fdroid.fdroid/files/My|#$%^&*[](){}'"`:;?<~>,.file""",
                 fileInfo.absolutePath
         )
         assertEquals(

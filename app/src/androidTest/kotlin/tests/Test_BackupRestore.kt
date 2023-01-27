@@ -58,7 +58,7 @@ class Test_BackupRestore {
         fun listContent(dir: RootFile): List<String> {
             //return runAsRoot("ls -bAlZ ${dir.quoted} | grep -v total | sort").out.joinToString("\n")
             return runAsRoot(
-                        "cd ${dir.quoted} ; stat -c '%-20n %y %A %f %-15U %-15G %8s %F' .* * | grep -v '\\.$'"
+                        """cd ${dir.quoted} ; stat -c '%-20n %y %A %f %-15U %-15G %8s %F' .* * | grep -v '\.$'"""
             ).out
                 .filterNotNull()
                 .map { it.replace(Regex(""":\d\d\.\d{9}\b"""), "") } // :seconds.millis
