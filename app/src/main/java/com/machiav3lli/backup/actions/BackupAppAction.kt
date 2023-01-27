@@ -481,6 +481,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             //---------- instead look at error output and ignore some of the messages
             if (code != 0)
                 Timber.i("tar returns: code $code: $err") // at least log the full error
+
             val errLines = err
                 .split("\n")
                 .filterNot { line ->
@@ -488,12 +489,25 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                             || line.contains("tar: unknown file type") // e.g. socket 140000
                             || line.contains("tar: had errors") // summary at the end
                 }
+
+            // Ignoring the error code looks problematic, but it was checked.
+            // It's not like it should, but the world isn't perfect.
+            // 1. The unknown file type is a known thing and is about sockets or in general files that
+            //    cannot be added to an archive or unsupported by tar.
+            //    You know, tar is able to pack the most of all archivers.
+            // 2. The "had errors" was added in this commit of toybox tar:
+            //    https://github.com/landley/toybox/commit/3b71ff9d7e4cab52b9d421bc8daf2bdd7810731d
+            //    it is additional to the real error messages.
+            //    If any error was found, this message is added as a summary at the end.
+
+            // so if there are remaining lines *and* the code is non-zero, we throw an exception
             if (errLines.isNotEmpty()) {
                 val errFiltered = errLines.joinToString("\n")
                 Timber.i(errFiltered)
                 if (code != 0)
                     throw ScriptException(errFiltered)
             }
+
             result = true
         } catch (e: Throwable) {
             val message = "${e.javaClass.canonicalName} occurred on $dataType backup: $e"
