@@ -2,6 +2,7 @@ package tests_ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,6 +26,7 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.machiav3lli.backup.preferences.TerminalText
 import com.machiav3lli.backup.ui.compose.isAtBottom
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -54,6 +56,37 @@ class Test_UI_FollowNonStateVariable {
             }
         }
     }
+
+    @Preview
+    @Composable
+    fun TerminalTextPreview() {
+
+        Timber.d("recompose ${queue2.size}")
+
+        val lines = queue2
+
+        var recompose by remember { mutableStateOf(0) }
+
+        LaunchedEffect(Unit) {
+            launch {
+                while (true) {
+                    delay(100)
+                    recompose++
+                }
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .height(300.dp)
+                .width(500.dp)
+                .padding(0.dp)
+                .background(color = Color(0.2f, 0.2f, 0.3f))
+        ) {
+            TerminalText(lines.toList())
+        }
+    }
+
 
     @Preview
     @Composable
@@ -135,11 +168,15 @@ class Test_UI_FollowNonStateVariable {
     @Rule
     @JvmField
     var test: ComposeContentTestRule = createComposeRule()
+    //var test: ComposeContentTestRule = createAndroidComposeRule<MainActivityX>()
 
     @Before
     fun setUp() {
         test.setContent {
-            TestPreview()
+            Column {
+                TestPreview()
+                //TerminalTextPreview()
+            }
         }
         //test.onRoot().printToLog("root")
     }
