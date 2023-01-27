@@ -135,7 +135,7 @@ class AppSheetViewModel(
         return shellCommands.getUsers().toTypedArray()
     }
 
-    fun deleteBackup(backup: Backup) {
+    fun deleteBackup(backup: Backup) {              //TODO hg42 launchDeleteBackup ?
         viewModelScope.launch {
             delete(backup)
         }
