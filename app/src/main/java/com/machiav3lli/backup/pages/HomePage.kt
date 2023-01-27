@@ -62,9 +62,9 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.List
 import com.machiav3lli.backup.ui.compose.item.ActionButton
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.ExpandingFadingVisibility
+import com.machiav3lli.backup.ui.compose.item.IconCache
 import com.machiav3lli.backup.ui.compose.item.MainPackageContextMenu
 import com.machiav3lli.backup.ui.compose.item.cachedAsyncImagePainter
-import com.machiav3lli.backup.ui.compose.item.sizeOfIconCache
 import com.machiav3lli.backup.ui.compose.recycler.HomePackageRecycler
 import com.machiav3lli.backup.ui.compose.recycler.UpdatedPackageRecycler
 import com.machiav3lli.backup.utils.TraceUtils.beginNanoTimer
@@ -100,7 +100,7 @@ fun HomePage() {
     }
 
     // prefetch icons
-    if (filteredList.size > sizeOfIconCache()) {    // includes empty cache and empty filteredList
+    if (filteredList.size > IconCache.size) {    // includes empty cache and empty filteredList
         beginNanoTimer("prefetchIcons")
         filteredList.forEach { pkg ->
             cachedAsyncImagePainter(model = pkg.iconData)

@@ -214,28 +214,53 @@ fun PackageIcon(
     endNanoTimer("pkgIcon.rCAIP")
 }
 
-private var painterCache = mutableMapOf<Any, Painter>()         //TODO hg42 move somewhere else
+object IconCache {
 
-fun clearIconCache() {                                  //TODO hg42 move somewhere else
-    synchronized(painterCache) {
-        painterCache.clear()
-    }
-}
+    private var painterCache = mutableMapOf<Any, Painter>()
 
-fun limitIconCache(pkgs: List<Package>) {
-    beginNanoTimer("limitIconCache")
-    (painterCache.keys - pkgs.map { it.iconData }).forEach {
-        if (it !is Int) {
-            traceDebug { "icon remove $it" }
-            synchronized(painterCache) {
-                painterCache.remove(it)
-            }
+    fun getIcon(key: Any) : Painter? {
+        return synchronized(painterCache) {
+            painterCache.get(key)
         }
     }
-    endNanoTimer("limitIconCache")
-}
 
-fun sizeOfIconCache() = painterCache.size               //TODO hg42 move somewhere else
+    fun putIcon(key: Any, painter: Painter) {
+        traceDebug { "icon put $key" }
+        synchronized(painterCache) {
+            painterCache.put(key, painter)
+        }
+    }
+
+    fun removeIcon(key: Any) {
+        traceDebug { "icon remove $key" }
+        synchronized(painterCache) {
+            painterCache.remove(key)
+        }
+    }
+
+    fun clear() {
+        synchronized(painterCache) {
+            painterCache.clear()
+        }
+    }
+
+    fun dropAllButUsed(pkgs: List<Package>) {
+        beginNanoTimer("limitIconCache")
+        val keys = synchronized(painterCache) { painterCache.keys }
+        (keys - pkgs.map { it.iconData }).forEach {
+            if (it !is Int) {
+                IconCache.removeIcon(it)
+            }
+        }
+        endNanoTimer("limitIconCache")
+    }
+
+    val size: Int get() {
+        return synchronized(painterCache) {
+            painterCache.size
+        }
+    }
+}
 
 @Composable
 fun cachedAsyncImagePainter(
@@ -244,7 +269,7 @@ fun cachedAsyncImagePainter(
     altPainter: Painter? = null,
 ): Painter {
     beginNanoTimer("rmbrCachedAIP")
-    var painter = synchronized(painterCache) { painterCache.get(model) }
+    var painter = IconCache.getIcon(model)
     if (painter == null) {
         beginNanoTimer("rmbrAIP")
         val request =
@@ -259,7 +284,7 @@ fun cachedAsyncImagePainter(
                 onState = {
                     if (it !is AsyncImagePainter.State.Loading)
                         it.painter?.let {
-                            synchronized(painterCache) { painterCache.put(model, it) }
+                            IconCache.putIcon(model, it)
                         }
                 }
             )
