@@ -183,54 +183,54 @@ data class Backup constructor(
     )
 
     override fun toString(): String = "Backup{" +
-                                      "backupDate=" + backupDate +
-                                      ", hasApk=" + hasApk +
-                                      ", hasAppData=" + hasAppData +
-                                      ", hasDevicesProtectedData=" + hasDevicesProtectedData +
-                                      ", hasExternalData=" + hasExternalData +
-                                      ", hasObbData=" + hasObbData +
-                                      ", hasMediaData=" + hasMediaData +
-                                      ", compressionType='" + compressionType + '\'' +
-                                      ", cipherType='" + cipherType + '\'' +
-                                      ", iv='" + iv + '\'' +
-                                      ", cpuArch='" + cpuArch + '\'' +
-                                      ", backupVersionCode='" + backupVersionCode + '\'' +
-                                      ", size=" + size +
-                                      ", permissions='" + permissions + '\'' +
-                                      ", persistent='" + persistent + '\'' +
-                                      '}'
+            "backupDate=" + backupDate +
+            ", hasApk=" + hasApk +
+            ", hasAppData=" + hasAppData +
+            ", hasDevicesProtectedData=" + hasDevicesProtectedData +
+            ", hasExternalData=" + hasExternalData +
+            ", hasObbData=" + hasObbData +
+            ", hasMediaData=" + hasMediaData +
+            ", compressionType='" + compressionType + '\'' +
+            ", cipherType='" + cipherType + '\'' +
+            ", iv='" + iv + '\'' +
+            ", cpuArch='" + cpuArch + '\'' +
+            ", backupVersionCode='" + backupVersionCode + '\'' +
+            ", size=" + size +
+            ", permissions='" + permissions + '\'' +
+            ", persistent='" + persistent + '\'' +
+            '}'
 
     override fun equals(other: Any?): Boolean = when {
         this === other -> true
         javaClass != other?.javaClass
-        || other !is Backup
-        || backupVersionCode != other.backupVersionCode
-        || packageName != other.packageName
-        || packageLabel != other.packageLabel
-        || versionName != other.versionName
-        || versionCode != other.versionCode
-        || profileId != other.profileId
-        || sourceDir != other.sourceDir
-        || !splitSourceDirs.contentEquals(other.splitSourceDirs)
-        || isSystem != other.isSystem
-        || backupDate != other.backupDate
-        || hasApk != other.hasApk
-        || hasAppData != other.hasAppData
-        || hasDevicesProtectedData != other.hasDevicesProtectedData
-        || hasExternalData != other.hasExternalData
-        || hasObbData != other.hasObbData
-        || hasMediaData != other.hasMediaData
-        || compressionType != other.compressionType
-        || cipherType != other.cipherType
-        || iv != null && other.iv == null
-        || iv != null && !iv.contentEquals(other.iv)
-        || iv == null && other.iv != null
-        || cpuArch != other.cpuArch
-        || isEncrypted != other.isEncrypted
-        || permissions != other.permissions
-        || persistent != other.persistent
-        || file?.path != other.file?.path
-        || dir?.path != other.dir?.path
+                || other !is Backup
+                || backupVersionCode != other.backupVersionCode
+                || packageName != other.packageName
+                || packageLabel != other.packageLabel
+                || versionName != other.versionName
+                || versionCode != other.versionCode
+                || profileId != other.profileId
+                || sourceDir != other.sourceDir
+                || !splitSourceDirs.contentEquals(other.splitSourceDirs)
+                || isSystem != other.isSystem
+                || backupDate != other.backupDate
+                || hasApk != other.hasApk
+                || hasAppData != other.hasAppData
+                || hasDevicesProtectedData != other.hasDevicesProtectedData
+                || hasExternalData != other.hasExternalData
+                || hasObbData != other.hasObbData
+                || hasMediaData != other.hasMediaData
+                || compressionType != other.compressionType
+                || cipherType != other.cipherType
+                || iv != null && other.iv == null
+                || iv != null && !iv.contentEquals(other.iv)
+                || iv == null && other.iv != null
+                || cpuArch != other.cpuArch
+                || isEncrypted != other.isEncrypted
+                || permissions != other.permissions
+                || persistent != other.persistent
+                || file?.path != other.file?.path
+                || dir?.path != other.dir?.path
                        -> false
         else           -> true
     }
@@ -282,9 +282,7 @@ data class Backup constructor(
             val baseName = file?.name?.removeSuffix(".$PROP_NAME")
             baseName?.let { dirName ->
                 file?.parent?.let { parent ->
-                    parent.findFile(dirName)?.let {
-                        it
-                    }
+                    parent.findFile(dirName)
                 }
             }
         }
@@ -292,17 +290,15 @@ data class Backup constructor(
     val tag: String
         get() {
             val pkg = "📦" // "📁"
-            return dir?.path?.let {
-                it
-                    .replace(OABX.context.getBackupRoot()?.path ?: "", "")
-                    .replace(packageName, pkg)
-                    .replace(Regex("""($pkg@)?$BACKUP_INSTANCE_REGEX_PATTERN"""), "")
-                    .replace(Regex("""[-:\s]+"""), "-")
-                    .replace(Regex("""/+"""), "/")
-                    .replace(Regex("""[-]+$"""), "-")
-                    .replace(Regex("""^[-/]+"""), "")
-
-            } + if (dir?.name == BACKUP_INSTANCE_PROPERTIES_INDIR) "🔹" else ""
+            return (dir?.path
+                ?.replace(OABX.context.getBackupRoot().path ?: "", "")
+                ?.replace(packageName, pkg)
+                ?.replace(Regex("""($pkg@)?$BACKUP_INSTANCE_REGEX_PATTERN"""), "")
+                ?.replace(Regex("""[-:\s]+"""), "-")
+                ?.replace(Regex("""/+"""), "/")
+                ?.replace(Regex("""[-]+$"""), "-")
+                ?.replace(Regex("""^[-/]+"""), "")
+                ?: "") + if (file?.name == BACKUP_INSTANCE_PROPERTIES_INDIR) "🔹" else ""
         }
 
     companion object {
