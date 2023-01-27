@@ -144,7 +144,7 @@ class AppSheetViewModel(
     private suspend fun delete(backup: Backup) {
         withContext(Dispatchers.IO) {
             thePackage.value?.let { pkg ->
-                deleteBackup(backup)
+                pkg.deleteBackup(backup)
                 if (!pkg.isInstalled && pkg.backupList.isEmpty()) {
                     database.appInfoDao.deleteAllOf(pkg.packageName)
                     dismissNow.value = true
