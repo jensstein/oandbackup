@@ -51,6 +51,7 @@ import com.machiav3lli.backup.traceBackupsScan
 import com.machiav3lli.backup.traceBackupsScanAll
 import com.machiav3lli.backup.traceDebug
 import com.machiav3lli.backup.traceTiming
+import com.machiav3lli.backup.utils.SystemUtils.numCores
 import com.machiav3lli.backup.utils.TraceUtils
 import com.machiav3lli.backup.utils.TraceUtils.beginNanoTimer
 import com.machiav3lli.backup.utils.TraceUtils.endNanoTimer
@@ -59,17 +60,12 @@ import com.machiav3lli.backup.utils.TraceUtils.logNanoTiming
 import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.utils.getInstalledPackageInfosWithPermissions
 import com.machiav3lli.backup.utils.specialBackupsEnabled
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
@@ -108,9 +104,7 @@ fun checkThreadStats() {
     }
 }
 
-val numCores = Runtime.getRuntime().availableProcessors()
-
-val pool = when (1) {
+val scanPool = when (1) {
 
     // force hang for recursive scanning
     0    -> Executors.newFixedThreadPool(1).asCoroutineDispatcher()
@@ -312,70 +306,34 @@ suspend fun scanBackups(
         }
     }
 
-    val scope = CoroutineScope(pool)
-    when (1) {
+    val scanScope = MainScope()
 
-        0 -> files.parallelStream()
-            .forEach { runBlocking { processFile(it) } }                // best,  8 threads, may hang
-        // may hang for recursive scanning because threads are limited
-
-        0 -> files.stream().parallel()
-            .forEach { runBlocking { processFile(it) } }                // best,  8 threads, may hang
-        // may hang for recursive scanning because threads are limited
-
-        0 -> runBlocking {
-            files.asFlow().onEach { processFile(it) }.flowOn(pool).collect {}
-        }                                                               // slow,  7 threads with IO,
-        // most used once, one used 900 times
-
-        0 -> runBlocking {
-            files.asFlow().collect { launch(pool) { processFile(it) } }
-        }                                                               // best, 63 threads with IO
-
-        0 -> files.asFlow().onEach { processFile(it) }
-            .collect {}                                                 // slow,  1 thread with IO
-
-        0 -> files.asFlow().map { scope.launch(pool) { processFile(it) } }
-            .collect { it.join() }                                      // slow, 19 threads with IO
-
-        0 -> files.map { scope.launch(pool) { processFile(it) } }
-            .joinAll()                                                  // best, 66 threads with IO
-
-        0 -> runBlocking {
-            files.forEach { launch(pool) { processFile(it) } }
-        }                                                               // best, 63 threads with IO
-
-        0 -> runBlocking {
-            files.iterator().forEach { launch(pool) { processFile(it) } }
-        }                                                               // best, 65 threads with IO
-
-        1 -> runBlocking {
-            val filesFlow = flow {
-                while (
-                    files.isNotEmpty() ||
-                    run {
-                        //TODO hg42 seems to be necessary, because the items are added via launch
-                        //  (which in turn is necessary to be fast)
-                        //  though it is not totally clear why it happens, the launch reasoning
-                        //  seems only to be valid if it's the last package
-                        //  how can we do this better?
-                        //  I tried to emit the directory files directly to this flow,
-                        //  but doesn't seem to work with processFile
-                        //  probably the FlowCollector must be given to processFile
-                        delay(250)
-                        files.isNotEmpty()
-                    }
-                ) {
-                    val file = files.remove()
-                    emit(file)
+    runBlocking {
+        val filesFlow = flow {
+            while (
+                files.isNotEmpty() ||
+                run {
+                    //TODO hg42 seems to be necessary, because the items are added via launch
+                    //  (which in turn is necessary to be fast)
+                    //  though it is not totally clear why it happens, the launch reasoning
+                    //  seems only to be valid if it's the last package
+                    //  how can we do this better?
+                    //  I tried to emit the directory files directly to this flow,
+                    //  but doesn't seem to work with processFile
+                    //  probably the FlowCollector must be given to processFile
+                    delay(500)
+                    files.isNotEmpty()
                 }
+            ) {
+                val file = files.remove()
+                emit(file)
             }
-            filesFlow.collect {
-                launch(pool) {
-                    processFile(it)
-                }
+        }
+        filesFlow.collect {
+            launch(scanPool) {
+                processFile(it)
             }
-        }                                                               // best, 65 threads with IO
+        }
     }
 }
 
