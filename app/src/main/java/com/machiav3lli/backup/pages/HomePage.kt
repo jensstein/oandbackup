@@ -76,16 +76,17 @@ import com.machiav3lli.backup.utils.TraceUtils.endNanoTimer
 fun HomePage() {
     // TODO include tags in search
     val main = OABX.main!!
+    val viewModel = main.viewModel
     var appSheet: AppSheet? = null
 
-    val filteredList by main.viewModel.filteredList.collectAsState(emptyList())
-    val updatedPackages by main.viewModel.updatedPackages.collectAsState(emptyList())
+    val filteredList by viewModel.filteredList.collectAsState(emptyList())
+    val updatedPackages by viewModel.updatedPackages.collectAsState(emptyList())
     val updaterVisible = updatedPackages.isNotEmpty()  // recompose is already triggered above
     var updaterExpanded by remember { mutableStateOf(false) }
-    val selection = main.viewModel.selection
-    val selected = selection.filter { it.value }
+    val selection = viewModel.selection
+    val nSelected = selection.filter { it.value }.keys.size
     var menuPackage by remember { mutableStateOf<Package?>(null) }
-    val menuExpanded = main.viewModel.menuExpanded
+    val menuExpanded = viewModel.menuExpanded
     val menuButtonAlwaysVisible = pref_menuButtonAlwaysVisible.value
 
     traceCompose {
@@ -120,7 +121,7 @@ fun HomePage() {
     Scaffold(
         containerColor = Color.Transparent,
         floatingActionButton = {
-            if (selected.isNotEmpty() || updaterVisible || menuButtonAlwaysVisible) {
+            if (nSelected > 0 || updaterVisible || menuButtonAlwaysVisible) {
                 Row(
                     modifier = Modifier.padding(start = 28.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -217,10 +218,10 @@ fun HomePage() {
                         )
                     }
                     if (! (updaterVisible && updaterExpanded) &&
-                        (selected.isNotEmpty() || menuButtonAlwaysVisible)
+                        (nSelected > 0 || menuButtonAlwaysVisible)
                     ) {
                         ExtendedFloatingActionButton(
-                            text = { Text(text = selected.size.toString()) },
+                            text = { Text(text = nSelected.toString()) },
                             icon = {
                                 Icon(
                                     imageVector = Phosphor.List,

@@ -49,7 +49,6 @@ import com.machiav3lli.backup.preferences.pref_backupSuspendApps
 import com.machiav3lli.backup.preferences.pref_earlyEmptyBackups
 import com.machiav3lli.backup.traceBackupsScan
 import com.machiav3lli.backup.traceBackupsScanAll
-import com.machiav3lli.backup.traceDebug
 import com.machiav3lli.backup.traceTiming
 import com.machiav3lli.backup.utils.SystemUtils.numCores
 import com.machiav3lli.backup.utils.TraceUtils
@@ -384,7 +383,7 @@ fun Context.findBackups(
             }
         }
 
-        traceDebug { "-----------------------------------------> backups: $count" }
+        //traceDebug { "-----------------------------------------> backups: $count" }
 
         if (packageName.isEmpty()) {
 

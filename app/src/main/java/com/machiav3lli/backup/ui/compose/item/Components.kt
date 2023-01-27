@@ -225,7 +225,7 @@ object IconCache {
     }
 
     fun putIcon(key: Any, painter: Painter) {
-        traceDebug { "icon put $key" }
+        //traceDebug { "icon put $key" }
         synchronized(painterCache) {
             painterCache.put(key, painter)
         }
