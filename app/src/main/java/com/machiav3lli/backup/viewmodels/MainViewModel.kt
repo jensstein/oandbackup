@@ -55,7 +55,9 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 import timber.log.Timber
 import kotlin.reflect.*
 
@@ -280,6 +282,23 @@ class MainViewModel(
                 SharingStarted.Eagerly,
                 emptyList()
             )
+
+    //---------------------------------------------------------------------------------------------- retriggerFlowsForUI
+
+    fun retriggerFlowsForUI() {
+        traceFlows { "******************** retriggerFlowsForUI" }
+        runBlocking {
+            val saved = searchQuery.value
+            // in case same value isn't triggering
+            val retrigger = saved + "<RETRIGGERING>"
+            searchQuery.value = retrigger
+            // wait until we really get that value
+            while(searchQuery.value != retrigger)
+                yield()
+            // now switch back
+            searchQuery.value = saved
+        }
+    }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - FLOWS end
 

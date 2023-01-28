@@ -267,6 +267,8 @@ class OABX : Application() {
                 val time = endBusy(startupMsg)
                 addInfoText("startup: ${"%.3f".format(time / 1E9)} sec")
                 startup = false
+
+                main?.viewModel?.retriggerFlowsForUI()
             }
         }
     }
