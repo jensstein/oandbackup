@@ -45,7 +45,7 @@ val LOGS_FOLDER_NAME = "${ADMIN_PREFIX}LOGS"
 val LOGS_FOLDER_NAME_ALT = LOGS_FOLDER_NAME_BASE
 
 const val PROP_NAME = "properties"
-const val LOG_INSTANCE = "%s.log"
+const val LOG_INSTANCE = "%s.log.txt"
 const val BACKUP_INSTANCE_REGEX_PATTERN = """\d\d\d\d-\d\d-\d\d-\d\d-\d\d-\d\d(-\d\d\d)?-user_\d+"""
 fun backupInstanceDir(packageInfo: PackageInfo, dateTimeStr: String) = "$dateTimeStr-user_${packageInfo.profileId}"
 fun backupInstanceDirFlat(packageInfo: PackageInfo, dateTimeStr: String) = "${packageInfo.packageName}@$dateTimeStr-user_${packageInfo.profileId}"

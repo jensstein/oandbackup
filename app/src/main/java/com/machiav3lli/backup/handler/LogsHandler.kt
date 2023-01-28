@@ -86,7 +86,7 @@ class LogsHandler {
                 logsDirectory.createFile(logFileName).let { logFile ->
                     BufferedOutputStream(logFile.outputStream()).use { logOut ->
                         logOut.write(
-                            logItem.toJSON().toByteArray(StandardCharsets.UTF_8)
+                            logItem.toText().toByteArray(StandardCharsets.UTF_8)
                         )
                         //traceDebug { "Wrote $logFile file for $logItem" }
                     }
@@ -102,17 +102,35 @@ class LogsHandler {
             val logs = mutableListOf<Log>()
             val backupRoot = OABX.context.getBackupRoot()
             StorageFile.invalidateCache { it.contains(LOGS_FOLDER_NAME) }
-            //val logsDirectory = StorageFile(backupRoot, LOG_FOLDER_NAME)
             backupRoot.findFile(LOGS_FOLDER_NAME)?.let { logsDir ->
                 if (logsDir.isDirectory) {
                     logsDir.listFiles().forEach {
                         if (it.isFile) try {
-                            logs.add(Log(it))   //TODO hg42 don't throw, but create a dummy log entry, so it can be deleted
+                            logs.add(Log(it))
                         } catch (e: Throwable) {
+                            // avoid recursion! never use: logErrors(message) or throw
                             val message =
                                 "incomplete log or wrong structure found in $it."
                             logException(e, it)
-                            //no => recursion! logErrors(message)
+                            // create dummy log entry, that is deletable and shareable
+                            runCatching {
+                                val logDate =
+                                    LocalDateTime.parse(
+                                        it.name!!
+                                            .replace(Regex(""".*?(\d+-\d+-\d+)-(\d+-\d+-\d+)-(\d+).*""")) {
+                                                "${
+                                                    it.groups[1]?.value ?: ""
+                                                }T${
+                                                    it.groups[2]?.value
+                                                        ?.replace("-", ":")
+                                                        ?: ""
+                                                }.${
+                                                    it.groups[3]?.value ?: ""
+                                                }"
+                                            }
+                                    )
+                                logs.add(Log(message(e), logDate))
+                            }
                         }
                     }
                 }
@@ -154,13 +172,23 @@ class LogsHandler {
 
         fun getLogFile(date: LocalDateTime): StorageFile? {
             val backupRoot = OABX.context.getBackupRoot()
-            backupRoot.findFile(LOGS_FOLDER_NAME)?.let { logsDir ->
-                val logFileName = String.format(
-                    LOG_INSTANCE,
-                    BACKUP_DATE_TIME_FORMATTER.format(date)
-                )
-                val file = logsDir.findFile(logFileName)
-                return if (file?.exists() == true) file else null
+            try {
+                backupRoot.findFile(LOGS_FOLDER_NAME)?.let { logsDir ->
+                    val timeStr = BACKUP_DATE_TIME_FORMATTER.format(date)
+                    //val logFileName = String.format(  //TODO WECH
+                    //    LOG_INSTANCE,
+                    //    BACKUP_DATE_TIME_FORMATTER.format(date)
+                    //)
+                    //val file = logsDir.findFile(logFileName)
+                    val files = logsDir.listFiles().filter { it.name!!.contains(timeStr) }
+                    if (files.isNotEmpty()) {
+                        val file = files.first()
+                        if (file.exists() == true)
+                            return file
+                    }
+                }
+            } catch (e: Throwable) {
+                unexpectedException(e)
             }
             return null
         }
