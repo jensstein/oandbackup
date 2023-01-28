@@ -24,6 +24,7 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Process
+import androidx.compose.runtime.mutableStateOf
 import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES_INDIR
 import com.machiav3lli.backup.BACKUP_INSTANCE_REGEX_PATTERN
 import com.machiav3lli.backup.BACKUP_PACKAGE_FOLDER_REGEX_PATTERN
@@ -70,7 +71,6 @@ import java.io.IOException
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executors
-import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.system.measureTimeMillis
 
@@ -336,7 +336,18 @@ suspend fun scanBackups(
     }
 }
 
-val backupsLocked = AtomicBoolean(false)
+val backupsLocked = mutableStateOf(false)
+fun beginBackupsLock() {
+    backupsLocked.value = true
+}
+
+fun endBackupsLock() {
+    backupsLocked.value = false
+}
+
+fun isBackupsLocked(): Boolean {
+    return backupsLocked.value
+}
 
 fun Context.findBackups(
     packageName: String = "",
@@ -350,7 +361,7 @@ fun Context.findBackups(
     try {
         if (packageName.isEmpty()) {
 
-            backupsLocked.set(true)
+            beginBackupsLock()
 
             OABX.beginBusy("findBackups")
 
@@ -386,7 +397,8 @@ fun Context.findBackups(
                             ?.let {
                                 //traceDebug { "put ${it.packageName}/${it.backupDate}" }
                                 synchronized(backupsMap) {
-                                    backupsMap.getOrPut(it.packageName) { mutableListOf() }.add(it)
+                                    backupsMap.getOrPut(it.packageName) { mutableListOf() }
+                                        .add(it)
                                 }
                             }
                             ?: run {
@@ -400,6 +412,8 @@ fun Context.findBackups(
         //traceDebug { "-----------------------------------------> backups: $count" }
 
         if (packageName.isEmpty()) {
+
+            endBackupsLock()
 
             setBackups(backupsMap)
 
@@ -423,7 +437,9 @@ fun Context.findBackups(
         logException(e, backTrace = true)
     } finally {
         if (packageName.isEmpty()) {
-            backupsLocked.set(false)
+
+            endBackupsLock()
+
             val time = OABX.endBusy("findBackups")
             OABX.addInfoText("findBackups: ${"%.3f".format(time / 1E9)} sec")
 
