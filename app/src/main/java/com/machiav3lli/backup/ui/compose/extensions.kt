@@ -59,11 +59,17 @@ class MutableComposableSharedFlow<T>(
     var value: T
         get() {
             val value = state.value
-            traceFlows { "*** $label => $value" }
+            if (value is String)
+                traceFlows { "*** $label => '$value'" }
+            else
+                traceFlows { "*** $label => $value" }
             return value
         }
         set(value: T) {
-            traceFlows { "*** $label <= $value" }
+            if (value is String)
+                traceFlows { "*** $label <= '$value'" }
+            else
+                traceFlows { "*** $label <= $value" }
             initial = value
             scope.launch { flow.emit(value) }
         }
@@ -85,11 +91,17 @@ class MutableComposableStateFlow<T>(
     var value: T
         get() {
             val value = state.value
-            traceFlows { "*** $label => $value" }
+            if (value is String)
+                traceFlows { "*** $label => '$value'" }
+            else
+                traceFlows { "*** $label => $value" }
             return value
         }
         set(value: T) {
-            traceFlows { "*** $label <= $value" }
+            if (value is String)
+                traceFlows { "*** $label <= '$value'" }
+            else
+                traceFlows { "*** $label <= $value" }
             //initial = value
             scope.launch { flow.update { value } }
         }

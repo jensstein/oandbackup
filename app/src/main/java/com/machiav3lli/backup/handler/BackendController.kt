@@ -694,9 +694,14 @@ fun Context.getPackageStorageStats(
     packageName: String,
     storageUuid: UUID = packageManager.getApplicationInfo(packageName, 0).storageUuid,
 ): StorageStats? {
-    val storageStatsManager = getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager
+    val storageStatsManager =
+        getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager
     return try {
-        storageStatsManager.queryStatsForPackage(storageUuid, packageName, Process.myUserHandle())
+        storageStatsManager.queryStatsForPackage(
+            storageUuid,
+            packageName,
+            Process.myUserHandle()
+        )
     } catch (e: IOException) {
         Timber.e("Could not retrieve storage stats of $packageName: $e")
         null

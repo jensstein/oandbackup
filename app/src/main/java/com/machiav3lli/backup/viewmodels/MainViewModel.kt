@@ -215,7 +215,7 @@ class MainViewModel(
             "searchQuery"
         )
 
-    var modelSortFilter =
+    val modelSortFilter =
         //------------------------------------------------------------------------------------------ modelSortFilter
         MutableComposableFlow(
             sortFilterModel,
