@@ -153,9 +153,15 @@ suspend fun scanBackups(
     val files = ConcurrentLinkedQueue<StorageFile>()
     val propsFiles = ConcurrentLinkedQueue<StorageFile>()
 
-    files.addAll(directory.listFiles())
+    beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}listFiles")
+    val initialFiles = directory.listFiles()
+    endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}listFiles")
+    files.addAll(initialFiles)
 
-    suspend fun processFile(file:  StorageFile, collector: FlowCollector<StorageFile>? = null): Unit {
+    suspend fun processFile(
+        file: StorageFile,
+        collector: FlowCollector<StorageFile>? = null,
+    ): Unit {
 
         checkThreadStats()
 
@@ -278,7 +284,10 @@ suspend fun scanBackups(
                                     formatBackupFile(file)
                                 } //////////////////// dir ok"
                             }
-                            file.listFiles().forEach {
+                            beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}listFiles")
+                            val list = file.listFiles()
+                            endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}listFiles")
+                            list.forEach {
                                 collector?.run { emit(it) } ?: files.offer(it)
                             }
                             //traceDebug { "queue: $files" }
@@ -296,7 +305,10 @@ suspend fun scanBackups(
                             formatBackupFile(file)
                         } /\\/\\/\\/\\/\\/\\/\\/\\/\\/\\ folder ok"
                     }
-                file.listFiles().forEach {
+                beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}listFiles")
+                val list = file.listFiles()
+                endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}listFiles")
+                list.forEach {
                     collector?.run { emit(it) } ?: files.offer(it)
                 }
             }
