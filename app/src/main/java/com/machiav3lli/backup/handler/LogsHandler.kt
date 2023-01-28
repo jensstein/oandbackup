@@ -221,7 +221,9 @@ class LogsHandler {
             if (unhandled && pref_autoLogExceptions.value) {
                 textLog(
                     listOf(
-                        "$whatStr\n${message(e, backTrace)}"
+                        whatStr,
+                        message(e, backTrace),
+                        ""
                     ) + onErrorInfo()
                 )
             }

@@ -179,7 +179,8 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                         if (BuildConfig.DEBUG || BuildConfig.APPLICATION_ID.contains("hg42") || pref_autoLogSuspicious.value)
                             textLog(
                                 listOf(
-                                    message
+                                    message,
+                                    ""
                                 ) + onErrorInfo()
                             )
                     }
