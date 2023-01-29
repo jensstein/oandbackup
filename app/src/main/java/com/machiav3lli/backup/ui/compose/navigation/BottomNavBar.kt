@@ -43,7 +43,7 @@ fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
     }
 
     NavigationBar(
-        containerColor = Color.Transparent,
+        containerColor = MaterialTheme.colorScheme.background,
         tonalElevation = 0.dp,
         contentColor = MaterialTheme.colorScheme.onBackground
     ) {

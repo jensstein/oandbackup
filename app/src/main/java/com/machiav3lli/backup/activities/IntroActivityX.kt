@@ -32,7 +32,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -63,7 +62,6 @@ class IntroActivityX : BaseActivity() {
                 navController = rememberAnimatedNavController()
 
                 Scaffold(
-                    containerColor = Color.Transparent,
                     contentColor = MaterialTheme.colorScheme.onBackground
                 ) { paddingValues ->
 

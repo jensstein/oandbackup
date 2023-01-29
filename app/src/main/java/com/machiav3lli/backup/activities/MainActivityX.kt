@@ -296,7 +296,6 @@ class MainActivityX : BaseActivity() {
 
                 BusyBackground {
                     Scaffold(
-                        containerColor = Color.Transparent,
                         contentColor = MaterialTheme.colorScheme.onBackground,
                         topBar = {
                             if (currentPage.destination == NavItem.Scheduler.destination)
