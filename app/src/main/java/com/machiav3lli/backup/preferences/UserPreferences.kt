@@ -172,6 +172,14 @@ val pref_appSecondaryColor = EnumPref(
     defaultValue = 0
 )
 
+val pref_blackTheme = BooleanPref(
+    key = "user.blackTheme",
+    titleId = R.string.prefs_theme_black,
+    summaryId = R.string.prefs_theme_black_summary,
+    icon = Phosphor.Swatches,
+    defaultValue = false,
+)
+
 val pref_pathBackupFolder = StringPref(
     key = "user.pathBackupFolder",
     titleId = R.string.prefs_pathbackupfolder,
