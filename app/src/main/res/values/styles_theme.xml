@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="Black">
+        <item name="backgroundColor">@android:color/black</item>
+    </style>
+
     <style name="Accent0">
         <item name="colorPrimary">@color/accent_0</item>
         <item name="colorOnPrimary">@color/accent_0_trans</item>
