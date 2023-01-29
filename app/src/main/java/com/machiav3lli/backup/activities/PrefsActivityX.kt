@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +42,7 @@ import com.google.accompanist.pager.rememberPagerState
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.fragments.HelpSheet
+import com.machiav3lli.backup.preferences.pref_blackTheme
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Info
 import com.machiav3lli.backup.ui.compose.item.RoundButton
@@ -51,6 +53,7 @@ import com.machiav3lli.backup.ui.compose.navigation.PrefsNavHost
 import com.machiav3lli.backup.ui.compose.recycler.BusyBackground
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.destinationToItem
+import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import com.machiav3lli.backup.utils.setCustomTheme
 import com.machiav3lli.backup.viewmodels.ExportsViewModel
 import com.machiav3lli.backup.viewmodels.LogViewModel
@@ -88,6 +91,16 @@ class PrefsActivityX : BaseActivity() {
 
                 navController.addOnDestinationChangedListener { _, destination, _ ->
                     barVisible = destination.route == NavItem.Settings.destination
+                }
+
+                LaunchedEffect(key1 = pref_blackTheme.value) {
+                    getDefaultSharedPreferences()
+                        .registerOnSharedPreferenceChangeListener { _, key ->
+                            when (key) {
+                                pref_blackTheme.key -> recreate()
+                                else                -> {}
+                            }
+                        }
                 }
 
                 BusyBackground {

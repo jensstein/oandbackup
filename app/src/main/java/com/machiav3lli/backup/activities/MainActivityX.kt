@@ -67,6 +67,7 @@ import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.pref_catchUncaughtException
 import com.machiav3lli.backup.pref_uncaughtExceptionsJumpToPreferences
 import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
+import com.machiav3lli.backup.preferences.pref_blackTheme
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
@@ -86,6 +87,7 @@ import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.FileUtils.invalidateBackupLocation
 import com.machiav3lli.backup.utils.TraceUtils.classAndId
 import com.machiav3lli.backup.utils.TraceUtils.traceBold
+import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import com.machiav3lli.backup.utils.isEncryptionEnabled
 import com.machiav3lli.backup.utils.setCustomTheme
 import com.machiav3lli.backup.utils.sortFilterModel
@@ -292,6 +294,16 @@ class MainActivityX : BaseActivity() {
 
                         //refreshPackages()     // not a good idea -> using init { ... } in viewModel
                     }
+                }
+
+                LaunchedEffect(key1 = pref_blackTheme.value) {
+                    getDefaultSharedPreferences()
+                        .registerOnSharedPreferenceChangeListener { _, key ->
+                            when (key) {
+                                pref_blackTheme.key -> recreate()
+                                else                -> {}
+                            }
+                        }
                 }
 
                 BusyBackground {
