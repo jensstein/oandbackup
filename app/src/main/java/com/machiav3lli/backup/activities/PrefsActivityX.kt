@@ -112,7 +112,7 @@ class PrefsActivityX : BaseActivity() {
                                     title = stringResource(
                                         id = if (barVisible) currentPage.title
                                         else navController.currentDestination?.destinationToItem()?.title
-                                             ?: NavItem.Settings.title
+                                            ?: NavItem.Settings.title
                                     )
                                 ) {
                                     RoundButton(

@@ -24,7 +24,7 @@ import com.machiav3lli.backup.utils.styleTheme
 @Composable
 fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
     val blackTheme by remember(pref_blackTheme) { mutableStateOf(pref_blackTheme.value) }

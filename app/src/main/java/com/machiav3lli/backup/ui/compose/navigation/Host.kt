@@ -60,7 +60,7 @@ fun PrefsNavHost(
     navController: NavHostController,
     pagerState: PagerState,
     pages: List<NavItem>,
-    viewModels: List<AndroidViewModel>
+    viewModels: List<AndroidViewModel>,
 ) {
     AnimatedNavHost(
         modifier = modifier,
@@ -116,7 +116,7 @@ fun IntroNavHost(
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.slideUpComposable(
     route: String,
-    composable: @Composable (AnimatedVisibilityScope.(NavBackStackEntry) -> Unit)
+    composable: @Composable (AnimatedVisibilityScope.(NavBackStackEntry) -> Unit),
 ) {
     composable(
         route,
@@ -130,7 +130,7 @@ fun NavGraphBuilder.slideUpComposable(
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.slideDownComposable(
     route: String,
-    composable: @Composable (AnimatedVisibilityScope.(NavBackStackEntry) -> Unit)
+    composable: @Composable (AnimatedVisibilityScope.(NavBackStackEntry) -> Unit),
 ) {
     composable(
         route,
@@ -144,7 +144,7 @@ fun NavGraphBuilder.slideDownComposable(
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.fadeComposable(
     route: String,
-    composable: @Composable (AnimatedVisibilityScope.(NavBackStackEntry) -> Unit)
+    composable: @Composable (AnimatedVisibilityScope.(NavBackStackEntry) -> Unit),
 ) {
     composable(
         route,

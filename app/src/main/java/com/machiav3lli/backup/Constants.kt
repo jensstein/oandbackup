@@ -47,14 +47,23 @@ val LOGS_FOLDER_NAME_ALT = LOGS_FOLDER_NAME_BASE
 const val PROP_NAME = "properties"
 const val LOG_INSTANCE = "%s.log.txt"
 const val BACKUP_INSTANCE_REGEX_PATTERN = """\d\d\d\d-\d\d-\d\d-\d\d-\d\d-\d\d(-\d\d\d)?-user_\d+"""
-fun backupInstanceDir(packageInfo: PackageInfo, dateTimeStr: String) = "$dateTimeStr-user_${packageInfo.profileId}"
-fun backupInstanceDirFlat(packageInfo: PackageInfo, dateTimeStr: String) = "${packageInfo.packageName}@$dateTimeStr-user_${packageInfo.profileId}"
-fun backupInstanceProps(packageInfo: PackageInfo, dateTimeStr: String) = "${backupInstanceDir(packageInfo, dateTimeStr)}.$PROP_NAME"
-fun backupInstancePropsFlat(packageInfo: PackageInfo, dateTimeStr: String) = "${backupInstanceDirFlat(packageInfo, dateTimeStr)}.$PROP_NAME"
+fun backupInstanceDir(packageInfo: PackageInfo, dateTimeStr: String) =
+    "$dateTimeStr-user_${packageInfo.profileId}"
+
+fun backupInstanceDirFlat(packageInfo: PackageInfo, dateTimeStr: String) =
+    "${packageInfo.packageName}@$dateTimeStr-user_${packageInfo.profileId}"
+
+fun backupInstanceProps(packageInfo: PackageInfo, dateTimeStr: String) =
+    "${backupInstanceDir(packageInfo, dateTimeStr)}.$PROP_NAME"
+
+fun backupInstancePropsFlat(packageInfo: PackageInfo, dateTimeStr: String) =
+    "${backupInstanceDirFlat(packageInfo, dateTimeStr)}.$PROP_NAME"
+
 const val BACKUP_INSTANCE_PROPERTIES_INDIR = "backup.$PROP_NAME"
 const val BACKUP_PACKAGE_FOLDER_REGEX_PATTERN = """\w+(\.\w+)+"""
 val BACKUP_SPECIAL_FILE_REGEX_PATTERN = """(^\.|^$ADMIN_PREFIX)"""
-val BACKUP_SPECIAL_FOLDER_REGEX_PATTERN = """(^\.|^$ADMIN_PREFIX|$EXPORTS_FOLDER_NAME_BASE|$LOGS_FOLDER_NAME_BASE|$SELECTIONS_FOLDER_NAME_BASE)"""
+val BACKUP_SPECIAL_FOLDER_REGEX_PATTERN =
+    """(^\.|^$ADMIN_PREFIX|$EXPORTS_FOLDER_NAME_BASE|$LOGS_FOLDER_NAME_BASE|$SELECTIONS_FOLDER_NAME_BASE)"""
 const val EXPORTS_INSTANCE = "%s.scheds"
 
 const val MIME_TYPE_FILE = "application/octet-stream"
@@ -85,7 +94,7 @@ const val THEME_DYNAMIC = 3
 val themeItems = mutableMapOf(
     THEME_LIGHT to R.string.prefs_theme_light,
     THEME_DARK to R.string.prefs_theme_dark,
-    THEME_SYSTEM to R.string.prefs_theme_system
+    THEME_SYSTEM to R.string.prefs_theme_system,
 ).apply {
     if (OABX.minSDK(31)) set(THEME_DYNAMIC, R.string.prefs_theme_dynamic)
 }
@@ -257,13 +266,22 @@ val FILE_DATE_TIME_PATTERN = "yyyy-MM-dd-HH-mm-ss"
 
 val ISO_DATE_TIME_FORMAT get() = SimpleDateFormat(ISO_LIKE_DATE_TIME_PATTERN, Locale.getDefault())
 
-val ISO_DATE_TIME_FORMAT_MIN get() = SimpleDateFormat(ISO_LIKE_DATE_TIME_MIN_PATTERN, Locale.getDefault())
+val ISO_DATE_TIME_FORMAT_MIN
+    get() = SimpleDateFormat(
+        ISO_LIKE_DATE_TIME_MIN_PATTERN,
+        Locale.getDefault()
+    )
 
-val ISO_DATE_TIME_FORMAT_MS get() = SimpleDateFormat(ISO_LIKE_DATE_TIME_MS_PATTERN, Locale.getDefault())
+val ISO_DATE_TIME_FORMAT_MS
+    get() = SimpleDateFormat(
+        ISO_LIKE_DATE_TIME_MS_PATTERN,
+        Locale.getDefault()
+    )
 
 // must be ISO time format for sane sorting yyyy, MM, dd, ...
 // and only allowed file name characters (on all systems, Windows has the smallest set)
 val BACKUP_DATE_TIME_FORMATTER_OLD = DateTimeFormatter.ofPattern(FILE_DATE_TIME_PATTERN)
+
 // use millisec, because computers (and users) can be faster than a sec
 val BACKUP_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(FILE_DATE_TIME_MS_PATTERN)
 

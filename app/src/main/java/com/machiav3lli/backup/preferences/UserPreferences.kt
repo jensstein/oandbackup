@@ -87,7 +87,7 @@ fun UserPrefsPage() {
                         val flags = it.flags and (
                                 Intent.FLAG_GRANT_READ_URI_PERMISSION or
                                         Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                                                 )
+                                )
                         context.contentResolver.takePersistableUriPermission(uri, flags)
                         Timber.i("setting uri $uri")
                         backupDir = setBackupDir(uri)
