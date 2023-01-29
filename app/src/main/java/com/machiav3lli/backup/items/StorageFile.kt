@@ -520,6 +520,7 @@ open class StorageFile {
 
     fun renameTo(displayName: String): Boolean {
         path?.let { cacheFilesRemove(it, this) }
+        parent?.let { cacheInvalidate(it) }
         var ok = false
         file?.let { oldFile ->
             val newFile = RootFile(oldFile.parent, displayName)
