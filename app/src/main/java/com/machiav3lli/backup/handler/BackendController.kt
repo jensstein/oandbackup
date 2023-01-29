@@ -270,12 +270,19 @@ suspend fun scanBackups(
                                 formatBackupFile(file)
                             } ++++++++++++++++++++ props ok"
                         }
-                        if (queueProps) {
-                            propsFiles.add(file)
-                        } else {
-                            beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
-                            onPropsFile(file)
-                            endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
+                        try {
+                            if (queueProps) {
+                                propsFiles.add(file)
+                            } else {
+                                beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
+                                onPropsFile(file)
+                                endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
+                            }
+                        } catch (_: Throwable) {
+                            if (!name.contains(regexSpecialFile))
+                                runCatching {
+                                    if (cleanup) file.renameTo(".ERROR.${file.name}")
+                                }
                         }
                     } else {
                         if (file.isDirectory) {
