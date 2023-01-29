@@ -122,7 +122,6 @@ android {
 }
 
 dependencies {
-    //implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$vKotlin")
     implementation(kotlin("stdlib", vKotlin))
     implementation(kotlin("reflect", vKotlin))
 
@@ -140,9 +139,7 @@ dependencies {
     implementation("com.jakewharton.timber:timber:5.0.1")
     implementation("com.github.topjohnwu.libsu:core:$vLibsu")
     implementation("com.github.topjohnwu.libsu:io:$vLibsu")
-    //implementation("com.github.topjohnwu.libsu:busybox:$libsu")
     implementation("de.voize:semver4k:4.1.0")
-    //implementation("com.github.tony19:named-regexp:0.2.6") // regex named groups
 
     // UI
     implementation("com.google.android.material:material:1.8.0-rc01")
