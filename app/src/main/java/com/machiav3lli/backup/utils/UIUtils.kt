@@ -48,6 +48,7 @@ import com.machiav3lli.backup.THEME_LIGHT
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.ActionResult
+import com.machiav3lli.backup.preferences.pref_blackTheme
 import com.machiav3lli.backup.ui.compose.theme.ApricotOrange
 import com.machiav3lli.backup.ui.compose.theme.ArcticCyan
 import com.machiav3lli.backup.ui.compose.theme.AzureBlue
@@ -77,6 +78,8 @@ fun Context.setCustomTheme() {
         theme.applyAccentStyle()
         theme.applySecondaryStyle()
     } // TODO allow fine control on using custom accent/secondary colors?
+    if (pref_blackTheme.value && isNightMode())
+        theme.applyStyle(R.style.Black, true)
 }
 
 fun Context.setLanguage(): Configuration {
@@ -143,6 +146,9 @@ fun getThemeStyleX(theme: Int) = when (theme) {
     THEME_DARK -> AppCompatDelegate.MODE_NIGHT_YES
     else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 }
+
+fun Context.isNightMode() =
+    resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
 
 fun Resources.Theme.applyAccentStyle() = applyStyle(
     when (stylePrimary) {
