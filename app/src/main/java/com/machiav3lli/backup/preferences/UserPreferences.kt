@@ -20,6 +20,8 @@ import com.machiav3lli.backup.BACKUP_DIRECTORY_INTENT
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_LANGUAGES_DEFAULT
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.THEME_DYNAMIC
+import com.machiav3lli.backup.THEME_SYSTEM
 import com.machiav3lli.backup.accentColorItems
 import com.machiav3lli.backup.dialogs.BaseDialog
 import com.machiav3lli.backup.dialogs.EnumDialogUI
@@ -151,7 +153,8 @@ val pref_appTheme = EnumPref(
     icon = Phosphor.Swatches,
     iconTint = ColorSpecial,
     entries = themeItems,
-    defaultValue = 2
+    defaultValue = if (OABX.minSDK(31)) THEME_DYNAMIC
+    else THEME_SYSTEM
 )
 
 val pref_appAccentColor = EnumPref(
