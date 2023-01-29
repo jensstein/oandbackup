@@ -28,6 +28,7 @@ next version
 
 #### Function
 
+- fix scanning stopped by non-instance (no date-time-user) properties file with error (e.g. an empty specialname.properties)
 - fix menu "Load" not working (and others that didn't select after action)
 - run only numCores threads in parallel on menu actions
     (avoids stopping actions in the middle of the list)
