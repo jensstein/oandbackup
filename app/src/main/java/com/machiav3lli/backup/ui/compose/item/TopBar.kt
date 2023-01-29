@@ -61,9 +61,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.accompanist.flowlayout.FlowRow
+import com.machiav3lli.backup.ERROR_PREFIX
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dialogs.BaseDialog
+import com.machiav3lli.backup.handler.findBackups
 import com.machiav3lli.backup.preferences.DevPrefGroups
 import com.machiav3lli.backup.preferences.LogsPage
 import com.machiav3lli.backup.preferences.TerminalButton
@@ -71,11 +74,14 @@ import com.machiav3lli.backup.preferences.TerminalPage
 import com.machiav3lli.backup.preferences.TerminalText
 import com.machiav3lli.backup.preferences.pref_showInfoLogBar
 import com.machiav3lli.backup.preferences.supportInfoLogShare
+import com.machiav3lli.backup.preferences.ui.PrefsGroup
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.MagnifyingGlass
 import com.machiav3lli.backup.ui.compose.icons.phosphor.X
 import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.compose.vertical
+import com.machiav3lli.backup.ui.item.LaunchPref
+import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.viewmodels.LogViewModel
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -225,6 +231,36 @@ fun DevSettingsTab() {
     }
 }
 
+val prev_renameDamagedToERROR = LaunchPref(
+    key = "dev-tool.renameDamagedToERROR",
+    summary = "rename damaged backups from xxx to ${ERROR_PREFIX}xxx (e.g. damaged properties file, properties without directory, directory wihtout properties)"
+) {
+    OABX.context.findBackups(renameDamaged = true)
+}
+
+val prev_undoDamagedToERROR = LaunchPref(
+    key = "dev-tool.undoDamagedToERROR",
+    summary = "rename all ${ERROR_PREFIX}xxx back to xxx"
+) {
+    OABX.context.findBackups(renameDamaged = false)
+}
+
+@Composable
+fun DevToolsTab() {
+
+    val scroll = rememberScrollState(0)
+
+    val prefs = Pref.preferences["dev-tool"] ?: listOf()
+
+    Column(
+        modifier = Modifier
+            .verticalScroll(scroll)
+    ) {
+        PrefsGroup(prefs = prefs) { pref ->
+        }
+    }
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DevTools(
@@ -258,7 +294,7 @@ fun DevTools(
                     expanded.value = false
                 }      //TODO hg42 use weight, add modifier to TerminalButton
             }
-            Row(modifier = Modifier
+            FlowRow(modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp, 0.dp, 8.dp, 4.dp)
                 .combinedClickable(
@@ -277,8 +313,9 @@ fun DevTools(
                 //Spacer(modifier = Modifier.weight(1f))
                 //TerminalButton("  A  ", important = true) {
                 //}
-                //TerminalButton("  B  ", important = true) {
-                //}
+                TerminalButton("tools", important = true) {
+                    tab = "tools"
+                }
                 Spacer(modifier = Modifier.weight(1f))
                 TerminalButton(" term ", important = true) { tab = "term" }
             }
@@ -286,6 +323,7 @@ fun DevTools(
                 "log"     -> DevLogTab()
                 "info"    -> DevInfoTab()
                 "devsett" -> DevSettingsTab()
+                "tools"   -> DevToolsTab()
                 "term"    -> TerminalPage()
                 "logs"    -> LogsPage(LogViewModel(OABX.app))
             }

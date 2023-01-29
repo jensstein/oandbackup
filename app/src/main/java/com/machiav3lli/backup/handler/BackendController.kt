@@ -30,12 +30,14 @@ import com.machiav3lli.backup.BACKUP_INSTANCE_REGEX_PATTERN
 import com.machiav3lli.backup.BACKUP_PACKAGE_FOLDER_REGEX_PATTERN
 import com.machiav3lli.backup.BACKUP_SPECIAL_FILE_REGEX_PATTERN
 import com.machiav3lli.backup.BACKUP_SPECIAL_FOLDER_REGEX_PATTERN
+import com.machiav3lli.backup.ERROR_PREFIX
 import com.machiav3lli.backup.IGNORED_PERMISSIONS
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.hitBusy
 import com.machiav3lli.backup.OABX.Companion.setBackups
+import com.machiav3lli.backup.PROP_NAME
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.actions.BaseAppAction.Companion.ignoredPackages
 import com.machiav3lli.backup.dbs.entity.AppInfo
@@ -104,13 +106,13 @@ fun checkThreadStats() {
 val scanPool = when (1) {
 
     // force hang for recursive scanning
-    0    -> Executors.newFixedThreadPool(1).asCoroutineDispatcher()
+    0 -> Executors.newFixedThreadPool(1).asCoroutineDispatcher()
 
     // may hang for recursive scanning because threads are limited
-    0    -> Executors.newFixedThreadPool(numCores).asCoroutineDispatcher()
+    0 -> Executors.newFixedThreadPool(numCores).asCoroutineDispatcher()
 
     // unlimited threads!
-    0    -> Executors.newCachedThreadPool().asCoroutineDispatcher()
+    0 -> Executors.newCachedThreadPool().asCoroutineDispatcher()
 
     // creates many threads (~65)
     else -> Dispatchers.IO
@@ -124,7 +126,7 @@ suspend fun scanBackups(
     backupRoot: StorageFile = OABX.context.getBackupRoot(),
     level: Int = 0,
     forceTrace: Boolean = false,
-    cleanup: Boolean = false,
+    renameDamaged: Boolean? = null,
     onPropsFile: suspend (StorageFile) -> Unit,
 ) {
     if (level == 0 && packageName.isEmpty() && traceTiming.pref.value) {
@@ -158,6 +160,22 @@ suspend fun scanBackups(
     endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}listFiles")
     files.addAll(initialFiles)
 
+    fun renameDamagedToERROR(file: StorageFile) {
+        if (renameDamaged == true)
+            runCatching {
+                file.renameTo("$ERROR_PREFIX${file.name}")
+            }
+    }
+
+    fun undoDamagedToERROR(file: StorageFile) {
+        runCatching {
+            file.name?.let { name ->
+                if (name.startsWith(ERROR_PREFIX))
+                    file.renameTo(name.removePrefix(ERROR_PREFIX))
+            }
+        }
+    }
+
     suspend fun processFile(
         file: StorageFile,
         collector: FlowCollector<StorageFile>? = null,
@@ -175,6 +193,10 @@ suspend fun scanBackups(
                     formatBackupFile(file)
                 } file"
             }
+
+        if (renameDamaged == false)
+            undoDamagedToERROR(file)
+
         if (name.contains(regexPackageFolder) ||
             name.contains(regexBackupInstance)                      // backup
         ) {
@@ -210,53 +232,59 @@ suspend fun scanBackups(
                             }
                         } catch (_: Throwable) {
                             if (!name.contains(regexSpecialFile))
-                                runCatching {
-                                    if (cleanup) file.renameTo(".ERROR.${file.name}")
-                                }
+                                renameDamagedToERROR(file)
                         }
                     } else {
                         if (!name.contains(regexSpecialFolder) &&
                             file.isDirectory                                // instance dir
                         ) {
-                            if (false) { //TODO hg42  && "${file.name}.${PROP_NAME}" !in names) {             // no dir.properties
-                                if (name.contains(regexPackageFolder)) {
-                                    try {
-                                        file.findFile(BACKUP_INSTANCE_PROPERTIES_INDIR)  // indir props
-                                            ?.let {
-                                                traceBackupsScanPackage {
-                                                    ":::${"|:::".repeat(level)}>     ${
-                                                        formatBackupFile(it)
-                                                    } ++++++++++++++++++++ indir props ok"
-                                                }
-                                                try {
-                                                    if (queueProps) {
-                                                        propsFiles.add(it)
-                                                    } else {
-                                                        beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
-                                                        onPropsFile(it)
-                                                        endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
-                                                    }
-                                                } catch (_: Throwable) {
-                                                    // rename the dir, because the backup is damaged
-                                                    runCatching {
-                                                        file.name?.let { name ->
-                                                            if (!name.contains(
-                                                                    regexSpecialFolder
-                                                                )
-                                                            ) {
-                                                                if (cleanup) file.renameTo(".ERROR.${file.name}")
+                            if (renameDamaged == true) {    //TODO hg42 it's damn slow
+                                val propFile =
+                                    file.parent?.findFile("${file.name}.${PROP_NAME}")
+                                if (!(propFile?.exists() ?: false)) {         // no dir.properties
+                                    if (name.contains(regexPackageFolder)) {
+                                        if (false) {    //TODO hg42 it's damn slow (inDir not working)
+                                            try {
+                                                file.findFile(BACKUP_INSTANCE_PROPERTIES_INDIR)  // indir props
+                                                    ?.let {
+                                                        traceBackupsScanPackage {
+                                                            ":::${"|:::".repeat(level)}>     ${
+                                                                formatBackupFile(it)
+                                                            } ++++++++++++++++++++ indir props ok"
+                                                        }
+                                                        try {
+                                                            if (queueProps) {
+                                                                propsFiles.add(it)
+                                                            } else {
+                                                                beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
+                                                                onPropsFile(it)
+                                                                endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
+                                                            }
+                                                        } catch (_: Throwable) {
+                                                            // rename the dir, because the backup is damaged
+                                                            runCatching {
+                                                                file.name?.let { name ->
+                                                                    if (!name.contains(
+                                                                            regexSpecialFolder
+                                                                        )
+                                                                    ) {
+                                                                        renameDamagedToERROR(file)
+                                                                    }
+                                                                }
                                                             }
                                                         }
-                                                    }
+                                                    } ?: run { // rename the dir, no dir.properties
+                                                    renameDamagedToERROR(file)
                                                 }
-                                            } ?: run { // rename the dir, no dir.properties
-                                            if (cleanup) file.renameTo(".ERROR.${file.name}")
+                                            } catch (_: Throwable) { // rename the dir, no dir.properties
+                                                renameDamagedToERROR(file)
+                                            }
                                         }
-                                    } catch (_: Throwable) { // rename the dir, no dir.properties
-                                        if (cleanup) file.renameTo(".ERROR.${file.name}")
+                                    } else {
+                                        renameDamagedToERROR(file)
                                     }
                                 } else {
-                                    if (cleanup) file.renameTo(".ERROR.${file.name}")
+                                    // ok, dir.properties exists
                                 }
                             }
                         }
@@ -280,9 +308,7 @@ suspend fun scanBackups(
                             }
                         } catch (_: Throwable) {
                             if (!name.contains(regexSpecialFile))
-                                runCatching {
-                                    if (cleanup) file.renameTo(".ERROR.${file.name}")
-                                }
+                                renameDamagedToERROR(file)
                         }
                     } else {
                         if (file.isDirectory) {
@@ -364,6 +390,7 @@ fun isBackupsLocked(): Boolean {
 
 fun Context.findBackups(
     packageName: String = "",
+    renameDamaged: Boolean? = null,
     forceTrace: Boolean = false,
 ): Map<String, List<Backup>> {
 
@@ -404,7 +431,12 @@ fun Context.findBackups(
         when (1) {
             1 -> {
                 runBlocking {
-                    scanBackups(backupRoot, packageName, forceTrace = forceTrace) { propsFile ->
+                    scanBackups(
+                        backupRoot,
+                        packageName,
+                        renameDamaged = renameDamaged,
+                        forceTrace = forceTrace
+                    ) { propsFile ->
                         count.getAndIncrement()
                         Backup.createFrom(propsFile)
                             ?.let {

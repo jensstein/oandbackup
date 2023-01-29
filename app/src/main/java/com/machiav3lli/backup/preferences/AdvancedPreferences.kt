@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.preferences.ui.PrefsExpandableGroupHeader
@@ -264,7 +265,10 @@ val pref_flatStructure = BooleanPref(
 )
 
 val pref_propertiesInDir = BooleanPref(
-    key = "dev-alt.propertiesInDir",
+    key = if (BuildConfig.DEBUG)
+        "dev-alt.propertiesInDir"         //TODO hg42 available for testing
+    else
+        "dev-alt--off.propertiesInDir",   //TODO hg42 currently not working in scanner
     summary = "store the properties inside the backup directory",
     defaultValue = false
 )

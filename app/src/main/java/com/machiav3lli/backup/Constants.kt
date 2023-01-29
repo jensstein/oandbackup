@@ -44,6 +44,8 @@ val LOGS_FOLDER_NAME_BASE = "LOGS"
 val LOGS_FOLDER_NAME = "${ADMIN_PREFIX}LOGS"
 val LOGS_FOLDER_NAME_ALT = LOGS_FOLDER_NAME_BASE
 
+const val ERROR_PREFIX = "${ADMIN_PREFIX}ERROR."
+
 const val PROP_NAME = "properties"
 const val LOG_INSTANCE = "%s.log.txt"
 const val BACKUP_INSTANCE_REGEX_PATTERN = """\d\d\d\d-\d\d-\d\d-\d\d-\d\d-\d\d(-\d\d\d)?-user_\d+"""
@@ -61,7 +63,7 @@ fun backupInstancePropsFlat(packageInfo: PackageInfo, dateTimeStr: String) =
 
 const val BACKUP_INSTANCE_PROPERTIES_INDIR = "backup.$PROP_NAME"
 const val BACKUP_PACKAGE_FOLDER_REGEX_PATTERN = """\w+(\.\w+)+"""
-val BACKUP_SPECIAL_FILE_REGEX_PATTERN = """(^\.|^$ADMIN_PREFIX)"""
+val BACKUP_SPECIAL_FILE_REGEX_PATTERN = """(^\.|^$ADMIN_PREFIX|^$ERROR_PREFIX)"""
 val BACKUP_SPECIAL_FOLDER_REGEX_PATTERN =
     """(^\.|^$ADMIN_PREFIX|$EXPORTS_FOLDER_NAME_BASE|$LOGS_FOLDER_NAME_BASE|$SELECTIONS_FOLDER_NAME_BASE)"""
 const val EXPORTS_INSTANCE = "%s.scheds"
