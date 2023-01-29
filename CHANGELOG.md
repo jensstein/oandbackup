@@ -7,6 +7,8 @@ next version
 
 #### Usability / UX
 
+- fix for empty list shown in certain situations after startup
+- changed log file format to text (email like with headers), json is still read
 - workaround for floating buttons hiding info (scroll a bit more at bottom)
 - add menuButtonAlwaysVisible
 - add confirmation to context menu "add to blocklist"
