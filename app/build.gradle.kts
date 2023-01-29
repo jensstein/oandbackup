@@ -142,7 +142,7 @@ dependencies {
     implementation("de.voize:semver4k:4.1.0")
 
     // UI
-    implementation("com.google.android.material:material:1.8.0-rc01")
+    implementation("com.google.android.material:material:1.8.0")
     implementation("androidx.preference:preference-ktx:1.2.0")
 
     // Compose
