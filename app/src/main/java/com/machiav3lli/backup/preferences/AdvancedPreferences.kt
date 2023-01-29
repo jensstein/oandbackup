@@ -255,6 +255,12 @@ val pref_refreshAppInfoTimeout = IntPref(
 
 //---------------------------------------- developer settings - implementation alternatives
 
+val pref_findBackupsLocksFlows = BooleanPref(
+    key = "dev-alt.lockFlowsWhileFindbackups",
+    summary = "empty backup lists for installed packages early, to prevent single scanning",
+    defaultValue = true
+)
+
 val pref_earlyEmptyBackups = BooleanPref(
     key = "dev-alt.earlyEmptyBackups",
     summary = "empty backup lists for installed packages early, to prevent single scanning",
