@@ -354,10 +354,16 @@ fun TerminalPage() {
                 singleLine = false,
                 placeholder = { Text(text = "shell command", color = Color.Gray) },
                 trailingIcon = {
-                    RoundButton(icon = Phosphor.Play) {
-                        command.removeSuffix("\n")
-                        run(command)
-                        command = ""
+                    Row {
+                        if (command.isNotEmpty())
+                            RoundButton(icon = Phosphor.X) {
+                                command = ""
+                            }
+                        RoundButton(icon = Phosphor.Play) {
+                            command.removeSuffix("\n")
+                            run(command)
+                            command = ""
+                        }
                     }
                 },
                 keyboardOptions = KeyboardOptions(
