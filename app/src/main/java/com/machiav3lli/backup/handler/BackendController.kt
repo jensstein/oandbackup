@@ -184,7 +184,7 @@ suspend fun scanBackups(
                         formatBackupFile(file)
                     } backup"
                 }
-            if (path.contains(packageName)) {
+            if (path.contains(packageName)) {                       // either of the single scan or any
                 if (name.contains(regexBackupInstance)                  // instance
                 ) {
                     traceBackupsScanPackage {
@@ -263,7 +263,7 @@ suspend fun scanBackups(
                     }
                 } else {
                     if (file.isPropertyFile &&
-                        !name.contains(regexSpecialFile)                // classic props
+                        !name.contains(regexSpecialFile)                // props without an instance name
                     ) {
                         traceBackupsScanPackage {
                             ":::${"|:::".repeat(level)}> ${
@@ -315,17 +315,21 @@ suspend fun scanBackups(
         }
     }
 
+    var total = 0
     while (files.isNotEmpty()) {
         if (packageName.isEmpty())
-            traceBackupsScanPackage { "queue filled ${files.size}" }
+            traceBackupsScanPackage { "queue filled with ${files.size}" }
         runBlocking { // joins jobs, so launched jobs that queue files are finished, before checking the queue
+            var count = 0
             val filesFlow = flow {
                 while (files.isNotEmpty()) {
                     val file = files.remove()
+                    count++
+                    total++
                     emit(file)
                 }
                 if (packageName.isEmpty())
-                    traceBackupsScanPackage { "queue empty" }
+                    traceBackupsScanPackage { "queue empty after $count" }
             }
             filesFlow.collect {
                 launch(scanPool) {
@@ -334,6 +338,8 @@ suspend fun scanBackups(
             }
         }
     }
+    if (packageName.isEmpty())
+        traceBackupsScanPackage { "queue total ----> $total" }
 }
 
 val backupsLocked = mutableStateOf(false)
