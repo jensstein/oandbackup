@@ -19,6 +19,7 @@ package com.machiav3lli.backup.preferences
 
 import android.os.Process
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -93,6 +94,7 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowUp
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Equals
 import com.machiav3lli.backup.ui.compose.icons.phosphor.MagnifyingGlass
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Play
+import com.machiav3lli.backup.ui.compose.icons.phosphor.X
 import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.compose.isAtBottom
 import com.machiav3lli.backup.ui.compose.isAtTop
@@ -458,6 +460,8 @@ fun TerminalText(
 
     autoScroll = listState.isAtBottom()
 
+    val lines = text.filter { it.contains(search, ignoreCase = true) }
+
     Box(
         modifier = modifier
             .ifThen(limitLines == 0) { Modifier.fillMaxHeight() }
@@ -488,8 +492,7 @@ fun TerminalText(
                     verticalArrangement = Arrangement.spacedBy(lineSpacing),
                     state = listState
                 ) {
-                    items(text) {
-                        if (it.contains(search, ignoreCase = true)) {
+                    items(lines) {
                             val color =
                                 when {
                                     it.contains("error", ignoreCase = true) -> Color(1f, 0f, 0f)
@@ -514,7 +517,6 @@ fun TerminalText(
                                     .fillMaxWidth()
                                     .padding(0.dp)
                             )
-                        }
                     }
                 }
             }
@@ -556,13 +558,23 @@ fun TerminalText(
                     lineHeight = lineHeightSp * searchFontFactor
                 ),
                 trailingIcon = {
-                    Icon(
-                        imageVector = Phosphor.MagnifyingGlass,
-                        contentDescription = "search",
-                        modifier = Modifier.size(ICON_SIZE_SMALL)
-                        //tint = tint,
-                        //contentDescription = description
-                    )
+                    if (search.isEmpty())
+                        Icon(
+                            imageVector = Phosphor.MagnifyingGlass,
+                            contentDescription = "search",
+                            modifier = Modifier.size(ICON_SIZE_SMALL)
+                            //tint = tint,
+                            //contentDescription = description
+                        )
+                    else
+                        Icon(
+                            imageVector = Phosphor.X,
+                            contentDescription = "search",
+                            modifier = Modifier.size(ICON_SIZE_SMALL)
+                                .clickable { search = "" }
+                            //tint = tint,
+                            //contentDescription = description,
+                        )
                 },
                 keyboardOptions = KeyboardOptions(
                     autoCorrect = false,
