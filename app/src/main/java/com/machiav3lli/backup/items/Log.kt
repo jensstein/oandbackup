@@ -140,7 +140,7 @@ open class Log {
         deviceName: $deviceName
         sdkCodename: $sdkCodename
         cpuArch: $cpuArch
-    """.trimIndent() + "\n" + logText
+    """.trimIndent() + "\n\n" + logText
 
     fun initFromJson(text: String): Boolean {
         return fromJson(text)?.let { item ->
