@@ -1,153 +1,46 @@
 CHANGELOG
 =========
 
-next version
+8.3.0 (30.01.2023) +350 Commits & +60 Translations
 ------------
-
 
 #### Usability / UX
 
-- fix for empty list shown in certain situations after startup
-- changed log file format to text (email like with headers), json is still read
-- workaround for floating buttons hiding info (scroll a bit more at bottom)
-- add menuButtonAlwaysVisible
-- add confirmation to context menu "add to blocklist"
-- the busy progress bar was replaced by a more calm background animation
-- improved list speed and cached/prefetched icons
-- improved list loading speed (for details see Function section)
-- option to hide the backup data type icons for faster scrolling
-    - &rarr; `advanced/devsettings/advanced/hideBackupLabels`
+- Add: `hideBackupLabels`, `menuButtonAlwaysVisible` developer options
+- Add: Confirmation to context menu "add to blocklist"
+- Add: Context menu item "Deselect Not Visible"
+- Add: Enable backup/restore in context menu
+- Add: Button to run schedule in Schedule item
+- Fix: Duplicate entries in LogPage
+- Fix: Remove and dismiss AppSheet of uninstalled package with no backups
+- Update: Revamp the backend for faster reading and loading of the apps' list
+- Update: More informative log file format
+- Update: Replace busy progress bar by a more background animation
 
 #### UI
 
-- add menu item "Deselect Not Visible" (for programmers: this is an AND function)
-- enable backup/restore in context menu
-    (note, there is no question about data types, yet, it uses the configured default,
-     restore has a confirmation, need to add "..." to such entries)
-- fix duplicate entries in LogPage
+- Add: Context menu floating button
+- Add: Info on who's the build is signed by in HelpSheet
+- Add: Separate Black theme preference
+- Fix: Grey out app icon when uninstalled
+- Update: Improve background theming
+- Update: Actions buttons layout
+- Update: ScheduleSheet bottom layout
 
 #### Function
 
-- fix scanning stopped by non-instance (no date-time-user) properties file with error (e.g. an empty specialname.properties)
-- fix menu "Load" not working (and others that didn't select after action)
-- run only numCores threads in parallel on menu actions
-    (avoids stopping actions in the middle of the list)
-- fix parallel scanning, which could stop before end (no more timeout necessary)
-- fix single delete not working in app sheet
-    (it actually created an endless loop that blocks the thread,
-     if doing this often you had a bunch of threads running full speed)
-- queue based scanning instead of recursive, reduces memory consumption
-    and prevents hanging on no more threads available (e.g. with parallelStream)
-- blocking other parts until full scan is ready
-- duplicated schedules should be solved
-    - it's not easy to test all situations and takes one day for each test under real world conditions
-    - detects if the schedule to be started is already running at three stages
-    - automatically saves a log (if autoLogSuspicious is enabled)
-- fix thread safety (@hg42: on my extensions)
-- use parallel processing where appropriate (e.g. it greatly improves list loading)
-- fix searching a second time for backups of packages that don't have backups
-- busy (indicator) logic reimplemented (the former logic could hang the app in some cases)
-
-- add an experimental flatStructure scheme, where
-
-    `the.package.name/YYYY-MM-DD-hh-mm-ss-mmm-user_x*`
-    
-    is substituted by
-
-    `the.package.name@YYYY-MM-DD-hh-mm-ss-mmm-user_x*`
-
-    so all backups are stored flat in the backup folder.
-
-    You find flatStructure in
-
-    - &rarr; `advanced/devsettings/alternatives`
-
-    It is not enabled by default, because it may still change it's format and the last word isn't spoken, maybe official in 9.0 or even dropped, there are also some possible alternatives.
-
-    Theoretically, this should result in faster scanning because it reduces the number of directory scans, and it actually worked.
-
-    flatStructure might be especially helpful, if you are using remote backup locations.
-
-    However, current measurements are more like it doesn't matter much, because the parallel processing
-    changed the game and remote access seems to focus more on file reading (properties files) instead of directory scanning.
-    Though this might be heavily dependent on the remote file service. In my (@hg42) tests it was ssh on local network using extRact (which uses rclone). 
-
-    Note: it uses `@` as separator instead of the former `-`
-
-- the backups are now scanned differently, which allows to
-    - collect backups from subfolders (experimental, don't rely on it, though it's easy to chnage it back)
-    - backups that were renamed (e.g. by bug + SAF design problem)
-    - handle different backups schemes
-    
-    **Note: all backups found are handled by housekeeping. If you used renaming backups to protect them (which was never supported inside the backup location, because it disturbs file management), they may now be subject to housekeeping, so save them elsewhere.** 
-
-    The different variants of backups are marked (in AppSheet), basically by
-
-    - replacing `the.package.name` by `📦` and
-    - removing the `YYYY-MM-DD-hh-mm-ss-mmm-user_x` part
-  
-    so it looks like this:
-    
-    - *nothing shown*
-    
-        a "standard" flat backup
-    
-        &rarr; `the.package.name@YYYY-MM-DD-hh-mm-ss-mmm-user_x`
-    
-    - **`somefolder/`**
-    
-        a flat backup, but in a folder
-    
-        &rarr; `somefolder/the.package.name@YYYY-MM-DD-hh-mm-ss-mmm-user_x`
-    
-    - **`📦-`**
-    
-        a flat backup with the former "-" separator
-    
-        &rarr; `the.package.name-YYYY-MM-DD-hh-mm-ss-mmm-user_x`
-    
-    - **`📦/`**
-    
-        classic backup with package folder
-    
-        &rarr; `the.package.name/YYYY-MM-DD-hh-mm-ss-mmm-user_x`
-    
-    - **`somefolder/📦/`**
-    
-        the same inside a folder
-    
-        &rarr; `somefolder/the.package.name/YYYY-MM-DD-hh-mm-ss-mmm-user_x`
-    
-    - **`pre%📦%suf/`**
-    
-        the same with "pre%" before the package name and "%suf" after it
-    
-        &rarr; `pre%the.package.name%suf/YYYY-MM-DD-hh-mm-ss-mmm-user_x`
-    
-    - **`📦 (1)/`**
-    
-        a package folder with a duplicate created (falsely) by SAF problem
-    
-        &rarr; `the.package.name (1)/YYYY-MM-DD-hh-mm-ss-mmm-user_x`
-    
-
-#### Troubleshooting
-
-- DevTools: for trouble shooting / power users that have showInfoLogBar enabled:
-    - long press on Title will show the DevTools popup for faster access to dev settings, log, terminal and other tools
-- DevTools: add log autoscroll
-- option to autosave a log if an unexpected exception happens, even if it is catched later, so we get better info from the inner circles  
-    - &rarr; `advanced/devsettings/logging/autoLogExceptions`
-- option to autosave a support log after each schedule, because it's difficult to do this manually
-    - &rarr; `advanced/devsettings/logging/autoLogAfterSchedule`
-- option to autosave a support log on suspicious events, e.g. duplicate schedules
-    - situations that are not necessarily an error, only "interesting" sometimes to have a look at
-    - &rarr; `advanced/devsettings/logging/autoLogSuspicious`
-- `SUPPORT` button in the terminal, that can create the interesting infos as a new log item and opens share menu in one go
-- `share` button saves the text in the terminal and opens share menu 
-    - if you want to review it, cancel the menu and goto the "View the log" tool instead, you can still share from there
-
-
+- Add: Database accessor on OABX
+- Add: An experimental flatStructure scheme (read more in [developer notes document](NOTES.md))
+- Add: DevTools for advanced users (read more in [developer notes document](NOTES.md))
+- Fix: Run only numCores threads in parallel on menu actions
+- Fix: Duplicated schedules
+- Fix: Blocking other parts until full scan is ready
+- Fix: Thread safety for parallel processes
+- Fix: Duplicate searching time for backups of packages that don't have backups
+- Fix: Failing backup after cleaning up the backup list
+- Update: Use parallel processing where appropriate
+- Update: Speedy cached/prefetched icons
+- Update: Organize dev options in groups
 
 8.2.5 (03.12.2022) +15 Commits & +20 Translations
 ------------------

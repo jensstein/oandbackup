@@ -46,10 +46,10 @@ android {
         applicationId = "com.machiav3lli.backup"
         minSdk = 26
         targetSdk = 32
-        versionCode = 8208
-        versionName = "8.2.5"
+        versionCode = 8300
+        versionName = "8.3.0"
         buildConfigField("int", "MAJOR", "8")
-        buildConfigField("int", "MINOR", "2")
+        buildConfigField("int", "MINOR", "3")
 
         testApplicationId = "${applicationId}.tests"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
