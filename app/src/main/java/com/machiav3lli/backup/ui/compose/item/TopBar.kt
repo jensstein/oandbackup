@@ -3,6 +3,7 @@ package com.machiav3lli.backup.ui.compose.item
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
@@ -31,6 +33,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.surfaceColorAtElevation
@@ -63,6 +67,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.flowlayout.FlowRow
 import com.machiav3lli.backup.ERROR_PREFIX
+import com.machiav3lli.backup.ICON_SIZE_SMALL
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dialogs.BaseDialog
@@ -218,16 +223,81 @@ fun DevLogTab() {
     TerminalText(OABX.lastLogMessages.toList())
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DevSettingsTab() {
 
     val scroll = rememberScrollState(0)
+    var search by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier
-            .verticalScroll(scroll)
-    ) {
-        DevPrefGroups()
+    val color = MaterialTheme.colorScheme.onSurface
+
+    Column {
+        TextField(modifier = Modifier
+            .fillMaxWidth()
+            .padding(0.dp),
+            value = search,
+            singleLine = true,
+            //placeholder = { Text(text = "search", color = Color.Gray) },
+            colors = TextFieldDefaults.textFieldColors(
+                textColor = color,
+                containerColor = Color.Transparent,
+                unfocusedTrailingIconColor = color,
+                focusedTrailingIconColor = color, //if (search.length > 0) Color.Transparent else overlayColor
+            ),
+            textStyle = MaterialTheme.typography.bodyMedium,
+            trailingIcon = {
+                if (search.isEmpty())
+                    Icon(
+                        imageVector = Phosphor.MagnifyingGlass,
+                        contentDescription = "search",
+                        modifier = Modifier.size(ICON_SIZE_SMALL)
+                        //tint = tint,
+                        //contentDescription = description
+                    )
+                else
+                    Icon(
+                        imageVector = Phosphor.X,
+                        contentDescription = "search",
+                        modifier = Modifier
+                            .size(ICON_SIZE_SMALL)
+                            .clickable { search = "" }
+                        //tint = tint,
+                        //contentDescription = description,
+                    )
+            },
+            keyboardOptions = KeyboardOptions(
+                autoCorrect = false,
+                //imeAction = ImeAction.Done
+            ),
+            //keyboardActions = KeyboardActions(
+            //    onDone = {
+            //        todo
+            //        search = ""
+            //    }
+            //),
+            onValueChange = {
+                search = it
+            }
+        )
+
+        Column(
+            modifier = Modifier
+                .verticalScroll(scroll)
+                .weight(1f)
+        ) {
+            if (search.isNullOrEmpty())
+                DevPrefGroups()
+            else
+                PrefsGroup(
+                    prefs =
+                        Pref.preferences.values.flatten()
+                            .filter {
+                                it.key.contains(search, ignoreCase = true)
+                                        && it.group !in listOf("persist", "kill")
+                            }
+                )
+        }
     }
 }
 

@@ -54,7 +54,10 @@ fun DevPrefGroups() {
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        PrefsGroupCollapsed(prefs = devUserOptions, heading = "advanced users (for those who know)")
+        PrefsGroupCollapsed(
+            prefs = devUserOptions,
+            heading = "advanced users (for those who know)"
+        )
         PrefsGroupCollapsed(prefs = devHackOptions, heading = "workarounds (hacks)")
         PrefsGroupCollapsed(prefs = devLogOptions, heading = "logging")
         PrefsGroupCollapsed(prefs = devTraceOptions, heading = "tracing")
@@ -98,15 +101,15 @@ fun AdvancedPrefsPage() {
             }
             item {
                 //Box {  // hg42: use Box as workaround for weird animation behavior  //TODO hg42 seems to be fixed now? //TODO wech
-                    AnimatedVisibility(
-                        visible = expanded,
-                        //enter = EnterTransition.None,
-                        //exit = ExitTransition.None
-                        enter = expandVertically() + fadeIn(),
-                        exit = shrinkVertically() + fadeOut()
-                    ) {
-                        DevPrefGroups()
-                    }
+                AnimatedVisibility(
+                    visible = expanded,
+                    //enter = EnterTransition.None,
+                    //exit = ExitTransition.None
+                    enter = expandVertically() + fadeIn(),
+                    exit = shrinkVertically() + fadeOut()
+                ) {
+                    DevPrefGroups()
+                }
                 //}
             }
         }
