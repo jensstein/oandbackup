@@ -119,6 +119,27 @@ fun AdvancedPrefsPage() {
 
 //---------------------------------------- developer settings - advanced users
 
+val pref_busyIconTurnTime = IntPref(
+    key = "dev-adv.busyIconTurnTime",
+    summary = "time for one rotation of busy icon (ms)",
+    entries = (1000..10000 step 500).toList(),
+    defaultValue = 4000
+)
+
+val pref_busyIconScale = IntPref(
+    key = "dev-adv.busyIconScale",
+    summary = "busy icon scaling (%)",
+    entries = (100..200 step 10).toList(),
+    defaultValue = 150
+)
+
+val pref_busyFadeTime = IntPref(
+    key = "dev-adv.busyFadeTime",
+    summary = "time to fade busy color (ms)",
+    entries = (0..5000 step 250).toList(),
+    defaultValue = 2000
+)
+
 val pref_menuButtonAlwaysVisible = BooleanPref(
     key = "dev-adv.menuButtonAlwaysVisible",
     summary = "also show context menu button when selection is empty",
@@ -260,27 +281,6 @@ val pref_findBackupsLocksFlows = BooleanPref(
     key = "dev-alt.lockFlowsWhileFindbackups",
     summary = "empty backup lists for installed packages early, to prevent single scanning",
     defaultValue = false
-)
-
-val pref_busyIconTurnTime = IntPref(
-    key = "dev-alt.busyIconTurnTime",
-    summary = "time for one rotation of busy icon (ms)",
-    entries = (1000..10000 step 500).toList(),
-    defaultValue = 4000
-)
-
-val pref_busyIconScale = IntPref(
-    key = "dev-alt.busyIconScale",
-    summary = "busy icon scaling (%)",
-    entries = (100..200 step 10).toList(),
-    defaultValue = 150
-)
-
-val pref_busyFadeTime = IntPref(
-    key = "dev-alt.busyFadeTime",
-    summary = "time to fade animated busy bars (ms)",
-    entries = (0..5000 step 250).toList(),
-    defaultValue = 2000
 )
 
 val pref_busyHitTime = IntPref(
