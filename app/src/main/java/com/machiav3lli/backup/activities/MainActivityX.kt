@@ -133,42 +133,6 @@ fun Modifier.angledGradientBackground(colors: List<Color>, degrees: Float, facto
         }
     )
 
-fun Modifier.busyBackground(
-    angle: Float,
-    color0: Color,
-    color1: Color,
-    color2: Color,
-): Modifier {
-    val factor = 0.2f
-    return this
-        .angledGradientBackground(
-            listOf(
-                color0,
-                color0,
-                color1,
-                color0,
-                color0,
-                color0,
-                color0,
-                color0,
-                color0,
-            ), angle, factor
-        )
-        .angledGradientBackground(
-            listOf(
-                color0,
-                color0,
-                color0,
-                color2,
-                color0,
-                color0,
-                color0,
-                color0,
-                color0,
-            ), angle * 1.5f, factor
-        )
-}
-
 class MainActivityX : BaseActivity() {
 
     private val crScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
@@ -308,6 +272,7 @@ class MainActivityX : BaseActivity() {
 
                 BusyBackground {
                     Scaffold(
+                        containerColor = Color.Transparent,
                         contentColor = MaterialTheme.colorScheme.onBackground,
                         topBar = {
                             if (currentPage.destination == NavItem.Scheduler.destination)

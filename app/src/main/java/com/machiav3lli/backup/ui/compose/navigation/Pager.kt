@@ -47,7 +47,7 @@ fun PagerNavBar(pageItems: List<NavItem>, pagerState: PagerState) {
     val scope = rememberCoroutineScope()
 
     NavigationBar(
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.3f),
         tonalElevation = 0.dp,
         contentColor = MaterialTheme.colorScheme.onBackground
     ) {

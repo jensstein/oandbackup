@@ -518,7 +518,7 @@ fun TopBar(
                 }
             },
             colors = TopAppBarDefaults.smallTopAppBarColors(
-                containerColor = Color.Transparent,
+                containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.3f),
                 titleContentColor = MaterialTheme.colorScheme.onBackground,
                 actionIconContentColor = MaterialTheme.colorScheme.onBackground,
                 navigationIconContentColor = MaterialTheme.colorScheme.onBackground,

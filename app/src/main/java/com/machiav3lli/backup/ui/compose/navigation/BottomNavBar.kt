@@ -43,7 +43,7 @@ fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
     }
 
     NavigationBar(
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.2f),
         tonalElevation = 0.dp,
         contentColor = MaterialTheme.colorScheme.onBackground
     ) {

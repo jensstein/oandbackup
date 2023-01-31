@@ -52,7 +52,7 @@ import androidx.compose.ui.unit.sp
 import com.google.accompanist.flowlayout.FlowRow
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.activities.busyBackground
+import com.machiav3lli.backup.activities.angledGradientBackground
 import com.machiav3lli.backup.ui.compose.item.ActionChip
 import com.machiav3lli.backup.ui.compose.item.ButtonIcon
 import com.machiav3lli.backup.ui.item.ChipItem
@@ -287,6 +287,42 @@ fun MultiSelectableChipGroup(
     }
 }
 
+fun Modifier.busyBackground(
+    angle: Float,
+    color0: Color,
+    color1: Color,
+    color2: Color,
+): Modifier {
+    val factor = 1.2f
+    return this
+        .angledGradientBackground(
+            listOf(
+                color0,
+                color0,
+                color1,
+                color1,
+                color0,
+                color0,
+                color0,
+                color0,
+                color0,
+            ), angle, factor
+        )
+        .angledGradientBackground(
+            listOf(
+                color0,
+                color0,
+                color2,
+                color2,
+                color0,
+                color0,
+                color0,
+                color0,
+                color0,
+            ), angle * 1.5f, factor
+        )
+}
+
 @Composable
 fun BusyBackground(
     busy: State<Boolean>? = null,
@@ -295,8 +331,8 @@ fun BusyBackground(
     val isBusy by remember { busy ?: OABX.busy }
     val rounds = 12
     val color0 = Color.Transparent
-    val color1 = MaterialTheme.colorScheme.primary.copy(alpha = 0.25f)
-    val color2 = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.35f)
+    val color1 = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+    val color2 = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f)
 
     val inTime = 2000
     val outTime = 2000
