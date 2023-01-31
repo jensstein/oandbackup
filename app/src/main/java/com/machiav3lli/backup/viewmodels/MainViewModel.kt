@@ -25,6 +25,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.OABX.Companion.getBackups
 import com.machiav3lli.backup.PACKAGES_LIST_GLOBAL_ID
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.AppExtras
@@ -154,8 +155,9 @@ class MainViewModel(
                 }"
             }
 
-            val pkgs = p.toPackageList(appContext, emptyList(), b)
-            //val pkgs = p.toPackageList(appContext, emptyList(), getBackups())     //TODO hg42 always use the current packages instead of slow turna around from db?
+            //TODO hg42 use the current backups instead of slow turn around from db
+            //val pkgs = p.toPackageList(appContext, emptyList(), b)
+            val pkgs = p.toPackageList(appContext, emptyList(), getBackups())
 
             IconCache.dropAllButUsed(pkgs)
 
