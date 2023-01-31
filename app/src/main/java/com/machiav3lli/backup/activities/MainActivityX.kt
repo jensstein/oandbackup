@@ -26,6 +26,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -42,6 +47,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -68,6 +75,8 @@ import com.machiav3lli.backup.pref_catchUncaughtException
 import com.machiav3lli.backup.pref_uncaughtExceptionsJumpToPreferences
 import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
 import com.machiav3lli.backup.preferences.pref_blackTheme
+import com.machiav3lli.backup.preferences.pref_busyIconScale
+import com.machiav3lli.backup.preferences.pref_busyIconTurnTime
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
@@ -275,6 +284,28 @@ class MainActivityX : BaseActivity() {
                         containerColor = Color.Transparent,
                         contentColor = MaterialTheme.colorScheme.onBackground,
                         topBar = {
+                            val isBusy by remember { OABX.busy }
+                            val (angle, scale) = if (isBusy) {
+                                val infiniteTransition = rememberInfiniteTransition()
+
+                                // Animate from 0f to 1f
+                                val animationProgress by infiniteTransition.animateFloat(
+                                    initialValue = 0f,
+                                    targetValue = 1f,
+                                    animationSpec = infiniteRepeatable(
+                                        animation = tween(
+                                            durationMillis = pref_busyIconTurnTime.value,
+                                            easing = LinearEasing
+                                        )
+                                    )
+                                )
+                                val angle = 360f * animationProgress
+                                val scale = 0.01f * pref_busyIconScale.value
+                                angle to scale
+                            } else {
+                                0f to 1f
+                            }
+
                             if (currentPage.destination == NavItem.Scheduler.destination)
                                 TopBar(
                                     title = stringResource(id = currentPage.title)
@@ -320,9 +351,14 @@ class MainActivityX : BaseActivity() {
                                             viewModel.searchQuery.value = ""
                                         }
                                     )
+
                                     RoundButton(
                                         description = stringResource(id = R.string.refresh),
-                                        icon = Phosphor.ArrowsClockwise
+                                        icon = Phosphor.ArrowsClockwise,
+                                        tint = if (isBusy) Color.Red else MaterialTheme.colorScheme.onBackground,
+                                        modifier = Modifier
+                                            .scale(scale)
+                                            .rotate(angle)
                                     ) { refreshPackages() }
                                     RoundButton(
                                         description = stringResource(id = R.string.prefs_title),

@@ -261,6 +261,20 @@ val pref_findBackupsLocksFlows = BooleanPref(
     defaultValue = true
 )
 
+val pref_busyIconTurnTime = IntPref(
+    key = "dev-alt.busyIconTurnTime",
+    summary = "time for one rotation of busy icon (ms)",
+    entries = (1000..10000 step 500).toList(),
+    defaultValue = 4000
+)
+
+val pref_busyIconScale = IntPref(
+    key = "dev-alt.busyIconScale",
+    summary = "busy icon scaling (%)",
+    entries = (100..200 step 10).toList(),
+    defaultValue = 150
+)
+
 val pref_earlyEmptyBackups = BooleanPref(
     key = "dev-alt.earlyEmptyBackups",
     summary = "empty backup lists for installed packages early, to prevent single scanning",
