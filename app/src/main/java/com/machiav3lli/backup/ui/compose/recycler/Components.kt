@@ -11,6 +11,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -324,11 +325,10 @@ fun Modifier.busyBackground(
 }
 
 @Composable
-fun BusyBackground(
-    busy: State<Boolean>? = null,
+fun BusyBackgroundAnimated(
+    busy: Boolean,
     content: @Composable () -> Unit,
 ) {
-    val isBusy by remember { busy ?: OABX.busy }
     val rounds = 12
     val color0 = Color.Transparent
     val color1 = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
@@ -344,7 +344,7 @@ fun BusyBackground(
         contentAlignment = Alignment.Center
     ) {
         AnimatedVisibility(
-            visible = isBusy,
+            visible = busy,
             enter = fadeIn(tween(inTime)),
             exit = fadeOut(tween(outTime)),
             modifier = Modifier
@@ -377,12 +377,57 @@ fun BusyBackground(
     }
 }
 
+@Composable
+fun BusyBackgroundColor(
+    busy: Boolean,
+    content: @Composable () -> Unit,
+) {
+    val inTime = pref_busyFadeTime.value
+    val outTime = pref_busyFadeTime.value
+
+    AnimatedVisibility(
+        visible = busy,
+        enter = fadeIn(tween(inTime)),
+        exit = fadeOut(tween(outTime)),
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Color.Gray.copy(alpha = 0.3f)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+        }
+    }
+
+    content()
+}
+
+@Composable
+fun BusyBackground(
+    busy: State<Boolean>? = null,
+    content: @Composable () -> Unit,
+) {
+    val isBusy by remember { busy ?: OABX.busy }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+        contentAlignment = Alignment.Center
+    ) {
+        BusyBackgroundColor(busy = isBusy, content = content)
+    }
+}
+
 @Preview
 @Composable
 fun BusyBackgroundPreview() {
     val busy = remember { mutableStateOf(true) }
     var progress by remember { mutableStateOf(true) }
-    Box {
+    Column {
         Row {
             ActionChip(text = "busy ${busy.value}", positive = busy.value) {
                 busy.value = !busy.value
