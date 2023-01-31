@@ -24,7 +24,9 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Process
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES_INDIR
 import com.machiav3lli.backup.BACKUP_INSTANCE_REGEX_PATTERN
 import com.machiav3lli.backup.BACKUP_PACKAGE_FOLDER_REGEX_PATTERN
@@ -35,6 +37,7 @@ import com.machiav3lli.backup.IGNORED_PERMISSIONS
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.OABX.Companion.addInfoText
 import com.machiav3lli.backup.OABX.Companion.hitBusy
 import com.machiav3lli.backup.OABX.Companion.setBackups
 import com.machiav3lli.backup.PROP_NAME
@@ -72,7 +75,7 @@ import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import java.io.IOException
 import java.util.*
-import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.ConcurrentLinkedDeque
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.system.measureTimeMillis
@@ -135,8 +138,6 @@ suspend fun scanBackups(
         traceTiming { "threads max: ${maxThreads.get()} (before)" }
     }
 
-    val queueProps = false
-
     fun formatBackupFile(file: StorageFile) = "${file.path?.replace(backupRoot.path ?: "", "")}"
 
     fun traceBackupsScanPackage(lazyText: () -> String) {
@@ -153,19 +154,15 @@ suspend fun scanBackups(
         }
     }
 
-    val files = ConcurrentLinkedQueue<StorageFile>()
-    val propsFiles = ConcurrentLinkedQueue<StorageFile>()
-
-    beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}listFiles")
-    val initialFiles = directory.listFiles()
-    endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}listFiles")
-    files.addAll(initialFiles)
+    var suspicious by mutableStateOf(0)     // documented to be thread safe
 
     fun renameDamagedToERROR(file: StorageFile) {
         if (renameDamaged == true)
             runCatching {
                 file.renameTo("$ERROR_PREFIX${file.name}")
             }
+        else if (renameDamaged == null)
+            suspicious++
     }
 
     fun undoDamagedToERROR(file: StorageFile) {
@@ -177,9 +174,51 @@ suspend fun scanBackups(
         }
     }
 
+    val files = ConcurrentLinkedDeque<StorageFile>()
+
+    suspend fun handleProps(
+        file: StorageFile,
+        path: String?,
+        name: String?,
+        onPropsFile: suspend (StorageFile) -> Unit,
+        renamer: (() -> Unit)? = null,
+    ) {
+        try {
+            beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
+            onPropsFile(file)
+            endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
+        } catch (_: Throwable) {
+            if (renamer != null)
+                renamer()
+            else {
+                name?.let {
+                    if (!it.contains(regexSpecialFile))
+                        renameDamagedToERROR(file)
+                }
+            }
+        }
+    }
+
+    fun handleDirectory(file: StorageFile, collector: FlowCollector<StorageFile>? = null) {
+        beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}listFiles")
+        var list = file.listFiles()
+        endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}listFiles")
+        // queue at front of queue (depth first)
+        // filter out dir matching dir.properties
+        val props = list.mapNotNull { it.name }.filter { it.endsWith(".$PROP_NAME") ?: false }
+        val propDirs = props.map { it.removeSuffix(".$PROP_NAME") }
+        list = list.filterNot { it.name in propDirs }
+        // if matching directories are filtered out, we can sort normally,
+        // so sort reverted and prepend one by one
+        list.sortedByDescending { it.name }.forEach {
+            files.offerFirst(it)
+        }
+    }
+
+    handleDirectory(directory)	// top level directory
+
     suspend fun processFile(
         file: StorageFile,
-        collector: FlowCollector<StorageFile>? = null,
     ): Unit {
 
         checkThreadStats()
@@ -223,26 +262,17 @@ suspend fun scanBackups(
                                 formatBackupFile(file)
                             } ++++++++++++++++++++ props ok"
                         }
-                        try {
-                            if (queueProps) {
-                                propsFiles.add(file)
-                            } else {
-                                beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
-                                onPropsFile(file)
-                                endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
-                            }
-                        } catch (_: Throwable) {
-                            if (!name.contains(regexSpecialFile))
-                                renameDamagedToERROR(file)
-                        }
+                        handleProps(file, path, name, onPropsFile)
                     } else {
                         if (!name.contains(regexSpecialFolder) &&
                             file.isDirectory                                // instance dir
                         ) {
-                            if (renameDamaged == true) {    //TODO hg42 it's damn slow
-                                val propFile =
-                                    file.parent?.findFile("${file.name}.${PROP_NAME}")
-                                if (!(propFile?.exists() ?: false)) {         // no dir.properties
+                            //if (renameDamaged == true) {  //TODO hg42 it's damn slow to find dir
+                            // dir for dir.properties already removed
+                            //val propFile =
+                            //    //file.parent?.findFile("${file.name}.${PROP_NAME}")
+                            //    files.find { it.name == "${file.name}.${PROP_NAME}" }
+                            //if (!(propFile?.exists() ?: false)) {         // no dir.properties
                                     if (name.contains(regexPackageFolder)) {
                                         if (false) {    //TODO hg42 it's damn slow (inDir not working)
                                             try {
@@ -253,15 +283,7 @@ suspend fun scanBackups(
                                                                 formatBackupFile(it)
                                                             } ++++++++++++++++++++ indir props ok"
                                                         }
-                                                        try {
-                                                            if (queueProps) {
-                                                                propsFiles.add(it)
-                                                            } else {
-                                                                beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
-                                                                onPropsFile(it)
-                                                                endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
-                                                            }
-                                                        } catch (_: Throwable) {
+                                                handleProps(it, it.path, it.name, onPropsFile) {
                                                             // rename the dir, because the backup is damaged
                                                             runCatching {
                                                                 file.name?.let { name ->
@@ -284,10 +306,10 @@ suspend fun scanBackups(
                                     } else {
                                         renameDamagedToERROR(file)
                                     }
-                                } else {
-                                    // ok, dir.properties exists
-                                }
-                            }
+                            //} else {
+                            //    // ok, dir.properties exists
+                            //}
+                            //}
                         }
                     }
                 } else {
@@ -297,20 +319,9 @@ suspend fun scanBackups(
                         traceBackupsScanPackage {
                             ":::${"|:::".repeat(level)}> ${
                                 formatBackupFile(file)
-                            } ++++++++++++++++++++ props ok"
+                            } ++++++++++++++++++++ special props ok"
                         }
-                        try {
-                            if (queueProps) {
-                                propsFiles.add(file)
-                            } else {
-                                beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
-                                onPropsFile(file)
-                                endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
-                            }
-                        } catch (_: Throwable) {
-                            if (!name.contains(regexSpecialFile))
-                                renameDamagedToERROR(file)
-                        }
+                        handleProps(file, path, name, onPropsFile)
                     } else {
                         if (file.isDirectory) {
                             traceBackupsScanPackage {
@@ -318,13 +329,7 @@ suspend fun scanBackups(
                                     formatBackupFile(file)
                                 } //////////////////// dir ok"
                             }
-                            beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}listFiles")
-                            val list = file.listFiles()
-                            endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}listFiles")
-                            list.forEach {
-                                collector?.run { emit(it) } ?: files.offer(it)
-                            }
-                            //traceDebug { "queue: $files" }
+                            handleDirectory(file)
                         }
                     }
                 }
@@ -339,12 +344,7 @@ suspend fun scanBackups(
                             formatBackupFile(file)
                         } /\\/\\/\\/\\/\\/\\/\\/\\/\\/\\ folder ok"
                     }
-                beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}listFiles")
-                val list = file.listFiles()
-                endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}listFiles")
-                list.forEach {
-                    collector?.run { emit(it) } ?: files.offer(it)
-                }
+                handleDirectory(file)
             }
         }
     }
@@ -372,8 +372,10 @@ suspend fun scanBackups(
             }
         }
     }
-    if (packageName.isEmpty())
+    if (packageName.isEmpty()) {
         traceBackupsScanPackage { "queue total ----> $total" }
+        if (suspicious > 0) addInfoText("suspicious: $suspicious")
+    }
 }
 
 val backupsLocked = mutableStateOf(false)
