@@ -259,7 +259,7 @@ val pref_refreshAppInfoTimeout = IntPref(
 val pref_findBackupsLocksFlows = BooleanPref(
     key = "dev-alt.lockFlowsWhileFindbackups",
     summary = "empty backup lists for installed packages early, to prevent single scanning",
-    defaultValue = true
+    defaultValue = false
 )
 
 val pref_busyIconTurnTime = IntPref(
@@ -274,13 +274,6 @@ val pref_busyIconScale = IntPref(
     summary = "busy icon scaling (%)",
     entries = (100..200 step 10).toList(),
     defaultValue = 150
-)
-
-val pref_busyTurnTime = IntPref(
-    key = "dev-alt.busyTurnTime",
-    summary = "time the animated busy bars need for one rotation (ms)",
-    entries = (500..50000 step 500).toList(),
-    defaultValue = 50000
 )
 
 val pref_busyFadeTime = IntPref(
