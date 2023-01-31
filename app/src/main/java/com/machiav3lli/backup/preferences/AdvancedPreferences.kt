@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
+import com.machiav3lli.backup.OABX.Companion.busyTick
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.preferences.ui.PrefsExpandableGroupHeader
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
@@ -273,6 +274,27 @@ val pref_busyIconScale = IntPref(
     summary = "busy icon scaling (%)",
     entries = (100..200 step 10).toList(),
     defaultValue = 150
+)
+
+val pref_busyTurnTime = IntPref(
+    key = "dev-alt.busyTurnTime",
+    summary = "time the animated busy bars need for one rotation (ms)",
+    entries = (500..50000 step 500).toList(),
+    defaultValue = 50000
+)
+
+val pref_busyFadeTime = IntPref(
+    key = "dev-alt.busyFadeTime",
+    summary = "time to fade animated busy bars (ms)",
+    entries = (0..5000 step 250).toList(),
+    defaultValue = 2000
+)
+
+val pref_busyHitTime = IntPref(
+    key = "dev-alt.busyHitTime",
+    summary = "time being busy after hitting the watchdog (ms)",
+    entries = (busyTick..4000 step busyTick).toList(),
+    defaultValue = 2000
 )
 
 val pref_earlyEmptyBackups = BooleanPref(

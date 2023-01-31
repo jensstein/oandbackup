@@ -54,6 +54,8 @@ import com.google.accompanist.flowlayout.FlowRow
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.angledGradientBackground
+import com.machiav3lli.backup.preferences.pref_busyFadeTime
+import com.machiav3lli.backup.preferences.pref_busyTurnTime
 import com.machiav3lli.backup.ui.compose.item.ActionChip
 import com.machiav3lli.backup.ui.compose.item.ButtonIcon
 import com.machiav3lli.backup.ui.item.ChipItem
@@ -334,9 +336,9 @@ fun BusyBackgroundAnimated(
     val color1 = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
     val color2 = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f)
 
-    val inTime = 2000
-    val outTime = 2000
-    val turnTime = 20000
+    val inTime = pref_busyFadeTime.value
+    val outTime = pref_busyFadeTime.value
+    val turnTime = pref_busyTurnTime.value
 
     Box(
         modifier = Modifier

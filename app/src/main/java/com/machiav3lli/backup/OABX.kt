@@ -40,6 +40,7 @@ import com.machiav3lli.backup.handler.LogsHandler.Companion.unexpectedException
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.handler.findBackups
+import com.machiav3lli.backup.preferences.pref_busyHitTime
 import com.machiav3lli.backup.preferences.pref_cancelOnStart
 import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
@@ -545,13 +546,13 @@ class OABX : Application() {
         //------------------------------------------------------------------------------------------ busy
 
         var busyCountDown = AtomicInteger(0)
-        val busyTick = 250L
+        val busyTick = 250
         var busy = mutableStateOf(false)
 
         init {
             CoroutineScope(Dispatchers.IO).launch {
                 while (true) {
-                    delay(busyTick)
+                    delay(busyTick.toLong())
                     busyCountDown.getAndUpdate {
                         if (it > 0) {
                             val new = it - 1
@@ -570,7 +571,7 @@ class OABX : Application() {
 
         fun hitBusy(state: Boolean = false) {
             //beginNanoTimer("busy.hitBusy")
-            busyCountDown.set((1000L / busyTick).toInt())
+            busyCountDown.set(pref_busyHitTime.value / busyTick)
             //endNanoTimer("busy.hitBusy")
         }
 
