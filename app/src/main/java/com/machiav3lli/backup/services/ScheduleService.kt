@@ -43,7 +43,7 @@ import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.pref_autoLogAfterSchedule
 import com.machiav3lli.backup.pref_autoLogSuspicious
-import com.machiav3lli.backup.preferences.pref_fakeSchedups
+import com.machiav3lli.backup.preferences.pref_fakeScheduleDups
 import com.machiav3lli.backup.preferences.pref_useForegroundInService
 import com.machiav3lli.backup.preferences.supportInfo
 import com.machiav3lli.backup.preferences.textLog
@@ -143,7 +143,7 @@ open class ScheduleService : Service() {
 
             if (scheduleId >= 0) {
 
-                repeat(pref_fakeSchedups.value) { count ->
+                repeat(1 + pref_fakeScheduleDups.value) { count ->
                     val now = System.currentTimeMillis()
                     scheduledActionTask = object : ScheduledActionTask(baseContext, scheduleId) {
                         override fun onPostExecute(result: Triple<String, List<String>, Int>?) {

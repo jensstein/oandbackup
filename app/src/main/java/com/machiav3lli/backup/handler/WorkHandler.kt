@@ -20,7 +20,7 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.classAddress
-import com.machiav3lli.backup.preferences.pref_fakeSchedups
+import com.machiav3lli.backup.preferences.pref_fakeScheduleDups
 import com.machiav3lli.backup.preferences.pref_maxRetriesPerPackage
 import com.machiav3lli.backup.services.CommandReceiver
 import com.machiav3lli.backup.tasks.AppActionWork
@@ -162,7 +162,7 @@ class WorkHandler(appContext: Context) {
         fun getBatchName(name: String, startTime: Long): String {
             return if (startTime == 0L)
                 name
-            else if (pref_fakeSchedups.value > 1)
+            else if (pref_fakeScheduleDups.value > 0)
                 "$name @ ${
                     SimpleDateFormat("EEE HH:mm:ss:SSS", Locale.getDefault()).format(startTime)
                 }"
