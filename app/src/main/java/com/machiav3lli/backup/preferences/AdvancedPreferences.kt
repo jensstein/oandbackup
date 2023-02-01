@@ -16,8 +16,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.busyTick
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.preferences.ui.PrefsExpandableGroupHeader
@@ -369,6 +371,14 @@ val pref_forceCrash = LaunchPref(
     summary = "crash the app [for testing only]"
 ) {
     throw Exception("forceCrash")
+}
+
+val pref_killMyself = LaunchPref(
+    key = "dev-fake.killMyself",
+    summary = "kill the app, which leaves the Alarms set (in contrast to force-close) [for testing only]"
+) {
+    OABX.activity?.let { ActivityCompat.finishAffinity(it) }
+    System.exit(0)
 }
 
 
