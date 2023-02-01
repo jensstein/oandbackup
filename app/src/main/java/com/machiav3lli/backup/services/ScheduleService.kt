@@ -25,6 +25,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
+import android.os.Process
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.Observer
 import androidx.work.OneTimeWorkRequest
@@ -103,7 +104,7 @@ open class ScheduleService : Service() {
 
         traceSchedule {
             var message =
-                "%%%%% ############################################################ ScheduleService starting for scheduleId=$scheduleId name=$name"
+                "%%%%% ############################################################ ScheduleService PID=${Process.myPid()} starting for scheduleId=$scheduleId name=$name"
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 message += " ui=$isUiContext"
             }

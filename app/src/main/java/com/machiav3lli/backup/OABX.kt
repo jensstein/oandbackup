@@ -25,6 +25,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.PowerManager
+import android.os.Process
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -215,6 +216,8 @@ class OABX : Application() {
     // TODO Add BroadcastReceiver for (UN)INSTALL_PACKAGE intents
 
     override fun onCreate() {
+
+        Timber.i("app onCreate: PID=${Process.myPid()}")
 
         super.onCreate()
 
