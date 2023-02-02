@@ -281,7 +281,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         if (iv != null && password.isNotEmpty() && isEncryptionEnabled()) {
             outStream = outStream.encryptStream(password, getCryptoSalt(), iv)
         }
-
+        
         if (shouldCompress) {
             val compressionLevel = getCompressionLevel()
             val gzipParams = GzipParameters()
