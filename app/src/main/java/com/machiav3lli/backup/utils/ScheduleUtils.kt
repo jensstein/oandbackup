@@ -248,7 +248,7 @@ fun scheduleAlarms() {
                 // setting this same minute as alarm time will start it immediately
                 //TODO is that documented?
                 //TODO is there a better way to test?
-                val scheduleAlreadyRuns = runningSchedules[it.id] != null
+                val scheduleAlreadyRuns = runningSchedules[it.id] == true
                 if (scheduleAlreadyRuns) {
                     traceSchedule { "schedule is already started" }
                 } else {

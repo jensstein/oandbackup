@@ -140,7 +140,7 @@ open class ScheduleService : Service() {
             }
         }
 
-        if (runningSchedules[scheduleId] == null) {
+        if (runningSchedules[scheduleId] != true) {
 
             if (scheduleId >= 0) {
 
@@ -294,7 +294,7 @@ open class ScheduleService : Service() {
     }
 
     fun beginSchedule(scheduleId: Long, name: String, details: String = ""): Boolean {
-        return if (runningSchedules[scheduleId] == null) {
+        return if (runningSchedules[scheduleId] != true) {
             runningSchedules[scheduleId] = true
             beginLogSection("schedule $name")
             true
