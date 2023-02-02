@@ -150,9 +150,15 @@ fun logInt() =
 val maxLogcat = "-t 100000"
 
 fun logApp() =
+    listOf("--- logcat app") +
     shell("logcat -d ${maxLogcat} --pid=${Process.myPid()} | grep -v SHELLOUT:")
 
+fun logRel() =
+    listOf("--- logcat related") +
+    shell("logcat -d ${maxLogcat} | grep -v SHELLOUT: | grep -E '(machiav3lli.backup|NeoBackup>))'")
+
 fun logSys() =
+    listOf("--- logcat system") +
     shell("logcat -d ${maxLogcat} | grep -v SHELLOUT:")
 
 fun dumpPrefs() =
@@ -181,15 +187,27 @@ fun dumpTiming() =
 
 fun accessTest() =
     listOf("------ access") +
-            listOf("- data") +
-            shell("echo \"\$(ls \$ANDROID_DATA/user/0/ | wc -l) packages\"") +
+            listOf("--- data") +
+            shell("echo \"\$(ls \$ANDROID_DATA/user/0/ | wc -l) packages (dtata)\"") +
             shell("ls -dAlZ \$ANDROID_DATA/user/0/") +
-            listOf("- apk") +
-            shell("echo \"$(ls \$ANDROID_DATA/app/ | wc -l) packages\"") +
+            listOf("--- data-device-protected") +
+            shell("echo \"\$(ls \$ANDROID_DATA/user_de/0/ | wc -l) packages (device protected)\"") +
+            shell("ls -dAlZ \$ANDROID_DATA/user_de/0/") +
+            listOf("--- apk") +
+            shell("echo \"$(ls \$ANDROID_DATA/app/ | wc -l) packages (app)\"") +
             shell("ls -dAlZ \$ANDROID_DATA/app/") +
-            listOf("- misc") +
+            listOf("--- misc") +
             shell("echo \"\$(ls -l \$ANDROID_DATA/misc/ | wc -l) misc data\"") +
-            shell("ls -dAlZ \$ANDROID_DATA/misc/")
+            shell("ls -dAlZ \$ANDROID_DATA/misc/") +
+            listOf("--- external") +
+            shell("echo \"\$(ls -l \$EXTERNAL_STORAGE/Android/data/ | wc -l) packages external data\"") +
+            shell("ls -dAlZ \$EXTERNAL_STORAGE/Android/data/") +
+            listOf("--- obb") +
+            shell("echo \"\$(ls -l \$EXTERNAL_STORAGE/Android/obb/ | wc -l) packages obb\"") +
+            shell("ls -dAlZ \$EXTERNAL_STORAGE/Android/obb/") +
+            listOf("--- media") +
+            shell("echo \"\$(ls -l \$EXTERNAL_STORAGE/Android/media/ | wc -l) packages media\"") +
+            shell("ls -dAlZ \$EXTERNAL_STORAGE/Android/media/")
 
 fun threadsInfo(): List<String> {
     val threads =
@@ -240,7 +258,7 @@ fun onErrorInfo(): List<String> {
 
 fun supportInfo(): List<String> {
     try {
-        val logs = logInt() + logApp()
+        val logs = logInt() + logRel()
         val lines =
             listOf("=== support log", "") +
                     envInfo() +
@@ -398,6 +416,7 @@ fun TerminalPage() {
                 Spacer(Modifier.width(8.dp))
                 TerminalButton("log/int") { append(logInt()) }
                 TerminalButton("log/app") { append(logApp()) }
+                TerminalButton("log/rel") { append(logRel()) }
                 TerminalButton("log/all") { append(logSys()) }
                 TerminalButton("info") { append(envInfo()) }
                 TerminalButton("prefs") { append(dumpPrefs()) }
