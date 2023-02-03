@@ -40,6 +40,7 @@ import com.machiav3lli.backup.ui.item.IntPref
 import com.machiav3lli.backup.ui.item.LaunchPref
 import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.ui.item.StringPref
+import com.machiav3lli.backup.utils.SystemUtils.numCores
 import com.machiav3lli.backup.utils.sortFilterModel
 
 
@@ -120,6 +121,13 @@ fun AdvancedPrefsPage() {
 }
 
 //---------------------------------------- developer settings - advanced users
+
+val pref_maxJobs = IntPref(
+    key = "dev-adv.maxJobs",
+    summary = "maximum number of jobs run concurrently (0 = default = numCores)[needs restart]",
+    entries = (0..10*numCores).toList(),
+    defaultValue = 0
+)
 
 val pref_busyIconTurnTime = IntPref(
     key = "dev-adv.busyIconTurnTime",

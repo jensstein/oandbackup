@@ -46,11 +46,25 @@ import com.machiav3lli.backup.handler.getSpecial
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.preferences.pref_maxJobs
 import com.machiav3lli.backup.preferences.pref_maxRetriesPerPackage
 import com.machiav3lli.backup.preferences.pref_useExpedited
 import com.machiav3lli.backup.preferences.pref_useForegroundInJob
 import com.machiav3lli.backup.services.CommandReceiver
+import com.machiav3lli.backup.utils.SystemUtils.numCores
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.util.concurrent.Executors
+
+
+val jobPool = Executors.newFixedThreadPool(
+        if (pref_maxJobs.value > 0)
+            pref_maxJobs.value
+        else
+            numCores
+    ).asCoroutineDispatcher()
+
 
 class AppActionWork(val context: Context, workerParams: WorkerParameters) :
     CoroutineWorker(context, workerParams) {
@@ -68,110 +82,116 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
 
     override suspend fun doWork(): Result {
 
-        OABX.wakelock(true)
+        val work = this
 
-        if (pref_useForegroundInJob.value)               //TODO hg42 the service already does this?
-        //if (inputData.getBoolean("immediate", false))
-            setForeground(getForegroundInfo())
-        //setForegroundAsync(getForegroundInfo())  //TODO hg42 what's the difference?
+        return withContext(jobPool) {
 
-        var actionResult: ActionResult? = null
+            OABX.wakelock(true)
 
-        setOperation("...")
+            if (pref_useForegroundInJob.value)               //TODO hg42 the service already does this?
+            //if (inputData.getBoolean("immediate", false))
+                setForeground(getForegroundInfo())
+            //setForegroundAsync(getForegroundInfo())  //TODO hg42 what's the difference?
 
-        var logMessage =
-            "------------------------------------------------------------ Work: $batchName $packageName"
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            logMessage += " ui=${context.isUiContext}"
-        }
-        Timber.i(logMessage)
+            var actionResult: ActionResult? = null
 
-        val selectedMode = inputData.getInt("selectedMode", MODE_UNSET)
+            setOperation("...")
 
-        var packageItem: Package? = null
+            var logMessage =
+                "------------------------------------------------------------ Work: $batchName $packageName"
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                logMessage += " ui=${context.isUiContext}"
+            }
+            Timber.i(logMessage)
 
-        try {
-            packageItem =
-                context.getSpecial(packageName)
-                    ?: run {
-                        val foundItem =
-                            context.packageManager.getPackageInfo(
-                                packageName,
-                                PackageManager.GET_PERMISSIONS
-                            )
-                        Package(context, foundItem)
-                    }
-        } catch (e: PackageManager.NameNotFoundException) {
-            if (packageLabel.isEmpty())
-                packageLabel = packageItem?.packageLabel ?: "NONAME"
-            packageItem = Package(context, packageName)
-        }
+            val selectedMode = inputData.getInt("selectedMode", MODE_UNSET)
 
-        try {
-            if (!isStopped) {
+            var packageItem: Package? = null
 
-                packageItem?.let { pi ->
-                    try {
-                        //pi.refreshBackupList()  // not yet set, be up to date when the job is finally executed
-                        OABX.shellHandlerInstance?.let { shellHandler ->
-                            actionResult = when {
-                                backupBoolean -> {
-                                    BackupRestoreHelper.backup(
-                                        context, this, shellHandler, pi, selectedMode
-                                    )
-                                }
-                                else          -> {
-                                    // Latest backup for now
-                                    pi.latestBackup?.let {
-                                        BackupRestoreHelper.restore(
-                                            context, this,
-                                            shellHandler, pi,
-                                            selectedMode, it
+            try {
+                packageItem =
+                    context.getSpecial(packageName)
+                        ?: run {
+                            val foundItem =
+                                context.packageManager.getPackageInfo(
+                                    packageName,
+                                    PackageManager.GET_PERMISSIONS
+                                )
+                            Package(context, foundItem)
+                        }
+            } catch (e: PackageManager.NameNotFoundException) {
+                if (packageLabel.isEmpty())
+                    packageLabel = packageItem?.packageLabel ?: "NONAME"
+                packageItem = Package(context, packageName)
+            }
+
+            try {
+                if (!isStopped) {
+
+                    packageItem?.let { pi ->
+                        try {
+                            //pi.refreshBackupList()  // not yet set, be up to date when the job is finally executed
+                            OABX.shellHandlerInstance?.let { shellHandler ->
+                                actionResult = when {
+                                    backupBoolean -> {
+                                        BackupRestoreHelper.backup(
+                                            context, work, shellHandler, pi, selectedMode
                                         )
+                                    }
+                                    else          -> {
+                                        // Latest backup for now
+                                        pi.latestBackup?.let {
+                                            BackupRestoreHelper.restore(
+                                                context, work,
+                                                shellHandler, pi,
+                                                selectedMode, it
+                                            )
+                                        }
                                     }
                                 }
                             }
+                            //pi.refreshBackupList()  // who knows what happened in external space?
+                        } catch (e: Throwable) {
+                            val message = "package not processed: $packageName $packageLabel: $e\n${
+                                LogsHandler.message(e, true)
+                            }"
+                            actionResult = ActionResult(pi, null, message, false)
+                            Timber.w(message)
                         }
-                        //pi.refreshBackupList()  // who knows what happened in external space?
-                    } catch (e: Throwable) {
-                        val message = "package not processed: $packageName $packageLabel: $e\n${
-                            LogsHandler.message(e, true)
-                        }"
-                        actionResult = ActionResult(pi, null, message, false)
-                        Timber.w(message)
                     }
                 }
+            } catch (e: Throwable) {
+                LogsHandler.unexpectedException(e, packageLabel)
             }
-        } catch (e: Throwable) {
-            LogsHandler.unexpectedException(e, packageLabel)
-        }
 
-        val succeeded = actionResult?.succeeded ?: false
-        val result = if (succeeded) {
-            setOperation("OK.")
-            Timber.w("package: $packageName OK")
-            Result.success(getWorkData("OK", actionResult))
-        } else {
-            failures++
-            setVar(batchName, packageName, "failures", failures.toString())
-            if (failures <= pref_maxRetriesPerPackage.value) {
-                setOperation("err")
-                Timber.w("package: $packageName failures: $failures -> retry")
-                Result.retry()
+            val succeeded = actionResult?.succeeded ?: false
+            val result = if (succeeded) {
+                setOperation("OK.")
+                Timber.w("package: $packageName OK")
+                Result.success(getWorkData("OK", actionResult))
             } else {
-                val message = "$packageName\n${actionResult?.message}"
-                showNotification(
-                    context, MainActivityX::class.java,
-                    actionResult.hashCode(), packageLabel, actionResult?.message, message, false
-                )
-                setOperation("ERR")
-                Timber.w("package: $packageName FAILED")
-                Result.failure(getWorkData("ERR", actionResult))
+                failures++
+                setVar(batchName, packageName, "failures", failures.toString())
+                if (failures <= pref_maxRetriesPerPackage.value) {
+                    setOperation("err")
+                    Timber.w("package: $packageName failures: $failures -> retry")
+                    Result.retry()
+                } else {
+                    val message = "$packageName\n${actionResult?.message}"
+                    showNotification(
+                        context, MainActivityX::class.java,
+                        actionResult.hashCode(), packageLabel, actionResult?.message, message, false
+                    )
+                    setOperation("ERR")
+                    Timber.w("package: $packageName FAILED")
+                    Result.failure(getWorkData("ERR", actionResult))
+                }
             }
-        }
 
-        OABX.wakelock(false)
-        return result
+            OABX.wakelock(false)
+
+            result
+        }
     }
 
     fun setOperation(operation: String = "") {
