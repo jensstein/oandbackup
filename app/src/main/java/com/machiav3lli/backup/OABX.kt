@@ -59,6 +59,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.lang.Integer.min
 import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicInteger
@@ -572,10 +573,10 @@ class OABX : Application() {
             }
         }
 
-        fun hitBusy(state: Boolean = false) {
-            //beginNanoTimer("busy.hitBusy")
-            busyCountDown.set(pref_busyHitTime.value / busyTick)
-            //endNanoTimer("busy.hitBusy")
+        fun hitBusy(time: Long = 0L) {
+            busyCountDown.set(
+                min(time.toInt(), pref_busyHitTime.value) / busyTick
+            )
         }
 
         fun beginBusy(name: String? = null) {
@@ -583,13 +584,13 @@ class OABX : Application() {
                 val label = name ?: methodName(1)
                 """*** \ busy $label"""
             }
-            hitBusy(true)
+            hitBusy()
             beginNanoTimer("busy.$name")
         }
 
         fun endBusy(name: String? = null): Long {
             val time = endNanoTimer("busy.$name")
-            hitBusy()
+            hitBusy(0)
             traceBusy {
                 val label = name ?: methodName(1)
                 "*** / busy $label ${"%.3f".format(time / 1E9)} sec"
