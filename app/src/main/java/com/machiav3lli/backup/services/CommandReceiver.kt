@@ -27,12 +27,12 @@ class CommandReceiver : //TODO hg42 how to maintain security?
             ACTION_CANCEL     -> {
                 val batchName = intent.getStringExtra("name")
                 Timber.d("################################################### command intent cancel -------------> name=$batchName")
-                OABX.addInfoText("$command $batchName")
+                OABX.addInfoLogText("$command $batchName")
                 OABX.work.cancel(batchName)
             }
             ACTION_SCHEDULE   -> {
                 intent.getStringExtra("name")?.let { name ->
-                    OABX.addInfoText("$command $name")
+                    OABX.addInfoLogText("$command $name")
                     Timber.d("################################################### command intent schedule -------------> name=$name")
                     Thread {
                         val now = System.currentTimeMillis()
@@ -52,7 +52,7 @@ class CommandReceiver : //TODO hg42 how to maintain security?
                     val time = intent.getStringExtra("time")
                     val setTime = time ?: SimpleDateFormat("HH:mm", Locale.getDefault())
                         .format(now + 120)
-                    OABX.addInfoText("$command $name $time -> $setTime")
+                    OABX.addInfoLogText("$command $name $time -> $setTime")
                     Timber.d("################################################### command intent reschedule -------------> name=$name time=$time -> $setTime")
                     Thread {
                         val scheduleDao = OABX.db.scheduleDao
@@ -74,7 +74,7 @@ class CommandReceiver : //TODO hg42 how to maintain security?
             }
             null              -> {}
             else              -> {
-                OABX.addInfoText("Command: command '$command'")
+                OABX.addInfoLogText("Command: command '$command'")
             }
         }
     }

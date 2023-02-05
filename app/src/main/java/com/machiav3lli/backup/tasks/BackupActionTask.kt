@@ -49,7 +49,7 @@ class BackupActionTask(
             result = BackupRestoreHelper.backup(mainActivityX, null, shellHandler, app, mode)
 
         }
-        OABX.addInfoText(
+        OABX.addInfoLogText(
             "backup: ${app.packageName}: ${(time / 1000 + 0.5).toInt()} sec"
         )
 

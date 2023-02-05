@@ -37,7 +37,7 @@ import com.machiav3lli.backup.IGNORED_PERMISSIONS
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.OABX.Companion.addInfoText
+import com.machiav3lli.backup.OABX.Companion.addInfoLogText
 import com.machiav3lli.backup.OABX.Companion.hitBusy
 import com.machiav3lli.backup.OABX.Companion.setBackups
 import com.machiav3lli.backup.PROP_NAME
@@ -374,7 +374,7 @@ suspend fun scanBackups(
     }
     if (packageName.isEmpty()) {
         traceBackupsScanPackage { "queue total ----> $total" }
-        if (suspicious > 0) addInfoText("suspicious: $suspicious")
+        if (suspicious > 0) addInfoLogText("suspicious: $suspicious")
     }
 }
 
@@ -492,7 +492,7 @@ fun Context.findBackups(
                 endBackupsLock()
 
             val time = OABX.endBusy("findBackups")
-            OABX.addInfoText("findBackups: ${"%.3f".format(time / 1E9)} sec")
+            OABX.addInfoLogText("findBackups: ${"%.3f".format(time / 1E9)} sec")
 
             if (traceTiming.pref.value) {
                 logNanoTiming("scanBackups.", "scanBackups")
@@ -582,7 +582,7 @@ fun Context.getInstalledPackageList(): MutableList<Package> { // only used in Sc
             //}.toMutableList()
         }
 
-        OABX.addInfoText(
+        OABX.addInfoLogText(
             "getPackageList: ${(time / 1000 + 0.5).toInt()} sec"
         )
     } catch (e: Throwable) {
@@ -736,7 +736,7 @@ fun Context.updateAppTables() {
         logException(e, backTrace = true)
     } finally {
         val time = OABX.endBusy("updateAppTables")
-        OABX.addInfoText("updateAppTables: ${"%.3f".format(time / 1E9)} sec")
+        OABX.addInfoLogText("updateAppTables: ${"%.3f".format(time / 1E9)} sec")
     }
 }
 

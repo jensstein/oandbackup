@@ -78,7 +78,7 @@ object FileUtils {
                 val time = measureNanoTime {
                     OABX.context.updateAppTables()
                 }
-                OABX.addInfoText("invalidateBackupLocation: ${"%.3f".format(time / 1E9)} sec")
+                OABX.addInfoLogText("invalidateBackupLocation: ${"%.3f".format(time / 1E9)} sec")
             } catch (e: Throwable) {
                 LogsHandler.logException(e, backTrace = true)
             }

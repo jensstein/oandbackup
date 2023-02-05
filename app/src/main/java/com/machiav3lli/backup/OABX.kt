@@ -250,8 +250,8 @@ class OABX : Application() {
         work?.prune()
 
         MainScope().launch {
-            addInfoText("--> click title to keep infobox open")
-            addInfoText("--> long press title for dev tools")
+            addInfoLogText("--> click title to keep infobox open")
+            addInfoLogText("--> long press title for dev tools")
         }
 
         val startupMsg = "******************** startup" // ensure it's the same for begin/end
@@ -270,7 +270,7 @@ class OABX : Application() {
             } finally {
                 traceBackupsScan { "*** --------------------> packages: ${backupsMap.keys.size} backups: ${backupsMap.values.flatten().size}" }
                 val time = endBusy(startupMsg)
-                addInfoText("startup: ${"%.3f".format(time / 1E9)} sec")
+                addInfoLogText("startup: ${"%.3f".format(time / 1E9)} sec")
                 startup = false
 
                 main?.viewModel?.retriggerFlowsForUI()
@@ -454,28 +454,28 @@ class OABX : Application() {
 
         //------------------------------------------------------------------------------------------ infoText
 
-        var infoLines = mutableStateListOf<String>()
+        var infoLogLines = mutableStateListOf<String>()
 
-        val nInfoLines = 100
-        var showInfo by mutableStateOf(false)
+        val nInfoLogLines = 100
+        var showInfoLog by mutableStateOf(false)
 
-        fun clearInfoText() {
-            synchronized(infoLines) {
-                infoLines = mutableStateListOf()
+        fun clearInfoLogText() {
+            synchronized(infoLogLines) {
+                infoLogLines = mutableStateListOf()
             }
         }
 
-        fun addInfoText(value: String) {
-            synchronized(infoLines) {
-                infoLines.add(value)
-                if (infoLines.size > nInfoLines)
-                    infoLines.drop(1)
+        fun addInfoLogText(value: String) {
+            synchronized(infoLogLines) {
+                infoLogLines.add(value)
+                if (infoLogLines.size > nInfoLogLines)
+                    infoLogLines.drop(1)
             }
         }
 
-        fun getInfoText(n: Int = nInfoLines, fill: String? = null): String {
-            synchronized(infoLines) {
-                val lines = infoLines.takeLast(n).toMutableList()
+        fun getInfoLogText(n: Int = nInfoLogLines, fill: String? = null): String {
+            synchronized(infoLogLines) {
+                val lines = infoLogLines.takeLast(n).toMutableList()
                 if (fill != null)
                     while (lines.size < n)
                         lines.add(fill)

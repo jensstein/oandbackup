@@ -48,7 +48,7 @@ import coil.ImageLoader
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.MODE_ALL
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.OABX.Companion.addInfoText
+import com.machiav3lli.backup.OABX.Companion.addInfoLogText
 import com.machiav3lli.backup.OABX.Companion.beginBusy
 import com.machiav3lli.backup.OABX.Companion.endBusy
 import com.machiav3lli.backup.SELECTIONS_FOLDER_NAME
@@ -286,7 +286,7 @@ fun launchPackagesAction(
             unexpectedException(e)
         } finally {
             val time = endBusy(name)
-            addInfoText("$name: ${"%.3f".format(time / 1E9)} sec")
+            addInfoLogText("$name: ${"%.3f".format(time / 1E9)} sec")
         }
     }
 }

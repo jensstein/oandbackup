@@ -64,7 +64,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.OABX.Companion.addInfoText
+import com.machiav3lli.backup.OABX.Companion.addInfoLogText
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.fragments.BatchPrefsSheet
@@ -460,7 +460,7 @@ class MainActivityX : BaseActivity() {
             null -> {}
             "android.intent.action.MAIN" -> {}
             else -> {
-                addInfoText("Main: command '$command'")
+                addInfoLogText("Main: command '$command'")
             }
         }
         return false

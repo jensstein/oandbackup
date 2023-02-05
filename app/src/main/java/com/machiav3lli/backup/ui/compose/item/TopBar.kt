@@ -101,21 +101,21 @@ fun DefaultPreview() {
 
     val maxCount = 4
 
-    OABX.clearInfoText()
-    repeat(10) { OABX.addInfoText("line $it") }
+    OABX.clearInfoLogText()
+    repeat(10) { OABX.addInfoLogText("line $it") }
     OABX.setProgress(count, maxCount)
 
     LaunchedEffect(OABX) {
         MainScope().launch {
             while (count < maxCount) {
                 OABX.beginBusy()
-                OABX.addInfoText("count is $count busy is $busy")
+                OABX.addInfoLogText("count is $count busy is $busy")
                 delay(1000)
                 count = (count + 1) % (maxCount + 2)
                 OABX.endBusy()
                 if (count > maxCount)
                     OABX.setProgress()
-                OABX.addInfoText("count is $count busy is $busy")
+                OABX.addInfoLogText("count is $count busy is $busy")
                 delay(1000)
             }
         }
@@ -142,7 +142,7 @@ fun DefaultPreview() {
                 OABX.setProgress(count, maxCount)
                 if (count > maxCount)
                     OABX.setProgress()
-                OABX.addInfoText("test $count")
+                OABX.addInfoLogText("test $count")
             }
         ) {
             Text("$count")
@@ -413,9 +413,9 @@ fun TopBar(
     val scope = rememberCoroutineScope()
     val infoText =
         if (longShowInfo.value)
-            OABX.getInfoText()
+            OABX.getInfoLogText()
         else
-            OABX.getInfoText(n = 5, fill = "")
+            OABX.getInfoLogText(n = 5, fill = "")
     val scroll = rememberScrollState(0)
     val showInfo =
         !longShowInfo.value && (OABX.showInfo || tempShowInfo) && pref_showInfoLogBar.value
