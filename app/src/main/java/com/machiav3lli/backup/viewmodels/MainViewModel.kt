@@ -159,7 +159,7 @@ class MainViewModel(
             //val pkgs = p.toPackageList(appContext, emptyList(), b)
             val pkgs = p.toPackageList(appContext, emptyList(), getBackups())
 
-            IconCache.dropAllButUsed(pkgs)
+            IconCache.dropAllButUsed(pkgs.drop(0))
 
             traceFlows { "***** packages ->> ${pkgs.size}" }
             pkgs

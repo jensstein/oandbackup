@@ -245,11 +245,12 @@ object IconCache {
     }
 
     fun dropAllButUsed(pkgs: List<Package>) {
+        val used = pkgs.map { it.iconData }
         beginNanoTimer("limitIconCache")
         val keys = synchronized(painterCache) { painterCache.keys }
-        (keys - pkgs.map { it.iconData }).forEach {
+        (keys - used).forEach {
             if (it !is Int) {
-                IconCache.removeIcon(it)
+                removeIcon(it)
             }
         }
         endNanoTimer("limitIconCache")
