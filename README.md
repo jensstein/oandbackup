@@ -107,4 +107,4 @@ Following the application on their grant for open-source projects, my Tutanota e
 
 ## Authors
 
-Antonios Hazim & Harald Gautsche
+Antonios Hazim & Harald Gutsche
