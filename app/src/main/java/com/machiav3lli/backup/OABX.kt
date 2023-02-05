@@ -295,24 +295,26 @@ class OABX : Application() {
             }
             lastLogMessages.add(message)
             val size = lastLogMessages.size
-            val nDelete = size-maxLogLines
+            val nDelete = size - maxLogLines
             if (nDelete > 0)
                 repeat(nDelete) {
                     lastLogMessages.remove()
                 }
         }
+
         var lastErrorPackage = ""
         var lastErrorCommands = ConcurrentLinkedQueue<String>()
         fun addErrorCommand(command: String) {
             val maxErrorCommands = 10
             lastErrorCommands.add(command)
             val size = lastErrorCommands.size
-            val nDelete = size-maxErrorCommands
+            val nDelete = size - maxErrorCommands
             if (nDelete > 0)
                 repeat(nDelete) {
                     lastErrorCommands.remove()
                 }
         }
+
         var logSections = mutableMapOf<String, Int>()
             .withDefault { 0 }     //TODO hg42 use AtomicInteger? but map is synchronized anyways
 

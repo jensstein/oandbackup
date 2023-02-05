@@ -295,7 +295,12 @@ fun supportInfoLogShare() {
 }
 
 @Composable
-fun TerminalButton(name: String, important: Boolean = false, action: () -> Unit) {
+fun TerminalButton(
+    name: String,
+    modifier: Modifier = Modifier,
+    important: Boolean = false,
+    action: () -> Unit
+) {
     val color = if (important)
         MaterialTheme.colorScheme.primaryContainer
     else
@@ -306,15 +311,16 @@ fun TerminalButton(name: String, important: Boolean = false, action: () -> Unit)
         MaterialTheme.colorScheme.onSurfaceVariant
     SmallFloatingActionButton(
         modifier = Modifier
+            .padding(2.dp, 0.dp)
             .wrapContentWidth()
             .wrapContentHeight()
-            .padding(2.dp, 0.dp),
+            .then(modifier),
         containerColor = color,
         onClick = action
     ) {
         Text(
             modifier = Modifier
-                .padding(2.dp, 0.dp),
+                .padding(8.dp, 0.dp),
             text = name,
             color = textColor
         )

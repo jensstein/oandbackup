@@ -596,7 +596,7 @@ fun Context.getInstalledPackageList(): MutableList<Package> { // only used in Sc
                 }
                 .toMutableList()
 
-            //if (!OABX.appsSuspendedChecked) { //TODO move somewhere else
+            //if (!OABX.appsSuspendedChecked) { //TODO hg42 move somewhere else
             //    packageList.filter { appPackage ->
             //        0 != (OABX.activity?.packageManager
             //            ?.getPackageInfo(appPackage.packageName, 0)
