@@ -381,9 +381,9 @@ val pref_forceCrash = LaunchPref(
     throw Exception("forceCrash")
 }
 
-val pref_killMyself = LaunchPref(
-    key = "dev-fake.killMyself",
-    summary = "kill the app, which leaves the Alarms set (in contrast to force-close) [for testing only]"
+val pref_killThisApp = LaunchPref(
+    key = "dev-fake.killThisApp",
+    summary = "terminate app, service and process, but leave the schedules(=alarms) intact (in contrast to force-close, where alarms are removed from the system)"
 ) {
     OABX.activity?.let { ActivityCompat.finishAffinity(it) }
     System.exit(0)
