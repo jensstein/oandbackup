@@ -23,6 +23,7 @@ import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.LOGS_FOLDER_NAME
 import com.machiav3lli.backup.LOG_INSTANCE
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.OABX.Companion.hitBusy
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.items.StorageFile
@@ -105,6 +106,9 @@ class LogsHandler {
             backupRoot.findFile(LOGS_FOLDER_NAME)?.let { logsDir ->
                 if (logsDir.isDirectory) {
                     logsDir.listFiles().forEach {
+
+                        hitBusy(1000L)
+
                         if (it.isFile) try {
                             logs.add(Log(it))
                         } catch (e: Throwable) {
