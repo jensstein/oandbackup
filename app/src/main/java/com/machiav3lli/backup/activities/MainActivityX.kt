@@ -39,6 +39,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,6 +54,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -62,6 +64,7 @@ import androidx.work.WorkManager
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
+import com.machiav3lli.backup.ICON_SIZE_SMALL
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.addInfoLogText
@@ -141,6 +144,52 @@ fun Modifier.angledGradientBackground(colors: List<Color>, degrees: Float, facto
             )
         }
     )
+
+@Composable
+fun RefreshButton(
+    modifier: Modifier = Modifier,
+    size: Dp = ICON_SIZE_SMALL,
+    tint: Color = MaterialTheme.colorScheme.onBackground,
+    hideIfNotBusy: Boolean = false,
+    onClick: () -> Unit = {},
+) {
+    val isBusy by remember { OABX.busy }
+
+    if (hideIfNotBusy && isBusy.not())
+        return
+
+    val (angle, scale) = if (isBusy) {
+        val infiniteTransition = rememberInfiniteTransition()
+
+        // Animate from 0f to 1f
+        val animationProgress by infiniteTransition.animateFloat(
+            initialValue = 0f,
+            targetValue = 1f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(
+                    durationMillis = pref_busyIconTurnTime.value,
+                    easing = LinearEasing
+                )
+            )
+        )
+        val angle = 360f * animationProgress
+        val scale = 0.01f * pref_busyIconScale.value
+        angle to scale
+    } else {
+        0f to 1f
+    }
+
+    RoundButton(
+        description = stringResource(id = R.string.refresh),
+        icon = Phosphor.ArrowsClockwise,
+        size = size,
+        tint = if (isBusy) Color.Red else tint,
+        modifier = modifier
+            .scale(scale)
+            .rotate(angle),
+        onClick = onClick
+    )
+}
 
 class MainActivityX : BaseActivity() {
 
@@ -284,28 +333,6 @@ class MainActivityX : BaseActivity() {
                         containerColor = Color.Transparent,
                         contentColor = MaterialTheme.colorScheme.onBackground,
                         topBar = {
-                            val isBusy by remember { OABX.busy }
-                            val (angle, scale) = if (isBusy) {
-                                val infiniteTransition = rememberInfiniteTransition()
-
-                                // Animate from 0f to 1f
-                                val animationProgress by infiniteTransition.animateFloat(
-                                    initialValue = 0f,
-                                    targetValue = 1f,
-                                    animationSpec = infiniteRepeatable(
-                                        animation = tween(
-                                            durationMillis = pref_busyIconTurnTime.value,
-                                            easing = LinearEasing
-                                        )
-                                    )
-                                )
-                                val angle = 360f * animationProgress
-                                val scale = 0.01f * pref_busyIconScale.value
-                                angle to scale
-                            } else {
-                                0f to 1f
-                            }
-
                             if (currentPage.destination == NavItem.Scheduler.destination)
                                 TopBar(
                                     title = stringResource(id = currentPage.title)
@@ -352,14 +379,7 @@ class MainActivityX : BaseActivity() {
                                         }
                                     )
 
-                                    RoundButton(
-                                        description = stringResource(id = R.string.refresh),
-                                        icon = Phosphor.ArrowsClockwise,
-                                        tint = if (isBusy) Color.Red else MaterialTheme.colorScheme.onBackground,
-                                        modifier = Modifier
-                                            .scale(scale)
-                                            .rotate(angle)
-                                    ) { refreshPackages() }
+                                    RefreshButton() { refreshPackages() }
                                     RoundButton(
                                         description = stringResource(id = R.string.prefs_title),
                                         icon = Phosphor.GearSix
