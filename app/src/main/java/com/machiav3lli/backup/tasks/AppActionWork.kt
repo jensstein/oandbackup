@@ -52,18 +52,10 @@ import com.machiav3lli.backup.preferences.pref_useExpedited
 import com.machiav3lli.backup.preferences.pref_useForegroundInJob
 import com.machiav3lli.backup.services.CommandReceiver
 import com.machiav3lli.backup.utils.SystemUtils.numCores
-import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.util.concurrent.Executors
-
-
-val jobPool = Executors.newFixedThreadPool(
-        if (pref_maxJobs.value > 0)
-            pref_maxJobs.value
-        else
-            numCores
-    ).asCoroutineDispatcher()
 
 
 class AppActionWork(val context: Context, workerParams: WorkerParameters) :
@@ -278,6 +270,21 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
 
     companion object {
         private val CHANNEL_ID = AppActionWork::class.java.name
+
+        //val jobPool1 = Executors.newFixedThreadPool(
+        //    if (pref_maxJobs.value > 0)
+        //        pref_maxJobs.value
+        //    else
+        //        numCores
+        //).asCoroutineDispatcher()
+
+        @OptIn(ExperimentalCoroutinesApi::class)
+        val jobPool = Dispatchers.IO.limitedParallelism(
+            if (pref_maxJobs.value > 0)
+                pref_maxJobs.value
+            else
+                numCores
+        )
 
         fun Request(
             packageName: String,
