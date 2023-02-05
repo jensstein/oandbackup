@@ -24,9 +24,7 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Process
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import com.machiav3lli.backup.BACKUP_INSTANCE_PROPERTIES_INDIR
 import com.machiav3lli.backup.BACKUP_INSTANCE_REGEX_PATTERN
 import com.machiav3lli.backup.BACKUP_PACKAGE_FOLDER_REGEX_PATTERN
@@ -121,7 +119,7 @@ val scanPool = when (1) {
     // creates many threads (~65)
     else -> Dispatchers.IO
 
-    //TODO hg42 it's still not clear, if non-recursive scanning prevents hanging
+    //TODO hg42 it's still not 100% clear, if queue based scanning prevents hanging
 }
 
 suspend fun scanBackups(
@@ -154,22 +152,32 @@ suspend fun scanBackups(
         }
     }
 
-    var suspicious by mutableStateOf(0)     // documented to be thread safe
+    val suspicious = AtomicInteger(0)
 
-    fun renameDamagedToERROR(file: StorageFile) {
-        if (renameDamaged == true)
+    fun renameDamagedToERROR(file: StorageFile, reason: String) {
+        if (renameDamaged == true) {
             runCatching {
-                file.renameTo("$ERROR_PREFIX${file.name}")
+                val newName = "$ERROR_PREFIX${file.name}"
+                file.renameTo(newName)
+                Timber.i("renamed: ${file.path} ($reason)")
+                suspicious.getAndIncrement()
             }
-        else if (renameDamaged == null)
-            suspicious++
+        } else if (renameDamaged == null) {
+            suspicious.getAndIncrement()
+            Timber.i("suspicious: ${file.path} ($reason)")
+        }
     }
 
     fun undoDamagedToERROR(file: StorageFile) {
         runCatching {
             file.name?.let { name ->
-                if (name.startsWith(ERROR_PREFIX))
-                    file.renameTo(name.removePrefix(ERROR_PREFIX))
+                if (name.startsWith(ERROR_PREFIX)) {
+                    val newName = name.removePrefix(ERROR_PREFIX)
+                    if (file.renameTo(newName)) {
+                        Timber.i("undo: ${file.path}")
+                        suspicious.getAndIncrement()
+                    }
+                }
             }
         }
     }
@@ -193,37 +201,58 @@ suspend fun scanBackups(
             else {
                 name?.let {
                     if (!it.contains(regexSpecialFile))
-                        renameDamagedToERROR(file)
+                        renameDamagedToERROR(file, "damaged")
                 }
             }
         }
     }
 
-    fun handleDirectory(file: StorageFile, collector: FlowCollector<StorageFile>? = null) {
+    fun handleDirectory(file: StorageFile, collector: FlowCollector<StorageFile>? = null): Boolean {
+
+        hitBusy()
+
         beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}listFiles")
         var list = file.listFiles()
         endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}listFiles")
-        // queue at front of queue (depth first)
-        // filter out dir matching dir.properties
-        val props = list.mapNotNull { it.name }.filter { it.endsWith(".$PROP_NAME") ?: false }
-        val propDirs = props.map { it.removeSuffix(".$PROP_NAME") }
-        list = list.filterNot { it.name in propDirs }
+
+        if (list.isEmpty())
+            return false
+
+        // undo for all files otherwise filter
+        if (renameDamaged != false) {
+            // queue at front of queue (depth first)
+            // filter out dir matching dir.properties
+            val props = list.mapNotNull { it.name }.filter { it.endsWith(".$PROP_NAME") ?: false }
+            val propDirs = props.map { it.removeSuffix(".$PROP_NAME") }
+
+            if (renameDamaged == true) {
+                list.filter { it.name in propDirs }.forEach { file ->
+                    runCatching {   // in case it's not a directory etc.
+                        if (file.listFiles().isEmpty())
+                            renameDamagedToERROR(file, "empty-inst-dir")
+                    }
+                }
+            }
+
+            list = list.filterNot { it.name in propDirs }
+        }
+
         // if matching directories are filtered out, we can sort normally,
-        // so sort reverted and prepend one by one
+        // so we sort reverted and push to front one by one
         list.sortedByDescending { it.name }.forEach {
             files.offerFirst(it)
         }
+
+        return true
     }
 
-    handleDirectory(directory)	// top level directory
+    handleDirectory(directory)    // top level directory
 
     suspend fun processFile(
         file: StorageFile,
     ): Unit {
 
         checkThreadStats()
-
-        hitBusy()
 
         val name = file.name ?: ""
         val path = file.path ?: ""
@@ -234,8 +263,15 @@ suspend fun scanBackups(
                 } file"
             }
 
-        if (renameDamaged == false)
+        if (renameDamaged == false) {
+            // undo for each file
             undoDamagedToERROR(file)
+            // scan all files
+            if (file.isDirectory)
+                handleDirectory(file)
+            // do nothing else
+            return
+        }
 
         if (name.contains(regexPackageFolder) ||
             name.contains(regexBackupInstance)                      // backup
@@ -246,8 +282,8 @@ suspend fun scanBackups(
                         formatBackupFile(file)
                     } backup"
                 }
-            if (path.contains(packageName)) {                       // either of the single scan or any
-                if (name.contains(regexBackupInstance)                  // instance
+            if (path.contains(packageName)) {                           // single scan: pkg matches
+                if (name.contains(regexBackupInstance)                  // or any instance
                 ) {
                     traceBackupsScanPackage {
                         ":::${"|:::".repeat(level)}i     ${
@@ -273,48 +309,50 @@ suspend fun scanBackups(
                             //    //file.parent?.findFile("${file.name}.${PROP_NAME}")
                             //    files.find { it.name == "${file.name}.${PROP_NAME}" }
                             //if (!(propFile?.exists() ?: false)) {         // no dir.properties
-                                    if (name.contains(regexPackageFolder)) {
-                                        if (false) {    //TODO hg42 it's damn slow (inDir not working)
-                                            try {
-                                                file.findFile(BACKUP_INSTANCE_PROPERTIES_INDIR)  // indir props
-                                                    ?.let {
-                                                        traceBackupsScanPackage {
-                                                            ":::${"|:::".repeat(level)}>     ${
-                                                                formatBackupFile(it)
-                                                            } ++++++++++++++++++++ indir props ok"
-                                                        }
+                            if (name.contains(regexPackageFolder)) {
+                                if (false) {    //TODO hg42 it's damn slow (inDir not working)
+                                    try {
+                                        file.findFile(BACKUP_INSTANCE_PROPERTIES_INDIR)  // indir props
+                                            ?.let {
+                                                traceBackupsScanPackage {
+                                                    ":::${"|:::".repeat(level)}>     ${
+                                                        formatBackupFile(it)
+                                                    } ++++++++++++++++++++ indir props ok"
+                                                }
                                                 handleProps(it, it.path, it.name, onPropsFile) {
-                                                            // rename the dir, because the backup is damaged
-                                                            runCatching {
-                                                                file.name?.let { name ->
-                                                                    if (!name.contains(
-                                                                            regexSpecialFolder
-                                                                        )
-                                                                    ) {
-                                                                        renameDamagedToERROR(file)
-                                                                    }
-                                                                }
+                                                    runCatching {
+                                                        file.name?.let { name ->
+                                                            if (!name.contains(
+                                                                    regexSpecialFolder
+                                                                )
+                                                            ) {
+                                                                renameDamagedToERROR(
+                                                                    file,
+                                                                    "damaged"
+                                                                )
                                                             }
                                                         }
-                                                    } ?: run { // rename the dir, no dir.properties
-                                                    renameDamagedToERROR(file)
+                                                    }
                                                 }
-                                            } catch (_: Throwable) { // rename the dir, no dir.properties
-                                                renameDamagedToERROR(file)
-                                            }
+                                            } ?: run {
+                                            renameDamagedToERROR(file, "no-props")
                                         }
-                                    } else {
-                                        renameDamagedToERROR(file)
+                                    } catch (_: Throwable) {
+                                        renameDamagedToERROR(file, "no-props")
                                     }
+                                }
+                            } else {
+                                renameDamagedToERROR(file, "no-props")
+                            }
                             //} else {
                             //    // ok, dir.properties exists
                             //}
                             //}
                         }
                     }
-                } else {
+                } else {                                            // no instance
                     if (file.isPropertyFile &&
-                        !name.contains(regexSpecialFile)                // props without an instance name
+                        !name.contains(regexSpecialFile)                // non-instance props (???)
                     ) {
                         traceBackupsScanPackage {
                             ":::${"|:::".repeat(level)}> ${
@@ -329,7 +367,8 @@ suspend fun scanBackups(
                                     formatBackupFile(file)
                                 } //////////////////// dir ok"
                             }
-                            handleDirectory(file)
+                            if (handleDirectory(file).not())
+                                renameDamagedToERROR(file, "empty-dir")
                         }
                     }
                 }
@@ -344,7 +383,8 @@ suspend fun scanBackups(
                             formatBackupFile(file)
                         } /\\/\\/\\/\\/\\/\\/\\/\\/\\/\\ folder ok"
                     }
-                handleDirectory(file)
+                if (handleDirectory(file).not())
+                    renameDamagedToERROR(file, "empty-folder")
             }
         }
     }
@@ -374,7 +414,17 @@ suspend fun scanBackups(
     }
     if (packageName.isEmpty()) {
         traceBackupsScanPackage { "queue total ----> $total" }
-        if (suspicious > 0) addInfoLogText("suspicious: $suspicious")
+        if (suspicious.get() > 0)
+            addInfoLogText(
+                "${
+                    if (renameDamaged == true)
+                        "renamed"
+                    else if (renameDamaged == false)
+                        "undo"
+                    else
+                        "suspicious"
+                }: ${suspicious.get()}"
+            )
     }
 }
 
