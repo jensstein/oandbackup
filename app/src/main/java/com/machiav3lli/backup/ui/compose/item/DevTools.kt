@@ -1,5 +1,9 @@
 package com.machiav3lli.backup.ui.compose.item
 
+import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT
+import android.content.Intent.FLAG_ACTIVITY_MULTIPLE_TASK
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -43,7 +47,9 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.beginBusy
 import com.machiav3lli.backup.OABX.Companion.endBusy
 import com.machiav3lli.backup.activities.RefreshButton
+import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
 import com.machiav3lli.backup.handler.findBackups
+import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.preferences.DevPrefGroups
 import com.machiav3lli.backup.preferences.LogsPage
 import com.machiav3lli.backup.preferences.TerminalButton
@@ -51,11 +57,13 @@ import com.machiav3lli.backup.preferences.TerminalPage
 import com.machiav3lli.backup.preferences.TerminalText
 import com.machiav3lli.backup.preferences.supportInfoLogShare
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
+import com.machiav3lli.backup.traceDebug
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.MagnifyingGlass
 import com.machiav3lli.backup.ui.compose.icons.phosphor.X
 import com.machiav3lli.backup.ui.item.LaunchPref
 import com.machiav3lli.backup.ui.item.Pref
+import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.viewmodels.LogViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -178,7 +186,7 @@ fun DevSettingsTab() {
 
 val pref_renameDamagedToERROR = LaunchPref(
     key = "dev-tool.renameDamagedToERROR",
-    summary = "rename damaged backups from xxx to ${ERROR_PREFIX}xxx (e.g. damaged properties file, properties without directory, directory wihtout properties)"
+    summary = "rename damaged backups from xxx to ${ERROR_PREFIX}xxx (e.g. damaged properties file, properties without directory, directory without properties).\nHint: search recursively for ${ERROR_PREFIX} in a capable file manager"
 ) {
     MainScope().launch(Dispatchers.IO) {
         beginBusy("renameDamagedToERROR")
@@ -196,6 +204,117 @@ val pref_undoDamagedToERROR = LaunchPref(
         OABX.context.findBackups(renameDamaged = false)
         endBusy("undoDamagedToERROR")
     }
+}
+
+fun openFileManager(folder: StorageFile) {
+    folder.uri?.let { uri ->
+        MainScope().launch(Dispatchers.Default) {
+            try {
+                traceDebug { "uri = $uri" }
+                when (1) {
+                    0    -> {
+                        val intent =
+                            Intent().apply {
+                                action = Intent.ACTION_VIEW
+                                flags = FLAG_ACTIVITY_NEW_TASK or
+                                        FLAG_ACTIVITY_MULTIPLE_TASK or
+                                        FLAG_ACTIVITY_LAUNCH_ADJACENT
+                                setData(uri)
+                                //setDataAndType(uri, "*/*")
+                                //putExtra(Intent.EXTRA_LOCAL_ONLY, true)
+                                addCategory(Intent.CATEGORY_BROWSABLE)
+                            }
+                        OABX.activity?.startActivity(intent)
+                    }
+                    0    -> {
+                        val intent =
+                            Intent().apply {
+                                action = Intent.ACTION_GET_CONTENT
+                                flags = FLAG_ACTIVITY_NEW_TASK or
+                                        FLAG_ACTIVITY_MULTIPLE_TASK or
+                                        FLAG_ACTIVITY_LAUNCH_ADJACENT
+                                setData(uri)
+                                //setDataAndType(uri, "*/*")
+                                //putExtra(Intent.EXTRA_LOCAL_ONLY, true)
+                                addCategory(Intent.CATEGORY_BROWSABLE)
+                            }
+                        val chooser = Intent.createChooser(intent, "Browse")
+                        OABX.activity?.startActivity(chooser)
+                    }
+                    0    -> {
+                        val intent =
+                            Intent().apply {
+                                action = Intent.ACTION_GET_CONTENT
+                                flags = FLAG_ACTIVITY_NEW_TASK or
+                                        FLAG_ACTIVITY_MULTIPLE_TASK or
+                                        FLAG_ACTIVITY_LAUNCH_ADJACENT
+                                setDataAndType(uri, "*/*")
+                                //putExtra(Intent.EXTRA_LOCAL_ONLY, true)
+                                addCategory(Intent.CATEGORY_OPENABLE)
+                            }
+                        val chooser = Intent.createChooser(intent, "Browse")
+                        OABX.activity?.startActivity(chooser)
+                    }
+                    0    -> {
+                        val intent =
+                            Intent().apply {
+                                action = Intent.ACTION_OPEN_DOCUMENT_TREE
+                                //flags =
+                                //    FLAG_ACTIVITY_NEW_TASK or
+                                //            FLAG_ACTIVITY_MULTIPLE_TASK or
+                                //            FLAG_ACTIVITY_LAUNCH_ADJACENT
+                                setData(uri)
+                                //setDataAndType(uri, "*/*")
+                                //setDataAndType(uri, "resource/folder")
+                                //setDataAndType(uri, "vnd.android.document/directory")
+                                //setDataAndType(uri, EXTRA_MIME_TYPES)
+                                //addCategory(CATEGORY_APP_FILES)
+                            }
+                        OABX.activity?.startActivity(intent)
+                    }
+                    1    -> {
+                        val intent =
+                            Intent().apply {
+                                action = Intent.ACTION_VIEW
+                                flags =
+                                    FLAG_ACTIVITY_NEW_TASK or
+                                            FLAG_ACTIVITY_MULTIPLE_TASK or
+                                            FLAG_ACTIVITY_LAUNCH_ADJACENT
+                                //setData(uri)
+                                //setDataAndType(uri, "*/*")
+                                //setDataAndType(uri, "resource/folder")
+                                setDataAndType(uri, "vnd.android.document/directory")
+                                //putExtra(EXTRA_MIME_TYPES, arrayOf(
+                                //    "vnd.android.document/directory",
+                                //    "resource/folder",
+                                //))
+                                //addCategory(CATEGORY_APP_FILES)
+                                //addCategory(Intent.CATEGORY_BROWSABLE)
+                            }
+                        OABX.context.startActivity(intent)
+                    }
+                    else -> {}
+                }
+                traceDebug { "ok" }
+            } catch(e: Throwable) {
+                logException(e, backTrace = true)
+            }
+        }
+    }
+}
+
+fun testOnStart() {
+    MainScope().launch(Dispatchers.Main) {
+        delay(3000)
+        //openFileManager(OABX.context.getBackupRoot())
+    }
+}
+
+val pref_openBackupDir = LaunchPref(
+    key = "dev-tool.openBackupDir",
+    summary = "open backup directory in associated app"
+) {
+    OABX.context.getBackupRoot().let { openFileManager(it) }
 }
 
 @Composable
@@ -267,7 +386,11 @@ fun DevTools(
                     onLongClick = { tab = "devsett" }
                 )
             ) {
-                Box(modifier = Modifier.weight(1f).wrapContentHeight()) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .wrapContentHeight()
+                ) {
                     TitleOrInfoLog(
                         title = "DevTools",
                         showInfo = showInfo,
@@ -314,11 +437,6 @@ fun DevTools(
                 "term" to { TerminalPage() },
                 "" to {},
                 "devsett" to { DevSettingsTab() },
-                "" to {},
-                "" to {},
-                "" to {},
-                "" to {},
-                "" to {},
                 "" to {},
                 "SUPPORT" to { DevSupportTab() },
             )

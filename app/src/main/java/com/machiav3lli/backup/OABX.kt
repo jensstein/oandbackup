@@ -274,6 +274,10 @@ class OABX : Application() {
                 startup = false
 
                 main?.viewModel?.retriggerFlowsForUI()
+
+                if (BuildConfig.DEBUG) {
+                    //testOnStart()
+                }
             }
         }
     }
