@@ -197,7 +197,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                 if (isEncryptionEnabled()) {
                     backupBuilder.setCipherType(CIPHER_ALGORITHM)
                 }
-                StorageFile.cacheInvalidate(backupInstanceDir)
+                StorageFile.invalidateCache(backupInstanceDir)
                 val backupSize = backupInstanceDir.listFiles().sumOf { it.size }
                 backupBuilder.setSize(backupSize)
 

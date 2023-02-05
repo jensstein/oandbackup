@@ -394,14 +394,14 @@ open class StorageFile {
 
     val isDirectory: Boolean
         get() = file?.isDirectory
-                ?: (documentInfo?.mimeType == MIME_TYPE_DIR)
+            ?: (documentInfo?.mimeType == MIME_TYPE_DIR)
 
     val isPropertyFile: Boolean
         get() = name?.endsWith(".$PROP_NAME") ?: false
 
     fun exists(): Boolean =
         file?.exists()
-        ?: !documentInfo?.id.isNullOrEmpty()
+            ?: !documentInfo?.id.isNullOrEmpty()
 
     val size: Long
         get() = (
@@ -488,6 +488,7 @@ open class StorageFile {
                 }
             }
         }
+        // creates a subobject inside this
         path?.let { cacheFilesAdd(it, newFile) }
         return newFile
     }
@@ -496,13 +497,13 @@ open class StorageFile {
         traceDebug { "########## delete $path" }
         val ok = try {
             file?.delete()
-            ?: run {
-                // don't delete if any file inside
-                if (listFiles(maxFiles = 1, useCache = false).isEmpty())
-                    DocumentsContract.deleteDocument(context.contentResolver, _uri!!)
-                else
-                    false
-            }
+                ?: run {
+                    // don't delete if any file inside
+                    if (listFiles(maxFiles = 1, useCache = false).isEmpty())
+                        DocumentsContract.deleteDocument(context.contentResolver, _uri!!)
+                    else
+                        false
+                }
         } catch (e: FileNotFoundException) {
             false
         } catch (e: IllegalArgumentException) { // can also happen with FileNotFoundException
@@ -511,16 +512,15 @@ open class StorageFile {
             logException(e, path, backTrace = false)
             false
         }
-        if (ok) {
-            path?.let { cacheFilesRemove(it, this) }
-            parent?.let { cacheInvalidate(it) }
-        }
+        if (ok)
+        // removes this, so need to change parent
+            parent?.path?.let { cacheFilesRemove(it, this) }
         return ok
     }
 
     fun renameTo(displayName: String): Boolean {
-        path?.let { cacheFilesRemove(it, this) }
-        parent?.let { cacheInvalidate(it) }
+        // removes this, so need to change parent
+        parent?.path?.let { cacheFilesRemove(it, this) }
         var ok = false
         file?.let { oldFile ->
             val newFile = RootFile(oldFile.parent, displayName)
@@ -543,17 +543,18 @@ open class StorageFile {
             logException(e, path, backTrace = false)
             ok = false
         }
-        path?.let { cacheFilesAdd(it, this) }
+        // adds this, so need to change parent
+        parent?.path?.let { cacheFilesAdd(it, this) }
         return ok
     }
 
     fun readText(): String {
         return try {
             file?.readText()
-            ?: run {
-                inputStream()?.reader()?.readText()
-                ?: ""
-            }
+                ?: run {
+                    inputStream()?.reader()?.readText()
+                        ?: ""
+                }
         } catch (e: FileNotFoundException) {
             logException(e, path, backTrace = false)
             ""
@@ -580,7 +581,7 @@ open class StorageFile {
         if (exists())   //TODO CAUTION: deletes COMPLETE parent directory, if file does not exist
             delete()    //TODO no clue why! it was reproducible, only change this if 100% proved
         return parent?.createFile(name!!)
-                   ?.writeText(text) ?: false
+            ?.writeText(text) ?: false
     }
 
     fun findUri(displayName: String): Uri? {
@@ -756,10 +757,10 @@ open class StorageFile {
             if (pref_cacheUris.value) {
                 cacheCheck()
                 return cacheGetUri(uri.toString())
-                       ?: StorageFile(
-                           null,
-                           uri
-                       )
+                    ?: StorageFile(
+                        null,
+                        uri
+                    )
             } else {
                 return StorageFile(
                     null,
@@ -802,6 +803,10 @@ open class StorageFile {
             cacheCheck()    // non-lazy seems to be better
         }
 
+        fun invalidateCache(storageFile: StorageFile) {
+            storageFile.path?.let { path -> invalidateCache { it.startsWith(path) } }
+        }
+
         private fun cacheCheck() {
             try {
                 synchronized(invalidateFilters) {
@@ -829,11 +834,7 @@ open class StorageFile {
             }
         }
 
-        fun cacheInvalidate(storageFile: StorageFile) {
-            storageFile.path?.let { path -> invalidateCache { it.startsWith(path) } }
-        }
-
-        fun cacheGetFiles(id: String): List<StorageFile>? {
+        private fun cacheGetFiles(id: String): List<StorageFile>? {
             if (pref_cacheFileLists.value) {
                 cacheCheck()
                 return synchronized(fileListCache) {
@@ -843,7 +844,7 @@ open class StorageFile {
             return null
         }
 
-        fun cacheSetFiles(id: String, files: List<StorageFile>) {
+        private fun cacheSetFiles(id: String, files: List<StorageFile>) {
             synchronized(fileListCache) {
                 fileListCache[id] = files.toMutableList()
             }
@@ -856,13 +857,13 @@ open class StorageFile {
             }
         }
 
-        fun cacheSetUri(id: String, file: StorageFile) {
+        private fun cacheSetUri(id: String, file: StorageFile) {
             synchronized(uriStorageFileCache) {
                 uriStorageFileCache[id] = file
             }
         }
 
-        fun cacheFilesAdd(path: String, file: StorageFile) {
+        private fun cacheFilesAdd(path: String, file: StorageFile) {
             synchronized(fileListCache) {
                 fileListCache[path]?.run {
                     //removeAll { it.name == file.name }
@@ -874,13 +875,11 @@ open class StorageFile {
             }
         }
 
-        fun cacheFilesRemove(path: String, file: StorageFile?) {
+        private fun cacheFilesRemove(path: String, file: StorageFile?) {
             synchronized(fileListCache) {
                 file?.let {
                     fileListCache[path]?.run {
                         removeAll { it.name == file.name }
-                    } ?: run {
-                        fileListCache.remove(path)
                     }
                 } ?: fileListCache.remove(path)
             }
