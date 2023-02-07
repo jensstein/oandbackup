@@ -157,6 +157,7 @@ suspend fun scanBackups(
     fun renameDamagedToERROR(file: StorageFile, reason: String) {
         if (renameDamaged == true) {
             runCatching {
+                hitBusy()
                 val newName = "$ERROR_PREFIX${file.name}"
                 file.renameTo(newName)
                 Timber.i("renamed: ${file.path} ($reason)")
@@ -172,6 +173,7 @@ suspend fun scanBackups(
         runCatching {
             file.name?.let { name ->
                 if (name.startsWith(ERROR_PREFIX)) {
+                    hitBusy()
                     val newName = name.removePrefix(ERROR_PREFIX)
                     if (file.renameTo(newName)) {
                         Timber.i("undo: ${file.path}")
@@ -191,6 +193,7 @@ suspend fun scanBackups(
         onPropsFile: suspend (StorageFile) -> Unit,
         renamer: (() -> Unit)? = null,
     ) {
+        hitBusy()
         try {
             beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
             onPropsFile(file)
@@ -303,51 +306,43 @@ suspend fun scanBackups(
                         if (!name.contains(regexSpecialFolder) &&
                             file.isDirectory                                // instance dir
                         ) {
-                            //if (renameDamaged == true) {  //TODO hg42 it's damn slow to find dir
-                            // dir for dir.properties already removed
-                            //val propFile =
-                            //    //file.parent?.findFile("${file.name}.${PROP_NAME}")
-                            //    files.find { it.name == "${file.name}.${PROP_NAME}" }
-                            //if (!(propFile?.exists() ?: false)) {         // no dir.properties
+                            // directories are filtered out for existing properties,
+                            // so if it's an instance directory it's solo -> error
                             if (name.contains(regexPackageFolder)) {
-                                if (false) {    //TODO hg42 it's damn slow (inDir not working)
-                                    try {
-                                        file.findFile(BACKUP_INSTANCE_PROPERTIES_INDIR)  // indir props
-                                            ?.let {
-                                                traceBackupsScanPackage {
-                                                    ":::${"|:::".repeat(level)}>     ${
-                                                        formatBackupFile(it)
-                                                    } ++++++++++++++++++++ indir props ok"
-                                                }
-                                                handleProps(it, it.path, it.name, onPropsFile) {
-                                                    runCatching {
-                                                        file.name?.let { name ->
-                                                            if (!name.contains(
-                                                                    regexSpecialFolder
-                                                                )
-                                                            ) {
-                                                                renameDamagedToERROR(
-                                                                    file,
-                                                                    "damaged"
-                                                                )
-                                                            }
+                                // in case of flatStructure there could be a backup.properties inside
+                                // TODO hg42 change so that this can be seen by the directory name
+                                try {
+                                    file.findFile(BACKUP_INSTANCE_PROPERTIES_INDIR)  // indir props
+                                        ?.let {
+                                            traceBackupsScanPackage {
+                                                ":::${"|:::".repeat(level)}>     ${
+                                                    formatBackupFile(it)
+                                                } ++++++++++++++++++++ indir props ok"
+                                            }
+                                            handleProps(it, it.path, it.name, onPropsFile) {
+                                                runCatching {
+                                                    file.name?.let { name ->
+                                                        if (!name.contains(
+                                                                regexSpecialFolder
+                                                            )
+                                                        ) {
+                                                            renameDamagedToERROR(
+                                                                file,
+                                                                "damaged"
+                                                            )
                                                         }
                                                     }
                                                 }
-                                            } ?: run {
-                                            renameDamagedToERROR(file, "no-props")
-                                        }
-                                    } catch (_: Throwable) {
+                                            }
+                                        } ?: run {
                                         renameDamagedToERROR(file, "no-props")
                                     }
+                                } catch (_: Throwable) {
+                                    renameDamagedToERROR(file, "no-props")
                                 }
                             } else {
                                 renameDamagedToERROR(file, "no-props")
                             }
-                            //} else {
-                            //    // ok, dir.properties exists
-                            //}
-                            //}
                         }
                     }
                 } else {                                            // no instance
