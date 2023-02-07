@@ -353,6 +353,14 @@ val pref_useExpedited = BooleanPref(
 
 //---------------------------------------- developer settings - faking
 
+val pref_killThisApp = LaunchPref(
+    key = "dev-fake.killThisApp",
+    summary = "terminate app, service and process, but leave the schedules(=alarms) intact (in contrast to force-close, where alarms are removed from the system)"
+) {
+    OABX.activity?.let { ActivityCompat.finishAffinity(it) }
+    System.exit(0)
+}
+
 val pref_fakeScheduleDups = IntPref(
     key = "dev-fake.fakeScheduleDups",
     summary = "count of additional equal schedules to run at once, 0 = do not fake [for testing only]",
@@ -379,14 +387,6 @@ val pref_forceCrash = LaunchPref(
     summary = "crash the app [for testing only]"
 ) {
     throw Exception("forceCrash")
-}
-
-val pref_killThisApp = LaunchPref(
-    key = "dev-fake.killThisApp",
-    summary = "terminate app, service and process, but leave the schedules(=alarms) intact (in contrast to force-close, where alarms are removed from the system)"
-) {
-    OABX.activity?.let { ActivityCompat.finishAffinity(it) }
-    System.exit(0)
 }
 
 
