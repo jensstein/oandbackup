@@ -160,6 +160,7 @@ class ShellHandler {
                         } else {
                             ""
                         }
+                        Timber.d("utilBox OK: --------------> $box $boxVersion")
                         utilBoxes.add(UtilBox(name = box, version = boxVersion))
                     } else {
                         throw Exception() // goto catch

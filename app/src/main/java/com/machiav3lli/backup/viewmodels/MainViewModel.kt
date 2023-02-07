@@ -40,6 +40,7 @@ import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.traceFlows
 import com.machiav3lli.backup.ui.compose.MutableComposableFlow
 import com.machiav3lli.backup.ui.compose.item.IconCache
+import com.machiav3lli.backup.utils.TraceUtils.classAndId
 import com.machiav3lli.backup.utils.TraceUtils.formatSortedBackups
 import com.machiav3lli.backup.utils.TraceUtils.trace
 import com.machiav3lli.backup.utils.applyFilter
@@ -66,6 +67,8 @@ class MainViewModel(
     private val db: ODatabase,
     private val appContext: Application,
 ) : AndroidViewModel(appContext) {
+
+    init { Timber.w("==================== ${classAndId(this)}") }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - FLOWS
 

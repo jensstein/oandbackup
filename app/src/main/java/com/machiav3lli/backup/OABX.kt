@@ -49,6 +49,7 @@ import com.machiav3lli.backup.ui.item.BooleanPref
 import com.machiav3lli.backup.ui.item.IntPref
 import com.machiav3lli.backup.utils.TraceUtils
 import com.machiav3lli.backup.utils.TraceUtils.beginNanoTimer
+import com.machiav3lli.backup.utils.TraceUtils.classAndId
 import com.machiav3lli.backup.utils.TraceUtils.endNanoTimer
 import com.machiav3lli.backup.utils.TraceUtils.methodName
 import com.machiav3lli.backup.utils.scheduleAlarms
@@ -218,7 +219,7 @@ class OABX : Application() {
 
     override fun onCreate() {
 
-        Timber.i("app onCreate: PID=${Process.myPid()}")
+        Timber.w("======================================== app ${classAndId(this)} PID=${Process.myPid()}")
 
         super.onCreate()
 

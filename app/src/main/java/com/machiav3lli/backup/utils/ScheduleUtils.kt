@@ -70,34 +70,38 @@ fun calculateTimeToRun(schedule: Schedule, now: Long): Long {
         c[Calendar.MINUTE] = (c[Calendar.MINUTE] / fakeMin + 1) * fakeMin % 60
         c[Calendar.SECOND] = 0
         c[Calendar.MILLISECOND] = 0
+        var nIncrements = 0
         repeat(limitIncrements) {
             if (c.timeInMillis > now + minTimeFromNow)
                 return@repeat
-            //traceSchedule { "increment $it * $fakeMin min" }
             c.add(Calendar.MINUTE, fakeMin)
+            nIncrements++
         }
+        traceSchedule { "added $nIncrements * ${schedule.interval} min" }
     } else {
         c[Calendar.HOUR_OF_DAY] = schedule.timeHour
         c[Calendar.MINUTE] = schedule.timeMinute
         c[Calendar.SECOND] = 0
         c[Calendar.MILLISECOND] = 0
+        var nIncrements = 0
         repeat(limitIncrements) {
             if (c.timeInMillis > now + minTimeFromNow)
                 return@repeat
-            traceSchedule { "increment $it * ${schedule.interval} days" }
             c.add(Calendar.DAY_OF_MONTH, schedule.interval)
+            nIncrements++
         }
+        traceSchedule { "added $nIncrements * ${schedule.interval} days" }
     }
 
     traceSchedule {
-        "calculateTimeToRun: now: ${
+        "calculateTimeToRun: next: ${
+            ISO_DATE_TIME_FORMAT.format(c.timeInMillis)
+        } now: ${
             ISO_DATE_TIME_FORMAT.format(now)
         } placed: ${
             ISO_DATE_TIME_FORMAT.format(schedule.timePlaced)
         } interval: ${
             schedule.interval
-        } next: ${
-            ISO_DATE_TIME_FORMAT.format(c.timeInMillis)
         }"
     }
     return c.timeInMillis
@@ -192,7 +196,9 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                     } else {
                         true
                     }
+
                 val pendingIntent = createPendingIntent(context, scheduleId)
+
                 if (hasPermission && pref_useAlarmClock.value) {
                     traceSchedule { "alarmManager.setAlarmClock $schedule" }
                     alarmManager.setAlarmClock(
@@ -217,9 +223,9 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                     }
                 }
                 traceSchedule {
-                    "schedule starting in: ${
+                    "schedule $scheduleId starting in: ${
                         TimeUnit.MILLISECONDS.toMinutes(schedule.timeToRun - System.currentTimeMillis())
-                    } minutes"
+                    } minutes name=${schedule.name}"
                 }
             } else
                 traceSchedule { "schedule is disabled. Nothing to schedule!" }
@@ -245,9 +251,7 @@ fun scheduleAlarms() {
             .forEach {
                 // do not set or cancel schedules that are just going to be started
                 // (on boot or fresh start from an alarm)
-                // setting this same minute as alarm time will start it immediately
-                //TODO is that documented?
-                //TODO is there a better way to test?
+                // setting a past time as alarm will start it immediately
                 val scheduleAlreadyRuns = runningSchedules[it.id] == true
                 if (scheduleAlreadyRuns) {
                     traceSchedule { "schedule is already started" }

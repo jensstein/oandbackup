@@ -98,13 +98,13 @@ open class ScheduleService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val scheduleId = intent?.getLongExtra("scheduleId", -1L) ?: -1L
-        val name = intent?.getStringExtra("name") ?: "NoName@Service"
+        val name = intent?.getStringExtra("name") ?: ""
 
         OABX.wakelock(true)
 
         traceSchedule {
             var message =
-                "%%%%% ############################################################ ScheduleService PID=${Process.myPid()} starting for scheduleId=$scheduleId name=$name"
+                "%%%%% ############################################################ ScheduleService PID=${Process.myPid()} starting for id=$scheduleId name='$name'"
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 message += " ui=$isUiContext"
             }
@@ -117,7 +117,7 @@ open class ScheduleService : Service() {
         if (intent != null) {
             when (val action = intent.action) {
                 ACTION_CANCEL   -> {
-                    traceSchedule { "action $action" }
+                    traceSchedule { "id=$scheduleId name='$name' action=$action" }
                     OABX.work.cancel(name)
                     OABX.wakelock(false)
                     traceSchedule { "%%%%% service stop" }
@@ -125,13 +125,13 @@ open class ScheduleService : Service() {
                 }
                 ACTION_SCHEDULE -> {
                     // scheduleId already read from extras
-                    traceSchedule { "action $action" }
+                    traceSchedule { "id=$scheduleId name='$name' action=$action" }
                 }
                 null            -> {
                     // no action = standard action, simply continue with extra data
                 }
                 else            -> {
-                    traceSchedule { "action $action unknown, ignored" }
+                    traceSchedule { "id=$scheduleId name='$name' action=$action unknown, ignored" }
                     //OABX.wakelock(false)
                     //return START_NOT_STICKY
                     // or
@@ -245,7 +245,7 @@ open class ScheduleService : Service() {
                                             t?.state == WorkInfo.State.CANCELLED
                                         ) {
                                             traceSchedule {
-                                                "work manager changed to state ${t?.state?.name}"
+                                                "work manager changed to state ${t?.state?.name ?: "null"}"
                                             }
                                             //scheduleAlarm(context, scheduleId, true)
                                             OABX.main?.refreshPackages()
@@ -273,12 +273,12 @@ open class ScheduleService : Service() {
                             super.onPostExecute(result)
                         }
                     }
-                    traceSchedule { "starting schedule $scheduleId ($count)" }
+                    traceSchedule { "starting task for schedule $scheduleId${if (count > 0) " (dup $count)" else ""}" }
                     scheduledActionTask.execute()
                 }
             }
         } else {
-            val message = "duplicate schedule detected: $scheduleId $name"
+            val message = "duplicate schedule detected: $scheduleId $name (as designed, ignored)"
             Timber.w(message)
             if (BuildConfig.DEBUG || BuildConfig.APPLICATION_ID.contains("hg42") || pref_autoLogSuspicious.value)
                 textLog(
@@ -299,13 +299,13 @@ open class ScheduleService : Service() {
             beginLogSection("schedule $name")
             true
         } else {
-            val message = "duplicate schedule detected: $scheduleId $name $details (late)"
+            val message = "duplicate schedule detected: id=$scheduleId name='$name' (late, ignored) $details"
             Timber.w(message)
             if (BuildConfig.DEBUG || BuildConfig.APPLICATION_ID.contains("hg42") || pref_autoLogSuspicious.value)
                 textLog(
                     listOf(
                         message,
-                        "--- autoLogAfterSchedule $scheduleId $name $details"
+                        "--- autoLogAfterSchedule $scheduleId $name${if (details.isEmpty()) "" else " ($details)"}"
                     ) + supportInfo()
                 )
             false
@@ -318,7 +318,7 @@ open class ScheduleService : Service() {
             if (pref_autoLogAfterSchedule.value) {
                 textLog(
                     listOf(
-                        "--- autoLogAfterSchedule $name $details"
+                        "--- autoLogAfterSchedule $name${if (details.isEmpty()) "" else " ($details)"}"
                     ) + supportInfo()
                 )
             }
@@ -328,7 +328,7 @@ open class ScheduleService : Service() {
             //    stopService(intent)
             //    stopSelf()
         } else
-            traceSchedule { "duplicate schedule end detected: $scheduleId $name $details $intent" }
+            traceSchedule { "duplicate schedule end detected: id=$scheduleId name='$name'${if (details.isEmpty()) "" else " ($details)"} $intent" }
     }
 
     private fun createForegroundInfo() {
