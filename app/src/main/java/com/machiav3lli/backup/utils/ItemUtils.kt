@@ -31,6 +31,7 @@ import com.machiav3lli.backup.CHIP_TYPE
 import com.machiav3lli.backup.CHIP_VERSION
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.entity.AppExtras
+import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.AsteriskSimple
@@ -59,7 +60,14 @@ fun getStats(appsList: List<Package>): Triple<Int, Int, Int> {
 }
 
 fun PackageManager.getInstalledPackageInfosWithPermissions() =
-    getInstalledPackages(0).map { getPackageInfo(it.packageName, PackageManager.GET_PERMISSIONS) }
+    getInstalledPackages(0).mapNotNull {
+        try {
+            getPackageInfo(it.packageName, PackageManager.GET_PERMISSIONS)
+        } catch(e: Throwable) {
+            LogsHandler.unexpectedException(e)
+            null
+        }
+    }
 
 fun List<AppExtras>.get(packageName: String) =
     find { it.packageName == packageName } ?: AppExtras(packageName)
