@@ -155,7 +155,7 @@ fun logApp() =
 
 fun logRel() =
     listOf("--- logcat related") +
-    shell("logcat -d ${maxLogcat} | grep -v SHELLOUT: | grep -E '(machiav3lli.backup|NeoBackup>))'")
+    shell("logcat -d ${maxLogcat} | grep -v SHELLOUT: | grep -E '(machiav3lli.backup|NeoBackup>)'")
 
 fun logSys() =
     listOf("--- logcat system") +
