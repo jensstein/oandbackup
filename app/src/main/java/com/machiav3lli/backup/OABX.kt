@@ -59,7 +59,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.lang.Integer.min
+import java.lang.Integer.max
 import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicInteger
@@ -575,7 +575,7 @@ class OABX : Application() {
 
         fun hitBusy(time: Long = 0L) {
             busyCountDown.set(
-                min(time.toInt(), pref_busyHitTime.value) / busyTick
+                max(time.toInt(), pref_busyHitTime.value) / busyTick
             )
         }
 
