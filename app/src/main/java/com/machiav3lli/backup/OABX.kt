@@ -52,7 +52,7 @@ import com.machiav3lli.backup.utils.TraceUtils.beginNanoTimer
 import com.machiav3lli.backup.utils.TraceUtils.classAndId
 import com.machiav3lli.backup.utils.TraceUtils.endNanoTimer
 import com.machiav3lli.backup.utils.TraceUtils.methodName
-import com.machiav3lli.backup.utils.scheduleAlarms
+import com.machiav3lli.backup.utils.scheduleAlarmsOnce
 import com.machiav3lli.backup.utils.styleTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -260,8 +260,6 @@ class OABX : Application() {
         if (startup)    // paranoid
             beginBusy(startupMsg)
 
-        scheduleAlarms()
-
         MainScope().launch(Dispatchers.IO) {
             var backupsMap: Map<String, List<Backup>> = emptyMap()
             try {
@@ -269,21 +267,38 @@ class OABX : Application() {
             } catch (e: Throwable) {
                 unexpectedException(e)
             } finally {
-                traceBackupsScan { "*** --------------------> packages: ${backupsMap.keys.size} backups: ${backupsMap.values.flatten().size}" }
-                val time = endBusy(startupMsg)
-                addInfoLogText("startup: ${"%.3f".format(time / 1E9)} sec")
+
+                // catch exceptions to make each block independent
+
+                runCatching {
+                    traceBackupsScan { "*** --------------------> packages: ${backupsMap.keys.size} backups: ${backupsMap.values.flatten().size}" }
+                    val time = endBusy(startupMsg)
+                    addInfoLogText("startup: ${"%.3f".format(time / 1E9)} sec")
+                }
+
                 startup = false
 
-                main?.viewModel?.retriggerFlowsForUI()
-
-                if (BuildConfig.DEBUG) {
-                    //testOnStart()
+                runCatching {
+                    main?.viewModel?.retriggerFlowsForUI()
+                }
+                runCatching {
+                    if (BuildConfig.DEBUG) {
+                        //testOnStart()
+                    }
+                }
+                runCatching {
+                    delay(60_000)
+                    scheduleAlarmsOnce()
                 }
             }
         }
     }
 
     override fun onTerminate() {
+
+        // in case the app is terminated too early
+        scheduleAlarmsOnce()
+
         work = work?.release()
         appRef = WeakReference(null)
         super.onTerminate()
@@ -408,6 +423,7 @@ class OABX : Application() {
             }
             set(activity) {
                 activityRef = WeakReference(activity)
+                scheduleAlarmsOnce()        // if any activity is started
             }
 
         // main might be null

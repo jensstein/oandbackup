@@ -48,10 +48,8 @@ import com.machiav3lli.backup.services.AlarmReceiver
 import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.traceSchedule
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.LocalTime
 import java.util.concurrent.TimeUnit
@@ -243,8 +241,22 @@ fun cancelAlarm(context: Context, scheduleId: Long) {
     traceSchedule { "cancelled schedule with id: $scheduleId" }
 }
 
-fun scheduleAlarms() {
-    CoroutineScope(Dispatchers.Default).launch {
+var alarmsHaveBeenScheduled = false
+
+fun scheduleAlarmsOnce() {
+
+    // schedule alarms only once
+    // whichever event comes first:
+    //   any activity started
+    //   after all current schedules are queued
+    //   the app is terminated (too early)
+    //   on a timeout
+
+    if (alarmsHaveBeenScheduled)
+        return
+    alarmsHaveBeenScheduled = true
+
+    Thread {
         val scheduleDao = OABX.db.scheduleDao
         traceSchedule { "scheduleAlarms" }
         scheduleDao.all
@@ -265,7 +277,7 @@ fun scheduleAlarms() {
                     }
                 }
             }
-    }
+    }.start()
 }
 
 fun createPendingIntent(context: Context, scheduleId: Long): PendingIntent {

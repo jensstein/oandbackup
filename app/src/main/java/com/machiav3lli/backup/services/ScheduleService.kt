@@ -32,7 +32,6 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import com.machiav3lli.backup.ACTION_CANCEL
 import com.machiav3lli.backup.ACTION_SCHEDULE
-import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.beginLogSection
@@ -53,6 +52,7 @@ import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.tasks.ScheduledActionTask
 import com.machiav3lli.backup.traceSchedule
 import com.machiav3lli.backup.utils.scheduleAlarm
+import com.machiav3lli.backup.utils.scheduleAlarmsOnce
 import timber.log.Timber
 
 open class ScheduleService : Service() {
@@ -140,12 +140,27 @@ open class ScheduleService : Service() {
             }
         }
 
-        if (runningSchedules[scheduleId] != true) {
+        if (scheduleId >= 0) {
 
-            if (scheduleId >= 0) {
+            if (runningSchedules[scheduleId] == null) {
+
+                runningSchedules[scheduleId] = false
 
                 repeat(1 + pref_fakeScheduleDups.value) { count ->
+
                     val now = System.currentTimeMillis()
+
+                    // hg42:
+                    // while it looks reasonable to re-schedule after the job is done,
+                    // it seems to be less problematic to re-schedule *before* doing the job.
+                    // that's because rescheduling would not happen, when
+                    // * not all exceptions catched and jumoing out of the batch
+                    // * the job doesn't finish and just hangs around
+                    // the re-schedule is also more exact
+                    //TODO hg42 it would probably be even better to use
+                    //  the current timeToRun of this schedule as timePlaced in the calculation
+                    scheduleAlarm(OABX.context, scheduleId, true)
+
                     scheduledActionTask = object : ScheduledActionTask(baseContext, scheduleId) {
                         override fun onPostExecute(result: Triple<String, List<String>, Int>?) {
                             val name = result?.first ?: "NoName@Task"
@@ -154,17 +169,6 @@ open class ScheduleService : Service() {
                             var errors = ""
                             var resultsSuccess = true
                             var counter = 0
-
-                            // hg42:
-                            // while it looks reasonable to re-schedule after the job is done,
-                            // it seems to be less problematic to re-schedule *before* doing the job.
-                            // that's because rescheduling would not happen, when
-                            // * not all exceptions catched and jumoing out of the batch
-                            // * the job doesn't finish and just hangs around
-                            // the re-schedule is also more exact
-                            //TODO hg42 it would probably be even better to use
-                            //  the current timeToRun of this schedule as timePlaced in the calculation
-                            scheduleAlarm(context, scheduleId, true)
 
                             if (selectedItems.isEmpty()) {
                                 showNotification(
@@ -276,18 +280,21 @@ open class ScheduleService : Service() {
                     traceSchedule { "starting task for schedule $scheduleId${if (count > 0) " (dup $count)" else ""}" }
                     scheduledActionTask.execute()
                 }
+            } else {
+                val message =
+                    "duplicate schedule detected: $scheduleId $name (as designed, ignored)"
+                Timber.w(message)
+                if (pref_autoLogSuspicious.value)
+                    textLog(
+                        listOf(
+                            message,
+                            "--- autoLogAfterSchedule $scheduleId $name"
+                        ) + supportInfo()
+                    )
             }
-        } else {
-            val message = "duplicate schedule detected: $scheduleId $name (as designed, ignored)"
-            Timber.w(message)
-            if (BuildConfig.DEBUG || BuildConfig.APPLICATION_ID.contains("hg42") || pref_autoLogSuspicious.value)
-                textLog(
-                    listOf(
-                        message,
-                        "--- autoLogAfterSchedule $scheduleId $name"
-                    ) + supportInfo()
-                )
         }
+
+        scheduleAlarmsOnce()
 
         OABX.wakelock(false)
         return START_NOT_STICKY
@@ -299,9 +306,10 @@ open class ScheduleService : Service() {
             beginLogSection("schedule $name")
             true
         } else {
-            val message = "duplicate schedule detected: id=$scheduleId name='$name' (late, ignored) $details"
+            val message =
+                "duplicate schedule detected: id=$scheduleId name='$name' (late, ignored) $details"
             Timber.w(message)
-            if (BuildConfig.DEBUG || BuildConfig.APPLICATION_ID.contains("hg42") || pref_autoLogSuspicious.value)
+            if (pref_autoLogSuspicious.value)
                 textLog(
                     listOf(
                         message,
@@ -328,7 +336,7 @@ open class ScheduleService : Service() {
             //    stopService(intent)
             //    stopSelf()
         } else
-            traceSchedule { "duplicate schedule end detected: id=$scheduleId name='$name'${if (details.isEmpty()) "" else " ($details)"} $intent" }
+            traceSchedule { "duplicate schedule end: id=$scheduleId name='$name'${if (details.isEmpty()) "" else " ($details)"} $intent" }
     }
 
     private fun createForegroundInfo() {
