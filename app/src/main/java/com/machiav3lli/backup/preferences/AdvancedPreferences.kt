@@ -306,6 +306,13 @@ val pref_busyLaserBackground = BooleanPref(
     defaultValue = true
 )
 
+val pref_toolbarOpacity = IntPref(
+    key = "dev-alt.toolbarOpacity",
+    summary = "opacity of toolbars [percent]",
+    entries = (0..100 step 5).toList(),
+    defaultValue = 80
+)
+
 val pref_busyHitTime = IntPref(
     key = "dev-alt.busyHitTime",
     summary = "time being busy after hitting the watchdog (ms)",

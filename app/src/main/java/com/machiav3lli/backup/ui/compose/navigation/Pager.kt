@@ -29,6 +29,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.machiav3lli.backup.preferences.pref_squeezeNavText
+import com.machiav3lli.backup.preferences.pref_toolbarOpacity
 import com.machiav3lli.backup.ui.compose.item.ResponsiveText
 import kotlinx.coroutines.launch
 
@@ -53,8 +54,9 @@ fun PagerNavBar(pageItems: List<NavItem>, pagerState: PagerState) {
     val scope = rememberCoroutineScope()
 
     NavigationBar(
-        containerColor = MaterialTheme.colorScheme.background,
-        tonalElevation = 0.dp,
+        containerColor = MaterialTheme.colorScheme.background
+            .copy(alpha = pref_toolbarOpacity.value / 100f),
+        //TODO hg42 how to set this for TopBar? //tonalElevation = 48.dp,
         contentColor = MaterialTheme.colorScheme.onBackground
     ) {
         pageItems.forEachIndexed { index, tab ->

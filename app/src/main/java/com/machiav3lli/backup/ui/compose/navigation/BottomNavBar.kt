@@ -9,6 +9,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.machiav3lli.backup.NAV_MAIN
 import com.machiav3lli.backup.NAV_PREFS
+import com.machiav3lli.backup.preferences.pref_toolbarOpacity
 
 @Composable
 fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
@@ -28,7 +29,8 @@ fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
     }
 
     NavigationBar(
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.background
+            .copy(alpha = pref_toolbarOpacity.value/100f),
         tonalElevation = 0.dp,
         contentColor = MaterialTheme.colorScheme.onBackground
     ) {
