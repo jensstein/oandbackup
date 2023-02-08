@@ -330,7 +330,7 @@ fun Modifier.busyBackground(
     color1: Color,
     color2: Color,
 ): Modifier {
-    val factor = 1.2f
+    val factor = 0.2f
     return this
         .angledGradientBackground(
             listOf(
@@ -367,8 +367,8 @@ fun BusyBackgroundAnimated(
 ) {
     val rounds = 12
     val color0 = Color.Transparent
-    val color1 = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
-    val color2 = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f)
+    val color1 = MaterialTheme.colorScheme.primary.copy(alpha = 0.30f)
+    val color2 = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.20f)
 
     val inTime = pref_busyFadeTime.value
     val outTime = pref_busyFadeTime.value
