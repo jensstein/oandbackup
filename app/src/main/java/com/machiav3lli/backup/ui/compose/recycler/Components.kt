@@ -1,6 +1,10 @@
 package com.machiav3lli.backup.ui.compose.recycler
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animate
+import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -29,10 +33,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,10 +53,14 @@ import androidx.compose.ui.unit.sp
 import com.google.accompanist.flowlayout.FlowRow
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.activities.angledGradientBackground
 import com.machiav3lli.backup.preferences.pref_busyFadeTime
+import com.machiav3lli.backup.preferences.pref_busyTurnTime
 import com.machiav3lli.backup.ui.compose.item.ActionChip
 import com.machiav3lli.backup.ui.compose.item.ButtonIcon
 import com.machiav3lli.backup.ui.item.ChipItem
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Composable
 fun <T : Any> VerticalItemList(
@@ -277,6 +287,95 @@ fun MultiSelectableChipGroup(
                 }
             )
         }
+    }
+}
+
+fun Modifier.busyBackground(
+    angle: Float,
+    color0: Color,
+    color1: Color,
+    color2: Color,
+): Modifier {
+    val factor = 1.2f
+    return this
+        .angledGradientBackground(
+            listOf(
+                color0,
+                color0,
+                color1,
+                color1,
+                color0,
+                color0,
+                color0,
+                color0,
+                color0,
+            ), angle, factor
+        )
+        .angledGradientBackground(
+            listOf(
+                color0,
+                color0,
+                color2,
+                color2,
+                color0,
+                color0,
+                color0,
+                color0,
+                color0,
+            ), angle * 1.5f, factor
+        )
+}
+
+@Composable
+fun BusyBackgroundAnimated(
+    busy: Boolean,
+    content: @Composable () -> Unit,
+) {
+    val rounds = 12
+    val color0 = Color.Transparent
+    val color1 = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+    val color2 = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f)
+
+    val inTime = pref_busyFadeTime.value
+    val outTime = pref_busyFadeTime.value
+    val turnTime = pref_busyTurnTime.value
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        AnimatedVisibility(
+            visible = busy,
+            enter = fadeIn(tween(inTime)),
+            exit = fadeOut(tween(outTime)),
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            //var angle by rememberSaveable { mutableStateOf(70f) }
+            var angle by rememberSaveable { mutableStateOf(System.currentTimeMillis() % turnTime * 360f / turnTime) }
+            LaunchedEffect(true) {
+                withContext(Dispatchers.IO) {
+                    animate(
+                        initialValue = angle,
+                        targetValue = angle + 360f * rounds,
+                        animationSpec = infiniteRepeatable(
+                            animation = tween(turnTime * rounds, easing = LinearEasing),
+                            repeatMode = RepeatMode.Restart
+                            //repeatMode = RepeatMode.Reverse
+                        )
+                    ) { value, _ -> angle = value }
+                }
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .busyBackground(angle, color0, color1, color2)
+            ) {
+            }
+        }
+
+        content()
     }
 }
 
