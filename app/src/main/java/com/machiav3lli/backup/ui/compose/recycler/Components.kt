@@ -114,7 +114,7 @@ fun <T : Any> VerticalItemList(
                         Spacer(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(80.dp)  // workaround for floating buttons hiding the elements
+                                .height(64.dp)  // workaround for floating buttons hiding the elements
                             // unfortunately the sizes are private
                         )
                     }

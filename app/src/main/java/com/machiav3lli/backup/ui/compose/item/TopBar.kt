@@ -283,7 +283,7 @@ fun TopBar(
             ),
             actions = actions
         )
-        
+
         GlobalIndicators()
     }
 }

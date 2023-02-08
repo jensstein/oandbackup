@@ -276,7 +276,7 @@ object IconCache {
 
     private var painterCache = mutableMapOf<Any, Painter>()
 
-    fun getIcon(key: Any) : Painter? {
+    fun getIcon(key: Any): Painter? {
         return synchronized(painterCache) {
             painterCache.get(key)
         }
@@ -314,11 +314,12 @@ object IconCache {
         endNanoTimer("limitIconCache")
     }
 
-    val size: Int get() {
-        return synchronized(painterCache) {
-            painterCache.size
+    val size: Int
+        get() {
+            return synchronized(painterCache) {
+                painterCache.size
+            }
         }
-    }
 }
 
 @Composable
