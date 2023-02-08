@@ -1,38 +1,35 @@
 CHANGELOG
 =========
 
-next
+next 8.3.1 +50 Commits & +10 Translations
 ----
 
-- Update: improves prevention of duplicate schedules handling (should no more trigger detection)
-
-- Fix: renameDamagedToERROR missing some important damages
-  (they were excluded while testing and are now enabled again)
-- Add: DevTools/tools/openBackupDir
-  (works only with SAF capable file managers, so only Files/DocumentsUI)
-- Fix: hidden Lucky Patcher issue (please test, we don't use it)
+#### Function
 - Add: busy to renameDamagedToERROR etc.
-- Add: busy handling + refresh (indicator) button to Logs tab
-- Fix: renameDamagedToERROR + undoDamagedToERROR blocking the UI
-- Fix: a delete/rename backup glitch
-
-- Fix: all backups running at once
+- Add: DevTools/tools/openBackupDir (works only with SAF capable file managers, so only Files/DocumentsUI)
 - Add: maxJobs to change the default (changing needs real kill + restart),
-- Add: killThisApp to provide a defined kill method for troubleshooting
-  (app is killed, but alarms are kept, unlike force-close, which removes the alarms)
-- Update: terminal button log/rel to extract lines that are related to NB from logcat
-  (currently machiav3lli.backup + NeoBackup, also used in SUPPORT)
-  Note, log/app is PID related, so only from the running NB,
-  not from the one before, if it was restarted
-
+- Add: killThisApp to provide a defined kill method for troubleshooting (app is killed, but alarms are kept, unlike force-close, which removes the alarms)
+- Add: Stopping schedule service on finished
+- Fix: renameDamagedToERROR missing some important damages (they were excluded while testing and are now enabled again)
+- Fix: hidden Lucky Patcher issue (please test, we don't use it)
+- Update: improves prevention of duplicate schedules handling (should no more trigger detection)
+- Fix: all backups running at once
 - Update: findBackups: scan depth first (= add directory contents at front of queue)
 - Update: findbackups: remove all xxx dir for xxx.properties before queueing directory content
-- Add: rotating refesh button (and red and scaled), turn time and scale in devsettings/adv
-- Update: should work with dynamic colors (also for light backgrounds)
-- Update: busy background simply fades a transparent gray
-
+- Update: terminal button log/rel to extract lines that are related to NB from logcat (currently machiav3lli.backup + NeoBackup, also used in SUPPORT. Note, log/app is PID related, so only from the running NB, not from the one before, if it was restarted)
 - Fix missing empty line after log header
+
+#### UI
+- Add: busy handling + refresh (indicator) button to Logs tab
+- Update: Revamp NavBar button
+- Remove: Overriding background color in light theme
+- Update: Another option for busy background with grey fade
+
+#### UX
+- Add: Rotating refresh button (turn time and scale in devsettings/adv)
 - Add: search field in DevTools/devsett, searches all settings, but only key names, not the label
+- Fix: renameDamagedToERROR + undoDamagedToERROR blocking the UI
+- Fix: a delete/rename backup glitch
 
 
 8.3.0 (30.01.2023) +350 Commits & +60 Translations
