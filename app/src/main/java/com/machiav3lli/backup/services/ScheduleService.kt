@@ -104,7 +104,7 @@ open class ScheduleService : Service() {
 
         traceSchedule {
             var message =
-                "%%%%% ############################################################ ScheduleService PID=${Process.myPid()} starting for id=$scheduleId name='$name'"
+                "%%%%% ############################################################ ScheduleService startId=$startId PID=${Process.myPid()} starting for id=$scheduleId name='$name'"
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 message += " ui=$isUiContext"
             }
@@ -255,7 +255,7 @@ open class ScheduleService : Service() {
                                             OABX.main?.refreshPackages()
                                             finishWorkLiveData.removeObserver(this)
                                             endSchedule(scheduleId, name, "finish work", intent)
-                                            stopService(intent)
+                                            OABX.service?.stopSelf(startId)
                                         }
                                     }
                                 })
