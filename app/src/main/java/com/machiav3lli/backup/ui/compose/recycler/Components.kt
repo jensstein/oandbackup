@@ -42,6 +42,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
@@ -53,14 +56,18 @@ import androidx.compose.ui.unit.sp
 import com.google.accompanist.flowlayout.FlowRow
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.activities.angledGradientBackground
 import com.machiav3lli.backup.preferences.pref_busyFadeTime
+import com.machiav3lli.backup.preferences.pref_busyLaserBackground
 import com.machiav3lli.backup.preferences.pref_busyTurnTime
 import com.machiav3lli.backup.ui.compose.item.ActionChip
 import com.machiav3lli.backup.ui.compose.item.ButtonIcon
 import com.machiav3lli.backup.ui.item.ChipItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.max
+import kotlin.math.sin
 
 @Composable
 fun <T : Any> VerticalItemList(
@@ -289,6 +296,33 @@ fun MultiSelectableChipGroup(
         }
     }
 }
+
+fun Modifier.angledGradientBackground(colors: List<Color>, degrees: Float, factor: Float = 1f) =
+    this.then(
+        drawBehind {
+
+            val (w, h) = size
+            val dim = max(w, h) * factor
+
+            val degreesNormalised = (degrees % 360).let { if (it < 0) it + 360 else it }
+
+            val alpha = (degreesNormalised * PI / 180).toFloat()
+
+            val centerOffsetX = cos(alpha) * dim / 2
+            val centerOffsetY = sin(alpha) * dim / 2
+
+            drawRect(
+                brush = Brush.linearGradient(
+                    colors = colors,
+                    // negative here so that 0 degrees is left -> right
+                    // and 90 degrees is top -> bottom
+                    start = Offset(center.x - centerOffsetX, center.y - centerOffsetY),
+                    end = Offset(center.x + centerOffsetX, center.y + centerOffsetY)
+                ),
+                size = size
+            )
+        }
+    )
 
 fun Modifier.busyBackground(
     angle: Float,
