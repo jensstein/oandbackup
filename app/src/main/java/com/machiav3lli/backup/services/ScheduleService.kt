@@ -254,8 +254,8 @@ open class ScheduleService : Service() {
                                             //scheduleAlarm(context, scheduleId, true)
                                             OABX.main?.refreshPackages()
                                             finishWorkLiveData.removeObserver(this)
-                                            //stopService(intent)
                                             endSchedule(scheduleId, name, "finish work", intent)
+                                            stopService(intent)
                                         }
                                     }
                                 })
