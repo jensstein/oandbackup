@@ -26,7 +26,7 @@
         <item name="android:navigationBarColor">?colorSurface</item>
         <item name="bottomSheetDialogTheme">@style/Sheet.Bottom</item>
         <item name="android:windowBackground">?backgroundColor</item>
-        <item name="backgroundColor">@android:color/white</item>
+        <item name="backgroundColor">?android:colorBackground</item>
         <item name="colorBackgroundFloating">@color/app_primary_base</item>
         <item name="android:statusBarColor">?backgroundColor</item>
         <item name="android:windowLightStatusBar">true</item>
