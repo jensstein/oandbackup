@@ -420,7 +420,8 @@ fun BusyBackground(
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
-        BusyBackgroundColor(busy = isBusy, content = content)
+        if (pref_busyLaserBackground.value) BusyBackgroundAnimated(busy = isBusy, content = content)
+        else BusyBackgroundColor(busy = isBusy, content = content)
     }
 }
 
