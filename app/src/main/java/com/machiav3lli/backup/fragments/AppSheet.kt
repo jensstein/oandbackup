@@ -549,9 +549,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                             true,
                             listOf(packageName),
                             listOf(mode)
-                        ) {
-                            it.removeObserver(this)
-                        }
+                        )
                     } else {
                         BackupActionTask(
                             p, requireMainActivity(), OABX.shellHandlerInstance!!, mode,
@@ -565,9 +563,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                             false,
                             listOf(packageName),
                             listOf(mode)
-                        ) {
-                            it.removeObserver(this)
-                        }
+                        )
                     } else {
                         backup?.let {
                             RestoreActionTask(

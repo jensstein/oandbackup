@@ -44,7 +44,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
@@ -66,7 +65,6 @@ import com.machiav3lli.backup.pref_uncaughtExceptionsJumpToPreferences
 import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
 import com.machiav3lli.backup.preferences.pref_blackTheme
 import com.machiav3lli.backup.tasks.AppActionWork
-import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.FunnelSimple
 import com.machiav3lli.backup.ui.compose.icons.phosphor.GearSix
@@ -456,7 +454,6 @@ class MainActivityX : BaseActivity() {
         backupBoolean: Boolean,
         selectedPackages: List<String?>,
         selectedModes: List<Int>,
-        onSuccessfulFinish: Observer<WorkInfo>.(LiveData<WorkInfo>) -> Unit,
     ) {
         val now = System.currentTimeMillis()
         val notificationId = now.toInt()
@@ -510,22 +507,9 @@ class MainActivityX : BaseActivity() {
             })
         }
 
-        val finishWorkRequest = FinishWork.Request(resultsSuccess, backupBoolean, batchName)
-
-        val finishWorkLiveData = WorkManager.getInstance(OABX.context)
-            .getWorkInfoByIdLiveData(finishWorkRequest.id)
-        finishWorkLiveData.observeForever(object : Observer<WorkInfo> {
-            override fun onChanged(t: WorkInfo?) {
-                if (t?.state == WorkInfo.State.SUCCEEDED) {
-                    onSuccessfulFinish(finishWorkLiveData)
-                }
-            }
-        })
-
         if (worksList.isNotEmpty()) {
             WorkManager.getInstance(OABX.context)
                 .beginWith(worksList)
-                .then(finishWorkRequest)
                 .enqueue()
         }
     }

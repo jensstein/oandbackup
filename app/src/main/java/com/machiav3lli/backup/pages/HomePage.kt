@@ -112,9 +112,7 @@ fun HomePage() {
 
     val batchConfirmListener = object : BatchDialogFragment.ConfirmListener {
         override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {
-            main.startBatchAction(true, selectedPackages, selectedModes) {
-                it.removeObserver(this)
-            }
+            main.startBatchAction(true, selectedPackages, selectedModes)
         }
     }
 

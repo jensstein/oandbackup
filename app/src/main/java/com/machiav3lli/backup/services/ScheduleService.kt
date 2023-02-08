@@ -48,7 +48,6 @@ import com.machiav3lli.backup.preferences.pref_useForegroundInService
 import com.machiav3lli.backup.preferences.supportInfo
 import com.machiav3lli.backup.preferences.textLog
 import com.machiav3lli.backup.tasks.AppActionWork
-import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.tasks.ScheduledActionTask
 import com.machiav3lli.backup.traceSchedule
 import com.machiav3lli.backup.utils.scheduleAlarm
@@ -236,35 +235,10 @@ open class ScheduleService : Service() {
                                     })
                                 }
 
-                                val finishWorkRequest =
-                                    FinishWork.Request(resultsSuccess, true, batchName)
-
-                                val finishWorkLiveData = OABX.work.manager
-                                    .getWorkInfoByIdLiveData(finishWorkRequest.id)
-                                finishWorkLiveData.observeForever(object : Observer<WorkInfo> {
-                                    override fun onChanged(t: WorkInfo?) {
-                                        if (t == null ||
-                                            t?.state == WorkInfo.State.SUCCEEDED ||
-                                            t?.state == WorkInfo.State.FAILED ||
-                                            t?.state == WorkInfo.State.CANCELLED
-                                        ) {
-                                            traceSchedule {
-                                                "work manager changed to state ${t?.state?.name ?: "null"}"
-                                            }
-                                            //scheduleAlarm(context, scheduleId, true)
-                                            OABX.main?.refreshPackages()
-                                            finishWorkLiveData.removeObserver(this)
-                                            endSchedule(scheduleId, name, "finish work", intent)
-                                            OABX.service?.stopSelf(startId)
-                                        }
-                                    }
-                                })
-
                                 if (worksList.isNotEmpty()) {
                                     if (beginSchedule(scheduleId, name, "queueing work")) {
                                         OABX.work.manager
                                             .beginWith(worksList)
-                                            .then(finishWorkRequest)
                                             .enqueue()
                                     } else {
                                         endSchedule(scheduleId, name, "duplicate detected", intent)

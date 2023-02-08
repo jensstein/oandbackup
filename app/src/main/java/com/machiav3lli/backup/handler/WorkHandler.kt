@@ -24,7 +24,6 @@ import com.machiav3lli.backup.preferences.pref_fakeScheduleDups
 import com.machiav3lli.backup.preferences.pref_maxRetriesPerPackage
 import com.machiav3lli.backup.services.CommandReceiver
 import com.machiav3lli.backup.tasks.AppActionWork
-import com.machiav3lli.backup.tasks.FinishWork
 import com.machiav3lli.backup.utils.TraceUtils.traceBold
 import timber.log.Timber
 import java.text.SimpleDateFormat
@@ -60,13 +59,6 @@ class WorkHandler(appContext: Context) {
             AppActionWork::class.qualifiedName!!
         ).observeForever {
             onProgress(this, it)
-        }
-
-        // observe FinishWork
-        manager.getWorkInfosByTagLiveData(
-            FinishWork::class.qualifiedName!!
-        ).observeForever {
-            onFinish(this, it)
         }
     }
 
@@ -557,13 +549,5 @@ class WorkHandler(appContext: Context) {
                 }
             }
         }
-    }
-
-    fun onFinish(handler: WorkHandler, work: MutableList<WorkInfo>? = null) {
-        // may be the state changed in between
-        onProgress(
-            handler,
-            null
-        ) // don't forward "work", because it's FinishWork not AppActionWork!
     }
 }

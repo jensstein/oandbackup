@@ -342,15 +342,7 @@ fun launchBackup(packages: List<Package>) {
         true,
         selectedAndInstalled.map { it.packageName },
         selectedAndInstalled.map { MODE_ALL }
-    ) {
-        it.removeObserver(this)
-        launchEachPackage(
-            selectedAndInstalled,
-            "backup",
-            select = true,
-            parallel = false
-        ) {}
-    }
+    )
 }
 
 fun launchRestore(packages: List<Package>) {
@@ -359,15 +351,7 @@ fun launchRestore(packages: List<Package>) {
         false,
         packagesWithBackups.map { it.packageName },
         packagesWithBackups.map { MODE_ALL }
-    ) {
-        it.removeObserver(this)
-        launchEachPackage(
-            packagesWithBackups,
-            "restore",
-            select = true,
-            parallel = false
-        ) {}
-    }
+    )
 }
 
 fun launchToBlocklist(packages: List<Package>) {
