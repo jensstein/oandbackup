@@ -82,7 +82,7 @@ val pref_maxLogLines = IntPref(
 
 val pref_maxLogCount = IntPref(
     key = "dev-log.maxLogCount",
-    summary = "maximum count of log files",
+    summary = "maximum count of log files (= entries on log page)",
     entries = ((1..9 step 1) + (10..100 step 10)).toList(),
     defaultValue = 20
 )
@@ -95,26 +95,26 @@ val pref_catchUncaughtException = BooleanPref(
 
 val pref_uncaughtExceptionsJumpToPreferences = BooleanPref(
     key = "dev-log.uncaughtExceptionsJumpToPreferences",
-    summary = "in case of unexpected crashes juimp to preferences (prevent loops if a preference causes this)",
+    summary = "in case of unexpected crashes jump to preferences (prevent loops if a preference causes this, and allows to change it, back button leaves the app)",
     defaultValue = false,
     enableIf = { pref_catchUncaughtException.value }
 )
 
 val pref_logToSystemLogcat = BooleanPref(
     key = "dev-log.logToSystemLogcat",
-    summary = "log to Android logcat, otherwise only internal",
+    summary = "log to Android logcat, otherwise only internal (internal doesn't help if the app is restarted)",
     defaultValue = false
 )
 
 val pref_autoLogExceptions = BooleanPref(
     key = "dev-log.autoLogExceptions",
-    summary = "create a log for each unexpected exception",
+    summary = "create a log for each unexpected exception (may disturb the timing of other operations, meant to detect catched but not expected exceptions, developers are probably intersted in these)",
     defaultValue = false
 )
 
 val pref_autoLogSuspicious = BooleanPref(
     key = "dev-log.autoLogSuspicious",
-    summary = "create a log for each unexpected exception",
+    summary = "create a log for some suspicious but partly expected situations, e.g. detection of duplicate schedules (don't use it regularly)",
     defaultValue = false
 )
 
