@@ -122,7 +122,6 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
 
                     packageItem?.let { pi ->
                         try {
-                            //pi.refreshBackupList()  // not yet set, be up to date when the job is finally executed
                             OABX.shellHandlerInstance?.let { shellHandler ->
                                 actionResult = when {
                                     backupBoolean -> {
@@ -142,7 +141,6 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                                     }
                                 }
                             }
-                            //pi.refreshBackupList()  // who knows what happened in external space?
                         } catch (e: Throwable) {
                             val message = "package not processed: $packageName $packageLabel: $e\n${
                                 LogsHandler.message(e, true)
