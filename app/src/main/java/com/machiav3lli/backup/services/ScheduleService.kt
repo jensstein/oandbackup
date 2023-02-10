@@ -167,7 +167,8 @@ open class ScheduleService : Service() {
                             val mode = result?.third ?: MODE_UNSET
                             var errors = ""
                             var resultsSuccess = true
-                            var counter = 0
+                            var finished = 0
+                            var queued = 0
 
                             if (selectedItems.isEmpty()) {
                                 showNotification(
@@ -213,7 +214,7 @@ open class ScheduleService : Service() {
                                                 t?.state == WorkInfo.State.FAILED ||
                                                 t?.state == WorkInfo.State.CANCELLED
                                             ) {
-                                                counter += 1
+                                                finished += 1
                                                 val succeeded =
                                                     t.outputData.getBoolean("succeeded", false)
                                                 val packageLabel =
@@ -230,12 +231,15 @@ open class ScheduleService : Service() {
                                                     }\n"
                                                 resultsSuccess = resultsSuccess && succeeded
                                                 oneTimeWorkLiveData.removeObserver(this)
+                                                if (finished >= queued)
+                                                    endSchedule(scheduleId, name, "all jobs finished", intent)
                                             }
                                         }
                                     })
                                 }
 
                                 if (worksList.isNotEmpty()) {
+                                    queued = worksList.size
                                     if (beginSchedule(scheduleId, name, "queueing work")) {
                                         OABX.work.manager
                                             .beginWith(worksList)
