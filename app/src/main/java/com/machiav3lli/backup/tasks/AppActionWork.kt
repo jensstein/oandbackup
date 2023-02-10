@@ -113,7 +113,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                         }
             } catch (e: PackageManager.NameNotFoundException) {
                 if (packageLabel.isEmpty())
-                    packageLabel = packageItem?.packageLabel ?: "NONAME"
+                    packageLabel = packageItem?.packageLabel ?: "NOLABEL"
                 packageItem = Package(context, packageName)
             }
 
