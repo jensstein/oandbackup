@@ -189,7 +189,7 @@ val pref_renameDamagedToERROR = LaunchPref(
 ) {
     MainScope().launch(Dispatchers.IO) {
         beginBusy("renameDamagedToERROR")
-        OABX.context.findBackups(renameDamaged = true)
+        OABX.context.findBackups(damagedOp = "ren")
         endBusy("renameDamagedToERROR")
     }
 }
@@ -200,8 +200,19 @@ val pref_undoDamagedToERROR = LaunchPref(
 ) {
     MainScope().launch(Dispatchers.IO) {
         beginBusy("undoDamagedToERROR")
-        OABX.context.findBackups(renameDamaged = false)
+        OABX.context.findBackups(damagedOp = "undo")
         endBusy("undoDamagedToERROR")
+    }
+}
+
+val pref_deleteERROR = LaunchPref(
+    key = "dev-tool.deleteERROR",
+    summary = "delete all ${ERROR_PREFIX}xxx"
+) {
+    MainScope().launch(Dispatchers.IO) {
+        beginBusy("deleteERROR")
+        OABX.context.findBackups(damagedOp = "del")
+        endBusy("deleteERROR")
     }
 }
 

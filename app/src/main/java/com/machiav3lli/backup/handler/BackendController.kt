@@ -128,7 +128,7 @@ suspend fun scanBackups(
     backupRoot: StorageFile = OABX.context.getBackupRoot(),
     level: Int = 0,
     forceTrace: Boolean = false,
-    renameDamaged: Boolean? = null,
+    damagedOp: String? = null,
     onPropsFile: suspend (StorageFile) -> Unit,
 ) {
     if (level == 0 && packageName.isEmpty() && traceTiming.pref.value) {
@@ -136,7 +136,8 @@ suspend fun scanBackups(
         traceTiming { "threads max: ${maxThreads.get()} (before)" }
     }
 
-    fun formatBackupFile(file: StorageFile) = "${file.path?.replace(backupRoot.path ?: "", "")}"
+    fun formatBackupFile(file: StorageFile) =
+        file.path?.removePrefix(backupRoot.path ?: "")?.removePrefix("/") ?: ""
 
     fun traceBackupsScanPackage(lazyText: () -> String) {
         if (forceTrace) {
@@ -155,18 +156,17 @@ suspend fun scanBackups(
     val suspicious = AtomicInteger(0)
 
     fun logSuspicious(file: StorageFile, reason: String) {
-        backupRoot.path?.let { root ->
-            file.path
-                ?.removePrefix(root)
-                ?.removePrefix(ERROR_PREFIX)
-                ?.let { subpath ->
-                    addInfoLogText("? $subpath ($reason)")
+        formatBackupFile(file)
+                .removePrefix(ERROR_PREFIX)
+                .let { relPath ->
+                    val message = "? $relPath ($reason)"
+                    addInfoLogText(message)
+                    traceBackupsScanAll { message }
                 }
-        }
     }
 
     fun renameDamagedToERROR(file: StorageFile, reason: String) {
-        if (renameDamaged == true) {
+        if (damagedOp == "ren") {
             runCatching {
                 hitBusy()
                 val newName = "$ERROR_PREFIX${file.name}"
@@ -174,21 +174,31 @@ suspend fun scanBackups(
                 suspicious.getAndIncrement()
                 logSuspicious(file, reason)
             }
-        } else if (renameDamaged == null) {
+        } else if (damagedOp == null) {
             suspicious.getAndIncrement()
             logSuspicious(file, reason)
         }
     }
 
-    fun undoDamagedToERROR(file: StorageFile) {
+    fun onErrorPrefix(file: StorageFile) {
         runCatching {
             file.name?.let { name ->
                 if (name.startsWith(ERROR_PREFIX)) {
                     hitBusy()
-                    val newName = name.removePrefix(ERROR_PREFIX)
-                    if (file.renameTo(newName)) {
-                        Timber.i("undo: ${file.path}")
-                        suspicious.getAndIncrement()
+                    when(damagedOp) {
+                        "undo" -> {
+                            val newName = name.removePrefix(ERROR_PREFIX)
+                            if (file.renameTo(newName)) {
+                                suspicious.getAndIncrement()
+                                logSuspicious(file, "undo")
+                            }
+                        }
+                        "del" -> {
+                            if (file.deleteRecursive()) {
+                                suspicious.getAndIncrement()
+                                logSuspicious(file, "delete")
+                            }
+                        }
                     }
                 }
             }
@@ -232,18 +242,18 @@ suspend fun scanBackups(
         if (list.isEmpty())
             return false
 
-        // undo for all files otherwise filter
-        if (renameDamaged != false) {
+        // all files for undo or del, otherwise filter
+        if (damagedOp in listOf("ren", null)) {
             // queue at front of queue (depth first)
             // filter out dir matching dir.properties
             val props = list.mapNotNull { it.name }.filter { it.endsWith(".$PROP_NAME") ?: false }
             val propDirs = props.map { it.removeSuffix(".$PROP_NAME") }
 
-            if (renameDamaged == true) {
-                list.filter { it.name in propDirs }.forEach { file ->
+            if (damagedOp == "ren") {
+                list.filter { it.name in propDirs }.forEach { dir ->
                     runCatching {   // in case it's not a directory etc.
-                        if (file.listFiles().isEmpty())
-                            renameDamagedToERROR(file, "empty-inst-dir")
+                        if (dir.listFiles().isEmpty())
+                            renameDamagedToERROR(dir, "empty-inst-dir")
                     }
                 }
             }
@@ -277,9 +287,9 @@ suspend fun scanBackups(
                 } file"
             }
 
-        if (renameDamaged == false) {
+        if (damagedOp in listOf("undo", "del")) {
             // undo for each file
-            undoDamagedToERROR(file)
+            onErrorPrefix(file)
             // scan all files
             if (file.isDirectory)
                 handleDirectory(file)
@@ -423,9 +433,11 @@ suspend fun scanBackups(
         if (suspicious.get() > 0)
             addInfoLogText(
                 "${
-                    if (renameDamaged == true)
+                    if (damagedOp == "ren")
                         "renamed"
-                    else if (renameDamaged == false)
+                    else if (damagedOp == "del")
+                        "deleted"
+                    else if (damagedOp == "undo")
                         "undo"
                     else
                         "suspicious"
@@ -449,7 +461,7 @@ fun isBackupsLocked(): Boolean {
 
 fun Context.findBackups(
     packageName: String = "",
-    renameDamaged: Boolean? = null,
+    damagedOp: String? = null,
     forceTrace: Boolean = false,
 ): Map<String, List<Backup>> {
 
@@ -494,7 +506,7 @@ fun Context.findBackups(
                     scanBackups(
                         backupRoot,
                         packageName,
-                        renameDamaged = renameDamaged,
+                        damagedOp = damagedOp,
                         forceTrace = forceTrace
                     ) { propsFile ->
                         count.getAndIncrement()
