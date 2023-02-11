@@ -290,6 +290,10 @@ fun textLogShare(lines: List<String>) {
     }
 }
 
+fun supportLog() {
+    textLog(supportInfo())
+}
+
 fun supportInfoLogShare() {
     textLogShare(supportInfo())
 }
