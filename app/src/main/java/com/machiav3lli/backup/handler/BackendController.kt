@@ -108,13 +108,13 @@ fun checkThreadStats() {
 val scanPool = when (1) {
 
     // force hang for recursive scanning
-    0 -> Executors.newFixedThreadPool(1).asCoroutineDispatcher()
+    0    -> Executors.newFixedThreadPool(1).asCoroutineDispatcher()
 
     // may hang for recursive scanning because threads are limited
-    0 -> Executors.newFixedThreadPool(numCores).asCoroutineDispatcher()
+    0    -> Executors.newFixedThreadPool(numCores).asCoroutineDispatcher()
 
     // unlimited threads!
-    0 -> Executors.newCachedThreadPool().asCoroutineDispatcher()
+    0    -> Executors.newCachedThreadPool().asCoroutineDispatcher()
 
     // creates many threads (~65)
     else -> Dispatchers.IO
@@ -154,18 +154,29 @@ suspend fun scanBackups(
 
     val suspicious = AtomicInteger(0)
 
+    fun logSuspicious(file: StorageFile, reason: String) {
+        backupRoot.path?.let { root ->
+            file.path
+                ?.removePrefix(root)
+                ?.removePrefix(ERROR_PREFIX)
+                ?.let { subpath ->
+                    addInfoLogText("? $subpath ($reason)")
+                }
+        }
+    }
+
     fun renameDamagedToERROR(file: StorageFile, reason: String) {
         if (renameDamaged == true) {
             runCatching {
                 hitBusy()
                 val newName = "$ERROR_PREFIX${file.name}"
                 file.renameTo(newName)
-                Timber.i("renamed: ${file.path} ($reason)")
                 suspicious.getAndIncrement()
+                logSuspicious(file, reason)
             }
         } else if (renameDamaged == null) {
             suspicious.getAndIncrement()
-            Timber.i("suspicious: ${file.path} ($reason)")
+            logSuspicious(file, reason)
         }
     }
 
