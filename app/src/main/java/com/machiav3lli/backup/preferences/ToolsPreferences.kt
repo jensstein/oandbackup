@@ -44,7 +44,6 @@ import com.machiav3lli.backup.ui.compose.theme.ColorExodus
 import com.machiav3lli.backup.ui.compose.theme.ColorExtDATA
 import com.machiav3lli.backup.ui.item.LinkPref
 import com.machiav3lli.backup.ui.item.Pref
-import com.machiav3lli.backup.utils.FileUtils.invalidateBackupLocation
 import com.machiav3lli.backup.utils.applyFilter
 import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.utils.show
@@ -148,7 +147,7 @@ private fun Context.onClickUninstalledBackupsDelete(
                 .setMessage(message.toString().trim { it <= ' ' })
                 .setPositiveButton(R.string.dialogYes) { _: DialogInterface?, _: Int ->
                     deleteBackups(deleteList)
-                    invalidateBackupLocation()
+                    //invalidateBackupLocation()    //TODO hg42 deletebackups *should* be sufficient (to be proved)
                 }
                 .setNegativeButton(R.string.dialogNo, null)
                 .show()
