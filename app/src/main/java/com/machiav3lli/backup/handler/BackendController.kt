@@ -158,7 +158,7 @@ suspend fun scanBackups(
 
     fun logSuspicious(file: StorageFile, reason: String) {
         formatBackupFile(file)
-                .removePrefix(ERROR_PREFIX)
+                .replace(ERROR_PREFIX, "")
                 .let { relPath ->
                     val message = "? $relPath ($reason)"
                     addInfoLogText(message)
