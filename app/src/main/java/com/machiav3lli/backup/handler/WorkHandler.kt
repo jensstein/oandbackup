@@ -84,7 +84,10 @@ class WorkHandler(appContext: Context) {
         prune()
     }
 
-    val endDelay = 200L //500L //10000L
+    val endDelay = 0L
+    //val endDelay = 200L
+    //val endDelay = 500L
+    //val endDelay = 10000L
 
     fun endBatches() {
         Timber.d("%%%%% ALL PRUNE")
@@ -106,18 +109,19 @@ class WorkHandler(appContext: Context) {
         }
         batchPackageVars = mutableMapOf()
 
-        OABX.setProgress()
+        //OABX.setProgress()
 
         Thread.sleep(endDelay)
 
         Timber.d("%%%%% ALL DONE")
-        OABX.wakelock(false) // now everything is done
 
         OABX.service?.let {
             traceBold { """%%%%% ------------------------------------------ service stopping...\""" }
             it.stopSelf()
             traceBold { """%%%%% ------------------------------------------ service stopped.../""" }
         }
+
+        OABX.wakelock(false)
     }
 
     fun beginBatch(batchName: String) {
@@ -386,7 +390,7 @@ class WorkHandler(appContext: Context) {
 
                 val batch: BatchState = batchesKnown[batchName]!!
 
-                if (batch.nFinished <= 2) {
+                if (batch.nFinished <= 0) {
 
                     workState.run {
                         val processed = succeeded + failed
@@ -519,9 +523,9 @@ class WorkHandler(appContext: Context) {
                                     .setProgress(workCount, processed, false)
                                     .setColor(
                                         if (failed == 0)
-                                            0x66FF66
+                                            0x009900
                                         else
-                                            0xFF6666
+                                            0x990000
                                     )
                         }
 
