@@ -215,14 +215,14 @@ class MainActivityX : BaseActivity() {
                     freshStart = false
                     LaunchedEffect(viewModel) {
                         traceBold { "******************** freshStart LaunchedEffect(viewModel) ********************" }
-                        // it isn't necessary with MutableStateFlow under the hood
+                        // this isn't necessary with MutableStateFlow under the hood
                         // keeping the compile conditions, even if they are always false if using MutableComposableStateFlow
                         //if (viewModel.searchQuery is MutableComposableSharedFlow<*>)
                         //    viewModel.searchQuery.value = ""
                         //if (viewModel.modelSortFilter is MutableComposableSharedFlow<*>)
                         //    viewModel.modelSortFilter.value = OABX.context.sortFilterModel
 
-                        //refreshPackages()     // not a good idea -> using init { ... } in viewModel
+                        refreshPackages()
                     }
                 }
 
