@@ -208,7 +208,7 @@ open class ScheduleService : Service() {
 
                                     val oneTimeWorkLiveData = OABX.work.manager
                                         .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
-                                    oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
+                                    oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {    //TODO WECH hg42
                                         override fun onChanged(t: WorkInfo?) {
                                             if (t?.state == WorkInfo.State.SUCCEEDED ||
                                                 t?.state == WorkInfo.State.FAILED ||
@@ -222,7 +222,7 @@ open class ScheduleService : Service() {
                                                         ?: ""
                                                 val error = t.outputData.getString("error")
                                                     ?: ""
-                                                if (error.isNotEmpty()) errors =
+                                                if (error.isNotEmpty()) errors =     //TODO hg42 add to WorkHandler
                                                     "$errors$packageLabel: ${
                                                         LogsHandler.handleErrorMessages(
                                                             this@ScheduleService,

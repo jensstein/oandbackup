@@ -487,13 +487,13 @@ class MainActivityX : BaseActivity() {
 
             val oneTimeWorkLiveData = WorkManager.getInstance(OABX.context)
                 .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
-            oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
+            oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {    //TODO WECH hg42
                 override fun onChanged(t: WorkInfo?) {
                     if (t?.state == WorkInfo.State.SUCCEEDED) {
                         counter += 1
 
                         val (succeeded, packageLabel, error) = AppActionWork.getOutput(t)
-                        if (error.isNotEmpty()) errors = "$errors$packageLabel: ${
+                        if (error.isNotEmpty()) errors = "$errors$packageLabel: ${      //TODO hg42 add to WorkHandler
                             LogsHandler.handleErrorMessages(
                                 OABX.context,
                                 error
