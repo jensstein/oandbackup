@@ -124,6 +124,12 @@ val pref_autoLogAfterSchedule = BooleanPref(
     defaultValue = false
 )
 
+val pref_autoLogUnInstallBroadcast = BooleanPref(
+    key = "dev-log.autoLogUnInstallBroadcast",
+    summary = "create a log when a package is installed or uninstalled",
+    defaultValue = false
+)
+
 //---------------------------------------- developer settings - tracing
 
 val pref_trace = BooleanPref(
