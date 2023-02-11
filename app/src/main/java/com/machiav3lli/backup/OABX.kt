@@ -636,7 +636,9 @@ class OABX : Application() {
         private var theBackupsMap = mutableMapOf<String, List<Backup>>()
 
         fun getBackups(): Map<String, List<Backup>> {
-            synchronized(theBackupsMap) { return theBackupsMap }
+            synchronized(theBackupsMap) {
+                return theBackupsMap
+            }
         }
 
         fun clearBackups(packageName: String? = null) {

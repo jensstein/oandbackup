@@ -60,6 +60,7 @@ import com.machiav3lli.backup.fragments.BatchPrefsSheet
 import com.machiav3lli.backup.fragments.SortFilterSheet
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
+import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.pref_catchUncaughtException
 import com.machiav3lli.backup.pref_uncaughtExceptionsJumpToPreferences
 import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
@@ -85,7 +86,6 @@ import com.machiav3lli.backup.utils.TraceUtils.traceBold
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import com.machiav3lli.backup.utils.isEncryptionEnabled
 import com.machiav3lli.backup.utils.setCustomTheme
-import com.machiav3lli.backup.utils.sortFilterModel
 import com.machiav3lli.backup.viewmodels.BatchViewModel
 import com.machiav3lli.backup.viewmodels.MainViewModel
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
@@ -285,7 +285,7 @@ class MainActivityX : BaseActivity() {
                                         }
                                     )
 
-                                    RefreshButton() { refreshPackages() }
+                                    RefreshButton() { refreshPackagesAndBackups() }
                                     RoundButton(
                                         description = stringResource(id = R.string.prefs_title),
                                         icon = Phosphor.GearSix
@@ -418,12 +418,14 @@ class MainActivityX : BaseActivity() {
         viewModel.updatePackage(packageName)
     }
 
-    fun refreshView() {    //TODO hg42 is currently unused (and should always be?)
-        crScope.launch { viewModel.modelSortFilter.flow.emit(sortFilterModel) }
+    fun refreshPackagesAndBackups() {
+        invalidateBackupLocation()
     }
 
     fun refreshPackages() {
-        invalidateBackupLocation()
+        CoroutineScope(Dispatchers.Default).launch {
+            updateAppTables()
+        }
     }
 
     fun showSnackBar(message: String) {

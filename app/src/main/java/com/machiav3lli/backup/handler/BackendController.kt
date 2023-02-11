@@ -55,6 +55,7 @@ import com.machiav3lli.backup.preferences.pref_findBackupsLocksFlows
 import com.machiav3lli.backup.traceBackupsScan
 import com.machiav3lli.backup.traceBackupsScanAll
 import com.machiav3lli.backup.traceTiming
+import com.machiav3lli.backup.utils.FileUtils.ensureBackups
 import com.machiav3lli.backup.utils.SystemUtils.numCores
 import com.machiav3lli.backup.utils.TraceUtils
 import com.machiav3lli.backup.utils.TraceUtils.beginNanoTimer
@@ -754,7 +755,7 @@ fun Context.updateAppTables() {
         }
 
 
-        val backupsMap = findBackups()
+        val backupsMap = ensureBackups()
         val backups = backupsMap.values.flatten()
 
         val specialPackages = SpecialInfo.getSpecialPackages(this)
