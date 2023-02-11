@@ -99,6 +99,7 @@ import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.compose.isAtBottom
 import com.machiav3lli.backup.ui.compose.isAtTop
 import com.machiav3lli.backup.ui.compose.item.RoundButton
+import com.machiav3lli.backup.ui.item.LaunchPref
 import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.utils.SystemUtils.getApplicationIssuer
 import com.machiav3lli.backup.utils.TraceUtils.listNanoTiming
@@ -151,22 +152,25 @@ val maxLogcat = "-t 100000"
 
 fun logApp() =
     listOf("--- logcat app") +
-    shell("logcat -d ${maxLogcat} --pid=${Process.myPid()} | grep -v SHELLOUT:")
+            shell("logcat -d ${maxLogcat} --pid=${Process.myPid()} | grep -v SHELLOUT:")
 
 fun logRel() =
     listOf("--- logcat related") +
-    shell("logcat -d ${maxLogcat} | grep -v SHELLOUT: | grep -E '(machiav3lli.backup|NeoBackup>)'")
+            shell("logcat -d ${maxLogcat} | grep -v SHELLOUT: | grep -E '(machiav3lli.backup|NeoBackup>)'")
 
 fun logSys() =
     listOf("--- logcat system") +
-    shell("logcat -d ${maxLogcat} | grep -v SHELLOUT:")
+            shell("logcat -d ${maxLogcat} | grep -v SHELLOUT:")
 
 fun dumpPrefs() =
     listOf("------ preferences") +
             Pref.preferences.map {
                 val (group, prefs) = it
                 prefs.map {
-                    if (it.private)
+                    if (it.private ||
+                        it is LaunchPref ||
+                        it.group == "kill"
+                    )
                         null
                     else
                         "${it.group}.${it.key} = ${it}"
@@ -256,11 +260,25 @@ fun onErrorInfo(): List<String> {
     }
 }
 
-fun supportInfo(): List<String> {
+fun textLog(lines: List<String>): StorageFile? {
+    return LogsHandler.writeToLogFile(lines.joinToString("\n"))
+}
+
+fun textLogShare(lines: List<String>) {
+    LogsHandler.writeToLogFile(lines.joinToString("\n"))?.let { file ->
+        Log(file).let { log ->
+            if (lines.isNotEmpty()) {
+                share(log, asFile = true)
+            }
+        }
+    }
+}
+
+fun supportInfo(title: String = ""): List<String> {
     try {
         val logs = logInt() + logRel()
         val lines =
-            listOf("=== support log", "") +
+            listOf("=== ${if (title.isEmpty()) "support log" else title}", "") +
                     envInfo() +
                     dumpPrefs() +
                     dumpEnv() +
@@ -276,22 +294,8 @@ fun supportInfo(): List<String> {
     }
 }
 
-fun textLog(lines: List<String>): StorageFile? {
-    return LogsHandler.writeToLogFile(lines.joinToString("\n"))
-}
-
-fun textLogShare(lines: List<String>) {
-    LogsHandler.writeToLogFile(lines.joinToString("\n"))?.let { file ->
-        Log(file).let { log ->
-            if (lines.isNotEmpty()) {
-                share(log, asFile = true)
-            }
-        }
-    }
-}
-
-fun supportLog() {
-    textLog(supportInfo())
+fun supportLog(title: String = "") {
+    textLog(supportInfo(title))
 }
 
 fun supportInfoLogShare() {
@@ -303,7 +307,7 @@ fun TerminalButton(
     name: String,
     modifier: Modifier = Modifier,
     important: Boolean = false,
-    action: () -> Unit
+    action: () -> Unit,
 ) {
     val color = if (important)
         MaterialTheme.colorScheme.primaryContainer
@@ -528,30 +532,30 @@ fun TerminalText(
                     state = listState
                 ) {
                     items(lines) {
-                            val color =
-                                when {
-                                    it.contains("error", ignoreCase = true) -> Color(1f, 0f, 0f)
-                                    it.contains("warning", ignoreCase = true) -> Color(1f, 0.5f, 0f)
-                                    it.contains("***") -> Color(0f, 1f, 1f)
-                                    it.startsWith("===") -> Color(1f, 1f, 0f)
-                                    it.startsWith("---") -> Color(
-                                        0.8f,
-                                        0.8f,
-                                        0f
-                                    )
-                                    else -> Color.White
-                                }
-                            Text(
-                                if (it == "") " " else it,     //TODO hg42 workaround
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = fontSize,
-                                lineHeight = lineHeightSp,
-                                softWrap = wrap,
-                                color = color,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(0.dp)
-                            )
+                        val color =
+                            when {
+                                it.contains("error", ignoreCase = true) -> Color(1f, 0f, 0f)
+                                it.contains("warning", ignoreCase = true) -> Color(1f, 0.5f, 0f)
+                                it.contains("***") -> Color(0f, 1f, 1f)
+                                it.startsWith("===") -> Color(1f, 1f, 0f)
+                                it.startsWith("---") -> Color(
+                                    0.8f,
+                                    0.8f,
+                                    0f
+                                )
+                                else -> Color.White
+                            }
+                        Text(
+                            if (it == "") " " else it,     //TODO hg42 workaround
+                            fontFamily = FontFamily.Monospace,
+                            fontSize = fontSize,
+                            lineHeight = lineHeightSp,
+                            softWrap = wrap,
+                            color = color,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(0.dp)
+                        )
                     }
                 }
             }
@@ -605,7 +609,8 @@ fun TerminalText(
                         Icon(
                             imageVector = Phosphor.X,
                             contentDescription = "search",
-                            modifier = Modifier.size(ICON_SIZE_SMALL)
+                            modifier = Modifier
+                                .size(ICON_SIZE_SMALL)
                                 .clickable { search = "" }
                             //tint = tint,
                             //contentDescription = description,

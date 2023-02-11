@@ -66,7 +66,7 @@ class PackageUnInstalledReceiver : BroadcastReceiver() {
                 }
             }
             if (pref_autoLogUnInstallBroadcast.value)
-                supportLog()
+                supportLog("PackageUnInstalledReceiver")
         }
     }
 }
