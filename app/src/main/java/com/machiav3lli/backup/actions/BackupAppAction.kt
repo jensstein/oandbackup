@@ -244,13 +244,13 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         //propertiesFile.parent?.let { dir ->       //TODO WECH
         //    propertiesFile.name?.let { name ->
         //        dir.createFile(name)
-        //        propertiesFile.writeText(backup.toJSON())
+        //        propertiesFile.writeText(backup.toSerialized())
         //        Timber.i("Wrote $propertiesFile file for backup: $backup")
         //        return true
         //    }
         //}
         propertiesFile.createFile()?.let { it ->
-            it.writeText(backup.toJSON())
+            it.writeText(backup.toSerialized())
             Timber.i("Wrote $it for backup: $backup")
             return true
         }

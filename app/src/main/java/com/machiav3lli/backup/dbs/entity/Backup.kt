@@ -39,7 +39,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -264,7 +263,7 @@ data class Backup constructor(
         return result
     }
 
-    fun toJSON() = Json.encodeToString(this)
+    fun toSerialized() = OABX.serializer.encodeToString(this)
 
     class BrokenBackupException @JvmOverloads internal constructor(
         message: String?,
@@ -303,18 +302,18 @@ data class Backup constructor(
 
     companion object {
 
-        fun fromJson(json: String): Backup {
-            traceBackupProps { "backup json: $json" }
-            return Json.decodeFromString(json)
+        fun fromSerialized(serialized: String): Backup {
+            traceBackupProps { "backup: $serialized" }
+            return OABX.serializer.decodeFromString(serialized)
         }
 
         fun createFrom(propertiesFile: StorageFile): Backup? {
-            var json = ""
+            var serialized = ""
             try {
 
-                json = propertiesFile.readText()
+                serialized = propertiesFile.readText()
 
-                val backup = fromJson(json)
+                val backup = fromSerialized(serialized)
 
                 var dir: StorageFile? = null
 
@@ -329,7 +328,7 @@ data class Backup constructor(
                 logException(e, "Cannot read ${propertiesFile.path}", backTrace = false)
                 return null
             } catch (e: Throwable) {
-                logException(e, "file: ${propertiesFile.path} =\n$json", backTrace = false)
+                logException(e, "file: ${propertiesFile.path} =\n$serialized", backTrace = false)
                 return null
             }
         }

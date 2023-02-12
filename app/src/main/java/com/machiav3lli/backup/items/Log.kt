@@ -17,6 +17,7 @@
  */
 package com.machiav3lli.backup.items
 
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.utils.LocalDateTimeSerializer
@@ -24,7 +25,6 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.time.LocalDateTime
@@ -56,9 +56,9 @@ open class Log {
         try {
             logFile.inputStream()!!.use { inputStream ->
                 val text = inputStream.reader().readText()
-                initFromJson(text) || initFromText(text) ||
+                initFromSerialized(text) || initFromText(text) ||
                         throw Backup.BrokenBackupException(
-                            "$logFile is neither json nor text header format"
+                            "$logFile is neither ${OABX.serializer.javaClass.simpleName} nor text header format"
                         )
             }
         } catch (e: FileNotFoundException) {
@@ -142,8 +142,8 @@ open class Log {
         cpuArch: $cpuArch
     """.trimIndent() + "\n\n" + logText
 
-    fun initFromJson(text: String): Boolean {
-        return fromJson(text)?.let { item ->
+    fun initFromSerialized(text: String): Boolean {
+        return fromSerialized(text)?.let { item ->
             this.logDate = item.logDate
             this.deviceName = item.deviceName
             this.sdkCodename = item.sdkCodename
@@ -153,9 +153,9 @@ open class Log {
         } ?: false
     }
 
-    fun toJSON() = Json.encodeToString(this)
+    fun toSerialized() = OABX.serializer.encodeToString(this)
 
     companion object {
-        fun fromJson(json: String) = runCatching { Json.decodeFromString<Log>(json) }.getOrNull()
+        fun fromSerialized(serialized: String) = runCatching { OABX.serializer.decodeFromString<Log>(serialized) }.getOrNull()
     }
 }

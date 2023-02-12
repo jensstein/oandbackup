@@ -43,6 +43,7 @@ import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.handler.findBackups
 import com.machiav3lli.backup.preferences.pref_busyHitTime
 import com.machiav3lli.backup.preferences.pref_cancelOnStart
+import com.machiav3lli.backup.preferences.pref_prettyJson
 import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.ui.item.BooleanPref
@@ -59,6 +60,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.StringFormat
+import kotlinx.serialization.json.Json
 import timber.log.Timber
 import java.lang.Integer.max
 import java.lang.ref.WeakReference
@@ -194,7 +197,7 @@ val traceBackupsScanAll = TraceUtils.TracePref(
 
 val traceBackupProps = TraceUtils.TracePref(
     name = "BackupProps",
-    summary = "trace backup properties (json)",
+    summary = "trace backup properties (serialization format, e.g. json)",
     default = false
 )
 
@@ -311,6 +314,10 @@ class OABX : Application() {
     }
 
     companion object {
+
+        val JsonPretty = Json { prettyPrint = true }    // create only once
+        val JsonDefault = Json.Default
+        val serializer: StringFormat get() = if (pref_prettyJson.value) JsonPretty else JsonDefault
 
         val lastLogMessages = ConcurrentLinkedQueue<String>()
         fun addLogMessage(message: String) {

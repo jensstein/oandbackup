@@ -56,7 +56,7 @@ class LogsHandler {
                             throw Exception("${log.name} is empty or cannot be read")
                         val sendIntent = Intent().apply {
                             action = Intent.ACTION_SEND
-                            type = "text/json"
+                            type = "text/*"
                             flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
                             putExtra(Intent.EXTRA_SUBJECT, "[NeoBackup] ${log.name}")
                             if (asFile)

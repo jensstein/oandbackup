@@ -61,7 +61,7 @@ class ExportsHandler(var context: Context) {
                 BufferedOutputStream(exportFile.outputStream())
                     .use { exportOut ->
                         exportOut.write(
-                            it.toJSON().toByteArray(StandardCharsets.UTF_8)
+                            it.toSerialized().toByteArray(StandardCharsets.UTF_8)
                         )
                         Timber.i("Exported the schedule ${it.name} to $exportFile")
                     }

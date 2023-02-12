@@ -287,6 +287,12 @@ val pref_refreshAppInfoTimeout = IntPref(
 
 //---------------------------------------- developer settings - implementation alternatives
 
+val pref_prettyJson = BooleanPref(
+    key = "dev-alt.prettyJson",
+    summary = "create human readable json files. Note they should be compatible in both directions",
+    defaultValue = true
+)
+
 val pref_findBackupsLocksFlows = BooleanPref(
     key = "dev-alt.lockFlowsWhileFindbackups",
     summary = "empty backup lists for installed packages early, to prevent single scanning",

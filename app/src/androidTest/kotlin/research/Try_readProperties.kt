@@ -13,7 +13,6 @@ import com.machiav3lli.backup.items.getCursorString
 import com.machiav3lli.backup.utils.getBackupRoot
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import org.junit.Test
 import timber.log.Timber
 import kotlin.system.measureTimeMillis
@@ -89,9 +88,9 @@ class Try_readProperties {
                     packageName?.let { backups.put(it, backupList) }
             }
         }
-        //val json = Json.encodeToString(backups)
-        //StorageFile(File("/sdcard/test.map")).outputStream()?.write(json.toByteArray())
-        //Timber.i("backups: $json")
+        //val serialized = OABX.serializer.encodeToString(backups)
+        //StorageFile(File("/sdcard/test.map")).outputStream()?.write(serialized.toByteArray())
+        //Timber.i("backups: $serialized")
         Timber.i("packages: ${backups.size} backups: ${backups.map { it.value.size }.sum()}")
         Timber.w("time scanning (create backups): $time ms")
     }
@@ -146,9 +145,9 @@ class Try_readProperties {
             }
         }
 
-        //val json = Json.encodeToString(backups)
-        //StorageFile(File("/sdcard/test.map")).outputStream()?.write(json.toByteArray())
-        //Timber.i("backups: $json")
+        //val serialized = OABX.serializer.encodeToString(backups)
+        //StorageFile(File("/sdcard/test.map")).outputStream()?.write(serialized.toByteArray())
+        //Timber.i("backups: $serialized")
         Timber.i("backups: ${backupList.map { it.size }.sum()}")
         Timber.i("packages: ${backups.size} backups: ${backups.map { it.value.size }.sum()}")
         Timber.w("time scanning (create backups): $time ms")
@@ -172,9 +171,9 @@ class Try_readProperties {
                     packageName?.let { backups.put(it, backupList) }
             }
         }
-        val json = Json.encodeToString(backups)
-        //StorageFile(File("/sdcard/test.map")).outputStream()?.write(json.toByteArray())
-        //Timber.i("backups: $json")
+        val serialized = OABX.serializer.encodeToString(backups)
+        //StorageFile(File("/sdcard/test.map")).outputStream()?.write(serialized.toByteArray())
+        //Timber.i("backups: $serialized")
         Timber.i("packages: ${backups.size} backups: ${backups.map { it.value.size }.sum()}")
         Timber.w("time scanning (create backups): $time ms")
     }
@@ -192,7 +191,7 @@ class Try_readProperties {
             text = file.readText()
             Timber.i("text size: ${text.length}")
             text.substring(1, text.length-1).split("}{").forEach {
-                Backup.fromJson("{$it}").let { backupList.add(it) }
+                Backup.fromSerialized("{$it}").let { backupList.add(it) }
             }
         }
         Timber.i("backups: ${backupList.size}")
@@ -209,7 +208,7 @@ class Try_readProperties {
             Timber.i("file ${file.path} size: $size")
             val text = file.readText()
             Timber.i("text size: ${text.length}")
-            backups = Json.decodeFromString(text)
+            backups = OABX.serializer.decodeFromString(text)
         }
         Timber.i("packages: ${backups.size} backups: ${backups.map { it.value.size }.sum()}")
         Timber.w("time backups from single map file: $time ms")

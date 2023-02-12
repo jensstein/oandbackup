@@ -24,6 +24,7 @@ import androidx.room.migration.AutoMigrationSpec
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT_WITHOUT_SPECIAL
 import com.machiav3lli.backup.MODE_APK
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.SPECIAL_FILTER_ALL
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
@@ -31,7 +32,6 @@ import com.machiav3lli.backup.items.StorageFile
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import java.io.FileNotFoundException
 import java.io.IOException
 
@@ -120,7 +120,7 @@ data class Schedule(
         constructor(exportFile: StorageFile) : this() {
             try {
                 exportFile.inputStream()!!.use { inputStream ->
-                    val item = fromJson(inputStream.reader().readText())
+                    val item = fromSerialized(inputStream.reader().readText())
                     schedule = item.copy(
                         enabled = false,
                         timePlaced = System.currentTimeMillis(),
@@ -172,10 +172,10 @@ data class Schedule(
         }
     }
 
-    fun toJSON() = Json.encodeToString(this)
+    fun toSerialized() = OABX.serializer.encodeToString(this)
 
     companion object {
-        fun fromJson(json: String) = Json.decodeFromString<Schedule>(json)
+        fun fromSerialized(serialized: String) = OABX.serializer.decodeFromString<Schedule>(serialized)
 
         @RenameColumn(
             tableName = "Schedule",
