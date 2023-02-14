@@ -78,6 +78,7 @@ import com.machiav3lli.backup.ICON_SIZE_SMALL
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.LogsHandler.Companion.share
+import com.machiav3lli.backup.handler.ShellHandler.Companion.needFreshShell
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.Companion.utilBoxInfo
@@ -367,7 +368,7 @@ fun TerminalPage() {
 
     DisposableEffect(Unit) {
         onDispose {
-            shell("exit")
+            needFreshShell()
         }
     }
 

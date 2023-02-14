@@ -24,10 +24,13 @@ import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.addErrorCommand
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.Companion.utilBoxInfo
+import com.machiav3lli.backup.traceDebug
 import com.machiav3lli.backup.utils.BUFFER_SIZE
 import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
 import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.Shell.ROOT_MOUNT_MASTER
+import com.topjohnwu.superuser.Shell.ROOT_SHELL
+import com.topjohnwu.superuser.ShellUtils
 import com.topjohnwu.superuser.io.SuRandomAccessFile
 import de.voize.semver4k.Semver
 import kotlinx.coroutines.Dispatchers
@@ -141,10 +144,13 @@ class ShellHandler {
     init {
         Shell.enableVerboseLogging = BuildConfig.DEBUG
         Shell.setDefaultBuilder(shellDefaultBuilder())
-        Shell.getShell()
+        needFreshShell(startup = true)
 
-        Timber.i("is root         = ${Shell.isAppGrantedRoot()}")
-        Timber.i("is mount-master = $isMountMaster")
+        Timber.i("app is granted root        = $isGrantedRoot")
+        Timber.i("libsu shell status         = ${Shell.getShell().status}")
+        Timber.i("libsu has root shell       = $hasRootShell")
+        Timber.i("libsu has mount master     = $hasMountMaster")
+        Timber.i("su has mount master option = $hasMountMasterOption")
 
         utilBoxes = mutableListOf<UtilBox>()
         try {
@@ -605,8 +611,6 @@ class ShellHandler {
             "toybox",
         )
 
-        val isMountMaster get() = Shell.getShell().status >= ROOT_MOUNT_MASTER
-
         var utilBoxes = mutableListOf<UtilBox>()
         var utilBox: UtilBox = UtilBox()
         val utilBoxQ get() = utilBox.quote()
@@ -619,12 +623,45 @@ class ShellHandler {
         val EXCLUDE_CACHE_FILE = "tar_EXCLUDE_CACHE"
         val EXCLUDE_FILE = "tar_EXCLUDE"
 
+        val isGrantedRoot get() = Shell.isAppGrantedRoot()
+        val hasRootShell get() = Shell.getShell().status >= ROOT_SHELL
+        val hasMountMaster get() = Shell.getShell().status >= ROOT_MOUNT_MASTER
+
+        val hasMountMasterOption: Boolean
+            get() {
+                // only return true if command does not choke on the option and exits with code 0
+                val ok = runCatching {
+                    ShellUtils.fastCmdResult("echo true | su --mount-master 0")
+                }.getOrNull() ?: false
+                //traceDebug { "detected mount master option = $ok" }
+                return ok
+            }
+
         fun shellDefaultBuilder() =
             Shell.Builder.create()
                 .setFlags(Shell.FLAG_MOUNT_MASTER)
                 .setTimeout(20)
         //.setInitializers(BusyBoxInstaller::class.java)
 
+        fun needFreshShell(builder: Shell.Builder = shellDefaultBuilder(), startup: Boolean = false): Shell {
+            val shellBefore = Shell.getCachedShell()
+            if (shellBefore != null) {
+                if (startup)
+                    Timber.e("ERROR: previous cached shell found, terminating it ($shellBefore)")
+                else
+                    traceDebug { "previous cached shell found, trying to terminate it ($shellBefore)" }
+                Shell.cmd("exit 77").exec()
+            }
+            Shell.cmd("true").exec()
+            val shellAfter = Shell.getShell()
+            if (shellBefore != null) {
+                if (shellAfter === shellBefore)
+                    Timber.e("ERROR: shell not refreshed! ($shellBefore vs $shellAfter)")
+                else
+                    traceDebug { "new shell created ($shellAfter)" }
+            }
+            return shellAfter
+        }
 
         interface RunnableShellCommand {
             fun runCommand(command: String): Shell.Job
@@ -778,12 +815,19 @@ class ShellHandler {
             return err.isNotEmpty() && err[0].contains("no such file or directory", true)
         }
 
-        val suCommand
-            get() =
-                if (isMountMaster)
-                    "su --mount-master 0"
-                else
-                    "su 0"
+        var suCommand: String = ""
+            get() {
+                if (field.isEmpty()) {
+                    // only set to true if command is executed and returns exit code 0
+                    field =
+                        if (hasMountMasterOption)
+                            "su --mount-master 0"
+                        else
+                            "su 0"
+                    Timber.i("using '$field' for streaming commands")
+                }
+                return field
+            }
 
         @Throws(IOException::class)
         fun quirkLibsuReadFileWorkaround(inputFile: FileInfo, output: OutputStream) {
