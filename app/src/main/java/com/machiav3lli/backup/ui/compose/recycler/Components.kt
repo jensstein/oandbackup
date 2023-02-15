@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -54,14 +55,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.flowlayout.FlowRow
+import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.preferences.pref_busyFadeTime
 import com.machiav3lli.backup.preferences.pref_busyLaserBackground
 import com.machiav3lli.backup.preferences.pref_busyTurnTime
+import com.machiav3lli.backup.preferences.pref_versionOpacity
 import com.machiav3lli.backup.ui.compose.item.ActionChip
 import com.machiav3lli.backup.ui.compose.item.ButtonIcon
 import com.machiav3lli.backup.ui.item.ChipItem
+import com.machiav3lli.backup.utils.SystemUtils.applicationIssuer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.math.PI
@@ -454,8 +458,21 @@ fun BusyBackground(
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
-        if (pref_busyLaserBackground.value) BusyBackgroundAnimated(busy = isBusy, content = content)
-        else BusyBackgroundColor(busy = isBusy, content = content)
+        if (pref_busyLaserBackground.value)
+            BusyBackgroundAnimated(busy = isBusy, content = content)
+        else
+            BusyBackgroundColor(busy = isBusy, content = content)
+
+        if (pref_versionOpacity.value > 0)
+            Text(
+                text = "${BuildConfig.VERSION_NAME} $applicationIssuer",
+                fontSize = 8.sp,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = pref_versionOpacity.value/100f),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .wrapContentSize(Alignment.TopStart)
+                    .padding(16.dp, 0.dp, 0.dp, 0.dp)
+            )
     }
 }
 

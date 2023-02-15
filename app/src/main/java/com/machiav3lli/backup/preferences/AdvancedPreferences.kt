@@ -21,6 +21,7 @@ import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.busyTick
 import com.machiav3lli.backup.OABX.Companion.isDebug
+import com.machiav3lli.backup.OABX.Companion.isRelease
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.preferences.ui.PrefsExpandableGroupHeader
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
@@ -317,6 +318,14 @@ val pref_toolbarOpacity = IntPref(
     summary = "opacity of toolbars [percent]",
     entries = (0..100 step 5).toList(),
     defaultValue = 100
+)
+
+val pref_versionOpacity = IntPref(
+    key = "dev-alt.versionOpacity",
+    summary = "opacity of version [percent]",
+    entries = ((0..9 step 1) + (10..100 step 5)).toList(),
+    defaultValue = if (isRelease) 0 else 1
+    // invisible but can be seen when zooming
 )
 
 val pref_busyHitTime = IntPref(
