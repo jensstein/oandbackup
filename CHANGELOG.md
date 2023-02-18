@@ -4,6 +4,15 @@ CHANGELOG
 next 8.3.1 +50 Commits & +10 Translations
 ----
 
+- Add: support infos fpr mount master etc.
+- Change: prettyPrint properties files (can be disabled: prettyJson)
+- Fix: github issue #562 et.al.: phh su + inherited+enforcing, directly check if su has --mount-master
+- Remove: finishWork -> simplification
+- Fix: missing refresh of packages on start
+- Add: devsettings/autoLogUnInstallBroadcast
+- Fix: progress notifications (one more) 
+- Add: devsettings/toolbarOpacity
+
 #### Function
 - Add: busy to renameDamagedToERROR etc.
 - Add: DevTools/tools/openBackupDir (works only with SAF capable file managers, so only Files/DocumentsUI)
