@@ -80,6 +80,9 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.LogsHandler.Companion.share
 import com.machiav3lli.backup.handler.ShellHandler.Companion.needFreshShell
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
+import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRootPipeOutCollectErr
+import com.machiav3lli.backup.handler.ShellHandler.Companion.suCommand
+import com.machiav3lli.backup.handler.ShellHandler.Companion.suInfo
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.Companion.utilBoxInfo
 import com.machiav3lli.backup.handler.findBackups
@@ -104,20 +107,29 @@ import com.machiav3lli.backup.ui.item.LaunchPref
 import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.utils.SystemUtils.getApplicationIssuer
 import com.machiav3lli.backup.utils.TraceUtils.listNanoTiming
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
 
 
 //var terminalShell = shellDefaultBuilder().build()
 
-fun shell(command: String): List<String> {
+fun shell(command: String, silent: Boolean = false): List<String> {
     try {
         //val env = "EPKG=\"${OABX.lastErrorPackage}\" ECMD=\"${OABX.lastErrorCommand}\""
         //val result = runAsRoot("$env $command")
         val result = runAsRoot(command)
-        return listOf(
-            "--- # $command${if (!result.isSuccess) " -> ${result.code}" else " -> ok"}"
-        ) + result.err.map { "? $it" } + result.out
+        val lines = mutableListOf<String>()
+        if (!silent)
+            lines += listOf(
+                "--- # $command${if (!result.isSuccess) " -> ${result.code}" else " -> ok"}"
+            )
+        lines += result.err.map { "? $it" }
+        lines += result.out
+        return lines
     } catch (e: Throwable) {
         return listOf(
             "--- # $command -> ERROR",
@@ -128,20 +140,25 @@ fun shell(command: String): List<String> {
     }
 }
 
-fun info(): List<String> {
+fun appInfo(): List<String> {
     return listOf(
-        "------ info",
+        "------ application",
         BuildConfig.APPLICATION_ID,
         BuildConfig.VERSION_NAME,
         OABX.context.getApplicationIssuer()?.let { "signed by $it" } ?: "",
-        "------ shell utility box"
-    ).filterNotNull() + utilBoxInfo()
+    )
 }
 
-fun envInfo() =
-    info() +
+fun baseInfo(): List<String> {
+    return appInfo() +
+            listOf("------ superuser") +
+            suInfo() +
+            listOf("------ shell utility box") + utilBoxInfo()
+}
+
+fun extendedInfo() =
+    baseInfo() +
             shell("su --help") +
-            shell("echo ${utilBox.name}") +
             shell("${utilBox.name} --version") +
             shell("${utilBox.name} --help")
 
@@ -190,29 +207,36 @@ fun dumpTiming() =
     listOf("------ timing") +
             listNanoTiming()
 
+fun accessTest1(title: String, directory: String, comment: String) =
+    listOf("--- $title") +
+            shell("echo \"$directory/*\"", silent = true) +
+            shell("echo \"$(ls $directory/ | wc -l) $comment\"", silent = true) +
+            shell("ls -dAlZ $directory", silent = true) +
+            run {
+                val stringStream = ByteArrayOutputStream()
+                runAsRootPipeOutCollectErr(
+                    stringStream,
+                    "echo \"$(ls $directory/ | wc -l) $comment - not using libsu\""
+                )
+                runAsRootPipeOutCollectErr(stringStream, "ls -dAlZ $directory")
+                stringStream.toString().lines().filterNot { it.isEmpty() }
+            }
+
 fun accessTest() =
     listOf("------ access") +
-            listOf("--- data") +
-            shell("echo \"\$(ls \$ANDROID_DATA/user/0/ | wc -l) packages (dtata)\"") +
-            shell("ls -dAlZ \$ANDROID_DATA/user/0/") +
-            listOf("--- data-device-protected") +
-            shell("echo \"\$(ls \$ANDROID_DATA/user_de/0/ | wc -l) packages (device protected)\"") +
-            shell("ls -dAlZ \$ANDROID_DATA/user_de/0/") +
-            listOf("--- apk") +
-            shell("echo \"$(ls \$ANDROID_DATA/app/ | wc -l) packages (app)\"") +
-            shell("ls -dAlZ \$ANDROID_DATA/app/") +
-            listOf("--- misc") +
-            shell("echo \"\$(ls -l \$ANDROID_DATA/misc/ | wc -l) misc data\"") +
-            shell("ls -dAlZ \$ANDROID_DATA/misc/") +
-            listOf("--- external") +
-            shell("echo \"\$(ls -l \$EXTERNAL_STORAGE/Android/data/ | wc -l) packages external data\"") +
-            shell("ls -dAlZ \$EXTERNAL_STORAGE/Android/data/") +
-            listOf("--- obb") +
-            shell("echo \"\$(ls -l \$EXTERNAL_STORAGE/Android/obb/ | wc -l) packages obb\"") +
-            shell("ls -dAlZ \$EXTERNAL_STORAGE/Android/obb/") +
-            listOf("--- media") +
-            shell("echo \"\$(ls -l \$EXTERNAL_STORAGE/Android/media/ | wc -l) packages media\"") +
-            shell("ls -dAlZ \$EXTERNAL_STORAGE/Android/media/")
+            listOf("not using libsu: echo some command | $suCommand (used for streaming in backup/restore)") +
+            accessTest1("system app", "\$ANDROID_ASSETS", "packages (system app)") +
+            accessTest1("user app", "\$ANDROID_DATA/app", "packages (user app)") +
+            accessTest1("data", "\$ANDROID_DATA/user/0", "packages (data)") +
+            accessTest1(
+                "device protected",
+                "\$ANDROID_DATA/user_de/0",
+                "packages (device protected)"
+            ) +
+            accessTest1("external", "\$EXTERNAL_STORAGE/Android/data", "packages (external)") +
+            accessTest1("obb", "\$EXTERNAL_STORAGE/Android/obb", "packages (obb)") +
+            accessTest1("media", "\$EXTERNAL_STORAGE/Android/media", "packages (media)") +
+            accessTest1("misc", "\$ANDROID_DATA/misc", "misc data")
 
 fun threadsInfo(): List<String> {
     val threads =
@@ -250,7 +274,7 @@ fun onErrorInfo(): List<String> {
         val logs = logInt() + logApp()
         val lines =
             listOf("=== onError log", "") +
-                    info() +
+                    baseInfo() +
                     dumpPrefs() +
                     dumpEnv() +
                     lastErrorPkg() +
@@ -280,7 +304,7 @@ fun supportInfo(title: String = ""): List<String> {
         val logs = logInt() + logRel()
         val lines =
             listOf("=== ${if (title.isEmpty()) "support log" else title}", "") +
-                    envInfo() +
+                    extendedInfo() +
                     dumpPrefs() +
                     dumpEnv() +
                     dumpAlarms() +
@@ -348,22 +372,35 @@ fun TerminalPage() {
     val padding = 4.dp
 
     fun launch(todo: () -> Unit) {
-        scope.launch {
+        scope.launch(Dispatchers.Default) {
             todo()
         }
     }
 
-    fun append(lines: List<String>) {
+    fun produce(produceLines: () -> List<String>) {
         launch {
+            val hittingBusy = CoroutineScope(Dispatchers.Default)
+            hittingBusy.launch {
+                while(true) {
+                    delay(50)
+                    OABX.hitBusy(50)
+                }
+            }
+
             runCatching {
                 focusManager.clearFocus()
             }
+
+            val lines = produceLines()
+
             output.addAll(lines)
+
+            hittingBusy.cancel()
         }
     }
 
     fun run(command: String) {
-        append(shell(command))
+        produce { shell(command) }
     }
 
     DisposableEffect(Unit) {
@@ -429,18 +466,18 @@ fun TerminalPage() {
                 Spacer(Modifier.width(8.dp))
                 TerminalButton("clear", important = true) { output.clear() }
                 Spacer(Modifier.width(8.dp))
-                TerminalButton("log/int") { append(logInt()) }
-                TerminalButton("log/app") { append(logApp()) }
-                TerminalButton("log/rel") { append(logRel()) }
-                TerminalButton("log/all") { append(logSys()) }
-                TerminalButton("info") { append(envInfo()) }
-                TerminalButton("prefs") { append(dumpPrefs()) }
-                TerminalButton("env") { append(dumpEnv()) }
-                TerminalButton("alarms") { append(dumpAlarms()) }
-                TerminalButton("timing") { append(dumpTiming()) }
-                TerminalButton("threads") { append(threadsInfo()) }
-                TerminalButton("access") { append(accessTest()) }
-                TerminalButton("errInfo") { append(lastErrorPkg() + lastErrorCommand()) }
+                TerminalButton("log/int") { produce { logInt() } }
+                TerminalButton("log/app") { produce { logApp() } }
+                TerminalButton("log/rel") { produce { logRel() } }
+                TerminalButton("log/all") { produce { logSys() } }
+                TerminalButton("info") { produce { extendedInfo() } }
+                TerminalButton("prefs") { produce { dumpPrefs() } }
+                TerminalButton("env") { produce { dumpEnv() } }
+                TerminalButton("alarms") { produce { dumpAlarms() } }
+                TerminalButton("timing") { produce { dumpTiming() } }
+                TerminalButton("threads") { produce { threadsInfo() } }
+                TerminalButton("access") { produce { accessTest() } }
+                TerminalButton("errInfo") { produce { lastErrorPkg() + lastErrorCommand() } }
                 TerminalButton("err->cmd") {
                     command =
                         if (OABX.lastErrorCommands.isNotEmpty())

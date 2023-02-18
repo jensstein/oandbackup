@@ -28,8 +28,6 @@ import com.machiav3lli.backup.traceDebug
 import com.machiav3lli.backup.utils.BUFFER_SIZE
 import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
 import com.topjohnwu.superuser.Shell
-import com.topjohnwu.superuser.Shell.ROOT_MOUNT_MASTER
-import com.topjohnwu.superuser.Shell.ROOT_SHELL
 import com.topjohnwu.superuser.ShellUtils
 import com.topjohnwu.superuser.io.SuRandomAccessFile
 import de.voize.semver4k.Semver
@@ -146,11 +144,7 @@ class ShellHandler {
         Shell.setDefaultBuilder(shellDefaultBuilder())
         needFreshShell(startup = true)
 
-        Timber.i("app is granted root        = $isGrantedRoot")
-        Timber.i("libsu shell status         = ${Shell.getShell().status}")
-        Timber.i("libsu has root shell       = $hasRootShell")
-        Timber.i("libsu has mount master     = $hasMountMaster")
-        Timber.i("su has mount master option = $hasMountMasterOption")
+        suInfo().forEach { Timber.i(it) }
 
         utilBoxes = mutableListOf<UtilBox>()
         try {
@@ -360,6 +354,8 @@ class ShellHandler {
                             }"
                         else
                             box.reason
+                    }${
+                        if (box.name == utilBox.name) " (used)" else ""
                     }"
                 }
             }
@@ -624,8 +620,8 @@ class ShellHandler {
         val EXCLUDE_FILE = "tar_EXCLUDE"
 
         val isGrantedRoot get() = Shell.isAppGrantedRoot()
-        val hasRootShell get() = Shell.getShell().status >= ROOT_SHELL
-        val hasMountMaster get() = Shell.getShell().status >= ROOT_MOUNT_MASTER
+        val hasRootShell get() = Shell.getShell().status >= Shell.ROOT_SHELL
+        val hasMountMaster get() = Shell.getShell().status >= Shell.ROOT_MOUNT_MASTER
 
         val hasMountMasterOption: Boolean
             get() {
@@ -637,13 +633,33 @@ class ShellHandler {
                 return ok
             }
 
+        fun suInfo() =
+            listOf(
+                "app is granted root        = $isGrantedRoot",
+                "libsu shell status         = ${Shell.getShell().status} = ${
+                    when(Shell.getShell().status) {
+                        Shell.UNKNOWN -> "UNKNOWN"
+                        Shell.NON_ROOT_SHELL -> "NON_ROOT_SHELL"
+                        Shell.ROOT_SHELL -> "ROOT_SHELL"
+                        Shell.ROOT_MOUNT_MASTER -> "ROOT_MOUNT_MASTER"
+                        else -> "unknown code"
+                    }
+                }",
+                "libsu has root shell       = $hasRootShell",
+                "libsu has mount master     = $hasMountMaster",
+                "su has mount master option = $hasMountMasterOption",
+            )
+
         fun shellDefaultBuilder() =
             Shell.Builder.create()
                 .setFlags(Shell.FLAG_MOUNT_MASTER)
                 .setTimeout(20)
         //.setInitializers(BusyBoxInstaller::class.java)
 
-        fun needFreshShell(builder: Shell.Builder = shellDefaultBuilder(), startup: Boolean = false): Shell {
+        fun needFreshShell(
+            builder: Shell.Builder = shellDefaultBuilder(),
+            startup: Boolean = false,
+        ): Shell {
             val shellBefore = Shell.getCachedShell()
             if (shellBefore != null) {
                 if (startup)
