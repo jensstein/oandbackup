@@ -97,12 +97,14 @@ fun Context.setLanguage(): Configuration {
     return config
 }
 
+//TODO hg42 at least one of the following Save buttons was reported as not doing anything
+
 fun Activity.showActionResult(result: ActionResult, saveMethod: DialogInterface.OnClickListener) =
     runOnUiThread {
         val builder = AlertDialog.Builder(this)
             .setPositiveButton(R.string.dialogOK, null)
         if (!result.succeeded) {
-            builder.setNegativeButton(R.string.dialogSave, saveMethod)
+            builder.setNegativeButton(R.string.dialogSave, saveMethod)      //TODO hg42 either this
             builder.setTitle(R.string.errorDialogTitle)
                 .setMessage(LogsHandler.handleErrorMessages(this, result.message))
             builder.show()
@@ -117,7 +119,7 @@ fun Activity.showError(message: String?) = runOnUiThread {
             .setMessage(message)
             .setPositiveButton(R.string.dialogOK, null)
             .setNegativeButton(R.string.dialogSave) { _: DialogInterface?, _: Int ->
-                LogsHandler.logErrors(message ?: "ERROR")
+                LogsHandler.logErrors(message ?: "ERROR")           //TODO hg42 or that
             }
             .show()
     }

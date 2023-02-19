@@ -4,7 +4,7 @@ CHANGELOG
 next 8.3.1 +50 Commits & +10 Translations
 ----
 
-- Add: support infos fpr mount master etc.
+- Add: support infos for mount master etc.
 - Change: prettyPrint properties files (can be disabled: prettyJson)
 - Fix: github issue #562 et.al.: phh su + inherited+enforcing, directly check if su has --mount-master
 - Remove: finishWork -> simplification
