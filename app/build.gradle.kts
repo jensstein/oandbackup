@@ -129,7 +129,7 @@ dependencies {
     implementation("androidx.room:room-runtime:$vRoom")
     implementation("androidx.room:room-ktx:$vRoom")
     kapt("androidx.room:room-compiler:$vRoom")
-    implementation("androidx.work:work-runtime-ktx:2.8.0-rc01")
+    implementation("androidx.work:work-runtime-ktx:2.8.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
     implementation("androidx.security:security-crypto-ktx:1.1.0-alpha04")
