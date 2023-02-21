@@ -1,9 +1,12 @@
 package com.machiav3lli.backup.ui.compose.navigation
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -29,8 +32,15 @@ fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
     }
 
     NavigationBar(
-        containerColor = MaterialTheme.colorScheme.background
-            .copy(alpha = pref_toolbarOpacity.value/100f),
+        modifier = Modifier
+            .padding(
+                start = 8.dp,
+                end = 8.dp,
+                bottom = 8.dp,
+            )
+            .clip(MaterialTheme.shapes.large),
+        containerColor = MaterialTheme.colorScheme.surface
+            .copy(alpha = pref_toolbarOpacity.value / 100f),
         tonalElevation = 0.dp,
         contentColor = MaterialTheme.colorScheme.onBackground
     ) {
