@@ -1,9 +1,12 @@
 package com.machiav3lli.backup.utils
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.items.StorageFile
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -82,4 +85,27 @@ object SystemUtils {
         }
     }
 
+    fun share(file: StorageFile, asFile: Boolean = true) {
+        MainScope().launch(Dispatchers.IO) {
+            try {
+                val text = if (asFile) "" else file.readText()
+                if (!asFile and text.isEmpty())
+                    throw Exception("${file.name} is empty or cannot be read")
+                val sendIntent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    type = "text/*"
+                    flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    putExtra(Intent.EXTRA_SUBJECT, "[NeoBackup] ${file.name}")
+                    if (asFile)
+                        putExtra(Intent.EXTRA_STREAM, file.uri)  // send as file
+                    else
+                        putExtra(Intent.EXTRA_TEXT, text)       // send as text
+                }
+                val shareIntent = Intent.createChooser(sendIntent, file.name)
+                OABX.activity?.startActivity(shareIntent)
+            } catch (e: Throwable) {
+                LogsHandler.unexpectedException(e)
+            }
+        }
+    }
 }

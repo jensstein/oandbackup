@@ -17,6 +17,7 @@
  */
 package com.machiav3lli.backup.preferences
 
+import android.os.Environment
 import android.os.Process
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -73,11 +74,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.flowlayout.FlowRow
+import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.ICON_SIZE_SMALL
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.isDebug
 import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
 import com.machiav3lli.backup.handler.LogsHandler.Companion.share
 import com.machiav3lli.backup.handler.ShellHandler.Companion.needFreshShell
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
@@ -91,6 +94,7 @@ import com.machiav3lli.backup.handler.maxThreads
 import com.machiav3lli.backup.handler.usedThreadsByName
 import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.items.uriFromFile
 import com.machiav3lli.backup.ui.compose.SelectionContainerX
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowDown
@@ -106,6 +110,7 @@ import com.machiav3lli.backup.ui.compose.isAtTop
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.item.LaunchPref
 import com.machiav3lli.backup.ui.item.Pref
+import com.machiav3lli.backup.utils.SystemUtils
 import com.machiav3lli.backup.utils.SystemUtils.applicationIssuer
 import com.machiav3lli.backup.utils.TraceUtils.listNanoTiming
 import kotlinx.coroutines.CoroutineScope
@@ -114,6 +119,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
+import java.time.LocalDateTime
 
 
 //var terminalShell = shellDefaultBuilder().build()
@@ -293,12 +299,30 @@ fun textLog(lines: List<String>): StorageFile? {
     return LogsHandler.writeToLogFile(lines.joinToString("\n"))
 }
 
-fun textLogShare(lines: List<String>) {
-    LogsHandler.writeToLogFile(lines.joinToString("\n"))?.let { file ->
-        Log(file).let { log ->
-            if (lines.isNotEmpty()) {
-                share(log, asFile = true)
+fun textLogShare(lines: List<String>, temporary: Boolean = false) {
+    if (lines.isNotEmpty()) {
+        runCatching {
+            val text = lines.joinToString("\n")
+            if (temporary) {
+                val now = LocalDateTime.now()
+                uriFromFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).let { uri ->
+                    StorageFile(
+                        StorageFile.fromUri(uri),
+                        "${BACKUP_DATE_TIME_FORMATTER.format(now)}.log.txt"
+                    ).let { file ->
+                        file.writeText(text)
+                        SystemUtils.share(file, asFile = true)
+                    }
+                }
+            } else {
+                LogsHandler.writeToLogFile(text)?.let { file ->
+                    Log(file).let { log ->
+                        share(log, asFile = true)
+                    }
+                }
             }
+        }.onFailure {
+            logException(it)
         }
     }
 }

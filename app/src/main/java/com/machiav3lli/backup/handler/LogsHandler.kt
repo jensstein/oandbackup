@@ -18,7 +18,6 @@
 package com.machiav3lli.backup.handler
 
 import android.content.Context
-import android.content.Intent
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.LOGS_FOLDER_NAME
 import com.machiav3lli.backup.LOG_INSTANCE
@@ -33,6 +32,7 @@ import com.machiav3lli.backup.preferences.onErrorInfo
 import com.machiav3lli.backup.preferences.textLog
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
+import com.machiav3lli.backup.utils.SystemUtils
 import com.machiav3lli.backup.utils.getBackupRoot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -50,22 +50,8 @@ class LogsHandler {
         fun share(log: Log, asFile: Boolean = true) {
             MainScope().launch(Dispatchers.IO) {
                 try {
-                    getLogFile(log.logDate)?.let { log ->
-                        val text = if (!asFile) log.readText() else ""
-                        if (!asFile and text.isEmpty())
-                            throw Exception("${log.name} is empty or cannot be read")
-                        val sendIntent = Intent().apply {
-                            action = Intent.ACTION_SEND
-                            type = "text/*"
-                            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                            putExtra(Intent.EXTRA_SUBJECT, "[NeoBackup] ${log.name}")
-                            if (asFile)
-                                putExtra(Intent.EXTRA_STREAM, log.uri)  // send as file
-                            else
-                                putExtra(Intent.EXTRA_TEXT, text)       // send as text
-                        }
-                        val shareIntent = Intent.createChooser(sendIntent, log.name)
-                        OABX.activity?.startActivity(shareIntent)
+                    getLogFile(log.logDate)?.let { file ->
+                        SystemUtils.share(file, asFile)
                     }
                 } catch (e: Throwable) {
                     unexpectedException(e)

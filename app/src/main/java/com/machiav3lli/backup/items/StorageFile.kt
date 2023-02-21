@@ -148,6 +148,13 @@ private fun closeQuietly(closeable: AutoCloseable?) {
     }
 }
 
+fun uriFromFile(file: File): Uri =
+    FileProvider.getUriForFile(
+        OABX.context,
+        "${OABX.context.packageName}.provider",
+        file
+    )
+
 
 // TODO MAYBE migrate at some point to FuckSAF
 // TODO hg42 or one of those https://github.com/topics/storage-access-framework?l=kotlin
@@ -177,9 +184,7 @@ open class StorageFile {
                     _uri = p.findUri(n)
                     _uri
                 }
-            } ?: FileProvider.getUriForFile(
-                context, "${context.applicationContext.packageName}.provider", f
-            )
+            } ?: uriFromFile(f)
         } ?: Uri.fromFile(file?.absoluteFile)
 
     data class DocumentInfo(
