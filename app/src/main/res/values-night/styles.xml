@@ -23,11 +23,9 @@
         <item name="colorAccent">@color/accent_0</item>
         <item name="colorOnPrimary">@color/accent_0_trans</item>
         <item name="colorSecondary">@color/secondary_0</item>
-        <item name="android:navigationBarColor">?colorSurface</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="bottomSheetDialogTheme">@style/Sheet.Bottom</item>
-        <item name="android:windowBackground">?backgroundColor</item>
         <item name="backgroundColor">?android:colorBackground</item>
-        <item name="colorBackgroundFloating">@color/app_primary_base</item>
         <item name="android:statusBarColor">?backgroundColor</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="dialogCornerRadius">8dp</item>
