@@ -266,7 +266,11 @@ val ISO_LIKE_DATE_TIME_MS_PATTERN = "yyyy-MM-dd HH:mm:ss:SSS"
 val FILE_DATE_TIME_MS_PATTERN = "yyyy-MM-dd-HH-mm-ss-SSS"
 val FILE_DATE_TIME_PATTERN = "yyyy-MM-dd-HH-mm-ss"
 
-val ISO_DATE_TIME_FORMAT get() = SimpleDateFormat(ISO_LIKE_DATE_TIME_PATTERN, Locale.getDefault())
+val ISO_DATE_TIME_FORMAT
+    get() = SimpleDateFormat(
+        ISO_LIKE_DATE_TIME_PATTERN,
+        Locale.getDefault()
+    )
 
 val ISO_DATE_TIME_FORMAT_MIN
     get() = SimpleDateFormat(
