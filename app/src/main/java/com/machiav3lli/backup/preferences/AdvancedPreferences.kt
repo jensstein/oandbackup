@@ -316,7 +316,7 @@ val pref_toolbarOpacity = IntPref(
     key = "dev-alt.toolbarOpacity",
     summary = "opacity of toolbars [percent]",
     entries = (0..100 step 5).toList(),
-    defaultValue = 80
+    defaultValue = 100
 )
 
 val pref_busyHitTime = IntPref(
