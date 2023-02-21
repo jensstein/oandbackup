@@ -106,7 +106,7 @@ import com.machiav3lli.backup.ui.compose.isAtTop
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.item.LaunchPref
 import com.machiav3lli.backup.ui.item.Pref
-import com.machiav3lli.backup.utils.SystemUtils.getApplicationIssuer
+import com.machiav3lli.backup.utils.SystemUtils.applicationIssuer
 import com.machiav3lli.backup.utils.TraceUtils.listNanoTiming
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -146,7 +146,7 @@ fun appInfo(): List<String> {
         "------ application",
         BuildConfig.APPLICATION_ID,
         BuildConfig.VERSION_NAME,
-        OABX.context.getApplicationIssuer()?.let { "signed by $it" } ?: "",
+        applicationIssuer?.let { "signed by $it" } ?: "",
     )
 }
 

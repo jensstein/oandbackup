@@ -73,7 +73,7 @@ import com.machiav3lli.backup.ui.compose.item.LinkItem
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TitleText
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
-import com.machiav3lli.backup.utils.SystemUtils.getApplicationIssuer
+import com.machiav3lli.backup.utils.SystemUtils.applicationIssuer
 import com.machiav3lli.backup.utils.gridItems
 import java.io.IOException
 import java.io.InputStream
@@ -145,7 +145,7 @@ class HelpSheet : BaseSheet() {
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(8.dp)
                 ) {
-                    context.getApplicationIssuer()?.let {
+                    applicationIssuer?.let {
                         item {
                             Text(
                                 text = "signed by $it",

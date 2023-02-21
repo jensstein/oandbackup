@@ -3,6 +3,7 @@ package com.machiav3lli.backup.utils
 import android.content.Context
 import android.content.pm.PackageManager
 import com.machiav3lli.backup.BuildConfig
+import com.machiav3lli.backup.OABX
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +22,7 @@ import java.security.cert.X509Certificate
 
 object SystemUtils {
 
-    fun Context.getApplicationIssuer() : String? {
+    private fun Context.getApplicationIssuer() : String? {
         runCatching {
             val packageManager: PackageManager = getPackageManager()
             val packageName = BuildConfig.APPLICATION_ID
@@ -45,6 +46,7 @@ object SystemUtils {
         }
         return null
     }
+    val applicationIssuer = OABX.context.getApplicationIssuer()
 
     val numCores = Runtime.getRuntime().availableProcessors()
 

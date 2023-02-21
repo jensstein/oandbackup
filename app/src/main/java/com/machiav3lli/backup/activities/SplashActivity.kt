@@ -55,7 +55,7 @@ import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Warning
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
-import com.machiav3lli.backup.utils.SystemUtils.getApplicationIssuer
+import com.machiav3lli.backup.utils.SystemUtils.applicationIssuer
 import com.machiav3lli.backup.utils.checkCallLogsPermission
 import com.machiav3lli.backup.utils.checkContactsPermission
 import com.machiav3lli.backup.utils.checkRootAccess
@@ -154,7 +154,7 @@ fun SplashPage() {
                     text = listOf(
                         BuildConfig.APPLICATION_ID,
                         BuildConfig.VERSION_NAME,
-                        LocalContext.current.getApplicationIssuer()?.let { "signed by $it" } ?: "",
+                        applicationIssuer?.let { "signed by $it" } ?: "",
                     ).joinToString("\n"),
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onBackground
