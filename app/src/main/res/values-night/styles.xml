@@ -30,7 +30,7 @@
         <item name="android:windowLightStatusBar">false</item>
         <item name="dialogCornerRadius">8dp</item>
         <item name="colorControlNormal">@android:color/white</item>
-        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
     </style>
 
     <style name="AppTheme.PopupTheme" parent="ThemeOverlay.Material3.Dark" />
