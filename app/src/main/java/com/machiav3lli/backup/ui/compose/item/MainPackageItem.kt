@@ -20,6 +20,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -59,6 +60,9 @@ import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.traceContextMenu
 import com.machiav3lli.backup.traceTiming
+import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Check
+import com.machiav3lli.backup.ui.compose.icons.phosphor.X
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.SystemUtils.numCores
 import com.machiav3lli.backup.utils.SystemUtils.runParallel
@@ -87,17 +91,25 @@ val yesNo = listOf(
 
 @Composable
 fun Confirmation(
+    expanded: MutableState<Boolean>,
     text: String = "Are you sure?",
     onAction: () -> Unit = {},
 ) {
     val (yes, no) = yesNo.random()
     DropdownMenuItem(
+        leadingIcon = { Icon(Phosphor.Check, null, tint = Color.Green) },
         text = { Text(yes) },
-        onClick = { onAction() }
+        onClick = {
+            expanded.value = false
+            onAction()
+        }
     )
     DropdownMenuItem(
+        leadingIcon = { Icon(Phosphor.X, null, tint = Color.Red) },
         text = { Text(no) },
-        onClick = {}
+        onClick = {
+            expanded.value = false
+        }
     )
 }
 
@@ -563,8 +575,7 @@ fun MainPackageContextMenu(
                 text = { Text("Restore...") },
                 onClick = {
                     openSubMenu(subMenu) {
-                        Confirmation {
-                            expanded.value = false
+                        Confirmation(expanded) {
                             launchRestore(selectedVisible)
                         }
                     }
@@ -575,8 +586,7 @@ fun MainPackageContextMenu(
                 text = { Text("Add to Blocklist...") },
                 onClick = {
                     openSubMenu(subMenu) {
-                        Confirmation {
-                            expanded.value = false
+                        Confirmation(expanded) {
                             launchToBlocklist(selectedVisible)
                         }
                     }
@@ -597,8 +607,7 @@ fun MainPackageContextMenu(
                 text = { Text("Disable...") },
                 onClick = {
                     openSubMenu(subMenu) {
-                        Confirmation {
-                            expanded.value = false
+                        Confirmation(expanded) {
                             launchDisable(selectedVisible)
                         }
                     }
@@ -609,8 +618,7 @@ fun MainPackageContextMenu(
                 text = { Text("Uninstall...") },
                 onClick = {
                     openSubMenu(subMenu) {
-                        Confirmation {
-                            expanded.value = false
+                        Confirmation(expanded) {
                             launchUninstall(selectedVisible)
                         }
                     }
@@ -623,8 +631,7 @@ fun MainPackageContextMenu(
                 text = { Text("Delete All Backups...") },
                 onClick = {
                     openSubMenu(subMenu) {
-                        Confirmation {
-                            expanded.value = false
+                        Confirmation(expanded) {
                             launchDeleteBackups(selectedVisible)
                         }
                     }
@@ -635,8 +642,7 @@ fun MainPackageContextMenu(
                 text = { Text("Limit Backups...") },
                 onClick = {
                     openSubMenu(subMenu) {
-                        Confirmation {
-                            expanded.value = false
+                        Confirmation(expanded) {
                             launchLimitBackups(selectedVisible)
                         }
                     }
