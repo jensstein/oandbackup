@@ -98,20 +98,20 @@ class IntroActivityX : BaseActivity() {
     }
 
     private fun launchMainActivity() {
-        if (isBiometricLockAvailable() && isBiometricLockEnabled() && isDeviceLockEnabled()) {
-            launchBiometricPrompt(true)
-        } else if (isDeviceLockAvailable() && isDeviceLockEnabled()) {
-            launchBiometricPrompt(false)
-        } else {
-            navController.navigate(NavItem.Main.destination)
+        when {
+            isBiometricLockAvailable() && isBiometricLockEnabled() && isDeviceLockEnabled() ->
+                launchBiometricPrompt(true)
+            isDeviceLockAvailable() && isDeviceLockEnabled()                                ->
+                launchBiometricPrompt(false)
+            else                                                                            ->
+                navController.navigate(NavItem.Main.destination)
         }
     }
 
     private fun launchBiometricPrompt(withBiometric: Boolean) {
         try {
             val biometricPrompt = createBiometricPrompt(this)
-            val promptInfo = PromptInfo.Builder()
-                .setTitle(getString(R.string.prefs_biometriclock))
+            val promptInfo = PromptInfo.Builder().setTitle(getString(R.string.prefs_biometriclock))
                 .setConfirmationRequired(true)
                 .setAllowedAuthenticators(DEVICE_CREDENTIAL or (if (withBiometric) BIOMETRIC_WEAK else 0))
                 .build()
@@ -122,8 +122,7 @@ class IntroActivityX : BaseActivity() {
     }
 
     private fun createBiometricPrompt(activity: Activity): BiometricPrompt {
-        return BiometricPrompt(
-            this,
+        return BiometricPrompt(this,
             ContextCompat.getMainExecutor(this),
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {

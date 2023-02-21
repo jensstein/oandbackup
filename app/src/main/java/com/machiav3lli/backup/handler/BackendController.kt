@@ -158,26 +158,28 @@ suspend fun scanBackups(
 
     fun logSuspicious(file: StorageFile, reason: String) {
         formatBackupFile(file)
-                .replace(ERROR_PREFIX, "")
-                .let { relPath ->
-                    val message = "? $relPath ($reason)"
-                    addInfoLogText(message)
-                    traceBackupsScanAll { message }
-                }
+            .replace(ERROR_PREFIX, "")
+            .let { relPath ->
+                val message = "? $relPath ($reason)"
+                addInfoLogText(message)
+                traceBackupsScanAll { message }
+            }
     }
 
     fun renameDamagedToERROR(file: StorageFile, reason: String) {
-        if (damagedOp == "ren") {
-            runCatching {
-                hitBusy()
-                val newName = "$ERROR_PREFIX${file.name}"
-                file.renameTo(newName)
+        when (damagedOp) {
+            "ren" ->
+                runCatching {
+                    hitBusy()
+                    val newName = "$ERROR_PREFIX${file.name}"
+                    file.renameTo(newName)
+                    suspicious.getAndIncrement()
+                    logSuspicious(file, reason)
+                }
+            null -> {
                 suspicious.getAndIncrement()
                 logSuspicious(file, reason)
             }
-        } else if (damagedOp == null) {
-            suspicious.getAndIncrement()
-            logSuspicious(file, reason)
         }
     }
 
@@ -186,7 +188,7 @@ suspend fun scanBackups(
             file.name?.let { name ->
                 if (name.startsWith(ERROR_PREFIX)) {
                     hitBusy()
-                    when(damagedOp) {
+                    when (damagedOp) {
                         "undo" -> {
                             val newName = name.removePrefix(ERROR_PREFIX)
                             if (file.renameTo(newName)) {
@@ -194,7 +196,7 @@ suspend fun scanBackups(
                                 logSuspicious(file, "undo")
                             }
                         }
-                        "del" -> {
+                        "del"  -> {
                             if (file.deleteRecursive()) {
                                 suspicious.getAndIncrement()
                                 logSuspicious(file, "delete")
@@ -434,14 +436,12 @@ suspend fun scanBackups(
         if (suspicious.get() > 0)
             addInfoLogText(
                 "${
-                    if (damagedOp == "ren")
-                        "renamed"
-                    else if (damagedOp == "del")
-                        "deleted"
-                    else if (damagedOp == "undo")
-                        "undo"
-                    else
-                        "suspicious"
+                    when (damagedOp) {
+                        "ren"  -> "renamed"
+                        "del"  -> "deleted"
+                        "undo" -> "undo"
+                        else   -> "suspicious"
+                    }
                 }: ${suspicious.get()}"
             )
     }

@@ -63,7 +63,7 @@ fun PackageManager.getInstalledPackageInfosWithPermissions() =
     getInstalledPackages(0).mapNotNull {
         try {
             getPackageInfo(it.packageName, PackageManager.GET_PERMISSIONS)
-        } catch(e: Throwable) {
+        } catch (e: Throwable) {
             LogsHandler.unexpectedException(e)
             null
         }
@@ -76,18 +76,24 @@ fun List<AppExtras>.get(packageName: String) =
 fun Package.infoChips(): List<InfoChipItem> = listOfNotNull(
     InfoChipItem(
         flag = CHIP_TYPE,
-        text = stringResource(if (isSpecial) R.string.apptype_special else if (isSystem) R.string.apptype_system else R.string.apptype_user),
+        text = stringResource(
+            when {
+                isSpecial -> R.string.apptype_special
+                isSystem  -> R.string.apptype_system
+                else      -> R.string.apptype_user
+            }
+        ),
         icon = when {
             isSpecial -> Phosphor.AsteriskSimple
-            isSystem -> Phosphor.Spinner
-            else -> Phosphor.User
+            isSystem  -> Phosphor.Spinner
+            else      -> Phosphor.User
         },
         color = when {
             !isInstalled -> ColorNotInstalled
-            isDisabled -> ColorDisabled
-            isSpecial -> ColorSpecial
-            isSystem -> ColorSystem
-            else -> ColorUser
+            isDisabled   -> ColorDisabled
+            isSpecial    -> ColorSpecial
+            isSystem     -> ColorSystem
+            else         -> ColorUser
         }
     ),
     InfoChipItem(

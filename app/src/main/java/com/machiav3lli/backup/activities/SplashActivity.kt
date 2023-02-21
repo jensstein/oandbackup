@@ -186,22 +186,31 @@ class SplashActivity : BaseActivity() {
         }
 
         val introIntent = Intent(applicationContext, IntroActivityX::class.java)
-        if (!persist_beenWelcomed.value) {
-            startActivity(introIntent)
-        } else if (hasStoragePermissions &&
-                   isStorageDirSetAndOk &&
-                   checkSMSMMSPermission &&
-                   checkCallLogsPermission &&
-                   checkContactsPermission &&
-                   checkUsageStatsPermission &&
-                   (persist_ignoreBatteryOptimization.value
-                    || powerManager.isIgnoringBatteryOptimizations(packageName))
-        ) {
-            introIntent.putExtra(classAddress(".fragmentNumber"), 3)
-            startActivity(introIntent)
-        } else {
-            introIntent.putExtra(classAddress(".fragmentNumber"), 2)
-            startActivity(introIntent)
+        when {
+            !persist_beenWelcomed.value -> {
+
+                startActivity(introIntent)
+
+            }
+            hasStoragePermissions && isStorageDirSetAndOk &&
+                    checkSMSMMSPermission &&
+                    checkCallLogsPermission &&
+                    checkContactsPermission &&
+                    checkUsageStatsPermission &&
+                    (persist_ignoreBatteryOptimization.value
+                            || powerManager.isIgnoringBatteryOptimizations(packageName)
+                            )           -> {
+
+                introIntent.putExtra(classAddress(".fragmentNumber"), 3)
+                startActivity(introIntent)
+
+            }
+            else                        -> {
+
+                introIntent.putExtra(classAddress(".fragmentNumber"), 2)
+                startActivity(introIntent)
+
+            }
         }
         overridePendingTransition(0, 0)
         finish()

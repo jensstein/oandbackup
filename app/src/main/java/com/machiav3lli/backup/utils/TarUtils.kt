@@ -82,19 +82,23 @@ fun TarArchiveOutputStream.addFilepath(inputFilepath: File, parent: String) {
         archiveEntry.linkName = inputFilepath.canonicalPath
     }
     putArchiveEntry(archiveEntry)
-    if (inputFilepath.isFile && !FileUtils.isSymlink(inputFilepath)) {
-        val bis = BufferedInputStream(FileInputStream(inputFilepath))
-        IOUtils.copy(bis, this)
-    } else if (inputFilepath.isDirectory) {
-        closeArchiveEntry()
-        Objects
-            .requireNonNull(inputFilepath.listFiles(), "Directory listing returned null!")
-            .forEach {
-                addFilepath(it, entryName + File.separator)
-            }
-    } else {
-        // in case of a symlink
-        closeArchiveEntry()
+    when {
+        inputFilepath.isFile &&
+                !FileUtils.isSymlink(inputFilepath) -> {
+            val bis = BufferedInputStream(FileInputStream(inputFilepath))
+            IOUtils.copy(bis, this)
+        }
+        inputFilepath.isDirectory                   -> {
+            closeArchiveEntry()
+            Objects
+                .requireNonNull(inputFilepath.listFiles(), "Directory listing returned null!")
+                .forEach {
+                    addFilepath(it, entryName + File.separator)
+                }
+        }
+        else /* symlink etc. */                     -> {
+            closeArchiveEntry()
+        }
     }
 }
 
@@ -104,7 +108,7 @@ fun TarArchiveOutputStream.suAddFiles(allFiles: List<ShellHandler.FileInfo>) {
         Timber.d("Adding ${file.filePath} to archive (filesize: ${file.fileSize})")
         var entry: TarArchiveEntry
         when (file.fileType) {
-            FileType.REGULAR_FILE -> {
+            FileType.REGULAR_FILE  -> {
                 entry = TarArchiveEntry(file.filePath)
                 entry.size = file.fileSize
                 entry.setNames(file.owner, file.group)
@@ -117,7 +121,7 @@ fun TarArchiveOutputStream.suAddFiles(allFiles: List<ShellHandler.FileInfo>) {
                     closeArchiveEntry()
                 }
             }
-            FileType.DIRECTORY -> {
+            FileType.DIRECTORY     -> {
                 entry = TarArchiveEntry(file.filePath, TarConstants.LF_DIR)
                 entry.setNames(file.owner, file.group)
                 entry.mode = DIR_MODE_OR_MASK or file.fileMode
@@ -132,16 +136,16 @@ fun TarArchiveOutputStream.suAddFiles(allFiles: List<ShellHandler.FileInfo>) {
                 putArchiveEntry(entry)
                 closeArchiveEntry()
             }
-            FileType.NAMED_PIPE -> {
+            FileType.NAMED_PIPE    -> {
                 entry = TarArchiveEntry(file.filePath, TarConstants.LF_FIFO)
                 entry.setNames(file.owner, file.group)
                 entry.mode = FIFO_MODE_OR_MASK or file.fileMode
                 putArchiveEntry(entry)
                 closeArchiveEntry()
             }
-            FileType.BLOCK_DEVICE -> Timber.w("Block devices should not occur: {$file.filePath}") //TODO hg42: add to errors? can we backup these?
-            FileType.CHAR_DEVICE -> Timber.w("Char devices should not occur: {$file.filePath}") //TODO hg42: add to errors? can we backup these?
-            FileType.SOCKET -> Timber.w("It does not make sense to backup sockets: {$file.filePath}") // not necessary //TODO hg42: add to errors?
+            FileType.BLOCK_DEVICE  -> Timber.w("Block devices should not occur: {$file.filePath}") //TODO hg42: add to errors? can we backup these?
+            FileType.CHAR_DEVICE   -> Timber.w("Char devices should not occur: {$file.filePath}") //TODO hg42: add to errors? can we backup these?
+            FileType.SOCKET        -> Timber.w("It does not make sense to backup sockets: {$file.filePath}") // not necessary //TODO hg42: add to errors?
         }
     }
 }
@@ -205,14 +209,14 @@ fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile, forceOldVersion: Boole
                     relPath in DATA_EXCLUDED_CACHE_DIRS -> {
                 return@forEach
             }
-            tarEntry.isDirectory -> {
+            tarEntry.isDirectory                        -> {
                 if (!targetFile.mkdirs()) {
                     throw IOException("Unable to create folder ${targetFile.absolutePath}")
                 }
                 // write protection would prevent creating files inside, so chmod at end
                 postponeAttribs = true
             }
-            tarEntry.isLink -> {
+            tarEntry.isLink                             -> {
                 // OABX v7 tarapi implementation stores all links as hard links (bug)
                 // and extracts all links as symlinks (repair)
                 if (strictHardLinks)
@@ -234,7 +238,7 @@ fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile, forceOldVersion: Boole
                     }
                 doAttribs = false
             }
-            tarEntry.isSymbolicLink -> {
+            tarEntry.isSymbolicLink                     -> {
                 try {
                     runAsRoot(
                         "$qUtilBox ln -s ${quote(tarEntry.linkName)} ${quote(targetFile)}"
@@ -244,14 +248,14 @@ fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile, forceOldVersion: Boole
                 }
                 doAttribs = false
             }
-            tarEntry.isFIFO -> {
+            tarEntry.isFIFO                             -> {
                 try {
                     runAsRoot("$qUtilBox mkfifo ${quote(targetFile)}")
                 } catch (e: Throwable) {
                     throw IOException("Unable to create fifo ${targetFile.absolutePath}: $e")
                 }
             }
-            else -> {
+            else                                        -> {
                 try {
                     SuFileOutputStream.open(RootFile.open(targetDir, tarEntry.name))
                         .use { fos -> IOUtils.copy(this, fos, BUFFER_SIZE) }

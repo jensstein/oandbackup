@@ -156,16 +156,18 @@ class WorkHandler(appContext: Context) {
     companion object {
 
         fun getBatchName(name: String, startTime: Long): String {
-            return if (startTime == 0L)
-                name
-            else if (pref_fakeScheduleDups.value > 0)
-                "$name @ ${
-                    SimpleDateFormat("EEE HH:mm:ss:SSS", Locale.getDefault()).format(startTime)
-                }"
-            else
-                "$name @ ${
-                    SimpleDateFormat("EEE HH:mm:ss", Locale.getDefault()).format(startTime)
-                }"
+            return when {
+                startTime == 0L                 ->
+                    name
+                pref_fakeScheduleDups.value > 0 ->
+                    "$name @ ${
+                        SimpleDateFormat("EEE HH:mm:ss:SSS", Locale.getDefault()).format(startTime)
+                    }"
+                else                            ->
+                    "$name @ ${
+                        SimpleDateFormat("EEE HH:mm:ss", Locale.getDefault()).format(startTime)
+                    }"
+            }
         }
 
         fun getTagVars(tags: MutableSet<String>): MutableMap<String, String> {

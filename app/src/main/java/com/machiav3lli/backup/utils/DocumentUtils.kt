@@ -26,7 +26,7 @@ fun Context.getBackupRoot(): StorageFile =
 fun suRecursiveCopyFilesToDocument(
     context: Context,
     filesToCopy: List<ShellHandler.FileInfo>,
-    targetUri: Uri
+    targetUri: Uri,
 ) {
     for (file in filesToCopy) {
         try {
@@ -37,8 +37,8 @@ fun suRecursiveCopyFilesToDocument(
             val parentFile = StorageFile.fromUri(parentUri)
             when (file.fileType) {
                 FileType.REGULAR_FILE -> suCopyFileToDocument(file, parentFile)
-                FileType.DIRECTORY -> parentFile.createDirectory(file.filename)
-                else -> Timber.e("SAF does not support ${file.fileType} for ${file.filePath}")
+                FileType.DIRECTORY    -> parentFile.createDirectory(file.filename)
+                else                  -> Timber.e("SAF does not support ${file.fileType} for ${file.filePath}")
             }
         } catch (e: Throwable) {
             LogsHandler.logException(e, backTrace = true)
@@ -70,7 +70,7 @@ fun suCopyFileToDocument(sourcePath: String, targetDir: StorageFile) {
 @Throws(IOException::class)
 fun suCopyFileToDocument(
     sourceFileInfo: ShellHandler.FileInfo,
-    targetDir: StorageFile
+    targetDir: StorageFile,
 ) {
     targetDir.createFile(sourceFileInfo.filename).let { newFile ->
         newFile.outputStream()!!.use { outputStream ->
@@ -81,12 +81,15 @@ fun suCopyFileToDocument(
 
 @Throws(IOException::class, ShellCommandFailedException::class)
 fun suRecursiveCopyFileFromDocument(sourceDir: StorageFile, targetPath: String?) {
-    for (sourceFile in sourceDir.listFiles()) {
-        sourceFile.name?.also { name ->
-            if (sourceFile.isDirectory) {
-                runAsRoot("mkdir -p ${quote(File(targetPath, name))}")
-            } else if (sourceFile.isFile) {
-                suCopyFileFromDocument(sourceFile, File(targetPath, name).absolutePath)
+    sourceDir.listFiles().forEach {
+        with(it) {
+            if (!name.isNullOrEmpty()) {
+                when {
+                    isDirectory ->
+                        runAsRoot("mkdir -p ${quote(File(targetPath, name!!))}")
+                    isFile      ->
+                        suCopyFileFromDocument(it, File(targetPath, name!!).absolutePath)
+                }
             }
         }
     }

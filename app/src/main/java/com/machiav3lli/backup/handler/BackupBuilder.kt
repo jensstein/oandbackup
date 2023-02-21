@@ -34,7 +34,7 @@ import java.time.LocalDateTime
 
 class BackupBuilder(
     private val packageInfo: PackageInfo,
-    backupRoot: StorageFile
+    backupRoot: StorageFile,
 ) {
     private val backupDate: LocalDateTime = LocalDateTime.now()
     private var iv = byteArrayOf()
@@ -71,21 +71,23 @@ class BackupBuilder(
 
         val dateTimeStr = BACKUP_DATE_TIME_FORMATTER.format(backupDate)
 
-        if (pref_propertiesInDir.value) {
-            return StorageFile(
-                backupPath,
-                BACKUP_INSTANCE_PROPERTIES_INDIR
-            )
-        } else if (pref_flatStructure.value)
-            return StorageFile(
-                backupRoot,
-                backupInstancePropsFlat(packageInfo, dateTimeStr)
-            )
-        else
-            return StorageFile(
-                backupRoot,
-                backupInstanceProps(packageInfo, dateTimeStr)
-            )
+        when {
+            pref_propertiesInDir.value ->
+                return StorageFile(
+                    backupPath,
+                    BACKUP_INSTANCE_PROPERTIES_INDIR
+                )
+            pref_flatStructure.value   ->
+                return StorageFile(
+                    backupRoot,
+                    backupInstancePropsFlat(packageInfo, dateTimeStr)
+                )
+            else                       ->
+                return StorageFile(
+                    backupRoot,
+                    backupInstanceProps(packageInfo, dateTimeStr)
+                )
+        }
     }
 
     fun setIv(iv: ByteArray) {
