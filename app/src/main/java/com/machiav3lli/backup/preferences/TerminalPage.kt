@@ -225,15 +225,18 @@ fun accessTest1(title: String, directory: String, comment: String) =
 
 fun accessTest() =
     listOf("------ access") +
-            listOf("not using libsu: echo some command | $suCommand (used for streaming in backup/restore)") +
+            shell("readlink /proc/1/ns/mnt") +
+            shell("readlink /proc/self/ns/mnt") +
+            listOf(
+                "--- not using libsu",
+                "uses: echo command | ${
+                    suCommand.map { "'$it'" }.joinToString(" ")
+                } (used for streaming commands in backup/restore)"
+            ) +
             accessTest1("system app", "\$ANDROID_ASSETS", "packages (system app)") +
             accessTest1("user app", "\$ANDROID_DATA/app", "packages (user app)") +
             accessTest1("data", "\$ANDROID_DATA/user/0", "packages (data)") +
-            accessTest1(
-                "device protected",
-                "\$ANDROID_DATA/user_de/0",
-                "packages (device protected)"
-            ) +
+            accessTest1("dedata", "\$ANDROID_DATA/user_de/0", "packages (dedata)") +
             accessTest1("external", "\$EXTERNAL_STORAGE/Android/data", "packages (external)") +
             accessTest1("obb", "\$EXTERNAL_STORAGE/Android/obb", "packages (obb)") +
             accessTest1("media", "\$EXTERNAL_STORAGE/Android/media", "packages (media)") +
@@ -382,7 +385,7 @@ fun TerminalPage() {
         launch {
             val hittingBusy = CoroutineScope(Dispatchers.Default)
             hittingBusy.launch {
-                while(true) {
+                while (true) {
                     delay(50)
                     OABX.hitBusy(50)
                 }
@@ -538,7 +541,7 @@ fun TerminalText(
 
     autoScroll = listState.isAtBottom()
 
-    val lines = text.filter { it.contains(search, ignoreCase = true) }
+    val lines = text.filter { it.contains(search, ignoreCase = true) } + (1..4).map { "" }
 
     Box(
         modifier = modifier

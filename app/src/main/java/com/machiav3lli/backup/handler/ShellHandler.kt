@@ -18,6 +18,7 @@
 package com.machiav3lli.backup.handler
 
 //import com.google.code.regexp.Pattern
+import android.content.Context
 import android.os.Environment.DIRECTORY_DOCUMENTS
 import androidx.core.text.isDigitsOnly
 import com.machiav3lli.backup.OABX
@@ -553,8 +554,8 @@ class ShellHandler {
                 var fileSize: Long = 0
                 val type: FileType
                 when (modeFlags[0]) {
-                    'd' -> type = FileType.DIRECTORY
-                    'l' -> {
+                    'd'  -> type = FileType.DIRECTORY
+                    'l'  -> {
                         type = FileType.SYMBOLIC_LINK
                         val nameAndLink = PATTERN_LINKSPLIT.split(filePath as CharSequence)
                         //TODO hg42 what if PATTERN_LINK_SPLIT is part of a file or link path? (should be pretty rare)
@@ -564,10 +565,10 @@ class ShellHandler {
                         filePath = nameAndLink[0]
                         linkName = nameAndLink[1]
                     }
-                    'p' -> type = FileType.NAMED_PIPE
-                    's' -> type = FileType.SOCKET
-                    'b' -> type = FileType.BLOCK_DEVICE
-                    'c' -> type = FileType.CHAR_DEVICE
+                    'p'  -> type = FileType.NAMED_PIPE
+                    's'  -> type = FileType.SOCKET
+                    'b'  -> type = FileType.BLOCK_DEVICE
+                    'c'  -> type = FileType.CHAR_DEVICE
                     else -> {
                         type = FileType.REGULAR_FILE
                         fileSize = size.toLong()
@@ -633,28 +634,49 @@ class ShellHandler {
                 return ok
             }
 
+        val hasNsEnter: Boolean
+            get() {
+                // only return true if command does not choke on the option and exits with code 0
+                val ok = runCatching {
+                    ShellUtils.fastCmdResult("nsenter --help")
+                }.getOrNull() ?: false
+                //traceDebug { "detected nsenter can be invoked = $ok" }
+                return ok
+            }
+
         fun suInfo() =
             listOf(
                 "app is granted root        = $isGrantedRoot",
                 "libsu shell status         = ${Shell.getShell().status} = ${
-                    when(Shell.getShell().status) {
-                        Shell.UNKNOWN -> "UNKNOWN"
-                        Shell.NON_ROOT_SHELL -> "NON_ROOT_SHELL"
-                        Shell.ROOT_SHELL -> "ROOT_SHELL"
+                    when (Shell.getShell().status) {
+                        Shell.UNKNOWN           -> "UNKNOWN"
+                        Shell.NON_ROOT_SHELL    -> "NON_ROOT_SHELL"
+                        Shell.ROOT_SHELL        -> "ROOT_SHELL"
                         Shell.ROOT_MOUNT_MASTER -> "ROOT_MOUNT_MASTER"
-                        else -> "unknown code"
+                        else                    -> "unknown code"
                     }
                 }",
                 "libsu has root shell       = $hasRootShell",
                 "libsu has mount master     = $hasMountMaster",
                 "su has mount master option = $hasMountMasterOption",
+                "system has nsenter         = $hasNsEnter",
             )
+
+        class ShellInit : Shell.Initializer() {
+            override fun onInit(context: Context, shell: Shell): Boolean {
+                shell.newJob()
+                    .add("nsenter -t 1 -m sh")
+                    .exec()
+                return true
+            }
+        }
 
         fun shellDefaultBuilder() =
             Shell.Builder.create()
-                .setFlags(Shell.FLAG_MOUNT_MASTER)
                 .setTimeout(20)
+                .setInitializers(ShellInit::class.java)
         //.setInitializers(BusyBoxInstaller::class.java)
+        //.setFlags(Shell.FLAG_MOUNT_MASTER)
 
         fun needFreshShell(
             builder: Shell.Builder = shellDefaultBuilder(),
@@ -735,7 +757,7 @@ class ShellHandler {
 
             return runBlocking(Dispatchers.IO) {
 
-                val process = Runtime.getRuntime().exec(suCommand)
+                val process = Runtime.getRuntime().exec(suCommand.toTypedArray())
 
                 val shellIn = process.outputStream
                 //val shellOut = process.inputStream
@@ -771,7 +793,7 @@ class ShellHandler {
 
             return runBlocking(Dispatchers.IO) {
 
-                val process = Runtime.getRuntime().exec(suCommand)
+                val process = Runtime.getRuntime().exec(suCommand.toTypedArray())
 
                 val shellIn = process.outputStream
                 val shellOut = process.inputStream
@@ -831,16 +853,16 @@ class ShellHandler {
             return err.isNotEmpty() && err[0].contains("no such file or directory", true)
         }
 
-        var suCommand: String = ""
+        var suCommand: List<String> = listOf()
             get() {
                 if (field.isEmpty()) {
                     // only set to true if command is executed and returns exit code 0
-                    field =
-                        if (hasMountMasterOption)
-                            "su --mount-master 0"
-                        else
-                            "su 0"
-                    Timber.i("using '$field' for streaming commands")
+                    field = when {
+                        hasNsEnter           -> listOf("su", "-c", "nsenter -t 1 -m sh")
+                        hasMountMasterOption -> listOf("su", "--mount-master")
+                        else                 -> listOf("su")
+                    }
+                    //Timber.i("using '$field' for streaming commands")
                 }
                 return field
             }
