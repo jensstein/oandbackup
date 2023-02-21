@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
@@ -24,8 +25,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.surfaceColorAtElevation
@@ -345,7 +347,7 @@ fun ExpandedSearchView(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        OutlinedTextField(
+        TextField(
             value = textFieldValue,
             onValueChange = {
                 textFieldValue = it
@@ -355,6 +357,14 @@ fun ExpandedSearchView(
                 .weight(1f)
                 .focusRequester(textFieldFocusRequester),
             singleLine = true,
+            colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent),
+            leadingIcon = {
+                Icon(
+                    modifier = Modifier.size(24.dp),
+                    imageVector = Phosphor.MagnifyingGlass,
+                    contentDescription = stringResource(id = R.string.search),
+                )
+            },
             trailingIcon = {
                 IconButton(onClick = {
                     onExpanded(false)
