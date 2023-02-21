@@ -18,7 +18,6 @@
 <resources>
     <color name="app_primary_base">#323639</color>
     <color name="app_primary_inverse">#E9ECEF</color>
-    <color name="ic_launcher_background">#000</color>
-    <color name="ic_launcher_foreground_secondary">#FEF1F1</color>
+    <color name="ic_launcher_background">#223</color>
     <color name="ic_background_alpha">#55000000</color>
 </resources>

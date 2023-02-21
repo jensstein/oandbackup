@@ -172,7 +172,7 @@ val pref_appSecondaryColor = EnumPref(
     icon = Phosphor.EyedropperSample,
     //iconTint = MaterialTheme.colorScheme.secondary,
     entries = secondaryColorItems,
-    defaultValue = 0
+    defaultValue = 3
 )
 
 val pref_blackTheme = BooleanPref(

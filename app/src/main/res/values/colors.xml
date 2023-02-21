@@ -2,8 +2,7 @@
 <resources>
     <color name="app_primary_base">#E9ECEF</color>
     <color name="app_primary_inverse">#323639</color>
-    <color name="ic_launcher_background">#FEF1F1</color>
-    <color name="ic_launcher_foreground_secondary">#000</color>
+    <color name="ic_launcher_background">#FFF3F9</color>
     <color name="ic_background_alpha">#55FFFFFF</color>
 
     <color name="ic_exodus">#AB47BC</color>
@@ -29,8 +28,8 @@
     <color name="ic_updated">#FF0000</color>
     <color name="ic_updated_trans">#80FF0000</color>
 
-    <color name="accent_0">#E0163D</color>
-    <color name="accent_0_trans">#80E0163D</color>
+    <color name="accent_0">#EE2255</color>
+    <color name="accent_0_trans">#80EE2255</color>
     <color name="accent_1">#7B1FA2</color>
     <color name="accent_1_trans">#807B1FA2</color>
     <color name="accent_2">#303F9F</color>
@@ -54,8 +53,8 @@
     <color name="secondary_1_trans">#804DB6AC</color>
     <color name="secondary_2">#AEEA00</color>
     <color name="secondary_2_trans">#80AEEA00</color>
-    <color name="secondary_3">#FFC400</color>
-    <color name="secondary_3_trans">#80FFC400</color>
+    <color name="secondary_3">#EEAA33</color>
+    <color name="secondary_3_trans">#80EEAA33</color>
     <color name="secondary_4">#FF3D00</color>
     <color name="secondary_4_trans">#80FF3D00</color>
     <color name="secondary_5">#FF8098</color>
