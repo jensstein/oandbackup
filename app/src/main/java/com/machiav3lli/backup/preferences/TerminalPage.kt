@@ -76,6 +76,7 @@ import com.google.accompanist.flowlayout.FlowRow
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.ICON_SIZE_SMALL
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.OABX.Companion.isDebug
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.LogsHandler.Companion.share
 import com.machiav3lli.backup.handler.ShellHandler.Companion.needFreshShell
@@ -486,7 +487,7 @@ fun TerminalPage() {
                             "no error command"
                 }
                 TerminalButton("findBackups") { OABX.context.findBackups(forceTrace = true) }
-                if (BuildConfig.DEBUG) {
+                if (isDebug) {
                 }
             }
         }

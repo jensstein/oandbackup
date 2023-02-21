@@ -17,10 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
-import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.busyTick
+import com.machiav3lli.backup.OABX.Companion.isDebug
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.preferences.ui.PrefsExpandableGroupHeader
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
@@ -125,7 +125,7 @@ fun AdvancedPrefsPage() {
 val pref_maxJobs = IntPref(
     key = "dev-adv.maxJobs",
     summary = "maximum number of jobs run concurrently (0 = default = numCores)[needs restart]",
-    entries = (0..10*numCores).toList(),
+    entries = (0..10 * numCores).toList(),
     defaultValue = 0
 )
 
@@ -339,7 +339,7 @@ val pref_flatStructure = BooleanPref(
 )
 
 val pref_propertiesInDir = BooleanPref(
-    key = if (BuildConfig.DEBUG)
+    key = if (isDebug)
         "dev-alt.propertiesInDir"         //TODO hg42 available for testing
     else
         "dev-alt--off.propertiesInDir",   //TODO hg42 currently not working in scanner

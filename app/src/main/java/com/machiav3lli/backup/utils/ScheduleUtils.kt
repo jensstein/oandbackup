@@ -27,12 +27,13 @@ import android.os.Build
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.ISO_DATE_TIME_FORMAT
 import com.machiav3lli.backup.ISO_DATE_TIME_FORMAT_MIN
 import com.machiav3lli.backup.MODE_UNSET
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.getString
+import com.machiav3lli.backup.OABX.Companion.isDebug
+import com.machiav3lli.backup.OABX.Companion.isHg42
 import com.machiav3lli.backup.OABX.Companion.runningSchedules
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.dao.ScheduleDao
@@ -178,7 +179,7 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                         val message =
                             "**************************************** timeLeft < 1 min -> set schedule $schedule"
                         traceSchedule { message }
-                        if (BuildConfig.DEBUG || BuildConfig.APPLICATION_ID.contains("hg42") || pref_autoLogSuspicious.value)
+                        if (isDebug || isHg42 || pref_autoLogSuspicious.value)
                             textLog(
                                 listOf(
                                     message,

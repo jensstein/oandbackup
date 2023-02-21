@@ -20,9 +20,9 @@ package com.machiav3lli.backup.handler
 //import com.google.code.regexp.Pattern
 import android.os.Environment.DIRECTORY_DOCUMENTS
 import androidx.core.text.isDigitsOnly
-import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.addErrorCommand
+import com.machiav3lli.backup.OABX.Companion.isDebug
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.Companion.utilBoxInfo
 import com.machiav3lli.backup.traceDebug
 import com.machiav3lli.backup.utils.BUFFER_SIZE
@@ -140,7 +140,7 @@ class ShellHandler {
     }
 
     init {
-        Shell.enableVerboseLogging = BuildConfig.DEBUG
+        Shell.enableVerboseLogging = isDebug
         Shell.setDefaultBuilder(shellDefaultBuilder())
         needFreshShell(startup = true)
 

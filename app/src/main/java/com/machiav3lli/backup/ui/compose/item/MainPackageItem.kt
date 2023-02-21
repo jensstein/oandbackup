@@ -45,12 +45,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import coil.ImageLoader
-import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.MODE_ALL
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.addInfoLogText
 import com.machiav3lli.backup.OABX.Companion.beginBusy
 import com.machiav3lli.backup.OABX.Companion.endBusy
+import com.machiav3lli.backup.OABX.Companion.isDebug
 import com.machiav3lli.backup.SELECTIONS_FOLDER_NAME
 import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.LogsHandler.Companion.unexpectedException
@@ -441,7 +441,7 @@ fun MainPackageContextMenu(
         onDismissRequest = { expanded.value = false }
     ) {
 
-        if (BuildConfig.DEBUG) {
+        if (isDebug) {
             val number = remember { mutableStateOf(0) }
             DropdownMenuItem(
                 text = { Text("test = ${number.value}") },

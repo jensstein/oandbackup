@@ -33,6 +33,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.DynamicColorsOptions
+import com.machiav3lli.backup.OABX.Companion.isDebug
+import com.machiav3lli.backup.OABX.Companion.isHg42
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.Backup
@@ -138,7 +140,7 @@ val pref_autoLogUnInstallBroadcast = BooleanPref(
 val pref_trace = BooleanPref(
     key = "dev-trace.trace",
     summary = "global switch for all traceXXX options",
-    defaultValue = BuildConfig.DEBUG || BuildConfig.APPLICATION_ID.contains("hg42")
+    defaultValue = isDebug || isHg42
 )
 
 val traceSection = TraceUtils.TracePref(
@@ -291,7 +293,7 @@ class OABX : Application() {
                     main?.viewModel?.retriggerFlowsForUI()
                 }
                 runCatching {
-                    if (BuildConfig.DEBUG) {
+                    if (isDebug) {
                         //testOnStart()
                     }
                 }
@@ -487,6 +489,11 @@ class OABX : Application() {
         fun minSDK(sdk: Int): Boolean {
             return Build.VERSION.SDK_INT >= sdk
         }
+
+        val isRelease = BuildConfig.APPLICATION_ID.endsWith(".backup")
+        val isDebug = BuildConfig.DEBUG
+        val isNeo = BuildConfig.APPLICATION_ID.contains("neo")
+        val isHg42 = BuildConfig.APPLICATION_ID.contains("hg42")
 
         //------------------------------------------------------------------------------------------ infoText
 
