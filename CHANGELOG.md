@@ -1,45 +1,51 @@
 CHANGELOG
 =========
 
-next 8.3.1 +50 Commits & +10 Translations
-----
-
-- Add: support infos for mount master etc.
-- Change: prettyPrint properties files (can be disabled: prettyJson)
-- Fix: github issue #562 et.al.: phh su + inherited+enforcing, directly check if su has --mount-master
-- Remove: finishWork -> simplification
-- Fix: missing refresh of packages on start
-- Add: devsettings/autoLogUnInstallBroadcast
-- Fix: progress notifications (one more) 
-- Add: devsettings/toolbarOpacity
+8.3.1 (21.02.2023) +80 Commits & +10 Translations
+------------
 
 #### Function
+
 - Add: busy to renameDamagedToERROR etc.
-- Add: DevTools/tools/openBackupDir (works only with SAF capable file managers, so only Files/DocumentsUI)
+- Add: DevTools openBackupDir (works only with SAF capable file managers, so only Files/DocumentsUI)
+- Add: Dev-Prefs: autoLogUnInstallBroadcast, toolbarOpacity, prettyJson
 - Add: maxJobs to change the default (changing needs real kill + restart),
-- Add: killThisApp to provide a defined kill method for troubleshooting (app is killed, but alarms are kept, unlike force-close, which removes the alarms)
+- Add: killThisApp (app is killed, alarms are kept, unlike force-close)
 - Add: Stopping schedule service on finished
-- Fix: renameDamagedToERROR missing some important damages (they were excluded while testing and are now enabled again)
+- Fix: renameDamagedToERROR missing some important damages
 - Fix: hidden Lucky Patcher issue (please test, we don't use it)
-- Update: improves prevention of duplicate schedules handling (should no more trigger detection)
+- Fix: missing empty line after log header
 - Fix: all backups running at once
-- Update: findBackups: scan depth first (= add directory contents at front of queue)
-- Update: findbackups: remove all xxx dir for xxx.properties before queueing directory content
-- Update: terminal button log/rel to extract lines that are related to NB from logcat (currently machiav3lli.backup + NeoBackup, also used in SUPPORT. Note, log/app is PID related, so only from the running NB, not from the one before, if it was restarted)
-- Fix missing empty line after log header
+- Fix: Phh su + inherited+enforcing, directly check if su has --mount-master (github issue #562)
+- Update: Pretty print properties files
+- Update: improves prevention of duplicate schedules handling (should no more trigger detection)
+- Update: Scan depth first in findBackups (= add directory contents at front of queue)
+- Update: Remove all xxx dir for xxx.properties before queueing directory content in findbackups
+- Update: terminal button log/rel to extract lines that are related to NB from logcat
+    - currently machiav3lli.backup + NeoBackup, also used in SUPPORT. Note, log/app is PID related,
+      so only from the running NB, not from the one before, if it was restarted)
+- Remove: finishWork -> simplification
 
 #### UI
+
+- Add: New app icon
 - Add: busy handling + refresh (indicator) button to Logs tab
-- Update: Revamp NavBar button
-- Remove: Overriding background color in light theme
+- Update: Revamp NavBar & SearchBar
 - Update: Another option for busy background with grey fade
+- Update: Allow BottomSheet to extend over StatusBar
+- Update: Icon & theme colors
+- Update: Cleaner splash icon
+- Remove: Overriding background color in light theme
 
 #### UX
+
 - Add: Rotating refresh button (turn time and scale in devsettings/adv)
 - Add: search field in DevTools/devsett, searches all settings, but only key names, not the label
+- Add: support infos for mount master etc.
 - Fix: renameDamagedToERROR + undoDamagedToERROR blocking the UI
 - Fix: a delete/rename backup glitch
-
+- Fix: progress notifications
+- Fix: missing refresh of packages on start
 
 8.3.0 (30.01.2023) +350 Commits & +60 Translations
 ------------
