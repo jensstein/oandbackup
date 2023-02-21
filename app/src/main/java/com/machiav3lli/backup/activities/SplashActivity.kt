@@ -49,9 +49,12 @@ import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.classAddress
+import com.machiav3lli.backup.preferences.extendedInfo
 import com.machiav3lli.backup.preferences.persist_beenWelcomed
 import com.machiav3lli.backup.preferences.persist_ignoreBatteryOptimization
+import com.machiav3lli.backup.preferences.textLogShare
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ShareNetwork
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Warning
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
@@ -114,6 +117,15 @@ fun RootMissing(activity: Activity? = null) {
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.fillMaxWidth()
                 )
+                Spacer(modifier = Modifier.height(80.dp))
+                ElevatedActionButton(
+                    text = "try to share a support log",
+                    icon = Phosphor.ShareNetwork,
+                    fullWidth = true,
+                    modifier = Modifier
+                ) {
+                    textLogShare(extendedInfo(), temporary = true)
+                }
                 Spacer(modifier = Modifier.height(80.dp))
                 ElevatedActionButton(
                     text = stringResource(id = R.string.dialogOK),
