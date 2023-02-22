@@ -165,6 +165,7 @@ fun baseInfo(): List<String> {
 
 fun extendedInfo() =
     baseInfo() +
+            shell("getenforce") +
             shell("su --help") +
             shell("${utilBox.name} --version") +
             shell("${utilBox.name} --help")
