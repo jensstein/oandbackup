@@ -259,21 +259,22 @@ fun scheduleAlarmsOnce() {
 
     Thread {
         val scheduleDao = OABX.db.scheduleDao
-        traceSchedule { "scheduleAlarms" }
         scheduleDao.all
             .forEach {
                 // do not set or cancel schedules that are just going to be started
                 // (on boot or fresh start from an alarm)
                 // setting a past time as alarm will start it immediately
                 val scheduleAlreadyRuns = runningSchedules[it.id] == true
-                if (scheduleAlreadyRuns) {
-                    traceSchedule { "schedule is already started" }
-                } else {
-                    if (it.enabled) {
-                        traceSchedule { "set alarm for $it" }
+                when {
+                    scheduleAlreadyRuns -> {
+                        traceSchedule { "*** scheduleAlarms: ignore $it" }
+                    }
+                    it.enabled          -> {
+                        traceSchedule { "*** scheduleAlarms: enable $it" }
                         scheduleAlarm(OABX.context, it.id, false)
-                    } else {
-                        traceSchedule { "cancel alarm for $it" }
+                    }
+                    else                -> {
+                        traceSchedule { "*** scheduleAlarms: cancel $it" }
                         cancelAlarm(OABX.context, it.id)
                     }
                 }
