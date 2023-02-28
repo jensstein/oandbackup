@@ -82,7 +82,7 @@ val pref_maxLogLines = IntPref(
             (2000..5000 step 1000) +
             (5000..20000 step 5000)
             ).toList(),
-    defaultValue = 50
+    defaultValue = 2000
 )
 
 val pref_maxLogCount = IntPref(
