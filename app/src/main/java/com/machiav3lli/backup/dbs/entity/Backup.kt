@@ -309,6 +309,10 @@ data class Backup constructor(
 
                 val backup = fromSerialized(serialized)
 
+                //TODO bug: list serialization (jsonPretty, yaml) adds a space in front of each value
+                // found older multiline json and yaml without the bug, so it was introduced lately (by lib versions)
+                backup.permissions = backup.permissions.map { it.trim() } //TODO workaround
+
                 var dir: StorageFile? = null
 
                 backup.file = propertiesFile
