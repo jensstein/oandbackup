@@ -28,6 +28,7 @@ import com.machiav3lli.backup.pref_autoLogUnInstallBroadcast
 import com.machiav3lli.backup.preferences.supportLog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 // TODO make main way of refresh & handle new installed and backup list
@@ -65,8 +66,12 @@ class PackageUnInstalledReceiver : BroadcastReceiver() {
                     }
                 }
             }
-            if (pref_autoLogUnInstallBroadcast.value)
-                supportLog("PackageUnInstalledReceiver")
+            if (pref_autoLogUnInstallBroadcast.value) {
+                GlobalScope.launch(Dispatchers.IO) {
+                    delay(60_0000)
+                    supportLog("PackageUnInstalledReceiver")
+                }
+            }
         }
     }
 }
