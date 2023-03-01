@@ -34,7 +34,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -68,6 +67,23 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+
+
+var devToolsTab = mutableStateOf("devsett")
+
+val devToolsTabs = listOf<Pair<String, @Composable () -> Unit>>(
+    "logs" to { DevLogsTab() },
+    "" to {},
+    "log" to { DevLogTab() },
+    "infolog" to { DevInfoLogTab() },
+    "" to {},
+    "tools" to { DevToolsTab() },
+    "term" to { TerminalPage() },
+    "" to {},
+    "devsett" to { DevSettingsTab() },
+    "" to {},
+    "SUPPORT" to { DevSupportTab() },
+)
 
 @Composable
 fun DevInfoLogTab() {
@@ -190,6 +206,7 @@ val pref_renameDamagedToERROR = LaunchPref(
     MainScope().launch(Dispatchers.IO) {
         beginBusy("renameDamagedToERROR")
         OABX.context.findBackups(damagedOp = "ren")
+        devToolsTab.value = "infolog"
         endBusy("renameDamagedToERROR")
     }
 }
@@ -201,6 +218,7 @@ val pref_undoDamagedToERROR = LaunchPref(
     MainScope().launch(Dispatchers.IO) {
         beginBusy("undoDamagedToERROR")
         OABX.context.findBackups(damagedOp = "undo")
+        devToolsTab.value = "infolog"
         endBusy("undoDamagedToERROR")
     }
 }
@@ -212,6 +230,7 @@ val pref_deleteERROR = LaunchPref(
     MainScope().launch(Dispatchers.IO) {
         beginBusy("deleteERROR")
         OABX.context.findBackups(damagedOp = "del")
+        devToolsTab.value = "infolog"
         endBusy("deleteERROR")
     }
 }
@@ -372,7 +391,7 @@ fun DevSupportTab() {
 fun DevTools(
     expanded: MutableState<Boolean>,
 ) {
-    var tab by rememberSaveable { mutableStateOf("devsett") }
+    var tab by devToolsTab
     val tempShowInfo = remember { mutableStateOf(false) }
     val showInfo = OABX.showInfoLog || tempShowInfo.value
 
@@ -437,20 +456,6 @@ fun DevTools(
                 }
             }
 
-            val tabs = listOf<Pair<String, @Composable () -> Unit>>(
-                "logs" to { DevLogsTab() },
-                "" to {},
-                "log" to { DevLogTab() },
-                "infolog" to { DevInfoLogTab() },
-                "" to {},
-                "tools" to { DevToolsTab() },
-                "term" to { TerminalPage() },
-                "" to {},
-                "devsett" to { DevSettingsTab() },
-                "" to {},
-                "SUPPORT" to { DevSupportTab() },
-            )
-
             FlowRow(modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp, 0.dp, 8.dp, 4.dp)
@@ -459,7 +464,7 @@ fun DevTools(
                     onLongClick = { tab = "devsett" }
                 )
             ) {
-                tabs.forEach {
+                devToolsTabs.forEach {
                     if (it.first.isEmpty())
                         Spacer(modifier = Modifier.width(8.dp))
                     else
@@ -467,7 +472,7 @@ fun DevTools(
                 }
             }
 
-            tabs.find { it.first == tab }?.let {
+            devToolsTabs.find { it.first == tab }?.let {
                 it.second()
             }
         }
