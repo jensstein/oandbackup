@@ -48,6 +48,13 @@ import com.machiav3lli.backup.OABX.Companion.endBusy
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
 import com.machiav3lli.backup.handler.findBackups
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.pref_autoLogAfterSchedule
+import com.machiav3lli.backup.pref_autoLogExceptions
+import com.machiav3lli.backup.pref_autoLogSuspicious
+import com.machiav3lli.backup.pref_catchUncaughtException
+import com.machiav3lli.backup.pref_logToSystemLogcat
+import com.machiav3lli.backup.pref_maxLogLines
+import com.machiav3lli.backup.pref_trace
 import com.machiav3lli.backup.preferences.DevPrefGroups
 import com.machiav3lli.backup.preferences.LogsPage
 import com.machiav3lli.backup.preferences.TerminalButton
@@ -362,6 +369,22 @@ fun DevToolsTab() {
     }
 }
 
+val pref_prepareSupport = LaunchPref(
+    key = "dev-support.prepareSupport",
+    summary = "prepare settings for usual support purposes"
+) {
+    Pref.preferences["dev-trace"]?.forEach {
+        Pref.setPrefFlag(it.key, it.defaultValue as Boolean)
+    }
+    pref_trace.value = true
+    pref_maxLogLines.value = 20_000
+    pref_logToSystemLogcat.value = true
+    pref_catchUncaughtException.value = true
+    pref_autoLogExceptions.value = true
+    pref_autoLogSuspicious.value = true
+    pref_autoLogAfterSchedule.value = true
+}
+
 val pref_shareSupportLog = LaunchPref(
     key = "dev-support.shareSupportLog",
     summary = "create and share a support log"
@@ -369,6 +392,22 @@ val pref_shareSupportLog = LaunchPref(
     MainScope().launch {
         supportInfoLogShare()
     }
+}
+
+val pref_afterSupport = LaunchPref(
+    key = "dev-support.afterSupport",
+    summary = "set settings to normal"
+) {
+    Pref.preferences["dev-trace"]?.forEach {
+        Pref.setPrefFlag(it.key, it.defaultValue as Boolean)
+    }
+    pref_trace.value = true
+    pref_maxLogLines.apply { value = defaultValue as Int }
+    pref_logToSystemLogcat.apply { value = defaultValue as Boolean }
+    pref_catchUncaughtException.apply { value = defaultValue as Boolean }
+    pref_autoLogExceptions.apply { value = defaultValue as Boolean }
+    pref_autoLogSuspicious.apply { value = defaultValue as Boolean }
+    pref_autoLogAfterSchedule.apply { value = defaultValue as Boolean }
 }
 
 @Composable

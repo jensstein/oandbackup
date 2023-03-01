@@ -15,6 +15,7 @@ open class Pref(
     val summary: String? = null,
     @StringRes val titleId: Int,
     @StringRes val summaryId: Int,
+    val defaultValue: Any? = null,
     val icon: ImageVector? = null,
     val iconTint: Color?,
     val enableIf: (() -> Boolean)? = null,
@@ -100,12 +101,13 @@ class BooleanPref(
     @StringRes summaryId: Int = -1,
     icon: ImageVector? = null,
     iconTint: Color? = null,
-    val defaultValue: Boolean,
-    enableIf: (() -> Boolean)? = null
-) : Pref(key, private, summary, titleId, summaryId, icon, iconTint, enableIf) {
+    defaultValue: Boolean,
+    enableIf: (() -> Boolean)? = null,
+) : Pref(key, private, summary, titleId, summaryId, defaultValue, icon, iconTint, enableIf) {
     var value
-        get() = prefFlag(key, defaultValue, private)
+        get() = prefFlag(key, defaultValue as Boolean, private)
         set(value) = setPrefFlag(key, value, private)
+
     override fun toString(): String = value.toString()
 }
 
@@ -118,12 +120,13 @@ class IntPref(
     icon: ImageVector? = null,
     iconTint: Color? = null,
     val entries: List<Int>,
-    val defaultValue: Int,
-    enableIf: (() -> Boolean)? = null
-) : Pref(key, private, summary, titleId, summaryId, icon, iconTint, enableIf) {
+    defaultValue: Int,
+    enableIf: (() -> Boolean)? = null,
+) : Pref(key, private, summary, titleId, summaryId, defaultValue, icon, iconTint, enableIf) {
     var value
-        get() = prefInt(key, defaultValue, private)
+        get() = prefInt(key, defaultValue as Int, private)
         set(value) = setPrefInt(key, value, private)
+
     override fun toString(): String = value.toString()
 }
 
@@ -135,12 +138,13 @@ open class StringPref(
     @StringRes summaryId: Int = -1,
     icon: ImageVector? = null,
     iconTint: Color? = null,
-    val defaultValue: String,
-    enableIf: (() -> Boolean)? = null
-) : Pref(key, private, summary, titleId, summaryId, icon, iconTint, enableIf) {
+    defaultValue: String,
+    enableIf: (() -> Boolean)? = null,
+) : Pref(key, private, summary, titleId, summaryId, defaultValue, icon, iconTint, enableIf) {
     open var value
-        get() = prefString(key, defaultValue, private)
+        get() = prefString(key, defaultValue as String, private)
         set(value) = setPrefString(key, value, private)
+
     override fun toString(): String = value.toString()
 }
 
@@ -153,11 +157,12 @@ class PasswordPref(
     icon: ImageVector? = null,
     iconTint: Color? = null,
     defaultValue: String,
-    enableIf: (() -> Boolean)? = null
+    enableIf: (() -> Boolean)? = null,
 ) : StringPref(key, private, summary, titleId, summaryId, icon, iconTint, defaultValue, enableIf) {
     override var value
-        get() = prefString(key, defaultValue, private)
+        get() = prefString(key, defaultValue as String, private)
         set(value) = setPrefString(key, value, private)
+
     override fun toString(): String = value.toString()
 }
 
@@ -170,12 +175,13 @@ class ListPref(
     icon: ImageVector? = null,
     iconTint: Color? = null,
     val entries: Map<String, String>,
-    val defaultValue: String,
-    enableIf: (() -> Boolean)? = null
-) : Pref(key, private, summary, titleId, summaryId, icon, iconTint, enableIf) {
+    defaultValue: String,
+    enableIf: (() -> Boolean)? = null,
+) : Pref(key, private, summary, titleId, summaryId, defaultValue, icon, iconTint, enableIf) {
     var value
-        get() = prefString(key, defaultValue, private)
+        get() = prefString(key, defaultValue as String, private)
         set(value) = setPrefString(key, value, private)
+
     override fun toString(): String = value.toString()
 }
 
@@ -188,12 +194,13 @@ class EnumPref(
     icon: ImageVector? = null,
     iconTint: Color? = null,
     val entries: Map<Int, Int>,
-    val defaultValue: Int,
-    enableIf: (() -> Boolean)? = null
-) : Pref(key, private, summary, titleId, summaryId, icon, iconTint, enableIf) {
+    defaultValue: Int,
+    enableIf: (() -> Boolean)? = null,
+) : Pref(key, private, summary, titleId, summaryId, defaultValue, icon, iconTint, enableIf) {
     var value
-        get() = prefInt(key, defaultValue, private)
+        get() = prefInt(key, defaultValue as Int, private)
         set(value) = setPrefInt(key, value, private)
+
     override fun toString(): String = value.toString()
 }
 
@@ -205,8 +212,8 @@ class LinkPref(
     @StringRes summaryId: Int = -1,
     icon: ImageVector? = null,
     iconTint: Color? = null,
-    enableIf: (() -> Boolean)? = null
-) : Pref(key, private, summary, titleId, summaryId, icon, iconTint, enableIf)
+    enableIf: (() -> Boolean)? = null,
+) : Pref(key, private, summary, titleId, summaryId, null, icon, iconTint, enableIf)
 
 class LaunchPref(
     key: String,
@@ -217,5 +224,7 @@ class LaunchPref(
     icon: ImageVector? = null,
     iconTint: Color? = null,
     enableIf: (() -> Boolean)? = null,
-    val onClick: (() -> Unit) = {}
-) : Pref(key, private, summary, titleId, summaryId, icon, iconTint, enableIf)
+    val onClick: (() -> Unit) = {},
+) : Pref(key, private, summary, titleId, summaryId, null, icon, iconTint, enableIf)
+
+
