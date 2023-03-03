@@ -177,8 +177,8 @@ fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean
                         )
                         scheduleDao.update(schedule)
                         val message =
-                            "**************************************** timeLeft < 1 min -> set schedule $schedule"
-                        traceSchedule { message }
+                            "timeLeft < 1 min -> set schedule $schedule"
+                        traceSchedule { "**************************************** $message" }
                         if (isDebug || isHg42 || pref_autoLogSuspicious.value)
                             textLog(
                                 listOf(
