@@ -400,6 +400,8 @@ class MainViewModel(
         }
     }
 
+    fun getBlocklist() = blocklist.value.mapNotNull { it.packageName }
+
     private suspend fun insertIntoBlocklistDB(newList: Set<String>) =
         withContext(Dispatchers.IO) {
             db.blocklistDao.updateList(PACKAGES_LIST_GLOBAL_ID, newList)

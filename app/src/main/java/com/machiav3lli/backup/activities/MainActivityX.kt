@@ -249,9 +249,7 @@ class MainActivityX : BaseActivity() {
                                         description = stringResource(id = R.string.sched_blocklist)
                                     ) {
                                         GlobalScope.launch(Dispatchers.IO) {
-                                            val blocklistedPackages = viewModel.blocklist.value
-                                                .mapNotNull { it.packageName }
-
+                                            val blocklistedPackages = viewModel.getBlocklist()
                                             PackagesListDialogFragment(
                                                 blocklistedPackages,
                                                 MAIN_FILTER_DEFAULT,
@@ -301,8 +299,7 @@ class MainActivityX : BaseActivity() {
                                         positive = false,
                                     ) {
                                         GlobalScope.launch(Dispatchers.IO) {
-                                            val blocklistedPackages = viewModel.blocklist.value
-                                                .mapNotNull { it.packageName }
+                                            val blocklistedPackages = viewModel.getBlocklist()
 
                                             PackagesListDialogFragment(
                                                 blocklistedPackages,
