@@ -10,14 +10,15 @@ import kotlinx.coroutines.flow.onEach
 import timber.log.Timber
 
 object TraceUtils {
+
     // only use these in implementations of other trace functions
 
-    fun trace(text: String = "") {
+    fun traceImpl(text: String = "") {
         if (pref_trace.value)
             Timber.d(text)
     }
 
-    fun traceBold(text: String = "") {
+    fun traceBoldImpl(text: String = "") {
         if (pref_trace.value)
             Timber.w(text)
     }
@@ -25,11 +26,11 @@ object TraceUtils {
     // use these instead to have lazy evaluation of the text in normal situations
 
     fun trace(lazyText: () -> String) {
-        trace(lazyText())
+        traceImpl(lazyText())
     }
 
     fun traceBold(lazyText: () -> String) {
-        traceBold(lazyText())
+        traceBoldImpl(lazyText())
     }
 
     open class TracePref(
@@ -48,7 +49,7 @@ object TraceUtils {
 
         open operator fun invoke(lazyText: () -> String) {
             if (pref.value)
-                trace("[$name] ${lazyText()}")
+                traceImpl("[$name] ${lazyText()}")
         }
     }
 
@@ -57,7 +58,7 @@ object TraceUtils {
 
         override operator fun invoke(lazyText: () -> String) {
             if (pref.value)
-                traceBold("[$name] ${lazyText()}")
+                traceBoldImpl("[$name] ${lazyText()}")
         }
     }
 

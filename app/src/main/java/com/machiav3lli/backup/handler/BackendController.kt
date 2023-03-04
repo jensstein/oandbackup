@@ -143,9 +143,9 @@ suspend fun scanBackups(
     fun traceBackupsScanPackage(lazyText: () -> String) {
         if (forceTrace) {
             if (packageName.isEmpty())
-                TraceUtils.trace("[BackupsScanAll] ${lazyText()}")
+                TraceUtils.traceImpl("[BackupsScanAll] ${lazyText()}")
             else
-                TraceUtils.trace("[BackupsScan] ${lazyText()}")
+                TraceUtils.traceImpl("[BackupsScan] ${lazyText()}")
         } else {
             if (packageName.isEmpty())
                 traceBackupsScanAll(lazyText)
