@@ -40,6 +40,7 @@ import androidx.core.app.ActivityCompat
 import androidx.preference.PreferenceManager
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import com.machiav3lli.backup.BACKUP_DIRECTORY_INTENT
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_LANGUAGES_DEFAULT
@@ -173,11 +174,7 @@ val Context.isStorageDirSetAndOk: Boolean
     }
 
 fun Activity.requireStorageLocation(activityResultLauncher: ActivityResultLauncher<Intent>) {
-    val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-        .addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
-        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-        .addFlags(Intent.FLAG_GRANT_PREFIX_URI_PERMISSION)
+    val intent = BACKUP_DIRECTORY_INTENT
     try {
         activityResultLauncher.launch(intent)
     } catch (e: ActivityNotFoundException) {

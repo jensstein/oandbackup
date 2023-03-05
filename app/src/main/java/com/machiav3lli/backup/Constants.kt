@@ -293,11 +293,15 @@ val BACKUP_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(FILE_DATE_TIME_MS_P
 
 val BACKUP_DATE_TIME_SHOW_FORMATTER = DateTimeFormatter.ofPattern(ISO_LIKE_DATE_TIME_PATTERN)
 
-val BACKUP_DIRECTORY_INTENT = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+val OPEN_DIRECTORY_INTENT = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
     .addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
     .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
     .addFlags(Intent.FLAG_GRANT_PREFIX_URI_PERMISSION)
+    .putExtra("android.content.extra.SHOW_ADVANCED", true)
+    .putExtra("android.content.extra.FANCY", true)
+    .putExtra("android.content.extra.SHOW_FILESIZE", true)
+val BACKUP_DIRECTORY_INTENT = OPEN_DIRECTORY_INTENT
 
 fun classAddress(address: String): String = PREFS_SHARED_PRIVATE + address
 
