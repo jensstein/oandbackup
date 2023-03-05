@@ -32,7 +32,7 @@ import com.machiav3lli.backup.PROP_NAME
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
 import com.machiav3lli.backup.handler.grantedPermissions
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.traceBackupProps
+import com.machiav3lli.backup.traceSerialize
 import com.machiav3lli.backup.utils.LocalDateTimeSerializer
 import com.machiav3lli.backup.utils.getBackupRoot
 import kotlinx.serialization.Serializable
@@ -303,7 +303,7 @@ data class Backup constructor(
     companion object {
 
         fun fromSerialized(serialized: String): Backup {
-            traceBackupProps { "backup: $serialized" }
+            traceSerialize { "backup: $serialized" }
             return OABX.serializer.decodeFromString(serialized)
         }
 
