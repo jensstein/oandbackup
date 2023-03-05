@@ -193,7 +193,7 @@ class Test_BackupRestore {
     fun archiveTarCmd(compress: Boolean) = StorageFile(backupDirTarCmd, "data.tar${if (compress) ".gz" else ""}")
 
     @Before
-    fun init() {
+    fun setup() {
         tempStorage = StorageFile(tempDir)
         shellHandler = ShellHandler()
         backupDirTarApi = tempStorage.createDirectory("backup_tarapi")
