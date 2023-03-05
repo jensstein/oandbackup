@@ -46,6 +46,7 @@ import com.machiav3lli.backup.ICON_SIZE_SMALL
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.beginBusy
 import com.machiav3lli.backup.OABX.Companion.endBusy
+import com.machiav3lli.backup.OABX.Companion.isDebug
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
 import com.machiav3lli.backup.handler.findBackups
 import com.machiav3lli.backup.items.StorageFile
@@ -71,6 +72,7 @@ import com.machiav3lli.backup.ui.item.LaunchPref
 import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.ui.item.Pref.Companion.preferencesFromSerialized
 import com.machiav3lli.backup.ui.item.Pref.Companion.preferencesToSerialized
+import com.machiav3lli.backup.utils.TraceUtils.trace
 import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.viewmodels.LogViewModel
 import kotlinx.coroutines.Dispatchers
@@ -281,6 +283,22 @@ val pref_loadPreferences = LaunchPref(
     }
 }
 
+fun testOnStart() {
+    if (isDebug) {
+        if (1==0)
+            MainScope().launch(Dispatchers.Main) {
+                trace { "############################################################ testOnStart: waiting..." }
+                delay(3000)
+                trace { "############################################################ testOnStart: running..." }
+
+                //openFileManager(OABX.context.getBackupRoot())
+
+                //pref_savePreferences.onClick()
+                trace { "############################################################ testOnStart: end." }
+            }
+    }
+}
+
 fun openFileManager(folder: StorageFile) {
     folder.uri?.let { uri ->
         MainScope().launch(Dispatchers.Default) {
@@ -378,13 +396,6 @@ fun openFileManager(folder: StorageFile) {
     }
 }
 
-fun testOnStart() {
-    MainScope().launch(Dispatchers.Main) {
-        delay(3000)
-        //openFileManager(OABX.context.getBackupRoot())
-    }
-}
-
 val pref_openBackupDir = LaunchPref(
     key = "dev-tool.openBackupDir",
     summary = "open backup directory in associated app"
@@ -416,6 +427,7 @@ val pref_prepareSupport = LaunchPref(
         Pref.setPrefFlag(it.key, it.defaultValue as Boolean)
     }
     pref_trace.value = true
+    traceDebug.pref.value = true
     pref_maxLogLines.value = 20_000
     pref_logToSystemLogcat.value = true
     pref_catchUncaughtException.value = true

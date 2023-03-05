@@ -54,6 +54,7 @@ import com.machiav3lli.backup.preferences.pref_useYamlProperties
 import com.machiav3lli.backup.preferences.pref_useYamlSchedules
 import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
+import com.machiav3lli.backup.ui.compose.item.testOnStart
 import com.machiav3lli.backup.ui.item.BooleanPref
 import com.machiav3lli.backup.ui.item.IntPref
 import com.machiav3lli.backup.utils.TraceUtils
@@ -307,9 +308,7 @@ class OABX : Application() {
                     //main?.viewModel?.retriggerFlowsForUI()
                 }
                 runCatching {
-                    if (isDebug) {
-                        //testOnStart()
-                    }
+                    testOnStart()
                 }
                 runCatching {
                     delay(60_000)
