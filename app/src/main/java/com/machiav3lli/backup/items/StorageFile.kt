@@ -373,7 +373,7 @@ open class StorageFile {
         parent.file?.let {
             file = RootFile(parent.file, subPath)
         } ?: run {
-            initializeFromUri(parent, Uri.withAppendedPath(parent._uri, subPath))
+            initializeFromUri(parent, Uri.withAppendedPath(parent.uri, subPath))
         }
     }
 
@@ -381,7 +381,7 @@ open class StorageFile {
         get() {
             if (field == null) {
                 field = file?.name ?: run {
-                    _uri?.lastPathSegment?.substringAfterLast("/")
+                    uri?.lastPathSegment?.substringAfterLast("/")
                 }
             }
             return field
@@ -391,7 +391,7 @@ open class StorageFile {
         }
 
     val path: String?
-        get() = file?.path ?: _uri?.path
+        get() = file?.path ?: uri?.path
 
     override fun toString(): String {
         return path ?: "null"
@@ -420,14 +420,14 @@ open class StorageFile {
                 )
 
     fun inputStream(): InputStream? {
-        return file?.inputStream() ?: _uri?.let { uri ->
+        return file?.inputStream() ?: uri?.let { uri ->
             context.contentResolver?.openInputStream(uri)
         }
     }
 
     fun outputStream(): OutputStream? {
         documentInfo = null
-        return file?.outputStream() ?: _uri?.let { uri ->
+        return file?.outputStream() ?: uri?.let { uri ->
             context.contentResolver?.openOutputStream(uri, "w")
         }
     }
@@ -475,7 +475,7 @@ open class StorageFile {
                     // otherwise a new one
                         ?: StorageFile(
                             this,
-                            createFile(context, _uri!!, mimeType, displayName),
+                            createFile(context, uri!!, mimeType, displayName),
                             //context,
                             displayName
                         )
@@ -485,7 +485,7 @@ open class StorageFile {
                     // always use the new one
                     StorageFile(
                         this,
-                        createFile(context, _uri!!, mimeType, displayName),
+                        createFile(context, uri!!, mimeType, displayName),
                         //context,
                         displayName
                     )
@@ -581,7 +581,7 @@ open class StorageFile {
         } ?: try {
             val result =
                 context.let { context ->
-                    _uri?.let { uri ->
+                    uri?.let { uri ->
                         DocumentsContract.renameDocument(
                             context.contentResolver, uri, displayName
                         )
@@ -726,7 +726,7 @@ open class StorageFile {
                                     val docInfo = retrieveDocumentInfo(cursor)
                                     documentUri =
                                         DocumentsContract.buildDocumentUriUsingTree(
-                                            this._uri,
+                                            this.uri,
                                             docInfo.id
                                         )
                                     val file =
