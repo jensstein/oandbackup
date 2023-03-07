@@ -304,15 +304,6 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         }
     }
 
-    @Throws(IOException::class)
-    protected fun copyToBackupArchive(
-        backupInstanceDir: StorageFile,
-        what: String,
-        allFilesToBackup: List<ShellHandler.FileInfo>
-    ) {
-        val backupDir = backupInstanceDir.createDirectory(what)
-        backupDir.recursiveCopyFiles(allFilesToBackup)
-    }
 
     @Throws(BackupFailedException::class)
     protected open fun backupPackage(app: Package, backupInstanceDir: StorageFile) {

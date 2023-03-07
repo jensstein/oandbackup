@@ -14,13 +14,11 @@ import com.machiav3lli.backup.PROP_NAME
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
 import com.machiav3lli.backup.handler.LogsHandler.Companion.unexpectedException
 import com.machiav3lli.backup.handler.ShellCommands
-import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.preferences.pref_allowShadowingDefault
 import com.machiav3lli.backup.preferences.pref_cacheFileLists
 import com.machiav3lli.backup.preferences.pref_cacheUris
 import com.machiav3lli.backup.preferences.pref_shadowRootFile
 import com.machiav3lli.backup.traceDebug
-import com.machiav3lli.backup.utils.suRecursiveCopyFilesToDocument
 import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
@@ -671,10 +669,6 @@ open class StorageFile {
             logException(e, path, backTrace = false)
         }
         return null
-    }
-
-    fun recursiveCopyFiles(files: List<ShellHandler.FileInfo>) {
-        suRecursiveCopyFilesToDocument(context, files, _uri!!)
     }
 
     @Throws(FileNotFoundException::class)
