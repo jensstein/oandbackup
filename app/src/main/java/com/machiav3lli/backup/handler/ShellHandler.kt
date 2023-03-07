@@ -117,8 +117,8 @@ class ShellHandler {
                 if (name.contains("ext")) {
                     score += 2
                 }
-                if (name.contains("local")) {
-                    score += 10_00_00_00_0
+                if (name.contains("local")) {   // prefer this over all others
+                    score += 100_00_00_00_0
                 }
 
                 if (semver.satisfies(verKnown)) {
@@ -129,7 +129,7 @@ class ShellHandler {
                 bugDetectors.forEach { it.value(it.key, this) }
 
                 if (!hasBugs()) {
-                    score += 200_00_00_00_0
+                    score += 10_00_00_00_0
                 }
             }
         }
