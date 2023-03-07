@@ -77,9 +77,79 @@ open class Pref(
             getPrefs(private).edit().putInt(name, value).apply().also { onPrefChange() }
         }
 
+        val toBeEscaped =
+            Regex("""[\\"\n\r\t]""")      // blacklist, only escape those that are necessary
+
+        val toBeUnescaped =
+            Regex("""\\(.)""")      // blacklist, only escape those that are necessary
+
+        fun escape(value: String): String {
+            return value.replace(toBeEscaped) {
+                when(it.value) {
+                    "\n" -> "\\n"
+                    "\r" -> "\\r"
+                    "\t" -> "\\t"
+                    else -> "\\${it.value}"
+                }
+            }
+        }
+
+        fun unescape(value: String): String {
+            return value.replace(toBeUnescaped) { match ->
+                match.groupValues[1].let {
+                    when(it) {
+                        "n" -> "\n"
+                        "r" -> "\r"
+                        "t" -> "\t"
+                        else  -> it
+                    }
+                }
+            }
+        }
+
+        fun toSimpleFormat(entries: Map<String, Any>): String {
+            return entries.toSortedMap().mapNotNull {
+                when (it.value) {
+                    is String  -> it.key to "\"" + escape(it.value as String) + "\""
+                    is Int     -> it.key to (it.value as Int).toString()
+                    is Boolean -> it.key to (it.value as Boolean).toString()
+                    else       -> null
+                }
+            }.map {
+                "${it.first}: ${it.second}"
+            }.joinToString("\n")
+        }
+
+        fun fromSimpleFormat(serialized: String): Map<String, Any> {
+            val map = mutableMapOf<String, Any>()
+            serialized.lineSequence().forEach {
+                var (key, value) = it.split(":", limit = 2)
+                value = value.trim()
+                runCatching {
+                    when {
+                        value.startsWith('"')
+                                && value.endsWith('"') -> {
+                            value = unescape(value.removeSurrounding("\""))
+                            map.put(key, value)
+                        }
+                        value == "true"                -> {
+                            map.put(key, true)
+                        }
+                        value == "false"               -> {
+                            map.put(key, false)
+                        }
+                        else                           -> {
+                            map.put(key, value.toInt())
+                        }
+                    }
+                }
+            }
+            return map
+        }
+
         fun preferencesToSerialized(): String {
 
-            val prefs: Map<String, @Contextual Any> =
+            val prefs: Map<String, Any> =
                 publicPreferences().mapNotNull { pref ->
                     try {
                         when (pref) {
@@ -97,7 +167,8 @@ open class Pref(
                 }.toMap()
 
             val serialized = try {
-                OABX.toSerialized(OABX.prefsSerializer, prefs)
+                //OABX.toSerialized(OABX.prefsSerializer, prefs)
+                toSimpleFormat(prefs)
             } catch (e: Throwable) {
                 LogsHandler.unexpectedException(e)
                 ""
@@ -108,7 +179,8 @@ open class Pref(
 
         fun preferencesFromSerialized(serialized: String) {
 
-            val prefs = OABX.fromSerialized<Map<String, @Contextual Any>>(serialized)
+            val prefs = fromSimpleFormat(serialized)
+            //OABX.fromSerialized<Map<String, Any>>(serialized)
 
             prefs.forEach { key, value ->
                 when (value) {
@@ -137,6 +209,9 @@ open class Pref(
 
     override fun toString(): String = ""
 }
+
+//typealias PrefValue = @Polymorphic Any
+typealias PrefValue = @Contextual Any
 
 class BooleanPref(
     key: String,
