@@ -602,8 +602,9 @@ open class StorageFile {
         return try {
             file?.readText()
                 ?: run {
-                    inputStream()?.reader()?.readText()
-                        ?: ""
+                    inputStream()?.reader()?.use {
+                        it.readText()
+                    } ?: ""
                 }
         } catch (e: FileNotFoundException) {
             logException(e, path, backTrace = false)
