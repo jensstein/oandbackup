@@ -34,7 +34,6 @@ val vAccompanist = "0.28.0"
 val vLibsu = "5.0.4"
 //val vIconics = "5.3.4"
 
-val vJunitJupiter = "5.9.2"
 val vAndroidxTest = "1.5.0"
 val vAndroidxTestExt = "1.1.5"
 
@@ -160,7 +159,6 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager:$vAccompanist")
 
     // Testing
-    androidTestImplementation("org.junit.jupiter:junit-jupiter:$vJunitJupiter")
     androidTestImplementation("androidx.test:runner:$vAndroidxTest")
     implementation("androidx.test:rules:$vAndroidxTest")
     implementation("androidx.test.ext:junit-ktx:$vAndroidxTestExt")
@@ -169,7 +167,7 @@ dependencies {
     //androidTestImplementation("androidx.ui:ui-test:$vCompose")
     // Test rules and transitive dependencies:
     androidTestImplementation("androidx.compose.ui:ui-test:$vCompose")
-    //androidTestImplementation("androidx.compose.ui:ui-test-junit4:$vCompose")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$vCompose")
     // Needed for createComposeRule, but not createAndroidComposeRule:
     debugImplementation("androidx.compose.ui:ui-test-manifest:$vCompose")
 }
@@ -195,7 +193,7 @@ tasks.preBuild.dependsOn("detectAndroidLocals")
 
 // tells all test tasks to use Gradle's built-in JUnit 5 support
 tasks.withType<Test> {
-    useJUnit()
+    useJUnit()          // we still use junit4
     //useTestNG()
     //useJUnitPlatform()
 }
