@@ -84,6 +84,16 @@ class MainViewModel(
     //   if f_in > f_proc, then there is no output at all
     //   this is much like processing on idle only
 
+    val schedules =
+        //------------------------------------------------------------------------------------------ blocklist
+        db.scheduleDao.allFlow
+            .trace { "*** schedules <<- ${it.size}" }
+            .stateIn(
+                viewModelScope + Dispatchers.IO,
+                SharingStarted.Eagerly,
+                emptyList()
+            )
+
     val blocklist =
         //------------------------------------------------------------------------------------------ blocklist
         db.blocklistDao.allFlow

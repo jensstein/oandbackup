@@ -21,6 +21,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -38,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
@@ -57,10 +59,10 @@ import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.LogsHandler.Companion.unexpectedException
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
-import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.traceContextMenu
 import com.machiav3lli.backup.traceTiming
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArchiveTray
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Check
 import com.machiav3lli.backup.ui.compose.icons.phosphor.X
 import com.machiav3lli.backup.ui.compose.theme.LocalShapes
@@ -72,7 +74,6 @@ import com.machiav3lli.backup.utils.TraceUtils.logNanoTiming
 import com.machiav3lli.backup.utils.TraceUtils.nanoTiming
 import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.utils.getFormattedDate
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.delay
@@ -118,6 +119,7 @@ fun Confirmation(
 fun TextInput(
     text: String = "",
     placeholder: String = "",
+    trailingIcon: ImageVector? = null,
     onAction: (String) -> Unit = {},
 ) {
     val input = remember { mutableStateOf(text) }
@@ -129,25 +131,41 @@ fun TextInput(
         textFieldFocusRequester.requestFocus()
     }
 
+    fun submit() {
+        focusManager.clearFocus()
+        onAction(input.value)
+    }
+
     DropdownMenuItem(
         text = {
             OutlinedTextField(
                 modifier = Modifier
+                    .testTag("input")
                     .focusRequester(textFieldFocusRequester),
                 value = input.value,
                 placeholder = { Text(text = placeholder, color = Color.Gray) },
                 singleLine = true,
+                trailingIcon = {
+                    trailingIcon?.let { icon ->
+                        IconButton(onClick = { submit() }) {
+                            Icon(icon, null)
+                        }
+                    }
+                },
                 keyboardActions = KeyboardActions(
                     onDone = {
-                        focusManager.clearFocus()
-                        onAction(input.value)
+                        submit()
                     }
                 ),
                 keyboardOptions = KeyboardOptions(
                     autoCorrect = false
                 ),
                 onValueChange = {
-                    input.value = it
+                    if (it.contains("\n")) {
+                        input.value = it.replace("\n", "")
+                        submit()
+                    } else
+                        input.value = it
                 }
             )
         },
@@ -157,7 +175,9 @@ fun TextInput(
 
 @Composable
 fun Selections(
-    onAction: (StorageFile) -> Unit = {},
+    action: String,
+    selection: List<String> = emptyList(),
+    onAction: (List<String>) -> Unit = {},
 ) {
     val backupRoot = OABX.context.getBackupRoot()
     val selectionsDir = backupRoot.findFile(SELECTIONS_FOLDER_NAME)
@@ -166,77 +186,163 @@ fun Selections(
 
     if (files.isEmpty())
         DropdownMenuItem(
-            text = { Text("--- no selections ---") },
+            text = { Text("--- no saved selections ---") },
             onClick = {}
         )
-    else
+    else {
+        DropdownMenuItem(
+            enabled = false, onClick = {},
+            text = { Text("selections saved:") }
+        )
         files.forEach { file ->
             file.name?.let { name ->
                 DropdownMenuItem(
                     text = { Text(name) },
-                    onClick = { onAction(file) }
+                    onClick = {
+                        when (action) {
+                            "get" -> {
+                                val newSelection = file.readText().lines()
+                                onAction(newSelection)
+                            }
+                            "put" -> {
+                                file.writeText(selection.joinToString("\n"))
+                                onAction(selection)
+                            }
+                            "del" -> {
+                                file.delete()
+                                onAction(selection)
+                            }
+                        }
+                    }
                 )
             }
         }
+    }
+
+    if (action in listOf("get", "put")) {
+        val scheduleDao = OABX.db.scheduleDao
+        val schedules = OABX.main?.viewModel?.schedules?.value ?: emptyList()
+        if (schedules.isEmpty())
+            DropdownMenuItem(
+                text = { Text("--- no schedules ---") },
+                onClick = {}
+            )
+        else {
+            DropdownMenuItem(
+                enabled = false, onClick = {},
+                text = { Text("schedules include:") }
+            )
+            schedules.forEach { schedule ->
+                schedule.name.let { name ->
+                    DropdownMenuItem(
+                        text = { Text(name) },
+                        onClick = {
+                            when (action) {
+                                "get" -> {
+                                    val newSelection = schedule.customList.toList()
+                                    onAction(newSelection)
+                                }
+                                "put" -> {
+                                    Thread {
+                                        scheduleDao.update(
+                                            schedule.copy(customList = selection.toSet())
+                                        )
+                                    }.start()
+                                    onAction(selection)
+                                }
+                            }
+                        }
+                    )
+                }
+            }
+            DropdownMenuItem(
+                enabled = false, onClick = {},
+                text = { Text("schedules exclude:") }
+            )
+            schedules.forEach { schedule ->
+                schedule.name.let { name ->
+                    DropdownMenuItem(
+                        text = { Text(name) },
+                        onClick = {
+                            when (action) {
+                                "get" -> {
+                                    val newSelection = schedule.blockList.toList()
+                                    onAction(newSelection)
+                                }
+                                "put" -> {
+                                    Thread {
+                                        scheduleDao.update(
+                                            schedule.copy(blockList = selection.toSet())
+                                        )
+                                    }.start()
+                                    onAction(selection)
+                                }
+                            }
+                        }
+                    )
+                }
+            }
+            DropdownMenuItem(
+                enabled = false, onClick = {},
+                text = { Text("global:") }
+            )
+            DropdownMenuItem(
+                text = { Text("blocklist") },
+                onClick = {
+                    when (action) {
+                        "get" -> {
+                            val newSelection =
+                                OABX.main?.viewModel?.getBlocklist()
+                                    ?: emptyList()
+                            onAction(newSelection)
+                        }
+                        "put" -> {
+                            OABX.main?.viewModel?.setBlocklist(selection.toSet())
+                            onAction(selection)
+                        }
+                    }
+                }
+            )
+        }
+    }
 }
 
 @Composable
-fun SelectionLoadMenu(
+fun SelectionGetMenu(
     onAction: (List<String>) -> Unit = {},
 ) {
-    Selections {
-        onAction(it.readText().lines())
-    }
+    Selections(action = "get", onAction = onAction)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelectionSaveMenu(
+fun SelectionPutMenu(
     selection: List<String>,
     onAction: () -> Unit = {},
 ) {
     val name = remember { mutableStateOf("") }
-    val focusManager = LocalFocusManager.current
-    val textFieldFocusRequester = remember { FocusRequester() }
 
-    LaunchedEffect(textFieldFocusRequester) {
-        delay(100)
-        textFieldFocusRequester.requestFocus()
-    }
-
-    DropdownMenuItem(
-        text = {
-            OutlinedTextField(
-                modifier = Modifier
-                    .testTag("input")
-                    .focusRequester(textFieldFocusRequester),
-                value = name.value,
-                placeholder = { Text(text = "selection name", color = Color.Gray) },
-                singleLine = false,
-                keyboardOptions = KeyboardOptions(
-                    autoCorrect = false
-                ),
-                onValueChange = {
-                    if (it.endsWith("\n")) {
-                        name.value = it.dropLast(1)
-                        focusManager.clearFocus()
-                        val backupRoot = OABX.context.getBackupRoot()
-                        val selectionsDir = backupRoot.ensureDirectory(SELECTIONS_FOLDER_NAME)
-                        selectionsDir.createFile(name.value)
-                            .writeText(selection.joinToString("\n"))
-                        onAction()
-                    } else
-                        name.value = it
-                }
-            )
-        },
-        onClick = {}
-    )
-
-    Selections {
-        it.writeText(selection.joinToString("\n"))
+    TextInput(
+        text = name.value,
+        placeholder = "new selection name",
+        trailingIcon = Phosphor.ArchiveTray,
+    ) {
+        name.value = it
+        val backupRoot = OABX.context.getBackupRoot()
+        val selectionsDir = backupRoot.ensureDirectory(SELECTIONS_FOLDER_NAME)
+        selectionsDir.createFile(name.value)
+            .writeText(selection.joinToString("\n"))
         onAction()
     }
+
+    Selections(action = "put", selection = selection) { onAction() }
+}
+
+@Composable
+fun SelectionRemoveMenu(
+    onAction: () -> Unit = {},
+) {
+    Selections(action = "del") { onAction() }
 }
 
 fun openSubMenu(
@@ -487,7 +593,7 @@ fun MainPackageContextMenu(
                 }
             )
 
-            Divider() //--------------------------------------------------------------------------------
+            Divider() //----------------------------------------------------------------------------
         }
 
         DropdownMenuItem(
@@ -528,10 +634,10 @@ fun MainPackageContextMenu(
         )
 
         DropdownMenuItem(
-            text = { Text("Load...") },
+            text = { Text("Get...") },
             onClick = {
                 openSubMenu(subMenu) {
-                    SelectionLoadMenu { selectionLoaded ->
+                    SelectionGetMenu { selectionLoaded ->
                         expanded.value = false
                         selection.clear()
                         selectionLoaded.forEach { selection[it] = true }
@@ -541,10 +647,10 @@ fun MainPackageContextMenu(
         )
 
         DropdownMenuItem(
-            text = { Text("Save...") },
+            text = { Text("Put...") },
             onClick = {
                 openSubMenu(subMenu) {
-                    SelectionSaveMenu(
+                    SelectionPutMenu(
                         selection = selection.filter { it.value }.map { it.key }
                     ) {
                         expanded.value = false
@@ -554,9 +660,21 @@ fun MainPackageContextMenu(
             }
         )
 
+        DropdownMenuItem(
+            text = { Text("Remove...") },
+            onClick = {
+                openSubMenu(subMenu) {
+                    SelectionRemoveMenu {
+                        expanded.value = false
+                        //launchSelect(selectedVisible)
+                    }
+                }
+            }
+        )
+
         if (selection.count { it.value } > 0) {
 
-            Divider() //--------------------------------------------------------------------------------
+            Divider() //----------------------------------------------------------------------------
 
             DropdownMenuItem(
                 enabled = false, onClick = {},
@@ -582,6 +700,8 @@ fun MainPackageContextMenu(
                 }
             )
 
+            Divider() //----------------------------------------------------------------------------
+
             DropdownMenuItem(
                 text = { Text("Add to Blocklist...") },
                 onClick = {
@@ -593,7 +713,7 @@ fun MainPackageContextMenu(
                 }
             )
 
-            Divider() //--------------------------------------------------------------------------------
+            Divider() //----------------------------------------------------------------------------
 
             DropdownMenuItem(
                 text = { Text("Enable") },
@@ -625,7 +745,7 @@ fun MainPackageContextMenu(
                 }
             )
 
-            Divider() //--------------------------------------------------------------------------------
+            Divider() //----------------------------------------------------------------------------
 
             DropdownMenuItem(
                 text = { Text("Delete All Backups...") },
