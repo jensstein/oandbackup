@@ -132,6 +132,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$vKotlinSerialization")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$vKotlinSerialization")
     implementation("com.charleskorn.kaml:kaml:0.52.0")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
     implementation("androidx.security:security-crypto-ktx:1.1.0-alpha05")
     implementation("androidx.biometric:biometric:1.2.0-alpha05")
