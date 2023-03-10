@@ -134,7 +134,7 @@ dependencies {
     implementation("androidx.security:security-crypto-ktx:1.1.0-alpha04")
     implementation("androidx.biometric:biometric:1.2.0-alpha05")
     implementation("org.apache.commons:commons-compress:1.22")
-    implementation("commons-io:commons-io:2.11.0")      // attention, there is an old 2003 version, that looks like newer
+    implementation("commons-io:commons-io:2.11.0")      // attention, there is an old 20030203.000550 version, that looks higher
     implementation("com.jakewharton.timber:timber:5.0.1")
     implementation("com.github.topjohnwu.libsu:core:$vLibsu")
     implementation("com.github.topjohnwu.libsu:io:$vLibsu")
