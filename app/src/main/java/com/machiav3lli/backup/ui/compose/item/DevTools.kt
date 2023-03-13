@@ -49,6 +49,7 @@ import com.machiav3lli.backup.OABX.Companion.endBusy
 import com.machiav3lli.backup.OABX.Companion.isDebug
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
 import com.machiav3lli.backup.handler.findBackups
+import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.pref_autoLogAfterSchedule
 import com.machiav3lli.backup.pref_autoLogExceptions
@@ -72,6 +73,7 @@ import com.machiav3lli.backup.ui.item.LaunchPref
 import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.ui.item.Pref.Companion.preferencesFromSerialized
 import com.machiav3lli.backup.ui.item.Pref.Companion.preferencesToSerialized
+import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.TraceUtils.trace
 import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.viewmodels.LogViewModel
@@ -83,7 +85,7 @@ import kotlinx.coroutines.launch
 
 var devToolsTab = mutableStateOf("")
 
-val devToolsTabs = listOf<Pair<String, @Composable () -> Unit>>(
+val devToolsTabs = listOf<Pair<String, @Composable () -> Any>>(
     "logs" to { DevLogsTab() },
     "" to {},
     "log" to { DevLogTab() },
@@ -95,7 +97,13 @@ val devToolsTabs = listOf<Pair<String, @Composable () -> Unit>>(
     "devsett" to { DevSettingsTab() },
     "" to {},
     "SUPPORT" to { DevSupportTab() },
-)
+) + if (isDebug) listOf<Pair<String, @Composable () -> Any>>(
+    "" to {},
+    "invBackupLoc" to { FileUtils.invalidateBackupLocation() ; devToolsTab.value = "" },
+    "updateAppTables" to { OABX.context.updateAppTables() ; devToolsTab.value = "" },
+    "findBackups" to { OABX.context.findBackups() ; devToolsTab.value = "" },
+) else emptyList()
+
 
 @Composable
 fun DevInfoLogTab() {
