@@ -220,7 +220,7 @@ class MainActivityX : BaseActivity() {
                         //if (viewModel.modelSortFilter is MutableComposableSharedFlow<*>)
                         //    viewModel.modelSortFilter.value = OABX.context.sortFilterModel
 
-                        refreshPackages()
+                        //refreshPackages()
                     }
                 }
 

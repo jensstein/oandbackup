@@ -43,6 +43,7 @@ import com.machiav3lli.backup.handler.LogsHandler.Companion.unexpectedException
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.handler.findBackups
+import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.preferences.pref_busyHitTime
 import com.machiav3lli.backup.preferences.pref_cancelOnStart
 import com.machiav3lli.backup.preferences.pref_prettyJson
@@ -289,8 +290,10 @@ class OABX : Application() {
 
                 startup = false
 
+                updateAppTables()   // after the lock
+
                 runCatching {
-                    main?.viewModel?.retriggerFlowsForUI()
+                    //main?.viewModel?.retriggerFlowsForUI()
                 }
                 runCatching {
                     if (isDebug) {
