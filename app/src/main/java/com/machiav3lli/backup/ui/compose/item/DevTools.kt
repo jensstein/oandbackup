@@ -76,7 +76,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
-var devToolsTab = mutableStateOf("devsett")
+var devToolsTab = mutableStateOf("")
 
 val devToolsTabs = listOf<Pair<String, @Composable () -> Unit>>(
     "logs" to { DevLogsTab() },
@@ -430,6 +430,9 @@ fun DevSupportTab() {
 fun DevTools(
     expanded: MutableState<Boolean>,
 ) {
+    if (devToolsTab.value.isEmpty())
+        devToolsTab.value = "devsett"
+
     var tab by devToolsTab
     val tempShowInfo = remember { mutableStateOf(false) }
     val showInfo = OABX.showInfoLog || tempShowInfo.value
@@ -451,7 +454,7 @@ fun DevTools(
                 .padding(8.dp, 4.dp, 8.dp, 0.dp)
                 .combinedClickable(
                     onClick = { expanded.value = false },
-                    onLongClick = { tab = "devsett" }
+                    onLongClick = { tab = "" }
                 )
             ) {
                 Box(
@@ -500,7 +503,7 @@ fun DevTools(
                 .padding(8.dp, 0.dp, 8.dp, 4.dp)
                 .combinedClickable(
                     onClick = { expanded.value = false },
-                    onLongClick = { tab = "devsett" }
+                    onLongClick = { tab = "" }
                 )
             ) {
                 devToolsTabs.forEach {
