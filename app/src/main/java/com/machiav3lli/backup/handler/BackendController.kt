@@ -483,11 +483,12 @@ fun Context.findBackups(
             // doing it here also avoids setting all packages to empty lists when findbackups fails
             // so there is a chance that scanning for backups of a single package will work later
 
-            //val installedPackages = getInstalledPackageList()   // too slow (2-3 sec)
+            //val installedPackages = getInstalledPackageList()   // would scan for backups
+            // so do the same without creating a Package for each
             val installedPackages = packageManager.getInstalledPackageInfosWithPermissions()
-            val specialInfo = SpecialInfo.getSpecialPackages(this)
+            val specialInfos = SpecialInfo.getSpecialInfos(this)  //TODO hg42 these probably scan for backups
             installedNames =
-                installedPackages.map { it.packageName } + specialInfo.map { it.packageName }
+                installedPackages.map { it.packageName } + specialInfos.map { it.packageName }
 
             if (pref_earlyEmptyBackups.value)
                 OABX.emptyBackupsForAllPackages(installedNames)
@@ -640,8 +641,8 @@ fun Context.getInstalledPackageList(): MutableList<Package> { // only used in Sc
             // This would mean, that no package info is available – neither from backup.properties
             // nor from PackageManager.
             if (includeSpecial) {
-                SpecialInfo.getSpecialPackages(this).forEach {
-                    packageList.add(it)
+                SpecialInfo.getSpecialInfos(this).forEach {
+                    packageList.add(Package(it))
                 }
             }
 
@@ -704,10 +705,10 @@ fun List<AppInfo>.toPackageList(
         // TODO show special packages directly without restarting NB
         //val specialList = mutableListOf<String>()
         if (includeSpecial) {
-            SpecialInfo.getSpecialPackages(context).forEach {
+            SpecialInfo.getSpecialInfos(context).forEach {
                 if (!blockList.contains(it.packageName)) {
                     //it.updateBackupList(backupsMap[it.packageName].orEmpty())
-                    packageList.add(it)
+                    packageList.add(Package(it))
                 }
                 //specialList.add(it.packageName)
             }
@@ -760,8 +761,8 @@ fun Context.updateAppTables() {
         val backupsMap = ensureBackups()
         val backups = backupsMap.values.flatten()
 
-        val specialPackages = SpecialInfo.getSpecialPackages(this)
-        val specialNames = specialPackages.map { it.packageName }.toSet()
+        val specialInfos = SpecialInfo.getSpecialInfos(this)
+        val specialNames = specialInfos.map { it.packageName }.toSet()
 
         val uninstalledPackagesWithBackup =
             try {
@@ -833,8 +834,10 @@ fun Context.getPackageStorageStats(
     }
 }
 
-fun Context.getSpecial(packageName: String) = SpecialInfo.getSpecialPackages(this)
-    .find { it.packageName == packageName }
+fun Context.getSpecial(packageName: String) =
+    SpecialInfo.getSpecialInfos(this)
+        .find { it.packageName == packageName }
+        ?.let { Package(it) }
 
 val PackageInfo.grantedPermissions: List<String>
     get() = requestedPermissions?.filterIndexed { index, perm ->

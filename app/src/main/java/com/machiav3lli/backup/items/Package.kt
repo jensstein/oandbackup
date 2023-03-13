@@ -95,9 +95,8 @@ class Package {
             refreshStorageStats(context)
         } catch (e: PackageManager.NameNotFoundException) {
             try {
-                this.packageInfo = SpecialInfo.getSpecialPackages(context)
+                this.packageInfo = SpecialInfo.getSpecialInfos(context)
                     .find { it.packageName == this.packageName }!!
-                    .packageInfo
             } catch (e: Throwable) {
                 //TODO hg42 Timber.i("$packageName is not installed")
                 this.packageInfo = latestBackup?.toAppInfo() ?: run {

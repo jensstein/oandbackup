@@ -28,7 +28,6 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.getPackageInfoList
-import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.utils.specialBackupsEnabled
 
 class PackagesListDialogFragment(
@@ -58,22 +57,22 @@ class PackagesListDialogFragment(
         val selections = mutableListOf<Int>()
         var i = 0
         if (specialBackupsEnabled && filter and MAIN_FILTER_SPECIAL == MAIN_FILTER_SPECIAL) {
-            var specialInfos = SpecialInfo.getSpecialPackages(OABX.app)
-            specialInfos = specialInfos.sortedWith { ai1: Package, ai2: Package ->
-                val b1 = selectedPackages.contains(ai1.packageName)
-                val b2 = selectedPackages.contains(ai2.packageName)
+            var specialInfos = SpecialInfo.getSpecialInfos(OABX.app)
+            specialInfos = specialInfos.sortedWith { si1, si2 ->
+                val b1 = selectedPackages.contains(si1.packageName)
+                val b2 = selectedPackages.contains(si2.packageName)
                 if (b1 != b2)
                     if (b1) -1 else 1
                 else {
-                    val l1 = ai1.packageLabel
-                    val l2 = ai2.packageLabel
+                    val l1 = si1.packageLabel ?: ""
+                    val l2 = si2.packageLabel ?: ""
                     l1.compareTo(l2, ignoreCase = true)
                 }
             }
-            specialInfos.forEach { appInfo ->
-                labels.add(appInfo.packageLabel)
-                packagesNames.add(appInfo.packageName)
-                if (selectedPackages.contains(appInfo.packageName)) {
+            specialInfos.forEach { specialInfo ->
+                labels.add(specialInfo.packageLabel ?: "")
+                packagesNames.add(specialInfo.packageName)
+                if (selectedPackages.contains(specialInfo.packageName)) {
                     checkedIndexes.add(true)
                     selections.add(i)
                 } else {
