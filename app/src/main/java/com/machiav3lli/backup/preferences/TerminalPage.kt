@@ -215,6 +215,14 @@ fun dumpTiming() =
     listOf("------ timing") +
             listNanoTiming()
 
+fun dumpDbSchedule() =
+    listOf("------ schedule db") +
+            shell("sqlite3 ${OABX.context.getDatabasePath("main.db")} \"SELECT * FROM schedule ORDER BY id ASC\"")
+
+fun dumpDbAppInfo() =
+    listOf("------ app info db") +
+            shell("sqlite3 ${OABX.context.getDatabasePath("main.db")} \"SELECT * FROM appinfo ORDER BY packageName ASC\"")
+
 fun accessTest1(title: String, directory: String, comment: String) =
     listOf("--- $title") +
             shell("echo \"$directory/*\"", silent = true) +
@@ -248,6 +256,7 @@ fun accessTest() =
             accessTest1("obb", "\$EXTERNAL_STORAGE/Android/obb", "packages (obb)") +
             accessTest1("media", "\$EXTERNAL_STORAGE/Android/media", "packages (media)") +
             accessTest1("misc", "\$ANDROID_DATA/misc", "misc data")
+
 
 fun threadsInfo(): List<String> {
     val threads =
@@ -506,6 +515,8 @@ fun TerminalPage() {
                 TerminalButton("timing") { produce { dumpTiming() } }
                 TerminalButton("threads") { produce { threadsInfo() } }
                 TerminalButton("access") { produce { accessTest() } }
+                TerminalButton("dbpkg") { produce { dumpDbAppInfo() } }
+                TerminalButton("dbsch") { produce { dumpDbSchedule() } }
                 TerminalButton("errInfo") { produce { lastErrorPkg() + lastErrorCommand() } }
                 TerminalButton("err->cmd") {
                     command =
