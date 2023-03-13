@@ -21,6 +21,7 @@ import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.busyTick
 import com.machiav3lli.backup.OABX.Companion.isDebug
+import com.machiav3lli.backup.OABX.Companion.isHg42
 import com.machiav3lli.backup.OABX.Companion.isRelease
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.preferences.ui.PrefsExpandableGroupHeader
@@ -120,6 +121,18 @@ fun AdvancedPrefsPage() {
         }
     }
 }
+
+
+val debug = if (isDebug)
+    "dev"
+else
+    "dbg"
+
+val hg42 = if (isHg42)
+    "dev"
+else
+    "hg42"
+
 
 //---------------------------------------- developer settings - advanced users
 
@@ -294,10 +307,10 @@ val pref_prettyJson = BooleanPref(
     defaultValue = true
 )
 
-val pref_findBackupsLocksFlows = BooleanPref(
-    key = "dev-alt.lockFlowsWhileFindbackups",
-    summary = "empty backup lists for installed packages early, to prevent single scanning",
-    defaultValue = true
+val pref_lockFlowsWhileFindBackups = BooleanPref(
+    key = "dev-alt.lockFlowsWhileFindBackups",
+    summary = "lock database machinery while scanning backups",
+    defaultValue = false
 )
 
 val pref_busyTurnTime = IntPref(
@@ -348,10 +361,7 @@ val pref_flatStructure = BooleanPref(
 )
 
 val pref_propertiesInDir = BooleanPref(
-    key = if (isDebug)
-        "dev-alt.propertiesInDir"         //TODO hg42 available for testing
-    else
-        "dev-alt--off.propertiesInDir",   //TODO hg42 currently not working in scanner
+    key = "$debug-alt.propertiesInDir",         //TODO hg42 currently not working in scanner
     summary = "store the properties inside the backup directory",
     defaultValue = false
 )

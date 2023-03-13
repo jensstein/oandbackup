@@ -51,7 +51,7 @@ import com.machiav3lli.backup.items.Package.Companion.invalidateBackupCacheForPa
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.preferences.pref_backupSuspendApps
 import com.machiav3lli.backup.preferences.pref_earlyEmptyBackups
-import com.machiav3lli.backup.preferences.pref_findBackupsLocksFlows
+import com.machiav3lli.backup.preferences.pref_lockFlowsWhileFindBackups
 import com.machiav3lli.backup.traceBackupsScan
 import com.machiav3lli.backup.traceBackupsScanAll
 import com.machiav3lli.backup.traceTiming
@@ -473,7 +473,7 @@ fun Context.findBackups(
     try {
         if (packageName.isEmpty()) {
 
-            if (pref_findBackupsLocksFlows.value)
+            if (pref_lockFlowsWhileFindBackups.value)
                 beginBackupsLock()
 
             OABX.beginBusy("findBackups")
@@ -531,7 +531,7 @@ fun Context.findBackups(
 
         if (packageName.isEmpty()) {
 
-            if (pref_findBackupsLocksFlows.value)
+            if (pref_lockFlowsWhileFindBackups.value)
                 endBackupsLock()
 
             setBackups(backupsMap)
@@ -557,7 +557,7 @@ fun Context.findBackups(
     } finally {
         if (packageName.isEmpty()) {
 
-            if (pref_findBackupsLocksFlows.value)
+            if (pref_lockFlowsWhileFindBackups.value)
                 endBackupsLock()
 
             val time = OABX.endBusy("findBackups")
