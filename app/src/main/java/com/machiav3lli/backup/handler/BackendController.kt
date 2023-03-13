@@ -534,6 +534,8 @@ fun Context.findBackups(
             if (pref_lockFlowsWhileFindBackups.value)
                 endBackupsLock()
 
+            traceBackupsScan { "*** --------------------> findBackups: packages: ${backupsMap.keys.size} backups: ${backupsMap.values.flatten().size}" }
+
             setBackups(backupsMap)
 
             // preset installed packages that don't have backups with empty backups lists

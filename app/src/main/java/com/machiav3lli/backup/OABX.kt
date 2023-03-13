@@ -283,10 +283,9 @@ class OABX : Application() {
             beginBusy(startupMsg)
 
         MainScope().launch(Dispatchers.IO) {
-            var backupsMap: Map<String, List<Backup>> = emptyMap()
             try {
 
-                backupsMap = findBackups()
+                findBackups()
 
             } catch (e: Throwable) {
                 unexpectedException(e)
@@ -295,7 +294,6 @@ class OABX : Application() {
                 // catch exceptions to make each block independent
 
                 runCatching {
-                    traceBackupsScan { "*** --------------------> packages: ${backupsMap.keys.size} backups: ${backupsMap.values.flatten().size}" }
                     val time = endBusy(startupMsg)
                     addInfoLogText("startup: ${"%.3f".format(time / 1E9)} sec")
                 }
