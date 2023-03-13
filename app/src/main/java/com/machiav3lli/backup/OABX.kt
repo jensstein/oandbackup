@@ -658,15 +658,9 @@ class OABX : Application() {
             }
         }
 
-        fun clearBackups(packageName: String? = null) {
-            packageName?.let {
-                synchronized(theBackupsMap) {
-                    theBackupsMap.remove(packageName)
-                }
-            } ?: run {
-                synchronized(theBackupsMap) {
-                    theBackupsMap.clear()
-                }
+        fun clearBackups() {
+            synchronized(theBackupsMap) {
+                theBackupsMap.clear()
             }
         }
 
@@ -676,7 +670,7 @@ class OABX : Application() {
             }
             // clear no more existing packages
             (theBackupsMap.keys - backups.keys).forEach {
-                clearBackups(it)
+                removeBackups(it)
             }
         }
 
@@ -694,6 +688,12 @@ class OABX : Application() {
                     backups[packageName]
                         ?: emptyList()  // so we need to take the correct package here
                 }.drop(0)  // copy
+            }
+        }
+
+        fun removeBackups(packageName: String) {
+            synchronized(theBackupsMap) {
+                theBackupsMap.remove(packageName)
             }
         }
 
