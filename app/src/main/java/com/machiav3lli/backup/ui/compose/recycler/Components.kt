@@ -480,7 +480,8 @@ fun BusyBackground(
 @Composable
 fun BusyBackgroundPreview() {
     val busy = remember { mutableStateOf(true) }
-    var progress by remember { mutableStateOf(true) }
+    //var progress by remember { mutableStateOf(true) }
+
     Column {
         Row {
             ActionChip(text = "busy ${busy.value}", positive = busy.value) {

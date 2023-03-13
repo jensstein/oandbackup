@@ -699,7 +699,7 @@ fun List<AppInfo>.toPackageList(
         // discover the backup directory and run in a special case where no the directory is empty.
         // This would mean, that no package info is available – neither from backup.properties
         // nor from PackageManager.
-        // TODO show special packages directly wihtout restarting NB
+        // TODO show special packages directly without restarting NB
         //val specialList = mutableListOf<String>()
         if (includeSpecial) {
             SpecialInfo.getSpecialPackages(context).forEach {

@@ -372,24 +372,9 @@ fun List<Package>.installed() = filter { it.isInstalled }
 
 // menu actions should continue even if the ui is left
 val menuScope = MainScope()
-
-val menuPool = when(1) {
-
-    // force hang for recursive invocation
-    0    -> Executors.newFixedThreadPool(1).asCoroutineDispatcher()
-
-    // may hang for recursive invocation because threads are limited
-    1    -> Executors.newFixedThreadPool(numCores).asCoroutineDispatcher()
-
-    // unlimited threads!
-    0    -> Executors.newCachedThreadPool().asCoroutineDispatcher()
-
-    // unclear
-    0    -> Dispatchers.Default
-
-    // creates many threads (~65)
-    else -> Dispatchers.IO
-}
+val menuPool = Executors.newFixedThreadPool(numCores).asCoroutineDispatcher()
+// Dispatchers.Default  unclear and can do anything in the future
+// Dispatchers.IO       creates many threads (~65)
 
 fun launchPackagesAction(
     action: String,
@@ -446,7 +431,8 @@ fun launchEachPackage(
         forEachPackage(
             packages = packages,
             action = action,
-            selection = OABX.main?.viewModel?.selection ?: throw Exception("cannot access selection"),
+            selection = OABX.main?.viewModel?.selection
+                ?: throw Exception("cannot access selection"),
             select = select,
             parallel = parallel,
             todo = todo
@@ -493,7 +479,7 @@ fun launchDisable(packages: List<Package>) {
 }
 
 fun launchUninstall(packages: List<Package>) {
-    launchEachPackage(packages,"uninstall", parallel = false) {
+    launchEachPackage(packages, "uninstall", parallel = false) {
         runAsRoot("pm uninstall ${it.packageName}")
         Package.invalidateCacheForPackage(it.packageName)
     }
