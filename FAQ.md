@@ -27,6 +27,7 @@
 * [How can I open encrypted backups on my computer?](#how-can-i-open-encrypted-backups-on-my-computer)
 * [What does the notification of schedules and batch jobs tell me?](#what-does-the-notification-of-schedules-and-batch-jobs-tell-me)
 * [Does NB support multi-user setups / work-profile?](#does-nb-support-multi-user-setups--work-profile)
+* [Does NB support remote backup locations?](#does-nb-support-remote-backup-locations)
 
 ### What is Neo Backup?
 
@@ -198,10 +199,15 @@ You cannot access /data/data/* at all, so app data is protected between apps.
 
 ### Why is NB so slow?
 
-Since rebasing the app on SAF(Storage Access Framework) the performance is bound to what Android's (or Google's) framework can provide.
-Needless to say: This is how much love this framework receives from the developers... [Fuck-Storage-Access-Framework](https://github.com/K1rakishou/Fuck-Storage-Access-Framework/)
+NB is not slow any more...
+a lot of work was put into optimizations and parallel execution.
 
-<details><summary>Click here to show some more SAF details ...</summary>
+The startup including scanning for backups (which is the most time consuming) should be done in 4-5 seconds.
+
+<details><summary>Click to show some more details why NB was slow ...</summary>
+
+Since rebasing the app on SAF (Storage Access Framework) the performance is bound to what Android's (or Google's) framework can provide.
+Needless to say: This is how much love this framework receives from the developers... [Fuck-Storage-Access-Framework](https://github.com/K1rakishou/Fuck-Storage-Access-Framework/)
 
 The "slow" up to v7 came from the way the data was read from the system.
 With using root via su commands you need to call multiple shell commands for every file to get their attributes for adding them to the tar file.
@@ -213,10 +219,14 @@ The other kind of "slow", that is still existent, comes from scanning the backup
 
 This is suboptimal with SAF, but isn't much faster with RootFile, because a command is invoked for each directory instead of one command for the whole tree. At some point this will probably be changed to scanning in one go (also with SAF if this is possible).
 
-Users tend to ask for use RootFile access instead. It is about toybox capabilities and the internal data structures.
+Users tend to ask for using RootFile access instead. It is about toybox capabilities and the internal data structures.
+Today SAF access is as fast as root access. Note: root file access could be faster, if it wouldn't use shell commands.
+For now there are no plans to put the machinery into a separate root service, that could use direct file access. 
 
-If you want to try what's there, you need to enable allowShadowingDefault at first and then you can switch RootFile on with shadowRootFileForSAF.
+If you want to try RootFile, you need to enable allowShadowingDefault and shadowRootFile.
 This works by searching for parts of the shitty uri scheme (you see it in the setting for the backup directory) in certain places. If it is found, then it's used, otherwise it falls back to SAF.
+Note, this can completely lock up the app, because certain file location can block completely (not sure why).
+To change back the backup directory, you can clear data, or edit it in the shared_prefs folder or you could try to start the Preferences activity of NB.
 
 </details>
 
@@ -236,10 +246,13 @@ In the next Android versions Google will (most probably) force apps more and mor
 
 - Performance, more of Performance and tons of Performance
 - obfuscation of the classical path structure
+- unrealiable file names (providers can rename the files as they like)
 
 #### Below some "performance" or time measuring infos from an older phone
 
 *related to a lot of SAF comments in the chat*
+
+Todays measurements are like 1-2 sec to scan ~500 backup instances.
 
 <details><summary>Click here to show the test-details ...</summary>
 
@@ -331,7 +344,7 @@ The time difference (for most of the test-tasks shown here) is due to:
 
 ### I do not see any apps in the list. What can be the reason?
 
-In most cases the you choose a special Android folder for your backups. (e.g. common mistake is root '/storage/emulated/0' or the "Downloads" folder)
+In most cases you choose a special Android folder for your backups. (e.g. common mistake is root '/storage/emulated/0' or the "Downloads" folder)
 This is not supported by [SAF](#why-is-nb-so-slow). You find a full list which folders are not allowed [here](https://developer.android.com/training/data-storage/shared/documents-files/#document-tree-access-restrictions).
 
 <ins>Solution:</ins><br/>
@@ -638,3 +651,169 @@ So this also answers if it works together with Apps which utilize the work profi
 You can try to clone NB into it, but it is not recommended.
 
 Root should be enable in work-profile by setting - Superuser "Multi-User Mode" to "Device Owner Managed" or "User-Independent" in Magisk App settings.
+
+### Does NB support remote backup locations?
+
+NB does not directly support this.
+There are already tools for these tasks. 
+
+Unlike commercial apps philosophy (lists of features, even if they are not very well supported),
+open source should follow the unix philosophy (write programs that do one thing and do it well).
+Just use the appropriate tool for a different task, instead of putting all of it into one tool.    
+
+You can sync the backup directory to the remote directory using tools like syncthing, which is recommended.
+If you have space for a complete backup, this is the preferred way (syncthing is known to work well). 
+
+You can use the SAF (Storage Access Framework) to access remote locations. 
+This can be done by installing so called document providers.
+Unfortunately these apps are rare, we only know these two:
+
+CIFS (Windows network)
+https://play.google.com/store/apps/details?id=com.wa2c.android.cifsdocumentsprovider
+
+SSH
+https://play.google.com/store/apps/details?id=ru.nsu.bobrofon.easysshfs
+You can also mount remote file systems to a local folder.
+
+It is also possible to mount remote file systems to local folders.
+* using unix tools (command line), e.g. via Termux
+* using rclone (command line), that can access a lot remotes like Google Drive and others 
+
+rclone can also be used via RCX or the successor (in beta phase) extRact.
+see https://github.com/newhinton/extRact
+
+With using appropriate options, it can also provide the mounts via SAF.
+
+<details><summary>Click here to show more details ...</summary>
+
+from Harald = hg42 on github = hg42x on Telegram
+
+this is a loose collection of messages I wrote on Telegram about the topic
+(edited and rearranged):
+
+
+> rsync vs rclone
+
+rsync uses another rsync on the remote side, then the two rsyncs move the data.
+So the remote rsync must be listening on a port or the local rsync must be able to start the remote via ssh.
+
+Instead rclone can use the protocols of a lot of remote "file systems", like Google Drive, sftp, whatever to connect to them.
+It can "mount" these file systems or "sync" them or list files or stream data to/from a file etc.
+
+
+RCX / extRact is a frontend to rclone.
+With rclone you have control over when you mount and unmount the remote directory.
+The UIs do this on their own, I am not sure if they keep the mount correctly while it is used...
+At least with RCX I had a feeling, that it uses a timeout
+
+
+> Is it somehow possible to back up to a remote storage? For example directly back up to my PC via cable or via FTP or similar
+
+usually the basic intent of this question is, to avoid storing data on the device first (e.g. no space left?) and then sync.
+So you want to "mount" a remote directory to the device and use this.
+
+
+my last test was with extRact (a successor of RCX, which also works but seems to be unmaintained for some time)
+
+https://github.com/newhinton/extRact
+
+I didn't use it lately, so I don't know about the current state.
+
+
+You need to change some settings to make it work with SAF.
+
+    File Access
+
+    [ ] Enable SAF Client Preview
+        EXPERIMENTAL: Access SD cards and other storage devices
+    
+    [x] Refresh local drives
+        Automatically refresh local storage media when starting
+    
+    [x] Enable Content Provider Preview
+        EXPERIMENTAL: Allows you to grant other apps access to rclone remotes
+    
+    [x] Declare as local provider
+        Some apps (e.g. Google docs) otherwise can't access files
+    
+    [ ] Allow any app to access your remotes
+        WARNING: This will allow any app to read and write any path on any configured remote.
+
+"Enable Content Provider Preview" is the necessary part to allow to select the extRact entry in the sidebar of the directory selection.
+"Declare as local provider" might also be necessary, at least it doesn't hurt.
+
+Then you connect by choosing a remote backup directory via the extRact entry in the DocumentsUI directory selector.
+
+
+It works, but it's still suboptimal. Especially getting the list of backups takes a looong time.
+And it probably reads it more often than necessary (e.g. while running backups on each deltetion of old directories).
+For remote usage some of this could be delayed or combined. This will need some restructuring.
+
+Though it has become much better lately. E.g. the time to read the list is now 1/4 or better.
+
+There might also be limits in the number of packages in one batch etc.
+It's possible, that such things are caused by timeouts in extRact (or RCX).
+
+
+You might try rclone directly (maybe starting it manually or via Tasker or similar).
+You can also trigger NB by a shell command using intents (see at the end of this text)
+
+NB uses SAF, this allows to use SAF providers.
+RCX and it's successor extRact (shitty name for searching) use rclone to integrate a bunch of remote storages into SAF.
+https://github.com/newhinton/extRact
+search above for settings of extRact
+both don't provide their remotes on SAF by default
+
+I know only a few providers:
+
+CIFS (Windows network)
+https://play.google.com/store/apps/details?id=com.wa2c.android.cifsdocumentsprovider
+
+SSH
+https://play.google.com/store/apps/details?id=ru.nsu.bobrofon.easysshfs
+
+Unfortunately the naming of such storage providers isn't very defined, "Document(s) Provider" or "Storage Access Provider", "File System" instead of "Provider" etc. So you never know if you found all.
+
+Google Drive should be a provider, too, but it seems the set of features does not match.
+There are only a few apps that show Google Drive in the sidebar.
+
+Those providers might have a different behavior... I never tried them more than a small test.
+
+
+note this is experimental, I don't use remote access regularly, so I don't know if it works flawlessly.
+I never restored from it, so I don't know, if the backups are 100% ok or if restore even works.
+In my last test it stopped after 50 min, with about 300 of the 400 apps backed up.
+Not sure what happened. At least it seems that less apps could eventually work...
+At least the tar files looked ok from looking at some samples.
+
+
+> control NB via INTENTS:
+
+I added an experiment using intents (for now only to control tests by scripts).
+
+The feature or interface isn't discussed, yet.
+It's probably subject to change.
+Though the general parameters should be obvious.
+
+e.g.
+am broadcast -a schedule -e name "schedule name"  -n com.machiav3lli.backup.hg42/com.machiav3lli.backup.services.CommandReceiver
+
+starts the schedule named "schedule name"
+in this case it's controlling the pumpkin version of NB
+
+release com.machiav3lli.backup
+neo     com.machiav3lli.backup.neo
+pumpkin com.machiav3lli.backup.hg42
+
+
+E.g. this sets a schedule to a new time:
+am broadcast -a reschedule -e name "schedule name" -e time 23:45 -n com.machiav3lli.backup.hg42/com.machiav3lli.backup.services.CommandReceiver
+
+there is also a "cancel" action, that only get the name parameter (or empty for cancel all).
+
+Tasker adds extras like:
+name: schedule name
+Also note that you need to use "broadcast" (not "activity").
+You can use tasker actions "Send Intent" or shell scripting (which is useful, if you also use it outside of tasker, e.g. you could create a shell script and invoke it from tasker)
+
+</details>
