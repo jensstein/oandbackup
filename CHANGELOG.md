@@ -1,6 +1,34 @@
 CHANGELOG
 =========
 
+- Add: version text for screenshots and other purposes
+  - default is very transparent = only visible if zooming in
+  - preference versionOpacity
+- Fix: close context menu if choosing "no"  
+- Update: use nsenter to run commands in the global mount namespace (of init process -> pid=1),
+  - this probably works with all superuser solutions (tested: Magisk, KernelSU, phhsu),
+  - the only condition is piping commands into "su" command and existence of nsenter.
+  - according to https://android.googlesource.com/platform/system/core/+/master/shell_and_utilities/README.md it is available since Andorid 10
+  - for older android versions it falls back to the --mount-master method if available 
+  - the availability of each option is logged at start and in support log
+- Add: option in root missing dialog to share a (crippled) support log
+- Add: selinux status (getenforce) to support log
+- Fix: cache excluded even if it's enabled
+- Fix: file duplication with SAF (file! not directory), redesiged/hardened duplicate protection
+- Fix: missing uninstalled packages with backups after startup (github issue #739)
+- Add: remote access discussion to FAQ
+- Update: Get/Put replaces Load/Save in context menu
+- Add: Get/Put selections from/to schedule custom or block list
+- Fix: stream not closed
+- Fix: deleted file/directory sometimes not recognized as deleted
+- Fix: /data/local/toybox is now prioritized over others
+- Add: appInfo+schedule database dumps to terminal
+- Add: save/load preferences to/from backup directory (fixed name for now: !-app.preferences)
+  - found in DevTools/tools/ 
+  - file format might change later
+  - so don't use it as a backup, it's only designed for temporary usage (e.g. when changing ROMs or NB variants)
+- Add: long press on title always opens DevTools (without showInfoLogBar enabled)
+
 8.3.1 (21.02.2023) +80 Commits & +10 Translations
 ------------
 
