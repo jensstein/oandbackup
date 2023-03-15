@@ -47,7 +47,8 @@ import java.util.concurrent.TimeUnit
 
 
 const val verKnown = "0.8.0 - 0.8.7"
-const val verBugDotDotDir = "0.8.3 - 0.8.6"
+const val verBugDotDotDirHang = "0.8.3 - 0.8.6"
+const val verBugDotDotDirExtract = "0.8.0 - 0.8.0"  //TODO hg42 more versions?
 
 class ShellHandler {
 
@@ -66,10 +67,19 @@ class ShellHandler {
 
         companion object {
             val bugDetectors = mapOf<String, (String, UtilBox) -> Unit>(
-                "DotDotDir" to { name, box ->
+                "DotDotDirExtract" to { name, box ->
                     box.apply {
                         //TODO hg42 should use a real "feature" test instead of version (but it hangs)
-                        if (semver.satisfies(verBugDotDotDir)) {
+                        if (semver.satisfies(verBugDotDotDirExtract)) {
+                            bugs[name] = true
+                            // workaround: not necessary, tar only ignores ..dir on extraction
+                        }
+                    }
+                },
+                "DotDotDirHang" to { name, box ->
+                    box.apply {
+                        //TODO hg42 should use a real "feature" test instead of version (but it hangs)
+                        if (semver.satisfies(verBugDotDotDirHang)) {
                             bugs[name] = true
                             // workaround: ignore directories of this kind
                         }
