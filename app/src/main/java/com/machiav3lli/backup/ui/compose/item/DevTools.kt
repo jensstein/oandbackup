@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowRow
+import com.machiav3lli.backup.ADMIN_PREFIX
 import com.machiav3lli.backup.ERROR_PREFIX
 import com.machiav3lli.backup.ICON_SIZE_SMALL
 import com.machiav3lli.backup.OABX
@@ -68,6 +69,8 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.MagnifyingGlass
 import com.machiav3lli.backup.ui.compose.icons.phosphor.X
 import com.machiav3lli.backup.ui.item.LaunchPref
 import com.machiav3lli.backup.ui.item.Pref
+import com.machiav3lli.backup.ui.item.Pref.Companion.preferencesFromSerialized
+import com.machiav3lli.backup.ui.item.Pref.Companion.preferencesToSerialized
 import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.viewmodels.LogViewModel
 import kotlinx.coroutines.Dispatchers
@@ -239,6 +242,42 @@ val pref_deleteERROR = LaunchPref(
         OABX.context.findBackups(damagedOp = "del")
         devToolsTab.value = "infolog"
         endBusy("deleteERROR")
+    }
+}
+
+val prefsbackupFilename = "${ADMIN_PREFIX}app.preferences"
+
+val pref_savePreferences = LaunchPref(
+    key = "dev-tool.savePreferences",
+    summary = "save preferences to $prefsbackupFilename"
+) {
+    MainScope().launch(Dispatchers.IO) {
+        val serialized = preferencesToSerialized()
+        if (serialized.isNotEmpty()) {
+            runCatching {
+                val backupRoot = OABX.context.getBackupRoot()
+                StorageFile(backupRoot, prefsbackupFilename).let {
+                    it.overwriteText(serialized)
+                    OABX.addInfoLogText("saved ${it.name}")
+                }
+            }
+        }
+    }
+}
+
+val pref_loadPreferences = LaunchPref(
+    key = "dev-tool.loadPreferences",
+    summary = "load preferences from $prefsbackupFilename"
+) {
+    MainScope().launch(Dispatchers.IO) {
+        runCatching {
+            val backupRoot = OABX.context.getBackupRoot()
+            backupRoot.findFile(prefsbackupFilename)?.let {
+                val serialized = it.readText()
+                preferencesFromSerialized(serialized)
+                OABX.addInfoLogText("loaded ${it.name}")
+            }
+        }
     }
 }
 

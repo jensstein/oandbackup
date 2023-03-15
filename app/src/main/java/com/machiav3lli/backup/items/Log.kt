@@ -23,8 +23,6 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.utils.LocalDateTimeSerializer
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.time.LocalDateTime
@@ -56,9 +54,10 @@ open class Log {
         try {
             logFile.inputStream()!!.use { inputStream ->
                 val text = inputStream.reader().readText()
-                initFromSerialized(text) || initFromText(text) ||
+                //initFromSerialized(text) ||
+                initFromText(text) ||
                         throw Backup.BrokenBackupException(
-                            "$logFile is neither ${OABX.serializer.javaClass.simpleName} nor text header format"
+                            "$logFile is neither ${OABX.propsSerializer.javaClass.simpleName} nor text header format"
                         )
             }
         } catch (e: FileNotFoundException) {
@@ -135,27 +134,27 @@ open class Log {
         }
     }
 
-    fun toText() = """
+    fun toSerialized() = """
         logDate: $logDate
         deviceName: $deviceName
         sdkCodename: $sdkCodename
         cpuArch: $cpuArch
     """.trimIndent() + "\n\n" + logText
 
-    fun initFromSerialized(text: String): Boolean {
-        return fromSerialized(text)?.let { item ->
-            this.logDate = item.logDate
-            this.deviceName = item.deviceName
-            this.sdkCodename = item.sdkCodename
-            this.cpuArch = item.cpuArch
-            this.logText = item.logText
-            true
-        } ?: false
-    }
-
-    fun toSerialized() = OABX.serializer.encodeToString(this)
-
-    companion object {
-        fun fromSerialized(serialized: String) = runCatching { OABX.serializer.decodeFromString<Log>(serialized) }.getOrNull()
-    }
+    //fun initFromSerialized(text: String): Boolean {
+    //    return fromSerialized(text)?.let { item ->
+    //        this.logDate = item.logDate
+    //        this.deviceName = item.deviceName
+    //        this.sdkCodename = item.sdkCodename
+    //        this.cpuArch = item.cpuArch
+    //        this.logText = item.logText
+    //        true
+    //    } ?: false
+    //}
+    //
+    //fun toSerialized() = OABX.propsSerializer.encodeToString(this)
+    //
+    //companion object {
+    //    fun fromSerialized(serialized: String) = runCatching { OABX.propsSerializer.decodeFromString<Log>(serialized) }.getOrNull()
+    //}
 }

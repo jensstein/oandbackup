@@ -26,11 +26,13 @@ import android.content.IntentFilter
 import android.os.Build
 import android.os.PowerManager
 import android.os.Process
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.charleskorn.kaml.Yaml
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.DynamicColorsOptions
 import com.machiav3lli.backup.OABX.Companion.isDebug
@@ -47,6 +49,9 @@ import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.preferences.pref_busyHitTime
 import com.machiav3lli.backup.preferences.pref_cancelOnStart
 import com.machiav3lli.backup.preferences.pref_prettyJson
+import com.machiav3lli.backup.preferences.pref_useYamlPreferences
+import com.machiav3lli.backup.preferences.pref_useYamlProperties
+import com.machiav3lli.backup.preferences.pref_useYamlSchedules
 import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
 import com.machiav3lli.backup.ui.item.BooleanPref
@@ -63,8 +68,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.StringFormat
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
 import timber.log.Timber
 import java.lang.Integer.max
 import java.lang.ref.WeakReference
@@ -275,7 +284,9 @@ class OABX : Application() {
         MainScope().launch(Dispatchers.IO) {
             var backupsMap: Map<String, List<Backup>> = emptyMap()
             try {
+
                 backupsMap = findBackups()
+
             } catch (e: Throwable) {
                 unexpectedException(e)
             } finally {
@@ -320,9 +331,85 @@ class OABX : Application() {
 
     companion object {
 
-        val JsonPretty = Json { prettyPrint = true }    // create only once
-        val JsonDefault = Json.Default
-        val serializer: StringFormat get() = if (pref_prettyJson.value) JsonPretty else JsonDefault
+        @ExperimentalSerializationApi
+        val serMod = SerializersModule {
+            //contextual(Boolean.serializer())
+            //contextual(Int.serializer())
+            //contextual(String.serializer())
+            //polymorphic(Any::class) {
+            //    subclass(Boolean.serializer())
+            //    subclass(Int.serializer())
+            //    subclass(String.serializer())
+            //}
+            //polymorphic(Any::class) {
+            //    subclass(Boolean::class)
+            //    subclass(Int::class)
+            //    subclass(String::class)
+            //}
+            //polymorphic(Any::class) {
+            //    subclass(Boolean::class, Boolean.serializer())
+            //    subclass(Int::class, Int.serializer())
+            //    subclass(String::class, String.serializer())
+            //}
+            //polymorphic(Any::class, Boolean::class, Boolean.serializer())
+            //polymorphic(Any::class, Int::class, Int.serializer())
+            //polymorphic(Any::class, String::class, String.serializer())
+        }
+
+        // create alternatives here and switch when used to allow dynamic prefs
+        @OptIn(ExperimentalSerializationApi::class)
+        val JsonDefault = Json {
+            serializersModule = serMod
+        }
+        @OptIn(ExperimentalSerializationApi::class)
+        val JsonPretty = Json {
+            serializersModule = serMod
+            prettyPrint = true
+        }
+        @OptIn(ExperimentalSerializationApi::class)
+        val YamlDefault = Yaml(serMod)
+
+        val propsSerializerDef: Pair<String, StringFormat>
+            get() =
+                when {
+                    pref_useYamlProperties.value -> "yaml" to YamlDefault
+                    pref_prettyJson.value        -> "json" to JsonPretty
+                    else                         -> "json" to JsonDefault
+                }
+        val propsSerializer: StringFormat get() = propsSerializerDef.second
+        val propsSerializerSuffix: String get() = propsSerializerDef.first
+
+        val prefsSerializerDef: Pair<String, StringFormat>
+            get() =
+                when {
+                    pref_useYamlPreferences.value -> "yaml" to YamlDefault
+                    else                          -> "json" to JsonPretty
+                }
+        val prefsSerializer: StringFormat get() = prefsSerializerDef.second
+        val prefsSerializerSuffix: String get() = prefsSerializerDef.first
+
+        val schedSerializerDef: Pair<String, StringFormat>
+            get() =
+                when {
+                    pref_useYamlSchedules.value -> "yaml" to YamlDefault
+                    else                        -> "json" to JsonPretty
+                }
+        val schedSerializer: StringFormat get() = schedSerializerDef.second
+        val schedSerializerSuffix: String get() = schedSerializerDef.first
+
+        inline fun <reified T> toSerialized(serializer: StringFormat, value: T) =
+            serializer.encodeToString(value)
+
+        inline fun <reified T> fromSerialized(serialized: String): T {
+            traceSerialize { "serialized: <-- $serialized" }
+            val props: T = try {
+                JsonDefault.decodeFromString(serialized)
+            } catch (_: Throwable) {
+                YamlDefault.decodeFromString(serialized)
+            }
+            traceSerialize { "    object: --> $props" }
+            return props
+        }
 
         val lastLogMessages = ConcurrentLinkedQueue<String>()
         fun addLogMessage(message: String) {
@@ -375,13 +462,13 @@ class OABX : Application() {
 
                     val prio =
                         when (priority) {
-                            android.util.Log.VERBOSE -> "V"
-                            android.util.Log.ASSERT  -> "A"
-                            android.util.Log.DEBUG   -> "D"
-                            android.util.Log.ERROR   -> "E"
-                            android.util.Log.INFO    -> "I"
-                            android.util.Log.WARN    -> "W"
-                            else                     -> "?"
+                            Log.VERBOSE -> "V"
+                            Log.ASSERT  -> "A"
+                            Log.DEBUG   -> "D"
+                            Log.ERROR   -> "E"
+                            Log.INFO    -> "I"
+                            Log.WARN    -> "W"
+                            else        -> "?"
                         }
                     val now = System.currentTimeMillis()
                     val date = ISO_DATE_TIME_FORMAT_MS.format(now)
@@ -406,11 +493,11 @@ class OABX : Application() {
 
                 override fun createStackElementTag(element: StackTraceElement): String {
                     var tag = "${
-                            super.createStackElementTag(element)
+                        super.createStackElementTag(element)
                     }:${
-                    element.lineNumber
+                        element.lineNumber
                     }::${
-                    element.methodName
+                        element.methodName
                     }"
                     if (tag.contains("TraceUtils"))
                         tag = ""
@@ -544,7 +631,7 @@ class OABX : Application() {
             if (aquire) {
                 traceDebug { "%%%%% $wakeLockTag wakelock aquire (before: $wakeLockNested)" }
                 if (wakeLockNested.accumulateAndGet(+1, Int::plus) == 1) {
-                    val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+                    val pm = context.getSystemService(POWER_SERVICE) as PowerManager
                     theWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, wakeLockTag)
                     theWakeLock?.acquire(60 * 60 * 1000L)
                     traceDebug { "%%%%% $wakeLockTag wakelock ACQUIRED" }

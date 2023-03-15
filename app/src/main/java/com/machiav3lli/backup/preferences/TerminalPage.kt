@@ -108,8 +108,6 @@ import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.compose.isAtBottom
 import com.machiav3lli.backup.ui.compose.isAtTop
 import com.machiav3lli.backup.ui.compose.item.RoundButton
-import com.machiav3lli.backup.ui.item.LaunchPref
-import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.utils.SystemUtils
 import com.machiav3lli.backup.utils.SystemUtils.applicationIssuer
 import com.machiav3lli.backup.utils.TraceUtils.listNanoTiming
@@ -190,18 +188,9 @@ fun logSys() =
 
 fun dumpPrefs() =
     listOf("------ preferences") +
-            Pref.preferences.map {
-                val (group, prefs) = it
-                prefs.map {
-                    if (it.private ||
-                        it is LaunchPref ||
-                        it.group == "kill"
-                    )
-                        null
-                    else
+            publicPreferences(persist = true).map {
                         "${it.group}.${it.key} = ${it}"
-                }.filterNotNull()
-            }.flatten()
+            }
 
 fun dumpEnv() =
     listOf("------ environment") +

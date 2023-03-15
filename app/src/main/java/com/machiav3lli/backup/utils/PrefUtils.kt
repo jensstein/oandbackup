@@ -300,15 +300,15 @@ val Context.checkSMSMMSPermission: Boolean
         }
         return if (mode == AppOpsManager.MODE_DEFAULT) {
             (checkCallingOrSelfPermission(Manifest.permission.READ_SMS) ==
-             PackageManager.PERMISSION_GRANTED &&
-             checkCallingOrSelfPermission(Manifest.permission.SEND_SMS) ==
-             PackageManager.PERMISSION_GRANTED &&
-             checkCallingOrSelfPermission(Manifest.permission.RECEIVE_SMS) ==
-             PackageManager.PERMISSION_GRANTED &&
-             checkCallingOrSelfPermission(Manifest.permission.RECEIVE_MMS) ==
-             PackageManager.PERMISSION_GRANTED &&
-             checkCallingOrSelfPermission(Manifest.permission.RECEIVE_WAP_PUSH) ==
-             PackageManager.PERMISSION_GRANTED)
+                    PackageManager.PERMISSION_GRANTED &&
+                    checkCallingOrSelfPermission(Manifest.permission.SEND_SMS) ==
+                    PackageManager.PERMISSION_GRANTED &&
+                    checkCallingOrSelfPermission(Manifest.permission.RECEIVE_SMS) ==
+                    PackageManager.PERMISSION_GRANTED &&
+                    checkCallingOrSelfPermission(Manifest.permission.RECEIVE_MMS) ==
+                    PackageManager.PERMISSION_GRANTED &&
+                    checkCallingOrSelfPermission(Manifest.permission.RECEIVE_WAP_PUSH) ==
+                    PackageManager.PERMISSION_GRANTED)
         } else {
             mode == AppOpsManager.MODE_ALLOWED
         }
@@ -350,9 +350,9 @@ val Context.checkCallLogsPermission: Boolean
         }
         return if (mode == AppOpsManager.MODE_DEFAULT) {
             (checkCallingOrSelfPermission(Manifest.permission.READ_CALL_LOG) ==
-             PackageManager.PERMISSION_GRANTED &&
-             checkCallingOrSelfPermission(Manifest.permission.WRITE_CALL_LOG) ==
-             PackageManager.PERMISSION_GRANTED)
+                    PackageManager.PERMISSION_GRANTED &&
+                    checkCallingOrSelfPermission(Manifest.permission.WRITE_CALL_LOG) ==
+                    PackageManager.PERMISSION_GRANTED)
         } else {
             mode == AppOpsManager.MODE_ALLOWED
         }
@@ -425,7 +425,7 @@ val Context.checkUsageStatsPermission: Boolean
 
 fun Context.checkBatteryOptimization(powerManager: PowerManager)
         : Boolean = persist_ignoreBatteryOptimization.value
-                    || powerManager.isIgnoringBatteryOptimizations(packageName)
+        || powerManager.isIgnoringBatteryOptimizations(packageName)
 
 
 val isBackupDeviceProtectedData: Boolean
@@ -522,9 +522,9 @@ fun Context.getLocaleOfCode(localeCode: String): Locale = when {
 
 fun Context.getLanguageList() =
     mapOf(PREFS_LANGUAGES_DEFAULT to resources.getString(R.string.prefs_language_system)) +
-    BuildConfig.DETECTED_LOCALES
-        .sorted()
-        .associateWith { translateLocale(getLocaleOfCode(it)) }
+            BuildConfig.DETECTED_LOCALES
+                .sorted()
+                .associateWith { translateLocale(getLocaleOfCode(it)) }
 
 private fun translateLocale(locale: Locale): String {
     val country = locale.getDisplayCountry(locale)
@@ -533,3 +533,4 @@ private fun translateLocale(locale: Locale): String {
             + (if (country.isNotEmpty() && country.compareTo(language, true) != 0)
         "($country)" else ""))
 }
+

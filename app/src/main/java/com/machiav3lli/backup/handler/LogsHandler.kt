@@ -73,7 +73,7 @@ class LogsHandler {
                 logsDirectory.createFile(logFileName).let { logFile ->
                     BufferedOutputStream(logFile.outputStream()).use { logOut ->
                         logOut.write(
-                            logItem.toText().toByteArray(StandardCharsets.UTF_8)
+                            logItem.toSerialized().toByteArray(StandardCharsets.UTF_8)
                         )
                         //traceDebug { "Wrote $logFile file for $logItem" }
                     }

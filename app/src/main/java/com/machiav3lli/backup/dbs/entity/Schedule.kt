@@ -30,8 +30,6 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.items.StorageFile
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import java.io.FileNotFoundException
 import java.io.IOException
 
@@ -172,10 +170,11 @@ data class Schedule(
         }
     }
 
-    fun toSerialized() = OABX.serializer.encodeToString(this)
+    fun toSerialized() = OABX.toSerialized(OABX.schedSerializer, this)
 
     companion object {
-        fun fromSerialized(serialized: String) = OABX.serializer.decodeFromString<Schedule>(serialized)
+
+        fun fromSerialized(serialized: String) = OABX.fromSerialized<Schedule>(serialized)
 
         @RenameColumn(
             tableName = "Schedule",

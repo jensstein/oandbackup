@@ -5,9 +5,12 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.preferences.publicPreferences
 import com.machiav3lli.backup.tracePrefs
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import com.machiav3lli.backup.utils.getPrivateSharedPrefs
+import kotlinx.serialization.Contextual
 
 open class Pref(
     var key: String,
@@ -19,7 +22,7 @@ open class Pref(
     val icon: ImageVector? = null,
     val iconTint: Color?,
     val enableIf: (() -> Boolean)? = null,
-    var group: String = ""
+    var group: String = "",
 ) {
     companion object {
 
@@ -41,7 +44,7 @@ open class Pref(
         fun prefFlag(name: String, default: Boolean, private: Boolean = false) =
             try {
                 getPrefs(private).getBoolean(name, default)
-            } catch(e: Throwable) {
+            } catch (e: Throwable) {
                 default
             }
 
@@ -53,7 +56,7 @@ open class Pref(
         fun prefString(name: String, default: String, private: Boolean = false) =
             try {
                 getPrefs(private).getString(name, default) ?: default
-            } catch(e: Throwable) {
+            } catch (e: Throwable) {
                 default
             }
 
@@ -65,13 +68,55 @@ open class Pref(
         fun prefInt(name: String, default: Int, private: Boolean = false) =
             try {
                 getPrefs(private).getInt(name, default)
-            } catch(e: Throwable) {
+            } catch (e: Throwable) {
                 default
             }
 
         fun setPrefInt(name: String, value: Int, private: Boolean = false) {
             if (!private) tracePrefs { "set pref $name = $value" }
             getPrefs(private).edit().putInt(name, value).apply().also { onPrefChange() }
+        }
+
+        fun preferencesToSerialized(): String {
+
+            val prefs: Map<String, @Contextual Any> =
+                publicPreferences().mapNotNull { pref ->
+                    try {
+                        when (pref) {
+                            is IntPref     -> pref.key to pref.value
+                            is BooleanPref -> pref.key to pref.value
+                            is StringPref  -> pref.key to pref.value
+                            is ListPref    -> pref.key to pref.value
+                            is EnumPref    -> pref.key to pref.value
+                            else           -> null
+                        }
+                    } catch (e: Throwable) {
+                        LogsHandler.unexpectedException(e)
+                        null
+                    }
+                }.toMap()
+
+            val serialized = try {
+                OABX.toSerialized(OABX.prefsSerializer, prefs)
+            } catch (e: Throwable) {
+                LogsHandler.unexpectedException(e)
+                ""
+            }
+
+            return serialized
+        }
+
+        fun preferencesFromSerialized(serialized: String) {
+
+            val prefs = OABX.fromSerialized<Map<String, @Contextual Any>>(serialized)
+
+            prefs.forEach { key, value ->
+                when (value) {
+                    is String  -> setPrefString(key, value)
+                    is Int     -> setPrefInt(key, value)
+                    is Boolean -> setPrefFlag(key, value)
+                }
+            }
         }
     }
 

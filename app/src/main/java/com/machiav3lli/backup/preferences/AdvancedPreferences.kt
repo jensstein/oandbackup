@@ -301,6 +301,24 @@ val pref_refreshAppInfoTimeout = IntPref(
 
 //---------------------------------------- developer settings - implementation alternatives
 
+val pref_useYamlPreferences = BooleanPref(
+    key = "$debug-alt.useYamlPreferences",
+    summary = "create human readable yaml format for preferences",
+    defaultValue = true
+)
+
+val pref_useYamlSchedules = BooleanPref(
+    key = "$debug-alt.useYamlSchedules",
+    summary = "create human readable yaml format for schedules",
+    defaultValue = true
+)
+
+val pref_useYamlProperties = BooleanPref(
+    key = "$debug-alt.useYamlProperties",
+    summary = "create human readable yaml format for backup properties",
+    defaultValue = false
+)
+
 val pref_prettyJson = BooleanPref(
     key = "dev-alt.prettyJson",
     summary = "create human readable json files. Note they should be compatible in both directions",
@@ -505,3 +523,21 @@ val persist_skippedEncryptionCounter = IntPref(
     entries = (0..100).toList(),
     defaultValue = 0
 )
+
+
+//----------------------------------------
+
+fun publicPreferences(persist: Boolean = false) =
+    Pref.preferences.map {
+        val (group, prefs) = it
+        prefs.map {
+            if (it.private ||
+                it is LaunchPref ||
+                it.group == "kill" ||
+                (persist && it.group == "persist")
+            )
+                null
+            else
+                it
+        }.filterNotNull()
+    }.flatten()
