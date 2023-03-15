@@ -44,8 +44,8 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.LogsHandler.Companion.unexpectedException
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
+import com.machiav3lli.backup.handler.endPackageFlowsLock
 import com.machiav3lli.backup.handler.findBackups
-import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.preferences.pref_busyHitTime
 import com.machiav3lli.backup.preferences.pref_cancelOnStart
 import com.machiav3lli.backup.preferences.pref_prettyJson
@@ -291,18 +291,20 @@ class OABX : Application() {
                 unexpectedException(e)
             } finally {
 
-                // catch exceptions to make each block independent
+                // always need to do these
+                // catch all exceptions to make each block independent, so an error does not stop the rest
 
                 runCatching {
                     val time = endBusy(startupMsg)
                     addInfoLogText("startup: ${"%.3f".format(time / 1E9)} sec")
                 }
-
-                startup = false
-
-                updateAppTables()   // after the lock
-
                 runCatching {
+                    startup = false
+                    // always (re)start the flows, even if they were not locked
+                    endPackageFlowsLock()  // before removing this, ensure init value will always be false
+                    // if removing endPackageFlowsLock do this:
+                    //updateAppTables()
+                    // this is not necessary any more:
                     //main?.viewModel?.retriggerFlowsForUI()
                 }
                 runCatching {

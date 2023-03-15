@@ -32,7 +32,7 @@ import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Blocklist
-import com.machiav3lli.backup.handler.isBackupsLocked
+import com.machiav3lli.backup.handler.isPackageFlowsLocked
 import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.Package.Companion.invalidateCacheForPackage
@@ -247,7 +247,7 @@ class MainViewModel(
 
             var list = emptyList<Package>()
 
-            if (isBackupsLocked()) {
+            if (isPackageFlowsLocked()) {
 
                 traceFlows { "******************** filtering - locked" }
 
@@ -282,7 +282,7 @@ class MainViewModel(
     val updatedPackages =
         //------------------------------------------------------------------------------------------ updatedPackages
         notBlockedList
-            .filterNot { isBackupsLocked() }
+            .filterNot { isPackageFlowsLocked() }
             .trace { "updatePackages? ..." }
             .mapLatest {
                 it.filter(Package::isUpdated).toMutableList()

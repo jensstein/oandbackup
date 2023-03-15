@@ -52,6 +52,7 @@ import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.preferences.pref_backupSuspendApps
 import com.machiav3lli.backup.preferences.pref_earlyEmptyBackups
 import com.machiav3lli.backup.preferences.pref_lockFlowsWhileFindBackups
+import com.machiav3lli.backup.preferences.pref_lockFlowsWhileStartup
 import com.machiav3lli.backup.traceBackupsScan
 import com.machiav3lli.backup.traceBackupsScanAll
 import com.machiav3lli.backup.traceTiming
@@ -447,17 +448,19 @@ suspend fun scanBackups(
     }
 }
 
-val backupsLocked = mutableStateOf(false)
-fun beginBackupsLock() {
-    backupsLocked.value = true
+private val packageFlowsLocked = mutableStateOf(pref_lockFlowsWhileStartup.value)    // locked from start
+
+fun beginPackageFlowsLock() {
+    packageFlowsLocked.value = true
 }
 
-fun endBackupsLock() {
-    backupsLocked.value = false
+fun endPackageFlowsLock() {
+    packageFlowsLocked.value = false
+    OABX.context.updateAppTables()
 }
 
-fun isBackupsLocked(): Boolean {
-    return backupsLocked.value
+fun isPackageFlowsLocked(): Boolean {
+    return packageFlowsLocked.value
 }
 
 fun Context.findBackups(
@@ -474,7 +477,7 @@ fun Context.findBackups(
         if (packageName.isEmpty()) {
 
             if (pref_lockFlowsWhileFindBackups.value)
-                beginBackupsLock()
+                beginPackageFlowsLock()
 
             OABX.beginBusy("findBackups")
 
@@ -533,7 +536,7 @@ fun Context.findBackups(
         if (packageName.isEmpty()) {
 
             if (pref_lockFlowsWhileFindBackups.value)
-                endBackupsLock()
+                endPackageFlowsLock()
 
             traceBackupsScan { "*** --------------------> findBackups: packages: ${backupsMap.keys.size} backups: ${backupsMap.values.flatten().size}" }
 
@@ -561,7 +564,7 @@ fun Context.findBackups(
         if (packageName.isEmpty()) {
 
             if (pref_lockFlowsWhileFindBackups.value)
-                endBackupsLock()
+                endPackageFlowsLock()
 
             val time = OABX.endBusy("findBackups")
             OABX.addInfoLogText("findBackups: ${"%.3f".format(time / 1E9)} sec")
