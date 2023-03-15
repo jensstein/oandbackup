@@ -66,7 +66,6 @@ import com.machiav3lli.backup.preferences.pref_toolbarOpacity
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.MagnifyingGlass
 import com.machiav3lli.backup.ui.compose.icons.phosphor.X
-import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.compose.vertical
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -259,18 +258,18 @@ fun TopBar(
                     showInfo = showInfo,
                     tempShowInfo = tempShowInfo,
                     modifier = Modifier
-                        .ifThen(pref_showInfoLogBar.value) {
-                            combinedClickable(
-                                onClick = {
+                        .combinedClickable(
+                            onClick = {
+                                if (pref_showInfoLogBar.value) {
                                     OABX.showInfoLog = !OABX.showInfoLog
-                                    if (!OABX.showInfoLog)
-                                        tempShowInfo.value = false
-                                },
-                                onLongClick = {
-                                    showDevTools.value = true
                                 }
-                            )
-                        }
+                                if (!OABX.showInfoLog)
+                                    tempShowInfo.value = false
+                            },
+                            onLongClick = {
+                                showDevTools.value = true
+                            }
+                        )
                 )
                 if (showDevTools.value) {
                     BaseDialog(openDialogCustom = showDevTools) {
