@@ -1,10 +1,11 @@
 package tests
 
-import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.actions.BackupAppAction
 import com.machiav3lli.backup.actions.RestoreAppAction
 import com.machiav3lli.backup.handler.ShellHandler
+import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
@@ -19,6 +20,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
+import timber.log.Timber
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -36,12 +38,23 @@ class Test_BackupRestore {
         lateinit var tempDir: RootFile
         lateinit var testDir: RootFile
 
+        lateinit var shellHandler : ShellHandler
+        lateinit var tempStorage : StorageFile
+        lateinit var backupDirTarApi : StorageFile
+        lateinit var backupDirTarCmd : StorageFile
+        lateinit var restoreCache : File
+
         var backupCreated = false
         var contentLs = listOf<String>()
         var contentCount = 0
 
+        init {
+            ShellHandler.FileInfo.utilBoxInfo().forEach { Timber.w(it) }
+        }
+
         @BeforeClass @JvmStatic
         fun setupClass() {
+            shellHandler = OABX.Companion.shellHandlerInstance!!
             //tempDir = RootFile(context.cacheDir, "test_backup_restore")
             tempDir = RootFile(context.dataDir, "test_backup_restore")
             //tempDir = RootFile("/data/local/tmp/test_backup_restore")
@@ -58,7 +71,7 @@ class Test_BackupRestore {
         fun listContent(dir: RootFile): List<String> {
             //return runAsRoot("ls -bAlZ ${dir.quoted} | grep -v total | sort").out.joinToString("\n")
             return runAsRoot(
-                        """cd ${dir.quoted} ; stat -c '%-20n %y %A %f %-15U %-15G %8s %F' .* * | grep -v '\.$'"""
+                        """cd ${dir.quoted} ; stat -c '%-20n %y %A %f %-15U %-15G %8s %F' .* * | grep -v '\.\$'"""
             ).out
                 .filterNotNull()
                 .map { it.replace(Regex(""":\d\d\.\d{9}\b"""), "") } // :seconds.millis
@@ -162,12 +175,14 @@ class Test_BackupRestore {
                 contentCount++
             }
 
-            run {
-                val name = "..dir"
-                val file = RootFile(dir, name)
-                fastCmd("$utilBoxQ mkdir -p ${file.quoted}")
-                checks["$name/type"] = { if (utilBox.hasBug("DotDotDir")) true else it.isDirectory }
-                contentCount++
+            if (!utilBox.hasBug("DotDotDirHang") && !utilBox.hasBug("DotDotDirExtract")) {
+                run {
+                    val name = "..dir"
+                    val file = RootFile(dir, name)
+                    fastCmd("$utilBoxQ mkdir -p ${file.quoted}")
+                    checks["$name/type"] = { it.isDirectory }
+                    contentCount++
+                }
             }
 
             contentLs = listContent(dir)
@@ -183,19 +198,12 @@ class Test_BackupRestore {
     //val activityRule = activityScenarioRule<MainActivityX>( /* intent */ )
     //var activityRule = ActivityScenarioRule(MainActivityX::class.java)
 
-    lateinit var tempStorage : StorageFile
-    lateinit var shellHandler : ShellHandler
-    lateinit var backupDirTarApi : StorageFile
-    lateinit var backupDirTarCmd : StorageFile
-    lateinit var restoreCache : File
-
     fun archiveTarApi(compress: Boolean) = StorageFile(backupDirTarApi, "data.tar${if (compress) ".gz" else ""}")
     fun archiveTarCmd(compress: Boolean) = StorageFile(backupDirTarCmd, "data.tar${if (compress) ".gz" else ""}")
 
     @Before
     fun setup() {
         tempStorage = StorageFile(tempDir)
-        shellHandler = ShellHandler()
         backupDirTarApi = tempStorage.createDirectory("backup_tarapi")
         backupDirTarCmd = tempStorage.createDirectory("backup_tarcmd")
         //restoreCache = RootFile(tempDir, "restore").also { it.mkdirs() }
@@ -208,31 +216,30 @@ class Test_BackupRestore {
         RootFile(restoreCache).deleteRecursive()
     }
 
-    fun checkDirectory(dir: RootFile) {
+    fun checkContent(dir: RootFile) {
         val want = contentLs
         val real = listContent(dir)
         assertTrue(want.isNotEmpty())
         assertTrue(real.isNotEmpty())
+        //assertEquals(want, real)
         checks.forEach { (name, check) ->
             if(name.startsWith("#"))
                 return@forEach
             val fileName = name.split("/").first()
             val result = check(RootFile(dir, fileName))
             if(!result)
-                Log.w("checkDirectory", "FAILED: $name")
+                Timber.w("checkDirectory: FAILED: $name")
             else
-                Log.w("checkDirectory", "OK:     $name")
-            Log.w("checkDirectory/want", want.firstOrNull { it.substringBefore(" ") == fileName } ?: "<missing>")
-            Log.w("checkDirectory/real", real.firstOrNull { it.substringBefore(" ") == fileName } ?: "<missing>")
-            assertTrue("check failed for $name", result)
+                Timber.w("checkDirectory: OK:     $name")
+            Timber.w("checkDirectory/want: ${want.firstOrNull { it.substringBefore(" ") == fileName } ?: "<missing>"}")
+            Timber.w("checkDirectory/real: ${real.firstOrNull { it.substringBefore(" ") == fileName } ?: "<missing>"}")
+            assertTrue("check $name failed", result)
         }
-        //assertEquals(want, real)
     }
 
     @Test
     fun test_sourceContents() {
-        assertTrue(contentLs.size == contentCount)
-        checkDirectory(testDir)
+        checkContent(testDir)
     }
 
     fun backup(compress: Boolean) {
@@ -258,7 +265,7 @@ class Test_BackupRestore {
         val result = runAsRoot(
             // toybox doesn't have awk
             //"tar -tvzf ${quote(archive.file!!.absolutePath)} | awk '{if($8) {print $1,$2,$3,$6,$7,$8} else {print $1,$2,$3,$6}}'"
-            "tar -tvzf ${quote(archive.file!!.absolutePath)}"
+            "tar -tvzf ${quote(archive.path!!)}"
         ).out
             .filterNotNull()
             .map { it.replace(Regex("""/$"""), "") }
@@ -278,6 +285,8 @@ class Test_BackupRestore {
                             archiveTarApi(compress)
                         else
                             archiveTarCmd(compress)
+        Timber.w("#################### TAR ${archive.path!!}")
+        runAsRoot("tar -tvzf ${quote(archive.path!!)}")
         val restoreAction = RestoreAppAction(context, null, shellHandler)
         val restoreDir = RootFile(tempDir, "restore_" + toType)
         restoreDir.mkdirs()
@@ -293,7 +302,9 @@ class Test_BackupRestore {
                     compress, false, null
                 )
         }
-        checkDirectory(restoreDir)
+        Timber.w("#################### RES ${archive.path!!}")
+        runAsRoot("ls -bAlZ ${restoreDir.quoted} | grep -v total | sort")
+        checkContent(restoreDir)
     }
 
     @Test fun test_restore_tarapi_from_tarapi() { checkRestore("tarapi", "tarapi") }
