@@ -1,4 +1,4 @@
-package research
+package tests
 
 import android.net.Uri
 import androidx.core.content.FileProvider
@@ -12,7 +12,7 @@ import com.machiav3lli.backup.utils.TraceUtils
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 
-class Try_StorageFile {
+class Test_StorageFile {
 
     val context = InstrumentationRegistry.getInstrumentation().targetContext
 
@@ -112,11 +112,12 @@ class Try_StorageFile {
 
         val dir2 = baseDir.createDirectory(testDirName)     // create existing dir
 
+        assertEquals(dir.uri, dir2.uri)
         assertEquals(true, dir2.exists())
         assertEquals(true, dir2.isDirectory)
         assertEquals(testText, file.readText())
-        assertEquals(1, dir.listFiles().count())
-        assertEquals(testFileName, dir.listFiles().first().name)
+        assertEquals(1, dir2.listFiles().count())
+        assertEquals(testFileName, dir2.listFiles().first().name)
 
         dir.deleteRecursive()
 
