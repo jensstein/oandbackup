@@ -619,7 +619,7 @@ open class StorageFile {
 
     fun writeText(text: String): Boolean {
         val ok = try {
-            createFile()?.outputStream()?.writer()?.use {
+            outputStream()?.writer()?.use {
                 it.write(text)
                 parent?.path?.let { cacheFilesAdd(it, this) }
                 true
@@ -630,6 +630,13 @@ open class StorageFile {
         }
         documentInfo = null
         return ok
+    }
+
+    fun overwriteText(text: String): Boolean {
+        if (exists())   //TODO CAUTION: deletes COMPLETE parent directory, if file does not exist
+            delete()    //TODO no clue why! it was reproducible, only change this if 100% proved
+        return parent?.createFile(name!!)
+            ?.writeText(text) ?: false
     }
 
     fun findUri(displayName: String): Uri? {

@@ -267,7 +267,7 @@ class Package {
         }
         runChecked {
             backup.file?.apply {
-                writeText(changedBackup.toSerialized())
+                overwriteText(changedBackup.toSerialized())
             }
         }
         runChecked {

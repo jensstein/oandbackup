@@ -267,7 +267,7 @@ val pref_savePreferences = LaunchPref(
             runCatching {
                 val backupRoot = OABX.context.getBackupRoot()
                 StorageFile(backupRoot, prefsbackupFilename).let {
-                    it.writeText(serialized)
+                    it.overwriteText(serialized)
                     OABX.addInfoLogText("saved ${it.name}")
                 }
             }
