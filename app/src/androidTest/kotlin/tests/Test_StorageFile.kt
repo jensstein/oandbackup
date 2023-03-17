@@ -41,6 +41,7 @@ class Test_StorageFile {
     }
     val testDirName get() = "!-" + TraceUtils.classAndMethodName().replace(':', '_')
     val testSubDirName get() = "subdir"
+    val testSubSubDirName get() = "subsubdir"
     val testFileName = "test.txt"
     val testText1 = "test text 1"
     val testText2 = "test text 2"
@@ -286,11 +287,62 @@ class Test_StorageFile {
         assertEquals(true, dir.isDirectory)
         assertEquals(0, dir.listFiles().count())
 
-        dir.deleteRecursive()
+        dir1.deleteRecursive()
 
         assertEquals(false, file.exists())
-        assertEquals(false, dir.exists())
-        assertEquals(false, dir.isDirectory)
+        assertEquals(false, dir1.exists())
+        assertEquals(false, dir1.isDirectory)
+    }
+
+    @Test
+    fun test_DoubleWriteFileWithSlashInSubSubSubDir() {
+
+        val dir1 = baseDir.createDirectory(testDirName)
+        val dir2 = dir1.createDirectory(testSubDirName)
+        val dir = dir2.createDirectory(testSubSubDirName)
+
+        assertEquals(testDirName, dir1.name)
+        assertEquals(testSubDirName, dir2.name)
+        assertEquals(testSubSubDirName, dir.name)
+
+        val file = StorageFile(dir, testFileName)
+
+        file.delete()       // currently deletes the parent directory
+
+        assertEquals(true, dir.exists())
+        assertEquals(true, dir.isDirectory)
+        assertEquals(testFileName, file.name)
+        assertEquals(null, dir.findFile(testFileName)?.name)
+        assertEquals(false, file.exists())
+
+        file.writeText(testText)
+
+        assertEquals(testFileName, dir.findFile(testFileName)?.name)
+        assertEquals(true, file.exists())
+
+        file.writeText(testText)
+
+        assertEquals(true, dir.findFile(testFileName) != null)
+        assertEquals(true, file.exists())
+        assertEquals(testText.length.toLong(), file.size)
+        assertEquals(true, dir.exists())
+        assertEquals(true, dir.isDirectory)
+        assertEquals(testText, file.readText())
+        assertEquals(1, dir.listFiles().count())
+        assertEquals(testFileName, dir.listFiles().first().name)
+
+        file.delete()
+
+        assertEquals(false, file.exists())
+        assertEquals(true, dir.exists())
+        assertEquals(true, dir.isDirectory)
+        assertEquals(0, dir.listFiles().count())
+
+        dir1.deleteRecursive()
+
+        assertEquals(false, file.exists())
+        assertEquals(false, dir1.exists())
+        assertEquals(false, dir1.isDirectory)
     }
 
     @Test
