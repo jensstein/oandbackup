@@ -104,11 +104,13 @@ object FileUtils {
      * `getBackupDir` will set it again.
      */
     fun invalidateBackupLocation() {
-        backupLocation = null
         Package.invalidateBackupCacheForPackage()
         SpecialInfo.clearCache()
+        backupLocation = null // after clearing caches, because they probably need the location
         CoroutineScope(Dispatchers.Default).launch {
             try {
+                // updateAppTables does ensureBackups, but make intention clear here
+                OABX.context.findBackups()
                 OABX.context.updateAppTables()
             } catch (e: Throwable) {
                 LogsHandler.logException(e, backTrace = true)
