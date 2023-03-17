@@ -922,7 +922,7 @@ open class StorageFile {
 
         private fun cacheFilesAdd(path: String, file: StorageFile) {
             synchronized(fileListCache) {
-                fileListCache[path]?.run {
+                fileListCache[path]?.apply {
                     //removeAll { it.name == file.name }
                     find { it.name == file.name }?.let { remove(it) }
                     add(file)
@@ -935,7 +935,7 @@ open class StorageFile {
         private fun cacheFilesRemove(path: String, file: StorageFile?) {
             synchronized(fileListCache) {
                 file?.let {
-                    fileListCache[path]?.run {
+                    fileListCache[path]?.apply {
                         removeAll { it.name == file.name }
                     }
                 } ?: fileListCache.remove(path)
