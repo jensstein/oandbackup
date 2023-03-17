@@ -552,8 +552,10 @@ open class StorageFile {
                     // don't delete if any file inside
                     if (isDirectory && listFiles(maxFiles = 1, useCache = false).isNotEmpty())
                         false
-                    else
+                    else {
+                        traceDebug { "########## deleteDocument ######################### $_uri" }
                         DocumentsContract.deleteDocument(context.contentResolver, _uri!!)
+                    }
                 }
         } catch (e: FileNotFoundException) {
             false
