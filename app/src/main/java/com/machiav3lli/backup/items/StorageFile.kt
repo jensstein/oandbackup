@@ -475,7 +475,7 @@ open class StorageFile {
                     // otherwise a new one
                         ?: StorageFile(
                             this,
-                            createFile(context, uri!!, mimeType, displayName),
+                            createDocument(context, uri!!, mimeType, displayName),
                             //context,
                             displayName
                         )
@@ -485,7 +485,7 @@ open class StorageFile {
                     // always use the new one
                     StorageFile(
                         this,
-                        createFile(context, uri!!, mimeType, displayName),
+                        createDocument(context, uri!!, mimeType, displayName),
                         //context,
                         displayName
                     )
@@ -565,9 +565,10 @@ open class StorageFile {
             logException(e, path, backTrace = false)
             false
         }
-        if (ok)
-        // removes this, so need to change parent
+        if (ok) {
+            // removes this, so need to change parent
             parent?.path?.let { cacheFilesRemove(it, this) }
+        }
         documentInfo = null
         return ok
     }
@@ -825,7 +826,7 @@ open class StorageFile {
             }
         }
 
-        fun createFile(context: Context, uri: Uri, mimeType: String, displayName: String): Uri? {
+        fun createDocument(context: Context, uri: Uri, mimeType: String, displayName: String): Uri? {
             return try {
                 DocumentsContract.createDocument(
                     context.contentResolver,
