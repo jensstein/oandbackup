@@ -39,6 +39,7 @@ import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.RootFile
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.items.UndeterminedStorageFile
 import com.machiav3lli.backup.preferences.pref_backupPauseApps
 import com.machiav3lli.backup.preferences.pref_backupTarCmd
 import com.machiav3lli.backup.preferences.pref_excludeCache
@@ -238,19 +239,10 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
 
     @Throws(IOException::class)
     protected fun saveBackupProperties(
-        propertiesFile: StorageFile,
+        propertiesFile: UndeterminedStorageFile,
         backup: Backup
     ) : Boolean {
-        //propertiesFile.parent?.let { dir ->       //TODO WECH
-        //    propertiesFile.name?.let { name ->
-        //        dir.createFile(name)
-        //        propertiesFile.writeText(backup.toSerialized())
-        //        Timber.i("Wrote $propertiesFile file for backup: $backup")
-        //        return true
-        //    }
-        //}
-        propertiesFile.createFile()?.let { it ->
-            it.writeText(backup.toSerialized())
+        propertiesFile.writeText(backup.toSerialized())?.let {
             Timber.i("Wrote $it for backup: $backup")
             return true
         }

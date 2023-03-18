@@ -11,6 +11,7 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.items.RootFile
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.items.UndeterminedStorageFile
 import com.machiav3lli.backup.preferences.pref_encryption
 import com.topjohnwu.superuser.ShellUtils.fastCmd
 import kotlinx.coroutines.runBlocking
@@ -38,11 +39,11 @@ class Test_BackupRestore {
         lateinit var tempDir: RootFile
         lateinit var testDir: RootFile
 
-        lateinit var shellHandler : ShellHandler
-        lateinit var tempStorage : StorageFile
-        lateinit var backupDirTarApi : StorageFile
-        lateinit var backupDirTarCmd : StorageFile
-        lateinit var restoreCache : File
+        lateinit var shellHandler: ShellHandler
+        lateinit var tempStorage: StorageFile
+        lateinit var backupDirTarApi: StorageFile
+        lateinit var backupDirTarCmd: StorageFile
+        lateinit var restoreCache: File
 
         var backupCreated = false
         var contentLs = listOf<String>()
@@ -52,7 +53,8 @@ class Test_BackupRestore {
             ShellHandler.FileInfo.utilBoxInfo().forEach { Timber.w(it) }
         }
 
-        @BeforeClass @JvmStatic
+        @BeforeClass
+        @JvmStatic
         fun setupClass() {
             shellHandler = OABX.Companion.shellHandlerInstance!!
             //tempDir = RootFile(context.cacheDir, "test_backup_restore")
@@ -63,7 +65,8 @@ class Test_BackupRestore {
             testDir = prepareDirectory()
         }
 
-        @AfterClass @JvmStatic
+        @AfterClass
+        @JvmStatic
         fun cleanupClass() {
             tempDir.deleteRecursive()
         }
@@ -71,7 +74,7 @@ class Test_BackupRestore {
         fun listContent(dir: RootFile): List<String> {
             //return runAsRoot("ls -bAlZ ${dir.quoted} | grep -v total | sort").out.joinToString("\n")
             return runAsRoot(
-                        """cd ${dir.quoted} ; stat -c '%-20n %y %A %f %-15U %-15G %8s %F' .* * | grep -v '\.\$'"""
+                """cd ${dir.quoted} ; stat -c '%-20n %y %A %f %-15U %-15G %8s %F' .* * | grep -v '\.\$'"""
             ).out
                 .filterNotNull()
                 .map { it.replace(Regex(""":\d\d\.\d{9}\b"""), "") } // :seconds.millis
@@ -81,10 +84,12 @@ class Test_BackupRestore {
 
         var checks = mutableMapOf<String, (file: RootFile) -> Boolean>()
         fun compareTime(want: String, real: Long) =
-            want.startsWith(SimpleDateFormat(
-                timeCompareFormat,
-                Locale.getDefault()
-                ).format(real))
+            want.startsWith(
+                SimpleDateFormat(
+                    timeCompareFormat,
+                    Locale.getDefault()
+                ).format(real)
+            )
 
         private fun prepareDirectory(): RootFile {
 
@@ -198,9 +203,6 @@ class Test_BackupRestore {
     //val activityRule = activityScenarioRule<MainActivityX>( /* intent */ )
     //var activityRule = ActivityScenarioRule(MainActivityX::class.java)
 
-    fun archiveTarApi(compress: Boolean) = StorageFile(backupDirTarApi, "data.tar${if (compress) ".gz" else ""}")
-    fun archiveTarCmd(compress: Boolean) = StorageFile(backupDirTarCmd, "data.tar${if (compress) ".gz" else ""}")
-
     @Before
     fun setup() {
         tempStorage = StorageFile(tempDir)
@@ -216,6 +218,12 @@ class Test_BackupRestore {
         RootFile(restoreCache).deleteRecursive()
     }
 
+    fun archiveTarApi(compress: Boolean) =
+        UndeterminedStorageFile(backupDirTarApi, "data.tar${if (compress) ".gz" else ""}")
+
+    fun archiveTarCmd(compress: Boolean) =
+        UndeterminedStorageFile(backupDirTarCmd, "data.tar${if (compress) ".gz" else ""}")
+
     fun checkContent(dir: RootFile) {
         val want = contentLs
         val real = listContent(dir)
@@ -223,11 +231,11 @@ class Test_BackupRestore {
         assertTrue(real.isNotEmpty())
         //assertEquals(want, real)
         checks.forEach { (name, check) ->
-            if(name.startsWith("#"))
+            if (name.startsWith("#"))
                 return@forEach
             val fileName = name.split("/").first()
             val result = check(RootFile(dir, fileName))
-            if(!result)
+            if (!result)
                 Timber.w("checkDirectory: FAILED: $name")
             else
                 Timber.w("checkDirectory: OK:     $name")
@@ -243,7 +251,7 @@ class Test_BackupRestore {
     }
 
     fun backup(compress: Boolean) {
-        if(!backupCreated) {
+        if (!backupCreated) {
             pref_encryption.value = false
             val iv = null     //initIv(CIPHER_ALGORITHM)
             val backupAction = BackupAppAction(context, null, shellHandler)
@@ -281,11 +289,14 @@ class Test_BackupRestore {
 
         backup(compress)
 
-        val archive = if(fromType == "tarapi")
-                            archiveTarApi(compress)
-                        else
-                            archiveTarCmd(compress)
-        Timber.w("#################### TAR ${archive.path!!}")
+        val archive = (
+                if (fromType == "tarapi")
+                    archiveTarApi(compress)
+                else
+                    archiveTarCmd(compress)
+                ).findFile()!!
+
+        Timber.w("#################### TAR ${archive.path}")
         runAsRoot("tar -tvzf ${quote(archive.path!!)}")
         val restoreAction = RestoreAppAction(context, null, shellHandler)
         val restoreDir = RootFile(tempDir, "restore_" + toType)
@@ -302,13 +313,28 @@ class Test_BackupRestore {
                     compress, false, null
                 )
         }
-        Timber.w("#################### RES ${archive.path!!}")
+        Timber.w("#################### RES ${archive.path}")
         runAsRoot("ls -bAlZ ${restoreDir.quoted} | grep -v total | sort")
         checkContent(restoreDir)
     }
 
-    @Test fun test_restore_tarapi_from_tarapi() { checkRestore("tarapi", "tarapi") }
-    @Test fun test_restore_tarcmd_from_tarapi() { checkRestore("tarcmd", "tarapi") }
-    @Test fun test_restore_tarapi_from_tarcmd() { checkRestore("tarapi", "tarcmd") }
-    @Test fun test_restore_tarcmd_from_tarcmd() { checkRestore("tarcmd", "tarcmd") }
+    @Test
+    fun test_restore_tarapi_from_tarapi() {
+        checkRestore("tarapi", "tarapi")
+    }
+
+    @Test
+    fun test_restore_tarcmd_from_tarapi() {
+        checkRestore("tarcmd", "tarapi")
+    }
+
+    @Test
+    fun test_restore_tarapi_from_tarcmd() {
+        checkRestore("tarapi", "tarcmd")
+    }
+
+    @Test
+    fun test_restore_tarcmd_from_tarcmd() {
+        checkRestore("tarcmd", "tarcmd")
+    }
 }

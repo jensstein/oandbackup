@@ -46,6 +46,8 @@ val LOGS_FOLDER_NAME_ALT = LOGS_FOLDER_NAME_BASE
 
 const val ERROR_PREFIX = "${ADMIN_PREFIX}ERROR."
 
+val PREFS_BACKUP_FILE = "${ADMIN_PREFIX}app.preferences"
+
 const val PROP_NAME = "properties"
 const val LOG_INSTANCE = "%s.log.txt"
 const val BACKUP_INSTANCE_REGEX_PATTERN = """\d\d\d\d-\d\d-\d\d-\d\d-\d\d-\d\d(-\d\d\d)?-user_\d+"""

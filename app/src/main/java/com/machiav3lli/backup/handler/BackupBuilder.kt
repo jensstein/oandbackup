@@ -28,6 +28,7 @@ import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.PackageInfo
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.items.UndeterminedStorageFile
 import com.machiav3lli.backup.preferences.pref_flatStructure
 import com.machiav3lli.backup.preferences.pref_propertiesInDir
 import java.time.LocalDateTime
@@ -67,23 +68,23 @@ class BackupBuilder(
                 )
     }
 
-    private fun getPropsFile(backupRoot: StorageFile): StorageFile {
+    private fun getPropsFile(backupRoot: StorageFile): UndeterminedStorageFile {
 
         val dateTimeStr = BACKUP_DATE_TIME_FORMATTER.format(backupDate)
 
         when {
             pref_propertiesInDir.value ->
-                return StorageFile(
+                return UndeterminedStorageFile(
                     backupPath,
                     BACKUP_INSTANCE_PROPERTIES_INDIR
                 )
             pref_flatStructure.value   ->
-                return StorageFile(
+                return UndeterminedStorageFile(
                     backupRoot,
                     backupInstancePropsFlat(packageInfo, dateTimeStr)
                 )
             else                       ->
-                return StorageFile(
+                return UndeterminedStorageFile(
                     backupRoot,
                     backupInstanceProps(packageInfo, dateTimeStr)
                 )

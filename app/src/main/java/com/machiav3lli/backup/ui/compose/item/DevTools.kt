@@ -40,17 +40,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowRow
-import com.machiav3lli.backup.ADMIN_PREFIX
 import com.machiav3lli.backup.ERROR_PREFIX
 import com.machiav3lli.backup.ICON_SIZE_SMALL
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.beginBusy
 import com.machiav3lli.backup.OABX.Companion.endBusy
 import com.machiav3lli.backup.OABX.Companion.isDebug
+import com.machiav3lli.backup.PREFS_BACKUP_FILE
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
 import com.machiav3lli.backup.handler.findBackups
 import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.items.UndeterminedStorageFile
 import com.machiav3lli.backup.pref_autoLogAfterSchedule
 import com.machiav3lli.backup.pref_autoLogExceptions
 import com.machiav3lli.backup.pref_autoLogSuspicious
@@ -255,20 +256,19 @@ val pref_deleteERROR = LaunchPref(
     }
 }
 
-val prefsbackupFilename = "${ADMIN_PREFIX}app.preferences"
-
 val pref_savePreferences = LaunchPref(
     key = "dev-tool.savePreferences",
-    summary = "save preferences to $prefsbackupFilename"
+    summary = "save preferences to $PREFS_BACKUP_FILE"
 ) {
     MainScope().launch(Dispatchers.IO) {
         val serialized = preferencesToSerialized()
         if (serialized.isNotEmpty()) {
             runCatching {
                 val backupRoot = OABX.context.getBackupRoot()
-                StorageFile(backupRoot, prefsbackupFilename).let {
-                    it.overwriteText(serialized)
-                    OABX.addInfoLogText("saved ${it.name}")
+                UndeterminedStorageFile(backupRoot, PREFS_BACKUP_FILE).let {
+                    it.writeText(serialized)?.let {
+                        OABX.addInfoLogText("saved ${it.name}")
+                    }
                 }
             }
         }
@@ -277,12 +277,12 @@ val pref_savePreferences = LaunchPref(
 
 val pref_loadPreferences = LaunchPref(
     key = "dev-tool.loadPreferences",
-    summary = "load preferences from $prefsbackupFilename"
+    summary = "load preferences from $PREFS_BACKUP_FILE"
 ) {
     MainScope().launch(Dispatchers.IO) {
         runCatching {
             val backupRoot = OABX.context.getBackupRoot()
-            backupRoot.findFile(prefsbackupFilename)?.let {
+            backupRoot.findFile(PREFS_BACKUP_FILE)?.let {
                 val serialized = it.readText()
                 preferencesFromSerialized(serialized)
                 OABX.addInfoLogText("loaded ${it.name}")

@@ -94,6 +94,7 @@ import com.machiav3lli.backup.handler.maxThreads
 import com.machiav3lli.backup.handler.usedThreadsByName
 import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.items.UndeterminedStorageFile
 import com.machiav3lli.backup.items.uriFromFile
 import com.machiav3lli.backup.ui.compose.SelectionContainerX
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
@@ -305,12 +306,16 @@ fun textLogShare(lines: List<String>, temporary: Boolean = false) {
             if (temporary) {
                 val now = LocalDateTime.now()
                 uriFromFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).let { uri ->
-                    StorageFile(
+                    UndeterminedStorageFile(
                         StorageFile.fromUri(uri),
                         "${BACKUP_DATE_TIME_FORMATTER.format(now)}.log.txt"
                     ).let { file ->
-                        file.writeText(text)
-                        SystemUtils.share(file, asFile = true)
+                        file.writeText(text)?.let {
+                            SystemUtils.share(
+                                it,
+                                asFile = true
+                            )
+                        }
                     }
                 }
             } else {

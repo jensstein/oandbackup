@@ -270,7 +270,7 @@ open class StorageFile {
 
     fun initializeFromUri(
         parent: StorageFile?,
-        uri: Uri?,
+        uri: Uri? = null,
         name: String? = null,
         allowShadowing: Boolean = pref_allowShadowingDefault.value, // Storage files that should be shadowable should be explicitly declared as such
     ) {
@@ -368,14 +368,24 @@ open class StorageFile {
         this.file = file
     }
 
-    constructor(parent: StorageFile, subPath: String) {
-        this.parent = parent
-        parent.file?.let {
-            file = RootFile(parent.file, subPath)
-        } ?: run {
-            initializeFromUri(parent, Uri.withAppendedPath(parent.uri, subPath))
-        }
+    constructor(parentFile: RootFile, subPath: String) {
+        this.parent = StorageFile(parentFile)
+        this.file = RootFile(parentFile, subPath)
     }
+
+    constructor(parentFile: File, subPath: String) {
+        this.parent = StorageFile(parentFile)
+        this.file = RootFile(parentFile, subPath)
+    }
+
+    //constructor(parent: StorageFile, subPath: String) {
+    //    this.parent = parent
+    //    parent.file?.let {
+    //        file = RootFile(parent.file, subPath)
+    //    } ?: run {
+    //        initializeFromUri(parent, Uri.withAppendedPath(parent.uri, subPath))
+    //    }
+    //}
 
     var name: String? = null
         get() {
@@ -622,9 +632,9 @@ open class StorageFile {
 
     fun writeText(text: String): Boolean {
         val ok = try {
-            outputStream()?.writer()?.use {
+            // cache handled in createFile
+            createFile()?.outputStream()?.writer()?.use {
                 it.write(text)
-                parent?.path?.let { cacheFilesAdd(it, this) }
                 true
             } ?: false
         } catch (e: Throwable) {
@@ -633,13 +643,6 @@ open class StorageFile {
         }
         documentInfo = null
         return ok
-    }
-
-    fun overwriteText(text: String): Boolean {
-        if (exists())   //TODO CAUTION: deletes COMPLETE parent directory, if file does not exist
-            delete()    //TODO no clue why! it was reproducible, only change this if 100% proved
-        return parent?.createFile(name!!)
-            ?.writeText(text) ?: false
     }
 
     fun findUri(displayName: String): Uri? {
@@ -663,12 +666,13 @@ open class StorageFile {
     fun findFile(displayName: String): StorageFile? {
         try {
             file?.let {
-                val found = StorageFile(this, displayName)
+                val found = StorageFile(this.file!!, displayName)
                 return if (found.exists()) found else null
-            }
-            for (f in listFiles()) {
-                if (displayName == f.name) {
-                    return f
+            } ?: run {
+                for (f in listFiles()) {
+                    if (displayName == f.name) {
+                        return f
+                    }
                 }
             }
         } catch (_: FileNotFoundException) {
@@ -955,4 +959,44 @@ open class StorageFile {
             }
         }
     }
+}
+
+class UndeterminedStorageFile(val parent: StorageFile, val subPath: String) {
+
+    val path: String get() = parent.path + "/" + subPath
+
+    fun findFile(): StorageFile? {
+        var dir: StorageFile? = parent
+        val components = subPath.split('/').toMutableList()
+        while(dir != null && components.size > 1) {
+            val component = components.removeFirst()
+            dir = dir.findFile(component)
+        }
+        return dir?.findFile(components.first())
+    }
+
+    fun exists() = findFile() != null
+
+    val size: Long get() = findFile()?.size ?: 0
+
+    fun createFile(): StorageFile {
+        var dir = parent
+        val components = subPath.split('/').toMutableList()
+        while(components.size > 1) {
+            val component = components.removeFirst()
+            dir = dir.createDirectory(component)
+        }
+        return dir.createFile(components.first())
+    }
+
+    fun writeText(text: String): StorageFile? {
+        val file = createFile()
+        if (file.writeText(text))
+            return file
+        return null
+    }
+
+    fun readText() = findFile()?.readText() ?: ""
+
+    fun delete() = findFile()?.delete()
 }

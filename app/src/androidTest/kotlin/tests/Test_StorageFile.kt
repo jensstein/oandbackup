@@ -4,12 +4,15 @@ import android.net.Uri
 import androidx.core.content.FileProvider
 import androidx.documentfile.provider.DocumentFile
 import androidx.test.platform.app.InstrumentationRegistry
+import com.machiav3lli.backup.ADMIN_PREFIX
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.items.StorageFile
+import com.machiav3lli.backup.items.UndeterminedStorageFile
 import com.machiav3lli.backup.items.uriFromFile
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.TraceUtils
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNotNull
 import org.junit.Test
 
 class Test_StorageFile {
@@ -39,7 +42,7 @@ class Test_StorageFile {
         1    -> StorageFile.fromUri(baseDirUri)     // SAF
         else -> StorageFile(baseDirAsFile)          // RootFile
     }
-    val testDirName get() = "!-" + TraceUtils.classAndMethodName().replace(':', '_')
+    val testDirName get() = ADMIN_PREFIX + TraceUtils.methodName().replace(':', '_')
     val testSubDirName get() = "subdir"
     val testSubSubDirName get() = "subsubdir"
     val testFileName = "test.txt"
@@ -48,7 +51,78 @@ class Test_StorageFile {
     val testText = "test text"
 
     init {
+        baseDir.listFiles().filter { it.name!!.startsWith(ADMIN_PREFIX + "test") }.forEach { it.deleteRecursive() }
+
         println("###################################### ${baseDir.path}")
+    }
+
+    @Test
+    fun test_withAppendedPath() {
+
+        val dir = baseDir.createDirectory(testDirName)
+
+        assertEquals(testDirName, dir.name)
+
+        //val file = StorageFile(dir, "$testSubDirName/$testSubSubDirName/$testFileName")
+        val file = StorageFile.fromUri(Uri.withAppendedPath(dir.uri, "$testSubDirName/$testSubSubDirName/$testFileName"))
+
+        println("uri = ${file.uri}")
+
+        assertEquals(false, file.exists())
+
+        file.createFile()   // does not create the file, error: "unsupported uri"
+
+        println("uri = ${file.uri}")
+
+        assertEquals(false, file.exists())  // expected fail
+        //assertEquals(true, file.exists())
+        //assertEquals(testFileName, dir.listFiles().first().listFiles().first().listFiles().first().name)
+    }
+
+    @Test
+    fun test_UndeterminedStorageFile() {
+
+        val dir = baseDir.createDirectory(testDirName)
+
+        assertEquals(testDirName, dir.name)
+
+        //val file = StorageFile(dir, "$testSubDirName/$testSubSubDirName/$testFileName")
+        val ufo = UndeterminedStorageFile(dir, "$testSubDirName/$testSubSubDirName/$testFileName")
+
+        println("path = ${ufo.path}")
+
+        assertEquals(false, ufo.exists())
+
+        ufo.delete()
+
+        assertEquals(listOf<StorageFile>(), dir.listFiles())
+
+        val file = ufo.writeText(testText)
+
+        println("uri = ${file?.uri}")
+
+        assertNotNull(file)
+        assertEquals(true, file!!.exists())
+        assertEquals(testFileName, dir.listFiles().first().listFiles().first().listFiles().first().name)
+
+        val file2 = ufo.findFile()
+
+        println("uri = ${file2?.uri}")
+
+        assertNotNull(file2)
+        assertEquals(true, file2!!.exists())
+        assertEquals(testText.length.toLong(), file2.size)
+        assertEquals(testText, file2.readText())
+
+        val file3 = ufo.writeText(testText)
+
+        println("uri = ${file3?.uri}")
+
+        assertNotNull(file3)
+        assertEquals(true, file3!!.exists())
+        assertEquals(testFileName, dir.listFiles().first().listFiles().first().listFiles().first().name)
+        assertEquals(testText.length.toLong(), file3.size)
+        assertEquals(testText, file3.readText())
     }
 
     @Test
@@ -305,13 +379,12 @@ class Test_StorageFile {
         assertEquals(testSubDirName, dir2.name)
         assertEquals(testSubSubDirName, dir.name)
 
-        val file = StorageFile(dir, testFileName)
+        val file = UndeterminedStorageFile(dir, testFileName)
 
         file.delete()       // currently deletes the parent directory
 
         assertEquals(true, dir.exists())
         assertEquals(true, dir.isDirectory)
-        assertEquals(testFileName, file.name)
         assertEquals(null, dir.findFile(testFileName)?.name)
         assertEquals(false, file.exists())
 
