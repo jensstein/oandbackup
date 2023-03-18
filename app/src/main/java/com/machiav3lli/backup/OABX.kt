@@ -228,7 +228,7 @@ val traceBackupsScanAll = TraceUtils.TracePref(
 
 val traceSerialize = TraceUtils.TracePref(
     name = "Serialize",
-    summary = "trace json or yaml conversions",
+    summary = "trace json/yaml/... conversions",
     default = false
 )
 

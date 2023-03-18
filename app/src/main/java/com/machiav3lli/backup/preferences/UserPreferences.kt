@@ -117,7 +117,7 @@ fun UserPrefsPage() {
             } else BaseDialog(openDialogCustom = openDialog) {
                 when (dialogsPref) {
                     pref_languages,
-                    -> ListDialogUI(
+                    -> ListDialogUI(                            //TODO hg42 encapsulate in pref
                         pref = dialogsPref as ListPref,
                         openDialogCustom = openDialog,
                         onChanged = { context.restartApp() }
@@ -125,7 +125,7 @@ fun UserPrefsPage() {
                     pref_appTheme,
                     pref_appAccentColor,
                     pref_appSecondaryColor,
-                    -> EnumDialogUI(
+                    -> EnumDialogUI(                            //TODO hg42 encapsulate in pref
                         pref = dialogsPref as EnumPref,
                         openDialogCustom = openDialog,
                         onChanged = {

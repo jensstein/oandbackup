@@ -285,7 +285,7 @@ open class StorageFile {
             parent ?: run {
                 uri?.let { uri ->
                     if (this.name == null)
-                        this.name = uri.lastPathSegment
+                        this.name = uri.lastPathSegment //TODO hg42 ???  / vs %2F , is the last segment the name?
                     try {
                         val last = name!!
                         Timber.i("SAF: last=$last uri=$uri")
@@ -381,7 +381,7 @@ open class StorageFile {
         get() {
             if (field == null) {
                 field = file?.name ?: run {
-                    uri?.lastPathSegment?.substringAfterLast("/")
+                    uri?.lastPathSegment?.substringAfterLast("/")   //TODO hg42 ??? / vs %2F
                 }
             }
             return field

@@ -476,7 +476,7 @@ class RootFile internal constructor(file: File) : File(file.absolutePath) {
         }
 
         fun open(uri: URI): File {
-            return if (Shell.isAppGrantedRoot() == true) RootFile(uri) else File(uri)
+            return if (Shell.isAppGrantedRoot() == true) RootFile(uri) else File(uri)   //TODO hg42 ???
         }
     }
 }

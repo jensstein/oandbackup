@@ -89,7 +89,7 @@ fun AdvancedPrefsPage() {
         ) {
             item {
                 PrefsGroup(prefs = prefs) { pref ->
-                    if (pref == pref_enableSpecialBackups) {
+                    if (pref == pref_enableSpecialBackups) {        //TODO hg42 encapsulate in pref
                         val newModel = sortFilterModel
                         newModel.mainFilter = newModel.mainFilter and MAIN_FILTER_DEFAULT
                         sortFilterModel = newModel

@@ -72,17 +72,17 @@ fun ServicePrefsPage() {
         if (openDialog.value) {
             BaseDialog(openDialogCustom = openDialog) {
                 when (dialogsPref) {
-                    is PasswordPref -> StringDialogUI(
+                    is PasswordPref -> StringDialogUI(              //TODO hg42 encapsulate in pref
                         pref = dialogsPref as PasswordPref,
                         isPrivate = true,
                         confirm = true,
                         openDialogCustom = openDialog
                     )
-                    is StringPref -> StringDialogUI(
+                    is StringPref -> StringDialogUI(                //TODO hg42 encapsulate in pref
                         pref = dialogsPref as StringPref,
                         openDialogCustom = openDialog
                     )
-                    is EnumPref -> EnumDialogUI(
+                    is EnumPref -> EnumDialogUI(                    //TODO hg42 encapsulate in pref
                         pref = dialogsPref as EnumPref,
                         openDialogCustom = openDialog
                     )
