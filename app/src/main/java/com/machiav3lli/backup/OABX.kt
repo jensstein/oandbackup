@@ -520,14 +520,29 @@ class OABX : Application() {
             }
 
         // activity might be null
-        var activityRef: WeakReference<Activity> = WeakReference(null)
+        private var activityRefs = mutableListOf<WeakReference<Activity>>()
+        private var activityRef: WeakReference<Activity> = WeakReference(null)
         var activity: Activity?
             get() {
                 return activityRef.get()
             }
             set(activity) {
                 activityRef = WeakReference(activity)
+                synchronized(activityRefs) {
+                    // remove activities of the same class
+                    activityRef.get()?.localClassName.let { localClassName ->
+                        activityRefs.removeIf { it.get()?.localClassName == localClassName }
+                    }
+                    activityRefs.add(activityRef)
+                    activityRefs = activityRefs.filter { it.get() != null }.toMutableList()
+                }
                 scheduleAlarmsOnce()        // if any activity is started
+            }
+        val activities: List<Activity>
+            get() {
+                synchronized(activityRefs) {
+                    return activityRefs.mapNotNull { it.get() }
+                }
             }
 
         // main might be null
