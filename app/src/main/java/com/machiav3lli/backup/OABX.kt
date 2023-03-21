@@ -556,17 +556,17 @@ class OABX : Application() {
                 dbRef = WeakReference(dbInstance)
             }
 
-        fun initShellHandler(): Boolean {
+        fun initShellHandler(): ShellHandler? {
             return try {
                 shellHandlerInstance = ShellHandler()
-                true
+                shellHandlerInstance
             } catch (e: ShellHandler.ShellCommandFailedException) {
-                false
+                null
             }
         }
 
-        // "Do not place Android context classes in static fields; this is a memory leak"
-        // but only if a context is assigned, this is only used by Preview (and maybe by Tests)
+        // lint: "Do not place Android context classes in static fields; this is a memory leak"
+        // but: only if a context is assigned, this is only used by Preview (and maybe by Tests)
         @SuppressLint("StaticFieldLeak")
         var fakeContext: Context? = null
         val context: Context get() = fakeContext ?: app.applicationContext
