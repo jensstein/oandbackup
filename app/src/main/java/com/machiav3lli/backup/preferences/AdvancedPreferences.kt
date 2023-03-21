@@ -48,14 +48,14 @@ import com.machiav3lli.backup.utils.sortFilterModel
 
 @Composable
 fun DevPrefGroups() {
-    val devUserOptions = Pref.preferences["dev-adv"] ?: listOf()
-    val devFileOptions = Pref.preferences["dev-file"] ?: listOf()
-    val devLogOptions = Pref.preferences["dev-log"] ?: listOf()
-    val devTraceOptions = Pref.preferences["dev-trace"] ?: listOf()
-    val devHackOptions = Pref.preferences["dev-hack"] ?: listOf()
-    val devAltOptions = Pref.preferences["dev-alt"] ?: listOf()
-    val devNewOptions = Pref.preferences["dev-new"] ?: listOf()
-    val devFakeOptions = Pref.preferences["dev-fake"] ?: listOf()
+    val devUserOptions = Pref.prefGroups["dev-adv"] ?: listOf()
+    val devFileOptions = Pref.prefGroups["dev-file"] ?: listOf()
+    val devLogOptions = Pref.prefGroups["dev-log"] ?: listOf()
+    val devTraceOptions = Pref.prefGroups["dev-trace"] ?: listOf()
+    val devHackOptions = Pref.prefGroups["dev-hack"] ?: listOf()
+    val devAltOptions = Pref.prefGroups["dev-alt"] ?: listOf()
+    val devNewOptions = Pref.prefGroups["dev-new"] ?: listOf()
+    val devFakeOptions = Pref.prefGroups["dev-fake"] ?: listOf()
 
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -79,7 +79,7 @@ fun AdvancedPrefsPage() {
     val context = LocalContext.current
     val (expanded, expand) = remember { mutableStateOf(false) }
 
-    val prefs = Pref.preferences["adv"] ?: listOf()
+    val prefs = Pref.prefGroups["adv"] ?: listOf()
 
     AppTheme {
         LazyColumn(
@@ -534,7 +534,7 @@ val persist_skippedEncryptionCounter = IntPref(
 //----------------------------------------
 
 fun publicPreferences(persist: Boolean = false) =
-    Pref.preferences.map {
+    Pref.prefGroups.map {
         val (group, prefs) = it
         prefs.map {
             if (it.private ||

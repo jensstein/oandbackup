@@ -65,7 +65,7 @@ fun ToolsPrefsPage(navController: NavHostController) {
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
-    val prefs = Pref.preferences["tool"] ?: listOf()
+    val prefs = Pref.prefGroups["tool"] ?: listOf()
 
     AppTheme {
         Scaffold(

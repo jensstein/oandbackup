@@ -26,7 +26,7 @@ open class Pref(
 ) {
     companion object {
 
-        val preferences: MutableMap<String, MutableList<Pref>> = mutableMapOf()
+        val prefGroups: MutableMap<String, MutableList<Pref>> = mutableMapOf()
 
         val prefChangeListeners = mutableStateMapOf<Pref, (pref: Pref) -> Unit>()
         fun onPrefChange() {
@@ -204,7 +204,7 @@ open class Pref(
         }
         //Timber.d("add pref $group - $key")
 
-        preferences.getOrPut(group) { mutableListOf() }.add(this)
+        prefGroups.getOrPut(group) { mutableListOf() }.add(this)
     }
 
     override fun toString(): String = ""

@@ -93,9 +93,9 @@ fun ServicePrefsPage() {
 }
 
 fun LazyListScope.ServicePrefGroups(onPrefDialog: (Pref) -> Unit) {
-    val generalServicePrefs = Pref.preferences["srv"] ?: listOf()
-    val backupServicePrefs = Pref.preferences["srv-bkp"] ?: listOf()
-    val restoreServicePrefs = Pref.preferences["srv-rst"] ?: listOf()
+    val generalServicePrefs = Pref.prefGroups["srv"] ?: listOf()
+    val backupServicePrefs = Pref.prefGroups["srv-bkp"] ?: listOf()
+    val restoreServicePrefs = Pref.prefGroups["srv-rst"] ?: listOf()
 
     item {
         PrefsGroup(

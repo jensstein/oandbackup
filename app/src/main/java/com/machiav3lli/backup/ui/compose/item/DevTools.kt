@@ -210,7 +210,7 @@ fun DevSettingsTab() {
             else
                 PrefsGroup(
                     prefs =
-                    Pref.preferences.values.flatten()
+                    Pref.prefGroups.values.flatten()
                         .filter {
                             it.key.contains(search, ignoreCase = true)
                                     && it.group !in listOf("persist", "kill")
@@ -416,7 +416,7 @@ fun DevToolsTab() {
 
     val scroll = rememberScrollState(0)
 
-    val prefs = Pref.preferences["dev-tool"] ?: listOf()
+    val prefs = Pref.prefGroups["dev-tool"] ?: listOf()
 
     Column(
         modifier = Modifier
@@ -431,7 +431,7 @@ val pref_prepareSupport = LaunchPref(
     key = "dev-support.prepareSupport",
     summary = "prepare settings for usual support purposes"
 ) {
-    Pref.preferences["dev-trace"]?.forEach {
+    Pref.prefGroups["dev-trace"]?.forEach {
         Pref.setPrefFlag(it.key, it.defaultValue as Boolean)
     }
     pref_trace.value = true
@@ -457,7 +457,7 @@ val pref_afterSupport = LaunchPref(
     key = "dev-support.afterSupport",
     summary = "set settings to normal"
 ) {
-    Pref.preferences["dev-trace"]?.forEach {
+    Pref.prefGroups["dev-trace"]?.forEach {
         Pref.setPrefFlag(it.key, it.defaultValue as Boolean)
     }
     pref_trace.value = true
@@ -473,7 +473,7 @@ val pref_afterSupport = LaunchPref(
 fun DevSupportTab() {
     val scroll = rememberScrollState(0)
 
-    val prefs = Pref.preferences["dev-support"] ?: listOf()
+    val prefs = Pref.prefGroups["dev-support"] ?: listOf()
 
     Column(
         modifier = Modifier

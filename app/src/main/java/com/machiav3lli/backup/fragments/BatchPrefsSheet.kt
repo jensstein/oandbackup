@@ -63,7 +63,7 @@ class BatchPrefsSheet() : BaseSheet(false) {
 
     @Composable
     fun BatchPrefsPage(backupBoolean: Boolean) {
-        val prefs = Pref.preferences[if (backupBoolean) "srv-bkp" else "srv-rst"] ?: listOf()
+        val prefs = Pref.prefGroups[if (backupBoolean) "srv-bkp" else "srv-rst"] ?: listOf()
 
         AppTheme {
             LazyColumn(
