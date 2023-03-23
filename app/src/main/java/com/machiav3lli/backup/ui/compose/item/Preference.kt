@@ -64,7 +64,7 @@ fun BasePreference(
     SideEffect {
         pref.enableIf?.run {
             prefChangeListeners.put(pref) {
-                isEnabled = pref.enableIf.invoke() ?: true
+                isEnabled = pref.enableIf.invoke()
             }
         }
     }
@@ -168,7 +168,7 @@ fun LaunchPreference(
         },
         index = index,
         groupSize = groupSize,
-        onClick = onClick
+        onClick = onClick,
     )
 }
 
@@ -194,7 +194,7 @@ fun EnumPreference(
         },
         index = index,
         groupSize = groupSize,
-        onClick = onClick
+        onClick = onClick,
     )
 }
 
@@ -221,7 +221,7 @@ fun ListPreference(
         },
         index = index,
         groupSize = groupSize,
-        onClick = onClick
+        onClick = onClick,
     )
 }
 
@@ -270,7 +270,7 @@ fun SwitchPreference(
                 },
                 enabled = isEnabled,
             )
-        }
+        },
     )
 }
 
@@ -318,7 +318,7 @@ fun CheckboxPreference(
                 },
                 enabled = isEnabled,
             )
-        }
+        },
     )
 }
 
@@ -388,6 +388,6 @@ fun SeekBarPreference(
                     modifier = Modifier.widthIn(min = 48.dp)
                 )
             }
-        }
+        },
     )
 }
