@@ -184,10 +184,7 @@ class MainActivityX : BaseActivity() {
 
         Shell.getShell()
 
-        if (freshStart) {
-            runOnUiThread { showEncryptionDialog() }
-            //refreshPackages()
-        }
+
 
         setContent {
             AppTheme {
@@ -200,6 +197,17 @@ class MainActivityX : BaseActivity() {
                     NavItem.Scheduler,
                 )
                 val currentPage by remember(pagerState.currentPage) { mutableStateOf(pages[pagerState.currentPage]) }   //TODO hg42 remove remember ???
+                var barVisible by remember { mutableStateOf(true) }
+
+                navController.addOnDestinationChangedListener { _, destination, _ ->
+                    barVisible = destination.route == NavItem.Main.destination
+                    if (destination.route == NavItem.Main.destination && freshStart) {
+                        traceBold { "******************** freshStart && Main ********************" }
+                        freshStart = false
+                        refreshPackagesAndBackups()
+                        runOnUiThread { showEncryptionDialog() }
+                    }
+                }
 
                 var query by rememberSaveable { mutableStateOf(viewModel.searchQuery.value) }
                 //val query by viewModel.searchQuery.flow.collectAsState(viewModel.searchQuery.initial)  // doesn't work with rotate (not saveable)...
@@ -208,21 +216,6 @@ class MainActivityX : BaseActivity() {
                 Timber.d("compose: query = '$query'")
 
                 Timber.d("search: ${viewModel.searchQuery.value} filter: ${viewModel.modelSortFilter.value}")
-
-                if (freshStart) {
-                    freshStart = false
-                    LaunchedEffect(viewModel) {
-                        traceBold { "******************** freshStart LaunchedEffect(viewModel) ********************" }
-                        // this isn't necessary with MutableStateFlow under the hood
-                        // keeping the compile conditions, even if they are always false if using MutableComposableStateFlow
-                        //if (viewModel.searchQuery is MutableComposableSharedFlow<*>)
-                        //    viewModel.searchQuery.value = ""
-                        //if (viewModel.modelSortFilter is MutableComposableSharedFlow<*>)
-                        //    viewModel.modelSortFilter.value = OABX.context.sortFilterModel
-
-                        //refreshPackages()
-                    }
-                }
 
                 LaunchedEffect(key1 = pref_blackTheme.value) {
                     getDefaultSharedPreferences()
