@@ -95,12 +95,12 @@ fun Context.setLanguage(): Configuration {
         setLocalCode = Locale.getDefault().toString()
     }
     val config = resources.configuration
-    val sysLocale = config.locales[0]
-    if (setLocalCode != sysLocale.language || setLocalCode != "${sysLocale.language}-r${sysLocale.country}") {
+    //val sysLocale = config.locales[0]
+    //if (setLocalCode != sysLocale.language || setLocalCode != "${sysLocale.language}-r${sysLocale.country}") {
         val newLocale = getLocaleOfCode(setLocalCode)
-        Locale.setDefault(newLocale)
+        //Locale.setDefault(newLocale)
         config.setLocale(newLocale)
-    }
+    //}
     return config
 }
 
