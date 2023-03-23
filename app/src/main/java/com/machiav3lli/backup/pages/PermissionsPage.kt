@@ -52,12 +52,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.activities.IntroActivityX
+import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.preferences.persist_ignoreBatteryOptimization
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowRight
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.PermissionItem
+import com.machiav3lli.backup.ui.compose.navigation.NavItem
 import com.machiav3lli.backup.ui.item.Permission
 import com.machiav3lli.backup.utils.checkBatteryOptimization
 import com.machiav3lli.backup.utils.checkCallLogsPermission
@@ -78,7 +79,7 @@ import timber.log.Timber
 @Composable
 fun PermissionsPage() {
     val context = LocalContext.current
-    val introActivityX = context as IntroActivityX
+    val mainActivity = context as MainActivityX
     val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
     val permissionsList = remember {
         mutableStateListOf<Pair<Permission, () -> Unit>>()
@@ -104,25 +105,25 @@ fun PermissionsPage() {
                 permissionsList.clear()
                 permissionsList.addAll(buildList {
                     if (!context.hasStoragePermissions)
-                        add(Pair(Permission.StorageAccess) { introActivityX.getStoragePermission() })
+                        add(Pair(Permission.StorageAccess) { mainActivity.getStoragePermission() })
                     if (!context.isStorageDirSetAndOk)
                         add(Pair(Permission.StorageLocation) {
-                            introActivityX.requireStorageLocation(askForDirectory)
+                            mainActivity.requireStorageLocation(askForDirectory)
                         })
                     if (!context.checkBatteryOptimization(powerManager))
                         add(Pair(Permission.BatteryOptimization) {
-                            introActivityX.showBatteryOptimizationDialog(powerManager)
+                            mainActivity.showBatteryOptimizationDialog(powerManager)
                         })
                     if (!context.checkUsageStatsPermission)
-                        add(Pair(Permission.UsageStats) { introActivityX.usageStatsPermission })
+                        add(Pair(Permission.UsageStats) { mainActivity.usageStatsPermission })
                     if (!context.checkSMSMMSPermission)
-                        add(Pair(Permission.SMSMMS) { introActivityX.smsmmsPermission })
+                        add(Pair(Permission.SMSMMS) { mainActivity.smsmmsPermission })
                     if (!context.checkCallLogsPermission)
-                        add(Pair(Permission.CallLogs) { introActivityX.callLogsPermission })
+                        add(Pair(Permission.CallLogs) { mainActivity.callLogsPermission })
                     if (!context.checkContactsPermission)
-                        add(Pair(Permission.Contacts) { introActivityX.contactsPermission })
+                        add(Pair(Permission.Contacts) { mainActivity.contactsPermission })
                 })
-                if (permissionsList.isEmpty()) introActivityX.moveTo(3)
+                if (permissionsList.isEmpty()) mainActivity.moveTo(NavItem.Main.destination)
             }
         }
 
@@ -144,7 +145,7 @@ fun PermissionsPage() {
                         text = stringResource(id = R.string.dialog_start),
                         icon = Phosphor.ArrowRight,
                     ) {
-                        introActivityX.moveTo(3)
+                        mainActivity.moveTo(NavItem.Main.destination)
                     }
                 }
             }
