@@ -49,7 +49,6 @@ import com.machiav3lli.backup.OABX.Companion.isDebug
 import com.machiav3lli.backup.PREFS_BACKUP_FILE
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
 import com.machiav3lli.backup.handler.findBackups
-import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.UndeterminedStorageFile
 import com.machiav3lli.backup.pref_autoLogAfterSchedule
@@ -74,15 +73,14 @@ import com.machiav3lli.backup.ui.item.LaunchPref
 import com.machiav3lli.backup.ui.item.Pref
 import com.machiav3lli.backup.ui.item.Pref.Companion.preferencesFromSerialized
 import com.machiav3lli.backup.ui.item.Pref.Companion.preferencesToSerialized
-import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.TraceUtils.trace
 import com.machiav3lli.backup.utils.getBackupRoot
+import com.machiav3lli.backup.utils.recreateActivities
 import com.machiav3lli.backup.viewmodels.LogViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
 
 var devToolsTab = mutableStateOf("")
 
@@ -100,9 +98,13 @@ val devToolsTabs = listOf<Pair<String, @Composable () -> Any>>(
     "SUPPORT" to { DevSupportTab() },
 ) + if (isDebug) listOf<Pair<String, @Composable () -> Any>>(
     "" to {},
-    "invBackupLoc" to { FileUtils.invalidateBackupLocation() ; devToolsTab.value = "" },
-    "updateAppTables" to { OABX.context.updateAppTables() ; devToolsTab.value = "" },
-    "findBackups" to { OABX.context.findBackups() ; devToolsTab.value = "" },
+    "refreshScreen" to {
+        OABX.context.recreateActivities()
+        devToolsTab.value = ""
+    },
+    //"invBackupLoc" to { FileUtils.invalidateBackupLocation() ; devToolsTab.value = "" },
+    //"updateAppTables" to { OABX.context.updateAppTables() ; devToolsTab.value = "" },
+    //"findBackups" to { OABX.context.findBackups() ; devToolsTab.value = "" },
 ) else emptyList()
 
 
@@ -205,7 +207,7 @@ fun DevSettingsTab() {
                 .verticalScroll(scroll)
                 .weight(1f)
         ) {
-            if (search.isNullOrEmpty())
+            if (search.isEmpty())
                 DevPrefGroups()
             else
                 PrefsGroup(
@@ -286,6 +288,7 @@ val pref_loadPreferences = LaunchPref(
                 val serialized = it.readText()
                 preferencesFromSerialized(serialized)
                 OABX.addInfoLogText("loaded ${it.name}")
+                OABX.context.recreateActivities()
             }
         }
     }
@@ -293,7 +296,7 @@ val pref_loadPreferences = LaunchPref(
 
 fun testOnStart() {
     if (isDebug) {
-        if (1==0)
+        if (1 == 0)
             MainScope().launch(Dispatchers.Main) {
                 trace { "############################################################ testOnStart: waiting..." }
                 delay(3000)
@@ -313,7 +316,7 @@ fun openFileManager(folder: StorageFile) {
             try {
                 traceDebug { "uri = $uri" }
                 when (1) {
-                    0    -> {
+                    0 -> {
                         val intent =
                             Intent().apply {
                                 action = Intent.ACTION_VIEW
@@ -327,7 +330,7 @@ fun openFileManager(folder: StorageFile) {
                             }
                         OABX.activity?.startActivity(intent)
                     }
-                    0    -> {
+                    0 -> {
                         val intent =
                             Intent().apply {
                                 action = Intent.ACTION_GET_CONTENT
@@ -342,7 +345,7 @@ fun openFileManager(folder: StorageFile) {
                         val chooser = Intent.createChooser(intent, "Browse")
                         OABX.activity?.startActivity(chooser)
                     }
-                    0    -> {
+                    0 -> {
                         val intent =
                             Intent().apply {
                                 action = Intent.ACTION_GET_CONTENT
@@ -356,7 +359,7 @@ fun openFileManager(folder: StorageFile) {
                         val chooser = Intent.createChooser(intent, "Browse")
                         OABX.activity?.startActivity(chooser)
                     }
-                    0    -> {
+                    0 -> {
                         val intent =
                             Intent().apply {
                                 action = Intent.ACTION_OPEN_DOCUMENT_TREE
@@ -373,7 +376,7 @@ fun openFileManager(folder: StorageFile) {
                             }
                         OABX.activity?.startActivity(intent)
                     }
-                    1    -> {
+                    1 -> {
                         val intent =
                             Intent().apply {
                                 action = Intent.ACTION_VIEW
@@ -397,7 +400,7 @@ fun openFileManager(folder: StorageFile) {
                     else -> {}
                 }
                 traceDebug { "ok" }
-            } catch(e: Throwable) {
+            } catch (e: Throwable) {
                 logException(e, backTrace = true)
             }
         }

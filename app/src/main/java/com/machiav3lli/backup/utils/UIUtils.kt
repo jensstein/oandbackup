@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.ColorUtils
 import com.google.android.material.color.DynamicColors
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_LANGUAGES_DEFAULT
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.THEME_DARK
@@ -49,6 +50,7 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.preferences.pref_blackTheme
+import com.machiav3lli.backup.preferences.pref_languages
 import com.machiav3lli.backup.ui.compose.theme.ApricotOrange
 import com.machiav3lli.backup.ui.compose.theme.ArcticCyan
 import com.machiav3lli.backup.ui.compose.theme.AzureBlue
@@ -68,7 +70,12 @@ import com.machiav3lli.backup.ui.compose.theme.ThunderYellow
 import com.machiav3lli.backup.ui.compose.theme.TigerAmber
 import com.machiav3lli.backup.ui.compose.theme.Turquoise
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import timber.log.Timber
 import java.util.*
 
 fun Context.setCustomTheme() {
@@ -211,6 +218,29 @@ fun Context.restartApp() = startActivity(
         ComponentName(this, MainActivityX::class.java)
     )
 )
+
+var recreateActivitiesJob: Job? = null
+
+fun Context.recreateActivities() {
+    runBlocking {
+        recreateActivitiesJob?.cancel()
+    }
+    recreateActivitiesJob = MainScope().launch {
+        //Timber.w("recreating activities...")
+        delay(500)
+        Timber.w("recreating activities ${
+            OABX.activities.map {
+                "${it.javaClass.simpleName}@${Integer.toHexString(it.hashCode())}"
+            }.joinToString(" ")
+        } language=${pref_languages.value}")
+        OABX.activities
+            .forEach {
+                runCatching {
+                    it.recreate()
+                }
+            }
+    }
+}
 
 fun <T> LazyListScope.gridItems(
     items: List<T>,
