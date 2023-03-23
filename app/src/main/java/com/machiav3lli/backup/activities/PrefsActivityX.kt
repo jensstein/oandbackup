@@ -57,7 +57,6 @@ import com.machiav3lli.backup.ui.compose.recycler.BusyBackground
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.destinationToItem
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
-import com.machiav3lli.backup.utils.setCustomTheme
 import com.machiav3lli.backup.viewmodels.ExportsViewModel
 import com.machiav3lli.backup.viewmodels.LogViewModel
 
@@ -75,8 +74,7 @@ class PrefsActivityX : BaseActivity() {
         ExperimentalPagerApi::class
     )
     override fun onCreate(savedInstanceState: Bundle?) {
-        OABX.activity = this
-        setCustomTheme()
+
         super.onCreate(savedInstanceState)
 
         setContent {
@@ -154,10 +152,5 @@ class PrefsActivityX : BaseActivity() {
                 }
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        OABX.activity = this
     }
 }

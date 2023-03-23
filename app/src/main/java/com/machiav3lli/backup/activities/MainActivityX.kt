@@ -76,7 +76,6 @@ import com.machiav3lli.backup.pref_uncaughtExceptionsJumpToPreferences
 import com.machiav3lli.backup.preferences.persist_beenWelcomed
 import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
 import com.machiav3lli.backup.preferences.pref_blackTheme
-import com.machiav3lli.backup.preferences.pref_languages
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.FunnelSimple
@@ -98,7 +97,6 @@ import com.machiav3lli.backup.utils.TraceUtils.traceBold
 import com.machiav3lli.backup.utils.altModeToMode
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import com.machiav3lli.backup.utils.isEncryptionEnabled
-import com.machiav3lli.backup.utils.setCustomTheme
 import com.machiav3lli.backup.viewmodels.BatchViewModel
 import com.machiav3lli.backup.viewmodels.MainViewModel
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
@@ -136,27 +134,24 @@ class MainActivityX : BaseActivity() {
         ExperimentalPagerApi::class
     )
     override fun onCreate(savedInstanceState: Bundle?) {
+
         val context = this
+
         val mainChanged = (this != OABX.mainSaved)
-        OABX.activity = this
         OABX.main = this
 
         var freshStart = (savedInstanceState == null)   //TODO use some lifecycle method?
 
         Timber.w(
-            "======================================== activity ${
-                classAndId(this)
-            }${
-                if (freshStart) ", fresh start" else ""
-            }${
-                if (mainChanged and (!freshStart or (OABX.mainSaved != null)))
-                    ", main changed (was ${classAndId(OABX.mainSaved)})"
+            listOf(
+                if (freshStart) "fresh start" else "",
+                if (mainChanged && (!freshStart || (OABX.mainSaved != null)))
+                    "main changed (was ${classAndId(OABX.mainSaved)})"
                 else
-                    ""
-            } language=${pref_languages.value}"
+                    "",
+            ).joinToString(", ")
         )
 
-        setCustomTheme()
         super.onCreate(savedInstanceState)
 
         Timber.d(
@@ -197,8 +192,6 @@ class MainActivityX : BaseActivity() {
         }
 
         Shell.getShell()
-
-
 
         setContent {
 
@@ -377,7 +370,6 @@ class MainActivityX : BaseActivity() {
     }
 
     override fun onResume() {
-        OABX.activity = this    // just in case 'this' object is recreated
         OABX.main = this
         super.onResume()
     }

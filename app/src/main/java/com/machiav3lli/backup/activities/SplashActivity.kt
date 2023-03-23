@@ -78,7 +78,6 @@ import com.machiav3lli.backup.utils.isBiometricLockEnabled
 import com.machiav3lli.backup.utils.isDeviceLockAvailable
 import com.machiav3lli.backup.utils.isDeviceLockEnabled
 import com.machiav3lli.backup.utils.isStorageDirSetAndOk
-import com.machiav3lli.backup.utils.setCustomTheme
 import com.topjohnwu.superuser.Shell
 import kotlin.system.exitProcess
 
@@ -191,8 +190,7 @@ fun SplashPage() {
 class SplashActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        OABX.activity = this
-        setCustomTheme()
+
         super.onCreate(savedInstanceState)
         Shell.getShell()
 
@@ -237,11 +235,6 @@ class SplashActivity : BaseActivity() {
                 launchMainActivity(mainIntent)
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        OABX.activity = this
     }
 
     private fun launchMainActivity(mainIntent: Intent) {
