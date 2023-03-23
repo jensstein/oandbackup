@@ -330,12 +330,11 @@ fun SeekBarPreference(
     groupSize: Int = 1,
     onValueChange: ((Int) -> Unit) = {},
 ) {
-    val currentValue = pref.value
     var sliderPosition by remember {    //TODO hg42 remove remember ???
         mutableStateOf(
-            pref.entries.indexOfFirst { it == currentValue }.let {
+            pref.entries.indexOfFirst { it >= pref.value }.let {
                 if (it < 0)
-                    pref.entries.indexOfFirst { it == pref.defaultValue }
+                    pref.entries.indexOfFirst { it >= (pref.defaultValue as Int) }
                 else
                     it
             }.let {
