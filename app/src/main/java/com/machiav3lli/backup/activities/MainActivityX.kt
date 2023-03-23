@@ -494,12 +494,12 @@ class MainActivityX : BaseActivity() {
 
             val oneTimeWorkRequest =
                 AppActionWork.Request(
-                    packageName,
-                    mode,
-                    backupBoolean,
-                    notificationId,
-                    batchName,
-                    true
+                    packageName = packageName,
+                    mode = mode,
+                    backupBoolean = backupBoolean,
+                    notificationId = notificationId,
+                    batchName = batchName,
+                    immediate = true
                 )
             worksList.add(oneTimeWorkRequest)
 

@@ -65,6 +65,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
     private var packageLabel = ""
     private var backupBoolean = inputData.getBoolean("backupBoolean", true)
     private var batchName = inputData.getString("batchName") ?: ""
+    private var backupIndex: Int = inputData.getInt("backupIndex", 0)
     private var notificationId: Int = inputData.getInt("notificationId", 123454321)
     private var failures = getVar(batchName, packageName, "failures")?.toInt() ?: 0
 
@@ -130,8 +131,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                                         )
                                     }
                                     else          -> {
-                                        // Latest backup for now
-                                        pi.latestBackup?.let {
+                                        pi.backupsNewestFirst[backupIndex].let {
                                             BackupRestoreHelper.restore(
                                                 context, work,
                                                 shellHandler, pi,
@@ -288,6 +288,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             packageName: String,
             mode: Int,
             backupBoolean: Boolean,
+            backupIndex: Int = 0,
             notificationId: Int,
             batchName: String,
             immediate: Boolean,
@@ -302,6 +303,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                         "packageName" to packageName,
                         "selectedMode" to mode,
                         "backupBoolean" to backupBoolean,
+                        "backupIndex" to backupIndex,
                         "notificationId" to notificationId,
                         "batchName" to batchName,
                         "operation" to "...",

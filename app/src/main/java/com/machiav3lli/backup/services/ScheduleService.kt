@@ -197,12 +197,12 @@ open class ScheduleService : Service() {
 
                                     val oneTimeWorkRequest =
                                         AppActionWork.Request(
-                                            packageName,
-                                            mode,
-                                            true,
-                                            notificationId,
-                                            batchName,
-                                            false
+                                            packageName = packageName,
+                                            mode = mode,
+                                            backupBoolean = true,
+                                            notificationId = notificationId,
+                                            batchName = batchName,
+                                            immediate = false
                                         )
                                     worksList.add(oneTimeWorkRequest)
 
