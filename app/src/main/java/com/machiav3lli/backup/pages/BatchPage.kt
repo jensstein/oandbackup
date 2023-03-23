@@ -44,8 +44,12 @@ import com.machiav3lli.backup.ALT_MODE_BOTH
 import com.machiav3lli.backup.ALT_MODE_DATA
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.dbs.entity.Backup
+import com.machiav3lli.backup.dialogs.BaseDialog
+import com.machiav3lli.backup.dialogs.BatchActionDialogUI
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.preferences.pref_singularBackupRestore
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.DiamondsFour
 import com.machiav3lli.backup.ui.compose.icons.phosphor.HardDrives
@@ -63,6 +67,7 @@ import com.machiav3lli.backup.viewmodels.BatchViewModel
 fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
     val main = OABX.main!!
     val filteredList by main.viewModel.filteredList.collectAsState(emptyList())
+    val openDialog = remember { mutableStateOf(false) }
 
     val filterPredicate = { item: Package ->
         if (backupBoolean) item.isInstalled else item.hasBackups
@@ -111,18 +116,41 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                 restore = !backupBoolean,
                 apkCheckedList = viewModel.apkCheckedList,
                 dataCheckedList = viewModel.dataCheckedList,
+                apkBackupCheckedList = viewModel.apkBackupCheckedList,
+                dataBackupCheckedList = viewModel.dataBackupCheckedList,
                 onApkClick = { item: Package, b: Boolean ->
                     if (b) viewModel.apkCheckedList.add(item.packageName)
                     else viewModel.apkCheckedList.remove(item.packageName)
-                    allApkChecked =
-                        viewModel.apkCheckedList.size == workList.filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }.size
-                }, onDataClick = { item: Package, b: Boolean ->
+                    allApkChecked = viewModel.apkCheckedList.size == workList
+                        .filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }.size
+                },
+                onDataClick = { item: Package, b: Boolean ->
                     if (b) viewModel.dataCheckedList.add(item.packageName)
                     else viewModel.dataCheckedList.remove(item.packageName)
+                    allDataChecked = viewModel.dataCheckedList.size == workList
+                        .filter { ai -> backupBoolean || ai.hasData }.size
+                },
+                onBackupApkClick = { item: Backup, b: Boolean, i: Int ->
+                    if (b) viewModel.apkBackupCheckedList[item.packageName] = i
+                    else if (viewModel.apkBackupCheckedList[item.packageName] == i)
+                        viewModel.apkBackupCheckedList[item.packageName] = -1
+                    allApkChecked =
+                        viewModel.apkBackupCheckedList.filterValues { it == 0 }.size ==
+                                workList.filter { ai ->
+                                    backupBoolean || ai.latestBackup?.hasApk ?: false
+                                }.size
+                },
+                onBackupDataClick = { item: Backup, b: Boolean, i: Int ->
+                    if (b) viewModel.dataBackupCheckedList[item.packageName] = i
+                    else if (viewModel.dataBackupCheckedList[item.packageName] == i)
+                        viewModel.dataBackupCheckedList[item.packageName] = -1
                     allDataChecked =
-                        viewModel.dataCheckedList.size == workList
-                            .filter { ai -> backupBoolean || ai.hasData }.size
-                }) { item, checkApk, checkData ->
+                        viewModel.dataBackupCheckedList.filterValues { it == 0 }.size ==
+                                workList.filter { ai ->
+                                    backupBoolean || ai.latestBackup?.hasData ?: false
+                                }.size
+                },
+            ) { item, checkApk, checkData ->
                 when (checkApk) {
                     true -> viewModel.apkCheckedList.add(item.packageName)
                     else -> viewModel.apkCheckedList.remove(item.packageName)
@@ -151,14 +179,26 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                 ) {
                     val checkBoolean = !allApkChecked
                     allApkChecked = checkBoolean
-                    if (checkBoolean)
-                        viewModel.apkCheckedList.addAll(
+                    when {
+                        checkBoolean && pref_singularBackupRestore.value -> workList
+                            .filter { it.latestBackup?.hasApk == true }
+                            .map(Package::packageName)
+                            .forEach {
+                                viewModel.apkBackupCheckedList[it] = 0
+                            }
+                        checkBoolean                                     -> viewModel.apkCheckedList.addAll(
                             workList
                                 .filter { ai -> !ai.isSpecial && (backupBoolean || ai.hasApk) }
                                 .mapNotNull(Package::packageName)
                         )
-                    else
-                        viewModel.apkCheckedList.clear()
+                        pref_singularBackupRestore.value                 -> workList
+                            .filter { it.latestBackup?.hasApk == true }
+                            .map(Package::packageName)
+                            .forEach {
+                                viewModel.apkBackupCheckedList[it] = -1
+                            }
+                        else                                             -> viewModel.apkCheckedList.clear()
+                    }
                 }
                 Spacer(modifier = Modifier.width(0.1.dp))
                 StateChip(
@@ -169,14 +209,26 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                 ) {
                     val checkBoolean = !allDataChecked
                     allDataChecked = checkBoolean
-                    if (checkBoolean)
-                        viewModel.dataCheckedList.addAll(
+                    when {
+                        checkBoolean && pref_singularBackupRestore.value -> workList
+                            .filter { it.latestBackup?.hasData == true }
+                            .map(Package::packageName)
+                            .forEach {
+                                viewModel.dataBackupCheckedList[it] = 0
+                            }
+                        checkBoolean                                     -> viewModel.dataCheckedList.addAll(
                             workList
                                 .filter { ai -> backupBoolean || ai.hasData }
                                 .mapNotNull(Package::packageName)
                         )
-                    else
-                        viewModel.dataCheckedList.clear()
+                        pref_singularBackupRestore.value                 -> workList
+                            .filter { it.latestBackup?.hasData == true }
+                            .map(Package::packageName)
+                            .forEach {
+                                viewModel.dataBackupCheckedList[it] = -1
+                            }
+                        else                                             -> viewModel.dataCheckedList.clear()
+                    }
                 }
                 RoundButton(icon = Phosphor.Nut) {
                     main.showBatchPrefsSheet(backupBoolean)
@@ -186,32 +238,58 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                     text = stringResource(id = if (backupBoolean) R.string.backup else R.string.restore),
                     positive = true
                 ) {
-                    val checkedPackages = filteredList
-                        .filter { it.packageName in viewModel.apkCheckedList.union(viewModel.dataCheckedList) }
-                    val selectedList =
-                        checkedPackages.map(Package::packageInfo).toCollection(ArrayList())
-                    val selectedListModes = checkedPackages
-                        .map {
-                            when (it.packageName) {
-                                in viewModel.apkCheckedList.intersect(viewModel.dataCheckedList) -> ALT_MODE_BOTH
-                                in viewModel.apkCheckedList -> ALT_MODE_APK
-                                else -> ALT_MODE_DATA
+                    if (!pref_singularBackupRestore.value) {
+                        val checkedPackages = filteredList
+                            .filter { it.packageName in viewModel.apkCheckedList.union(viewModel.dataCheckedList) }
+                        val selectedList =
+                            checkedPackages.map(Package::packageInfo).toCollection(ArrayList())
+                        val selectedListModes = checkedPackages
+                            .map {
+                                when (it.packageName) {
+                                    in viewModel.apkCheckedList.intersect(viewModel.dataCheckedList) -> ALT_MODE_BOTH
+                                    in viewModel.apkCheckedList                                      -> ALT_MODE_APK
+                                    else                                                             -> ALT_MODE_DATA
+                                }
                             }
-                        }
-                        .toCollection(ArrayList())
-                    if (selectedList.isNotEmpty()) {
-                        BatchDialogFragment(
-                            backupBoolean,
-                            selectedList,
-                            selectedListModes,
-                            batchConfirmListener
-                        )
-                            .show(
-                                main.supportFragmentManager,
-                                "DialogFragment"
+                            .toCollection(ArrayList())
+                        if (selectedList.isNotEmpty()) {
+                            BatchDialogFragment(
+                                backupBoolean,
+                                selectedList,
+                                selectedListModes,
+                                batchConfirmListener
                             )
-                    }
+                                .show(
+                                    main.supportFragmentManager,
+                                    "DialogFragment"
+                                )
+                        }
+                    } else if (viewModel.apkBackupCheckedList.filterValues { it != -1 }.isNotEmpty()
+                        || viewModel.dataBackupCheckedList.filterValues { it != -1 }.isNotEmpty()
+                    ) openDialog.value = true
                 }
+            }
+        }
+
+        if (openDialog.value) BaseDialog(openDialogCustom = openDialog) {
+            val selectedApk = viewModel.apkBackupCheckedList.filterValues { it != -1 }
+            val selectedData = viewModel.dataBackupCheckedList.filterValues { it != -1 }
+            val selectedPackages = selectedApk.keys.plus(selectedData.keys).distinct()
+
+            BatchActionDialogUI(
+                backupBoolean = backupBoolean,
+                selectedPackages = filteredList
+                    .filter { it.packageName in selectedPackages }
+                    .map(Package::packageInfo),
+                selectedApk = selectedApk,
+                selectedData = selectedData,
+                openDialogCustom = openDialog,
+            ) { // TODO generalize implementation to with default layout too
+                if (pref_singularBackupRestore.value && !backupBoolean) main.startBatchRestoreAction(
+                    packages = selectedPackages,
+                    selectedApk = selectedApk,
+                    selectedData = selectedData,
+                )
             }
         }
     }
