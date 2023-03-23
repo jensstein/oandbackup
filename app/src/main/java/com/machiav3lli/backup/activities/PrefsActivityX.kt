@@ -22,6 +22,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
@@ -131,8 +133,8 @@ class PrefsActivityX : BaseActivity() {
                         bottomBar = {
                             AnimatedVisibility(
                                 barVisible,
-                                enter = slideInVertically { height -> height },
-                                exit = slideOutVertically { height -> height },
+                                enter = slideInVertically { height -> height } + fadeIn(),
+                                exit = slideOutVertically { height -> height } + fadeOut(),
                             ) {
                                 PagerNavBar(pageItems = pages, pagerState = pagerState)
                             }

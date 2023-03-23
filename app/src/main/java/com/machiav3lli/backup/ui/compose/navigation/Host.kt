@@ -74,18 +74,18 @@ fun PrefsNavHost(
         navController = navController,
         startDestination = NavItem.Settings.destination
     ) {
-        slideUpComposable(NavItem.Settings.destination) {
+        slideDownComposable(NavItem.Settings.destination) {
             SlidePager(
                 pageItems = pages,
                 pagerState = pagerState,
                 navController = navController,
             )
         }
-        slideDownComposable(NavItem.Exports.destination) {
+        slideUpComposable(NavItem.Exports.destination) {
             val viewModel = viewModels.find { it is ExportsViewModel } as ExportsViewModel
             ExportsPage(viewModel)
         }
-        slideDownComposable(NavItem.Logs.destination) {
+        slideUpComposable(NavItem.Logs.destination) {
             val viewModel = viewModels.find { it is LogViewModel } as LogViewModel
             LogsPage(viewModel)
         }
@@ -136,5 +136,3 @@ fun NavGraphBuilder.fadeComposable(
         composable(it)
     }
 }
-
-
