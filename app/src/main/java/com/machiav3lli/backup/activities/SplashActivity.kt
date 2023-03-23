@@ -22,14 +22,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.PowerManager
 import androidx.activity.compose.setContent
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -45,6 +50,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
@@ -54,9 +60,11 @@ import com.machiav3lli.backup.preferences.persist_beenWelcomed
 import com.machiav3lli.backup.preferences.persist_ignoreBatteryOptimization
 import com.machiav3lli.backup.preferences.textLogShare
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowRight
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ShareNetwork
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Warning
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
+import com.machiav3lli.backup.ui.compose.navigation.NavItem
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.SystemUtils.applicationIssuer
 import com.machiav3lli.backup.utils.checkCallLogsPermission
@@ -65,6 +73,10 @@ import com.machiav3lli.backup.utils.checkRootAccess
 import com.machiav3lli.backup.utils.checkSMSMMSPermission
 import com.machiav3lli.backup.utils.checkUsageStatsPermission
 import com.machiav3lli.backup.utils.hasStoragePermissions
+import com.machiav3lli.backup.utils.isBiometricLockAvailable
+import com.machiav3lli.backup.utils.isBiometricLockEnabled
+import com.machiav3lli.backup.utils.isDeviceLockAvailable
+import com.machiav3lli.backup.utils.isDeviceLockEnabled
 import com.machiav3lli.backup.utils.isStorageDirSetAndOk
 import com.machiav3lli.backup.utils.setCustomTheme
 import com.topjohnwu.superuser.Shell
@@ -197,12 +209,10 @@ class SplashActivity : BaseActivity() {
             return
         }
 
-        val introIntent = Intent(applicationContext, IntroActivityX::class.java)
+        val mainIntent = Intent(applicationContext, MainActivityX::class.java)
         when {
             !persist_beenWelcomed.value -> {
-
-                startActivity(introIntent)
-
+                launchMainActivity(mainIntent)
             }
             hasStoragePermissions && isStorageDirSetAndOk &&
                     checkSMSMMSPermission &&
@@ -213,19 +223,20 @@ class SplashActivity : BaseActivity() {
                             || powerManager.isIgnoringBatteryOptimizations(packageName)
                             )           -> {
 
-                introIntent.putExtra(classAddress(".fragmentNumber"), 3)
-                startActivity(introIntent)
-
+                mainIntent.putExtra(
+                    classAddress(".fragmentNumber"),
+                    NavItem.Main.destination,
+                )
+                launchMainActivity(mainIntent)
             }
             else                        -> {
-
-                introIntent.putExtra(classAddress(".fragmentNumber"), 2)
-                startActivity(introIntent)
-
+                mainIntent.putExtra(
+                    classAddress(".fragmentNumber"),
+                    NavItem.Permissions.destination,
+                )
+                launchMainActivity(mainIntent)
             }
         }
-        overridePendingTransition(0, 0)
-        finish()
     }
 
     override fun onResume() {
@@ -233,4 +244,83 @@ class SplashActivity : BaseActivity() {
         OABX.activity = this
     }
 
+    private fun launchMainActivity(mainIntent: Intent) {
+        when {
+            isBiometricLockAvailable() && isBiometricLockEnabled() && isDeviceLockEnabled() ->
+                launchBiometricPrompt(mainIntent, true)
+            isDeviceLockAvailable() && isDeviceLockEnabled()                                ->
+                launchBiometricPrompt(mainIntent, false)
+            else                                                                            ->
+                startActivity(mainIntent)
+        }
+    }
+
+    private fun launchBiometricPrompt(mainIntent: Intent, withBiometric: Boolean) {
+        setContent {
+            LockPage(mainIntent)
+        }
+        try {
+            val biometricPrompt = createBiometricPrompt(mainIntent)
+            val promptInfo = BiometricPrompt.PromptInfo.Builder()
+                .setTitle(getString(R.string.prefs_biometriclock))
+                .setConfirmationRequired(true)
+                .setAllowedAuthenticators(BiometricManager.Authenticators.DEVICE_CREDENTIAL or (if (withBiometric) BiometricManager.Authenticators.BIOMETRIC_WEAK else 0))
+                .build()
+            biometricPrompt.authenticate(promptInfo)
+        } catch (e: Throwable) {
+            startActivity(mainIntent)
+        }
+    }
+
+    private fun createBiometricPrompt(mainIntent: Intent): BiometricPrompt {
+        return BiometricPrompt(this,
+            ContextCompat.getMainExecutor(this),
+            object : BiometricPrompt.AuthenticationCallback() {
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                    super.onAuthenticationSucceeded(result)
+                    startActivity(mainIntent)
+                }
+            })
+    }
+
+    override fun startActivity(intent: Intent?) {
+        super.startActivity(intent)
+        overridePendingTransition(0, 0)
+        finish()
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun LockPage(mainIntent: Intent) {
+        Scaffold(
+            containerColor = Color.Transparent,
+            contentColor = MaterialTheme.colorScheme.onBackground,
+            bottomBar = {
+                Row(
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    ElevatedActionButton(
+                        modifier = Modifier.padding(horizontal = 24.dp),
+                        text = stringResource(id = R.string.dialog_start),
+                        icon = Phosphor.ArrowRight,
+                    ) {
+                        launchMainActivity(mainIntent)
+                    }
+                }
+            }
+        ) { paddingValues ->
+            LazyColumn(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(8.dp)
+            ) {
+
+            }
+        }
+    }
 }
