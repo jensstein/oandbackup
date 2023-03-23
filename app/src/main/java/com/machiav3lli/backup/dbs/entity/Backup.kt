@@ -166,6 +166,9 @@ data class Backup constructor(
     val isEncrypted: Boolean
         get() = cipherType != null && cipherType?.isNotEmpty() == true
 
+    val hasData: Boolean
+        get() = hasAppData || hasExternalData || hasDevicesProtectedData || hasMediaData || hasObbData
+
     fun toAppInfo() = AppInfo(
         packageName,
         packageLabel,
