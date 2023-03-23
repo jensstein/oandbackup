@@ -37,6 +37,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -76,15 +77,16 @@ fun BaseDialog(
 
 @Composable
 fun ActionsDialogUI(
-    mainText: String,
+    titleText: String,
+    messageText: String,
     openDialogCustom: MutableState<Boolean>,
     primaryText: String,
+    primaryIcon: ImageVector? = null,
     primaryAction: (() -> Unit) = {},
     secondaryText: String = "",
-    secondaryAction: (() -> Unit)? = null
+    secondaryIcon: ImageVector? = null,
+    secondaryAction: (() -> Unit)? = null,
 ) {
-    val context = LocalContext.current
-
     Card(
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier.padding(8.dp),
@@ -96,7 +98,8 @@ fun ActionsDialogUI(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(text = mainText, style = MaterialTheme.typography.titleLarge)
+            Text(text = titleText, style = MaterialTheme.typography.titleLarge)
+            Text(text = messageText, style = MaterialTheme.typography.bodyMedium)
 
             Row(
                 Modifier.fillMaxWidth()
@@ -105,14 +108,21 @@ fun ActionsDialogUI(
                     openDialogCustom.value = false
                 }
                 Spacer(Modifier.weight(1f))
-                if (secondaryAction != null) {
-                    ElevatedActionButton(text = secondaryText, positive = false) {
+                if (secondaryAction != null && secondaryText.isNotEmpty()) {
+                    ElevatedActionButton(
+                        text = secondaryText,
+                        icon = secondaryIcon,
+                        positive = false
+                    ) {
                         secondaryAction()
                         openDialogCustom.value = false
                     }
                     Spacer(Modifier.requiredWidth(8.dp))
                 }
-                ElevatedActionButton(text = primaryText) {
+                ElevatedActionButton(
+                    text = primaryText,
+                    icon = primaryIcon,
+                ) {
                     primaryAction()
                     openDialogCustom.value = false
                 }
