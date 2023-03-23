@@ -246,8 +246,8 @@ class MainActivityX : BaseActivity() {
                         containerColor = Color.Transparent,
                         contentColor = MaterialTheme.colorScheme.onBackground,
                         topBar = {
-                            if (currentPage.destination == NavItem.Scheduler.destination)
-                                TopBar(
+                            when {
+                                currentPage.destination == NavItem.Scheduler.destination -> TopBar(
                                     title = stringResource(id = currentPage.title)
                                 ) {
 
@@ -274,69 +274,78 @@ class MainActivityX : BaseActivity() {
                                         icon = Phosphor.GearSix
                                     ) { navController.navigate(NavItem.Settings.destination) }
                                 }
-                            else Column() {
-                                TopBar(title = stringResource(id = currentPage.title)) {
-                                    ExpandableSearchAction(
-                                        expanded = searchExpanded,
-                                        query = query,
-                                        onQueryChanged = { newQuery ->
-                                            //if (newQuery != query)  // empty string doesn't work...
-                                            query = newQuery
-                                            viewModel.searchQuery.value = query
-                                        },
-                                        onClose = {
-                                            query = ""
-                                            viewModel.searchQuery.value = ""
-                                        }
-                                    )
+                                barVisible                                               -> Column() {
+                                    TopBar(title = stringResource(id = currentPage.title)) {
+                                        ExpandableSearchAction(
+                                            expanded = searchExpanded,
+                                            query = query,
+                                            onQueryChanged = { newQuery ->
+                                                //if (newQuery != query)  // empty string doesn't work...
+                                                query = newQuery
+                                                viewModel.searchQuery.value = query
+                                            },
+                                            onClose = {
+                                                query = ""
+                                                viewModel.searchQuery.value = ""
+                                            }
+                                        )
 
-                                    RefreshButton() { refreshPackagesAndBackups() }
-                                    RoundButton(
-                                        description = stringResource(id = R.string.prefs_title),
-                                        icon = Phosphor.GearSix
-                                    ) { navController.navigate(NavItem.Settings.destination) }
-                                }
-                                Row(
-                                    modifier = Modifier.padding(horizontal = 8.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                                ) {
-                                    ActionChip(
-                                        icon = Phosphor.Prohibit,
-                                        textId = R.string.sched_blocklist,
-                                        positive = false,
+                                        RefreshButton() { refreshPackagesAndBackups() }
+                                        RoundButton(
+                                            description = stringResource(id = R.string.prefs_title),
+                                            icon = Phosphor.GearSix
+                                        ) { navController.navigate(NavItem.Settings.destination) }
+                                    }
+                                    Row(
+                                        modifier = Modifier.padding(horizontal = 8.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(4.dp)
                                     ) {
-                                        GlobalScope.launch(Dispatchers.IO) {
-                                            val blocklistedPackages = viewModel.getBlocklist()
+                                        ActionChip(
+                                            icon = Phosphor.Prohibit,
+                                            textId = R.string.sched_blocklist,
+                                            positive = false,
+                                        ) {
+                                            GlobalScope.launch(Dispatchers.IO) {
+                                                val blocklistedPackages = viewModel.getBlocklist()
 
-                                            PackagesListDialogFragment(
-                                                blocklistedPackages,
-                                                MAIN_FILTER_DEFAULT,
-                                                true
-                                            ) { newList: Set<String> ->
-                                                viewModel.setBlocklist(newList)
-                                            }.show(
-                                                context.supportFragmentManager,
-                                                "BLOCKLIST_DIALOG"
+                                                PackagesListDialogFragment(
+                                                    blocklistedPackages,
+                                                    MAIN_FILTER_DEFAULT,
+                                                    true
+                                                ) { newList: Set<String> ->
+                                                    viewModel.setBlocklist(newList)
+                                                }.show(
+                                                    context.supportFragmentManager,
+                                                    "BLOCKLIST_DIALOG"
+                                                )
+                                            }
+                                        }
+                                        Spacer(modifier = Modifier.weight(1f))
+                                        ActionChip(
+                                            icon = Phosphor.FunnelSimple,
+                                            textId = R.string.sort_and_filter,
+                                            positive = true,
+                                        ) {
+                                            sheetSortFilter = SortFilterSheet()
+                                            sheetSortFilter.showNow(
+                                                supportFragmentManager,
+                                                "SORTFILTER_SHEET"
                                             )
                                         }
                                     }
-                                    Spacer(modifier = Modifier.weight(1f))
-                                    ActionChip(
-                                        icon = Phosphor.FunnelSimple,
-                                        textId = R.string.sort_and_filter,
-                                        positive = true,
-                                    ) {
-                                        sheetSortFilter = SortFilterSheet()
-                                        sheetSortFilter.showNow(
-                                            supportFragmentManager,
-                                            "SORTFILTER_SHEET"
-                                        )
-                                    }
                                 }
+                                else                                                     ->
+                                    TopBar(title = stringResource(id = R.string.app_name)) {}
                             }
                         },
                         bottomBar = {
-                            PagerNavBar(pageItems = pages, pagerState = pagerState)
+                            AnimatedVisibility(
+                                barVisible,
+                                enter = slideInVertically { height -> height } + fadeIn(),
+                                exit = slideOutVertically { height -> height } + fadeOut(),
+                            ) {
+                                PagerNavBar(pageItems = pages, pagerState = pagerState)
+                            }
                         }
                     ) { paddingValues ->
                         SideEffect { // TODO add biometric thingy OR maybe into SplashActivity?
