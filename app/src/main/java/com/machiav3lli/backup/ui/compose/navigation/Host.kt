@@ -24,6 +24,7 @@ import com.machiav3lli.backup.pages.WelcomePage
 import com.machiav3lli.backup.preferences.ExportsPage
 import com.machiav3lli.backup.preferences.LogsPage
 import com.machiav3lli.backup.preferences.TerminalPage
+import com.machiav3lli.backup.preferences.persist_beenWelcomed
 import com.machiav3lli.backup.viewmodels.ExportsViewModel
 import com.machiav3lli.backup.viewmodels.LogViewModel
 
@@ -38,8 +39,15 @@ fun MainNavHost(
     AnimatedNavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = NavItem.Main.destination
+        startDestination = if (persist_beenWelcomed.value) NavItem.Permissions.destination
+        else NavItem.Welcome.destination
     ) {
+        slideDownComposable(NavItem.Welcome.destination) {
+            WelcomePage()
+        }
+        composable(route = NavItem.Permissions.destination) {
+            PermissionsPage()
+        }
         slideUpComposable(NavItem.Main.destination) {
             SlidePager(
                 pagerState = pagerState,
