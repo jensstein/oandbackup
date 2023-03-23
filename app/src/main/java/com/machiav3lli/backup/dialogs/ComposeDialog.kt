@@ -49,7 +49,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.dbs.entity.PackageInfo
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ArchiveTray
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ClockCounterClockwise
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Eye
 import com.machiav3lli.backup.ui.compose.icons.phosphor.EyeSlash
 import com.machiav3lli.backup.ui.compose.item.ActionButton
@@ -129,6 +132,49 @@ fun ActionsDialogUI(
             }
         }
     }
+}
+
+@Composable
+fun BatchActionDialogUI(
+    backupBoolean: Boolean,
+    selectedPackages: List<PackageInfo>,
+    selectedApk: Map<String, Int>,
+    selectedData: Map<String, Int>,
+    openDialogCustom: MutableState<Boolean>,
+    primaryAction: (() -> Unit) = {},
+) {
+    val message = StringBuilder()
+    selectedPackages.forEach { pi ->
+        message.append("${pi.packageLabel}")
+        message.append(
+            ": ${
+                stringResource(
+                    id = when {
+                        selectedApk[pi.packageName] != null && selectedData[pi.packageName] != null -> R.string.handleBoth
+                        selectedApk[pi.packageName] != null                                         -> R.string.handleApk
+                        selectedData[pi.packageName] != null                                        -> R.string.handleData
+                        else                                                                        -> R.string.errorDialogTitle
+                    }
+                )
+            }\n"
+        )
+    }
+
+    ActionsDialogUI(
+        titleText = stringResource(
+            id = if (backupBoolean) R.string.backupConfirmation
+            else R.string.restoreConfirmation
+        ),
+        messageText = message.toString().trim { it <= ' ' },
+        openDialogCustom = openDialogCustom,
+        primaryText = stringResource(
+            id = if (backupBoolean) R.string.backup
+            else R.string.restore
+        ),
+        primaryIcon = if (backupBoolean) Phosphor.ArchiveTray
+        else Phosphor.ClockCounterClockwise,
+        primaryAction = primaryAction,
+    )
 }
 
 @Composable
