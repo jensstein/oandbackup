@@ -10,6 +10,9 @@ import com.machiav3lli.backup.preferences.publicPreferences
 import com.machiav3lli.backup.tracePrefs
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import com.machiav3lli.backup.utils.getPrivateSharedPrefs
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Contextual
 
 open class Pref(
@@ -21,21 +24,33 @@ open class Pref(
     val defaultValue: Any? = null,
     val icon: ImageVector? = null,
     val iconTint: Color?,
+    val onChanged: (() -> Unit)? = null,
     val enableIf: (() -> Boolean)? = null,
     var group: String = "",
 ) {
     companion object {
 
         val prefGroups: MutableMap<String, MutableList<Pref>> = mutableMapOf()
+        val prefs get() = prefGroups.values.flatten()
+        var lockedActions = 0
 
         val prefChangeListeners = mutableStateMapOf<Pref, (pref: Pref) -> Unit>()
-        fun onPrefChange() {
+        private fun onPrefChange(name: String) {
             prefChangeListeners.forEach {
                 it.value(it.key)
             }
+            prefs.find { it.key == name }?.let { pref ->
+                pref.onChanged?.let { onChanged ->
+                    MainScope().launch {
+                        while (lockedActions > 0)
+                            delay(500)
+                        onChanged()
+                    }
+                }
+            }
         }
 
-        fun getPrefs(private: Boolean = false) =
+        private fun getPrefs(private: Boolean = false) =
             if (private)
                 OABX.context.getPrivateSharedPrefs()
             else
@@ -50,7 +65,8 @@ open class Pref(
 
         fun setPrefFlag(name: String, value: Boolean, private: Boolean = false) {
             if (!private) tracePrefs { "set pref $name = $value" }
-            getPrefs(private).edit().putBoolean(name, value).apply().also { onPrefChange() }
+            getPrefs(private).edit().putBoolean(name, value).apply()
+            onPrefChange(name)
         }
 
         fun prefString(name: String, default: String, private: Boolean = false) =
@@ -62,7 +78,8 @@ open class Pref(
 
         fun setPrefString(name: String, value: String, private: Boolean = false) {
             if (!private) tracePrefs { "set pref $name = '$value'" }
-            getPrefs(private).edit().putString(name, value).apply().also { onPrefChange() }
+            getPrefs(private).edit().putString(name, value).apply()
+            onPrefChange(name)
         }
 
         fun prefInt(name: String, default: Int, private: Boolean = false) =
@@ -74,7 +91,8 @@ open class Pref(
 
         fun setPrefInt(name: String, value: Int, private: Boolean = false) {
             if (!private) tracePrefs { "set pref $name = $value" }
-            getPrefs(private).edit().putInt(name, value).apply().also { onPrefChange() }
+            getPrefs(private).edit().putInt(name, value).apply()
+            onPrefChange(name)
         }
 
         val toBeEscaped =
@@ -182,6 +200,7 @@ open class Pref(
             val prefs = fromSimpleFormat(serialized)
             //OABX.fromSerialized<Map<String, Any>>(serialized)
 
+            synchronized(Pref) { lockedActions++ }
             prefs.forEach { key, value ->
                 when (value) {
                     is String  -> setPrefString(key, value)
@@ -189,6 +208,7 @@ open class Pref(
                     is Boolean -> setPrefFlag(key, value)
                 }
             }
+            synchronized(Pref) { lockedActions-- }
         }
     }
 
@@ -222,8 +242,9 @@ class BooleanPref(
     icon: ImageVector? = null,
     iconTint: Color? = null,
     defaultValue: Boolean,
+    onChanged: (() -> Unit)? = null,
     enableIf: (() -> Boolean)? = null,
-) : Pref(key, private, summary, titleId, summaryId, defaultValue, icon, iconTint, enableIf) {
+) : Pref(key, private, summary, titleId, summaryId, defaultValue, icon, iconTint, onChanged, enableIf) {
     var value
         get() = prefFlag(key, defaultValue as Boolean, private)
         set(value) = setPrefFlag(key, value, private)
@@ -241,8 +262,9 @@ class IntPref(
     iconTint: Color? = null,
     val entries: List<Int>,
     defaultValue: Int,
+    onChanged: (() -> Unit)? = null,
     enableIf: (() -> Boolean)? = null,
-) : Pref(key, private, summary, titleId, summaryId, defaultValue, icon, iconTint, enableIf) {
+) : Pref(key, private, summary, titleId, summaryId, defaultValue, icon, iconTint, onChanged, enableIf) {
     var value
         get() = prefInt(key, defaultValue as Int, private)
         set(value) = setPrefInt(key, value, private)
@@ -259,8 +281,9 @@ open class StringPref(
     icon: ImageVector? = null,
     iconTint: Color? = null,
     defaultValue: String,
+    onChanged: (() -> Unit)? = null,
     enableIf: (() -> Boolean)? = null,
-) : Pref(key, private, summary, titleId, summaryId, defaultValue, icon, iconTint, enableIf) {
+) : Pref(key, private, summary, titleId, summaryId, defaultValue, icon, iconTint, onChanged, enableIf) {
     open var value
         get() = prefString(key, defaultValue as String, private)
         set(value) = setPrefString(key, value, private)
@@ -277,8 +300,9 @@ class PasswordPref(
     icon: ImageVector? = null,
     iconTint: Color? = null,
     defaultValue: String,
+    onChanged: (() -> Unit)? = null,
     enableIf: (() -> Boolean)? = null,
-) : StringPref(key, private, summary, titleId, summaryId, icon, iconTint, defaultValue, enableIf) {
+) : StringPref(key, private, summary, titleId, summaryId, icon, iconTint, defaultValue, onChanged, enableIf) {
     override var value
         get() = prefString(key, defaultValue as String, private)
         set(value) = setPrefString(key, value, private)
@@ -296,8 +320,9 @@ class ListPref(
     iconTint: Color? = null,
     val entries: Map<String, String>,
     defaultValue: String,
+    onChanged: (() -> Unit)? = null,
     enableIf: (() -> Boolean)? = null,
-) : Pref(key, private, summary, titleId, summaryId, defaultValue, icon, iconTint, enableIf) {
+) : Pref(key, private, summary, titleId, summaryId, defaultValue, icon, iconTint, onChanged, enableIf) {
     var value
         get() = prefString(key, defaultValue as String, private)
         set(value) = setPrefString(key, value, private)
@@ -315,8 +340,9 @@ class EnumPref(
     iconTint: Color? = null,
     val entries: Map<Int, Int>,
     defaultValue: Int,
+    onChanged: (() -> Unit)? = null,
     enableIf: (() -> Boolean)? = null,
-) : Pref(key, private, summary, titleId, summaryId, defaultValue, icon, iconTint, enableIf) {
+) : Pref(key, private, summary, titleId, summaryId, defaultValue, icon, iconTint, onChanged, enableIf) {
     var value
         get() = prefInt(key, defaultValue as Int, private)
         set(value) = setPrefInt(key, value, private)
@@ -332,8 +358,9 @@ class LinkPref(
     @StringRes summaryId: Int = -1,
     icon: ImageVector? = null,
     iconTint: Color? = null,
+    onChanged: (() -> Unit)? = null,
     enableIf: (() -> Boolean)? = null,
-) : Pref(key, private, summary, titleId, summaryId, null, icon, iconTint, enableIf)
+) : Pref(key, private, summary, titleId, summaryId, null, icon, iconTint, onChanged, enableIf)
 
 class LaunchPref(
     key: String,
@@ -343,8 +370,9 @@ class LaunchPref(
     @StringRes summaryId: Int = -1,
     icon: ImageVector? = null,
     iconTint: Color? = null,
+    onChanged: (() -> Unit)? = null,
     enableIf: (() -> Boolean)? = null,
     val onClick: (() -> Unit) = {},
-) : Pref(key, private, summary, titleId, summaryId, null, icon, iconTint, enableIf)
+) : Pref(key, private, summary, titleId, summaryId, null, icon, iconTint, onChanged, enableIf)
 
 
