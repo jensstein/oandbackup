@@ -58,6 +58,9 @@ import androidx.work.WorkManager
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
+import com.machiav3lli.backup.ALT_MODE_APK
+import com.machiav3lli.backup.ALT_MODE_BOTH
+import com.machiav3lli.backup.ALT_MODE_DATA
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.addInfoLogText
@@ -92,6 +95,7 @@ import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.FileUtils.invalidateBackupLocation
 import com.machiav3lli.backup.utils.TraceUtils.classAndId
 import com.machiav3lli.backup.utils.TraceUtils.traceBold
+import com.machiav3lli.backup.utils.altModeToMode
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import com.machiav3lli.backup.utils.isEncryptionEnabled
 import com.machiav3lli.backup.utils.setCustomTheme
@@ -530,6 +534,75 @@ class MainActivityX : BaseActivity() {
             WorkManager.getInstance(OABX.context)
                 .beginWith(worksList)
                 .enqueue()
+        }
+    }
+
+    fun startBatchRestoreAction(
+        packages: List<String>,
+        selectedApk: Map<String, Int>,
+        selectedData: Map<String, Int>,
+    ) {
+        val now = System.currentTimeMillis()
+        val notificationId = now.toInt()
+        val batchType = getString(R.string.restore)
+        val batchName = WorkHandler.getBatchName(batchType, now)
+
+        val selectedItems = buildList {
+            packages.forEach { pn ->
+                when {
+                    selectedApk[pn] == selectedData[pn] && selectedApk[pn] != null -> add(
+                        Triple(pn, selectedApk[pn]!!, altModeToMode(ALT_MODE_BOTH, false))
+                    )
+                    else                                                           -> {
+                        if ((selectedApk[pn] ?: -1) != -1) add(
+                            Triple(pn, selectedApk[pn]!!, altModeToMode(ALT_MODE_APK, false))
+                        )
+                        if ((selectedData[pn] ?: -1) != -1) add(
+                            Triple(pn, selectedData[pn]!!, altModeToMode(ALT_MODE_DATA, false))
+                        )
+                    }
+                }
+            }
+        }
+
+        var errors = ""
+        var resultsSuccess = true
+        var counter = 0
+        val worksList: MutableList<OneTimeWorkRequest> = mutableListOf()
+        OABX.work.beginBatch(batchName)
+        selectedItems.forEach { (packageName, bi, mode) ->
+            val oneTimeWorkRequest = AppActionWork.Request(
+                packageName = packageName,
+                mode = mode,
+                backupBoolean = false,
+                backupIndex = bi,
+                notificationId = notificationId,
+                batchName = batchName,
+                immediate = true,
+            )
+            worksList.add(oneTimeWorkRequest)
+
+            val oneTimeWorkLiveData = WorkManager.getInstance(OABX.context)
+                .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
+            oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
+                override fun onChanged(t: WorkInfo) {
+                    if (t.state == WorkInfo.State.SUCCEEDED) {
+                        counter += 1
+
+                        val (succeeded, packageLabel, error) = AppActionWork.getOutput(t)
+                        if (error.isNotEmpty()) errors =
+                            "$errors$packageLabel: ${
+                                LogsHandler.handleErrorMessages(
+                                    OABX.context,
+                                    error
+                                )
+                            }\n"
+
+                        resultsSuccess = resultsSuccess and succeeded
+                        oneTimeWorkLiveData.removeObserver(this)
+                    }
+                }
+            })
         }
     }
 }
