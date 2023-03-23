@@ -527,16 +527,24 @@ class OABX : Application() {
                 return activityRef.get()
             }
             set(activity) {
-                activityRef = WeakReference(activity)
-                synchronized(activityRefs) {
-                    // remove activities of the same class
-                    activityRef.get()?.localClassName.let { localClassName ->
-                        activityRefs.removeIf { it.get()?.localClassName == localClassName }
+                if (activity == null) {
+                    synchronized(activityRefs) {
+                        activityRefs.remove(activityRef)
+                        activityRef = WeakReference(null)
+                        activityRefs = activityRefs.filter { it.get() != null }.toMutableList()
                     }
-                    activityRefs.add(activityRef)
-                    activityRefs = activityRefs.filter { it.get() != null }.toMutableList()
+                } else {
+                    activityRef = WeakReference(activity)
+                    synchronized(activityRefs) {
+                        // remove activities of the same class
+                        //activityRef.get()?.localClassName.let { localClassName ->
+                        //    activityRefs.removeIf { it.get()?.localClassName == localClassName }
+                        //}
+                        activityRefs.add(activityRef)
+                        activityRefs = activityRefs.filter { it.get() != null }.toMutableList()
+                    }
+                    scheduleAlarmsOnce()        // if any activity is started
                 }
-                scheduleAlarmsOnce()        // if any activity is started
             }
         val activities: List<Activity>
             get() {
