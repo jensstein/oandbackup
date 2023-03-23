@@ -54,6 +54,7 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.preferences.pref_languages
 import com.machiav3lli.backup.preferences.pref_menuButtonAlwaysVisible
 import com.machiav3lli.backup.traceCompose
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
@@ -98,7 +99,7 @@ fun HomePage() {
             if (updaterVisible) "visible" else "hidden"
         } menu=${
             menuExpanded.value
-        } always=${menuButtonAlwaysVisible}"
+        } always=${menuButtonAlwaysVisible} language=${pref_languages.value}"
     }
 
     // prefetch icons

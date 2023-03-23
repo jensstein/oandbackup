@@ -76,6 +76,7 @@ import com.machiav3lli.backup.pref_uncaughtExceptionsJumpToPreferences
 import com.machiav3lli.backup.preferences.persist_beenWelcomed
 import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
 import com.machiav3lli.backup.preferences.pref_blackTheme
+import com.machiav3lli.backup.preferences.pref_languages
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.FunnelSimple
@@ -152,7 +153,7 @@ class MainActivityX : BaseActivity() {
                     ", main changed (was ${classAndId(OABX.mainSaved)})"
                 else
                     ""
-            }"
+            } language=${pref_languages.value}"
         )
 
         setCustomTheme()
@@ -200,6 +201,7 @@ class MainActivityX : BaseActivity() {
 
 
         setContent {
+
             AppTheme {
                 val pagerState = rememberPagerState()
                 navController = rememberAnimatedNavController()
