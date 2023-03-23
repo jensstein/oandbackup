@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.BACKUP_DIRECTORY_INTENT
+import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_LANGUAGES_DEFAULT
 import com.machiav3lli.backup.R
@@ -172,7 +173,14 @@ val pref_appAccentColor = EnumPref(
     icon = Phosphor.EyedropperSample,
     //iconTint = MaterialTheme.colorScheme.primary,
     entries = accentColorItems,
-    defaultValue = 0,
+    defaultValue = with(BuildConfig.APPLICATION_ID) {
+        when {
+            contains("hg42") -> 8
+            contains(".neo")  -> 4
+            contains("debug") -> 4
+            else             -> 0
+        }
+    },
     onChanged = ::onThemeChanged,
 )
 
@@ -182,7 +190,14 @@ val pref_appSecondaryColor = EnumPref(
     icon = Phosphor.EyedropperSample,
     //iconTint = MaterialTheme.colorScheme.secondary,
     entries = secondaryColorItems,
-    defaultValue = 3,
+    defaultValue = with(BuildConfig.APPLICATION_ID) {
+        when {
+            contains(".rel")  -> 0
+            contains(".neo")  -> 1
+            contains("debug") -> 2
+            else              -> 4
+        }
+    },
     onChanged = ::onThemeChanged,
 )
 
