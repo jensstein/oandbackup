@@ -25,7 +25,12 @@ import android.os.Looper
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,6 +40,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +51,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Observer
+import androidx.navigation.NavHostController
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
@@ -55,6 +62,7 @@ import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.addInfoLogText
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.classAddress
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
 import com.machiav3lli.backup.fragments.BatchPrefsSheet
 import com.machiav3lli.backup.fragments.SortFilterSheet
@@ -63,6 +71,7 @@ import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.pref_catchUncaughtException
 import com.machiav3lli.backup.pref_uncaughtExceptionsJumpToPreferences
+import com.machiav3lli.backup.preferences.persist_beenWelcomed
 import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
 import com.machiav3lli.backup.preferences.pref_blackTheme
 import com.machiav3lli.backup.tasks.AppActionWork
@@ -100,6 +109,7 @@ import kotlin.system.exitProcess
 class MainActivityX : BaseActivity() {
 
     private val crScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
+    private lateinit var navController: NavHostController
 
     val viewModel by viewModels<MainViewModel> {
         MainViewModel.Factory(OABX.db, application)
@@ -189,7 +199,7 @@ class MainActivityX : BaseActivity() {
         setContent {
             AppTheme {
                 val pagerState = rememberPagerState()
-                val navController = rememberAnimatedNavController()
+                navController = rememberAnimatedNavController()
                 val pages = listOf(
                     NavItem.Home,
                     NavItem.Backup,
@@ -325,6 +335,17 @@ class MainActivityX : BaseActivity() {
                             PagerNavBar(pageItems = pages, pagerState = pagerState)
                         }
                     ) { paddingValues ->
+                        SideEffect { // TODO add biometric thingy OR maybe into SplashActivity?
+                            if (intent.extras != null) {
+                                val destination =
+                                    intent.extras!!.getString(
+                                        classAddress(".fragmentNumber"),
+                                        NavItem.Welcome.destination
+                                    )
+                                moveTo(destination)
+                            }
+                        }
+
                         MainNavHost(
                             modifier = Modifier
                                 .padding(paddingValues),
@@ -422,6 +443,11 @@ class MainActivityX : BaseActivity() {
     }
 
     fun dismissSnackBar() {
+    }
+
+    fun moveTo(destination: String) {
+        persist_beenWelcomed.value = destination != NavItem.Welcome.destination
+        navController.navigate(destination)
     }
 
     fun showBatchPrefsSheet(backupBoolean: Boolean) {
