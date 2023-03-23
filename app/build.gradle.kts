@@ -25,8 +25,8 @@ plugins {
 }
 
 val vKotlin = "1.8.10"
-val vComposeCompiler = "1.4.0"
-val vCompose = "1.3.1"
+val vComposeCompiler = "1.4.3"
+val vCompose = "1.4.0-rc01"
 val vKotlinSerialization = "1.5.0"
 val vRoom = "2.5.0"
 val vNavigation = "2.5.3"
@@ -131,9 +131,9 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.8.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$vKotlinSerialization")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$vKotlinSerialization")
-    implementation("com.charleskorn.kaml:kaml:0.52.0")
+    implementation("com.charleskorn.kaml:kaml:0.53.0")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.0")
     implementation("androidx.security:security-crypto-ktx:1.1.0-alpha05")
     implementation("androidx.biometric:biometric:1.2.0-alpha05")
     implementation("org.apache.commons:commons-compress:1.22")
