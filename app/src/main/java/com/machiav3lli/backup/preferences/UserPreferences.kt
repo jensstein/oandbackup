@@ -35,6 +35,7 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.Clock
 import com.machiav3lli.backup.ui.compose.icons.phosphor.EyedropperSample
 import com.machiav3lli.backup.ui.compose.icons.phosphor.FingerprintSimple
 import com.machiav3lli.backup.ui.compose.icons.phosphor.FolderNotch
+import com.machiav3lli.backup.ui.compose.icons.phosphor.List
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Lock
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Swatches
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TextAa
@@ -218,6 +219,15 @@ val pref_multilineInfoChips = BooleanPref(
     icon = Phosphor.ArrowsOutLineVertical,
     iconTint = ColorSystem,
     defaultValue = false
+)
+
+val pref_singularBackupRestore = BooleanPref(
+    key = "user.singularBackupRestore",
+    titleId = R.string.prefs_singularbackuprestore,
+    summaryId = R.string.prefs_singularbackuprestore_summary,
+    icon = Phosphor.List,
+    iconTint = ColorSpecial,
+    defaultValue = true
 )
 
 val pref_squeezeNavText = BooleanPref(

@@ -105,6 +105,8 @@
     <string name="prefs_biometriclock_summary">Secure the app with the device\'s biometric lock (e.g. fingerprint, face unlock)</string>
     <string name="prefs_multilineinfochips">Multi-line info chips</string>
     <string name="prefs_multilineinfochips_summary">Allow info chips in app sheet to span over multi-lines.</string>
+    <string name="prefs_singularbackuprestore">Singular backup restore</string>
+    <string name="prefs_singularbackuprestore_summary">Use alternative restore item layout that allows choosing specific backups for restore.</string>
     <string name="prefs_squeezenavtext">Squeeze navigation item\'s text</string>
     <string name="prefs_squeezenavtext_summary">Allow text under navigation bar items to be resized to fit the available width.</string>
     <string name="prefs_rememberfiltering">Remember sort and filter</string>
