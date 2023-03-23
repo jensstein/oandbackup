@@ -1,6 +1,7 @@
 package tests_ui
 
 import androidx.compose.ui.test.ComposeTimeoutException
+import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertIsFocused
@@ -19,7 +20,7 @@ import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.printToLog
 import com.machiav3lli.backup.activities.MainActivityX
-import junit.framework.Assert.assertEquals
+import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -35,6 +36,7 @@ fun ComposeContentTestRule.waitUntilNodeCount(
     }
 }
 
+@OptIn(ExperimentalTestApi::class)
 fun ComposeContentTestRule.waitUntilExists(
     matcher: SemanticsMatcher,
     timeoutMillis: Long = 1_000L
@@ -42,6 +44,7 @@ fun ComposeContentTestRule.waitUntilExists(
     return this.waitUntilNodeCount(matcher, 1, timeoutMillis)
 }
 
+@OptIn(ExperimentalTestApi::class)
 fun ComposeContentTestRule.waitUntilDoesNotExist(
     matcher: SemanticsMatcher,
     timeoutMillis: Long = 1_000L
@@ -112,7 +115,7 @@ class Test_SelectionSaveLoad {
             val selectionName = "selection-${System.currentTimeMillis()}"
 
             // save selection as "selection-XXX"
-            test.onNodeWaitOrAssert(hasText("Save")).performTouchInput { click(center) }
+            test.onNodeWaitOrAssert(hasText("Put...")).performTouchInput { click(center) }
             test.waitForIdle()
             test.onNodeWithTag("input").assertIsFocused()
             test.onNodeWithTag("input").performTextInput("$selectionName\n")
@@ -124,7 +127,7 @@ class Test_SelectionSaveLoad {
             it.onChildAt(0).performTouchInput { longClick(center) }
             test.waitForIdle()
             // open sub-menu "Load"
-            test.onNodeWaitOrAssert(hasText("Load")).performTouchInput { click(center) }
+            test.onNodeWaitOrAssert(hasText("Get...")).performTouchInput { click(center) }
             test.waitForIdle()
             // count menu items
             val count = test.onAllNodesWithText(selectionName).fetchSemanticsNodes().size
