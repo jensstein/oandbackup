@@ -665,7 +665,7 @@ class ShellHandler {
         class ShellInit : Shell.Initializer() {
             override fun onInit(context: Context, shell: Shell): Boolean {
                 shell.newJob()
-                    .add("nsenter -t 1 -m sh")
+                    .add("nsenter --mount=/proc/1/ns/mnt sh")
                     .exec()
                 return true
             }
@@ -858,7 +858,7 @@ class ShellHandler {
                 if (field.isEmpty()) {
                     // only set to true if command is executed and returns exit code 0
                     field = when {
-                        hasNsEnter           -> listOf("su", "-c", "nsenter -t 1 -m sh")
+                        hasNsEnter           -> listOf("su", "-c", "nsenter --mount=/proc/1/ns/mnt sh")
                         hasMountMasterOption -> listOf("su", "--mount-master")
                         else                 -> listOf("su")
                     }
