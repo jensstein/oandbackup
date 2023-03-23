@@ -17,7 +17,6 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
-import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.activities.PrefsActivityX
 import com.machiav3lli.backup.pages.PermissionsPage
 import com.machiav3lli.backup.pages.WelcomePage
@@ -92,31 +91,6 @@ fun PrefsNavHost(
         }
         slideUpComposable(NavItem.Terminal.destination) {
             TerminalPage()
-        }
-    }
-}
-
-@OptIn(ExperimentalAnimationApi::class)
-@Composable
-fun IntroNavHost(
-    modifier: Modifier = Modifier,
-    navController: NavHostController,
-    beenWelcomed: Boolean,
-) {
-    AnimatedNavHost(
-        modifier = modifier,
-        navController = navController,
-        startDestination = if (beenWelcomed) NavItem.Permissions.destination
-        else NavItem.Welcome.destination
-    ) {
-        slideDownComposable(NavItem.Welcome.destination) {
-            WelcomePage()
-        }
-        slideUpComposable(route = NavItem.Permissions.destination) {
-            PermissionsPage()
-        }
-        activity(NavItem.Main.destination) {
-            this.activityClass = MainActivityX::class
         }
     }
 }
