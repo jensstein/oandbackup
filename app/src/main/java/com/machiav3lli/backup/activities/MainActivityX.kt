@@ -40,7 +40,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -348,7 +347,7 @@ class MainActivityX : BaseActivity() {
                             }
                         }
                     ) { paddingValues ->
-                        SideEffect { // TODO add biometric thingy OR maybe into SplashActivity?
+                        LaunchedEffect(key1 = viewModel) {
                             if (intent.extras != null) {
                                 val destination =
                                     intent.extras!!.getString(
