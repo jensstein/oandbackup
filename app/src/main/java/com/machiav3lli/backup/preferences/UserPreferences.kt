@@ -60,9 +60,11 @@ import com.machiav3lli.backup.utils.getLanguageList
 import com.machiav3lli.backup.utils.isBiometricLockAvailable
 import com.machiav3lli.backup.utils.isDeviceLockAvailable
 import com.machiav3lli.backup.utils.isDeviceLockEnabled
+import com.machiav3lli.backup.utils.recreateActivities
 import com.machiav3lli.backup.utils.restartApp
 import com.machiav3lli.backup.utils.setBackupDir
 import com.machiav3lli.backup.utils.setCustomTheme
+import com.machiav3lli.backup.utils.setLanguage
 import timber.log.Timber
 
 @Composable
@@ -120,7 +122,6 @@ fun UserPrefsPage() {
                     -> ListDialogUI(                            //TODO hg42 encapsulate in pref
                         pref = dialogsPref as ListPref,
                         openDialogCustom = openDialog,
-                        onChanged = { context.restartApp() }
                     )
                     pref_appTheme,
                     pref_appAccentColor,
@@ -128,15 +129,16 @@ fun UserPrefsPage() {
                     -> EnumDialogUI(                            //TODO hg42 encapsulate in pref
                         pref = dialogsPref as EnumPref,
                         openDialogCustom = openDialog,
-                        onChanged = {
-                            context.setCustomTheme()
-                            context.restartApp()
-                        }
                     )
                 }
             }
         }
     }
+}
+
+fun onThemeChanged() {
+    OABX.context.setCustomTheme()
+    OABX.context.recreateActivities()
 }
 
 val pref_languages = ListPref(
@@ -145,7 +147,12 @@ val pref_languages = ListPref(
     icon = Phosphor.Translate,
     iconTint = ColorOBB,
     entries = OABX.context.getLanguageList(),
-    defaultValue = PREFS_LANGUAGES_DEFAULT
+    defaultValue = PREFS_LANGUAGES_DEFAULT,
+    onChanged = {
+        OABX.context.setLanguage()
+        OABX.context.recreateActivities()
+        //OABX.context.restartApp()
+    },
 )
 
 val pref_appTheme = EnumPref(
@@ -155,7 +162,8 @@ val pref_appTheme = EnumPref(
     iconTint = ColorSpecial,
     entries = themeItems,
     defaultValue = if (OABX.minSDK(31)) THEME_DYNAMIC
-    else THEME_SYSTEM
+    else THEME_SYSTEM,
+    onChanged = ::onThemeChanged,
 )
 
 val pref_appAccentColor = EnumPref(
@@ -164,7 +172,8 @@ val pref_appAccentColor = EnumPref(
     icon = Phosphor.EyedropperSample,
     //iconTint = MaterialTheme.colorScheme.primary,
     entries = accentColorItems,
-    defaultValue = 0
+    defaultValue = 0,
+    onChanged = ::onThemeChanged,
 )
 
 val pref_appSecondaryColor = EnumPref(
@@ -173,7 +182,8 @@ val pref_appSecondaryColor = EnumPref(
     icon = Phosphor.EyedropperSample,
     //iconTint = MaterialTheme.colorScheme.secondary,
     entries = secondaryColorItems,
-    defaultValue = 3
+    defaultValue = 3,
+    onChanged = ::onThemeChanged,
 )
 
 val pref_blackTheme = BooleanPref(
@@ -182,6 +192,7 @@ val pref_blackTheme = BooleanPref(
     summaryId = R.string.prefs_theme_black_summary,
     icon = Phosphor.Swatches,
     defaultValue = false,
+    onChanged = ::onThemeChanged,
 )
 
 val pref_pathBackupFolder = StringPref(
