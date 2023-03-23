@@ -1,7 +1,6 @@
 package com.machiav3lli.backup.ui.compose.recycler
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyRow
@@ -13,6 +12,8 @@ import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -26,11 +27,12 @@ import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.preferences.pref_multilineInfoChips
-import com.machiav3lli.backup.ui.compose.item.BackupItem
+import com.machiav3lli.backup.preferences.pref_singularBackupRestore
 import com.machiav3lli.backup.ui.compose.item.BatchPackageItem
 import com.machiav3lli.backup.ui.compose.item.ExportedScheduleItem
 import com.machiav3lli.backup.ui.compose.item.LogItem
 import com.machiav3lli.backup.ui.compose.item.MainPackageItem
+import com.machiav3lli.backup.ui.compose.item.RestorePackageItem
 import com.machiav3lli.backup.ui.compose.item.ScheduleItem
 import com.machiav3lli.backup.ui.compose.item.UpdatedPackageItem
 import com.machiav3lli.backup.ui.item.InfoChipItem
@@ -78,16 +80,35 @@ fun BatchPackageRecycler(
     restore: Boolean = false,
     apkCheckedList: MutableSet<String> = mutableSetOf(),
     dataCheckedList: MutableSet<String> = mutableSetOf(),
+    apkBackupCheckedList: SnapshotStateMap<String, Int>,
+    dataBackupCheckedList: SnapshotStateMap<String, Int>,
     onApkClick: (Package, Boolean) -> Unit = { _: Package, _: Boolean -> },
     onDataClick: (Package, Boolean) -> Unit = { _: Package, _: Boolean -> },
-    onClick: (Package, Boolean, Boolean) -> Unit = { _: Package, _: Boolean, _: Boolean -> }
+    onBackupApkClick: (Backup, Boolean, Int) -> Unit = { _: Backup, _: Boolean, _: Int -> },
+    onBackupDataClick: (Backup, Boolean, Int) -> Unit = { _: Backup, _: Boolean, _: Int -> },
+    onClick: (Package, Boolean, Boolean) -> Unit = { _: Package, _: Boolean, _: Boolean -> },
 ) {
     VerticalItemList(
         modifier = modifier,
         list = productsList,
         itemKey = { it.packageName }
     ) {
-        BatchPackageItem(
+        val apkBackupChecked = remember(apkBackupCheckedList[it.packageName]) {
+            mutableStateOf(apkBackupCheckedList[it.packageName])
+        }
+        val dataBackupChecked = remember(dataBackupCheckedList[it.packageName]) {
+            mutableStateOf(dataBackupCheckedList[it.packageName])
+        }
+
+        if (restore && pref_singularBackupRestore.value) RestorePackageItem(
+            it,
+            apkBackupChecked,
+            dataBackupChecked,
+            onClick,
+            onBackupApkClick,
+            onBackupDataClick,
+        )
+        else BatchPackageItem(
             it,
             restore,
             apkCheckedList.contains(it.packageName),
