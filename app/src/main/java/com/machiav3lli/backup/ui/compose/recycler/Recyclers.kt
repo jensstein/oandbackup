@@ -60,7 +60,7 @@ fun HomePackageRecycler(
 fun UpdatedPackageRecycler(
     modifier: Modifier = Modifier,
     productsList: List<Package>?,
-    onClick: (Package) -> Unit = {}
+    onClick: (Package) -> Unit = {},
 ) {
     HorizontalItemList(
         modifier = modifier,
@@ -68,21 +68,6 @@ fun UpdatedPackageRecycler(
         itemKey = { it.packageName }
     ) {
         UpdatedPackageItem(it, onClick)
-    }
-}
-
-@Composable
-fun BackupRecycler(
-    productsList: List<Backup>?,
-    onRestore: (Backup) -> Unit = {},
-    onDelete: (Backup) -> Unit = {}
-) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        productsList?.forEach {
-            BackupItem(it, onRestore, onDelete)
-        }
     }
 }
 
@@ -119,7 +104,7 @@ fun ScheduleRecycler(
     modifier: Modifier = Modifier.fillMaxSize(),
     productsList: List<Schedule>?,
     onClick: (Schedule) -> Unit = {},
-    onCheckChanged: (Schedule, Boolean) -> Unit = { _: Schedule, _: Boolean -> }
+    onCheckChanged: (Schedule, Boolean) -> Unit = { _: Schedule, _: Boolean -> },
 ) {
     VerticalItemList(
         modifier = modifier,
@@ -134,7 +119,7 @@ fun ExportedScheduleRecycler(
     modifier: Modifier = Modifier,
     productsList: List<Pair<Schedule, StorageFile>>?,
     onImport: (Schedule) -> Unit = {},
-    onDelete: (StorageFile) -> Unit = {}
+    onDelete: (StorageFile) -> Unit = {},
 ) {
     VerticalItemList(
         modifier = modifier,
@@ -149,7 +134,7 @@ fun LogRecycler(
     modifier: Modifier = Modifier,
     productsList: List<Log>?,
     onShare: (Log) -> Unit = {},
-    onDelete: (Log) -> Unit = {}
+    onDelete: (Log) -> Unit = {},
 ) {
     VerticalItemList(
         modifier = modifier,

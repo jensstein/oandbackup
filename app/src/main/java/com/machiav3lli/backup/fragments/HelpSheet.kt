@@ -101,7 +101,7 @@ class HelpSheet : BaseSheet() {
         HelpPage()
     }
 
-    @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun HelpPage() {
         val nestedScrollConnection = rememberNestedScrollInteropConnection()

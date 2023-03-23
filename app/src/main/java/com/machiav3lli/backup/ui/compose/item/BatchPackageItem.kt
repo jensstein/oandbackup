@@ -37,7 +37,7 @@ fun BatchPackageItem(
     isDataChecked: Boolean,
     onClick: (Package, Boolean, Boolean) -> Unit = { _: Package, _: Boolean, _: Boolean -> },
     onApkClick: (Package, Boolean) -> Unit = { _: Package, _: Boolean -> },
-    onDataClick: (Package, Boolean) -> Unit = { _: Package, _: Boolean -> }
+    onDataClick: (Package, Boolean) -> Unit = { _: Package, _: Boolean -> },
 ) {
     val packageItem by remember(item) { mutableStateOf(item) }
     var apkChecked by remember(isApkChecked) { mutableStateOf(isApkChecked) }
@@ -46,7 +46,7 @@ fun BatchPackageItem(
         mutableStateOf(
             when {
                 packageItem.isSpecial || (restore && !packageItem.hasApk) -> false
-                else -> true
+                else                                                      -> true
             }
         )
     }
@@ -54,7 +54,7 @@ fun BatchPackageItem(
         mutableStateOf(
             when {
                 restore && !packageItem.hasData -> false
-                else -> true
+                else                            -> true
             }
         )
     }

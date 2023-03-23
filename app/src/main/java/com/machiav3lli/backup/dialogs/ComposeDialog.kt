@@ -64,7 +64,7 @@ import kotlinx.coroutines.delay
 fun BaseDialog(
     openDialogCustom: MutableState<Boolean>,
     modifier: Modifier = Modifier,
-    dialogUI: @Composable (() -> Unit)
+    dialogUI: @Composable (() -> Unit),
 ) {
     Dialog(
         onDismissRequest = { openDialogCustom.value = false },
@@ -125,7 +125,7 @@ fun ActionsDialogUI(
 fun EnumDialogUI(
     pref: EnumPref,
     openDialogCustom: MutableState<Boolean>,
-    onChanged: (() -> Unit) = {}
+    onChanged: (() -> Unit) = {},
 ) {
     val context = LocalContext.current
     var selected by remember { mutableStateOf(pref.value) }
@@ -183,7 +183,7 @@ fun EnumDialogUI(
 fun ListDialogUI(
     pref: ListPref,
     openDialogCustom: MutableState<Boolean>,
-    onChanged: (() -> Unit) = {}
+    onChanged: (() -> Unit) = {},
 ) {
     val context = LocalContext.current
     var selected by remember { mutableStateOf(pref.value) }
@@ -246,7 +246,7 @@ fun StringDialogUI(
     isPrivate: Boolean = false,
     confirm: Boolean = false,
     openDialogCustom: MutableState<Boolean>,
-    onChanged: (() -> Unit) = {}
+    onChanged: (() -> Unit) = {},
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current

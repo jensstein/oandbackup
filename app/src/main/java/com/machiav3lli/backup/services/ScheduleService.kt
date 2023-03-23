@@ -208,11 +208,12 @@ open class ScheduleService : Service() {
 
                                     val oneTimeWorkLiveData = OABX.work.manager
                                         .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
-                                    oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {    //TODO WECH hg42
-                                        override fun onChanged(t: WorkInfo?) {
-                                            if (t?.state == WorkInfo.State.SUCCEEDED ||
-                                                t?.state == WorkInfo.State.FAILED ||
-                                                t?.state == WorkInfo.State.CANCELLED
+                                    oneTimeWorkLiveData.observeForever(object :
+                                        Observer<WorkInfo> {    //TODO WECH hg42
+                                        override fun onChanged(t: WorkInfo) {
+                                            if (t.state == WorkInfo.State.SUCCEEDED ||
+                                                t.state == WorkInfo.State.FAILED ||
+                                                t.state == WorkInfo.State.CANCELLED
                                             ) {
                                                 finished += 1
                                                 val succeeded =
@@ -222,7 +223,8 @@ open class ScheduleService : Service() {
                                                         ?: ""
                                                 val error = t.outputData.getString("error")
                                                     ?: ""
-                                                if (error.isNotEmpty()) errors =     //TODO hg42 add to WorkHandler
+                                                if (error.isNotEmpty()) errors =
+                                                        //TODO hg42 add to WorkHandler
                                                     "$errors$packageLabel: ${
                                                         LogsHandler.handleErrorMessages(
                                                             this@ScheduleService,
@@ -232,7 +234,12 @@ open class ScheduleService : Service() {
                                                 resultsSuccess = resultsSuccess && succeeded
                                                 oneTimeWorkLiveData.removeObserver(this)
                                                 if (finished >= queued)
-                                                    endSchedule(scheduleId, name, "all jobs finished", intent)
+                                                    endSchedule(
+                                                        scheduleId,
+                                                        name,
+                                                        "all jobs finished",
+                                                        intent
+                                                    )
                                             }
                                         }
                                     })

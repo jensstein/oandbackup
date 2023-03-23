@@ -58,7 +58,7 @@ class BackupDialogFragment(val appInfo: Package, private val listener: ActionLis
 
         val checkedOptions = BooleanArray(possibleModes.size)
         possibleModes.forEachIndexed { i, mode ->
-            val activeMode = backupModeIfActive(requireContext(), mode)
+            val activeMode = backupModeIfActive(mode)
             selectedMode = selectedMode or activeMode
             checkedOptions[i] = activeMode != MODE_UNSET
         }

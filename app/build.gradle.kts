@@ -77,12 +77,10 @@ android {
         }
         named("debug") {
             applicationIdSuffix = ".debug"
-            //versionNameSuffix = "-alpha01"
             isMinifyEnabled = false
         }
         create("neo") {
             applicationIdSuffix = ".neo"
-            //versionNameSuffix = "-alpha01"
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

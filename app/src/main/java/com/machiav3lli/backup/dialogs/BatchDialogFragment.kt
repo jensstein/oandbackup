@@ -42,7 +42,7 @@ class BatchDialogFragment(
             selectedModes[i].let { message.append(": ${modeToStringAlt(requireContext(), it)}\n") }
         }
         val selectedPackages = selectedApps.map { it.packageName }.toList()
-        val selectedBackupModes = selectedModes.map { altModeToMode(requireContext(), it, backupBoolean) }
+        val selectedBackupModes = selectedModes.map { altModeToMode(it, backupBoolean) }
         return AlertDialog.Builder(requireActivity())
             .setTitle(title)
             .setMessage(message.toString().trim { it <= ' ' })
