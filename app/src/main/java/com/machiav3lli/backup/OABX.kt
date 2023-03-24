@@ -522,30 +522,37 @@ class OABX : Application() {
         // activity might be null
         private var activityRefs = mutableListOf<WeakReference<Activity>>()
         private var activityRef: WeakReference<Activity> = WeakReference(null)
-        var activity: Activity?
+        val activity: Activity?
             get() {
                 return activityRef.get()
             }
-            set(activity) {
-                if (activity == null) {
-                    synchronized(activityRefs) {
-                        activityRefs.remove(activityRef)
-                        activityRef = WeakReference(null)
-                        activityRefs = activityRefs.filter { it.get() != null }.toMutableList()
-                    }
-                } else {
-                    activityRef = WeakReference(activity)
-                    synchronized(activityRefs) {
-                        // remove activities of the same class
-                        activityRef.get()?.localClassName.let { localClassName ->
-                            activityRefs.removeIf { it.get()?.localClassName == localClassName }
-                        }
-                        activityRefs.add(activityRef)
-                        activityRefs = activityRefs.filter { it.get() != null }.toMutableList()
-                    }
-                    scheduleAlarmsOnce()        // if any activity is started
+
+        fun addActivity(activity: Activity) {
+            activityRef = WeakReference(activity)
+            synchronized(activityRefs) {
+                traceDebug { "activities.add: ${activityRef.get()?.localClassName}" }
+                // remove activities of the same class
+                activityRef.get()?.localClassName.let { localClassName ->
+                    activityRefs.removeIf { it.get()?.localClassName == localClassName }
                 }
+                activityRefs.add(activityRef)
+                activityRefs.removeIf { it.get() == null }
+                traceDebug { "activities(add): ${activityRefs.map { it.get()?.localClassName }}" }
             }
+
+            scheduleAlarmsOnce()        // if any activity is started
+        }
+
+        fun removeActivity(activity: Activity) {
+            synchronized(activityRefs) {
+                traceDebug { "activities.remove: ${activity.localClassName}" }
+                activityRefs.removeIf { it.get()?.localClassName == activity.localClassName }
+                activityRef = WeakReference(null)
+                activityRefs.removeIf { it.get() == null }
+                traceDebug { "activities(remove): ${activityRefs.map { it.get()?.localClassName }}" }
+            }
+        }
+
         val activities: List<Activity>
             get() {
                 synchronized(activityRefs) {
