@@ -212,7 +212,7 @@ class MainActivityX : BaseActivity() {
                     if (destination.route == NavItem.Main.destination && freshStart) {
                         traceBold { "******************** freshStart && Main ********************" }
                         freshStart = false
-                        refreshPackagesAndBackups()
+                        //refreshPackagesAndBackups()
                         runOnUiThread { showEncryptionDialog() }
                     }
                 }
