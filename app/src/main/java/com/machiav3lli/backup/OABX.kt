@@ -537,9 +537,9 @@ class OABX : Application() {
                     activityRef = WeakReference(activity)
                     synchronized(activityRefs) {
                         // remove activities of the same class
-                        //activityRef.get()?.localClassName.let { localClassName ->
-                        //    activityRefs.removeIf { it.get()?.localClassName == localClassName }
-                        //}
+                        activityRef.get()?.localClassName.let { localClassName ->
+                            activityRefs.removeIf { it.get()?.localClassName == localClassName }
+                        }
                         activityRefs.add(activityRef)
                         activityRefs = activityRefs.filter { it.get() != null }.toMutableList()
                     }
