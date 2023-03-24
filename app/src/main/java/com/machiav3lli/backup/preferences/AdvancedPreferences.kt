@@ -325,18 +325,6 @@ val pref_prettyJson = BooleanPref(
     defaultValue = true
 )
 
-val pref_lockFlowsWhileFindBackups = BooleanPref(
-    key = "dev-alt.lockFlowsWhileFindBackups",
-    summary = "lock database machinery while scanning backups",
-    defaultValue = false
-)
-
-val pref_lockFlowsWhileStartup = BooleanPref(
-    key = "dev-alt.lockFlowsWhileStartup",
-    summary = "lock database machinery while scanning backups",
-    defaultValue = false
-)
-
 val pref_busyTurnTime = IntPref(
     key = "dev-alt.busyTurnTime",
     summary = "time the animated busy bars need for one rotation (ms)",

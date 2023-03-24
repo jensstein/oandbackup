@@ -41,10 +41,8 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.handler.LogsHandler.Companion.unexpectedException
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
-import com.machiav3lli.backup.handler.endPackageFlowsLock
 import com.machiav3lli.backup.handler.findBackups
 import com.machiav3lli.backup.preferences.pref_busyHitTime
 import com.machiav3lli.backup.preferences.pref_cancelOnStart
@@ -54,7 +52,6 @@ import com.machiav3lli.backup.preferences.pref_useYamlProperties
 import com.machiav3lli.backup.preferences.pref_useYamlSchedules
 import com.machiav3lli.backup.services.PackageUnInstalledReceiver
 import com.machiav3lli.backup.services.ScheduleService
-import com.machiav3lli.backup.ui.compose.item.testOnStart
 import com.machiav3lli.backup.ui.item.BooleanPref
 import com.machiav3lli.backup.ui.item.IntPref
 import com.machiav3lli.backup.utils.TraceUtils
@@ -78,6 +75,7 @@ import kotlinx.serialization.modules.SerializersModule
 import timber.log.Timber
 import java.lang.Integer.max
 import java.lang.ref.WeakReference
+import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -277,45 +275,7 @@ class OABX : Application() {
             addInfoLogText("--> long press title for dev tools")
         }
 
-        val startupMsg = "******************** startup" // ensure it's the same for begin/end
-
-        if (startup)    // paranoid
-            beginBusy(startupMsg)
-
-        MainScope().launch(Dispatchers.IO) {
-            try {
-
-                findBackups()
-
-            } catch (e: Throwable) {
-                unexpectedException(e)
-            } finally {
-
-                // always need to do these
-                // catch all exceptions to make each block independent, so an error does not stop the rest
-
-                runCatching {
-                    val time = endBusy(startupMsg)
-                    addInfoLogText("startup: ${"%.3f".format(time / 1E9)} sec")
-                }
-                runCatching {
-                    startup = false
-                    // always (re)start the flows, even if they were not locked
-                    endPackageFlowsLock()  // before removing this, ensure init value will always be false
-                    // if removing endPackageFlowsLock do this:
-                    //updateAppTables()
-                    // this is not necessary any more:
-                    //main?.viewModel?.retriggerFlowsForUI()
-                }
-                runCatching {
-                    testOnStart()
-                }
-                runCatching {
-                    delay(60_000)
-                    scheduleAlarmsOnce()
-                }
-            }
-        }
+        Timber.w("******************** startup")
     }
 
     override fun onTerminate() {

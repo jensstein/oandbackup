@@ -32,7 +32,6 @@ import com.machiav3lli.backup.dbs.entity.AppExtras
 import com.machiav3lli.backup.dbs.entity.AppInfo
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Blocklist
-import com.machiav3lli.backup.handler.isPackageFlowsLocked
 import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.Package.Companion.invalidateCacheForPackage
@@ -50,7 +49,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
@@ -247,25 +245,18 @@ class MainViewModel(
 
             var list = emptyList<Package>()
 
-            if (isPackageFlowsLocked()) {
+            traceFlows { "******************** filtering - list: ${pkgs.size} filter: $filter" }
 
-                traceFlows { "******************** filtering - locked" }
+            list = pkgs
+                .filter { item: Package ->
+                    search.isEmpty() || (
+                            listOf(item.packageName, item.packageLabel)
+                                .any { it.contains(search, ignoreCase = true) }
+                            )
+                }
+                .applyFilter(filter, OABX.main!!)
 
-            } else {
-
-                traceFlows { "******************** filtering - list: ${pkgs.size} filter: $filter" }
-
-                list = pkgs
-                    .filter { item: Package ->
-                        search.isEmpty() || (
-                                listOf(item.packageName, item.packageLabel)
-                                    .any { it.contains(search, ignoreCase = true) }
-                                )
-                    }
-                    .applyFilter(filter, OABX.main!!)
-
-                traceFlows { "***** filtered ->> ${list.size}" }
-            }
+            traceFlows { "***** filtered ->> ${list.size}" }
 
             list
         }
@@ -282,7 +273,6 @@ class MainViewModel(
     val updatedPackages =
         //------------------------------------------------------------------------------------------ updatedPackages
         notBlockedList
-            .filterNot { isPackageFlowsLocked() }
             .trace { "updatePackages? ..." }
             .mapLatest {
                 it.filter(Package::isUpdated).toMutableList()

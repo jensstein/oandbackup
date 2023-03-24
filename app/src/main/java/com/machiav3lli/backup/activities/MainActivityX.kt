@@ -210,9 +210,9 @@ class MainActivityX : BaseActivity() {
                 navController.addOnDestinationChangedListener { _, destination, _ ->
                     barVisible = destination.route == NavItem.Main.destination
                     if (destination.route == NavItem.Main.destination && freshStart) {
-                        traceBold { "******************** freshStart && Main ********************" }
                         freshStart = false
-                        //refreshPackagesAndBackups()
+                        traceBold { "******************** freshStart && Main ********************" }
+                        refreshPackagesAndBackups()
                         runOnUiThread { showEncryptionDialog() }
                     }
                 }
