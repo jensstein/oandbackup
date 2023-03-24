@@ -89,18 +89,32 @@ fun Context.setCustomTheme() {
         theme.applyStyle(R.style.Black, true)
 }
 
-fun Context.setLanguage(): Configuration {
-    var setLocalCode = language
-    if (setLocalCode == PREFS_LANGUAGES_DEFAULT) {
-        setLocalCode = Locale.getDefault().toString()
-    }
+private var sysLocale: Locale? = null
+
+fun Context.setLanguage(lang: String = ""): Configuration {
+
+    // only works on start of activity
+
+    var setLocalCode = if (lang.isEmpty()) language else lang
+
     val config = resources.configuration
-    //val sysLocale = config.locales[0]
+
+    //TODO hg42 for now, cache the initial value, but this doesn't change with system settings
+    //TODO hg42 look for another method to retrieve the system setting
+    //TODO hg42 maybe asking the unwrapped app or activity context, but how to get this?
+    if (sysLocale == null)
+        sysLocale = config.locales[0]
+
+    if (setLocalCode == PREFS_LANGUAGES_DEFAULT) {
+        setLocalCode =  sysLocale.toString()
+    }
+
     //if (setLocalCode != sysLocale.language || setLocalCode != "${sysLocale.language}-r${sysLocale.country}") {
         val newLocale = getLocaleOfCode(setLocalCode)
-        //Locale.setDefault(newLocale)
         config.setLocale(newLocale)
+        Locale.setDefault(newLocale)
     //}
+
     return config
 }
 
@@ -117,7 +131,6 @@ fun Activity.showActionResult(result: ActionResult, saveMethod: DialogInterface.
             builder.show()
         }
     }
-
 
 fun Activity.showError(message: String?) = runOnUiThread {
     runOnUiThread {
