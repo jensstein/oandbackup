@@ -25,8 +25,6 @@ import androidx.lifecycle.ViewModelProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class BatchViewModel(appContext: Application) : AndroidViewModel(appContext) {
-    val apkCheckedList = mutableSetOf<String>()
-    val dataCheckedList = mutableSetOf<String>()
     val apkBackupCheckedList = SnapshotStateMap<String,Int>()
     val dataBackupCheckedList = SnapshotStateMap<String,Int>()
     private val progress = MutableStateFlow(Pair(true, 0.0f))

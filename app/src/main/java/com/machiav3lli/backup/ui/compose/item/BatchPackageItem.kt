@@ -26,7 +26,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.AsteriskSimple
@@ -159,8 +158,8 @@ fun RestorePackageItem(
     apkBackupChecked: MutableState<Int?>,
     dataBackupChecked: MutableState<Int?>,
     onClick: (Package, Boolean, Boolean) -> Unit = { _: Package, _: Boolean, _: Boolean -> },
-    onBackupApkClick: (Backup, Boolean, Int) -> Unit = { _: Backup, _: Boolean, _: Int -> },
-    onBackupDataClick: (Backup, Boolean, Int) -> Unit = { _: Backup, _: Boolean, _: Int -> },
+    onBackupApkClick: (String, Boolean, Int) -> Unit = { _: String, _: Boolean, _: Int -> },
+    onBackupDataClick: (String, Boolean, Int) -> Unit = { _: String, _: Boolean, _: Int -> },
 ) {
     val packageItem by remember(item) { mutableStateOf(item) }
     val apkBC by apkBackupChecked

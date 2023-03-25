@@ -205,8 +205,8 @@ fun RestoreBackupItem(
     index: Int,
     isApkChecked: Boolean = false,
     isDataChecked: Boolean = false,
-    onApkClick: (Backup, Boolean, Int) -> Unit = { _: Backup, _: Boolean, _: Int -> },
-    onDataClick: (Backup, Boolean, Int) -> Unit = { _: Backup, _: Boolean, _: Int -> },
+    onApkClick: (String, Boolean, Int) -> Unit = { _: String, _: Boolean, _: Int -> },
+    onDataClick: (String, Boolean, Int) -> Unit = { _: String, _: Boolean, _: Int -> },
 ) {
     var apkChecked by remember(isApkChecked) { mutableStateOf(isApkChecked) }
     var dataChecked by remember(isDataChecked) { mutableStateOf(isDataChecked) }
@@ -227,14 +227,14 @@ fun RestoreBackupItem(
                 enabled = showApk,
                 onCheckedChange = {
                     apkChecked = it
-                    onApkClick(item, it, index)
+                    onApkClick(item.packageName, it, index)
                 }
             )
             Checkbox(checked = dataChecked,
                 enabled = showData,
                 onCheckedChange = {
                     dataChecked = it
-                    onDataClick(item, it, index)
+                    onDataClick(item.packageName, it, index)
                 }
             )
             Column(

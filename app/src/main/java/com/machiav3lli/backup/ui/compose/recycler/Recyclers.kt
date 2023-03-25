@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import coil.imageLoader
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
-import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.items.Package
@@ -78,14 +77,10 @@ fun BatchPackageRecycler(
     modifier: Modifier = Modifier.fillMaxSize(),
     productsList: List<Package>?,
     restore: Boolean = false,
-    apkCheckedList: MutableSet<String> = mutableSetOf(),
-    dataCheckedList: MutableSet<String> = mutableSetOf(),
     apkBackupCheckedList: SnapshotStateMap<String, Int>,
     dataBackupCheckedList: SnapshotStateMap<String, Int>,
-    onApkClick: (Package, Boolean) -> Unit = { _: Package, _: Boolean -> },
-    onDataClick: (Package, Boolean) -> Unit = { _: Package, _: Boolean -> },
-    onBackupApkClick: (Backup, Boolean, Int) -> Unit = { _: Backup, _: Boolean, _: Int -> },
-    onBackupDataClick: (Backup, Boolean, Int) -> Unit = { _: Backup, _: Boolean, _: Int -> },
+    onBackupApkClick: (String, Boolean, Int) -> Unit = { _: String, _: Boolean, _: Int -> },
+    onBackupDataClick: (String, Boolean, Int) -> Unit = { _: String, _: Boolean, _: Int -> },
     onClick: (Package, Boolean, Boolean) -> Unit = { _: Package, _: Boolean, _: Boolean -> },
 ) {
     VerticalItemList(
@@ -111,11 +106,15 @@ fun BatchPackageRecycler(
         else BatchPackageItem(
             it,
             restore,
-            apkCheckedList.contains(it.packageName),
-            dataCheckedList.contains(it.packageName),
+            apkBackupChecked.value == 0,
+            dataBackupChecked.value == 0,
             onClick,
-            onApkClick,
-            onDataClick
+            onApkClick = { p, b ->
+                onBackupApkClick(p.packageName, b, 0)
+            },
+            onDataClick = { p, b ->
+                onBackupDataClick(p.packageName, b, 0)
+            }
         )
     }
 }
