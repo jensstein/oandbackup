@@ -23,13 +23,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.items.Package
-import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdatedPackageItem(
     item: Package,
-    onClick: (Package) -> Unit = {}
+    onClick: (Package) -> Unit = {},
 ) {
     val imageData by remember(item) {
         mutableStateOf(
@@ -41,7 +40,7 @@ fun UpdatedPackageItem(
     Card(
         modifier = Modifier,
         border = BorderStroke(0.dp, MaterialTheme.colorScheme.surface),
-        shape = RoundedCornerShape(LocalShapes.current.medium),
+        shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.outlinedCardColors(
             containerColor = Color.Transparent
         ),

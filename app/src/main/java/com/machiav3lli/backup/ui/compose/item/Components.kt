@@ -38,7 +38,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ButtonDefaults
@@ -86,7 +85,6 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import coil.ImageLoader
-import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.imageLoader
@@ -146,7 +144,6 @@ import com.machiav3lli.backup.ui.compose.theme.ColorSpecial
 import com.machiav3lli.backup.ui.compose.theme.ColorSystem
 import com.machiav3lli.backup.ui.compose.theme.ColorUpdated
 import com.machiav3lli.backup.ui.compose.theme.ColorUser
-import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.TraceUtils.beginNanoTimer
 import com.machiav3lli.backup.utils.TraceUtils.endNanoTimer
 import com.machiav3lli.backup.utils.brighter
@@ -186,27 +183,6 @@ fun PrefIcon(
 fun PackageIcon(
     modifier: Modifier = Modifier,
     item: Package?,
-    model: ImageRequest,
-    imageLoader: ImageLoader = LocalContext.current.imageLoader,
-) {
-    beginNanoTimer("pkgIcon.AI")
-    AsyncImage(
-        modifier = modifier
-            .size(ICON_SIZE_LARGE)
-            .clip(RoundedCornerShape(LocalShapes.current.medium)),
-        model = model,
-        contentDescription = null,
-        contentScale = ContentScale.Fit,
-        error = placeholderIconPainter(item, imageLoader),
-        placeholder = placeholderIconPainter(item, imageLoader)
-    )
-    endNanoTimer("pkgIcon.AI")
-}
-
-@Composable
-fun PackageIcon(
-    modifier: Modifier = Modifier,
-    item: Package?,
     imageData: Any,
     imageLoader: ImageLoader = LocalContext.current.imageLoader,
 ) {
@@ -214,7 +190,7 @@ fun PackageIcon(
     Image(
         modifier = modifier
             .size(ICON_SIZE_LARGE)
-            .clip(RoundedCornerShape(LocalShapes.current.medium)),
+            .clip(MaterialTheme.shapes.medium),
         painter = cachedAsyncImagePainter(
             model = imageData,
             imageLoader = imageLoader,
@@ -278,7 +254,7 @@ object IconCache {
 
     fun getIcon(key: Any): Painter? {
         return synchronized(painterCache) {
-            painterCache.get(key)
+            painterCache[key]
         }
     }
 
@@ -349,11 +325,11 @@ fun cachedAsyncImagePainter(
                 }
             )
         endNanoTimer("rmbrAIP")
-        if (rememberedPainter.state is AsyncImagePainter.State.Success) {
+        painter = if (rememberedPainter.state is AsyncImagePainter.State.Success) {
             //synchronized(painterCache) { painterCache.put(model, rememberedPainter) }
-            painter = rememberedPainter
+            rememberedPainter
         } else {
-            painter = altPainter ?: rememberedPainter
+            altPainter ?: rememberedPainter
         }
     }
     endNanoTimer("rmbrCachedAIP")
@@ -453,31 +429,6 @@ fun ElevatedActionButton(
             )
     }
 }
-
-
-@Composable
-fun TopBarButton(
-    modifier: Modifier = Modifier
-        .padding(4.dp)
-        .size(52.dp),
-    icon: ImageVector,
-    description: String = "",
-    onClick: () -> Unit,
-) {
-    ElevatedButton(
-        modifier = modifier,
-        colors = ButtonDefaults.elevatedButtonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onSurface
-        ),
-        contentPadding = PaddingValues(horizontal = 2.dp, vertical = 10.dp),
-        shape = MaterialTheme.shapes.medium,
-        onClick = { onClick() }
-    ) {
-        Icon(imageVector = icon, contentDescription = description)
-    }
-}
-
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
@@ -28,7 +27,6 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Play
-import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.startSchedule
 import com.machiav3lli.backup.utils.timeLeft
 import kotlinx.coroutines.CoroutineScope
@@ -39,7 +37,7 @@ import kotlinx.coroutines.Dispatchers
 fun ScheduleItem(
     schedule: Schedule,
     onClick: (Schedule) -> Unit = {},
-    onCheckChanged: (Schedule, Boolean) -> Unit = { _: Schedule, _: Boolean -> }
+    onCheckChanged: (Schedule, Boolean) -> Unit = { _: Schedule, _: Boolean -> },
 ) {
     val (checked, check) = mutableStateOf(schedule.enabled)
     val (absTime, relTime) = timeLeft(schedule, CoroutineScope(Dispatchers.Default))
@@ -47,7 +45,7 @@ fun ScheduleItem(
 
     Card(
         modifier = Modifier,
-        shape = RoundedCornerShape(LocalShapes.current.medium),
+        shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent
         ),

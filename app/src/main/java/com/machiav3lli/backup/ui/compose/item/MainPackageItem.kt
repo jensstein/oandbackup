@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
@@ -65,7 +64,6 @@ import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ArchiveTray
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Check
 import com.machiav3lli.backup.ui.compose.icons.phosphor.X
-import com.machiav3lli.backup.ui.compose.theme.LocalShapes
 import com.machiav3lli.backup.utils.SystemUtils.numCores
 import com.machiav3lli.backup.utils.SystemUtils.runParallel
 import com.machiav3lli.backup.utils.TraceUtils.beginNanoTimer
@@ -314,7 +312,6 @@ fun SelectionGetMenu(
     Selections(action = "get", onAction = onAction)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectionPutMenu(
     selection: List<String>,
@@ -352,7 +349,7 @@ fun openSubMenu(
     subMenu.value = {
         DropdownMenu(
             expanded = true,
-            offset = DpOffset(100.dp, -1000.dp),
+            offset = DpOffset(100.dp, (-1000).dp),
             modifier = Modifier.background(MaterialTheme.colorScheme.surfaceColorAtElevation(100.dp)),
             onDismissRequest = { subMenu.value = null }
         ) {
@@ -607,7 +604,9 @@ fun MainPackageContextMenu(
             text = { Text("Deselect Not Visible") },
             onClick = {
                 expanded.value = false
-                (selection.keys - visible.map { it.packageName }).forEach { selection[it] = false }
+                (selection.keys - visible.map { it.packageName }.toSet()).forEach {
+                    selection[it] = false
+                }
             }
         )
 
@@ -775,7 +774,7 @@ fun MainPackageItem(
 
     Card(
         modifier = Modifier,
-        shape = RoundedCornerShape(LocalShapes.current.medium),
+        shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent
         ),

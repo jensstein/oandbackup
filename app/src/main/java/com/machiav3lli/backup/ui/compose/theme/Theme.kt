@@ -7,7 +7,6 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,55 +28,53 @@ fun AppTheme(
     val context = LocalContext.current
     val blackTheme by remember(pref_blackTheme) { mutableStateOf(pref_blackTheme.value) }
 
-    CompositionLocalProvider(LocalShapes provides ShapeSize()) {
-        MaterialTheme(
-            colorScheme = when {
-                styleTheme == THEME_DYNAMIC && darkTheme && blackTheme
-                -> dynamicDarkColorScheme(context).copy(
-                    background = Color.Black
-                )
-                styleTheme == THEME_DYNAMIC && darkTheme
-                -> dynamicDarkColorScheme(context)
-                styleTheme == THEME_DYNAMIC
-                -> dynamicLightColorScheme(context)
-                darkTheme && blackTheme
-                -> DarkColors.copy(
-                    background = Color.Black,
-                    primary = primaryColor,
-                    primaryContainer = primaryColor
-                        .darker(0.2f),
-                    inverseOnSurface = primaryColor,
-                    tertiary = secondaryColor,
-                    tertiaryContainer = secondaryColor
-                        .darker(0.2f),
-                    surfaceTint = primaryColor
-                )
-                darkTheme
-                -> DarkColors.copy(
-                    primary = primaryColor,
-                    primaryContainer = primaryColor
-                        .darker(0.2f),
-                    inverseOnSurface = primaryColor,
-                    tertiary = secondaryColor,
-                    tertiaryContainer = secondaryColor
-                        .darker(0.2f),
-                    surfaceTint = primaryColor
-                )
-                else
-                -> LightColors.copy(
-                    primary = primaryColor,
-                    primaryContainer = primaryColor
-                        .brighter(0.2f),
-                    inverseOnSurface = primaryColor,
-                    tertiary = secondaryColor,
-                    tertiaryContainer = secondaryColor
-                        .brighter(0.2f),
-                    surfaceTint = primaryColor
-                )
-            },
-            content = content
-        )
-    }
+    MaterialTheme(
+        colorScheme = when {
+            styleTheme == THEME_DYNAMIC && darkTheme && blackTheme
+            -> dynamicDarkColorScheme(context).copy(
+                background = Color.Black
+            )
+            styleTheme == THEME_DYNAMIC && darkTheme
+            -> dynamicDarkColorScheme(context)
+            styleTheme == THEME_DYNAMIC
+            -> dynamicLightColorScheme(context)
+            darkTheme && blackTheme
+            -> DarkColors.copy(
+                background = Color.Black,
+                primary = primaryColor,
+                primaryContainer = primaryColor
+                    .darker(0.2f),
+                inverseOnSurface = primaryColor,
+                tertiary = secondaryColor,
+                tertiaryContainer = secondaryColor
+                    .darker(0.2f),
+                surfaceTint = primaryColor
+            )
+            darkTheme
+            -> DarkColors.copy(
+                primary = primaryColor,
+                primaryContainer = primaryColor
+                    .darker(0.2f),
+                inverseOnSurface = primaryColor,
+                tertiary = secondaryColor,
+                tertiaryContainer = secondaryColor
+                    .darker(0.2f),
+                surfaceTint = primaryColor
+            )
+            else
+            -> LightColors.copy(
+                primary = primaryColor,
+                primaryContainer = primaryColor
+                    .brighter(0.2f),
+                inverseOnSurface = primaryColor,
+                tertiary = secondaryColor,
+                tertiaryContainer = secondaryColor
+                    .brighter(0.2f),
+                surfaceTint = primaryColor
+            )
+        },
+        content = content
+    )
 }
 
 private val LightColors = lightColorScheme(

@@ -46,7 +46,6 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dialogs.BaseDialog
 import com.machiav3lli.backup.dialogs.BatchActionDialogUI
-import com.machiav3lli.backup.dialogs.BatchDialogFragment
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.preferences.pref_singularBackupRestore
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
@@ -87,12 +86,6 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                 .filter { backupBoolean || it.latestBackup?.hasData == true }
                 .size
         )
-    }
-
-    val batchConfirmListener = object : BatchDialogFragment.ConfirmListener {
-        override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {
-            main.startBatchAction(backupBoolean, selectedPackages, selectedModes)
-        }
     }
 
     val selection = remember { mutableStateMapOf<Package, Boolean>() }

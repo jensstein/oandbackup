@@ -30,7 +30,7 @@ import timber.log.Timber
 
 class BatchDialogFragment(
     private var backupBoolean: Boolean, private val selectedApps: ArrayList<PackageInfo>,
-    private val selectedModes: ArrayList<Int>, private val confirmListener: ConfirmListener
+    private val selectedModes: ArrayList<Int>, private val confirmListener: ConfirmListener,
 ) : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
