@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -88,6 +90,8 @@ fun ActionsDialogUI(
     secondaryIcon: ImageVector? = null,
     secondaryAction: (() -> Unit)? = null,
 ) {
+    val scrollState = rememberScrollState()
+
     Card(
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier.padding(8.dp),
@@ -100,7 +104,14 @@ fun ActionsDialogUI(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(text = titleText, style = MaterialTheme.typography.titleLarge)
-            Text(text = messageText, style = MaterialTheme.typography.bodyMedium)
+            Column(
+                modifier = Modifier
+                    .verticalScroll(scrollState)
+                    .fillMaxWidth()
+                    .weight(1f, false)
+            ) {
+                Text(text = messageText, style = MaterialTheme.typography.bodyMedium)
+            }
 
             Row(
                 Modifier.fillMaxWidth()
