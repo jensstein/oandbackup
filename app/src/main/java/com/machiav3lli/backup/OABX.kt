@@ -208,6 +208,12 @@ val traceDebug = TraceUtils.TracePref(
     default = false
 )
 
+val traceWIP = TraceUtils.TracePrefExtreme(
+    name = "WIP",
+    summary = "trace for debugging purposes (for devs)",
+    default = false
+)
+
 val traceBackups = TraceUtils.TracePref(
     name = "Backups",
     summary = "trace backups",

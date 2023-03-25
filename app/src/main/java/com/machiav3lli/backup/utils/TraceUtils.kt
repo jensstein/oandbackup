@@ -23,6 +23,11 @@ object TraceUtils {
             Timber.w(text)
     }
 
+    fun traceExtremeImpl(text: String = "") {
+        if (pref_trace.value)
+            Timber.e("# # # # # # # # # # # # # # # # # # # # " + text)
+    }
+
     // use these instead to have lazy evaluation of the text in normal situations
 
     fun trace(lazyText: () -> String) {
@@ -31,6 +36,10 @@ object TraceUtils {
 
     fun traceBold(lazyText: () -> String) {
         traceBoldImpl(lazyText())
+    }
+
+    fun traceExtreme(lazyText: () -> String) {
+        traceExtremeImpl(lazyText())
     }
 
     open class TracePref(
@@ -59,6 +68,15 @@ object TraceUtils {
         override operator fun invoke(lazyText: () -> String) {
             if (pref.value)
                 traceBoldImpl("[$name] ${lazyText()}")
+        }
+    }
+
+    class TracePrefExtreme(name: String, summary: String, default: Boolean) :
+        TracePref(name, summary, default) {
+
+        override operator fun invoke(lazyText: () -> String) {
+            if (pref.value)
+                traceExtremeImpl("[$name] ${lazyText()}")
         }
     }
 
