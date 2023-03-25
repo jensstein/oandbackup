@@ -240,6 +240,9 @@ val secondaryColor
     }
 
 fun Context.restartApp() {
+    Timber.w(
+        "restarting application"
+    )
     startActivity(
         Intent.makeRestartActivityTask(
             ComponentName(this, MainActivityX::class.java)
@@ -261,7 +264,7 @@ fun Context.recreateActivities() {
                 OABX.activities.map {
                     "${it.javaClass.simpleName}@${Integer.toHexString(it.hashCode())}"
                 }.joinToString(" ")
-            } language=${pref_languages.value}"
+            }"
         )
         OABX.activities
             .forEach {
