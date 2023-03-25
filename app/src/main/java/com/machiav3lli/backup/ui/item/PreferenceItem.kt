@@ -24,7 +24,7 @@ open class Pref(
     val defaultValue: Any? = null,
     val icon: ImageVector? = null,
     val iconTint: Color?,
-    val onChanged: (() -> Unit)? = null,
+    val onChanged: ((Pref) -> Unit)? = null,
     val enableIf: (() -> Boolean)? = null,
     var group: String = "",
 ) {
@@ -44,7 +44,7 @@ open class Pref(
                     MainScope().launch {
                         while (lockedActions > 0)
                             delay(500)
-                        onChanged()
+                        onChanged(pref)
                     }
                 }
             }
@@ -242,7 +242,7 @@ class BooleanPref(
     icon: ImageVector? = null,
     iconTint: Color? = null,
     defaultValue: Boolean,
-    onChanged: (() -> Unit)? = null,
+    onChanged: ((Pref) -> Unit)? = null,
     enableIf: (() -> Boolean)? = null,
 ) : Pref(key, private, summary, titleId, summaryId, defaultValue, icon, iconTint, onChanged, enableIf) {
     var value
@@ -262,7 +262,7 @@ class IntPref(
     iconTint: Color? = null,
     val entries: List<Int>,
     defaultValue: Int,
-    onChanged: (() -> Unit)? = null,
+    onChanged: ((Pref) -> Unit)? = null,
     enableIf: (() -> Boolean)? = null,
 ) : Pref(key, private, summary, titleId, summaryId, defaultValue, icon, iconTint, onChanged, enableIf) {
     var value
@@ -281,7 +281,7 @@ open class StringPref(
     icon: ImageVector? = null,
     iconTint: Color? = null,
     defaultValue: String,
-    onChanged: (() -> Unit)? = null,
+    onChanged: ((Pref) -> Unit)? = null,
     enableIf: (() -> Boolean)? = null,
 ) : Pref(key, private, summary, titleId, summaryId, defaultValue, icon, iconTint, onChanged, enableIf) {
     open var value
@@ -300,7 +300,7 @@ class PasswordPref(
     icon: ImageVector? = null,
     iconTint: Color? = null,
     defaultValue: String,
-    onChanged: (() -> Unit)? = null,
+    onChanged: ((Pref) -> Unit)? = null,
     enableIf: (() -> Boolean)? = null,
 ) : StringPref(key, private, summary, titleId, summaryId, icon, iconTint, defaultValue, onChanged, enableIf) {
     override var value
@@ -320,7 +320,7 @@ class ListPref(
     iconTint: Color? = null,
     val entries: Map<String, String>,
     defaultValue: String,
-    onChanged: (() -> Unit)? = null,
+    onChanged: ((Pref) -> Unit)? = null,
     enableIf: (() -> Boolean)? = null,
 ) : Pref(key, private, summary, titleId, summaryId, defaultValue, icon, iconTint, onChanged, enableIf) {
     var value
@@ -340,7 +340,7 @@ class EnumPref(
     iconTint: Color? = null,
     val entries: Map<Int, Int>,
     defaultValue: Int,
-    onChanged: (() -> Unit)? = null,
+    onChanged: ((Pref) -> Unit)? = null,
     enableIf: (() -> Boolean)? = null,
 ) : Pref(key, private, summary, titleId, summaryId, defaultValue, icon, iconTint, onChanged, enableIf) {
     var value
@@ -358,7 +358,7 @@ class LinkPref(
     @StringRes summaryId: Int = -1,
     icon: ImageVector? = null,
     iconTint: Color? = null,
-    onChanged: (() -> Unit)? = null,
+    onChanged: ((Pref) -> Unit)? = null,
     enableIf: (() -> Boolean)? = null,
 ) : Pref(key, private, summary, titleId, summaryId, null, icon, iconTint, onChanged, enableIf)
 
@@ -370,9 +370,7 @@ class LaunchPref(
     @StringRes summaryId: Int = -1,
     icon: ImageVector? = null,
     iconTint: Color? = null,
-    onChanged: (() -> Unit)? = null,
+    onChanged: ((Pref) -> Unit)? = null,
     enableIf: (() -> Boolean)? = null,
     val onClick: (() -> Unit) = {},
 ) : Pref(key, private, summary, titleId, summaryId, null, icon, iconTint, onChanged, enableIf)
-
-

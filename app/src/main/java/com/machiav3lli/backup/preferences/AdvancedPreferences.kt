@@ -301,6 +301,12 @@ val pref_refreshAppInfoTimeout = IntPref(
 
 //---------------------------------------- developer settings - implementation alternatives
 
+val pref_restartAppOnLanguageChange = BooleanPref(
+    key = "dev-alt.restartAppOnLanguageChange",
+    summary = "create human readable yaml format for preferences",
+    defaultValue = false
+)
+
 val pref_useYamlPreferences = BooleanPref(
     key = "$debug-alt.useYamlPreferences",
     summary = "create human readable yaml format for preferences",

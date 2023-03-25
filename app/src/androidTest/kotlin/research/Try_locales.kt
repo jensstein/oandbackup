@@ -3,7 +3,7 @@ package research
 import android.content.res.Configuration
 import androidx.test.platform.app.InstrumentationRegistry
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_LANGUAGES_DEFAULT
+import com.machiav3lli.backup.PREFS_LANGUAGES_SYSTEM
 import com.machiav3lli.backup.utils.getLocaleOfCode
 import org.junit.Test
 import java.util.*
@@ -36,7 +36,7 @@ class Try_locales {
                 sysLocale = config.locales[0]
 
             var setLocalCode = language
-            if (setLocalCode == PREFS_LANGUAGES_DEFAULT) {
+            if (setLocalCode == PREFS_LANGUAGES_SYSTEM) {
                 setLocalCode = sysLocale?.language ?: Locale.US.language
             }
 
@@ -53,7 +53,7 @@ class Try_locales {
 
         showLocales()
 
-        setLanguage(PREFS_LANGUAGES_DEFAULT)
+        setLanguage(PREFS_LANGUAGES_SYSTEM)
 
         showLocales()
 

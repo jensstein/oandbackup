@@ -24,6 +24,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.os.LocaleList
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.Arrangement
@@ -41,7 +42,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.ColorUtils
 import com.google.android.material.color.DynamicColors
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_LANGUAGES_DEFAULT
+import com.machiav3lli.backup.PREFS_LANGUAGES_SYSTEM
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.THEME_DARK
 import com.machiav3lli.backup.THEME_DYNAMIC
@@ -50,7 +51,7 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.preferences.pref_blackTheme
-import com.machiav3lli.backup.preferences.pref_languages
+import com.machiav3lli.backup.traceDebug
 import com.machiav3lli.backup.ui.compose.theme.ApricotOrange
 import com.machiav3lli.backup.ui.compose.theme.ArcticCyan
 import com.machiav3lli.backup.ui.compose.theme.AzureBlue
@@ -89,31 +90,43 @@ fun Context.setCustomTheme() {
         theme.applyStyle(R.style.Black, true)
 }
 
-private var sysLocale: Locale? = null
+private var sysLocale: LocaleList? = null
+private var sysLocaleJVM: Locale? = null
 
 fun Context.setLanguage(lang: String = ""): Configuration {
 
     // only works on start of activity
 
-    var setLocalCode = if (lang.isEmpty()) language else lang
+    var setLocaleCode = if (lang.isEmpty()) language else lang  // parameter for tests
+    traceDebug { "Locale.set: ${setLocaleCode}" }
 
     val config = resources.configuration
 
     //TODO hg42 for now, cache the initial value, but this doesn't change with system settings
     //TODO hg42 look for another method to retrieve the system setting
     //TODO hg42 maybe asking the unwrapped app or activity context, but how to get this?
-    if (sysLocale == null)
-        sysLocale = config.locales[0]
-
-    if (setLocalCode == PREFS_LANGUAGES_DEFAULT) {
-        setLocalCode =  sysLocale.toString()
+    if (sysLocale == null) {
+        sysLocale = config.locales
+        sysLocaleJVM = Locale.getDefault()
+        traceDebug { "Locale.sys: $sysLocale $sysLocaleJVM" }
     }
 
-    //if (setLocalCode != sysLocale.language || setLocalCode != "${sysLocale.language}-r${sysLocale.country}") {
-        val newLocale = getLocaleOfCode(setLocalCode)
+    var wantSystem = false
+    if (setLocaleCode == PREFS_LANGUAGES_SYSTEM) {
+        wantSystem = true
+        setLocaleCode = sysLocale.toString()
+    }
+
+    if (wantSystem) {
+        config.setLocales(sysLocale)
+        sysLocaleJVM?.let { Locale.setDefault(it) }
+    } else {
+        val newLocale = getLocaleOfCode(setLocaleCode)
+        traceDebug { "Locale.new: ${newLocale}" }
         config.setLocale(newLocale)
         Locale.setDefault(newLocale)
-    //}
+    }
+    traceDebug { "Locale.===: ${config.locales} $${Locale.getDefault()}" }
 
     return config
 }
@@ -226,11 +239,13 @@ val secondaryColor
         else -> ArcticCyan
     }
 
-fun Context.restartApp() = startActivity(
-    Intent.makeRestartActivityTask(
-        ComponentName(this, MainActivityX::class.java)
+fun Context.restartApp() {
+    startActivity(
+        Intent.makeRestartActivityTask(
+            ComponentName(this, MainActivityX::class.java)
+        )
     )
-)
+}
 
 var recreateActivitiesJob: Job? = null
 
@@ -241,11 +256,13 @@ fun Context.recreateActivities() {
     recreateActivitiesJob = MainScope().launch {
         //Timber.w("recreating activities...")
         delay(500)
-        Timber.w("recreating activities ${
-            OABX.activities.map {
-                "${it.javaClass.simpleName}@${Integer.toHexString(it.hashCode())}"
-            }.joinToString(" ")
-        } language=${pref_languages.value}")
+        Timber.w(
+            "recreating activities ${
+                OABX.activities.map {
+                    "${it.javaClass.simpleName}@${Integer.toHexString(it.hashCode())}"
+                }.joinToString(" ")
+            } language=${pref_languages.value}"
+        )
         OABX.activities
             .forEach {
                 runCatching {

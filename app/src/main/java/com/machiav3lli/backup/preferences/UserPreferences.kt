@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.BACKUP_DIRECTORY_INTENT
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.PREFS_LANGUAGES_DEFAULT
+import com.machiav3lli.backup.PREFS_LANGUAGES_SYSTEM
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.THEME_DYNAMIC
 import com.machiav3lli.backup.THEME_SYSTEM
@@ -65,7 +65,9 @@ import com.machiav3lli.backup.utils.recreateActivities
 import com.machiav3lli.backup.utils.restartApp
 import com.machiav3lli.backup.utils.setBackupDir
 import com.machiav3lli.backup.utils.setCustomTheme
-import com.machiav3lli.backup.utils.setLanguage
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @Composable
@@ -137,7 +139,7 @@ fun UserPrefsPage() {
     }
 }
 
-fun onThemeChanged() {
+fun onThemeChanged(pref: Pref) {
     OABX.context.setCustomTheme()
     OABX.context.recreateActivities()
 }
@@ -148,11 +150,15 @@ val pref_languages = ListPref(
     icon = Phosphor.Translate,
     iconTint = ColorOBB,
     entries = OABX.context.getLanguageList(),
-    defaultValue = PREFS_LANGUAGES_DEFAULT,
+    defaultValue = PREFS_LANGUAGES_SYSTEM,
     onChanged = {
-        OABX.context.setLanguage()
-        OABX.context.recreateActivities()
-        //OABX.context.restartApp()
+        val pref = it as ListPref
+        // does not work as expected, because restartApp doesn't really restart the whole app
+        //if (pref.value == PREFS_LANGUAGES_SYSTEM)
+        if (pref_restartAppOnLanguageChange.value)
+            OABX.context.restartApp()   // does not really restart the app, only recreates
+        else
+            OABX.context.recreateActivities()
     },
 )
 
