@@ -53,7 +53,7 @@ abstract class BaseActivity : AppCompatActivity() {
                 TraceUtils.classAndId(this)
             }"
         )
-        OABX.addActivity(this)
+        OABX.resumeActivity(this)
         super.onResume()
     }
 

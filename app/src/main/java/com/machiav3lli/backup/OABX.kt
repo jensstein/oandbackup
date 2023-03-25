@@ -499,14 +499,27 @@ class OABX : Application() {
         fun addActivity(activity: Activity) {
             activityRef = WeakReference(activity)
             synchronized(activityRefs) {
-                traceDebug { "activities.add: ${activityRef.get()?.localClassName}" }
+                traceDebug { "activities.add: ${classAndId(activity)}" }
                 // remove activities of the same class
-                activityRef.get()?.localClassName.let { localClassName ->
-                    activityRefs.removeIf { it.get()?.localClassName == localClassName }
-                }
+                //activityRef.get()?.localClassName.let { localClassName ->
+                //    activityRefs.removeIf { it.get()?.localClassName == localClassName }
+                //}
                 activityRefs.add(activityRef)
                 activityRefs.removeIf { it.get() == null }
-                traceDebug { "activities(add): ${activityRefs.map { it.get()?.localClassName }}" }
+                traceDebug { "activities(add): ${activityRefs.map { classAndId(it.get()) }}" }
+            }
+
+            scheduleAlarmsOnce()        // if any activity is started
+        }
+
+        fun resumeActivity(activity: Activity) {
+            activityRef = WeakReference(activity)
+            synchronized(activityRefs) {
+                traceDebug { "activities.res: ${classAndId(activity)}" }
+                activityRefs.removeIf { it.get() == activity }
+                activityRefs.add(activityRef)
+                activityRefs.removeIf { it.get() == null }
+                traceDebug { "activities(res): ${activityRefs.map { classAndId(it.get()) }}" }
             }
 
             scheduleAlarmsOnce()        // if any activity is started
@@ -514,11 +527,12 @@ class OABX : Application() {
 
         fun removeActivity(activity: Activity) {
             synchronized(activityRefs) {
-                traceDebug { "activities.remove: ${activity.localClassName}" }
-                activityRefs.removeIf { it.get()?.localClassName == activity.localClassName }
+                traceDebug { "activities.remove: ${classAndId(activity)}" }
+                //activityRefs.removeIf { it.get()?.localClassName == activity.localClassName }
+                activityRefs.removeIf { it.get() == activity }
                 activityRef = WeakReference(null)
                 activityRefs.removeIf { it.get() == null }
-                traceDebug { "activities(remove): ${activityRefs.map { it.get()?.localClassName }}" }
+                traceDebug { "activities(remove): ${activityRefs.map { classAndId(it.get()) }}" }
             }
         }
 
