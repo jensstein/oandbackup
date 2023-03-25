@@ -27,9 +27,6 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.findBackups
 import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.items.Package
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.io.File
 import java.nio.file.attribute.PosixFilePermission
 import java.nio.file.attribute.PosixFilePermissions
@@ -107,14 +104,12 @@ object FileUtils {
         Package.invalidateBackupCacheForPackage()
         SpecialInfo.clearCache()
         backupLocation = null // after clearing caches, because they probably need the location
-        CoroutineScope(Dispatchers.Default).launch {
-            try {
-                // updateAppTables does ensureBackups, but make intention clear here
-                OABX.context.findBackups()
-                OABX.context.updateAppTables()
-            } catch (e: Throwable) {
-                LogsHandler.logException(e, backTrace = true)
-            }
+        try {
+            // updateAppTables does ensureBackups, but make intention clear here
+            OABX.context.findBackups()
+            OABX.context.updateAppTables()
+        } catch (e: Throwable) {
+            LogsHandler.logException(e, backTrace = true)
         }
     }
 

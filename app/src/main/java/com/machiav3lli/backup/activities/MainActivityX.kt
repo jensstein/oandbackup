@@ -63,6 +63,7 @@ import com.machiav3lli.backup.ALT_MODE_DATA
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.addInfoLogText
+import com.machiav3lli.backup.OABX.Companion.startup
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.classAddress
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
@@ -70,6 +71,7 @@ import com.machiav3lli.backup.fragments.BatchPrefsSheet
 import com.machiav3lli.backup.fragments.SortFilterSheet
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
+import com.machiav3lli.backup.handler.findBackups
 import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.pref_catchUncaughtException
 import com.machiav3lli.backup.pref_uncaughtExceptionsJumpToPreferences
@@ -104,6 +106,7 @@ import com.topjohnwu.superuser.Shell
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.system.exitProcess
@@ -207,13 +210,21 @@ class MainActivityX : BaseActivity() {
                 val currentPage by remember(pagerState.currentPage) { mutableStateOf(pages[pagerState.currentPage]) }   //TODO hg42 remove remember ???
                 var barVisible by remember { mutableStateOf(true) }
 
-                navController.addOnDestinationChangedListener { _, destination, _ ->
-                    barVisible = destination.route == NavItem.Main.destination
-                    if (destination.route == NavItem.Main.destination && freshStart) {
-                        freshStart = false
-                        traceBold { "******************** freshStart && Main ********************" }
-                        refreshPackagesAndBackups()
-                        runOnUiThread { showEncryptionDialog() }
+                LaunchedEffect(viewModel) {
+                    navController.addOnDestinationChangedListener { _, destination, _ ->
+                        barVisible = destination.route == NavItem.Main.destination
+                        if (destination.route == NavItem.Main.destination && freshStart) {
+                            freshStart = false
+                            traceBold { "******************** freshStart && Main ********************" }
+                            MainScope().launch(Dispatchers.IO) {
+                                runCatching { findBackups() }
+                                startup = false     // ensure backups are no more reported as empty
+                                runCatching  { updateAppTables() }
+                                val time = OABX.endBusy(OABX.startupMsg)
+                                addInfoLogText("startup: ${"%.3f".format(time / 1E9)} sec")
+                            }
+                            runOnUiThread { showEncryptionDialog() }
+                        }
                     }
                 }
 
@@ -436,11 +447,13 @@ class MainActivityX : BaseActivity() {
     }
 
     fun refreshPackagesAndBackups() {
-        invalidateBackupLocation()
+        CoroutineScope(Dispatchers.IO).launch {
+            invalidateBackupLocation()
+        }
     }
 
     fun refreshPackages() {
-        CoroutineScope(Dispatchers.Default).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             updateAppTables()
         }
     }

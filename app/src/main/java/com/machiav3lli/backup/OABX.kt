@@ -40,6 +40,7 @@ import com.machiav3lli.backup.OABX.Companion.isHg42
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.Backup
+import com.machiav3lli.backup.dbs.entity.SpecialInfo
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
@@ -59,6 +60,7 @@ import com.machiav3lli.backup.utils.TraceUtils.beginNanoTimer
 import com.machiav3lli.backup.utils.TraceUtils.classAndId
 import com.machiav3lli.backup.utils.TraceUtils.endNanoTimer
 import com.machiav3lli.backup.utils.TraceUtils.methodName
+import com.machiav3lli.backup.utils.getInstalledPackageInfosWithPermissions
 import com.machiav3lli.backup.utils.scheduleAlarmsOnce
 import com.machiav3lli.backup.utils.styleTheme
 import kotlinx.coroutines.CoroutineScope
@@ -250,9 +252,11 @@ class OABX : Application() {
                 .build()
         )
         appRef = WeakReference(this)
-        db = ODatabase.getInstance(applicationContext)
+
+        beginBusy(startupMsg)
 
         initShellHandler()
+        db = ODatabase.getInstance(applicationContext)
 
         val result = registerReceiver(
             PackageUnInstalledReceiver(),
@@ -274,8 +278,6 @@ class OABX : Application() {
             addInfoLogText("--> click title to keep infobox open")
             addInfoLogText("--> long press title for dev tools")
         }
-
-        Timber.w("******************** startup")
     }
 
     override fun onTerminate() {
@@ -403,6 +405,7 @@ class OABX : Application() {
             .withDefault { 0 }     //TODO hg42 use AtomicInteger? but map is synchronized anyways
 
         var startup = true
+        val startupMsg = "******************** startup" // ensure it's the same for begin/end
 
         init {
 
@@ -759,10 +762,14 @@ class OABX : Application() {
         fun getBackups(packageName: String): List<Backup> {
             synchronized(theBackupsMap) {       // could be synchronized for a shorter time
                 return theBackupsMap.getOrPut(packageName) {
-                    val backups =
-                        context.findBackups(packageName)  //TODO hg42 may also find glob *packageName* for now
-                    backups[packageName]
-                        ?: emptyList()  // so we need to take the correct package here
+                    if (startup) {
+                        emptyList()
+                    } else {
+                        val backups =
+                            context.findBackups(packageName)  //TODO hg42 may also find glob *packageName* for now
+                        backups[packageName]
+                            ?: emptyList()  // so we need to take the correct package here
+                    }
                 }.drop(0)  // copy
             }
         }
@@ -783,6 +790,15 @@ class OABX : Application() {
             packageNames.forEach {
                 putBackups(it, emptyList())
             }
+        }
+
+        fun emptyBackupsForAllPackages() {
+            val installedPackages = context.packageManager.getInstalledPackageInfosWithPermissions()
+            val specialInfos =
+                SpecialInfo.getSpecialInfos(context)  //TODO hg42 these probably scan for backups
+            val installedNames =
+                installedPackages.map { it.packageName } + specialInfos.map { it.packageName }
+            emptyBackupsForAllPackages(installedNames)
         }
     }
 }

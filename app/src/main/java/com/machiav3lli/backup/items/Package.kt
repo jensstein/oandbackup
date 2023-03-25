@@ -46,7 +46,7 @@ class Package {
 
     var backupList: List<Backup>
         get() {
-            val backups = OABX.getBackups(packageName) ?: emptyList<Backup>()
+            val backups = OABX.getBackups(packageName)
             return backups
         }
         set(backups) {
