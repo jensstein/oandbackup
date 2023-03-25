@@ -39,6 +39,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.machiav3lli.backup.ALT_MODE_APK
+import com.machiav3lli.backup.ALT_MODE_BOTH
+import com.machiav3lli.backup.ALT_MODE_DATA
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dialogs.BaseDialog
@@ -56,6 +59,7 @@ import com.machiav3lli.backup.ui.compose.item.StateChip
 import com.machiav3lli.backup.ui.compose.recycler.BatchPackageRecycler
 import com.machiav3lli.backup.ui.compose.theme.ColorAPK
 import com.machiav3lli.backup.ui.compose.theme.ColorData
+import com.machiav3lli.backup.utils.altModeToMode
 import com.machiav3lli.backup.viewmodels.BatchViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -226,11 +230,24 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                 selectedApk = selectedApk,
                 selectedData = selectedData,
                 openDialogCustom = openDialog,
-            ) { // TODO generalize implementation to with default layout too
+            ) {
                 if (pref_singularBackupRestore.value && !backupBoolean) main.startBatchRestoreAction(
                     packages = selectedPackages,
                     selectedApk = selectedApk,
                     selectedData = selectedData,
+                )
+                else main.startBatchAction(
+                    backupBoolean,
+                    selectedPackages = selectedPackages,
+                    selectedModes = selectedPackages.map { pn ->
+                        altModeToMode(
+                            when {
+                                selectedData[pn] == 0 && selectedApk[pn] == 0 -> ALT_MODE_BOTH
+                                selectedData[pn] == 0                         -> ALT_MODE_DATA
+                                else                                          -> ALT_MODE_APK
+                            }, backupBoolean
+                        )
+                    }
                 )
             }
         }
