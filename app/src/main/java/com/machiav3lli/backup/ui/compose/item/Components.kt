@@ -599,13 +599,14 @@ fun StateChip(
     Surface(
         modifier = modifier
             .defaultMinSize(minWidth = 1.dp, minHeight = 1.dp)
+            .clip(MaterialTheme.shapes.medium)
             .combinedClickable(
                 onClick = onClick,
                 onLongClick = { openPopup.value = true }
             ),
         contentColor = if (checked) MaterialTheme.colorScheme.onSurface else color,
         color = if (checked) color else Color.Transparent,
-        shape = RoundedCornerShape(LocalShapes.current.medium),
+        shape = MaterialTheme.shapes.medium,
         border = BorderStroke(1.dp, color),
     ) {
         Icon(
