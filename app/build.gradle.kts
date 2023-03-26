@@ -25,12 +25,12 @@ plugins {
 }
 
 val vKotlin = "1.8.10"
-val vComposeCompiler = "1.4.3"
-val vCompose = "1.4.0-rc01"
+val vComposeCompiler = "1.4.4"
+val vCompose = "1.4.0"
 val vKotlinSerialization = "1.5.0"
 val vRoom = "2.5.0"
 val vNavigation = "2.5.3"
-val vAccompanist = "0.28.0"
+val vAccompanist = "0.30.0"
 val vLibsu = "5.0.4"
 //val vIconics = "5.3.4"
 
@@ -134,7 +134,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.0")
     implementation("androidx.security:security-crypto-ktx:1.1.0-alpha05")
     implementation("androidx.biometric:biometric:1.2.0-alpha05")
-    implementation("org.apache.commons:commons-compress:1.22")
+    implementation("org.apache.commons:commons-compress:1.23.0")
     implementation("commons-io:commons-io:2.11.0")      // attention, there is an old 20030203.000550 version, that looks higher
     implementation("com.jakewharton.timber:timber:5.0.1")
     implementation("com.github.topjohnwu.libsu:core:$vLibsu")
@@ -152,8 +152,8 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:$vCompose")
     implementation("androidx.compose.runtime:runtime-livedata:$vCompose")
     implementation("androidx.navigation:navigation-compose:$vNavigation")
-    implementation("io.coil-kt:coil-compose:2.2.2")
-    implementation("androidx.compose.material3:material3:1.0.1")
+    implementation("io.coil-kt:coil-compose:2.3.0")
+    implementation("androidx.compose.material3:material3:1.1.0-beta01")
     implementation("com.google.accompanist:accompanist-flowlayout:$vAccompanist")
     implementation("com.google.accompanist:accompanist-systemuicontroller:$vAccompanist")
     implementation("com.google.accompanist:accompanist-navigation-animation:$vAccompanist")
