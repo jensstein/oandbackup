@@ -659,7 +659,8 @@ fun TerminalText(
                 singleLine = true,
                 //placeholder = { Text(text = "search", color = Color.Gray) },
                 colors = TextFieldDefaults.textFieldColors(
-                    textColor = overlayColor,
+                    focusedTextColor = overlayColor,
+                    unfocusedTextColor = overlayColor,
                     containerColor = Color.Transparent,
                     unfocusedTrailingIconColor = overlayColor,
                     focusedTrailingIconColor = overlayColor, //if (search.length > 0) Color.Transparent else overlayColor

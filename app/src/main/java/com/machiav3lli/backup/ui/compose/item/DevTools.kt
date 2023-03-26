@@ -161,7 +161,8 @@ fun DevSettingsTab() {
             singleLine = true,
             //placeholder = { Text(text = "search", color = Color.Gray) },
             colors = TextFieldDefaults.textFieldColors(
-                textColor = color,
+                focusedTextColor = color,
+                unfocusedTextColor = color,
                 containerColor = Color.Transparent,
                 unfocusedTrailingIconColor = color,
                 focusedTrailingIconColor = color, //if (search.length > 0) Color.Transparent else overlayColor

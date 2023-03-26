@@ -357,7 +357,8 @@ fun StringDialogUI(
                 colors = TextFieldDefaults.textFieldColors(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                    textColor = textColor
+                    focusedTextColor = textColor,
+                    unfocusedTextColor = textColor,
                 ),
                 shape = MaterialTheme.shapes.medium,
                 singleLine = true,
@@ -403,7 +404,8 @@ fun StringDialogUI(
                     colors = TextFieldDefaults.textFieldColors(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
-                        textColor = textColor
+                        focusedTextColor = textColor,
+                        unfocusedTextColor = textColor,
                     ),
                     shape = MaterialTheme.shapes.medium,
                     singleLine = true,
