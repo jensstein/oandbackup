@@ -181,10 +181,9 @@ val pref_appAccentColor = EnumPref(
     entries = accentColorItems,
     defaultValue = with(BuildConfig.APPLICATION_ID) {
         when {
-            contains("hg42") -> 8
-            contains(".neo")  -> 4
+            contains("hg42")  -> 8
             contains("debug") -> 4
-            else             -> 0
+            else              -> 0
         }
     },
     onChanged = ::onThemeChanged,
@@ -199,9 +198,8 @@ val pref_appSecondaryColor = EnumPref(
     defaultValue = with(BuildConfig.APPLICATION_ID) {
         when {
             contains(".rel")  -> 0
-            contains(".neo")  -> 1
-            contains("debug") -> 2
-            else              -> 4
+            contains("debug") -> 4
+            else              -> 3
         }
     },
     onChanged = ::onThemeChanged,
