@@ -65,9 +65,6 @@ import com.machiav3lli.backup.utils.recreateActivities
 import com.machiav3lli.backup.utils.restartApp
 import com.machiav3lli.backup.utils.setBackupDir
 import com.machiav3lli.backup.utils.setCustomTheme
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @Composable
@@ -122,14 +119,16 @@ fun UserPrefsPage() {
             } else BaseDialog(openDialogCustom = openDialog) {
                 when (dialogsPref) {
                     pref_languages,
-                    -> ListDialogUI(                            //TODO hg42 encapsulate in pref
+                    -> ListDialogUI(
+                        //TODO hg42 encapsulate in pref
                         pref = dialogsPref as ListPref,
                         openDialogCustom = openDialog,
                     )
                     pref_appTheme,
                     pref_appAccentColor,
                     pref_appSecondaryColor,
-                    -> EnumDialogUI(                            //TODO hg42 encapsulate in pref
+                    -> EnumDialogUI(
+                        //TODO hg42 encapsulate in pref
                         pref = dialogsPref as EnumPref,
                         openDialogCustom = openDialog,
                     )

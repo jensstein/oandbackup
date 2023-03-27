@@ -155,7 +155,6 @@ class AppSheet() : BaseSheet(), ActionListener {
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
     @Composable
     fun AppPage() {
         val thePackages by requireMainActivity().viewModel.packageMap.collectAsState()

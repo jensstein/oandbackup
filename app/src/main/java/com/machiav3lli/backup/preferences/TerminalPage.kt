@@ -190,7 +190,7 @@ fun logSys() =
 fun dumpPrefs() =
     listOf("------ preferences") +
             publicPreferences(persist = true).map {
-                        "${it.group}.${it.key} = ${it}"
+                "${it.group}.${it.key} = ${it}"
             }
 
 fun dumpEnv() =
@@ -392,7 +392,6 @@ fun TerminalButton(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TerminalPage() {
     val output = remember { mutableStateListOf<String>() }

@@ -19,7 +19,6 @@ package com.machiav3lli.backup.preferences
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,7 +30,6 @@ import com.machiav3lli.backup.ui.compose.recycler.LogRecycler
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.viewmodels.LogViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LogsPage(viewModel: LogViewModel) {
 

@@ -28,7 +28,6 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
@@ -70,7 +69,7 @@ class PrefsActivityX : BaseActivity() {
     }
 
     @OptIn(
-        ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class,
+        ExperimentalAnimationApi::class,
         ExperimentalPagerApi::class
     )
     override fun onCreate(savedInstanceState: Bundle?) {

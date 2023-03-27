@@ -37,7 +37,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
@@ -143,7 +142,7 @@ class MainActivityX : BaseActivity() {
     private lateinit var sheetBatchPrefs: BatchPrefsSheet
 
     @OptIn(
-        ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class,
+        ExperimentalAnimationApi::class,
         ExperimentalPagerApi::class
     )
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -231,7 +230,7 @@ class MainActivityX : BaseActivity() {
                             MainScope().launch(Dispatchers.IO) {
                                 runCatching { findBackups() }
                                 startup = false     // ensure backups are no more reported as empty
-                                runCatching  { updateAppTables() }
+                                runCatching { updateAppTables() }
                                 val time = OABX.endBusy(OABX.startupMsg)
                                 addInfoLogText("startup: ${"%.3f".format(time / 1E9)} sec")
                             }

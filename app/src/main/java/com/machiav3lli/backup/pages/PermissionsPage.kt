@@ -40,7 +40,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -81,7 +80,8 @@ import com.machiav3lli.backup.utils.requireStorageLocation
 import com.machiav3lli.backup.utils.setBackupDir
 import timber.log.Timber
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
+// TODO use rememberPermissionState to manage more permissions
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun PermissionsPage() {
     val context = LocalContext.current
