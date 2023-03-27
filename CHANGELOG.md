@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-8.3.2 (XX.XX.2023) +80 Commits & +10 Translations
+8.3.2 (XX.XX.2023) +130 Commits & +10 Translations
 ------------
 
 #### Function
@@ -10,6 +10,7 @@ CHANGELOG
 - Add: Singular backups restore (atomic restoration)
 - Add: AppInfo+schedule database dumps to terminal
 - Add: Selinux status to support log
+- Add: Recreating activities on specific changes
 - Fix: Refreshing package & backup on launch
 - Fix: Cache excluded even if it's enabled
 - Fix: File duplication with SAF (file! not directory), redesiged/hardened duplicate protection (to
@@ -17,15 +18,29 @@ CHANGELOG
 - Fix: Deleted file/directory sometimes not recognized as deleted (to be tested more)
 - Fix: File stream not closed
 - Fix: Missing uninstalled packages with backups after startup
+- Fix: Using nsenter method of global mount namespace in some cases (credit @H1mJT)
+- Fix: With backupDir not accessible, refresh did not work
+- Fix: deleteDocument deletes a parent directory
+- Fix: setLanguage to work multiple times
+- Fix: Startup single backup scans
 - Update: /data/local/toybox is now prioritized over others
 - Update: Integrate Intro into Splash & Main
 - Update: Use nsenter to run commands in the global mount namespace
+- Update: TargetSDK 33
+- Update: Move basic functionality to BaseActivity
+- Update: Generalize BatchAction dialog usage
+- Update: Replace apk-/dataCheckedList usage with apk-/dataBackupCheckedList
 - Remove: IntroActivity
+- Remove: Premature refreshing
 
 #### UI
 
 - Add: Version text for screenshots and other purposes (preference versionOpacity)
+- Add: PostNotifications permission
 - Fix: Help sheet & Welcome page transparent backgrounds
+- Fix: Scrollable message when long in Actions DialogUI
+- Fix: Check all StateChips ripple
+- Update: Set default colors & main icon according to variant
 
 #### UX
 
@@ -34,6 +49,9 @@ CHANGELOG
 - Add: Long press on title always opens DevTools
 - Add: Option in root missing dialog to share a support log
 - Fix: Close context menu if choosing "no"
+- Fix: Batch backups not working when singular backups layout is enable
+- Fix: Check all apk/data not working
+- Fix: Asking for permissions for special backups without restart
 - Update: Get/Put replaces Load/Save in context menu
 
 8.3.1 (21.02.2023) +80 Commits & +10 Translations
