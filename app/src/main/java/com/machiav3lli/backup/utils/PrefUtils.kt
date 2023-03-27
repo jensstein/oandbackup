@@ -395,6 +395,13 @@ val Context.checkContactsPermission: Boolean
         }
     }
 
+val Context.postNotificationsPermission: Boolean
+    get() = if (OABX.minSDK(Build.VERSION_CODES.TIRAMISU)) {
+        checkCallingOrSelfPermission(
+            Manifest.permission.POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
+    } else true
+
 val Context.checkUsageStatsPermission: Boolean
     get() {
         val appOps = (getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager)

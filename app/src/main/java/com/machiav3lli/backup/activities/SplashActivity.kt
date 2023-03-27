@@ -78,6 +78,7 @@ import com.machiav3lli.backup.utils.isBiometricLockEnabled
 import com.machiav3lli.backup.utils.isDeviceLockAvailable
 import com.machiav3lli.backup.utils.isDeviceLockEnabled
 import com.machiav3lli.backup.utils.isStorageDirSetAndOk
+import com.machiav3lli.backup.utils.postNotificationsPermission
 import com.topjohnwu.superuser.Shell
 import kotlin.system.exitProcess
 
@@ -217,6 +218,7 @@ class SplashActivity : BaseActivity() {
                     checkCallLogsPermission &&
                     checkContactsPermission &&
                     checkUsageStatsPermission &&
+                    postNotificationsPermission &&
                     (persist_ignoreBatteryOptimization.value
                             || powerManager.isIgnoringBatteryOptimizations(packageName)
                             )           -> {
