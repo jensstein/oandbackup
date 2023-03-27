@@ -9,6 +9,7 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.FolderNotch
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Leaf
 import com.machiav3lli.backup.ui.compose.icons.phosphor.PhoneIncoming
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ShieldStar
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Warning
 
 data class Permission(
     val nameId: Int,
@@ -53,6 +54,11 @@ data class Permission(
             R.string.contacts_permission_title,
             Phosphor.AddressBook,
             R.string.intro_permission_contacts
+        )
+        val PostNotifications = Permission(
+            R.string.post_notifications_permission_title,
+            Phosphor.Warning,
+            R.string.post_notifications_permission_message
         )
     }
 }

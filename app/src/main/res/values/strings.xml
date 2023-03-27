@@ -263,6 +263,8 @@
     <string name="empty_filtered_list">The filtered list is empty.</string>
     <string name="ignore_battery_optimization_title">Battery Optimization</string>
     <string name="ignore_battery_optimization_message">Backups could stop sometimes. To prevent this, you should turn off the battery optimization</string>
+    <string name="post_notifications_permission_title">Post Notifications</string>
+    <string name="post_notifications_permission_message">Starting Android 13 apps require this permission to be able to post notifications.</string>
     <string name="ignore_battery_optimization_not_supported">This device doesn\'t support ignoring battery optimizations unfortunately!</string>
     <string name="failed_unzipping">Error while unzipping the data, check the encryption password!</string>
     <string name="split_apks">Split-APKs</string>
