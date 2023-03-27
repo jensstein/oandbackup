@@ -404,6 +404,8 @@ class MainActivityX : BaseActivity() {
                             || powerManager.isIgnoringBatteryOptimizations(packageName)
                             )
                     )
+            && this::navController.isInitialized
+            && !navController.currentDestination?.route?.equals(NavItem.Permissions.destination)!!
         ) navController.navigate(NavItem.Permissions.destination)
     }
 
