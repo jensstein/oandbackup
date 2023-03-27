@@ -22,6 +22,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.os.Looper
+import android.os.PowerManager
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -76,6 +77,7 @@ import com.machiav3lli.backup.handler.updateAppTables
 import com.machiav3lli.backup.pref_catchUncaughtException
 import com.machiav3lli.backup.pref_uncaughtExceptionsJumpToPreferences
 import com.machiav3lli.backup.preferences.persist_beenWelcomed
+import com.machiav3lli.backup.preferences.persist_ignoreBatteryOptimization
 import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
 import com.machiav3lli.backup.preferences.pref_blackTheme
 import com.machiav3lli.backup.tasks.AppActionWork
@@ -97,8 +99,15 @@ import com.machiav3lli.backup.utils.FileUtils.invalidateBackupLocation
 import com.machiav3lli.backup.utils.TraceUtils.classAndId
 import com.machiav3lli.backup.utils.TraceUtils.traceBold
 import com.machiav3lli.backup.utils.altModeToMode
+import com.machiav3lli.backup.utils.checkCallLogsPermission
+import com.machiav3lli.backup.utils.checkContactsPermission
+import com.machiav3lli.backup.utils.checkSMSMMSPermission
+import com.machiav3lli.backup.utils.checkUsageStatsPermission
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
+import com.machiav3lli.backup.utils.hasStoragePermissions
 import com.machiav3lli.backup.utils.isEncryptionEnabled
+import com.machiav3lli.backup.utils.isStorageDirSetAndOk
+import com.machiav3lli.backup.utils.postNotificationsPermission
 import com.machiav3lli.backup.viewmodels.BatchViewModel
 import com.machiav3lli.backup.viewmodels.MainViewModel
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
@@ -115,6 +124,7 @@ class MainActivityX : BaseActivity() {
 
     private val crScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
     private lateinit var navController: NavHostController
+    private lateinit var powerManager: PowerManager
 
     val viewModel by viewModels<MainViewModel> {
         MainViewModel.Factory(OABX.db, application)
@@ -195,6 +205,8 @@ class MainActivityX : BaseActivity() {
         }
 
         Shell.getShell()
+
+        powerManager = this.getSystemService(POWER_SERVICE) as PowerManager
 
         setContent {
 
@@ -383,6 +395,17 @@ class MainActivityX : BaseActivity() {
     override fun onResume() {
         OABX.main = this
         super.onResume()
+        if (!(hasStoragePermissions && isStorageDirSetAndOk &&
+                    checkSMSMMSPermission &&
+                    checkCallLogsPermission &&
+                    checkContactsPermission &&
+                    checkUsageStatsPermission &&
+                    postNotificationsPermission &&
+                    (persist_ignoreBatteryOptimization.value
+                            || powerManager.isIgnoringBatteryOptimizations(packageName)
+                            )
+                    )
+        ) navController.navigate(NavItem.Permissions.destination)
     }
 
     override fun onPause() {
