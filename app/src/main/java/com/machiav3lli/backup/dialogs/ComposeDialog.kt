@@ -321,7 +321,7 @@ fun StringDialogUI(
         delay(100)
         textFieldFocusRequester.requestFocus()
     }
-    var savedValue by remember { mutableStateOf(pref.value) }
+    var savedValue by remember { mutableStateOf(if (isPrivate) "" else pref.value) }
     var savedValueConfirm by remember { mutableStateOf("") }
     var isEdited by remember { mutableStateOf(false) }
     var notMatching by remember { mutableStateOf(false) }
@@ -390,7 +390,7 @@ fun StringDialogUI(
                         if (isPasswordVisible)
                             Text(pref.value)
                         else
-                            Text("**********")
+                            Text(if (savedValue.isEmpty()) "" else "**********")
                     } else if (!isPrivate) {
                         Text(pref.value)
                     }
