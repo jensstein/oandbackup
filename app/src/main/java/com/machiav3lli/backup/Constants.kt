@@ -210,7 +210,6 @@ val mainSpecialFilterChipItems = schedSpecialFilterChipItems.plus(ChipItem.NotIn
 val IGNORED_PERMISSIONS = listOfNotNull(
     Manifest.permission.ACCESS_WIFI_STATE,
     Manifest.permission.ACCESS_NETWORK_STATE,
-    Manifest.permission.ACCESS_NETWORK_STATE,
     Manifest.permission.CHANGE_WIFI_MULTICAST_STATE,
     if (OABX.minSDK(28)) Manifest.permission.FOREGROUND_SERVICE else null,
     Manifest.permission.INSTALL_SHORTCUT,
