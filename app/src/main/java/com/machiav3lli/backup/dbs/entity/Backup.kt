@@ -113,7 +113,7 @@ data class Backup constructor(
         cipherType = cipherType,
         iv = iv,
         cpuArch = cpuArch,
-        permissions = pi.grantedPermissions,
+        permissions = pi.grantedPermissions.sorted(),
         size = size,
         persistent = persistent,
     )
@@ -155,7 +155,7 @@ data class Backup constructor(
         cipherType = cipherType,
         iv = iv,
         cpuArch = cpuArch,
-        permissions = permissions,
+        permissions = permissions.sorted(),
         size = size,
         persistent = persistent,
     )
