@@ -135,7 +135,6 @@ val pref_password = PasswordPref(
     icon = Phosphor.Password,
     iconTint = ColorUpdated,
     defaultValue = "",
-    enableIf = { pref_encryption.value }
 )
 
 val kill_password = PasswordPref(   // make sure password is never saved in non-encrypted prefs
