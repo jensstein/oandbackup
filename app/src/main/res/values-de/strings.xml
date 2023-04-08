@@ -148,7 +148,7 @@
     <string name="prefs_excludecache_summary">Den Cache der App von der Datensicherung ausschließen</string>
     <string name="prefs_encryption">Verschlüsselung</string>
     <string name="prefs_password">Verschlüsselungspasswort</string>
-    <string name="prefs_password_summary">Leer lassen, um die Verschlüsselung zu deaktivieren</string>
+    <string name="prefs_password_summary">Auch für Entschlüsselung beim Wiederherstellen</string>
     <string name="prefs_encryption_summary">Die Verschlüsselung von Datensicherungen aktivieren</string>
     <string name="encrypted_data_title">Verschlüsselte Daten:</string>
     <string name="failed_unzipping">Fehler beim Entpacken von Daten, überprüfe das Verschlüsselungspasswort!</string>

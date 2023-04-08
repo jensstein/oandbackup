@@ -116,7 +116,7 @@
     <string name="prefs_encryption">Encryption</string>
     <string name="prefs_encryption_summary">Enable to encrypt data backups</string>
     <string name="prefs_password">Encryption password</string>
-    <string name="prefs_password_summary">Set to empty to disable encryption</string>
+    <string name="prefs_password_summary">Also used for decryption on restore</string>
     <string name="prefs_passwordconfirmation">Encryption password confirmation</string>
     <string name="prefs_password_match_true">The passwords match</string>
     <string name="prefs_password_match_false">The passwords don\'t match</string>
