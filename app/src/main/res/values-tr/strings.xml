@@ -93,7 +93,6 @@
     <string name="prefs_password">Şifreleme parolası</string>
     <string name="prefs_externaldata">Harici veriyi yedekle</string>
     <string name="prefs_deviceprotecteddata">Cihaz korunan verisini yedekle</string>
-    <string name="prefs_password_summary">Şifrelemeyi devre dışı bırakmak için boş bırakın</string>
     <string name="prefs_encryption_summary">Veri yedeklerini şifrelemek için etkinleştirin</string>
     <string name="prefs_excludecache_summary">Uygulamanın önbelleğini veri yedeklemesinden hariç tutun</string>
     <string name="prefs_acquirewakelock_summary">Uykuyu önlemek için toplu işlemler sırasında bir uyandırma kilidi alın. Yedeklemeleri ve restorasyonları önemli ölçüde hızlandırır, ancak daha fazla enerji tüketir.</string>

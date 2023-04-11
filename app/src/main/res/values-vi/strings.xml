@@ -163,7 +163,6 @@
     <string name="prefs_password_match_false">Các mật khẩu không trùng khớp</string>
     <string name="prefs_password_match_true">Các mật khẩu trùng khớp</string>
     <string name="prefs_passwordconfirmation">Xác nhận mật khẩu mã hoá</string>
-    <string name="prefs_password_summary">Để trống để tắt mã hoá</string>
     <string name="prefs_password">Mật khẩu mã hoá</string>
     <string name="prefs_encryption_summary">Bật để mã hoá các bản sao lưu dữ liệu</string>
     <string name="prefs_encryption">Mã hoá</string>

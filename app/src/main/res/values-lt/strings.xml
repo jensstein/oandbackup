@@ -244,7 +244,6 @@
     <string name="prefs_service">Paslaugų nuostatos</string>
     <string name="prefs_language_system">Sistemos numatytoji</string>
     <string name="prefs_oldbackups">Filtruoti atsargines kopijas pagal amžių</string>
-    <string name="prefs_password_summary">Nustatykite tuščią reikšmę, jei norite išjungti šifravimą</string>
     <string name="prefs_passwordconfirmation">Šifravimo slaptažodžio patvirtinimas</string>
     <string name="prefs_enablespecial_summary">Vis dar reikalauja intensyvaus testavimo, bandykite žinodami, kad tai gali sukelti nepertraukiamą įrenginio pasikartojantį persikrovimą. Atsiliepimai visada laukiami.</string>
     <string name="prefs_deviceprotecteddata">Kurti įrenginio apsaugotų duomenų atsargines kopijas</string>

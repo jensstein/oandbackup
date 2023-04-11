@@ -92,7 +92,6 @@
     <string name="prefs_encryption">Cifrado</string>
     <string name="prefs_encryption_summary">Activar para cifrar los respaldos de datos</string>
     <string name="prefs_password">Contraseña de cifrado</string>
-    <string name="prefs_password_summary">Dejar en blanco para desactivar el cifrado</string>
     <string name="prefs_passwordconfirmation">Confirmación de contraseña de cifrado</string>
     <string name="prefs_password_match_true">Las contraseñas coinciden</string>
     <string name="prefs_password_match_false">Las contraseñas no coinciden</string>

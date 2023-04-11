@@ -155,7 +155,6 @@
     <string name="prefs_externaldata">Sauvegarder les données externes</string>
     <string name="prefs_excludecache_summary">Exclure le cache de l\'application de la sauvegarde des données</string>
     <string name="prefs_excludecache">Exclure le cache de l’application</string>
-    <string name="prefs_password_summary">Laisser vide pour désactiver le chiffrement</string>
     <string name="prefs_password">Mot de passe de chiffrement</string>
     <string name="prefs_encryption_summary">Activer le chiffrement des sauvegardes de données</string>
     <string name="prefs_encryption">Chiffrement</string>

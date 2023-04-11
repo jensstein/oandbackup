@@ -156,7 +156,6 @@
     <string name="prefs_externaldata">Sikkerhetskopier ekstern data</string>
     <string name="prefs_excludecache_summary">Utelat programmets hurtiglager fra datasikkerhetskopi</string>
     <string name="prefs_excludecache">Utelat programmets hurtiglager</string>
-    <string name="prefs_password_summary">Sett til tom for å skru av kryptering</string>
     <string name="prefs_password">Krypteringspassord</string>
     <string name="prefs_encryption_summary">Skru på for å kryptere datasikkerhetskopier</string>
     <string name="prefs_encryption">Kryptering</string>

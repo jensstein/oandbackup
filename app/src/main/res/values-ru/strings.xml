@@ -179,7 +179,6 @@
     <string name="prefs_password_match_false">Пароли не совпадают</string>
     <string name="prefs_password_match_true">Пароли совпадают</string>
     <string name="prefs_passwordconfirmation">Подтверждение пароля шифрования</string>
-    <string name="prefs_password_summary">Оставьте пустым для отключения шифрования</string>
     <string name="prefs_biometriclock_summary">Защита приложения с биометрической блокировкой (напр., отпечаток пальца, разблокировка по лицу)</string>
     <string name="prefs_biometriclock">Биометрическая блокировка</string>
     <string name="msg_appkill_warning">Выбранным приложениям будет послан сигнал stop, и они будут возобновлены после окончания задания. Проверьте их после этого (и избегайте запускать их во время выполнения задания).</string>

@@ -93,7 +93,6 @@
     <string name="prefs_password">Hasło szyfrowania</string>
     <string name="prefs_externaldata">Kopiuj dane z pamięci zewnętrznej</string>
     <string name="prefs_deviceprotecteddata">Kopiuj chronione dane wewnętrzne</string>
-    <string name="prefs_password_summary">Ustaw na puste aby wyłączyć szyfrowanie</string>
     <string name="prefs_encryption_summary">Włącz aby szyfrować kopię zapasową</string>
     <string name="prefs_excludecache_summary">Usuń pamięć podręczną aplikacji przed wykonaniem kopii</string>
     <string name="prefs_acquirewakelock_summary">Pozyskuj wakelock\'i podczas wykonywania grupowych operacji w celu uniknięcia przejścia w stan spoczynku. Przyspiesza to tworzenie kopii zapasowych i ich przywracanie, ale zużywa więcej energii.</string>

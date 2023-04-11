@@ -112,7 +112,6 @@
     <string name="prefs_password">Password per crittografia</string>
     <string name="prefs_externaldata">Backup dati esterni</string>
     <string name="prefs_deviceprotecteddata">Backup dei dati protetti dal dispositivo</string>
-    <string name="prefs_password_summary">Imposta su vuoto per disabilitare la crittografia</string>
     <string name="prefs_encryption_summary">Abilita per crittografare i backup dei dati</string>
     <string name="prefs_excludecache_summary">Escludi la cache dell\'app dal backup dei dati</string>
     <string name="prefs_batchdelete_summary">Elimina i backup di tutte le app non attualmente installate.</string>

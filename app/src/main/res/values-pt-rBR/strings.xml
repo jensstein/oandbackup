@@ -95,7 +95,6 @@
     <string name="prefs_password_match_false">As senhas não correspondem</string>
     <string name="prefs_password_match_true">As senhas correspondem</string>
     <string name="prefs_passwordconfirmation">Confirmação de senha de criptografia</string>
-    <string name="prefs_password_summary">Deixe vazio para desativar a criptografia</string>
     <string name="prefs_password">Senha de criptografia</string>
     <string name="prefs_encryption_summary">Permitir criptografar backups de dados</string>
     <string name="prefs_encryption">Criptografia</string>

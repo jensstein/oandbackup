@@ -31,7 +31,6 @@
     <string name="prefs_password_match_false">密碼不相符</string>
     <string name="prefs_password_match_true">密碼相符</string>
     <string name="prefs_passwordconfirmation">加密密碼確認</string>
-    <string name="prefs_password_summary">設為空以停用加密</string>
     <string name="prefs_password">加密密碼</string>
     <string name="prefs_encryption_summary">啟用以加密資料備份</string>
     <string name="prefs_encryption">加密</string>

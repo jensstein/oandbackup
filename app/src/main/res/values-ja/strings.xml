@@ -111,7 +111,6 @@
     <string name="prefs_password_match_false">パスワード不一致</string>
     <string name="prefs_password_match_true">パスワード一致</string>
     <string name="prefs_passwordconfirmation">暗号パスワードの確認</string>
-    <string name="prefs_password_summary">空による暗号の無効化</string>
     <string name="prefs_password">暗号化パスワード</string>
     <string name="prefs_encryption_summary">暗号データバックアップを有効にする</string>
     <string name="prefs_encryption">暗号化</string>

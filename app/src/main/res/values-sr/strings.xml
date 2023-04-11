@@ -173,7 +173,6 @@
     <string name="prefs_biometriclock">Биометричко закључавање</string>
     <string name="showSplitAPKs">Раздвој-АПК</string>
     <string name="prefs_password">Лозинка за Шифровање</string>
-    <string name="prefs_password_summary">Подеси на празно да онемогућиш шифровање</string>
     <string name="prefs_passwordconfirmation">Потврда лозинке за Шифровање</string>
     <string name="prefs_biometriclock_summary">Заштити апликацију биометричким закључавањем уређаја (пр. отисак прста, откључавање лицем)</string>
     <string name="prefs_excludecache">Изозстави кеш апликације</string>

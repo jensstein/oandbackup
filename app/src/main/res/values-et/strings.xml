@@ -93,7 +93,6 @@
     <string name="prefs_password">Krüpteeringu parool</string>
     <string name="prefs_externaldata">Varunda väliseid andmeid</string>
     <string name="prefs_deviceprotecteddata">Varunda seadme poolt kaitstud andmeid</string>
-    <string name="prefs_password_summary">Krüpteeringu keelamiseks jäta tühjaks</string>
     <string name="prefs_encryption_summary">Luba, et krüpteerida andmevarundusi</string>
     <string name="prefs_excludecache_summary">Välista andmevarundusest rakenduse vahemälu</string>
     <string name="prefs_acquirewakelock_summary">Hangi ärkamislukk massioperatsioonide tegemise ajaks, et vältida unerežiimi - kiirendab varunduste loomist ja taastamist suurema energiakasutuse arvelt.</string>

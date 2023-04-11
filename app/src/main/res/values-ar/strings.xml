@@ -60,7 +60,6 @@
     <string name="prefs_password_match_false">كلمة السر ليست متطابقة</string>
     <string name="prefs_password_match_true">كلمات المرور متطابقة</string>
     <string name="prefs_passwordconfirmation">التأكيد لكلمة سر التشفير</string>
-    <string name="prefs_password_summary">اتركها فارغة لتعطل التشفير</string>
     <string name="prefs_password">كلمة سر التشفير</string>
     <string name="prefs_encryption_summary">تمكين تشفير النسخ الاحتياطية للبيانات</string>
     <string name="prefs_encryption">التشفير</string>

@@ -73,7 +73,6 @@
     <string name="prefs_encryption">Salaus</string>
     <string name="prefs_encryption_summary">Ota käyttöön salataksesi datan varmuuskopiot</string>
     <string name="prefs_password">Salauksen salasana</string>
-    <string name="prefs_password_summary">Jätä tyhjäksi poistaaksesi salauksen käytöstä</string>
     <string name="prefs_password_match_true">Salasanat täsmäävät</string>
     <string name="prefs_password_match_false">Salasanat eivät täsmää</string>
     <string name="prefs_excludecache">Ohita sovellusten välimuisti</string>

@@ -177,7 +177,6 @@
     <string name="prefs_password_match_false">De wachtwoorden komen niet overeen</string>
     <string name="prefs_password_match_true">De wachtwoorden komen overeen</string>
     <string name="prefs_passwordconfirmation">Encryptie wachtwoord bevestiging</string>
-    <string name="prefs_password_summary">Laat leeg om encryptie uit te schakelen</string>
     <string name="prefs_password">Encryptie wachtwoord</string>
     <string name="prefs_encryption_summary">Schakel encryptie van data back-ups in</string>
     <string name="prefs_encryption">Encryptie</string>

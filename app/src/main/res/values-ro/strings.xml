@@ -129,7 +129,6 @@
     <string name="enable_encryption_title">Criptarea datelor</string>
     <string name="intro_permission_storage">Aplicația folosește permisiunea de citire/scriere a spațiului de stocare pentru a putea accesa spațiul de stocare extern și pentru a oferi posibilitatea de a face backup datelor externe/obb-urilor ale altor aplicații.</string>
     <string name="prefs_encryption">Criptare</string>
-    <string name="prefs_password_summary">Lasă gol pentru a dezactiva criptarea</string>
     <string name="prefs_password">Parolă de criptare</string>
     <string name="prefs_passwordconfirmation">Confirmarea parolei de criptare</string>
     <string name="prefs_excludecache">Exclude cache-ul aplicațiilor</string>

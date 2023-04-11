@@ -153,7 +153,6 @@
     <string name="prefs_password_match_false">Паролі не збігаються</string>
     <string name="prefs_password_match_true">Паролі збігаються</string>
     <string name="prefs_passwordconfirmation">Підтвердження пароля шифрування</string>
-    <string name="prefs_password_summary">Залиште порожнім для вимкнення шифрування</string>
     <string name="prefs_password">Пароль шифрування</string>
     <string name="prefs_encryption_summary">Увімкнути для шифрування даних резервних копій</string>
     <string name="prefs_encryption">Шифрування</string>

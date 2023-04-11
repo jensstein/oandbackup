@@ -95,7 +95,6 @@
     <string name="prefs_oldbackups">فیلتر کردن پشتیبان ها با زمان</string>
     <string name="prefs_oldbackups_summary">"نسخه‌های پشتیبان قدیمی‌تر از مقدار را در چند روز فیلتر کنید.  با فیلتر «نمایش نسخه‌های پشتیبان قدیمی» استفاده می‌شود."</string>
     <string name="prefs_encryption">رمزگذاری</string>
-    <string name="prefs_password_summary">خالی، تنظیم کنید تا رمزگذاری غیرفعال شد</string>
     <string name="prefs_password_match_true">مطابقت گذرواژه</string>
     <string name="prefs_password_match_false">گذرواژه مطابق نیست</string>
     <string name="prefs_service">تنظیمات سرویس</string>

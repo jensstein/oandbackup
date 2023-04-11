@@ -167,7 +167,6 @@
     <string name="prefs_password_match_false">Les contrasenyes no coincideixen</string>
     <string name="prefs_password_match_true">Les contrasenyes coincideixen</string>
     <string name="prefs_passwordconfirmation">Confirmació de contrasenya de xifratge</string>
-    <string name="prefs_password_summary">Estableix com a buit per desactivar el xifratge</string>
     <string name="prefs_password">Contrasenya de xifratge</string>
     <string name="prefs_encryption_summary">Activeu per xifrar les còpies de seguretat de dades</string>
     <string name="prefs_encryption">Xifratge</string>

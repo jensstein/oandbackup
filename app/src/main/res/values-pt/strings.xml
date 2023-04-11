@@ -118,7 +118,6 @@
     <string name="prefs_encryption">Cifra</string>
     <string name="prefs_encryption_summary">Permitir cifrar os backups de dados</string>
     <string name="prefs_password">Palavra-passe de cifra</string>
-    <string name="prefs_password_summary">Deixe vazio para desativar a cifra</string>
     <string name="prefs_passwordconfirmation">Confirmação de palavra-passe de cifra</string>
     <string name="prefs_password_match_true">As palavras-passe coincidem</string>
     <string name="prefs_excludecache">Excluir cache da aplicação</string>

@@ -93,7 +93,6 @@
     <string name="prefs_password">Kata sandi enkripsi</string>
     <string name="prefs_externaldata">Cadangkan data eksternal</string>
     <string name="prefs_deviceprotecteddata">Cadangkan data yang dilindungi perangkat</string>
-    <string name="prefs_password_summary">Setel ke kosong untuk menonaktifkan enkripsi</string>
     <string name="prefs_encryption_summary">Aktifkan untuk mengenkripsi cadangan data</string>
     <string name="prefs_excludecache_summary">Bersihkan cache aplikasi sebelum melakukan mencadangkan data</string>
     <string name="prefs_acquirewakelock_summary">Dapatkan wakelock saat operasi batch sedang berjalan untuk mencegah tidur. Mempercepat backup dan memulihkan secara signifikan tetapi akan mengkonsumsi lebih banyak daya.</string>

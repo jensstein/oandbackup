@@ -90,7 +90,6 @@
     <string name="prefs_password">Κωδικός κρυπτογράφησης</string>
     <string name="prefs_externaldata">Δημιουργία αντιγράφου εξωτερικών δεδομένων</string>
     <string name="prefs_deviceprotecteddata">Δημιουργία αντιγράφου προστατευμένων από τη συσκευή δεδομένων</string>
-    <string name="prefs_password_summary">Αφήστε κενό για απενεργοποίηση κρυπτογράφησης</string>
     <string name="prefs_encryption_summary">Ενεργοποίηση για κρυπτογράφηση δεδομένων των αντιγράφων</string>
     <string name="prefs_excludecache_summary">Αποκλεισμός της μνήμης cache της εφαρμογής από το αντίγραφο δεδομένων</string>
     <string name="prefs_acquirewakelock_summary">Απόκτηση wakelock κατά τη διάρκεια διεργασιών μαζικών αντιγράφων ώστε να αποτραπεί ο ύπνος. Επιταχύνει τα αντίγραφα και τις επαναφορές σημαντικά, αλλά καταναλώνει περισσότερη ενέργεια.</string>

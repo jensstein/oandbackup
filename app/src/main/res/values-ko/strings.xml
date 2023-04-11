@@ -77,7 +77,6 @@
     <string name="prefs_rememberfiltering_summary">선택한 정렬 및 필터 방법을 저장합니다. 체크 표시된 메뉴만 고려합니다.</string>
     <string name="prefs_oldbackups">기간으로 백업 필터</string>
     <string name="prefs_password">비밀번호 암호화</string>
-    <string name="prefs_password_summary">암호화를 사용하지 않으려면 빈 값으로 설정</string>
     <string name="prefs_password_match_true">비밀번호 일치</string>
     <string name="prefs_password_match_false">비밀번호 불일치</string>
     <string name="prefs_enablespecial">특수 백업 활성화</string>
