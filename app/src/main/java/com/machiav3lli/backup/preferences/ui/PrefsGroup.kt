@@ -38,6 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.machiav3lli.backup.BUTTON_SIZE_MEDIUM
+import com.machiav3lli.backup.traceDebug
 import com.machiav3lli.backup.ui.compose.item.PrefIcon
 import com.machiav3lli.backup.ui.item.Pref
 
@@ -102,9 +103,11 @@ fun PrefsGroup(
         heading = heading
     ) {
         if (prefs.size > 0) {
-            prefs.forEachIndexed { index, item ->
+            prefs.forEachIndexed { index, pref ->
+                val value = remember(pref.toString()) { mutableStateOf(pref.toString()) }
+                traceDebug { "${pref.key} = $value" }
                 PrefsBuilder(
-                    item,
+                    pref,
                     onPrefDialog,
                     index,
                     size,

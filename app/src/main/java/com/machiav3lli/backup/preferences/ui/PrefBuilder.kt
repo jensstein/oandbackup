@@ -1,11 +1,13 @@
 package com.machiav3lli.backup.preferences.ui
 
 import androidx.compose.runtime.Composable
+import com.machiav3lli.backup.ui.compose.item.BooleanPreference
 import com.machiav3lli.backup.ui.compose.item.EnumPreference
+import com.machiav3lli.backup.ui.compose.item.IntPreference
 import com.machiav3lli.backup.ui.compose.item.LaunchPreference
 import com.machiav3lli.backup.ui.compose.item.ListPreference
-import com.machiav3lli.backup.ui.compose.item.SeekBarPreference
-import com.machiav3lli.backup.ui.compose.item.SwitchPreference
+import com.machiav3lli.backup.ui.compose.item.PasswordPreference
+import com.machiav3lli.backup.ui.compose.item.StringPreference
 import com.machiav3lli.backup.ui.item.BooleanPref
 import com.machiav3lli.backup.ui.item.EnumPref
 import com.machiav3lli.backup.ui.item.IntPref
@@ -24,58 +26,59 @@ fun PrefsBuilder(
 ) {
     when (pref) {
 
-        is BooleanPref -> SwitchPreference(
-            pref = pref,
-            index = index,
-            groupSize = size,
-        )
+        // order from derived to base classes (otherwise base would obscure derived)
 
-        is IntPref     -> SeekBarPreference(
-            pref = pref,
-            index = index,
-            groupSize = size,
-        )
-
-        is PasswordPref  -> LaunchPreference(   // place before StringPref, because it's derived
-            pref = pref,
-            summary = if (pref.value.isNotEmpty()) "*****" else "-----",
-            index = index,
-            groupSize = size,
-        ) {
-            onDialogPref(pref)
-        }
-
-        is StringPref  -> LaunchPreference(
-            pref = pref,
-            summary = pref.value,
-            index = index,
-            groupSize = size,
-        ) {
-            onDialogPref(pref)
-        }
-
-        is ListPref   -> ListPreference(
-            pref = pref,
-            index = index,
-            groupSize = size,
-        ) {
-            onDialogPref(pref)
-        }
-
-        is EnumPref   -> EnumPreference(
-            pref = pref,
-            index = index,
-            groupSize = size,
-        ) {
-            onDialogPref(pref)
-        }
-
-        is LaunchPref -> LaunchPreference(
+        is LaunchPref   -> LaunchPreference(
             pref = pref,
             summary = pref.summary,
             index = index,
             groupSize = size,
             onClick = pref.onClick
         )
+
+        is EnumPref     -> EnumPreference(
+            pref = pref,
+            index = index,
+            groupSize = size,
+        ) {
+            onDialogPref(pref)
+        }
+
+        is ListPref     -> ListPreference(
+            pref = pref,
+            index = index,
+            groupSize = size,
+        ) {
+            onDialogPref(pref)
+        }
+
+        is PasswordPref -> PasswordPreference(
+            pref = pref,
+            index = index,
+            groupSize = size,
+        ) {
+            onDialogPref(pref)
+        }
+
+        is StringPref   -> StringPreference(
+            pref = pref,
+            index = index,
+            groupSize = size,
+        ) {
+            onDialogPref(pref)
+        }
+
+        is IntPref      -> IntPreference(
+            pref = pref,
+            index = index,
+            groupSize = size,
+        )
+
+        is BooleanPref  -> BooleanPreference(
+            pref = pref,
+            index = index,
+            groupSize = size,
+        )
+
     }
 }
