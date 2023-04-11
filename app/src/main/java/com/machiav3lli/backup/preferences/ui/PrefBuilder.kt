@@ -38,7 +38,7 @@ fun PrefsBuilder(
 
         is PasswordPref  -> LaunchPreference(   // place before StringPref, because it's derived
             pref = pref,
-            summary = null,
+            summary = if (pref.value.isNotEmpty()) "*****" else "-----",
             index = index,
             groupSize = size,
         ) {
