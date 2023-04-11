@@ -10,7 +10,7 @@
     <string name="radio_apk">APK</string>
     <string name="radio_data">Данные</string>
     <string name="radio_both">APK + Данные</string>
-    <string name="de_selectAll">Инвертировать все</string>
+    <string name="de_selectAll">Инвертировать всё</string>
     <string name="refresh">Обновить</string>
     <string name="batchbackup">Пакетное резервирование</string>
     <string name="batchrestore">Пакетное восстановление</string>
