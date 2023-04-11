@@ -119,15 +119,21 @@ fun BasePreference(
                     style = MaterialTheme.typography.titleMedium,
                     fontSize = 16.sp
                 )
-                var summaryText = if (summaryId != -1) stringResource(id = summaryId) else ""
-                if (summaryText.isNotEmpty() && !summary.isNullOrEmpty())
-                    summaryText += " : "
-                summaryText += summary ?: ""
-                Text(
-                    text = summaryText,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
+                if (summary != null) {
+                    Text(
+                        text = summary,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+                if (summaryId != -1) {
+                    val summaryText = stringResource(id = summaryId)
+                    Text(
+                        text = summaryText,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
                 bottomWidget?.let { widget ->
                     Spacer(modifier = Modifier.requiredWidth(8.dp))
                     widget(isEnabled)
