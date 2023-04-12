@@ -76,7 +76,7 @@
     <string name="spec_appwidgets">Widgets do app</string>
     <string name="sched_excludeSystemCheckBox">Excluir apps do sistema</string>
     <string name="sched_startingbackup">Iniciando backup agendado…</string>
-    <string name="prefs_copyselfapk_summary">Colocar uma cópia do OAndBackupX no nível superior da pasta de backup</string>
+    <string name="prefs_copyselfapk_summary">Colocar uma cópia do Neo Backup no nível superior da pasta de backup</string>
     <string name="prefs_copyselfapk">Copiar o próprio APK</string>
     <string name="prefs_batchdelete_summary">Excluir backups de todos os apps não instalados atualmente.</string>
     <string name="prefs_batchdelete">Excluir backups\?</string>
@@ -351,4 +351,6 @@
     <string name="spec_smsmmsjson">SMS/MMS no formato JSON</string>
     <string name="root_missing">ROOT em falta!</string>
     <string name="dialog_export_schedules">Exportar meus agendamentos</string>
+    <string name="root_is_mandatory">Como as aplicações estão isoladas entre si, o acesso \'superuser\' é obrigatório para conseguir fazer os backups e o restauro dos dados.</string>
+    <string name="supended_apps_cleanup">remover todos os resíduos de aplicações suspensas</string>
 </resources>
