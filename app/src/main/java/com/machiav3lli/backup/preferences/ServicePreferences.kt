@@ -17,8 +17,8 @@ import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dialogs.BaseDialog
-import com.machiav3lli.backup.dialogs.EnumDialogUI
-import com.machiav3lli.backup.dialogs.StringDialogUI
+import com.machiav3lli.backup.dialogs.EnumPrefDialogUI
+import com.machiav3lli.backup.dialogs.StringPrefDialogUI
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.FileZip
@@ -72,17 +72,17 @@ fun ServicePrefsPage() {
         if (openDialog.value) {
             BaseDialog(openDialogCustom = openDialog) {
                 when (dialogsPref) {
-                    is PasswordPref -> StringDialogUI(              //TODO hg42 encapsulate in pref
+                    is PasswordPref -> StringPrefDialogUI(              //TODO hg42 encapsulate in pref
                         pref = dialogsPref as PasswordPref,
                         isPrivate = true,
                         confirm = true,
                         openDialogCustom = openDialog
                     )
-                    is StringPref -> StringDialogUI(                //TODO hg42 encapsulate in pref
+                    is StringPref -> StringPrefDialogUI(                //TODO hg42 encapsulate in pref
                         pref = dialogsPref as StringPref,
                         openDialogCustom = openDialog
                     )
-                    is EnumPref -> EnumDialogUI(                    //TODO hg42 encapsulate in pref
+                    is EnumPref -> EnumPrefDialogUI(                    //TODO hg42 encapsulate in pref
                         pref = dialogsPref as EnumPref,
                         openDialogCustom = openDialog
                     )

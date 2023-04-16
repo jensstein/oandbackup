@@ -25,8 +25,8 @@ import com.machiav3lli.backup.THEME_DYNAMIC
 import com.machiav3lli.backup.THEME_SYSTEM
 import com.machiav3lli.backup.accentColorItems
 import com.machiav3lli.backup.dialogs.BaseDialog
-import com.machiav3lli.backup.dialogs.EnumDialogUI
-import com.machiav3lli.backup.dialogs.ListDialogUI
+import com.machiav3lli.backup.dialogs.EnumPrefDialogUI
+import com.machiav3lli.backup.dialogs.ListPrefDialogUI
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
 import com.machiav3lli.backup.secondaryColorItems
 import com.machiav3lli.backup.themeItems
@@ -119,7 +119,7 @@ fun UserPrefsPage() {
             } else BaseDialog(openDialogCustom = openDialog) {
                 when (dialogsPref) {
                     pref_languages,
-                    -> ListDialogUI(
+                    -> ListPrefDialogUI(
                         //TODO hg42 encapsulate in pref
                         pref = dialogsPref as ListPref,
                         openDialogCustom = openDialog,
@@ -127,7 +127,7 @@ fun UserPrefsPage() {
                     pref_appTheme,
                     pref_appAccentColor,
                     pref_appSecondaryColor,
-                    -> EnumDialogUI(
+                    -> EnumPrefDialogUI(
                         //TODO hg42 encapsulate in pref
                         pref = dialogsPref as EnumPref,
                         openDialogCustom = openDialog,
