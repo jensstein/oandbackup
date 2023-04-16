@@ -157,7 +157,6 @@ dependencies {
     implementation("com.google.accompanist:accompanist-flowlayout:$vAccompanist")
     implementation("com.google.accompanist:accompanist-systemuicontroller:$vAccompanist")
     implementation("com.google.accompanist:accompanist-navigation-animation:$vAccompanist")
-    implementation("com.google.accompanist:accompanist-pager:$vAccompanist")
     implementation("com.google.accompanist:accompanist-permissions:$vAccompanist")
 
     // Testing
