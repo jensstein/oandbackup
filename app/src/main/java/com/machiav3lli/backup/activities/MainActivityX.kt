@@ -45,6 +45,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -128,6 +129,8 @@ class MainActivityX : BaseActivity() {
     private val crScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
     private lateinit var navController: NavHostController
     private lateinit var powerManager: PowerManager
+    lateinit var showBatchSheet: MutableState<Boolean>
+    lateinit var backupBatchSheet: MutableState<Boolean>
 
     val viewModel by viewModels<MainViewModel> {
         MainViewModel.Factory(OABX.db, application)
@@ -141,8 +144,6 @@ class MainActivityX : BaseActivity() {
     val schedulerViewModel: SchedulerViewModel by viewModels {
         SchedulerViewModel.Factory(OABX.db.scheduleDao, application)
     }
-
-    private lateinit var sheetBatchPrefs: BatchPrefsSheet
 
     @OptIn(
         ExperimentalAnimationApi::class, ExperimentalFoundationApi::class,
@@ -226,6 +227,9 @@ class MainActivityX : BaseActivity() {
                 var barVisible by remember { mutableStateOf(true) }
                 var showSortSheet by remember { mutableStateOf(false) }
                 val sortSheetState = rememberModalBottomSheetState(true)
+                showBatchSheet = remember { mutableStateOf(false) }
+                backupBatchSheet = remember { mutableStateOf(false) }
+                val batchSheetState = rememberModalBottomSheetState(true)
 
                 LaunchedEffect(viewModel) {
                     navController.addOnDestinationChangedListener { _, destination, _ ->
@@ -402,6 +406,21 @@ class MainActivityX : BaseActivity() {
                                 }
                             }
                         }
+
+                        if (showBatchSheet.value) {
+                            ModalBottomSheet(
+                                sheetState = batchSheetState,
+                                containerColor = MaterialTheme.colorScheme.background,
+                                dragHandle = null,
+                                scrimColor = Color.Transparent,
+                                onDismissRequest = {
+                                    scope.launch { batchSheetState.hide() }
+                                    showBatchSheet.value = false
+                                }
+                            ) {
+                                BatchPrefsSheet(backupBoolean = backupBatchSheet.value)
+                            }
+                        }
                     }
                 }
             }
@@ -514,11 +533,8 @@ class MainActivityX : BaseActivity() {
     }
 
     fun showBatchPrefsSheet(backupBoolean: Boolean) {
-        sheetBatchPrefs = BatchPrefsSheet(backupBoolean)
-        sheetBatchPrefs.showNow(
-            supportFragmentManager,
-            "SORTFILTER_SHEET"
-        )
+        backupBatchSheet.value = backupBoolean
+        showBatchSheet.value = true
     }
 
     fun whileShowingSnackBar(message: String, todo: () -> Unit) {
