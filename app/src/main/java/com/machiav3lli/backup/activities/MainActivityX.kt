@@ -32,11 +32,13 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
@@ -55,8 +57,6 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.rememberPagerState
 import com.machiav3lli.backup.ALT_MODE_APK
 import com.machiav3lli.backup.ALT_MODE_BOTH
 import com.machiav3lli.backup.ALT_MODE_DATA
@@ -142,8 +142,7 @@ class MainActivityX : BaseActivity() {
     private lateinit var sheetBatchPrefs: BatchPrefsSheet
 
     @OptIn(
-        ExperimentalAnimationApi::class,
-        ExperimentalPagerApi::class
+        ExperimentalAnimationApi::class, ExperimentalFoundationApi::class,
     )
     override fun onCreate(savedInstanceState: Bundle?) {
 

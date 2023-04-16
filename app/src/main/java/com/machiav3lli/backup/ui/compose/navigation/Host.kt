@@ -6,6 +6,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.AndroidViewModel
@@ -15,8 +17,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.activity
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.PagerState
 import com.machiav3lli.backup.activities.PrefsActivityX
 import com.machiav3lli.backup.pages.PermissionsPage
 import com.machiav3lli.backup.pages.WelcomePage
@@ -27,7 +27,7 @@ import com.machiav3lli.backup.preferences.persist_beenWelcomed
 import com.machiav3lli.backup.viewmodels.ExportsViewModel
 import com.machiav3lli.backup.viewmodels.LogViewModel
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalPagerApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun MainNavHost(
     modifier: Modifier = Modifier,
@@ -60,7 +60,7 @@ fun MainNavHost(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalPagerApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun PrefsNavHost(
     modifier: Modifier = Modifier,

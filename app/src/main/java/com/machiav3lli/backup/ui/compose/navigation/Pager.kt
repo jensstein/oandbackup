@@ -1,5 +1,6 @@
 package com.machiav3lli.backup.ui.compose.navigation
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -9,6 +10,8 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -26,15 +29,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
 import com.machiav3lli.backup.preferences.pref_squeezeNavText
 import com.machiav3lli.backup.preferences.pref_toolbarOpacity
 import com.machiav3lli.backup.ui.compose.item.ResponsiveText
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SlidePager(
     modifier: Modifier = Modifier,
@@ -42,14 +42,14 @@ fun SlidePager(
     pagerState: PagerState,
     navController: NavHostController,
 ) {
-    HorizontalPager(modifier = modifier, state = pagerState, count = pageItems.size) { page ->
+    HorizontalPager(modifier = modifier, state = pagerState, pageCount = pageItems.size) { page ->
         pageItems[page].ComposablePage(
             navController = navController,
         )
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PagerNavBar(pageItems: List<NavItem>, pagerState: PagerState) {
     val scope = rememberCoroutineScope()
