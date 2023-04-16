@@ -17,13 +17,10 @@
  */
 package com.machiav3lli.backup.fragments
 
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -51,17 +48,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.text.HtmlCompat
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.activities.PrefsActivityX
 import com.machiav3lli.backup.legendList
 import com.machiav3lli.backup.linksList
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
@@ -78,177 +73,154 @@ import java.io.IOException
 import java.io.InputStream
 import java.util.*
 
-class HelpSheet : BaseSheet() {
+@Composable
+fun HelpSheet(onDismiss: () -> Unit) {
+    val context = LocalContext.current
+    val pActivity = context as PrefsActivityX
+    val nestedScrollConnection = rememberNestedScrollInteropConnection()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        super.onCreate(savedInstanceState)
-        return ComposeView(requireContext()).apply {
-            setContent {
-                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                HelpPage()
-            }
-        }
-    }
-
-    @Preview
-    @Composable
-    fun DefaultPreview() {
-        HelpPage()
-    }
-
-    @Composable
-    private fun HelpPage() {
-        val nestedScrollConnection = rememberNestedScrollInteropConnection()
-        val context = LocalContext.current
-
-        AppTheme {
-            Scaffold(
-                containerColor = Color.Transparent,
-                contentColor = MaterialTheme.colorScheme.onBackground,
-                topBar = {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(IntrinsicSize.Min)
-                            .padding(horizontal = 8.dp),
-                        verticalAlignment = Alignment.Bottom,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.app_name),
-                            style = MaterialTheme.typography.headlineMedium,
-                            maxLines = 1,
-                        )
-                        Text(
-                            text = BuildConfig.VERSION_NAME,
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        Spacer(modifier = Modifier.weight(1f))
-                        RoundButton(icon = Phosphor.CaretDown) {
-                            dismissAllowingStateLoss()
-                        }
+    AppTheme {
+        Scaffold(
+            containerColor = Color.Transparent,
+            contentColor = MaterialTheme.colorScheme.onBackground,
+            topBar = {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(IntrinsicSize.Min)
+                        .padding(horizontal = 8.dp),
+                    verticalAlignment = Alignment.Bottom,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.app_name),
+                        style = MaterialTheme.typography.headlineMedium,
+                        maxLines = 1,
+                    )
+                    Text(
+                        text = BuildConfig.VERSION_NAME,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    RoundButton(icon = Phosphor.CaretDown) {
+                        onDismiss()
                     }
                 }
-            ) { paddingValues ->
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(paddingValues)
-                        .nestedScroll(nestedScrollConnection)
-                        .fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(8.dp)
-                ) {
-                    applicationIssuer?.let {
-                        item {
-                            Text(
-                                text = "signed by $it",
-                                modifier = Modifier.padding(horizontal = 8.dp),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
+            }
+        ) { paddingValues ->
+            LazyColumn(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .nestedScroll(nestedScrollConnection)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(8.dp)
+            ) {
+                applicationIssuer?.let {
+                    item {
+                        Text(
+                            text = "signed by $it",
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
+                item {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.background,
+                        ),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface)
+                    ) {
+                        linksList.forEach {
+                            LinkItem(
+                                item = it,
+                                onClick = { uriString ->
+                                    context.startActivity(
+                                        Intent(
+                                            Intent.ACTION_VIEW,
+                                            Uri.parse(uriString)
+                                        )
+                                    )
+                                }
                             )
                         }
                     }
-                    item {
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.background,
-                            ),
-                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface)
-                        ) {
-                            linksList.forEach {
-                                LinkItem(
-                                    item = it,
-                                    onClick = { uriString ->
-                                        requireContext().startActivity(
-                                            Intent(
-                                                Intent.ACTION_VIEW,
-                                                Uri.parse(uriString)
-                                            )
-                                        )
-                                    }
-                                )
-                            }
-                        }
-                    }
-                    item { TitleText(R.string.help_legend) }
-                    gridItems(
-                        items = legendList,
-                        columns = 2,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        LegendItem(item = it)
-                    }
-                    item {
-                        Text(
-                            text = stringResource(id = R.string.help_appTypeHint),
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                    }
-                    item {
-                        val (showNotes, extendNotes) = remember { mutableStateOf(false) }
+                }
+                item { TitleText(R.string.help_legend) }
+                gridItems(
+                    items = legendList,
+                    columns = 2,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    LegendItem(item = it)
+                }
+                item {
+                    Text(
+                        text = stringResource(id = R.string.help_appTypeHint),
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+                item {
+                    val (showNotes, extendNotes) = remember { mutableStateOf(false) }
 
-                        OutlinedCard(
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.background,
-                            ),
-                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface)
+                    OutlinedCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.background,
+                        ),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { extendNotes(!showNotes) }
+                                .padding(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { extendNotes(!showNotes) }
-                                    .padding(8.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                TitleText(
-                                    textId = R.string.usage_notes_title,
-                                    modifier = Modifier.weight(1f)
-                                )
-                                Icon(
-                                    imageVector = if (showNotes) Phosphor.CaretUp
-                                    else Phosphor.CaretDown,
-                                    contentDescription = null
-                                )
-                            }
-                            AnimatedVisibility(
-                                visible = showNotes,
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Text(text = getUsageNotes(), modifier = Modifier.padding(8.dp))
-                            }
+                            TitleText(
+                                textId = R.string.usage_notes_title,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Icon(
+                                imageVector = if (showNotes) Phosphor.CaretUp
+                                else Phosphor.CaretDown,
+                                contentDescription = null
+                            )
+                        }
+                        AnimatedVisibility(
+                            visible = showNotes,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(text = context.getUsageNotes(), modifier = Modifier.padding(8.dp))
                         }
                     }
                 }
             }
         }
     }
+}
 
-    private fun getUsageNotes(): String = try {
-        val stream = resources.openRawResource(R.raw.help)
-        val htmlString = convertStreamToString(stream)
-        stream.close()
-        HtmlCompat.fromHtml(htmlString, HtmlCompat.FROM_HTML_MODE_LEGACY).dropLast(2).toString()
-    } catch (e: IOException) {
-        e.toString()
-    } catch (ignored: PackageManager.NameNotFoundException) {
-        ""
-    }
 
-    companion object {
-        fun convertStreamToString(stream: InputStream?): String {
-            val s = Scanner(stream, "utf-8").useDelimiter("\\A")
-            return if (s.hasNext()) s.next() else ""
-        }
-    }
+private fun Context.getUsageNotes(): String = try {
+    val stream = resources.openRawResource(R.raw.help)
+    val htmlString = convertStreamToString(stream)
+    stream.close()
+    HtmlCompat.fromHtml(htmlString, HtmlCompat.FROM_HTML_MODE_LEGACY).dropLast(2).toString()
+} catch (e: IOException) {
+    e.toString()
+} catch (ignored: PackageManager.NameNotFoundException) {
+    ""
+}
+
+fun convertStreamToString(stream: InputStream?): String {
+    val s = Scanner(stream, "utf-8").useDelimiter("\\A")
+    return if (s.hasNext()) s.next() else ""
 }
