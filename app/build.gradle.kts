@@ -30,7 +30,7 @@ val vCompose = "1.5.0-alpha02"
 val vKotlinSerialization = "1.5.0"
 val vRoom = "2.5.1"
 val vNavigation = "2.5.3"
-val vAccompanist = "0.30.1"
+val vAccompanist = "0.31.0-alpha"
 val vLibsu = "5.0.5"
 //val vIconics = "5.3.4"
 
