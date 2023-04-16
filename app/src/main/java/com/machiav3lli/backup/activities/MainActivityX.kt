@@ -39,12 +39,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -138,11 +142,11 @@ class MainActivityX : BaseActivity() {
         SchedulerViewModel.Factory(OABX.db.scheduleDao, application)
     }
 
-    private lateinit var sheetSortFilter: SortFilterSheet
     private lateinit var sheetBatchPrefs: BatchPrefsSheet
 
     @OptIn(
         ExperimentalAnimationApi::class, ExperimentalFoundationApi::class,
+        ExperimentalMaterial3Api::class,
     )
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -209,6 +213,7 @@ class MainActivityX : BaseActivity() {
         setContent {
 
             AppTheme {
+                val scope = rememberCoroutineScope()
                 val pagerState = rememberPagerState()
                 navController = rememberAnimatedNavController()
                 val pages = listOf(
@@ -219,6 +224,8 @@ class MainActivityX : BaseActivity() {
                 )
                 val currentPage by remember(pagerState.currentPage) { mutableStateOf(pages[pagerState.currentPage]) }   //TODO hg42 remove remember ???
                 var barVisible by remember { mutableStateOf(true) }
+                var showSortSheet by remember { mutableStateOf(false) }
+                val sortSheetState = rememberModalBottomSheetState(true)
 
                 LaunchedEffect(viewModel) {
                     navController.addOnDestinationChangedListener { _, destination, _ ->
@@ -341,11 +348,7 @@ class MainActivityX : BaseActivity() {
                                             textId = R.string.sort_and_filter,
                                             positive = true,
                                         ) {
-                                            sheetSortFilter = SortFilterSheet()
-                                            sheetSortFilter.showNow(
-                                                supportFragmentManager,
-                                                "SORTFILTER_SHEET"
-                                            )
+                                            showSortSheet = true
                                         }
                                     }
                                 }
@@ -381,6 +384,24 @@ class MainActivityX : BaseActivity() {
                             pagerState,
                             pages
                         )
+
+                        if (showSortSheet) {
+                            ModalBottomSheet(
+                                sheetState = sortSheetState,
+                                containerColor = MaterialTheme.colorScheme.background,
+                                dragHandle = null,
+                                scrimColor = Color.Transparent,
+                                onDismissRequest = {
+                                    scope.launch { sortSheetState.hide() }
+                                    showSortSheet = false
+                                }
+                            ) {
+                                SortFilterSheet {
+                                    scope.launch { sortSheetState.hide() }
+                                    showSortSheet = false
+                                }
+                            }
+                        }
                     }
                 }
             }
