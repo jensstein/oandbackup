@@ -12,7 +12,7 @@ import com.machiav3lli.backup.traceSchedule
 import com.machiav3lli.backup.utils.scheduleAlarm
 import timber.log.Timber
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 class CommandReceiver : //TODO hg42 how to maintain security?
 //TODO machiav3lli by making the receiver only internally accessible (not exported)
@@ -58,12 +58,12 @@ class CommandReceiver : //TODO hg42 how to maintain security?
                         val scheduleDao = OABX.db.scheduleDao
                         scheduleDao.getSchedule(name)?.let { schedule ->
                             val (hour, minute) = setTime.split(":").map { it.toInt() }
+                            traceSchedule { "[${schedule.id}] command receiver -> re-schedule to hour=$hour minute=$minute" }
                             val newSched = schedule.copy(
                                 timeHour = hour,
                                 timeMinute = minute,
                             )
                             scheduleDao.update(newSched)
-                            traceSchedule { "command receiver -> re-schedule" }
                             scheduleAlarm(context, newSched.id, true)
                         }
                     }.start()

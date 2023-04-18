@@ -65,14 +65,14 @@ class SchedulerViewModel(val database: ScheduleDao, appContext: Application) :
         withContext(Dispatchers.IO) {
             database.update(schedule)
             if (schedule.enabled) {
-                traceSchedule { "SchedulerViewModel.updateS -> ${if (rescheduleBoolean) "re-" else ""}schedule"}
+                traceSchedule { "[${schedule.id}] SchedulerViewModel.updateS -> ${if (rescheduleBoolean) "re-" else ""}schedule"}
                 scheduleAlarm(
                     getApplication<Application>().baseContext,
                     schedule.id,
                     rescheduleBoolean
                 )
             } else {
-                traceSchedule { "SchedulerViewModel.updateS -> cancelAlarm"}
+                traceSchedule { "[${schedule.id}] SchedulerViewModel.updateS -> cancelAlarm"}
                 cancelAlarm(getApplication<Application>().baseContext, schedule.id)
             }
         }
