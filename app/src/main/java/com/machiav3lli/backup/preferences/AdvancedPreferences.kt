@@ -436,8 +436,8 @@ val pref_fakeBackupSeconds = IntPref(
 
 val pref_fakeScheduleMin = IntPref(
     key = "dev-fake.fakeScheduleMin",
-    summary = "[minute] run each enabled schedule every x min [for testing only]",
-    entries = (listOf(0) + (3..9 step 1) + (10..60 step 5)).toList(),
+    summary = "[minute] =1: day->hour, hour->minute, minutes->seconds  >1: run enabled schedules every x min [for testing only]",
+    entries = (listOf(0, 1) + (3..9 step 1) + (10..60 step 5)).toList(),
     defaultValue = 0
 )
 

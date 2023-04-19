@@ -64,7 +64,7 @@ fun calculateTimeToRun(schedule: Schedule, now: Long): Long {
     val minTimeFromNow = TimeUnit.MINUTES.toMillis(1)
 
     val fakeMin = pref_fakeScheduleMin.value
-    if (fakeMin > 0) {
+    if (fakeMin > 1) {
         //c[Calendar.HOUR_OF_DAY] = schedule.timeHour
         c[Calendar.MINUTE] = (c[Calendar.MINUTE] / fakeMin + 1) * fakeMin % 60
         c[Calendar.SECOND] = 0
@@ -74,6 +74,19 @@ fun calculateTimeToRun(schedule: Schedule, now: Long): Long {
             if (c.timeInMillis > now + minTimeFromNow)
                 return@repeat
             c.add(Calendar.MINUTE, fakeMin)
+            nIncrements++
+        }
+        traceSchedule { "[${schedule.id}] added $nIncrements * ${schedule.interval} min" }
+    } else if (fakeMin == 1) {
+        //c[Calendar.HOUR_OF_DAY] = schedule.timeHour
+        c[Calendar.MINUTE] = schedule.timeHour
+        c[Calendar.SECOND] = schedule.timeMinute
+        c[Calendar.MILLISECOND] = 0
+        var nIncrements = 0
+        repeat(limitIncrements) {
+            if (c.timeInMillis > now + minTimeFromNow)
+                return@repeat
+            c.add(Calendar.HOUR, schedule.interval)
             nIncrements++
         }
         traceSchedule { "[${schedule.id}] added $nIncrements * ${schedule.interval} min" }
