@@ -123,7 +123,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
 
                     packageItem?.let { pi ->
                         try {
-                            OABX.shellHandlerInstance?.let { shellHandler ->
+                            OABX.shellHandler?.let { shellHandler ->
                                 actionResult = when {
                                     backupBoolean -> {
                                         BackupRestoreHelper.backup(

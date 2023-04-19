@@ -209,7 +209,7 @@ private fun Context.onClickCopySelf(
         GlobalScope.launch(Dispatchers.IO) {
             if (BackupRestoreHelper.copySelfApk(
                     this@onClickCopySelf,
-                    OABX.shellHandlerInstance!!
+                    OABX.shellHandler!!
                 )
             ) {
                 showNotification(

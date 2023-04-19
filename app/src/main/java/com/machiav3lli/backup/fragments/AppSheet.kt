@@ -563,7 +563,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                         )
                     } else {
                         BackupActionTask(
-                            p, requireMainActivity(), OABX.shellHandlerInstance!!, mode,
+                            p, requireMainActivity(), OABX.shellHandler!!, mode,
                             this
                         ).execute()
                     }
@@ -579,7 +579,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                     } else {
                         backup?.let {
                             RestoreActionTask(
-                                p, requireMainActivity(), OABX.shellHandlerInstance!!, mode,
+                                p, requireMainActivity(), OABX.shellHandler!!, mode,
                                 it, this
                             ).execute()
                         }

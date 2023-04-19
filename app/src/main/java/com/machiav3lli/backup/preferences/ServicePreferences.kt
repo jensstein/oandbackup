@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.BuildConfig
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dialogs.BaseDialog
 import com.machiav3lli.backup.dialogs.EnumPrefDialogUI
@@ -82,12 +83,12 @@ fun ServicePrefsPage() {
                         openDialogCustom = openDialog
                     )
 
-                    is StringPref   -> StringPrefDialogUI(                //TODO hg42 encapsulate in pref
+                    is StringPref   -> StringPrefDialogUI(              //TODO hg42 encapsulate in pref
                         pref = dialogsPref as StringPref,
                         openDialogCustom = openDialog
                     )
 
-                    is EnumPref     -> EnumPrefDialogUI(                    //TODO hg42 encapsulate in pref
+                    is EnumPref     -> EnumPrefDialogUI(                //TODO hg42 encapsulate in pref
                         pref = dialogsPref as EnumPref,
                         openDialogCustom = openDialog
                     )
@@ -191,7 +192,8 @@ val pref_backupNoBackupData = BooleanPref(
     summaryId = R.string.prefs_nobackupdata_summary,
     icon = Phosphor.ProhibitInset,
     iconTint = ColorData,
-    defaultValue = false
+    defaultValue = false,
+    onChanged = { OABX.shellHandler!!.assets.updateExcludeFiles() },
 )
 
 val pref_restoreDeviceProtectedData = BooleanPref(
@@ -236,7 +238,8 @@ val pref_restoreNoBackupData = BooleanPref(
     summaryId = R.string.prefs_nobackupdata_rst_summary,
     icon = Phosphor.ProhibitInset,
     iconTint = ColorData,
-    defaultValue = false
+    defaultValue = false,
+    onChanged = { OABX.shellHandler!!.assets.updateExcludeFiles() },
 )
 
 val pref_restorePermissions = BooleanPref(

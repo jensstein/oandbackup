@@ -557,7 +557,7 @@ class OABX : Application() {
 
         var appsSuspendedChecked = false
 
-        var shellHandlerInstance: ShellHandler? = null
+        var shellHandler: ShellHandler? = null
             private set
 
         var dbRef: WeakReference<ODatabase> = WeakReference(null)
@@ -571,8 +571,8 @@ class OABX : Application() {
 
         fun initShellHandler(): ShellHandler? {
             return try {
-                shellHandlerInstance = ShellHandler()
-                shellHandlerInstance
+                shellHandler = ShellHandler()
+                shellHandler
             } catch (e: ShellHandler.ShellCommandFailedException) {
                 null
             }

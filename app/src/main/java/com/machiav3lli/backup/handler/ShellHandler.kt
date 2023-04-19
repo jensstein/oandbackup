@@ -637,7 +637,8 @@ class ShellHandler {
             private set
         val SCRIPTS_SUBDIR = "scripts"
         val EXCLUDE_CACHE_FILE = "tar_EXCLUDE_CACHE"
-        val EXCLUDE_FILE = "tar_EXCLUDE"
+        val BACKUP_EXCLUDE_FILE = "tar_BACKUP_EXCLUDE"
+        val RESTORE_EXCLUDE_FILE = "tar_RESTORE_EXCLUDE"
 
         val isGrantedRoot get() = Shell.isAppGrantedRoot()
         val hasRootShell get() = Shell.getShell().status >= Shell.ROOT_SHELL

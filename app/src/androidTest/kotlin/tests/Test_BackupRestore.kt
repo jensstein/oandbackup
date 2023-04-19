@@ -56,7 +56,7 @@ class Test_BackupRestore {
         @BeforeClass
         @JvmStatic
         fun setupClass() {
-            shellHandler = OABX.Companion.shellHandlerInstance!!
+            shellHandler = OABX.Companion.shellHandler!!
             //tempDir = RootFile(context.cacheDir, "test_backup_restore")
             tempDir = RootFile(context.dataDir, "test_backup_restore")
             //tempDir = RootFile("/data/local/tmp/test_backup_restore")

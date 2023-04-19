@@ -137,30 +137,6 @@ abstract class BaseAppAction protected constructor(
         const val BACKUP_DIR_OBB_FILES = "obb_files"
         const val BACKUP_DIR_MEDIA_FILES = "media_files"
 
-        // @hg42 why exclude lib? how is it restored?
-        // @machiav3lli libs are generally created while installing the app. Backing them up
-        // would result a compatibility problem between devices with different cpu_arch
-
-        val DATA_EXCLUDED_CACHE_DIRS = listOf(
-            "cache",
-            "code_cache"
-        )
-        val DATA_BACKUP_EXCLUDED_BASENAMES = listOfNotNull(
-            "lib",      //TODO hg42 what about architecture dependent names? or may be application specific? lib* ???
-            if (!pref_backupNoBackupData.value) "no_backup" else null //TODO hg42 use Context.getNoBackupFilesDir() ??? tricky, because it's an absolute path (remove common part...)
-        )
-        val DATA_RESTORE_EXCLUDED_BASENAMES = listOfNotNull(
-            "lib",      //TODO hg42 what about architecture dependent names? or may be application specific? lib* ???
-            if (!pref_restoreNoBackupData.value) "no_backup" else null //TODO hg42 use Context.getNoBackupFilesDir() ??? tricky, because it's an absolute path (remove common part...)
-        )
-        val DATA_EXCLUDED_NAMES = listOfNotNull(
-            "com.google.android.gms.appid.xml",
-            "com.machiav3lli.backup.xml", // encrypted prefs file
-            //"cache",  // don't, this also excludes the cache
-            "trash",
-            ".thumbnails",
-            if (utilBox.hasBug("DotDotDirHang")) "..*" else null
-        )
 
         val ignoredPackages = Regex(
                 """(?x)(^(

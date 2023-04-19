@@ -481,7 +481,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                     // clear the data from the final directory
                     wipeDirectory(
                         targetPath,
-                        DATA_RESTORE_EXCLUDED_BASENAMES
+                        OABX.shellHandler!!.assets.DATA_RESTORE_EXCLUDED_BASENAMES
                     )
                     archiveStream.suUnpackTo(RootFile(targetPath), forceOldVersion)
                 } else {
@@ -493,7 +493,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
                         // clear the data from the final directory
                         wipeDirectory(
                             targetPath,
-                            DATA_RESTORE_EXCLUDED_BASENAMES
+                            OABX.shellHandler!!.assets.DATA_RESTORE_EXCLUDED_BASENAMES
                         )
                         // Move all the extracted data into the target directory
                         val command =
@@ -551,12 +551,12 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
 
                     wipeDirectory(
                         targetDir.absolutePath,
-                        DATA_RESTORE_EXCLUDED_BASENAMES
+                        OABX.shellHandler!!.assets.DATA_RESTORE_EXCLUDED_BASENAMES
                     )
 
                     val tarScript = findAssetFile("tar.sh").toString()
                     val qTarScript = quote(tarScript)
-                    val exclude = findAssetFile(ShellHandler.EXCLUDE_FILE).toString()
+                    val exclude = findAssetFile(ShellHandler.RESTORE_EXCLUDE_FILE).toString()
                     val excludeCache = findAssetFile(ShellHandler.EXCLUDE_CACHE_FILE).toString()
 
                     var options = ""
@@ -695,10 +695,10 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
             // assuming target exists, otherwise we should not enter this function, it's guarded outside
             val target = RootFile(targetPath).absolutePath
             val chownTargets = topLevelFiles
-                .filterNot { it in DATA_EXCLUDED_CACHE_DIRS }
+                .filterNot { it in OABX.shellHandler!!.assets.DATA_EXCLUDED_CACHE_DIRS }
                 .map { s -> RootFile(targetPath, s).absolutePath }
             val cacheTargets = topLevelFiles
-                .filter { it in DATA_EXCLUDED_CACHE_DIRS }
+                .filter { it in OABX.shellHandler!!.assets.DATA_EXCLUDED_CACHE_DIRS }
                 .map { s -> RootFile(targetPath, s).absolutePath }
             Timber.d("Changing owner and group to $uid:$gid for $target and recursive for $chownTargets")
             Timber.d("Changing owner and group to $uid:$gidCache for cache $cacheTargets")

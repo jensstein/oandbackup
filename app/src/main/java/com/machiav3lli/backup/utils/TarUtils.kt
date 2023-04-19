@@ -17,8 +17,7 @@
  */
 package com.machiav3lli.backup.utils
 
-import com.machiav3lli.backup.actions.BaseAppAction.Companion.DATA_EXCLUDED_CACHE_DIRS
-import com.machiav3lli.backup.actions.BaseAppAction.Companion.DATA_RESTORE_EXCLUDED_BASENAMES
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
@@ -205,8 +204,8 @@ fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile, forceOldVersion: Boole
         val relPath = targetFile.relativeTo(targetDir).toString()
         when {
             relPath.isEmpty() ||
-                    relPath in DATA_RESTORE_EXCLUDED_BASENAMES ||
-                    relPath in DATA_EXCLUDED_CACHE_DIRS -> {
+                    relPath in OABX.shellHandler!!.assets.DATA_RESTORE_EXCLUDED_BASENAMES ||
+                    relPath in OABX.shellHandler!!.assets.DATA_EXCLUDED_CACHE_DIRS -> {
                 return@forEach
             }
             tarEntry.isDirectory                        -> {
@@ -301,8 +300,8 @@ fun TarArchiveInputStream.unpackTo(targetDir: File?, strictHardLinks: Boolean = 
             val mode = tarEntry.mode and 0b111_111_111_111
             when {
                 relPath.isEmpty() -> return@forEach
-                relPath in DATA_EXCLUDED_BASENAMES -> return@forEach
-                relPath in DATA_EXCLUDED_CACHE_DIRS -> return@forEach
+                relPath in OABX.shellHandler!!.assets.DATA_EXCLUDED_BASENAMES -> return@forEach
+                relPath in OABX.shellHandler!!.assets.DATA_EXCLUDED_CACHE_DIRS -> return@forEach
                 tarEntry.isDirectory -> {
                     if (!targetFile.mkdirs()) {
                         throw IOException("Unable to create folder ${targetFile.absolutePath}")
