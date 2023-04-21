@@ -1,18 +1,14 @@
 package com.machiav3lli.backup.ui.compose.navigation
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.machiav3lli.backup.NAV_MAIN
 import com.machiav3lli.backup.NAV_PREFS
-import com.machiav3lli.backup.preferences.pref_toolbarOpacity
 
 @Composable
 fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
@@ -23,6 +19,7 @@ fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
             NavItem.AdvancedPrefs,
             NavItem.ToolsPrefs,
         )
+
         else      -> listOf(
             NavItem.Home,
             NavItem.Backup,
@@ -32,16 +29,7 @@ fun BottomNavBar(page: Int = NAV_MAIN, navController: NavController) {
     }
 
     NavigationBar(
-        modifier = Modifier
-            .padding(
-                start = 8.dp,
-                end = 8.dp,
-                bottom = 8.dp,
-            )
-            .clip(MaterialTheme.shapes.large),
-        containerColor = MaterialTheme.colorScheme.surface
-            .copy(alpha = pref_toolbarOpacity.value / 100f),
-        tonalElevation = 0.dp,
+        containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onBackground
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()

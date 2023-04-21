@@ -22,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -30,7 +29,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.machiav3lli.backup.preferences.pref_squeezeNavText
-import com.machiav3lli.backup.preferences.pref_toolbarOpacity
 import com.machiav3lli.backup.ui.compose.item.ResponsiveText
 import kotlinx.coroutines.launch
 
@@ -55,15 +53,7 @@ fun PagerNavBar(pageItems: List<NavItem>, pagerState: PagerState) {
     val scope = rememberCoroutineScope()
 
     NavigationBar(
-        modifier = Modifier
-            .padding(
-                start = 8.dp,
-                end = 8.dp,
-                bottom = 8.dp,
-            )
-            .clip(MaterialTheme.shapes.large),
-        containerColor = MaterialTheme.colorScheme.surface
-            .copy(alpha = pref_toolbarOpacity.value / 100f),
+        containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onBackground
     ) {
         pageItems.forEachIndexed { index, tab ->
