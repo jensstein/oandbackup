@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.machiav3lli.backup.items.Log
+import com.machiav3lli.backup.ui.compose.blockBorder
 import com.machiav3lli.backup.ui.compose.recycler.LogRecycler
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.viewmodels.LogViewModel
@@ -44,6 +45,7 @@ fun LogsPage(viewModel: LogViewModel) {
             LogRecycler(
                 modifier = Modifier
                     .padding(paddingValues)
+                    .blockBorder()
                     .fillMaxSize(),
                 productsList = logs.sortedByDescending(Log::logDate),
                 onShare = { viewModel.shareLog(it, pref_shareAsFile.value) },

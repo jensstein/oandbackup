@@ -20,6 +20,7 @@ import com.machiav3lli.backup.dialogs.BaseDialog
 import com.machiav3lli.backup.dialogs.EnumPrefDialogUI
 import com.machiav3lli.backup.dialogs.StringPrefDialogUI
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
+import com.machiav3lli.backup.ui.compose.blockBorder
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.FileZip
 import com.machiav3lli.backup.ui.compose.icons.phosphor.FloppyDisk
@@ -59,7 +60,9 @@ fun ServicePrefsPage() {
 
     AppTheme {
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .blockBorder()
+                .fillMaxSize(),
             contentPadding = PaddingValues(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {

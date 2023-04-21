@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.ui.compose.blockBorder
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CalendarPlus
 import com.machiav3lli.backup.ui.compose.recycler.ExportedScheduleRecycler
@@ -61,6 +62,7 @@ fun ExportsPage(viewModel: ExportsViewModel) {
             ExportedScheduleRecycler(
                 modifier = Modifier
                     .padding(paddingValues)
+                    .blockBorder()
                     .fillMaxSize(),
                 productsList = exports,
                 onImport = { viewModel.importSchedule(it) },

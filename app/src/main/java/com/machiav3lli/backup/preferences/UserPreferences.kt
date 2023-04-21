@@ -30,6 +30,7 @@ import com.machiav3lli.backup.dialogs.ListPrefDialogUI
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
 import com.machiav3lli.backup.secondaryColorItems
 import com.machiav3lli.backup.themeItems
+import com.machiav3lli.backup.ui.compose.blockBorder
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowsOutLineVertical
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Clock
@@ -101,7 +102,9 @@ fun UserPrefsPage() {
 
     AppTheme {
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .blockBorder()
+                .fillMaxSize(),
             contentPadding = PaddingValues(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {

@@ -97,6 +97,7 @@ import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.UndeterminedStorageFile
 import com.machiav3lli.backup.items.uriFromFile
 import com.machiav3lli.backup.ui.compose.SelectionContainerX
+import com.machiav3lli.backup.ui.compose.blockBorder
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowDown
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowUDownLeft
@@ -525,6 +526,7 @@ fun TerminalPage() {
         }
         Box(
             modifier = Modifier
+                .blockBorder()
                 .weight(1f)
                 .fillMaxSize()
                 .padding(0.dp)
