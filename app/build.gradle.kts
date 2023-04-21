@@ -89,6 +89,7 @@ android {
         }
     }
     buildFeatures {
+        buildConfig = true
         dataBinding = true
         compose = true
     }
