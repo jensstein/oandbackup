@@ -83,6 +83,7 @@ import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.preferences.pref_numBackupRevisions
 import com.machiav3lli.backup.preferences.pref_useWorkManagerForSingleManualJob
 import com.machiav3lli.backup.tasks.BackupActionTask
 import com.machiav3lli.backup.tasks.RestoreActionTask
@@ -469,6 +470,19 @@ class AppSheet() : BaseSheet(), ActionListener {
                                         )
                                     }
                                 }
+                            }
+                        }
+                        item(span = { GridItemSpan(columns) }) {
+                            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                TitleText(textId = R.string.stats_backups)
+                                if (pref_numBackupRevisions.value > 0) Text(
+                                    text = "(${
+                                        stringResource(
+                                            id = R.string.backup_revisions_limit,
+                                            pref_numBackupRevisions.value
+                                        )
+                                    })"
+                                )
                             }
                         }
                         this.items(

@@ -407,4 +407,5 @@
     <string name="edit_note">Edit note</string>
     <string name="prefs_tools_terminal">Terminal</string>
     <string name="context_menu">Context menu</string>
+    <string name="backup_revisions_limit">Backups limit: %d</string>
 </resources>
