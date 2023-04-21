@@ -17,7 +17,7 @@
  */
 package com.machiav3lli.backup.handler
 
-//import com.google.code.regexp.Pattern
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Environment.DIRECTORY_DOCUMENTS
 import androidx.core.text.isDigitsOnly
@@ -30,6 +30,7 @@ import com.machiav3lli.backup.utils.BUFFER_SIZE
 import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
 import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.ShellUtils
+import com.topjohnwu.superuser.internal.MainShell
 import com.topjohnwu.superuser.io.SuRandomAccessFile
 import de.voize.semver4k.Semver
 import kotlinx.coroutines.Dispatchers
@@ -730,8 +731,9 @@ class ShellHandler {
         }
 
         class SuRunnableShellCommand : RunnableShellCommand {
+            @SuppressLint("RestrictedApi") // TODO re-evaluate this
             override fun runCommand(command: String): Shell.Job {
-                return Shell.su(command)
+                return MainShell.newJob(true, command)
             }
         }
 
