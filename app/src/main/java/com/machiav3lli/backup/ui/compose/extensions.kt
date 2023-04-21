@@ -1,12 +1,16 @@
 package com.machiav3lli.backup.ui.compose
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.traceFlows
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -34,6 +38,15 @@ fun Modifier.ifThen(boolean: Boolean, modifier: Modifier.() -> Modifier): Modifi
         this
     }
 }
+
+@Composable
+fun Modifier.blockBorder() = this
+    .clip(MaterialTheme.shapes.large)
+    .border(
+        2.dp,
+        MaterialTheme.colorScheme.outlineVariant,
+        MaterialTheme.shapes.large,
+    )
 
 @Composable
 fun SelectionContainerX(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
