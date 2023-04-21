@@ -58,7 +58,6 @@ import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ToolsPrefsPage(navController: NavHostController) {
     val context = LocalContext.current
@@ -96,15 +95,18 @@ fun ToolsPrefsPage(navController: NavHostController) {
                                         snackbarHostState,
                                         coroutineScope
                                     )
+
                                     pref_copySelfApk -> context.onClickCopySelf(
                                         snackbarHostState,
                                         coroutineScope
                                     )
+
                                     pref_schedulesExportImport -> navController.navigate(NavItem.Exports.destination)
                                     pref_saveAppsList -> context.onClickSaveAppsList(
                                         snackbarHostState,
                                         coroutineScope
                                     )
+
                                     pref_logViewer -> navController.navigate(NavItem.Logs.destination)
                                     pref_terminal -> navController.navigate(NavItem.Terminal.destination)
                                 }

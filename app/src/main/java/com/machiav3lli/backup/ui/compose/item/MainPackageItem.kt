@@ -18,7 +18,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -112,7 +111,6 @@ fun Confirmation(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TextInput(
     text: String = "",
@@ -202,10 +200,12 @@ fun Selections(
                                 val newSelection = file.readText().lines()
                                 onAction(newSelection)
                             }
+
                             "put" -> {
                                 file.writeText(selection.joinToString("\n"))
                                 onAction(selection)
                             }
+
                             "del" -> {
                                 file.delete()
                                 onAction(selection)
@@ -240,6 +240,7 @@ fun Selections(
                                     val newSelection = schedule.customList.toList()
                                     onAction(newSelection)
                                 }
+
                                 "put" -> {
                                     Thread {
                                         scheduleDao.update(
@@ -267,6 +268,7 @@ fun Selections(
                                     val newSelection = schedule.blockList.toList()
                                     onAction(newSelection)
                                 }
+
                                 "put" -> {
                                     Thread {
                                         scheduleDao.update(
@@ -294,6 +296,7 @@ fun Selections(
                                     ?: emptyList()
                             onAction(newSelection)
                         }
+
                         "put" -> {
                             OABX.main?.viewModel?.setBlocklist(selection.toSet())
                             onAction(selection)

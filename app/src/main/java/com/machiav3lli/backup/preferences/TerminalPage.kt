@@ -43,7 +43,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -547,7 +546,6 @@ fun TerminalPage() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TerminalText(
     text: List<String>,
@@ -627,6 +625,7 @@ fun TerminalText(
                                     0.8f,
                                     0f
                                 )
+
                                 else -> Color.White
                             }
                         Text(

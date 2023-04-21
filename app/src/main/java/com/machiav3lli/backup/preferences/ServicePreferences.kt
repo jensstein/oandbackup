@@ -81,11 +81,13 @@ fun ServicePrefsPage() {
                         confirm = true,
                         openDialogCustom = openDialog
                     )
-                    is StringPref -> StringPrefDialogUI(                //TODO hg42 encapsulate in pref
+
+                    is StringPref   -> StringPrefDialogUI(                //TODO hg42 encapsulate in pref
                         pref = dialogsPref as StringPref,
                         openDialogCustom = openDialog
                     )
-                    is EnumPref -> EnumPrefDialogUI(                    //TODO hg42 encapsulate in pref
+
+                    is EnumPref     -> EnumPrefDialogUI(                    //TODO hg42 encapsulate in pref
                         pref = dialogsPref as EnumPref,
                         openDialogCustom = openDialog
                     )

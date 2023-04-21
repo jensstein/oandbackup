@@ -14,7 +14,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -179,7 +178,6 @@ fun ListPrefDialogUI(
 val RE_jumpChars = Regex("""[\t]""")
 val RE_finishChars = Regex("""[\n]""")
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StringPrefDialogUI(
     pref: StringPref,
@@ -230,6 +228,7 @@ fun StringPrefDialogUI(
                 val end = savedValue.text.length
                 savedValue = TextFieldValue(savedValue.text, selection = TextRange(end, end))
             }
+
             "confirm" -> {
                 if (confirm) {
                     confirmFocusRequester.requestFocus()
@@ -261,7 +260,7 @@ fun StringPrefDialogUI(
                     .fillMaxWidth()
                     .focusRequester(mainFocusRequester),
                 value = savedValue,
-                colors = TextFieldDefaults.textFieldColors(
+                colors = TextFieldDefaults.colors(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     focusedTextColor = textColor,
@@ -322,7 +321,7 @@ fun StringPrefDialogUI(
                         .fillMaxWidth()
                         .focusRequester(confirmFocusRequester),
                     value = savedValueConfirm,
-                    colors = TextFieldDefaults.textFieldColors(
+                    colors = TextFieldDefaults.colors(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                         focusedTextColor = textColor,

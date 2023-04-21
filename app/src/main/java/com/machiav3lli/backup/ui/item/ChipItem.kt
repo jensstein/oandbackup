@@ -50,7 +50,7 @@ data class ChipItem(
     val flag: Int,
     val textId: Int,
     val icon: ImageVector,
-    val colorId: Int = -1
+    val colorId: Int = -1,
 ) {
 
     companion object {
@@ -58,7 +58,7 @@ data class ChipItem(
             MODE_NONE,
             R.string.showNotBackedup,
             Phosphor.Placeholder,
-            R.color.material_on_surface_emphasis_high_type
+            com.google.android.material.R.color.material_on_surface_emphasis_high_type,
         )
         val Apk = ChipItem(
             MODE_APK,
@@ -148,7 +148,7 @@ data class ChipItem(
             SPECIAL_FILTER_NOT_INSTALLED,
             R.string.showNotInstalled,
             Phosphor.TrashSimple,
-            R.color.material_on_surface_emphasis_high_type
+            com.google.android.material.R.color.material_on_surface_emphasis_high_type,
         )
         val Label = ChipItem(
             MAIN_SORT_LABEL,
@@ -199,5 +199,5 @@ data class InfoChipItem(
     val flag: Int,
     val text: String,
     val icon: ImageVector? = null,
-    val color: Color? = null
+    val color: Color? = null,
 )

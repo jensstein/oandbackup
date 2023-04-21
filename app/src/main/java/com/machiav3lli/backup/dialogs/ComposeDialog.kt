@@ -34,7 +34,6 @@ import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 @Composable
 fun BaseDialog(
     openDialogCustom: MutableState<Boolean>,
-    modifier: Modifier = Modifier,
     dialogUI: @Composable (() -> Unit),
 ) {
     Dialog(

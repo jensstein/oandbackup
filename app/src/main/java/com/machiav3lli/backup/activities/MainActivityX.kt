@@ -126,6 +126,7 @@ import kotlin.system.exitProcess
 
 class MainActivityX : BaseActivity() {
 
+    private val mScope: CoroutineScope = MainScope()
     private val crScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
     private lateinit var navController: NavHostController
     private lateinit var powerManager: PowerManager
@@ -237,7 +238,7 @@ class MainActivityX : BaseActivity() {
                         if (destination.route == NavItem.Main.destination && freshStart) {
                             freshStart = false
                             traceBold { "******************** freshStart && Main ********************" }
-                            MainScope().launch(Dispatchers.IO) {
+                            mScope.launch(Dispatchers.IO) {
                                 runCatching { findBackups() }
                                 startup = false     // ensure backups are no more reported as empty
                                 runCatching { updateAppTables() }
@@ -300,6 +301,7 @@ class MainActivityX : BaseActivity() {
                                         icon = Phosphor.GearSix
                                     ) { navController.navigate(NavItem.Settings.destination) }
                                 }
+
                                 barVisible                                               -> Column() {
                                     TopBar(title = stringResource(id = currentPage.title)) {
                                         ExpandableSearchAction(
@@ -356,6 +358,7 @@ class MainActivityX : BaseActivity() {
                                         }
                                     }
                                 }
+
                                 else                                                     ->
                                     TopBar(title = stringResource(id = R.string.app_name)) {}
                             }
@@ -509,19 +512,13 @@ class MainActivityX : BaseActivity() {
         viewModel.updatePackage(packageName)
     }
 
-    fun refreshPackagesAndBackups() {
+    private fun refreshPackagesAndBackups() {
         CoroutineScope(Dispatchers.IO).launch {
             invalidateBackupLocation()
         }
     }
 
-    fun refreshPackages() {
-        CoroutineScope(Dispatchers.IO).launch {
-            updateAppTables()
-        }
-    }
-
-    fun showSnackBar(message: String) {
+    fun showSnackBar(message: String) { // TODO reimplement this?
     }
 
     fun dismissSnackBar() {
@@ -585,11 +582,11 @@ class MainActivityX : BaseActivity() {
             val oneTimeWorkLiveData = WorkManager.getInstance(OABX.context)
                 .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
             oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {    //TODO WECH hg42
-                override fun onChanged(t: WorkInfo) {
-                    if (t.state == WorkInfo.State.SUCCEEDED) {
+                override fun onChanged(value: WorkInfo) {
+                    if (value.state == WorkInfo.State.SUCCEEDED) {
                         counter += 1
 
-                        val (succeeded, packageLabel, error) = AppActionWork.getOutput(t)
+                        val (succeeded, packageLabel, error) = AppActionWork.getOutput(value)
                         if (error.isNotEmpty()) errors =
                             "$errors$packageLabel: ${      //TODO hg42 add to WorkHandler
                                 LogsHandler.handleErrorMessages(
@@ -628,6 +625,7 @@ class MainActivityX : BaseActivity() {
                     selectedApk[pn] == selectedData[pn] && selectedApk[pn] != null -> add(
                         Triple(pn, selectedApk[pn]!!, altModeToMode(ALT_MODE_BOTH, false))
                     )
+
                     else                                                           -> {
                         if ((selectedApk[pn] ?: -1) != -1) add(
                             Triple(pn, selectedApk[pn]!!, altModeToMode(ALT_MODE_APK, false))
@@ -660,11 +658,11 @@ class MainActivityX : BaseActivity() {
             val oneTimeWorkLiveData = WorkManager.getInstance(OABX.context)
                 .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
             oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
-                override fun onChanged(t: WorkInfo) {
-                    if (t.state == WorkInfo.State.SUCCEEDED) {
+                override fun onChanged(value: WorkInfo) {
+                    if (value.state == WorkInfo.State.SUCCEEDED) {
                         counter += 1
 
-                        val (succeeded, packageLabel, error) = AppActionWork.getOutput(t)
+                        val (succeeded, packageLabel, error) = AppActionWork.getOutput(value)
                         if (error.isNotEmpty()) errors =
                             "$errors$packageLabel: ${
                                 LogsHandler.handleErrorMessages(

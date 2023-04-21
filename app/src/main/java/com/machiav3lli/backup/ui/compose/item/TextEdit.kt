@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -50,7 +49,7 @@ fun MorphableTextField(
     expanded: Boolean = false,
     textAlignment: TextAlign? = null,
     onCancel: () -> Unit,
-    onSave: (String) -> Unit
+    onSave: (String) -> Unit,
 ) {
     val (expanded, onExpanded) = remember {
         mutableStateOf(expanded)
@@ -78,7 +77,7 @@ fun TextViewBlock(
     text: String?,
     modifier: Modifier = Modifier,
     textAlignment: TextAlign? = null,
-    onExpanded: (Boolean) -> Unit
+    onExpanded: (Boolean) -> Unit,
 ) {
     OutlinedCard(
         modifier = modifier
@@ -98,14 +97,13 @@ fun TextViewBlock(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TextEditBlock(
     text: String?,
     modifier: Modifier = Modifier,
     onCancel: () -> Unit,
     onExpanded: (Boolean) -> Unit,
-    onSave: (String) -> Unit
+    onSave: (String) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
     val textFieldFocusRequester = remember { FocusRequester() }
@@ -147,7 +145,7 @@ fun TextEditBlock(
             modifier = Modifier
                 .weight(1f)
                 .focusRequester(textFieldFocusRequester),
-            colors = TextFieldDefaults.textFieldColors(
+            colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
             ),

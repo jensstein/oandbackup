@@ -214,7 +214,7 @@ fun HomePage() {
                             }
                         )
                     }
-                    if (! (updaterVisible && updaterExpanded) &&
+                    if (!(updaterVisible && updaterExpanded) &&
                         (nSelected > 0 || menuButtonAlwaysVisible)
                     ) {
                         ExtendedFloatingActionButton(

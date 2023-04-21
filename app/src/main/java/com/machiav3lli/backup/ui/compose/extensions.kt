@@ -58,7 +58,7 @@ fun SelectionContainerX(modifier: Modifier = Modifier, content: @Composable () -
 class MutableComposableSharedFlow<T>(
     var initial: T,
     val scope: CoroutineScope,
-    val label: String = "ComposableSharedFlow"
+    val label: String = "ComposableSharedFlow",
 ) {
     var flow = MutableSharedFlow<T>()
 
@@ -95,7 +95,7 @@ class MutableComposableSharedFlow<T>(
 class MutableComposableStateFlow<T>(
     var initial: T,
     val scope: CoroutineScope,
-    val label: String = "ComposableStateFlow"
+    val label: String = "ComposableStateFlow",
 ) {
     var flow = MutableStateFlow<T>(initial)
 
@@ -140,7 +140,7 @@ fun LazyListState.isAtBottom() = remember {
     derivedStateOf {
         try {
             layoutInfo.visibleItemsInfo.last().index >= layoutInfo.totalItemsCount - 1
-        } catch(_: Throwable) {
+        } catch (_: Throwable) {
             true
         }
     }

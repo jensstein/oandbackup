@@ -160,10 +160,12 @@ fun DevSettingsTab() {
             value = search,
             singleLine = true,
             //placeholder = { Text(text = "search", color = Color.Gray) },
-            colors = TextFieldDefaults.textFieldColors(
+            colors = TextFieldDefaults.colors(
                 focusedTextColor = color,
                 unfocusedTextColor = color,
-                containerColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent,
                 unfocusedTrailingIconColor = color,
                 focusedTrailingIconColor = color, //if (search.length > 0) Color.Transparent else overlayColor
             ),
@@ -331,6 +333,7 @@ fun openFileManager(folder: StorageFile) {
                             }
                         OABX.activity?.startActivity(intent)
                     }
+
                     0 -> {
                         val intent =
                             Intent().apply {
@@ -346,6 +349,7 @@ fun openFileManager(folder: StorageFile) {
                         val chooser = Intent.createChooser(intent, "Browse")
                         OABX.activity?.startActivity(chooser)
                     }
+
                     0 -> {
                         val intent =
                             Intent().apply {
@@ -360,6 +364,7 @@ fun openFileManager(folder: StorageFile) {
                         val chooser = Intent.createChooser(intent, "Browse")
                         OABX.activity?.startActivity(chooser)
                     }
+
                     0 -> {
                         val intent =
                             Intent().apply {
@@ -377,6 +382,7 @@ fun openFileManager(folder: StorageFile) {
                             }
                         OABX.activity?.startActivity(intent)
                     }
+
                     1 -> {
                         val intent =
                             Intent().apply {
@@ -398,6 +404,7 @@ fun openFileManager(folder: StorageFile) {
                             }
                         OABX.context.startActivity(intent)
                     }
+
                     else -> {}
                 }
                 traceDebug { "ok" }

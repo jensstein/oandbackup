@@ -61,7 +61,7 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
     ) {
         Timber.i("%s: Restore special data", app)
         val metaInfo = app.packageInfo as SpecialInfo
-        val tempPath = RootFile(context.cacheDir, backup.packageName ?: "")
+        val tempPath = RootFile(context.cacheDir, backup.packageName)
         val backupFilename = getBackupArchiveFilename(
             BACKUP_DIR_DATA,
             backup.isCompressed,

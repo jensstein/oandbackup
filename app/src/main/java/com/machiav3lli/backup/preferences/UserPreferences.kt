@@ -127,6 +127,7 @@ fun UserPrefsPage() {
                         pref = dialogsPref as ListPref,
                         openDialogCustom = openDialog,
                     )
+
                     pref_appTheme,
                     pref_appAccentColor,
                     pref_appSecondaryColor,

@@ -62,7 +62,6 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dialogs.BaseDialog
 import com.machiav3lli.backup.preferences.pref_showInfoLogBar
-import com.machiav3lli.backup.preferences.pref_toolbarOpacity
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.MagnifyingGlass
 import com.machiav3lli.backup.ui.compose.icons.phosphor.X
@@ -277,9 +276,8 @@ fun TopBar(
                     }
                 }
             },
-            colors = TopAppBarDefaults.smallTopAppBarColors(
-                containerColor = MaterialTheme.colorScheme.background
-                    .copy(alpha = pref_toolbarOpacity.value / 100f),
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.background,
                 titleContentColor = MaterialTheme.colorScheme.onBackground,
                 actionIconContentColor = MaterialTheme.colorScheme.onBackground,
                 navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
@@ -324,7 +322,6 @@ fun ExpandableSearchAction(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpandedSearchView(
     query: String,
@@ -356,7 +353,11 @@ fun ExpandedSearchView(
                 .weight(1f)
                 .focusRequester(textFieldFocusRequester),
             singleLine = true,
-            colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent,
+            ),
             leadingIcon = {
                 Icon(
                     modifier = Modifier.size(24.dp),

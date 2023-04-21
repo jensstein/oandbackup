@@ -194,7 +194,7 @@ fun SortFilterSheet(onDismiss: () -> Unit) {
                         list = if (specialBackupsEnabled) mainFilterChipItems
                         else mainFilterChipItems.minus(ChipItem.Special),
                         selectedFlags = model.mainFilter
-                    ) { flags, flag ->
+                    ) { flags, _ ->
                         model = model.copy(mainFilter = flags)
                     }
                 }
@@ -203,7 +203,7 @@ fun SortFilterSheet(onDismiss: () -> Unit) {
                     MultiSelectableChipGroup(
                         list = mainBackupModeChipItems,
                         selectedFlags = model.backupFilter
-                    ) { flags, flag ->
+                    ) { flags, _ ->
                         model = model.copy(backupFilter = flags)
                     }
                 }

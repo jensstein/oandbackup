@@ -49,7 +49,7 @@ fun TagsBlock(
     modifier: Modifier = Modifier,
     tags: Set<String>?,
     onRemove: (String) -> Unit,
-    onAdd: (String) -> Unit
+    onAdd: (String) -> Unit,
 ) {
     var viewAddTag by remember { mutableStateOf(false) }
 
@@ -81,7 +81,7 @@ fun TagItem(
     tag: String,
     icon: ImageVector = Phosphor.XCircle,
     action: Boolean = false,
-    onClick: (String) -> Unit
+    onClick: (String) -> Unit,
 ) {
     InputChip(
         modifier = modifier,
@@ -114,12 +114,11 @@ fun TagItem(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTagView(
     modifier: Modifier = Modifier,
     onCancel: () -> Unit,
-    onAdd: (String) -> Unit
+    onAdd: (String) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
     val textFieldFocusRequester = remember { FocusRequester() }
@@ -161,7 +160,7 @@ fun AddTagView(
             modifier = Modifier
                 .weight(1f)
                 .focusRequester(textFieldFocusRequester),
-            colors = TextFieldDefaults.textFieldColors(
+            colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
             ),

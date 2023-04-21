@@ -592,7 +592,7 @@ class OABX : Application() {
             return Build.VERSION.SDK_INT >= sdk
         }
 
-        val isRelease = BuildConfig.APPLICATION_ID.endsWith(".backup")
+        val isRelease =BuildConfig.APPLICATION_ID.endsWith(".backup")
         val isDebug = BuildConfig.DEBUG
         val isNeo = BuildConfig.APPLICATION_ID.contains("neo")
         val isHg42 = BuildConfig.APPLICATION_ID.contains("hg42")

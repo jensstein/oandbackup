@@ -70,6 +70,7 @@ class ShellHandler {
             fun UtilBox.fatalBug(reason: String) {
                 score = score.mod(1_00_00_00_0)
             }
+
             fun UtilBox.haveWorkaround(reason: String) {
             }
 
@@ -271,12 +272,11 @@ class ShellHandler {
             else
                 runAsRoot("$utilBoxQ ls -bAll ${quote(path)}")
         val relativeParent = parent ?: ""
-        val result = shellResult.out
+        return shellResult.out
             .filter { it.isNotEmpty() }
             .filter { !it.startsWith("total") }
             .mapNotNull { FileInfo.fromLsOutput(it, null, path) }
             .toMutableList()
-        return result
     }
 
     /**
@@ -582,6 +582,7 @@ class ShellHandler {
                         filePath = nameAndLink[0]
                         linkName = nameAndLink[1]
                     }
+
                     'p'  -> type = FileType.NAMED_PIPE
                     's'  -> type = FileType.SOCKET
                     'b'  -> type = FileType.BLOCK_DEVICE
@@ -724,7 +725,7 @@ class ShellHandler {
 
         class ShRunnableShellCommand : RunnableShellCommand {
             override fun runCommand(command: String): Shell.Job {
-                return Shell.sh(command)
+                return Shell.cmd(command)
             }
         }
 
@@ -875,7 +876,12 @@ class ShellHandler {
                 if (field.isEmpty()) {
                     // only set to true if command is executed and returns exit code 0
                     field = when {
-                        hasNsEnter           -> listOf("su", "-c", "nsenter --mount=/proc/1/ns/mnt sh")
+                        hasNsEnter           -> listOf(
+                            "su",
+                            "-c",
+                            "nsenter --mount=/proc/1/ns/mnt sh"
+                        )
+
                         hasMountMasterOption -> listOf("su", "--mount-master")
                         else                 -> listOf("su")
                     }

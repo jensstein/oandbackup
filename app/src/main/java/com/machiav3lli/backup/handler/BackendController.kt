@@ -118,7 +118,7 @@ val scanPool = when (1) {
     // creates many threads (~65)
     else -> Dispatchers.IO
 
-    //TODO hg42 it's still not 100% clear, if queue based scanning prevents hanging
+    // TODO hg42 it's still not 100% clear, if queue based scanning prevents hanging
 }
 
 suspend fun scanBackups(
@@ -174,7 +174,8 @@ suspend fun scanBackups(
                     suspicious.getAndIncrement()
                     logSuspicious(file, reason)
                 }
-            null -> {
+
+            null  -> {
                 suspicious.getAndIncrement()
                 logSuspicious(file, reason)
             }
@@ -194,6 +195,7 @@ suspend fun scanBackups(
                                 logSuspicious(file, "undo")
                             }
                         }
+
                         "del"  -> {
                             if (file.deleteRecursive()) {
                                 suspicious.getAndIncrement()
@@ -247,7 +249,7 @@ suspend fun scanBackups(
         if (damagedOp in listOf("ren", null)) {
             // queue at front of queue (depth first)
             // filter out dir matching dir.properties
-            val props = list.mapNotNull { it.name }.filter { it.endsWith(".$PROP_NAME") ?: false }
+            val props = list.mapNotNull { it.name }.filter { it.endsWith(".$PROP_NAME") }
             val propDirs = props.map { it.removeSuffix(".$PROP_NAME") }
 
             if (damagedOp == "ren") {
@@ -275,7 +277,7 @@ suspend fun scanBackups(
 
     suspend fun processFile(
         file: StorageFile,
-    ): Unit {
+    ) {
 
         checkThreadStats()
 
@@ -468,7 +470,8 @@ fun Context.findBackups(
             //val installedPackages = getInstalledPackageList()   // would scan for backups
             // so do the same without creating a Package for each
             val installedPackages = packageManager.getInstalledPackageInfosWithPermissions()
-            val specialInfos = SpecialInfo.getSpecialInfos(this)  //TODO hg42 these probably scan for backups
+            val specialInfos =
+                SpecialInfo.getSpecialInfos(this)  //TODO hg42 these probably scan for backups
             installedNames =
                 installedPackages.map { it.packageName } + specialInfos.map { it.packageName }
 

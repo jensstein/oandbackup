@@ -34,6 +34,7 @@ import com.machiav3lli.backup.handler.grantedPermissions
 import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.utils.LocalDateTimeSerializer
 import com.machiav3lli.backup.utils.getBackupRoot
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import java.io.File
@@ -43,7 +44,7 @@ import java.time.LocalDateTime
 
 @Entity(primaryKeys = ["packageName", "backupDate"])
 @Serializable
-data class Backup constructor(
+data class Backup @OptIn(ExperimentalSerializationApi::class) constructor(
     var backupVersionCode: Int = 0,
     var packageName: String,
     var packageLabel: String?,
@@ -280,9 +281,7 @@ data class Backup constructor(
         } else {
             val baseName = file?.name?.removeSuffix(".$PROP_NAME")
             baseName?.let { dirName ->
-                file?.parent?.let { parent ->
-                    parent.findFile(dirName)
-                }
+                file?.parent?.findFile(dirName)
             }
         }
 
@@ -315,8 +314,6 @@ data class Backup constructor(
                 //TODO bug: list serialization (jsonPretty, yaml) adds a space in front of each value
                 // found older multiline json and yaml without the bug, so it was introduced lately (by lib versions)
                 backup.permissions = backup.permissions.map { it.trim() } //TODO workaround
-
-                var dir: StorageFile? = null
 
                 backup.file = propertiesFile
 

@@ -163,6 +163,7 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                             .forEach {
                                 viewModel.apkBackupCheckedList[it] = 0
                             }
+
                         else         -> workList
                             .filter { backupBoolean || it.latestBackup?.hasApk == true }
                             .map(Package::packageName)
@@ -187,6 +188,7 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                             .forEach {
                                 viewModel.dataBackupCheckedList[it] = 0
                             }
+
                         else         -> workList
                             .filter { backupBoolean || it.latestBackup?.hasData == true }
                             .map(Package::packageName)

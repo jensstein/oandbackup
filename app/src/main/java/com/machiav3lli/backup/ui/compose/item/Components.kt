@@ -609,7 +609,6 @@ fun CheckChip(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ActionChip(
     modifier: Modifier = Modifier,
@@ -643,7 +642,6 @@ fun ActionChip(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ActionChip(
     modifier: Modifier = Modifier,

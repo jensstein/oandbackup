@@ -44,7 +44,6 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -58,7 +57,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -556,6 +554,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                         ).execute()
                     }
                 }
+
                 actionType === ActionType.RESTORE -> {
                     if (pref_useWorkManagerForSingleManualJob.value) {
                         OABX.main?.startBatchAction(
@@ -572,6 +571,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                         }
                     }
                 }
+
                 else -> {
                     Timber.e("unhandled actionType: $actionType")
                 }
@@ -685,6 +685,7 @@ class AppSheet() : BaseSheet(), ActionListener {
                             " "
                         )
                     }
+
                     else                                        -> {
                         cause?.message ?: "unknown error"
                     }

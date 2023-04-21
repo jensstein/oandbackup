@@ -347,13 +347,6 @@ val pref_busyLaserBackground = BooleanPref(
     defaultValue = true
 )
 
-val pref_toolbarOpacity = IntPref(
-    key = "dev-alt.toolbarOpacity",
-    summary = "opacity of toolbars [percent]",
-    entries = (0..100 step 5).toList(),
-    defaultValue = 100
-)
-
 val pref_versionOpacity = IntPref(
     key = "dev-alt.versionOpacity",
     summary = "opacity of version [percent]",

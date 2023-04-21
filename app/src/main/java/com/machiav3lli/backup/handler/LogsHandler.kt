@@ -173,7 +173,7 @@ class LogsHandler {
                     val files = logsDir.listFiles().filter { it.name!!.contains(timeStr) }
                     if (files.isNotEmpty()) {
                         val file = files.first()
-                        if (file.exists() == true)
+                        if (file.exists())
                             return file
                     }
                 }
@@ -255,8 +255,10 @@ class LogsHandler {
             return when {
                 errorText?.contains("bytes specified in the header were written")
                     ?: false -> context.getString(R.string.error_datachanged)
+
                 errorText?.contains("Input is not in the .gz format")
                     ?: false -> context.getString(R.string.error_encryptionpassword)
+
                 else         -> errorText
             }
         }
@@ -270,7 +272,7 @@ class LogsHandler {
             }
         }
 
-        suspend fun <T> catchSuspendExceptions(todo: suspend () -> T): T? {
+        suspend fun <T> catchExceptions(todo: suspend () -> T): T? {
             return try {
                 todo()
             } catch (e: Throwable) {

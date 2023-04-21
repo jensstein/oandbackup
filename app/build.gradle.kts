@@ -113,7 +113,7 @@ android {
         includeInApk = false
         includeInBundle = false
     }
-    packagingOptions {
+    packaging {
         resources.excludes.add("META-INF/LICENSE.md")
         resources.excludes.add("META-INF/LICENSE-notice.md")
     }

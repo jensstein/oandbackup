@@ -9,6 +9,7 @@ import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
 import timber.log.Timber
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * This class is used to describe special backup files that use a hardcoded list of file paths
@@ -65,7 +66,7 @@ open class SpecialInfo : PackageInfo {
          * @throws BackupLocationInAccessibleException   when the backup location cannot be read for any reason
          * @throws StorageLocationNotConfiguredException when the backup location is not set in the configuration
          */
-        private var threadCount = 0
+        private var threadCount: AtomicInteger = AtomicInteger(0)
         private var locked = false
 
         fun clearCache() {
@@ -89,8 +90,8 @@ open class SpecialInfo : PackageInfo {
             // RestoreSpecialAction hasn't changed!
             if (locked) {
                 synchronized(threadCount) {
-                    threadCount++
-                    Timber.d("################################################################### specialInfos locked, threads: $threadCount")
+                    threadCount.incrementAndGet()
+                    Timber.d("################################################################### specialInfos locked, threads: ${threadCount.toInt()}")
                 }
             }
             synchronized(specialInfos) { // if n calls run in parallel we may have n duplicates
