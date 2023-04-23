@@ -1,9 +1,5 @@
 package tests_ui
 
-import androidx.compose.ui.test.ComposeTimeoutException
-import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.SemanticsMatcher
-import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertIsFocused
 import androidx.compose.ui.test.click
 import androidx.compose.ui.test.hasTestTag
@@ -13,7 +9,6 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onChildAt
-import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performTextInput
@@ -24,63 +19,9 @@ import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import tests.onNodeWait
+import tests.onNodeWaitOrAssert
 import timber.log.Timber
-
-fun ComposeContentTestRule.waitUntilNodeCount(
-    matcher: SemanticsMatcher,
-    count: Int,
-    timeoutMillis: Long = 1_000L
-) {
-    this.waitUntil(timeoutMillis) {
-        this.onAllNodes(matcher).fetchSemanticsNodes().size == count
-    }
-}
-
-@OptIn(ExperimentalTestApi::class)
-fun ComposeContentTestRule.waitUntilExists(
-    matcher: SemanticsMatcher,
-    timeoutMillis: Long = 1_000L
-) {
-    return this.waitUntilNodeCount(matcher, 1, timeoutMillis)
-}
-
-@OptIn(ExperimentalTestApi::class)
-fun ComposeContentTestRule.waitUntilDoesNotExist(
-    matcher: SemanticsMatcher,
-    timeoutMillis: Long = 1_000L
-) {
-    return this.waitUntilNodeCount(matcher, 0, timeoutMillis)
-}
-
-fun ComposeContentTestRule.onNodeWait(
-    matcher: SemanticsMatcher,
-    timeoutMillis: Long = 1_000L
-): SemanticsNodeInteraction? {
-    var node: SemanticsNodeInteraction? = null
-    try {
-        this.waitUntil(timeoutMillis) {
-            val nodes = this.onAllNodes(matcher)
-            if(nodes.fetchSemanticsNodes().size > 0) {
-                node = nodes.onFirst()
-                true
-            } else
-                false
-        }
-    } catch(e: ComposeTimeoutException) {
-        Timber.d("----------", "Timeout onNodeWait($matcher, $timeoutMillis)")
-        return null
-    }
-    return node
-}
-
-fun ComposeContentTestRule.onNodeWaitOrAssert(
-    matcher: SemanticsMatcher,
-    timeoutMillis: Long = 1_000L,
-    assert: Boolean = false
-): SemanticsNodeInteraction {
-    val node = onNodeWait(matcher, timeoutMillis)
-    return node ?: throw AssertionError("node with (${matcher.description}) does not exist")
-}
 
 class Test_SelectionSaveLoad {
 
