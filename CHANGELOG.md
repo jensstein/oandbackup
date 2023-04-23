@@ -13,7 +13,7 @@ CHANGELOG
 - Add: Recreating activities on specific changes
 - Fix: Refreshing package & backup on launch
 - Fix: Cache excluded even if it's enabled
-- Fix: File duplication with SAF (file! not directory), redesiged/hardened duplicate protection (to
+- Fix: File duplication with SAF (file! not directory), redesigned/hardened duplicate protection (to
   be tested more)
 - Fix: Deleted file/directory sometimes not recognized as deleted (to be tested more)
 - Fix: File stream not closed
@@ -83,7 +83,7 @@ CHANGELOG
 - Update: Pretty print properties files
 - Update: improves prevention of duplicate schedules handling (should no more trigger detection)
 - Update: Scan depth first in findBackups (= add directory contents at front of queue)
-- Update: Remove all xxx dir for xxx.properties before queueing directory content in findbackups
+- Update: Remove all xxx dir for xxx.properties before queueing directory content in findBackups
 - Update: terminal button log/rel to extract lines that are related to NB from logcat
     - currently machiav3lli.backup + NeoBackup, also used in SUPPORT. Note, log/app is PID related,
       so only from the running NB, not from the one before, if it was restarted)
@@ -369,7 +369,7 @@ CHANGELOG
 - Fix: DocumentInfo/size of files (@hg42)
 - Fix: Obey search with select all (@hg42)
 - Fix: Use proper first user appId instead of hardcoded one (@hg42)
-- Fix: Schedule's special filter visbility
+- Fix: Schedule's special filter visibility
 - Fix: OAndBackupX to Neo Backup in some strings (@whalehub)
 - Fix: Packages placeholder icons
 - Update: Use cancelable SnackBar for popup info
@@ -430,7 +430,7 @@ NEW FILTER FORMAT: Requires resetting sort/filter manually.
 - Add: Backend's lazy loading (half-baked)
 - Add: Loading toasts for refresh.
 - Update: Improve UX for search, scrolling & AppSheet
-- Fix: Reseting search box on work finished
+- Fix: Resetting search box on work finished
 - Update: Improve error reporting (@hg42)
 - Update Translations
 
@@ -541,7 +541,7 @@ CLEAR DATA NEEDED
 5.0.2 (24.02.2021)
 ------------------
 
-* Fixed: Message disply on error (@hg42)
+* Fixed: Message display on error (@hg42)
 * Fixed: Quote issue in backup process (@hg42)
 
 5.0.1 (13.02.2021)
@@ -561,7 +561,7 @@ CLEAR DATA NEEDED
 5.0.0 (03.01.2021)
 ------------------
 
-MIRGATED TO KOTLIN, NEW ENCRYPTION ALGORITHM: clean install & doesn't support restore of previous
+MIGRATED TO KOTLIN, NEW ENCRYPTION ALGORITHM: clean install & doesn't support restore of previous
 encrypted backups.
 SCHEDULED ACTIONS CAN ONLY LAST 10 MINUTES (SYSTEM CONSTRAINT): so partition your group of apps.
 will be fixed in next minor releases.
@@ -717,7 +717,7 @@ will be fixed in next minor releases.
 * Changed: default backup directory to /OABX
 * Rewritten Encryption Solution (Credits @Pizze)
 * Added: sort by Data Size
-* Added: Alert Dialog about enabling Encrylption
+* Added: alert dialog about enabling encryption
 * Updated: revamped Help UI
 * Added: tooltips for all Buttons' Icons
 * Updated: AppSheet adaptive UI
@@ -839,7 +839,7 @@ will be fixed in next minor releases.
 0.9.9 (06.05.2020)
 -------------------
 
-* removed: check for Update (preperaing for F-Droid Release)
+* removed: check for Update (preparing for F-Droid Release)
 
 0.9.8 (01.05.2020)
 -------------------
