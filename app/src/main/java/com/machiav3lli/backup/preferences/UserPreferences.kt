@@ -118,6 +118,7 @@ fun UserPrefsPage() {
 
         if (openDialog.value) {
             if (dialogsPref == pref_pathBackupFolder) {
+                openDialog.value = false
                 launcher.launch(BACKUP_DIRECTORY_INTENT)
             } else BaseDialog(openDialogCustom = openDialog) {
                 when (dialogsPref) {
