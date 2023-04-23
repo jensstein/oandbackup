@@ -119,8 +119,8 @@ class Package {
 
     private fun isPlausiblePath(path: String?): Boolean {
         return !path.isNullOrEmpty() &&
-               path.contains(packageName) &&
-               path != OABX.context.getBackupRoot().path
+                path.contains(packageName) &&
+                path != OABX.context.getBackupRoot().path
     }
 
     fun refreshStorageStats(context: Context): Boolean {
@@ -366,23 +366,23 @@ class Package {
 
     fun getExternalDataPath(context: Context): String {
         return context.getExternalFilesDir(null)        // Android/data/<ownpkg>/files
-                   ?.parentFile?.parentFile?.absolutePath           // Android/data
-                   ?.plus("${File.separator}$packageName")    // Android/data/<pkg>
-               ?: ""
+            ?.parentFile?.parentFile?.absolutePath           // Android/data
+            ?.plus("${File.separator}$packageName")    // Android/data/<pkg>
+            ?: ""
     }
 
     fun getObbFilesPath(context: Context): String {
         return context.obbDir                                // Android/obb/<ownpkg>
-                   .parentFile?.absolutePath                        // Android/obb
-                   ?.plus("${File.separator}$packageName")    // Android/obb/<pkg>
-               ?: ""
+            .parentFile?.absolutePath                        // Android/obb
+            ?.plus("${File.separator}$packageName")    // Android/obb/<pkg>
+            ?: ""
     }
 
     fun getMediaFilesPath(context: Context): String {
         return context.obbDir                                                     // Android/obb/<ownpkg>
-                   .parentFile?.parentFile?.absolutePath                                 // Android
-                   ?.plus("${File.separator}media${File.separator}$packageName")   // Android/media/<pkg>
-               ?: ""
+            .parentFile?.parentFile?.absolutePath                                 // Android
+            ?.plus("${File.separator}media${File.separator}$packageName")   // Android/media/<pkg>
+            ?: ""
     }
 
     /**
@@ -409,7 +409,7 @@ class Package {
     val hasData: Boolean
         get() = backupList.any {
             it.hasAppData || it.hasExternalData || it.hasDevicesProtectedData ||
-            it.hasObbData || it.hasMediaData
+                    it.hasObbData || it.hasMediaData
         }
 
     val hasAppData: Boolean
@@ -441,9 +441,9 @@ class Package {
         if (other == null || javaClass != other.javaClass) return false
         val pkg = other as Package
         return packageName == pkg.packageName
-               && this.packageInfo == pkg.packageInfo
-               && storageStats == pkg.storageStats
-               && backupList == pkg.backupList
+                && this.packageInfo == pkg.packageInfo
+                && storageStats == pkg.storageStats
+                && backupList == pkg.backupList
     }
 
     override fun hashCode(): Int {
@@ -457,11 +457,11 @@ class Package {
 
     override fun toString(): String {
         return "Package{" +
-               "packageName=" + packageName +
-               ", appInfo=" + packageInfo +
-               ", storageStats=" + storageStats +
-               ", backupList=" + backupList +
-               '}'
+                "packageName=" + packageName +
+                ", appInfo=" + packageInfo +
+                ", storageStats=" + storageStats +
+                ", backupList=" + backupList +
+                '}'
     }
 
     companion object {
