@@ -539,6 +539,54 @@ The menu can be reached by pressing that menu button or by long pressing a selec
 Menu items with "..." at the end will ask something (yes/no or asking for further info) before executing an action.
 Without "..." they wil immediately execute the action.
 
+### can I control NB from scripts or Tasker and similar?  
+
+yes, NB has a broadcast receiver for Android "intents", that reacts on commands.
+
+The Intent must contain the package name, that is:
+- release: `com.machiav3lli.backup`
+- neo: `com.machiav3lli.backup.neo`
+- pumpkin: `com.machiav3lli.backup.hg42`
+- debug (e.g. if you compile yourself): `com.machiav3lli.backup.debug`
+
+The broadcast receiver is:
+    `com.machiav3lli.backup.services.CommandReceiver`
+    note, this is a fixed name, `com.machiav3lli.backup` is a namespace not a package name.  
+
+Additional data is given in so called `extras` of the intent.
+
+Intnets can also be sent by a su shell command like this: 
+    `am -a COMMAND -e EXTRANAME1 EXTRADATA1 -e EXTRANAME2 EXTRADATA2 ... -n PACKAGE/BROADCASTRECEIVER`
+
+There are three commands:
+
+`schedule`
+    trigger a schedule (like pressing the run button)
+    extras:
+        name = the name of the schedule
+    example to start a specific schedule:
+    `am broadcast -a schedule -e name "the name of the schedule" -n com.machiav3lli.backup/com.machiav3lli.backup.services.CommandReceiver`
+        
+`cancel`
+    cancel a schedule or all schedules
+    extras:
+        name = the name of the schedule
+    without a name, it cancels all schedules
+    example for canceling all schedules: 
+    `am broadcast -a cancel -n com.machiav3lli.backup/com.machiav3lli.backup.services.CommandReceiver`
+    example for canceling a specific schedule:
+    `am broadcast -a cancel -e name "the name of the schedule" -n com.machiav3lli.backup/com.machiav3lli.backup.services.CommandReceiver`
+    
+`reschedule`
+    set a new time of a schedule
+    extras:
+        name = the name of the schedule
+        time = new time in HH:MM format, e.g. 12:34
+    example to set a schedule to the time 12:34:
+    `am broadcast -a reschedule -e name "the name of the schedule" -e time 12:34 -n com.machiav3lli.backup/com.machiav3lli.backup.services.CommandReceiver`
+
+with tasker etc. the parameters of the intent must be entered in the corresponding fields.
+
 ### What is the difference to implementations like Seedvault?
 
 The main difference is that NB uses root to create a copy of the apps [APK and it's data](#what-are-all-these-backup-parts-icons--which-parts-does-a-backup-of-an-app-consist-of) while Seedvault relies on Google's api to backup (without forcing the user to backup to the Google-Cloud).
