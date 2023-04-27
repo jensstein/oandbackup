@@ -20,20 +20,27 @@ package com.machiav3lli.backup.pages
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.machiav3lli.backup.ICON_SIZE_SMALL
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.fragments.ScheduleSheet
 import com.machiav3lli.backup.ui.compose.blockBorder
@@ -41,13 +48,25 @@ import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CalendarPlus
 import com.machiav3lli.backup.ui.compose.recycler.ScheduleRecycler
 import com.machiav3lli.backup.utils.specialBackupsEnabled
+import com.machiav3lli.backup.viewmodels.ScheduleViewModel
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SchedulerPage(viewModel: SchedulerViewModel) {
     val context = LocalContext.current
-    var sheetSchedule: ScheduleSheet? = null
+    val mScope = rememberCoroutineScope()
     val schedules by viewModel.schedules.collectAsState(emptyList())
+    val scheduleSheetId = remember { mutableStateOf(-1L) }
+    val scheduleSheetState = rememberModalBottomSheetState(true)
+    val scheduleSheetVM = remember(scheduleSheetId.value) {
+        ScheduleViewModel(
+            scheduleSheetId.value,
+            OABX.db.scheduleDao,
+            OABX.app,
+        )
+    }
 
     Scaffold(
         containerColor = Color.Transparent,
@@ -72,12 +91,7 @@ fun SchedulerPage(viewModel: SchedulerViewModel) {
                 .fillMaxSize(),
             productsList = schedules,
             onClick = { item ->
-                if (sheetSchedule != null) sheetSchedule?.dismissAllowingStateLoss()
-                sheetSchedule = ScheduleSheet(item.id)
-                sheetSchedule?.showNow(
-                    (context as MainActivityX).supportFragmentManager,
-                    "Schedule ${item.id}"
-                )
+                scheduleSheetId.value = item.id
             },
             onCheckChanged = { item: Schedule, b: Boolean ->
                 viewModel.updateSchedule(
@@ -86,5 +100,26 @@ fun SchedulerPage(viewModel: SchedulerViewModel) {
                 )
             }
         )
+
+        if (scheduleSheetId.value > 0L) {
+            ModalBottomSheet(
+                sheetState = scheduleSheetState,
+                containerColor = MaterialTheme.colorScheme.background,
+                dragHandle = null,
+                scrimColor = Color.Transparent,
+                onDismissRequest = {
+                    mScope.launch { scheduleSheetState.hide() }
+                    scheduleSheetId.value = -1L
+                }
+            ) {
+                ScheduleSheet(
+                    scheduleSheetVM,
+                    scheduleId = scheduleSheetId.value,
+                ) {
+                    mScope.launch { scheduleSheetState.hide() }
+                    scheduleSheetId.value = -1L
+                }
+            }
+        }
     }
 }
