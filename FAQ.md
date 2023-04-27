@@ -202,7 +202,8 @@ You cannot access /data/data/* at all, so app data is protected between apps.
 NB is not slow any more...
 a lot of work was put into optimizations and parallel execution.
 
-The startup including scanning for backups (which is the most time consuming) should be done in 4-5 seconds.
+The startup including scanning for backups on internal or external storage (which is the most time consuming) should be done in 4-5 seconds.
+Only on remote locations (over the network) it will be much longer...
 
 <details><summary>Click to show some more details why NB was slow ...</summary>
 
@@ -481,18 +482,14 @@ Here are several examples - e.g.:
 
 It's somewhere on the [todo list](#is-there-a-roadmap--an-overview-of-features-planned-to-be-implemented) ...
 
+There are experimental savePreferences and loadPreferences tools in DevTools/tools that save and load the preferences. This does not include schedules and the global blocklist. 
+
 Up to now you only have the possibility to (all the options are in preferences -> Tools):
 - Copy the APK of NB into the backup folder (useful to ramp up a new device)
 - Export/Import the schedules
 - Save a list of your apps
 
 A workaround for the settings for now (you're all root users, so capable of copying root files, right? [you should be]):
-
-Let's comment on some of the files:
-`/data/user/0/com.machiav3lli.backup/no_backup/androidx.work.workdb-shm`
-`/data/user/0/com.machiav3lli.backup/no_backup/androidx.work.workdb-wal`
-`/data/user/0/com.machiav3lli.backup/no_backup/androidx.work.workdb`
-this is the queue that is persistent through boot
 
 `/data/user/0/com.machiav3lli.backup/shared_prefs/com.machiav3lli.backup_preferences.xml`
 all preferences excluding the password
@@ -503,7 +500,13 @@ This contains the password (in case you use encryption) and it's encrypted by a 
 `/data/user/0/com.machiav3lli.backup/databases/main.db`
 `/data/user/0/com.machiav3lli.backup/databases/main.db-shm`
 `/data/user/0/com.machiav3lli.backup/databases/main.db-wal`
-should includes the blocklist and schedules etc. ()"should" ... there were individual databases at some point...)
+includes the tables for the global blocklist and the schedules etc. (there were individual databases at some point...)
+
+Let's comment on some of the files:
+`/data/user/0/com.machiav3lli.backup/no_backup/androidx.work.workdb-shm`
+`/data/user/0/com.machiav3lli.backup/no_backup/androidx.work.workdb-wal`
+`/data/user/0/com.machiav3lli.backup/no_backup/androidx.work.workdb`
+this is the queue that is persistent through boot
 
 You can look into the database with an SQLite editor app, e.g. MixPlorer can do it or you may use the app "SQLite Editor" (com.speedsoftware.sqleditor) or any other sqlite app.
 
@@ -513,6 +516,28 @@ A rough backlog (without any guarantee that the devs will 100% stick to it) can 
 https://tree.taiga.io/project/machiav3lli-neo-backup/kanban
 
 Not all features will be listed there, but maybe the bigger / frequently asked ones.
+
+### where do I find the so called "DevTools"?
+
+in versions >= 8.3.2 you can long press the page title.
+in older versions you first need to enable the long press by enabling showInfoLogBar in preferences/advanced/developer settings. 
+Note: DevTools contain a bunch of possibilities without explaination and without translations.
+You should know what it means, before using anything in there.
+Many things are experiments for development purposes, e.g. for work in progress and new features, or to compare alternative implementations.
+There are also options to fake backups and schedules or crash the app for test purposes.
+Read the Telegram group.
+
+### I read about selection and context menu in the Telegram group, where do I find this?  
+
+long press a list entry in Homepage, this will select the first item.
+Selection mode is on, if any item is selected.
+In selection mode you can select further items by single click.
+The selection mode finishes when nothing is selected any more.
+You will see a menu button in the lower right with a selection count.
+You can also enable this button all the time in developer settings.
+The menu can be reached by pressing that menu button or by long pressing a selected item.
+Menu items with "..." at the end will ask something (yes/no or asking for further info) before executing an action.
+Without "..." they wil immediately execute the action.
 
 ### What is the difference to implementations like Seedvault?
 
