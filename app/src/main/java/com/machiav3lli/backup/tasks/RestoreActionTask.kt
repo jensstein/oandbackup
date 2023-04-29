@@ -19,7 +19,6 @@ package com.machiav3lli.backup.tasks
 
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dbs.entity.Backup
-import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.ActionResult
@@ -27,11 +26,10 @@ import com.machiav3lli.backup.items.Package
 
 class RestoreActionTask(
     appInfo: Package, oAndBackupX: MainActivityX, shellHandler: ShellHandler, restoreMode: Int,
-    private val backup: Backup,
-    appSheet: AppSheet
+    private val backup: Backup, setInfoBar: (String) -> Unit,
 ) : BaseActionTask(
     appInfo, oAndBackupX, shellHandler, restoreMode,
-    BackupRestoreHelper.ActionType.RESTORE, appSheet
+    BackupRestoreHelper.ActionType.RESTORE, setInfoBar
 ) {
 
     override fun doInBackground(vararg params: Void?): ActionResult? {

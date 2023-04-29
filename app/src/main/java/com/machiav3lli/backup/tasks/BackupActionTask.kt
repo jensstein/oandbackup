@@ -19,7 +19,6 @@ package com.machiav3lli.backup.tasks
 
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.activities.MainActivityX
-import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.items.ActionResult
@@ -28,10 +27,10 @@ import kotlin.system.measureTimeMillis
 
 class BackupActionTask(
     appInfo: Package, oAndBackupX: MainActivityX, shellHandler: ShellHandler, backupMode: Int,
-    appSheet: AppSheet
+    setInfoBar: (String) -> Unit,
 ) : BaseActionTask(
     appInfo, oAndBackupX, shellHandler, backupMode,
-    BackupRestoreHelper.ActionType.BACKUP, appSheet
+    BackupRestoreHelper.ActionType.BACKUP, setInfoBar,
 ) {
 
     override fun doInBackground(vararg params: Void?): ActionResult? {

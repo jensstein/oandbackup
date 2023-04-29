@@ -22,7 +22,6 @@ import android.content.DialogInterface
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
-import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.handler.BackupRestoreHelper.ActionType
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logErrors
@@ -36,8 +35,7 @@ import java.util.concurrent.CountDownLatch
 
 abstract class BaseActionTask(
     val app: Package, oAndBackupX: MainActivityX, val shellHandler: ShellHandler,
-    val mode: Int, private val actionType: ActionType,
-    private val appSheet: AppSheet
+    val mode: Int, private val actionType: ActionType, val setInfoBar: (String) -> Unit,
 ) : CoroutinesAsyncTask<Void?, Void?, ActionResult>() {
     val mainActivityXReference: WeakReference<MainActivityX> = WeakReference(oAndBackupX)
     private var signal: CountDownLatch? = null
@@ -50,7 +48,7 @@ abstract class BaseActionTask(
             val message = getProgressMessage(mainActivityX, actionType)
             mainActivityX.runOnUiThread {
                 mainActivityX.showSnackBar("${app.packageLabel}: $message")
-                if (appSheet.isVisible) appSheet.showSnackBar("${app.packageLabel}: $message")
+                setInfoBar("${app.packageLabel}: $message")
             }
             showNotification(
                 mainActivityX, MainActivityX::class.java,
@@ -77,7 +75,7 @@ abstract class BaseActionTask(
                 OABX.lastErrorPackage = app.packageName
             mainActivityX.updatePackage(app.packageName)
             mainActivityX.dismissSnackBar()
-            if (appSheet.isVisible) appSheet.dismissSnackBar()
+            setInfoBar("")
         }
         if (signal != null) {
             signal!!.countDown()
