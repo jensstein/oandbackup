@@ -71,7 +71,7 @@ abstract class BaseActionTask(
                         ?: ""
                 )
             }
-            if (! (result?.succeeded ?: false))
+            if (!(result?.succeeded ?: false))
                 OABX.lastErrorPackage = app.packageName
             mainActivityX.updatePackage(app.packageName)
             mainActivityX.dismissSnackBar()
@@ -88,7 +88,7 @@ abstract class BaseActionTask(
     private fun getPostExecuteMessage(
         context: Context,
         actionType: ActionType,
-        result: ActionResult?
+        result: ActionResult?,
     ): String? {
         return result?.let {
             if (it.succeeded) {

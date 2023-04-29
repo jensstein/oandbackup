@@ -117,7 +117,7 @@ class AppSheetViewModel(
         }
     }
 
-    fun enableDisableApp(users: MutableList<String>, enable: Boolean) {
+    fun enableDisableApp(users: List<String>, enable: Boolean) {
         viewModelScope.launch {
             enableDisable(users, enable)
             refreshNow.value = true
@@ -125,7 +125,7 @@ class AppSheetViewModel(
     }
 
     @Throws(ShellCommands.ShellActionFailedException::class)
-    private suspend fun enableDisable(users: MutableList<String>, enable: Boolean) {
+    private suspend fun enableDisable(users: List<String>, enable: Boolean) {
         withContext(Dispatchers.IO) {
             shellCommands.enableDisablePackage(thePackage.value?.packageName, users, enable)
         }

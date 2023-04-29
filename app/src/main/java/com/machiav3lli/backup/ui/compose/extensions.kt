@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.dp
@@ -39,14 +40,15 @@ fun Modifier.ifThen(boolean: Boolean, modifier: Modifier.() -> Modifier): Modifi
     }
 }
 
-@Composable
-fun Modifier.blockBorder() = this
-    .clip(MaterialTheme.shapes.large)
-    .border(
-        2.dp,
-        MaterialTheme.colorScheme.outlineVariant,
-        MaterialTheme.shapes.large,
-    )
+fun Modifier.blockBorder() = composed {
+    this
+        .clip(MaterialTheme.shapes.large)
+        .border(
+            2.dp,
+            MaterialTheme.colorScheme.outlineVariant,
+            MaterialTheme.shapes.large,
+        )
+}
 
 @Composable
 fun SelectionContainerX(modifier: Modifier = Modifier, content: @Composable () -> Unit) {

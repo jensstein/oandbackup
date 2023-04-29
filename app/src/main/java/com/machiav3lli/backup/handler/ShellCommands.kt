@@ -38,11 +38,12 @@ class ShellCommands {
             users = getUsers()
         } catch (e: ShellActionFailedException) {
             users = arrayListOf()
-            var error =
+            val error =
                 when (val cause = e.cause) {
                     is ShellCommandFailedException ->
                         " : ${cause.shellResult.err.joinToString(" ")}"
-                    else -> ""
+
+                    else                           -> ""
                 }
             Timber.e("Could not load list of users: ${e}$error")
         }
