@@ -101,8 +101,8 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
             BatchPackageRecycler(
                 modifier = Modifier
                     .blockBorder()
-                    .weight(1f)
-                    .fillMaxWidth(),
+                    .weight(1f,true)
+                    .fillMaxSize(),
                 productsList = workList,
                 restore = !backupBoolean,
                 apkBackupCheckedList = viewModel.apkBackupCheckedList,
