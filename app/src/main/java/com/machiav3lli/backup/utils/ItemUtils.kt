@@ -38,7 +38,7 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.AsteriskSimple
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CircleWavyWarning
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Spinner
 import com.machiav3lli.backup.ui.compose.icons.phosphor.User
-import com.machiav3lli.backup.ui.compose.navigation.NavItem
+import com.machiav3lli.backup.ui.navigation.NavItem
 import com.machiav3lli.backup.ui.compose.theme.ColorDisabled
 import com.machiav3lli.backup.ui.compose.theme.ColorNotInstalled
 import com.machiav3lli.backup.ui.compose.theme.ColorSpecial

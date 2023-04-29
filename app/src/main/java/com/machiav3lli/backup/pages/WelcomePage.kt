@@ -47,7 +47,7 @@ import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowRight
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.LinkItem
-import com.machiav3lli.backup.ui.compose.navigation.NavItem
+import com.machiav3lli.backup.ui.navigation.NavItem
 
 @Composable
 fun WelcomePage() {

@@ -72,9 +72,9 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.classAddress
 import com.machiav3lli.backup.dialogs.BaseDialog
 import com.machiav3lli.backup.dialogs.GlobalBlockListDialogUI
-import com.machiav3lli.backup.fragments.AppSheet
-import com.machiav3lli.backup.fragments.BatchPrefsSheet
-import com.machiav3lli.backup.fragments.SortFilterSheet
+import com.machiav3lli.backup.sheets.AppSheet
+import com.machiav3lli.backup.sheets.BatchPrefsSheet
+import com.machiav3lli.backup.sheets.SortFilterSheet
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.WorkHandler
@@ -97,9 +97,9 @@ import com.machiav3lli.backup.ui.compose.item.ExpandableSearchAction
 import com.machiav3lli.backup.ui.compose.item.RefreshButton
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TopBar
-import com.machiav3lli.backup.ui.compose.navigation.MainNavHost
-import com.machiav3lli.backup.ui.compose.navigation.NavItem
-import com.machiav3lli.backup.ui.compose.navigation.PagerNavBar
+import com.machiav3lli.backup.ui.navigation.MainNavHost
+import com.machiav3lli.backup.ui.navigation.NavItem
+import com.machiav3lli.backup.ui.navigation.PagerNavBar
 import com.machiav3lli.backup.ui.compose.recycler.BusyBackground
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.FileUtils.invalidateBackupLocation

@@ -37,7 +37,7 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.CalendarX
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ListNumbers
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
 import com.machiav3lli.backup.ui.compose.item.LaunchPreference
-import com.machiav3lli.backup.ui.compose.navigation.NavItem
+import com.machiav3lli.backup.ui.navigation.NavItem
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.ColorDeData
 import com.machiav3lli.backup.ui.compose.theme.ColorExodus

@@ -1,4 +1,4 @@
-package com.machiav3lli.backup.ui.compose.navigation
+package com.machiav3lli.backup.ui.navigation
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar

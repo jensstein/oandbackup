@@ -1,4 +1,4 @@
-package com.machiav3lli.backup.ui.compose.navigation
+package com.machiav3lli.backup.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
