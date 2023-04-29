@@ -65,13 +65,13 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.machiav3lli.backup.ALT_MODE_APK
 import com.machiav3lli.backup.ALT_MODE_BOTH
 import com.machiav3lli.backup.ALT_MODE_DATA
-import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.addInfoLogText
 import com.machiav3lli.backup.OABX.Companion.startup
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.classAddress
-import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
+import com.machiav3lli.backup.dialogs.BaseDialog
+import com.machiav3lli.backup.dialogs.GlobalBlockListDialogUI
 import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.fragments.BatchPrefsSheet
 import com.machiav3lli.backup.fragments.SortFilterSheet
@@ -122,7 +122,6 @@ import com.machiav3lli.backup.viewmodels.SchedulerViewModel
 import com.topjohnwu.superuser.Shell
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -231,6 +230,7 @@ class MainActivityX : BaseActivity() {
                 )
                 val currentPage by remember(pagerState.currentPage) { mutableStateOf(pages[pagerState.currentPage]) }   //TODO hg42 remove remember ???
                 var barVisible by remember { mutableStateOf(true) }
+                val openBlocklist = remember { mutableStateOf(false) }
                 var showSortSheet by remember { mutableStateOf(false) }
                 val sortSheetState = rememberModalBottomSheetState(true)
                 showBatchSheet = remember { mutableStateOf(false) }
@@ -297,19 +297,7 @@ class MainActivityX : BaseActivity() {
                                         icon = Phosphor.Prohibit,
                                         description = stringResource(id = R.string.sched_blocklist)
                                     ) {
-                                        GlobalScope.launch(Dispatchers.IO) {
-                                            val blocklistedPackages = viewModel.getBlocklist()
-                                            PackagesListDialogFragment(
-                                                blocklistedPackages,
-                                                MAIN_FILTER_DEFAULT,
-                                                true
-                                            ) { newList: Set<String> ->
-                                                viewModel.setBlocklist(newList)
-                                            }.show(
-                                                context.supportFragmentManager,
-                                                "BLOCKLIST_DIALOG"
-                                            )
-                                        }
+                                        openBlocklist.value = true
                                     }
                                     RoundButton(
                                         description = stringResource(id = R.string.prefs_title),
@@ -348,20 +336,7 @@ class MainActivityX : BaseActivity() {
                                             textId = R.string.sched_blocklist,
                                             positive = false,
                                         ) {
-                                            GlobalScope.launch(Dispatchers.IO) {
-                                                val blocklistedPackages = viewModel.getBlocklist()
-
-                                                PackagesListDialogFragment(
-                                                    blocklistedPackages,
-                                                    MAIN_FILTER_DEFAULT,
-                                                    true
-                                                ) { newList: Set<String> ->
-                                                    viewModel.setBlocklist(newList)
-                                                }.show(
-                                                    context.supportFragmentManager,
-                                                    "BLOCKLIST_DIALOG"
-                                                )
-                                            }
+                                            openBlocklist.value = true
                                         }
                                         Spacer(modifier = Modifier.weight(1f))
                                         ActionChip(
@@ -457,6 +432,14 @@ class MainActivityX : BaseActivity() {
                                     scope.launch { appSheetState.hide() }
                                     appSheetPackage.value = null
                                 }
+                            }
+                        }
+                        if (openBlocklist.value) BaseDialog(openDialogCustom = openBlocklist) {
+                            GlobalBlockListDialogUI(
+                                currentBlocklist = viewModel.getBlocklist().toSet(),
+                                openDialogCustom = openBlocklist,
+                            ) { newSet ->
+                                viewModel.setBlocklist(newSet)
                             }
                         }
                     }
