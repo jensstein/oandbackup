@@ -1,18 +1,18 @@
 package com.machiav3lli.backup.ui.compose.item
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
@@ -74,8 +74,10 @@ fun BasePreference(
     val base = index.toFloat() / groupSize
     val rank = (index + 1f) / groupSize
 
-    Column(
-        modifier = Modifier
+
+    ListItem(
+        modifier = modifier
+            .fillMaxWidth()
             .clip(
                 RoundedCornerShape(
                     topStart = if (base == 0f) 16.dp else 6.dp,
@@ -84,43 +86,32 @@ fun BasePreference(
                     bottomEnd = if (rank == 1f) 16.dp else 6.dp
                 )
             )
-            .background(
-                MaterialTheme.colorScheme
-                    .surfaceColorAtElevation(
-                        if (pref_allPrefsShouldLookEqual.value)
-                            24.dp
-                        else
-                            (rank * 24).dp
-                    )
-            )
             .ifThen(onClick != null) {
                 clickable(enabled = isEnabled, onClick = onClick!!)
-            }
-    ) {
-        Row(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            icon?.let {
-                icon()
-                Spacer(modifier = Modifier.requiredWidth(8.dp))
-            }
-
+            },
+        colors = ListItemDefaults.colors(
+            containerColor = MaterialTheme.colorScheme
+                .surfaceColorAtElevation(
+                    if (pref_allPrefsShouldLookEqual.value) 24.dp
+                    else (rank * 24).dp
+                ),
+        ),
+        leadingContent = icon,
+        headlineContent = {
+            Text(
+                text = if (titleId != -1) stringResource(id = titleId) else pref.key,
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.titleMedium,
+                fontSize = 16.sp
+            )
+        },
+        supportingContent = {
             Column(
                 modifier = Modifier
-                    .weight(1f)
                     .ifThen(!isEnabled) {
                         alpha(0.3f)
                     }
             ) {
-                Text(
-                    text = if (titleId != -1) stringResource(id = titleId) else pref.key,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontSize = 16.sp
-                )
                 if (summary != null) {
                     Text(
                         text = summary,
@@ -141,12 +132,11 @@ fun BasePreference(
                     widget(isEnabled)
                 }
             }
-            endWidget?.let { widget ->
-                Spacer(modifier = Modifier.requiredWidth(8.dp))
-                widget(isEnabled)
-            }
-        }
-    }
+        },
+        trailingContent = if (endWidget != null) {
+            { endWidget(isEnabled) }
+        } else null,
+    )
 }
 
 @Composable
