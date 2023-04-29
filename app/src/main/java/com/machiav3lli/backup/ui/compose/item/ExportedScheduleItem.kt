@@ -5,15 +5,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -35,24 +34,17 @@ fun ExportedScheduleItem(
     onRestore: (Schedule) -> Unit = { },
     onDelete: (StorageFile) -> Unit = { },
 ) {
-    Card(
-        modifier = Modifier,
-        shape = MaterialTheme.shapes.medium,
-        colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent
+
+    ListItem(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(MaterialTheme.shapes.large),
+        colors = ListItemDefaults.colors(
+            containerColor = Color.Transparent,
         ),
-        elevation = CardDefaults.cardElevation(0.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-                .wrapContentHeight()
-        ) {
+        headlineContent = {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(
                     text = item.name,
@@ -66,54 +58,60 @@ fun ExportedScheduleItem(
                 )
                 ScheduleFilters(item = item)
             }
-            Row(
+        },
+        supportingContent = {
+            Column(
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                var setTime = LocalTime.of(item.timeHour, item.timeMinute).toString()
-                setTime += " ${
-                    LocalContext.current.resources
-                        .getQuantityString(
-                            R.plurals.sched_interval_formal,
-                            item.interval,
-                            item.interval
-                        )
-                }"
-                Text(
-                    text = setTime,
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .weight(1f),
-                    softWrap = true,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1,
-                    style = MaterialTheme.typography.bodySmall
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                ScheduleTypes(item = item)
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                ElevatedActionButton(
-                    icon = Phosphor.TrashSimple,
-                    text = stringResource(id = R.string.delete),
-                    withText = false,
-                    positive = false,
-                    onClick = { onDelete(file) }
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    var setTime = LocalTime.of(item.timeHour, item.timeMinute).toString()
+                    setTime += " ${
+                        LocalContext.current.resources
+                            .getQuantityString(
+                                R.plurals.sched_interval_formal,
+                                item.interval,
+                                item.interval
+                            )
+                    }"
+                    Text(
+                        text = setTime,
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .weight(1f),
+                        softWrap = true,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    ScheduleTypes(item = item)
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    ElevatedActionButton(
+                        icon = Phosphor.TrashSimple,
+                        text = stringResource(id = R.string.delete),
+                        withText = false,
+                        positive = false,
+                        onClick = { onDelete(file) }
+                    )
 
-                Spacer(modifier = Modifier.weight(1f))
+                    Spacer(modifier = Modifier.weight(1f))
 
-                ElevatedActionButton(
-                    icon = Phosphor.ClockCounterClockwise,
-                    text = stringResource(id = R.string.dialog_import),
-                    positive = true,
-                    onClick = { onRestore(item) }
-                )
+                    ElevatedActionButton(
+                        icon = Phosphor.ClockCounterClockwise,
+                        text = stringResource(id = R.string.dialog_import),
+                        positive = true,
+                        onClick = { onRestore(item) }
+                    )
+                }
             }
-        }
-    }
+        },
+    )
 }
 
 @Preview
