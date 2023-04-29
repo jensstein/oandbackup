@@ -41,8 +41,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ElevatedButton
@@ -51,6 +49,8 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -1136,7 +1136,6 @@ fun DoubleVerticalText(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardSubRow(
     text: String,
@@ -1145,26 +1144,24 @@ fun CardSubRow(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
 ) {
-    Card(
-        modifier = modifier,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.background,
+    ListItem(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(MaterialTheme.shapes.large)
+            .clickable { onClick() },
+        colors = ListItemDefaults.colors(
+            containerColor = Color.Transparent,
         ),
-        elevation = CardDefaults.cardElevation(0.dp),
-        onClick = onClick
-    ) {
-        Row(
-            modifier = Modifier.padding(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        leadingContent = {
             Icon(imageVector = icon, contentDescription = text, tint = iconColor)
+        },
+        headlineContent = {
             Text(
                 text = text,
                 maxLines = 2,
                 style = MaterialTheme.typography.bodyMedium,
                 overflow = TextOverflow.Ellipsis
             )
-        }
-    }
+        },
+    )
 }
