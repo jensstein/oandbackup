@@ -34,7 +34,7 @@ import com.machiav3lli.backup.utils.specialBackupsEnabled
 fun PackagesListDialogUI(
     selectedPackages: Set<String>,
     filter: Int,
-    isBlocklist: Boolean,
+    title: String,
     openDialogCustom: MutableState<Boolean>,
     onPackagesListChanged: (newList: Set<String>) -> Unit,
 ) {
@@ -81,10 +81,7 @@ fun PackagesListDialogUI(
     )
 
     MultiSelectionDialogUI(
-        titleText = stringResource(
-            id = if (isBlocklist) R.string.sched_blocklist
-            else R.string.customListTitle
-        ),
+        titleText = title,
         entryMap = packagePairs.toMap(),
         selectedItems = selectedPackages.toList(),
         openDialogCustom = openDialogCustom,
@@ -102,7 +99,7 @@ fun BlockListDialogUI(
     PackagesListDialogUI(
         selectedPackages = schedule.blockList,
         filter = schedule.filter,
-        isBlocklist = true,
+        title = stringResource(id = R.string.sched_blocklist),
         openDialogCustom = openDialogCustom,
         onPackagesListChanged = onPackagesListChanged,
     )
@@ -117,7 +114,7 @@ fun CustomListDialogUI(
     PackagesListDialogUI(
         selectedPackages = schedule.customList,
         filter = schedule.filter,
-        isBlocklist = false,
+        title = stringResource(id = R.string.customListTitle),
         openDialogCustom = openDialogCustom,
         onPackagesListChanged = onPackagesListChanged,
     )
