@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.MAIN_FILTER_SPECIAL
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
@@ -99,6 +100,21 @@ fun BlockListDialogUI(
     PackagesListDialogUI(
         selectedPackages = schedule.blockList,
         filter = schedule.filter,
+        title = stringResource(id = R.string.sched_blocklist),
+        openDialogCustom = openDialogCustom,
+        onPackagesListChanged = onPackagesListChanged,
+    )
+}
+
+@Composable
+fun GlobalBlockListDialogUI(
+    currentBlocklist: Set<String>,
+    openDialogCustom: MutableState<Boolean>,
+    onPackagesListChanged: (newList: Set<String>) -> Unit,
+) {
+    PackagesListDialogUI(
+        selectedPackages = currentBlocklist,
+        filter = MAIN_FILTER_DEFAULT,
         title = stringResource(id = R.string.sched_blocklist),
         openDialogCustom = openDialogCustom,
         onPackagesListChanged = onPackagesListChanged,
