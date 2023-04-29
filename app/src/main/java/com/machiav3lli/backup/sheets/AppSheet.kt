@@ -82,6 +82,7 @@ import com.machiav3lli.backup.preferences.pref_useWorkManagerForSingleManualJob
 import com.machiav3lli.backup.tasks.BackupActionTask
 import com.machiav3lli.backup.tasks.RestoreActionTask
 import com.machiav3lli.backup.traceCompose
+import com.machiav3lli.backup.ui.compose.blockBorder
 import com.machiav3lli.backup.ui.compose.icons.Icon
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.icon.Exodus
@@ -255,8 +256,6 @@ fun AppSheet(
                                 trackColor = MaterialTheme.colorScheme.surface,
                                 color = MaterialTheme.colorScheme.primary,
                             )
-                        else
-                            Divider(thickness = 2.dp)
                     }
                 },
                 snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -264,6 +263,7 @@ fun AppSheet(
                 LazyVerticalGrid(
                     modifier = Modifier
                         .padding(paddingValues)
+                        .blockBorder()
                         .nestedScroll(nestedScrollConnection)
                         .fillMaxSize(),
                     columns = GridCells.Fixed(3),

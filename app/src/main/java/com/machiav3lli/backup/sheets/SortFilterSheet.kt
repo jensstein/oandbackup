@@ -53,6 +53,7 @@ import com.machiav3lli.backup.mainBackupModeChipItems
 import com.machiav3lli.backup.mainFilterChipItems
 import com.machiav3lli.backup.mainSpecialFilterChipItems
 import com.machiav3lli.backup.sortChipItems
+import com.machiav3lli.backup.ui.compose.blockBorder
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowUUpLeft
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretDown
@@ -94,14 +95,8 @@ fun SortFilterSheet(onDismiss: () -> Unit) {
             contentColor = MaterialTheme.colorScheme.onBackground,
             bottomBar = {
                 Column(
-                    modifier = Modifier.padding(
-                        start = 8.dp,
-                        end = 8.dp,
-                        bottom = 12.dp,
-                    ),
+                    modifier = Modifier.padding(8.dp),
                 ) {
-                    Divider(thickness = 2.dp)
-                    Spacer(modifier = Modifier.height(8.dp))
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
@@ -134,6 +129,7 @@ fun SortFilterSheet(onDismiss: () -> Unit) {
             LazyColumn(
                 modifier = Modifier
                     .padding(paddingValues)
+                    .blockBorder()
                     .nestedScroll(nestedScrollConnection)
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(8.dp),

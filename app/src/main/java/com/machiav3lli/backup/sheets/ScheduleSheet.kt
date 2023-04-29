@@ -24,10 +24,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -59,6 +57,7 @@ import com.machiav3lli.backup.mainFilterChipItems
 import com.machiav3lli.backup.schedSpecialFilterChipItems
 import com.machiav3lli.backup.scheduleBackupModeChipItems
 import com.machiav3lli.backup.traceDebug
+import com.machiav3lli.backup.ui.compose.blockBorder
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretDown
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CheckCircle
@@ -123,14 +122,8 @@ fun ScheduleSheet(
             contentColor = MaterialTheme.colorScheme.onBackground,
             bottomBar = {
                 Column(
-                    modifier = Modifier.padding(
-                        start = 8.dp,
-                        end = 8.dp,
-                        bottom = 12.dp,
-                    )
+                    modifier = Modifier.padding(8.dp),
                 ) {
-                    Divider(thickness = 2.dp)
-                    Spacer(modifier = Modifier.height(8.dp))
                     Row {
                         if (schedule.enabled) {
                             Text(text = "🕒 $absTime    ⏳ $relTime") // TODO replace by resource icons
@@ -174,6 +167,7 @@ fun ScheduleSheet(
             LazyColumn(
                 modifier = Modifier
                     .padding(paddingValues)
+                    .blockBorder()
                     .nestedScroll(nestedScrollConnection)
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(8.dp),

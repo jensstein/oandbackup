@@ -59,6 +59,7 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.PrefsActivityX
 import com.machiav3lli.backup.legendList
 import com.machiav3lli.backup.linksList
+import com.machiav3lli.backup.ui.compose.blockBorder
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretDown
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretUp
@@ -114,6 +115,7 @@ fun HelpSheet(onDismiss: () -> Unit) {
             LazyColumn(
                 modifier = Modifier
                     .padding(paddingValues)
+                    .blockBorder()
                     .nestedScroll(nestedScrollConnection)
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
