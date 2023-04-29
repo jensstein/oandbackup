@@ -42,11 +42,11 @@ fun Modifier.ifThen(boolean: Boolean, modifier: Modifier.() -> Modifier): Modifi
 
 fun Modifier.blockBorder() = composed {
     this
-        .clip(MaterialTheme.shapes.large)
+        .clip(MaterialTheme.shapes.extraLarge)
         .border(
             2.dp,
             MaterialTheme.colorScheme.outlineVariant,
-            MaterialTheme.shapes.large,
+            MaterialTheme.shapes.extraLarge,
         )
 }
 
