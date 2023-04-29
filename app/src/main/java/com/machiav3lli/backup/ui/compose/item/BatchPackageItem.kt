@@ -1,16 +1,15 @@
 package com.machiav3lli.backup.ui.compose.item
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -70,86 +70,81 @@ fun BatchPackageItem(
     }
     //Timber.i("recompose BatchPackageItem ${packageItem.packageName}")
 
-    Card(
-        modifier = Modifier,
-        shape = MaterialTheme.shapes.medium,
-        colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent
+    ListItem(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(MaterialTheme.shapes.large)
+            .clickable {
+                val checked = (apkChecked || !showApk) && (dataChecked || !showData)
+                if (showApk) apkChecked = !checked
+                if (showData) dataChecked = !checked
+                onClick(packageItem, apkChecked, dataChecked)
+            },
+        colors = ListItemDefaults.colors(
+            containerColor = Color.Transparent,
         ),
-        onClick = {
-            val checked = (apkChecked || !showApk) && (dataChecked || !showData)
-            if (showApk) apkChecked = !checked
-            if (showData) dataChecked = !checked
-            onClick(packageItem, apkChecked, dataChecked)
-        }
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Checkbox(checked = apkChecked,
-                enabled = showApk,
-                onCheckedChange = {
-                    apkChecked = it
-                    onApkClick(packageItem, it)
-                }
-            )
-            Checkbox(checked = dataChecked,
-                enabled = showData,
-                onCheckedChange = {
-                    dataChecked = it
-                    onDataClick(packageItem, it)
-                }
-            )
-
-            Column(
-                modifier = Modifier.wrapContentHeight()
-            ) {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        text = packageItem.packageLabel,
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .weight(1f),
-                        softWrap = true,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    PackageLabels(item = packageItem)
-                }
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        text = packageItem.packageName,
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .weight(1f),
-                        softWrap = true,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                    AnimatedVisibility(visible = packageItem.hasBackups) {
-                        Text(
-                            text = (packageItem.latestBackup?.backupDate?.getFormattedDate(
-                                false
-                            ) ?: "") + " • ${packageItem.numberOfBackups}",
-                            modifier = Modifier.align(Alignment.CenterVertically),
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1,
-                            style = MaterialTheme.typography.bodySmall,
-                        )
+        leadingContent = {
+            Row {
+                Checkbox(checked = apkChecked,
+                    enabled = showApk,
+                    onCheckedChange = {
+                        apkChecked = it
+                        onApkClick(packageItem, it)
                     }
+                )
+                Checkbox(checked = dataChecked,
+                    enabled = showData,
+                    onCheckedChange = {
+                        dataChecked = it
+                        onDataClick(packageItem, it)
+                    }
+                )
+            }
+        },
+        headlineContent = {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = packageItem.packageLabel,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .weight(1f),
+                    softWrap = true,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                PackageLabels(item = packageItem)
+            }
+
+        },
+        supportingContent = {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = packageItem.packageName,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .weight(1f),
+                    softWrap = true,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
+                    style = MaterialTheme.typography.bodySmall
+                )
+                AnimatedVisibility(visible = packageItem.hasBackups) {
+                    Text(
+                        text = (packageItem.latestBackup?.backupDate?.getFormattedDate(
+                            false
+                        ) ?: "") + " • ${packageItem.numberOfBackups}",
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
                 }
             }
-        }
-    }
+        },
+    )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RestorePackageItem(
     item: Package,
@@ -171,64 +166,62 @@ fun RestorePackageItem(
         mutableStateOf(packageItem.latestBackup?.hasData == true)
     }
 
-    Card(
-        modifier = Modifier,
-        shape = MaterialTheme.shapes.medium,
-        colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent
-        ),
-        onClick = {
-            val checked = (apkChecked || !checkableApk) && (dataChecked || !checkableData)
-            if (checkableApk) apkChecked = !checked
-            if (checkableData) dataChecked = !checked
-            onClick(packageItem, apkChecked, dataChecked)
-        }
+    Column(
+        modifier = Modifier
+            .clip(MaterialTheme.shapes.large)
+            .clickable {
+                val checked = (apkChecked || !checkableApk) && (dataChecked || !checkableData)
+                if (checkableApk) apkChecked = !checked
+                if (checkableData) dataChecked = !checked
+                onClick(packageItem, apkChecked, dataChecked)
+            },
+        verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        Column(
-            modifier = Modifier.padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    modifier = Modifier.wrapContentHeight()
-                ) {
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            text = packageItem.packageLabel,
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .weight(1f),
-                            softWrap = true,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1,
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                        if (item.isUpdated) {
-                            ButtonIcon(
-                                Phosphor.CircleWavyWarning, R.string.radio_updated,
-                                tint = ColorUpdated
-                            )
-                        }
+        ListItem(
+            modifier = Modifier.fillMaxWidth(),
+            colors = ListItemDefaults.colors(
+                containerColor = Color.Transparent,
+            ),
+            headlineContent = {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = packageItem.packageLabel,
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .weight(1f),
+                        softWrap = true,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    if (item.isUpdated) {
                         ButtonIcon(
-                            when {
-                                item.isSpecial -> Phosphor.AsteriskSimple
-                                item.isSystem  -> Phosphor.Spinner
-                                else           -> Phosphor.User
-                            },
-                            R.string.app_s_type_title,
-                            tint = when {
-                                !item.isInstalled -> ColorDisabled
-                                item.isDisabled   -> ColorDisabled
-                                item.isSpecial    -> ColorSpecial
-                                item.isSystem     -> ColorSystem
-                                else              -> ColorUser
-                            }
+                            Phosphor.CircleWavyWarning, R.string.radio_updated,
+                            tint = ColorUpdated
                         )
                     }
+                    ButtonIcon(
+                        when {
+                            item.isSpecial -> Phosphor.AsteriskSimple
+                            item.isSystem  -> Phosphor.Spinner
+                            else           -> Phosphor.User
+                        },
+                        R.string.app_s_type_title,
+                        tint = when {
+                            !item.isInstalled -> ColorDisabled
+                            item.isDisabled   -> ColorDisabled
+                            item.isSpecial    -> ColorSpecial
+                            item.isSystem     -> ColorSystem
+                            else              -> ColorUser
+                        }
+                    )
+                }
+            },
+            supportingContent = {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Text(
                             text = packageItem.packageName,
@@ -252,18 +245,18 @@ fun RestorePackageItem(
                             )
                         }
                     }
+                    item.backupsNewestFirst.forEachIndexed { index, item ->
+                        RestoreBackupItem(
+                            item = item,
+                            index = index,
+                            isApkChecked = index == apkBC,
+                            isDataChecked = index == dataBC,
+                            onApkClick = onBackupApkClick,
+                            onDataClick = onBackupDataClick,
+                        )
+                    }
                 }
-            }
-            item.backupsNewestFirst.forEachIndexed { index, item ->
-                RestoreBackupItem(
-                    item = item,
-                    index = index,
-                    isApkChecked = index == apkBC,
-                    isDataChecked = index == dataBC,
-                    onApkClick = onBackupApkClick,
-                    onDataClick = onBackupDataClick,
-                )
-            }
-        }
+            },
+        )
     }
 }
