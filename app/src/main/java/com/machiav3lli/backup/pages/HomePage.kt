@@ -50,7 +50,6 @@ import com.machiav3lli.backup.ALT_MODE_UNSET
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dialogs.BatchDialogFragment
-import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.preferences.pref_languages
 import com.machiav3lli.backup.preferences.pref_menuButtonAlwaysVisible
@@ -74,9 +73,8 @@ import com.machiav3lli.backup.utils.TraceUtils.endNanoTimer
 @Composable
 fun HomePage() {
     // TODO include tags in search
-    val main = OABX.main!!
-    val viewModel = main.viewModel
-    var appSheet: AppSheet? = null
+    val mActivity = OABX.main!!
+    val viewModel = mActivity.viewModel
 
     val filteredList by viewModel.filteredList.collectAsState(emptyList())
     val updatedPackages by viewModel.updatedPackages.collectAsState(emptyList())
@@ -111,7 +109,7 @@ fun HomePage() {
 
     val batchConfirmListener = object : BatchDialogFragment.ConfirmListener {
         override fun onConfirmed(selectedPackages: List<String?>, selectedModes: List<Int>) {
-            main.startBatchAction(true, selectedPackages, selectedModes)
+            mActivity.startBatchAction(true, selectedPackages, selectedModes)
         }
     }
 
@@ -169,7 +167,7 @@ fun HomePage() {
                                                     batchConfirmListener
                                                 )
                                                     .show(
-                                                        main.supportFragmentManager,
+                                                        mActivity.supportFragmentManager,
                                                         "DialogFragment"
                                                     )
                                             }
@@ -185,12 +183,7 @@ fun HomePage() {
                                     UpdatedPackageRecycler(
                                         productsList = updatedPackages,
                                         onClick = { item ->
-                                            if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                                            appSheet = AppSheet(item.packageName)
-                                            appSheet?.showNow(
-                                                main.supportFragmentManager,
-                                                "Package ${item.packageName}"
-                                            )
+                                            mActivity.showAppSheet(item)
                                         }
                                     )
                                 }
@@ -252,12 +245,7 @@ fun HomePage() {
             },
             onClick = { item ->
                 if (filteredList.none { selection[it.packageName] == true }) {
-                    if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                    appSheet = AppSheet(item.packageName)
-                    appSheet?.showNow(
-                        main.supportFragmentManager,
-                        "Package ${item.packageName}"
-                    )
+                    mActivity.showAppSheet(item)
                 } else {
                     selection[item.packageName] = selection[item.packageName] != true
                 }
@@ -276,12 +264,7 @@ fun HomePage() {
                     productsList = filteredList,
                     selection = selection,
                     openSheet = { item ->
-                        if (appSheet != null) appSheet?.dismissAllowingStateLoss()
-                        appSheet = AppSheet(item.packageName)
-                        appSheet?.showNow(
-                            main.supportFragmentManager,
-                            "Package ${item.packageName}"
-                        )
+                        mActivity.showAppSheet(item)
                     }
                 )
             }

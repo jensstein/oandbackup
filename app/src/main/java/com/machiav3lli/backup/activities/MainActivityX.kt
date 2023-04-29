@@ -72,12 +72,15 @@ import com.machiav3lli.backup.OABX.Companion.startup
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.classAddress
 import com.machiav3lli.backup.dialogs.PackagesListDialogFragment
+import com.machiav3lli.backup.fragments.AppSheet
 import com.machiav3lli.backup.fragments.BatchPrefsSheet
 import com.machiav3lli.backup.fragments.SortFilterSheet
 import com.machiav3lli.backup.handler.LogsHandler
+import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.handler.findBackups
 import com.machiav3lli.backup.handler.updateAppTables
+import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.pref_catchUncaughtException
 import com.machiav3lli.backup.pref_uncaughtExceptionsJumpToPreferences
 import com.machiav3lli.backup.preferences.persist_beenWelcomed
@@ -112,6 +115,7 @@ import com.machiav3lli.backup.utils.hasStoragePermissions
 import com.machiav3lli.backup.utils.isEncryptionEnabled
 import com.machiav3lli.backup.utils.isStorageDirSetAndOk
 import com.machiav3lli.backup.utils.postNotificationsPermission
+import com.machiav3lli.backup.viewmodels.AppSheetViewModel
 import com.machiav3lli.backup.viewmodels.BatchViewModel
 import com.machiav3lli.backup.viewmodels.MainViewModel
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
@@ -132,6 +136,7 @@ class MainActivityX : BaseActivity() {
     private lateinit var powerManager: PowerManager
     lateinit var showBatchSheet: MutableState<Boolean>
     lateinit var backupBatchSheet: MutableState<Boolean>
+    private lateinit var appSheetPackage: MutableState<Package?>
 
     val viewModel by viewModels<MainViewModel> {
         MainViewModel.Factory(OABX.db, application)
@@ -231,6 +236,16 @@ class MainActivityX : BaseActivity() {
                 showBatchSheet = remember { mutableStateOf(false) }
                 backupBatchSheet = remember { mutableStateOf(false) }
                 val batchSheetState = rememberModalBottomSheetState(true)
+                appSheetPackage = remember { mutableStateOf(null) }
+                val appSheetState = rememberModalBottomSheetState(true)
+                val appSheetVM = remember(appSheetPackage.value) {
+                    if (appSheetPackage.value != null) AppSheetViewModel(
+                        appSheetPackage.value,
+                        OABX.db,
+                        ShellCommands(),
+                        OABX.app,
+                    ) else null
+                }
 
                 LaunchedEffect(viewModel) {
                     navController.addOnDestinationChangedListener { _, destination, _ ->
@@ -424,6 +439,26 @@ class MainActivityX : BaseActivity() {
                                 BatchPrefsSheet(backupBoolean = backupBatchSheet.value)
                             }
                         }
+                        if (appSheetPackage.value != null) {
+                            ModalBottomSheet(
+                                sheetState = appSheetState,
+                                containerColor = MaterialTheme.colorScheme.background,
+                                dragHandle = null,
+                                scrimColor = Color.Transparent,
+                                onDismissRequest = {
+                                    scope.launch { appSheetState.hide() }
+                                    appSheetPackage.value = null
+                                }
+                            ) {
+                                AppSheet(
+                                    appSheetVM!!,
+                                    appSheetPackage.value?.packageName ?: "",
+                                ) {
+                                    scope.launch { appSheetState.hide() }
+                                    appSheetPackage.value = null
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -506,6 +541,10 @@ class MainActivityX : BaseActivity() {
                 }
                 .show()
         }
+    }
+
+    internal fun showAppSheet(packageValue: Package) {
+        appSheetPackage.value = packageValue
     }
 
     fun updatePackage(packageName: String) {
