@@ -91,6 +91,7 @@ fun TagItem(
             labelColor = if (action) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
             trailingIconColor = if (action) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.tertiary,
         ),
+        shape = MaterialTheme.shapes.medium,
         border = InputChipDefaults.inputChipBorder(
             borderColor = MaterialTheme.colorScheme.surface,
             borderWidth = 0.dp
@@ -134,11 +135,11 @@ fun AddTagView(
             .fillMaxWidth()
             .background(
                 color = MaterialTheme.colorScheme.background,
-                shape = MaterialTheme.shapes.medium
+                shape = MaterialTheme.shapes.large
             )
             .border(
                 BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
-                shape = MaterialTheme.shapes.medium
+                shape = MaterialTheme.shapes.large
             ),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically

@@ -85,12 +85,13 @@ fun TextViewBlock(
         colors = CardDefaults.outlinedCardColors(
             containerColor = Color.Transparent
         ),
+        shape = MaterialTheme.shapes.large,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
     ) {
         Text(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 18.dp),
+                .padding(horizontal = 12.dp, vertical = 17.dp),
             text = text ?: " ",
             textAlign = textAlignment,
         )
@@ -118,11 +119,11 @@ fun TextEditBlock(
         modifier = modifier
             .background(
                 color = MaterialTheme.colorScheme.background,
-                shape = MaterialTheme.shapes.medium
+                shape = MaterialTheme.shapes.large
             )
             .border(
                 BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
-                shape = MaterialTheme.shapes.medium
+                shape = MaterialTheme.shapes.large
             ),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
@@ -149,7 +150,7 @@ fun TextEditBlock(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
             ),
-            shape = MaterialTheme.shapes.medium,
+            shape = MaterialTheme.shapes.large,
             singleLine = false,
             label = { Text(text = stringResource(id = R.string.edit_note)) },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),

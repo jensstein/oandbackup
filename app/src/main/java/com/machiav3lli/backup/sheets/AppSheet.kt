@@ -144,7 +144,7 @@ fun AppSheet(
     val snackbarVisible = snackbarText.isNotEmpty()
     val nestedScrollConnection = rememberNestedScrollInteropConnection()
     val coroutineScope = rememberCoroutineScope()
-    val columns = 3
+    val columns = 2
 
     thePackage?.let { pkg ->
 
@@ -266,13 +266,30 @@ fun AppSheet(
                         .blockBorder()
                         .nestedScroll(nestedScrollConnection)
                         .fillMaxSize(),
-                    columns = GridCells.Fixed(3),
+                    columns = GridCells.Fixed(columns),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(8.dp)
                 ) {
                     item(span = { GridItemSpan(columns) }) {
                         InfoChipsBlock(list = pkg.infoChips())
+                    }
+                    item {
+                        AnimatedVisibility(visible = !pkg.isSpecial) {
+                            CardButton(
+                                modifier = Modifier.fillMaxHeight(),
+                                icon = Icon.Exodus,
+                                tint = colorResource(id = R.color.ic_exodus),
+                                description = stringResource(id = R.string.exodus_report)
+                            ) {
+                                context.startActivity(
+                                    Intent(
+                                        Intent.ACTION_VIEW,
+                                        Uri.parse(exodusUrl(pkg.packageName))
+                                    )
+                                )
+                            }
+                        }
                     }
                     item {
                         CardButton(
@@ -299,23 +316,6 @@ fun AppSheet(
                                 launchIntent?.let {
                                     context.startActivity(it)
                                 }
-                            }
-                        }
-                    }
-                    item {
-                        AnimatedVisibility(visible = !pkg.isSpecial) {
-                            CardButton(
-                                modifier = Modifier.fillMaxHeight(),
-                                icon = Icon.Exodus,
-                                tint = colorResource(id = R.color.ic_exodus),
-                                description = stringResource(id = R.string.exodus_report)
-                            ) {
-                                context.startActivity(
-                                    Intent(
-                                        Intent.ACTION_VIEW,
-                                        Uri.parse(exodusUrl(pkg.packageName))
-                                    )
-                                )
                             }
                         }
                     }

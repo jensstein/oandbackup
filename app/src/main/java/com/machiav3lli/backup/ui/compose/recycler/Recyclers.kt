@@ -214,6 +214,7 @@ fun InfoChipsBlock(
                         contentDescription = chip.text,
                     )
                 },
+                shape = MaterialTheme.shapes.medium,
                 border = SuggestionChipDefaults.suggestionChipBorder(
                     borderColor = MaterialTheme.colorScheme.surface,
                     borderWidth = 0.dp
