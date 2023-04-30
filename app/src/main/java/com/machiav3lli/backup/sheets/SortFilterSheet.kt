@@ -18,7 +18,6 @@
 package com.machiav3lli.backup.sheets
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -94,35 +93,32 @@ fun SortFilterSheet(onDismiss: () -> Unit) {
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onBackground,
             bottomBar = {
-                Column(
+                Row(
                     modifier = Modifier.padding(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        ElevatedActionButton(
-                            text = stringResource(id = R.string.resetFilter),
-                            icon = Phosphor.ArrowUUpLeft,
-                            modifier = Modifier.weight(1f),
-                            fullWidth = true,
-                            positive = false,
-                            onClick = {
-                                sortFilterModel = SortFilterModel()
-                                onDismiss()
-                            }
-                        )
-                        ElevatedActionButton(
-                            text = stringResource(id = R.string.applyFilter),
-                            icon = Phosphor.Check,
-                            modifier = Modifier.weight(1f),
-                            fullWidth = true,
-                            positive = true,
-                            onClick = {
-                                sortFilterModel = model
-                                onDismiss()
-                            }
-                        )
-                    }
+                    ElevatedActionButton(
+                        text = stringResource(id = R.string.resetFilter),
+                        icon = Phosphor.ArrowUUpLeft,
+                        modifier = Modifier.weight(1f),
+                        fullWidth = true,
+                        positive = false,
+                        onClick = {
+                            sortFilterModel = SortFilterModel()
+                            onDismiss()
+                        }
+                    )
+                    ElevatedActionButton(
+                        text = stringResource(id = R.string.applyFilter),
+                        icon = Phosphor.Check,
+                        modifier = Modifier.weight(1f),
+                        fullWidth = true,
+                        positive = true,
+                        onClick = {
+                            sortFilterModel = model
+                            onDismiss()
+                        }
+                    )
                 }
             }
         ) { paddingValues ->

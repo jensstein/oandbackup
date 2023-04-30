@@ -22,7 +22,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -57,7 +56,6 @@ import androidx.compose.material3.SelectableChipColors
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -588,6 +586,7 @@ fun CheckChip(
             containerColor = Color.Transparent,
             selectedContainerColor = MaterialTheme.colorScheme.primaryContainer
         ),
+        shape = MaterialTheme.shapes.medium,
         leadingIcon = {
             if (checked) ButtonIcon(Phosphor.Checks, R.string.enabled)
         },
@@ -597,7 +596,7 @@ fun CheckChip(
         },
         label = {
             Row {
-                Text(text = if (checked) stringResource(id = checkedTextId) else stringResource(id = textId))
+                Text(text = stringResource(id = if (checked) checkedTextId else textId))
             }
         }
     )
@@ -688,29 +687,27 @@ fun SwitchChip(
     firstSelected: Boolean = true,
     colors: SelectableChipColors = FilterChipDefaults.filterChipColors(
         containerColor = Color.Transparent,
-        selectedContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
-        labelColor = MaterialTheme.colorScheme.onSurface,
+        selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+        labelColor = MaterialTheme.colorScheme.onSurfaceVariant,
         selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-        iconColor = MaterialTheme.colorScheme.onSurface,
+        iconColor = MaterialTheme.colorScheme.onSurfaceVariant,
         selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
     ),
     onCheckedChange: (Boolean) -> Unit,
 ) {
     Row(
         modifier = Modifier
-            .border(1.dp, MaterialTheme.colorScheme.onPrimaryContainer, MaterialTheme.shapes.medium)
-            .padding(horizontal = 6.dp)
+            .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.medium)
+            .padding(horizontal = 8.dp)
             .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         val (firstSelected, selectFirst) = remember { mutableStateOf(firstSelected) }   //TODO hg42 should probably be removed like for MultiChips
 
         FilterChip(
             modifier = Modifier.weight(1f),
-            border = FilterChipDefaults.filterChipBorder(
-                borderColor = Color.Transparent,
-                borderWidth = 0.dp
-            ),
+            shape = MaterialTheme.shapes.medium,
+            border = null,
             selected = firstSelected,
             colors = colors,
             onClick = {
@@ -721,27 +718,17 @@ fun SwitchChip(
                 ButtonIcon(firstIcon, firstTextId)
             },
             label = {
-                Row(
-                    Modifier
-                        .padding(vertical = 8.dp, horizontal = 4.dp)
-                        .weight(1f)
-                ) {
-                    Text(
-                        text = stringResource(id = firstTextId),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.weight(1f),
-                        fontWeight = if (firstSelected) FontWeight.Black
-                        else FontWeight.Normal
-                    )
-                }
+                Text(
+                    text = stringResource(id = firstTextId),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f),
+                )
             }
         )
         FilterChip(
             modifier = Modifier.weight(1f),
-            border = FilterChipDefaults.filterChipBorder(
-                borderColor = Color.Transparent,
-                borderWidth = 0.dp
-            ),
+            shape = MaterialTheme.shapes.medium,
+            border = null,
             selected = !firstSelected,
             colors = colors,
             onClick = {
@@ -749,19 +736,11 @@ fun SwitchChip(
                 selectFirst(false)
             },
             label = {
-                Row(
-                    Modifier
-                        .padding(vertical = 8.dp, horizontal = 4.dp)
-                        .weight(1f)
-                ) {
-                    Text(
-                        text = stringResource(id = secondTextId),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.weight(1f),
-                        fontWeight = if (!firstSelected) FontWeight.Black
-                        else FontWeight.Normal
-                    )
-                }
+                Text(
+                    text = stringResource(id = secondTextId),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f),
+                )
             },
             trailingIcon = {
                 ButtonIcon(secondIcon, secondTextId)
@@ -842,16 +821,16 @@ fun StatefulAnimatedVisibility(
     collapsedView: @Composable (AnimatedVisibilityScope.() -> Unit),
 ) {
     AnimatedVisibility(
-        visible = !currentState,
-        enter = enterNegative,
-        exit = exitNegative,
-        content = collapsedView
-    )
-    AnimatedVisibility(
         visible = currentState,
         enter = enterPositive,
         exit = exitPositive,
         content = expandedView
+    )
+    AnimatedVisibility(
+        visible = !currentState,
+        enter = enterNegative,
+        exit = exitNegative,
+        content = collapsedView
     )
 }
 
@@ -877,10 +856,10 @@ fun VerticalFadingVisibility(
     collapsedView: @Composable (AnimatedVisibilityScope.() -> Unit),
 ) = StatefulAnimatedVisibility(
     currentState = expanded,
-    enterPositive = fadeIn() + expandVertically(expandFrom = Alignment.Bottom),
-    exitPositive = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Bottom),
-    enterNegative = fadeIn() + expandVertically(expandFrom = Alignment.Top),
-    exitNegative = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
+    enterPositive = fadeIn() + expandVertically(expandFrom = Alignment.Top),
+    exitPositive = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
+    enterNegative = fadeIn() + expandVertically(expandFrom = Alignment.Bottom),
+    exitNegative = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Bottom),
     collapsedView = collapsedView,
     expandedView = expandedView
 )
