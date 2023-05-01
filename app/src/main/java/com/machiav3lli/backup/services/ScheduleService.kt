@@ -122,13 +122,16 @@ open class ScheduleService : Service() {
                     traceSchedule { "%%%%% service stop" }
                     stopSelf()
                 }
+
                 ACTION_SCHEDULE -> {
                     // scheduleId already read from extras
                     traceSchedule { "[$scheduleId] name='$name' action=$action" }
                 }
+
                 null            -> {
                     // no action = standard action, simply continue with extra data
                 }
+
                 else            -> {
                     traceSchedule { "[$scheduleId] name='$name' action=$action unknown, ignored" }
                     //OABX.wakelock(false)
@@ -208,41 +211,49 @@ open class ScheduleService : Service() {
 
                                     val oneTimeWorkLiveData = OABX.work.manager
                                         .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
-                                    oneTimeWorkLiveData.observeForever(object :
-                                        Observer<WorkInfo> {    //TODO WECH hg42
-                                        override fun onChanged(t: WorkInfo) {
-                                            if (t.state == WorkInfo.State.SUCCEEDED ||
-                                                t.state == WorkInfo.State.FAILED ||
-                                                t.state == WorkInfo.State.CANCELLED
-                                            ) {
-                                                finished += 1
-                                                val succeeded =
-                                                    t.outputData.getBoolean("succeeded", false)
-                                                val packageLabel =
-                                                    t.outputData.getString("packageLabel")
-                                                        ?: ""
-                                                val error = t.outputData.getString("error")
-                                                    ?: ""
-                                                if (error.isNotEmpty()) errors =
-                                                        //TODO hg42 add to WorkHandler
-                                                    "$errors$packageLabel: ${
-                                                        LogsHandler.handleErrorMessages(
-                                                            this@ScheduleService,
-                                                            error
-                                                        )
-                                                    }\n"
-                                                resultsSuccess = resultsSuccess && succeeded
-                                                oneTimeWorkLiveData.removeObserver(this)
-                                                if (finished >= queued)
-                                                    endSchedule(
-                                                        scheduleId,
-                                                        name,
-                                                        "all jobs finished",
-                                                        intent
-                                                    )
+                                    oneTimeWorkLiveData.observeForever(
+                                        object : Observer<WorkInfo?> {    //TODO WECH hg42
+                                            override fun onChanged(value: WorkInfo?) {
+                                                when (value?.state) {
+                                                    WorkInfo.State.SUCCEEDED,
+                                                    WorkInfo.State.FAILED,
+                                                    WorkInfo.State.CANCELLED,
+                                                    -> {
+                                                        finished += 1
+                                                        val succeeded =
+                                                            value.outputData.getBoolean(
+                                                                "succeeded",
+                                                                false
+                                                            )
+                                                        val packageLabel =
+                                                            value.outputData.getString("packageLabel")
+                                                                ?: ""
+                                                        val error =
+                                                            value.outputData.getString("error")
+                                                                ?: ""
+                                                        if (error.isNotEmpty()) errors =
+                                                                //TODO hg42 add to WorkHandler
+                                                            "$errors$packageLabel: ${
+                                                                LogsHandler.handleErrorMessages(
+                                                                    this@ScheduleService,
+                                                                    error
+                                                                )
+                                                            }\n"
+                                                        resultsSuccess = resultsSuccess && succeeded
+                                                        oneTimeWorkLiveData.removeObserver(this)
+                                                        if (finished >= queued)
+                                                            endSchedule(
+                                                                scheduleId,
+                                                                name,
+                                                                "all jobs finished",
+                                                                intent
+                                                            )
+                                                    }
+                                                    else -> {}
+                                                }
                                             }
                                         }
-                                    })
+                                    )
                                 }
 
                                 if (worksList.isNotEmpty()) {

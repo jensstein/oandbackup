@@ -605,25 +605,30 @@ class MainActivityX : BaseActivity() {
 
             val oneTimeWorkLiveData = WorkManager.getInstance(OABX.context)
                 .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
-            oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {    //TODO WECH hg42
-                override fun onChanged(value: WorkInfo) {
-                    if (value.state == WorkInfo.State.SUCCEEDED) {
-                        counter += 1
+            oneTimeWorkLiveData.observeForever(
+                object : Observer<WorkInfo?> {    //TODO WECH hg42
+                    override fun onChanged(value: WorkInfo?) {
+                        when (value?.state) {
+                            WorkInfo.State.SUCCEEDED -> {
+                                counter += 1
 
-                        val (succeeded, packageLabel, error) = AppActionWork.getOutput(value)
-                        if (error.isNotEmpty()) errors =
-                            "$errors$packageLabel: ${      //TODO hg42 add to WorkHandler
-                                LogsHandler.handleErrorMessages(
-                                    OABX.context,
-                                    error
-                                )
-                            }\n"
+                                val (succeeded, packageLabel, error) = AppActionWork.getOutput(value)
+                                if (error.isNotEmpty()) errors =
+                                    "$errors$packageLabel: ${      //TODO hg42 add to WorkHandler
+                                        LogsHandler.handleErrorMessages(
+                                            OABX.context,
+                                            error
+                                        )
+                                    }\n"
 
-                        resultsSuccess = resultsSuccess and succeeded
-                        oneTimeWorkLiveData.removeObserver(this)
+                                resultsSuccess = resultsSuccess and succeeded
+                                oneTimeWorkLiveData.removeObserver(this)
+                            }
+                            else                     -> {}
+                        }
                     }
                 }
-            })
+            )
         }
 
         if (worksList.isNotEmpty()) {
@@ -681,25 +686,30 @@ class MainActivityX : BaseActivity() {
 
             val oneTimeWorkLiveData = WorkManager.getInstance(OABX.context)
                 .getWorkInfoByIdLiveData(oneTimeWorkRequest.id)
-            oneTimeWorkLiveData.observeForever(object : Observer<WorkInfo> {
-                override fun onChanged(value: WorkInfo) {
-                    if (value.state == WorkInfo.State.SUCCEEDED) {
-                        counter += 1
+            oneTimeWorkLiveData.observeForever(
+                object : Observer<WorkInfo?> {
+                    override fun onChanged(value: WorkInfo?) {
+                        when (value?.state) {
+                            WorkInfo.State.SUCCEEDED -> {
+                                counter += 1
 
-                        val (succeeded, packageLabel, error) = AppActionWork.getOutput(value)
-                        if (error.isNotEmpty()) errors =
-                            "$errors$packageLabel: ${
-                                LogsHandler.handleErrorMessages(
-                                    OABX.context,
-                                    error
-                                )
-                            }\n"
+                                val (succeeded, packageLabel, error) = AppActionWork.getOutput(value)
+                                if (error.isNotEmpty()) errors =
+                                    "$errors$packageLabel: ${
+                                        LogsHandler.handleErrorMessages(
+                                            OABX.context,
+                                            error
+                                        )
+                                    }\n"
 
-                        resultsSuccess = resultsSuccess and succeeded
-                        oneTimeWorkLiveData.removeObserver(this)
+                                resultsSuccess = resultsSuccess and succeeded
+                                oneTimeWorkLiveData.removeObserver(this)
+                            }
+                            else                     -> {}
+                        }
                     }
                 }
-            })
+            )
         }
     }
 }
