@@ -112,14 +112,14 @@ fun ActionsDialogUI(
 @Composable
 fun BatchActionDialogUI(
     backupBoolean: Boolean,
-    selectedPackages: List<PackageInfo>,
+    selectedPackageInfos: List<PackageInfo>,
     selectedApk: Map<String, Int>,
     selectedData: Map<String, Int>,
     openDialogCustom: MutableState<Boolean>,
     primaryAction: (() -> Unit) = {},
 ) {
     val message = StringBuilder()
-    selectedPackages.forEach { pi ->
+    selectedPackageInfos.forEach { pi ->
         message.append("${pi.packageLabel}")
         message.append(
             ": ${

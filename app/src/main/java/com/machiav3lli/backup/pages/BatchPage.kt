@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Scaffold
@@ -215,26 +214,26 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
         if (openDialog.value) BaseDialog(openDialogCustom = openDialog) {
             val selectedApk = viewModel.apkBackupCheckedList.filterValues { it != -1 }
             val selectedData = viewModel.dataBackupCheckedList.filterValues { it != -1 }
-            val selectedPackages = selectedApk.keys.plus(selectedData.keys).distinct()
+            val selectedPackageNames = selectedApk.keys.plus(selectedData.keys).distinct()
 
             BatchActionDialogUI(
                 backupBoolean = backupBoolean,
-                selectedPackages = filteredList
-                    .filter { it.packageName in selectedPackages }
+                selectedPackageInfos = filteredList
+                    .filter { it.packageName in selectedPackageNames }
                     .map(Package::packageInfo),
                 selectedApk = selectedApk,
                 selectedData = selectedData,
                 openDialogCustom = openDialog,
             ) {
                 if (pref_singularBackupRestore.value && !backupBoolean) main.startBatchRestoreAction(
-                    packages = selectedPackages,
+                    selectedPackageNames = selectedPackageNames,
                     selectedApk = selectedApk,
                     selectedData = selectedData,
                 )
                 else main.startBatchAction(
                     backupBoolean,
-                    selectedPackages = selectedPackages,
-                    selectedModes = selectedPackages.map { pn ->
+                    selectedPackageNames = selectedPackageNames,
+                    selectedModes = selectedPackageNames.map { pn ->
                         altModeToMode(
                             when {
                                 selectedData[pn] == 0 && selectedApk[pn] == 0 -> ALT_MODE_BOTH

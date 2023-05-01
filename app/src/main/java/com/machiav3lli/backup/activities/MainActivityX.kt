@@ -570,7 +570,7 @@ class MainActivityX : BaseActivity() {
 
     fun startBatchAction(
         backupBoolean: Boolean,
-        selectedPackages: List<String?>,
+        selectedPackageNames: List<String?>,
         selectedModes: List<Int>,
     ) {
         val now = System.currentTimeMillis()
@@ -578,7 +578,7 @@ class MainActivityX : BaseActivity() {
         val batchType = getString(if (backupBoolean) R.string.backup else R.string.restore)
         val batchName = WorkHandler.getBatchName(batchType, now)
 
-        val selectedItems = selectedPackages
+        val selectedItems = selectedPackageNames
             .mapIndexed { i, packageName ->
                 if (packageName.isNullOrEmpty()) null
                 else Pair(packageName, selectedModes[i])
@@ -639,7 +639,7 @@ class MainActivityX : BaseActivity() {
     }
 
     fun startBatchRestoreAction(
-        packages: List<String>,
+        selectedPackageNames: List<String>,
         selectedApk: Map<String, Int>,
         selectedData: Map<String, Int>,
     ) {
@@ -649,7 +649,7 @@ class MainActivityX : BaseActivity() {
         val batchName = WorkHandler.getBatchName(batchType, now)
 
         val selectedItems = buildList {
-            packages.forEach { pn ->
+            selectedPackageNames.forEach { pn ->
                 when {
                     selectedApk[pn] == selectedData[pn] && selectedApk[pn] != null -> add(
                         Triple(pn, selectedApk[pn]!!, altModeToMode(ALT_MODE_BOTH, false))

@@ -33,7 +33,7 @@ import com.machiav3lli.backup.utils.specialBackupsEnabled
 
 @Composable
 fun PackagesListDialogUI(
-    selectedPackages: Set<String>,
+    selectedPackageNames: Set<String>,
     filter: Int,
     title: String,
     openDialogCustom: MutableState<Boolean>,
@@ -44,8 +44,8 @@ fun PackagesListDialogUI(
 
     var packageInfos = context.getPackageInfoList(filter)
     packageInfos = packageInfos.sortedWith { pi1: PackageInfo, pi2: PackageInfo ->
-        val b1 = selectedPackages.contains(pi1.packageName)
-        val b2 = selectedPackages.contains(pi2.packageName)
+        val b1 = selectedPackageNames.contains(pi1.packageName)
+        val b2 = selectedPackageNames.contains(pi2.packageName)
         if (b1 != b2)
             if (b1) -1 else 1
         else {
@@ -59,8 +59,8 @@ fun PackagesListDialogUI(
     if (specialBackupsEnabled && filter and MAIN_FILTER_SPECIAL == MAIN_FILTER_SPECIAL) {
         var specialInfos = SpecialInfo.getSpecialInfos(OABX.app)
         specialInfos = specialInfos.sortedWith { si1, si2 ->
-            val b1 = selectedPackages.contains(si1.packageName)
-            val b2 = selectedPackages.contains(si2.packageName)
+            val b1 = selectedPackageNames.contains(si1.packageName)
+            val b2 = selectedPackageNames.contains(si2.packageName)
             if (b1 != b2)
                 if (b1) -1 else 1
             else {
@@ -84,7 +84,7 @@ fun PackagesListDialogUI(
     MultiSelectionDialogUI(
         titleText = title,
         entryMap = packagePairs.toMap(),
-        selectedItems = selectedPackages.toList(),
+        selectedItems = selectedPackageNames.toList(),
         openDialogCustom = openDialogCustom,
     ) {
         onPackagesListChanged(it.toSet())
@@ -98,7 +98,7 @@ fun BlockListDialogUI(
     onPackagesListChanged: (newList: Set<String>) -> Unit,
 ) {
     PackagesListDialogUI(
-        selectedPackages = schedule.blockList,
+        selectedPackageNames = schedule.blockList,
         filter = schedule.filter,
         title = stringResource(id = R.string.sched_blocklist),
         openDialogCustom = openDialogCustom,
@@ -113,7 +113,7 @@ fun GlobalBlockListDialogUI(
     onPackagesListChanged: (newList: Set<String>) -> Unit,
 ) {
     PackagesListDialogUI(
-        selectedPackages = currentBlocklist,
+        selectedPackageNames = currentBlocklist,
         filter = MAIN_FILTER_DEFAULT,
         title = stringResource(id = R.string.sched_blocklist),
         openDialogCustom = openDialogCustom,
@@ -128,7 +128,7 @@ fun CustomListDialogUI(
     onPackagesListChanged: (newList: Set<String>) -> Unit,
 ) {
     PackagesListDialogUI(
-        selectedPackages = schedule.customList,
+        selectedPackageNames = schedule.customList,
         filter = schedule.filter,
         title = stringResource(id = R.string.customListTitle),
         openDialogCustom = openDialogCustom,

@@ -273,14 +273,14 @@ fun HomePage() {
 
             BatchActionDialogUI(
                 backupBoolean = true,
-                selectedPackages = selectedList,
+                selectedPackageInfos = selectedList,
                 selectedApk = selectedApk,
                 selectedData = selectedData,
                 openDialogCustom = openBatchDialog,
             ) {
                 mActivity.startBatchAction(
                     true,
-                    selectedPackages = selectedList.map { it.packageLabel },
+                    selectedPackageNames = selectedList.map { it.packageName },
                     selectedModes = selectedListModes,
                 )
             }
