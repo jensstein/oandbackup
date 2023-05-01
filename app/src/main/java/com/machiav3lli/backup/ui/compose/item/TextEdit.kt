@@ -118,7 +118,7 @@ fun TextEditBlock(
     Row(
         modifier = modifier
             .background(
-                color = MaterialTheme.colorScheme.background,
+                color = Color.Transparent,
                 shape = MaterialTheme.shapes.large
             )
             .border(
