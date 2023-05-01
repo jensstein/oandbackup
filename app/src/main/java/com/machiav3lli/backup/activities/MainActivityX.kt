@@ -36,7 +36,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -72,9 +71,6 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.classAddress
 import com.machiav3lli.backup.dialogs.BaseDialog
 import com.machiav3lli.backup.dialogs.GlobalBlockListDialogUI
-import com.machiav3lli.backup.sheets.AppSheet
-import com.machiav3lli.backup.sheets.BatchPrefsSheet
-import com.machiav3lli.backup.sheets.SortFilterSheet
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.WorkHandler
@@ -87,6 +83,9 @@ import com.machiav3lli.backup.preferences.persist_beenWelcomed
 import com.machiav3lli.backup.preferences.persist_ignoreBatteryOptimization
 import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
 import com.machiav3lli.backup.preferences.pref_blackTheme
+import com.machiav3lli.backup.sheets.AppSheet
+import com.machiav3lli.backup.sheets.BatchPrefsSheet
+import com.machiav3lli.backup.sheets.SortFilterSheet
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.FunnelSimple
@@ -97,11 +96,11 @@ import com.machiav3lli.backup.ui.compose.item.ExpandableSearchAction
 import com.machiav3lli.backup.ui.compose.item.RefreshButton
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TopBar
+import com.machiav3lli.backup.ui.compose.recycler.BusyBackground
+import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.navigation.MainNavHost
 import com.machiav3lli.backup.ui.navigation.NavItem
 import com.machiav3lli.backup.ui.navigation.PagerNavBar
-import com.machiav3lli.backup.ui.compose.recycler.BusyBackground
-import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.FileUtils.invalidateBackupLocation
 import com.machiav3lli.backup.utils.TraceUtils.classAndId
 import com.machiav3lli.backup.utils.TraceUtils.traceBold
@@ -329,20 +328,23 @@ class MainActivityX : BaseActivity() {
                                     }
                                     Row(
                                         modifier = Modifier.padding(horizontal = 8.dp),
-                                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                                     ) {
                                         ActionChip(
+                                            modifier = Modifier.weight(1f),
                                             icon = Phosphor.Prohibit,
-                                            textId = R.string.sched_blocklist,
+                                            text = stringResource(id = R.string.sched_blocklist),
                                             positive = false,
+                                            fullWidth = true,
                                         ) {
                                             openBlocklist.value = true
                                         }
-                                        Spacer(modifier = Modifier.weight(1f))
                                         ActionChip(
+                                            modifier = Modifier.weight(1f),
                                             icon = Phosphor.FunnelSimple,
-                                            textId = R.string.sort_and_filter,
+                                            text = stringResource(id = R.string.sort_and_filter),
                                             positive = true,
+                                            fullWidth = true,
                                         ) {
                                             showSortSheet = true
                                         }

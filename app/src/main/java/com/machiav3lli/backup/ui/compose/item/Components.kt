@@ -315,8 +315,8 @@ fun cachedAsyncImagePainter(
                 imageLoader = imageLoader,
                 onState = {
                     if (it !is AsyncImagePainter.State.Loading)
-                        it.painter?.let {
-                            IconCache.putIcon(model, it)
+                        it.painter?.let { painter ->
+                            IconCache.putIcon(model, painter)
                         }
                 }
             )
@@ -599,39 +599,6 @@ fun CheckChip(
                 Text(text = stringResource(id = if (checked) checkedTextId else textId))
             }
         }
-    )
-}
-
-@Composable
-fun ActionChip(
-    modifier: Modifier = Modifier,
-    @StringRes textId: Int,
-    icon: ImageVector,
-    positive: Boolean,
-    onClick: () -> Unit = {},
-) {
-    AssistChip(
-        modifier = modifier,
-        label = {
-            Text(text = stringResource(id = textId))
-        },
-        leadingIcon = {
-            Icon(
-                imageVector = icon,
-                contentDescription = stringResource(id = textId)
-            )
-        },
-        shape = MaterialTheme.shapes.large,
-        colors = AssistChipDefaults.assistChipColors(
-            containerColor = if (positive) MaterialTheme.colorScheme.primaryContainer
-            else MaterialTheme.colorScheme.tertiaryContainer,
-            labelColor = if (positive) MaterialTheme.colorScheme.onPrimaryContainer
-            else MaterialTheme.colorScheme.onTertiaryContainer,
-            leadingIconContentColor = if (positive) MaterialTheme.colorScheme.onPrimaryContainer
-            else MaterialTheme.colorScheme.onTertiaryContainer,
-        ),
-        border = null,
-        onClick = onClick
     )
 }
 
@@ -1113,10 +1080,10 @@ fun DoubleVerticalText(
 
 @Composable
 fun CardSubRow(
+    modifier: Modifier = Modifier,
     text: String,
     icon: ImageVector,
     iconColor: Color = MaterialTheme.colorScheme.onBackground,
-    modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
 ) {
     ListItem(
