@@ -27,7 +27,7 @@ import com.machiav3lli.backup.ui.item.Legend
 import com.machiav3lli.backup.ui.item.Link
 import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.Locale
 
 const val PREFS_SHARED_PRIVATE = "com.machiav3lli.backup"
 
@@ -50,7 +50,45 @@ val PREFS_BACKUP_FILE = "${ADMIN_PREFIX}app.preferences"
 
 const val PROP_NAME = "properties"
 const val LOG_INSTANCE = "%s.log.txt"
+
+val ISO_LIKE_DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss"
+val ISO_LIKE_DATE_TIME_MIN_PATTERN = "yyyy-MM-dd HH:mm"
+val ISO_LIKE_DATE_TIME_MS_PATTERN = "yyyy-MM-dd HH:mm:ss:SSS"
+val FILE_DATE_TIME_MS_PATTERN = "yyyy-MM-dd-HH-mm-ss-SSS"
+val FILE_DATE_TIME_PATTERN = "yyyy-MM-dd-HH-mm-ss"
+
+val ISO_DATE_TIME_FORMAT
+    get() = SimpleDateFormat(
+        ISO_LIKE_DATE_TIME_PATTERN,
+        Locale.getDefault()
+    )
+
+val ISO_DATE_TIME_FORMAT_MIN
+    get() = SimpleDateFormat(
+        ISO_LIKE_DATE_TIME_MIN_PATTERN,
+        Locale.getDefault()
+    )
+
+val ISO_DATE_TIME_FORMAT_MS
+    get() = SimpleDateFormat(
+        ISO_LIKE_DATE_TIME_MS_PATTERN,
+        Locale.getDefault()
+    )
+
+// must be ISO time format for sane sorting yyyy, MM, dd, ...
+// and only allowed file name characters (on all systems, Windows has the smallest set)
+// not used any more, because we don't create old format
+// and detection handles millisec as optional
+//val BACKUP_DATE_TIME_FORMATTER_OLD = DateTimeFormatter.ofPattern(FILE_DATE_TIME_PATTERN)
+
+// use millisec, because computers (and users) can be faster than a sec
+val BACKUP_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(FILE_DATE_TIME_MS_PATTERN)
+
+val BACKUP_DATE_TIME_SHOW_FORMATTER = DateTimeFormatter.ofPattern(ISO_LIKE_DATE_TIME_PATTERN)
+
+// optional millisec to include old format
 const val BACKUP_INSTANCE_REGEX_PATTERN = """\d\d\d\d-\d\d-\d\d-\d\d-\d\d-\d\d(-\d\d\d)?-user_\d+"""
+
 fun backupInstanceDir(packageInfo: PackageInfo, dateTimeStr: String) =
     "$dateTimeStr-user_${packageInfo.profileId}"
 
@@ -260,39 +298,6 @@ val legendList = listOf(
     Legend.Media,
     Legend.Updated,
 )
-
-val ISO_LIKE_DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss"
-val ISO_LIKE_DATE_TIME_MIN_PATTERN = "yyyy-MM-dd HH:mm"
-val ISO_LIKE_DATE_TIME_MS_PATTERN = "yyyy-MM-dd HH:mm:ss:SSS"
-val FILE_DATE_TIME_MS_PATTERN = "yyyy-MM-dd-HH-mm-ss-SSS"
-val FILE_DATE_TIME_PATTERN = "yyyy-MM-dd-HH-mm-ss"
-
-val ISO_DATE_TIME_FORMAT
-    get() = SimpleDateFormat(
-        ISO_LIKE_DATE_TIME_PATTERN,
-        Locale.getDefault()
-    )
-
-val ISO_DATE_TIME_FORMAT_MIN
-    get() = SimpleDateFormat(
-        ISO_LIKE_DATE_TIME_MIN_PATTERN,
-        Locale.getDefault()
-    )
-
-val ISO_DATE_TIME_FORMAT_MS
-    get() = SimpleDateFormat(
-        ISO_LIKE_DATE_TIME_MS_PATTERN,
-        Locale.getDefault()
-    )
-
-// must be ISO time format for sane sorting yyyy, MM, dd, ...
-// and only allowed file name characters (on all systems, Windows has the smallest set)
-val BACKUP_DATE_TIME_FORMATTER_OLD = DateTimeFormatter.ofPattern(FILE_DATE_TIME_PATTERN)
-
-// use millisec, because computers (and users) can be faster than a sec
-val BACKUP_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(FILE_DATE_TIME_MS_PATTERN)
-
-val BACKUP_DATE_TIME_SHOW_FORMATTER = DateTimeFormatter.ofPattern(ISO_LIKE_DATE_TIME_PATTERN)
 
 val OPEN_DIRECTORY_INTENT = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
     .addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
