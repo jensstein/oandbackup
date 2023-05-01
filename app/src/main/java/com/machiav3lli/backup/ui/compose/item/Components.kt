@@ -648,9 +648,11 @@ fun ActionChip(
         modifier = modifier,
         label = {
             Text(
-                modifier = Modifier.ifThen(fullWidth) {
-                    fillMaxWidth()
-                },
+                modifier = Modifier
+                    .padding(vertical = 8.dp)
+                    .ifThen(fullWidth) {
+                        fillMaxWidth()
+                    },
                 text = text,
                 textAlign = TextAlign.Center,
             )

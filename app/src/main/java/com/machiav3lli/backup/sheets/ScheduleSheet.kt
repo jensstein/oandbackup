@@ -17,6 +17,7 @@
  */
 package com.machiav3lli.backup.sheets
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,13 +25,19 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberTimePickerState
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -44,6 +51,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.R
@@ -52,6 +60,7 @@ import com.machiav3lli.backup.dialogs.BaseDialog
 import com.machiav3lli.backup.dialogs.BlockListDialogUI
 import com.machiav3lli.backup.dialogs.CustomListDialogUI
 import com.machiav3lli.backup.dialogs.IntPickerDialogUI
+import com.machiav3lli.backup.dialogs.StringInputDialogUI
 import com.machiav3lli.backup.dialogs.TimePickerDialogUI
 import com.machiav3lli.backup.mainFilterChipItems
 import com.machiav3lli.backup.schedSpecialFilterChipItems
@@ -67,7 +76,6 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
 import com.machiav3lli.backup.ui.compose.item.ActionChip
 import com.machiav3lli.backup.ui.compose.item.CheckChip
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
-import com.machiav3lli.backup.ui.compose.item.MorphableTextField
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TitleText
 import com.machiav3lli.backup.ui.compose.recycler.MultiSelectableChipGroup
@@ -88,6 +96,7 @@ const val DIALOG_BLOCKLIST = 1
 const val DIALOG_CUSTOMLIST = 2
 const val DIALOG_TIMEPICKER = 3
 const val DIALOG_INTERVALSETTER = 4
+const val DIALOG_SCHEDULENAME = 5
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -174,77 +183,117 @@ fun ScheduleSheet(
                 contentPadding = PaddingValues(8.dp)
             ) {
                 item {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        TitleText(R.string.sched_name)
-                        MorphableTextField(
-                            modifier = Modifier.weight(1f),
-                            text = schedule.name,
-                            textAlignment = TextAlign.Center,
-                            onCancel = {
-                            },
-                            onSave = {
-                                refresh(
-                                    schedule.copy(name = it),
-                                    rescheduleBoolean = false,
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
+                            ),
+                            shape = RoundedCornerShape(
+                                topStart = MaterialTheme.shapes.large.topStart,
+                                topEnd = MaterialTheme.shapes.large.topEnd,
+                                bottomStart = MaterialTheme.shapes.small.bottomStart,
+                                bottomEnd = MaterialTheme.shapes.small.bottomEnd,
+                            ),
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(start = 12.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                TitleText(R.string.sched_name)
+                                OutlinedCard(
+                                    modifier = Modifier.weight(1f),
+                                    colors = CardDefaults.outlinedCardColors(
+                                        containerColor = Color.Transparent
+                                    ),
+                                    shape = MaterialTheme.shapes.large,
+                                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+                                    onClick = {
+                                        dialogProps.value = Pair(DIALOG_SCHEDULENAME, schedule)
+                                        openDialog.value = true
+                                    }
+                                ) {
+                                    Text(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 12.dp, vertical = 16.dp),
+                                        text = schedule.name,
+                                        textAlign = TextAlign.Center,
+                                    )
+                                }
+                                RoundButton(
+                                    icon = Phosphor.CaretDown,
+                                    description = stringResource(id = R.string.dismiss),
+                                    onClick = { onDismiss() }
                                 )
                             }
-                        )
-                        RoundButton(
-                            icon = Phosphor.CaretDown,
-                            description = stringResource(id = R.string.dismiss),
-                            onClick = { onDismiss() }
-                        )
+
+                        }
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
+                            ),
+                            shape = RoundedCornerShape(6.dp),
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .clickable {
+                                        dialogProps.value = Pair(DIALOG_TIMEPICKER, schedule)
+                                        openDialog.value = true
+                                    }
+                                    .padding(horizontal = 12.dp, vertical = 16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                TitleText(R.string.sched_hourOfDay)
+                                Text(
+                                    text = LocalTime.of(schedule.timeHour, schedule.timeMinute)
+                                        .toString(),
+                                    modifier = Modifier.weight(1f),
+                                    fontWeight = FontWeight.Black,
+                                    textAlign = TextAlign.End,
+                                )
+                            }
+                        }
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
+                            ),
+                            shape = RoundedCornerShape(
+                                topStart = MaterialTheme.shapes.small.topStart,
+                                topEnd = MaterialTheme.shapes.small.topEnd,
+                                bottomStart = MaterialTheme.shapes.large.bottomStart,
+                                bottomEnd = MaterialTheme.shapes.large.bottomEnd,
+                            ),
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .clickable {
+                                        dialogProps.value = Pair(DIALOG_INTERVALSETTER, schedule)
+                                        openDialog.value = true
+                                    }
+                                    .padding(horizontal = 12.dp, vertical = 16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                TitleText(R.string.sched_interval)
+                                Text(
+                                    text = schedule.interval.toString(),
+                                    modifier = Modifier.weight(1f),
+                                    fontWeight = FontWeight.Black,
+                                    textAlign = TextAlign.End,
+                                )
+                            }
+                        }
                     }
                 }
                 item {
                     Row(
-                        modifier = Modifier
-                            .clickable {
-                                dialogProps.value = Pair(DIALOG_TIMEPICKER, schedule)
-                                openDialog.value = true
-                            }
-                            .padding(vertical = 4.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        TitleText(R.string.sched_hourOfDay)
-                        Text(
-                            text = LocalTime.of(schedule.timeHour, schedule.timeMinute)
-                                .toString(),
-                            modifier = Modifier.weight(1f),
-                            color = MaterialTheme.colorScheme.primary,
-                            textAlign = TextAlign.End,
-                        )
-                    }
-                }
-                item {
-                    // TODO replace with slider Or custom Compose Dialog?
-                    Row(
-                        modifier = Modifier
-                            .clickable {
-                                dialogProps.value = Pair(DIALOG_INTERVALSETTER, schedule)
-                                openDialog.value = true
-                            }
-                            .padding(vertical = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        TitleText(R.string.sched_interval)
-                        Text(
-                            text = schedule.interval.toString(),
-                            modifier = Modifier.weight(1f),
-                            color = MaterialTheme.colorScheme.primary,
-                            textAlign = TextAlign.End,
-                        )
-                    }
-                }
-                item {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         ActionChip(
                             icon = Phosphor.CheckCircle,
@@ -369,6 +418,19 @@ fun ScheduleSheet(
                                 refresh(
                                     schedule.copy(interval = it),
                                     rescheduleBoolean = true,
+                                )
+                            }
+                        }
+
+                        DIALOG_SCHEDULENAME   -> {
+                            StringInputDialogUI(
+                                titleText = stringResource(id = R.string.sched_name),
+                                initValue = schedule.name,
+                                openDialogCustom = openDialog
+                            ) {
+                                refresh(
+                                    schedule.copy(name = it),
+                                    rescheduleBoolean = false,
                                 )
                             }
                         }
