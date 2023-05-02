@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-8.3.2 (XX.XX.2023) +170 Commits & +30 Translations
+8.3.2 (XX.XX.2023) +220 Commits & +40 Translations
 ------------
 
 #### Function
@@ -11,6 +11,7 @@ CHANGELOG
 - Add: AppInfo+schedule database dumps to terminal
 - Add: Selinux status to support log
 - Add: Recreating activities on specific changes
+- Add: Schedule id to all schedule tracing messages
 - Fix: Refreshing package & backup on launch
 - Fix: Cache excluded even if it's enabled
 - Fix: File duplication with SAF (file! not directory), redesigned/hardened duplicate protection (to
@@ -24,6 +25,7 @@ CHANGELOG
 - Fix: setLanguage to work multiple times
 - Fix: Startup single backup scans
 - Fix: Do not disable password preference, if encryption is disabled, as still necessary for restore
+- Fix: Crash on "non-null is null"-exception
 - Update: /data/local/toybox is now prioritized over others
 - Update: Integrate Intro into Splash & Main
 - Update: Use nsenter to run commands in the global mount namespace
@@ -32,21 +34,32 @@ CHANGELOG
 - Update: Generalize BatchAction dialog usage
 - Update: Replace apk-/dataCheckedList usage with apk-/dataBackupCheckedList
 - Update: Make prefs reactive
+- Update: Simplify ShellCommands init
+- Udpate: Make exclude asset files react on no_backup preferences
 - Remove: IntroActivity
 - Remove: Premature refreshing
 - Remove: Automatically added ACCESS NETWORK STATE permission
+- Remove: Usage of AppSheet in tasks
 
 #### UI
 
 - Add: Version text for screenshots and other purposes (preference versionOpacity)
 - Add: PostNotifications permission
+- Add: BlockBorder to pages
 - Fix: Help sheet & Welcome page transparent backgrounds
 - Fix: Scrollable message when long in Actions DialogUI
 - Fix: Check all StateChips ripple
+- Fix: Batch recycler not filling page
 - Update: Set default colors & main icon according to variant
 - Update: Revamp pages layout
 - Update: Revamp Terminal page layout
 - Update: Revamp BatchPrefs, Help & SortFilter sheets into composables
+- Update: Revamp all layouts
+- Update: Theme-based prefs corner size
+- Update: Migrate sheets to composable only
+- Update: Replace legacy dialogs with composables
+- Update: Revamp all items using ListItem
+- Update: Make TopBar transparent
 
 #### UX
 
@@ -60,6 +73,7 @@ CHANGELOG
 - Fix: Batch backups not working when singular backups layout is enable
 - Fix: Check all apk/data not working
 - Fix: Asking for permissions for special backups without restart
+- Fix: duplicate directory picker
 - Update: Get/Put replaces Load/Save in context menu
 - Update: Keyboard actions in dialogs with editable text (focus, tab, return, done etc.)
 - Update: Allow showing value and description of prefs
