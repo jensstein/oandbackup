@@ -143,10 +143,11 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                     .size
             }
             Row(
-                modifier = Modifier.padding(horizontal = 12.dp),
+                modifier = Modifier.padding(horizontal = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                Spacer(modifier = Modifier.width(4.dp))
                 StateChip(
                     icon = Phosphor.DiamondsFour,
                     text = stringResource(id = R.string.all_apk),
@@ -171,7 +172,6 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                             }
                     }
                 }
-                Spacer(modifier = Modifier.width(0.1.dp))
                 StateChip(
                     icon = Phosphor.HardDrives,
                     text = stringResource(id = R.string.all_data),

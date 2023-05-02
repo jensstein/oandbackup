@@ -542,20 +542,20 @@ fun StateChip(
     Surface(
         modifier = modifier
             .defaultMinSize(minWidth = 1.dp, minHeight = 1.dp)
-            .clip(MaterialTheme.shapes.medium)
+            .clip(MaterialTheme.shapes.small)
             .combinedClickable(
                 onClick = onClick,
                 onLongClick = { openPopup.value = true }
             ),
-        contentColor = if (checked) MaterialTheme.colorScheme.onSurface else color,
+        contentColor = if (checked) MaterialTheme.colorScheme.background else color,
         color = if (checked) color else Color.Transparent,
-        shape = MaterialTheme.shapes.medium,
+        shape = MaterialTheme.shapes.small,
         border = BorderStroke(1.dp, color),
     ) {
         Icon(
             modifier = Modifier.padding(8.dp),
             imageVector = icon,
-            contentDescription = text
+            contentDescription = text,
         )
 
         if (openPopup.value) {
@@ -567,16 +567,16 @@ fun StateChip(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CheckChip(
+    modifier: Modifier = Modifier,
     checked: Boolean,
     textId: Int,
     checkedTextId: Int,
-    modifier: Modifier = Modifier,
     onCheckedChange: (Boolean) -> Unit,
 ) {
     val (checked, check) = remember(checked) { mutableStateOf(checked) }   //TODO hg42 should probably be removed like for MultiChips
 
     FilterChip(
-        modifier = modifier.padding(vertical = 8.dp, horizontal = 4.dp),
+        modifier = modifier,
         selected = checked,
         colors = FilterChipDefaults.filterChipColors(
             labelColor = MaterialTheme.colorScheme.onBackground,
@@ -595,7 +595,7 @@ fun CheckChip(
             check(!checked)
         },
         label = {
-            Row {
+            Row(modifier = Modifier.padding(vertical = 10.dp)) {
                 Text(text = stringResource(id = if (checked) checkedTextId else textId))
             }
         }
@@ -675,7 +675,7 @@ fun SwitchChip(
 
         FilterChip(
             modifier = Modifier.weight(1f),
-            shape = MaterialTheme.shapes.medium,
+            shape = MaterialTheme.shapes.small,
             border = null,
             selected = firstSelected,
             colors = colors,
@@ -696,7 +696,7 @@ fun SwitchChip(
         )
         FilterChip(
             modifier = Modifier.weight(1f),
-            shape = MaterialTheme.shapes.medium,
+            shape = MaterialTheme.shapes.small,
             border = null,
             selected = !firstSelected,
             colors = colors,
