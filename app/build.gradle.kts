@@ -25,12 +25,12 @@ plugins {
 }
 
 val vKotlin = "1.8.20"
-val vComposeCompiler = "1.4.5"
+val vComposeCompiler = "1.4.6"
 val vCompose = "1.5.0-alpha03"
 val vKotlinSerialization = "1.5.0"
 val vRoom = "2.5.1"
 val vNavigation = "2.6.0-beta01"
-val vAccompanist = "0.31.0-alpha"
+val vAccompanist = "0.31.1-alpha"
 val vLibsu = "5.0.5"
 //val vIconics = "5.3.4"
 
