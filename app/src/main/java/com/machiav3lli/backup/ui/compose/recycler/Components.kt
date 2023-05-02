@@ -28,8 +28,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -60,7 +58,7 @@ import com.machiav3lli.backup.preferences.pref_busyLaserBackground
 import com.machiav3lli.backup.preferences.pref_busyTurnTime
 import com.machiav3lli.backup.preferences.pref_versionOpacity
 import com.machiav3lli.backup.ui.compose.item.ActionChip
-import com.machiav3lli.backup.ui.compose.item.ButtonIcon
+import com.machiav3lli.backup.ui.compose.item.SelectionChip
 import com.machiav3lli.backup.ui.item.ChipItem
 import com.machiav3lli.backup.utils.SystemUtils.applicationIssuer
 import kotlinx.coroutines.Dispatchers
@@ -209,37 +207,18 @@ fun SelectableChipGroup(
     selectedFlag: Int,
     onClick: (Int) -> Unit,
 ) {
-    val colors = FilterChipDefaults.filterChipColors(
-        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-        selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-        labelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-        iconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-    )
-
     FlowRow(
         modifier = modifier
             .fillMaxWidth(),
         mainAxisSpacing = 8.dp
     ) {
-        list.forEach {
-
-            FilterChip(
-                colors = colors,
-                shape = MaterialTheme.shapes.medium,
-                border = null,
-                selected = it.flag == selectedFlag,
-                leadingIcon = {
-                    ButtonIcon(it.icon, it.textId)
-                },
-                onClick = {
-                    onClick(it.flag)
-                },
-                label = {
-                    Text(text = stringResource(id = it.textId))
-                }
-            )
+        list.forEach { item ->
+            SelectionChip(
+                item = item,
+                isSelected = item.flag == selectedFlag,
+            ) {
+                onClick(item.flag)
+            }
         }
     }
 }
@@ -253,36 +232,18 @@ fun MultiSelectableChipGroup(
     selectedFlags: Int,
     onClick: (Int, Int) -> Unit,
 ) {
-    val colors = FilterChipDefaults.filterChipColors(
-        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-        selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-        labelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-        iconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-    )
-
     FlowRow(
         modifier = modifier
             .fillMaxWidth(),
         mainAxisSpacing = 8.dp
     ) {
-        list.forEach {
-            FilterChip(
-                colors = colors,
-                shape = MaterialTheme.shapes.medium,
-                border = null,
-                selected = it.flag and selectedFlags != 0,
-                leadingIcon = {
-                    ButtonIcon(it.icon, it.textId)
-                },
-                onClick = {
-                    onClick(selectedFlags xor it.flag, it.flag)
-                },
-                label = {
-                    Text(text = stringResource(id = it.textId))
-                }
-            )
+        list.forEach { item ->
+            SelectionChip(
+                item = item,
+                isSelected = item.flag and selectedFlags != 0,
+            ) {
+                onClick(selectedFlags xor item.flag, item.flag)
+            }
         }
     }
 }
