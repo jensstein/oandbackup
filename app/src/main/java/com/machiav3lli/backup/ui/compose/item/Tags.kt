@@ -1,6 +1,5 @@
 package com.machiav3lli.backup.ui.compose.item
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -49,10 +48,8 @@ fun TagsBlock(
     modifier: Modifier = Modifier,
     tags: Set<String>?,
     onRemove: (String) -> Unit,
-    onAdd: (String) -> Unit,
+    onAdd: () -> Unit,
 ) {
-    var viewAddTag by remember { mutableStateOf(false) }
-
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         FlowRow(
             modifier = modifier
@@ -64,11 +61,8 @@ fun TagsBlock(
                 tag = stringResource(id = R.string.add_tag),
                 icon = Phosphor.PlusCircle,
                 action = true,
-                onClick = { viewAddTag = true }
+                onClick = { onAdd() },
             )
-        }
-        AnimatedVisibility(visible = viewAddTag) {
-            AddTagView(onCancel = { viewAddTag = false }, onAdd = onAdd)
         }
     }
 }
@@ -87,15 +81,12 @@ fun TagItem(
         modifier = modifier,
         selected = false,
         colors = InputChipDefaults.inputChipColors(
-            containerColor = if (action) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
-            labelColor = if (action) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
+            containerColor = if (action) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant,
+            labelColor = if (action) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant,
             trailingIconColor = if (action) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.tertiary,
         ),
-        shape = MaterialTheme.shapes.medium,
-        border = InputChipDefaults.inputChipBorder(
-            borderColor = MaterialTheme.colorScheme.surface,
-            borderWidth = 0.dp
-        ),
+        shape = MaterialTheme.shapes.small,
+        border = null,
         trailingIcon = {
             Icon(
                 imageVector = icon,

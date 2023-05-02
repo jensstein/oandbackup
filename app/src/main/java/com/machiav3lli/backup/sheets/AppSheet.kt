@@ -21,6 +21,7 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -37,9 +38,11 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.Divider
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -72,6 +75,7 @@ import com.machiav3lli.backup.dialogs.ActionsDialogUI
 import com.machiav3lli.backup.dialogs.BackupDialogUI
 import com.machiav3lli.backup.dialogs.BaseDialog
 import com.machiav3lli.backup.dialogs.RestoreDialogUI
+import com.machiav3lli.backup.dialogs.StringInputDialogUI
 import com.machiav3lli.backup.exodusUrl
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
@@ -98,7 +102,6 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.Warning
 import com.machiav3lli.backup.ui.compose.item.BackupItem
 import com.machiav3lli.backup.ui.compose.item.CardButton
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
-import com.machiav3lli.backup.ui.compose.item.MorphableTextField
 import com.machiav3lli.backup.ui.compose.item.PackageIcon
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TagsBlock
@@ -120,7 +123,10 @@ const val DIALOG_CLEANCACHE = 5
 const val DIALOG_FORCEKILL = 6
 const val DIALOG_ENABLEDISABLE = 7
 const val DIALOG_UNINSTALL = 8
+const val DIALOG_ADDTAG = 9
+const val DIALOG_NOTE = 10
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppSheet(
     viewModel: AppSheetViewModel,
@@ -383,9 +389,8 @@ fun AppSheet(
                                     })
                                 },
                                 onAdd = {
-                                    viewModel.setExtras(appExtras.apply {
-                                        customTags.add(it)
-                                    })
+                                    dialogProps.value = Pair(DIALOG_ADDTAG, "")
+                                    openDialog.value = true
                                 }
                             )
                         }
@@ -394,13 +399,26 @@ fun AppSheet(
                         Column {
                             TitleText(textId = R.string.title_note)
                             Spacer(modifier = Modifier.height(8.dp))
-                            MorphableTextField(
-                                text = appExtras.note,
-                                onCancel = { },
-                                onSave = {
-                                    viewModel.setExtras(appExtras.copy(note = it))
+                            OutlinedCard(
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = CardDefaults.outlinedCardColors(
+                                    containerColor = Color.Transparent
+                                ),
+                                shape = MaterialTheme.shapes.large,
+                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+                                onClick = {
+                                    dialogProps.value = Pair(DIALOG_NOTE, appExtras.note)
+                                    openDialog.value = true
                                 }
-                            )
+                            ) {
+                                Text(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 12.dp, vertical = 16.dp),
+                                    text = appExtras.note,
+                                    textAlign = TextAlign.Center,
+                                )
+                            }
                         }
                     }
                     item(span = { GridItemSpan(columns) }) {
@@ -679,6 +697,28 @@ fun AppSheet(
                                         )
                                     }
                                 )
+                            }
+
+                            DIALOG_NOTE          -> {
+                                StringInputDialogUI(
+                                    titleText = stringResource(id = R.string.edit_note),
+                                    initValue = dialogProps.value.second as String,
+                                    openDialogCustom = openDialog,
+                                ) {
+                                    viewModel.setExtras(appExtras.copy(note = it))
+                                }
+                            }
+
+                            DIALOG_ADDTAG        -> {
+                                StringInputDialogUI(
+                                    titleText = stringResource(id = R.string.add_tag),
+                                    initValue = dialogProps.value.second as String,
+                                    openDialogCustom = openDialog,
+                                ) {
+                                    viewModel.setExtras(appExtras.apply {
+                                        customTags.add(it)
+                                    })
+                                }
                             }
 
                             else                 -> {}
