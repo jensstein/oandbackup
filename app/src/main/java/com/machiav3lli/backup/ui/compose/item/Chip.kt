@@ -6,8 +6,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SelectableChipColors
+import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -17,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.ui.item.ChipItem
+import com.machiav3lli.backup.ui.item.InfoChipItem
 
 private enum class SelectionState { Unselected, Selected }
 
@@ -72,5 +76,31 @@ fun SelectionChip(
         label = {
             Text(text = stringResource(id = item.textId))
         }
+    )
+}
+
+@Composable
+fun InfoChip(
+    item: InfoChipItem,
+) {
+    SuggestionChip(
+        icon = {
+            if (item.icon != null) Icon(
+                imageVector = item.icon,
+                contentDescription = item.text,
+            )
+        },
+        border = null,
+        label = {
+            Text(text = item.text)
+        },
+        colors = SuggestionChipDefaults.suggestionChipColors(
+            containerColor = item.color ?: MaterialTheme.colorScheme.surfaceVariant,
+            labelColor = if (item.color != null) MaterialTheme.colorScheme.background
+            else MaterialTheme.colorScheme.onSurfaceVariant,
+            iconContentColor = if (item.color != null) MaterialTheme.colorScheme.background
+            else MaterialTheme.colorScheme.onSurfaceVariant,
+        ),
+        onClick = {}
     )
 }
