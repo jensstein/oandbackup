@@ -129,7 +129,7 @@ fun AdvancedPrefsPage() {
 val debug = if (isDebug)
     "dev"
 else
-    "dbg"
+    "debug"
 
 val hg42 = if (isHg42)
     "dev"
@@ -313,13 +313,13 @@ val pref_restartAppOnLanguageChange = BooleanPref(
 val pref_useYamlPreferences = BooleanPref(
     key = "$debug-alt.useYamlPreferences",
     summary = "create human readable yaml format for preferences",
-    defaultValue = true
+    defaultValue = false
 )
 
 val pref_useYamlSchedules = BooleanPref(
     key = "$debug-alt.useYamlSchedules",
     summary = "create human readable yaml format for schedules",
-    defaultValue = true
+    defaultValue = false
 )
 
 val pref_useYamlProperties = BooleanPref(
