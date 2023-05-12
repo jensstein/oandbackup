@@ -47,9 +47,11 @@ class Package {
     var backupList: List<Backup>
         get() {
             val backups = OABX.getBackups(packageName)
+            //Timber.w("-------------------> backups $packageName -> ${formatSortedBackups(backups)}")
             return backups
         }
         set(backups) {
+            //Timber.w("<=================== backups $packageName <- ${formatSortedBackups(backups)}")
             OABX.putBackups(packageName, backups)
         }
 

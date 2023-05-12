@@ -220,10 +220,10 @@ object TraceUtils {
                 "${
                     it.backupDate
                 }${
-                    if (it.persistent) "*" else ""
+                    if (it.persistent) "🔒" else ""
                 }"
             }
-                ?: ""
+                ?: "<null>"
         }"
     }
 
@@ -233,11 +233,11 @@ object TraceUtils {
                 "${
                     it.backupDate
                 }${
-                    if (it.persistent) "*" else ""
+                    if (it.persistent) "🔒" else ""
                 }"
             }
                 ?.sortedDescending()
-                ?: ""
+                ?: "<null>"
         }"
     }
 }
