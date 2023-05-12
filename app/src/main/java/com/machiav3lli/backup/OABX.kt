@@ -247,6 +247,9 @@ class OABX : Application() {
 
     override fun onCreate() {
 
+        // do this early, context will be used immediately
+        appRef = WeakReference(this)
+
         Timber.w("======================================== app ${classAndId(this)} PID=${Process.myPid()}")
 
         super.onCreate()
@@ -257,7 +260,6 @@ class OABX : Application() {
                 .setPrecondition { _, _ -> styleTheme == THEME_DYNAMIC }
                 .build()
         )
-        appRef = WeakReference(this)
 
         beginBusy(startupMsg)
 
