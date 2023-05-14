@@ -18,7 +18,6 @@
 package com.machiav3lli.backup.dbs.entity
 
 import android.content.Context
-import android.content.pm.PackageInfo
 import androidx.room.Entity
 import com.machiav3lli.backup.handler.grantedPermissions
 
@@ -54,7 +53,7 @@ open class AppInfo : com.machiav3lli.backup.dbs.entity.PackageInfo {
         this.permissions = permissions
     }
 
-    constructor(context: Context, pi: PackageInfo) : super(context, pi) {
+    constructor(context: Context, pi: android.content.pm.PackageInfo) : super(context, pi) {
         this.installed = true
         this.enabled = pi.applicationInfo.enabled
         this.apkDir = pi.applicationInfo.sourceDir
