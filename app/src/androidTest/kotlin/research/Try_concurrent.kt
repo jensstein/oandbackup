@@ -1,6 +1,9 @@
 package research
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.junit.Assert.assertEquals
@@ -9,12 +12,14 @@ import kotlin.system.measureTimeMillis
 
 class Try_concurrent {
 
-    val n = 10  // number of coroutines to launch
-    val t = 100L // times an action is repeated by each coroutine
+    val n = 10  // number of jobs to launch
+    val t = 100L // time to wait in each coroutine
 
-    suspend fun massiveCoroutines(action: suspend () -> Unit) {
+    private var theMap = mutableMapOf<Int, Int>()
+
+    fun massiveCoroutines(dispatcher: CoroutineDispatcher, action: suspend () -> Unit) {
         val time = measureTimeMillis {
-            coroutineScope { // scope for coroutines
+            runBlocking(dispatcher) {
                 repeat(n) {
                     launch {
                         action()
@@ -22,13 +27,13 @@ class Try_concurrent {
                 }
             }
         }
-        println("Completed $n actions in $time ms")
+        println("----------> Completed actions in $n coroutines in $time ms")
     }
 
     fun massiveThreads(action: () -> Unit) {
         val jobs = mutableListOf<Thread>()
         val time = measureTimeMillis {
-            repeat(n) {
+            repeat(n) { index ->
                 jobs.add(
                     Thread {
                         action()
@@ -37,22 +42,56 @@ class Try_concurrent {
             }
             jobs.forEach { it.join() }
         }
-        println("Completed $n actions in $time ms")
+        println("----------> Completed actions in $n threads in $time ms")
+    }
+
+    fun theAction() {
+        val x = counter
+        //theMap[x] = (theMap[x] ?: 0) + 1
+        Thread.sleep(t)
+        counter = x+1
+    }
+
+    fun theAssertions() {
+        assertEquals(n, counter)
+        //repeat(n) {
+        //    assertEquals(1, theMap[it])
+        //}
     }
 
     var mutex = Mutex()
+    object lock
     var counter = 0
 
     @Test
-    fun test_coroutine_withLock() = runBlocking {
+    fun test_coroutine_withLock(){
         counter = 0
-        withContext(Dispatchers.Default) {
-            massiveCoroutines {
-                // protect each increment
+        massiveCoroutines(Dispatchers.Default) {
                 mutex.withLock {
-                    val x = counter
-                    delay(1000)
-                    counter = x+1
+                theAction()
+            }
+        }
+        assertEquals(n, counter)
+    }
+
+    @Test
+    fun test_coroutine_io_withLock() {
+        counter = 0
+        massiveCoroutines(Dispatchers.IO) {
+            mutex.withLock {
+                theAction()
+            }
+        }
+        assertEquals(n, counter)
+    }
+
+    @Test
+    fun test_thread_withLock() {
+        counter = 0
+        massiveThreads {
+            runBlocking {
+                mutex.withLock {
+                    theAction()
                 }
             }
         }
@@ -60,17 +99,36 @@ class Try_concurrent {
     }
 
     @Test
-    fun test_thread_synchronized() = runBlocking {
+    fun test_thread_synchronized(){
         counter = 0
         massiveThreads {
-            // protect each increment
-            synchronized(counter) {
-                val x = counter
-                Thread.sleep(t)
-                counter = x+1
+            synchronized(lock) {
+                theAction()
             }
         }
-        assertEquals(n, counter)
+        theAssertions()
+    }
+
+    @Test
+    fun test_coroutine_synchronized(){
+        counter = 0
+        massiveCoroutines(Dispatchers.Default) {
+            synchronized(lock) {
+                theAction()
+            }
+        }
+        theAssertions()
+    }
+
+    @Test
+    fun test_coroutine_io_synchronized(){
+        counter = 0
+        massiveCoroutines(Dispatchers.IO) {
+            synchronized(lock) {
+                theAction()
+            }
+        }
+        theAssertions()
     }
 
 }
