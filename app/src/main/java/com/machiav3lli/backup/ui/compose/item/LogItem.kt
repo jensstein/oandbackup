@@ -104,7 +104,7 @@ fun LogItem(
                 }
             }
 
-            val lines = item.logText?.lines() ?: listOf()
+            val lines = item.logText.lines()
             Card(modifier = Modifier.fillMaxWidth()) {
                 Box(
                     modifier = Modifier

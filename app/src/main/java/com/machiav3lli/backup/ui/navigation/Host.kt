@@ -72,7 +72,7 @@ fun PrefsNavHost(
     AnimatedNavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = NavItem.Settings.destination
+        startDestination = NavItem.Settings.destination,
     ) {
         slideDownComposable(NavItem.Settings.destination) {
             SlidePager(

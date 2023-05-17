@@ -219,7 +219,6 @@ class MainActivityX : BaseActivity() {
 
             AppTheme {
                 val scope = rememberCoroutineScope()
-                val pagerState = rememberPagerState()
                 navController = rememberAnimatedNavController()
                 val pages = listOf(
                     NavItem.Home,
@@ -227,6 +226,7 @@ class MainActivityX : BaseActivity() {
                     NavItem.Restore,
                     NavItem.Scheduler,
                 )
+                val pagerState = rememberPagerState(pageCount = { pages.size })
                 val currentPage by remember(pagerState.currentPage) { mutableStateOf(pages[pagerState.currentPage]) }   //TODO hg42 remove remember ???
                 var barVisible by remember { mutableStateOf(true) }
                 val openBlocklist = remember { mutableStateOf(false) }
@@ -624,6 +624,7 @@ class MainActivityX : BaseActivity() {
                                 resultsSuccess = resultsSuccess and succeeded
                                 oneTimeWorkLiveData.removeObserver(this)
                             }
+
                             else                     -> {}
                         }
                     }
@@ -705,6 +706,7 @@ class MainActivityX : BaseActivity() {
                                 resultsSuccess = resultsSuccess and succeeded
                                 oneTimeWorkLiveData.removeObserver(this)
                             }
+
                             else                     -> {}
                         }
                     }

@@ -47,17 +47,17 @@ import androidx.compose.ui.res.stringResource
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.sheets.HelpSheet
 import com.machiav3lli.backup.preferences.pref_blackTheme
+import com.machiav3lli.backup.sheets.HelpSheet
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Info
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TopBar
+import com.machiav3lli.backup.ui.compose.recycler.BusyBackground
+import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.navigation.NavItem
 import com.machiav3lli.backup.ui.navigation.PagerNavBar
 import com.machiav3lli.backup.ui.navigation.PrefsNavHost
-import com.machiav3lli.backup.ui.compose.recycler.BusyBackground
-import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.destinationToItem
 import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import com.machiav3lli.backup.viewmodels.ExportsViewModel
@@ -84,7 +84,6 @@ class PrefsActivityX : BaseActivity() {
         setContent {
             AppTheme {
                 val scope = rememberCoroutineScope()
-                val pagerState = rememberPagerState()
                 val navController = rememberAnimatedNavController()
                 val pages = listOf(
                     NavItem.UserPrefs,
@@ -92,6 +91,7 @@ class PrefsActivityX : BaseActivity() {
                     NavItem.AdvancedPrefs,
                     NavItem.ToolsPrefs,
                 )
+                val pagerState = rememberPagerState(pageCount = { pages.size })
                 val currentPage by remember(pagerState.currentPage) { mutableStateOf(pages[pagerState.currentPage]) }
                 var barVisible by remember { mutableStateOf(true) }
                 var showHelpSheet by remember { mutableStateOf(false) }

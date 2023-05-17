@@ -71,14 +71,14 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
     }
     val workList = filteredList.filter(filterPredicate)
 
-    var allApkChecked by remember(workList) {
+    var allApkChecked by remember(workList, viewModel.apkBackupCheckedList) {
         mutableStateOf(
             viewModel.apkBackupCheckedList.size == workList
                 .filter { !it.isSpecial && (backupBoolean || it.latestBackup?.hasApk == true) }
                 .size
         )
     }
-    var allDataChecked by remember(workList) {
+    var allDataChecked by remember(workList, viewModel.dataBackupCheckedList) {
         mutableStateOf(
             viewModel.dataBackupCheckedList.size == workList
                 .filter { backupBoolean || it.latestBackup?.hasData == true }
@@ -100,7 +100,7 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
             BatchPackageRecycler(
                 modifier = Modifier
                     .blockBorder()
-                    .weight(1f,true)
+                    .weight(1f, true)
                     .fillMaxSize(),
                 productsList = workList,
                 restore = !backupBoolean,
