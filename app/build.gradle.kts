@@ -21,16 +21,16 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
-    kotlin("plugin.serialization").version("1.8.20")
+    kotlin("plugin.serialization").version("1.8.21")
 }
 
-val vKotlin = "1.8.20"
-val vComposeCompiler = "1.4.6"
-val vCompose = "1.5.0-alpha03"
-val vKotlinSerialization = "1.5.0"
+val vKotlin = "1.8.21"
+val vComposeCompiler = "1.4.7"
+val vCompose = "1.5.0-alpha04"
+val vKotlinSerialization = "1.5.1"
 val vRoom = "2.5.1"
-val vNavigation = "2.6.0-beta01"
-val vAccompanist = "0.31.1-alpha"
+val vNavigation = "2.6.0-rc01"
+val vAccompanist = "0.31.2-alpha"
 val vLibsu = "5.0.5"
 //val vIconics = "5.3.4"
 
@@ -143,7 +143,7 @@ dependencies {
     implementation("de.voize:semver4k:4.1.0")
 
     // UI
-    implementation("com.google.android.material:material:1.8.0")
+    implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.preference:preference-ktx:1.2.0")
 
     // Compose
@@ -154,7 +154,7 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:$vCompose")
     implementation("androidx.navigation:navigation-compose:$vNavigation")
     implementation("io.coil-kt:coil-compose:2.3.0")
-    implementation("androidx.compose.material3:material3:1.1.0-rc01")
+    implementation("androidx.compose.material3:material3:1.2.0-alpha01")
     implementation("com.google.accompanist:accompanist-flowlayout:$vAccompanist")
     implementation("com.google.accompanist:accompanist-systemuicontroller:$vAccompanist")
     implementation("com.google.accompanist:accompanist-navigation-animation:$vAccompanist")
