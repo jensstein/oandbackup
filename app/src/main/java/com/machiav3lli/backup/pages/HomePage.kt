@@ -70,6 +70,7 @@ import com.machiav3lli.backup.ui.compose.recycler.HomePackageRecycler
 import com.machiav3lli.backup.ui.compose.recycler.UpdatedPackageRecycler
 import com.machiav3lli.backup.utils.TraceUtils.beginNanoTimer
 import com.machiav3lli.backup.utils.TraceUtils.endNanoTimer
+import com.machiav3lli.backup.utils.altModeToMode
 
 @Composable
 fun HomePage() {
@@ -247,27 +248,30 @@ fun HomePage() {
             val selectedData = mutableMapOf<String, Int>()
             val selectedListModes = updatedPackages
                 .map {
-                    it.latestBackup?.let { bp ->
-                        when {
-                            bp.hasApk && bp.hasAppData -> {
-                                selectedApk[bp.packageName] = 1
-                                selectedData[bp.packageName] = 1
-                                ALT_MODE_BOTH
-                            }
+                    altModeToMode(
+                        it.latestBackup?.let { bp ->
+                            when {
+                                bp.hasApk && bp.hasAppData -> {
+                                    selectedApk[bp.packageName] = 1
+                                    selectedData[bp.packageName] = 1
+                                    ALT_MODE_BOTH
+                                }
 
-                            bp.hasApk                  -> {
-                                selectedApk[bp.packageName] = 1
-                                ALT_MODE_APK
-                            }
+                                bp.hasApk                  -> {
+                                    selectedApk[bp.packageName] = 1
+                                    ALT_MODE_APK
+                                }
 
-                            bp.hasAppData              -> {
-                                selectedData[bp.packageName] = 1
-                                ALT_MODE_DATA
-                            }
+                                bp.hasAppData              -> {
+                                    selectedData[bp.packageName] = 1
+                                    ALT_MODE_DATA
+                                }
 
-                            else                       -> ALT_MODE_UNSET
-                        }
-                    } ?: ALT_MODE_BOTH  // no backup -> try all
+                                else                       -> ALT_MODE_UNSET
+                            }
+                        } ?: ALT_MODE_BOTH  // no backup -> try all
+                        , true
+                    )
                 }
                 .toCollection(ArrayList())
 
