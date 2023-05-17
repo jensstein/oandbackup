@@ -341,12 +341,6 @@ val pref_busyTurnTime = IntPref(
     defaultValue = 50000
 )
 
-val pref_busyLaserBackground = BooleanPref(
-    key = "dev-alt.busyLaserBackground",
-    summary = "Use animated laser as busy background",
-    defaultValue = true
-)
-
 val pref_versionOpacity = IntPref(
     key = "dev-alt.versionOpacity",
     summary = "opacity of version [percent]",

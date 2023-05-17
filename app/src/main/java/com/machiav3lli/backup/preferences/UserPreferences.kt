@@ -273,6 +273,13 @@ val pref_squeezeNavText = BooleanPref(
     defaultValue = false
 )
 
+val pref_busyLaserBackground = BooleanPref(
+    key = "user.busyLaserBackground",
+    titleId = R.string.prefs_laserbackground,
+    summaryId = R.string.prefs_laserbackground_summary,
+    defaultValue = true
+)
+
 val pref_oldBackups = IntPref(
     key = "user.oldBackups",
     titleId = R.string.prefs_oldbackups,
