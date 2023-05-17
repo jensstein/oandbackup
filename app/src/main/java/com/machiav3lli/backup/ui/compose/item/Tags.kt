@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
@@ -36,13 +38,13 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.flowlayout.FlowRow
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.PlusCircle
 import com.machiav3lli.backup.ui.compose.icons.phosphor.X
 import com.machiav3lli.backup.ui.compose.icons.phosphor.XCircle
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TagsBlock(
     modifier: Modifier = Modifier,
@@ -52,9 +54,8 @@ fun TagsBlock(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         FlowRow(
-            modifier = modifier
-                .fillMaxWidth(),
-            mainAxisSpacing = 8.dp
+            modifier = modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             tags?.forEach { tag -> TagItem(tag = tag, onClick = onRemove) }
             TagItem(

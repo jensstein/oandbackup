@@ -25,8 +25,9 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,7 +35,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -72,7 +72,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.flowlayout.FlowRow
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.ICON_SIZE_SMALL
@@ -405,6 +404,7 @@ fun SmallButton(
     )
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TerminalPage() {
     val output = remember { mutableStateListOf<String>() }
@@ -499,14 +499,13 @@ fun TerminalPage() {
             FlowRow(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(padding)
+                    .padding(padding),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 TerminalButton("SUPPORT", important = true) { launch { supportInfoLogShare() } }
-                Spacer(Modifier.width(8.dp))
                 TerminalButton("share", important = true) { launch { textLogShare(output) } }
-                Spacer(Modifier.width(8.dp))
                 TerminalButton("clear", important = true) { output.clear() }
-                Spacer(Modifier.width(8.dp))
                 TerminalButton("log/int") { produce { logInt() } }
                 TerminalButton("log/app") { produce { logApp() } }
                 TerminalButton("log/rel") { produce { logRel() } }

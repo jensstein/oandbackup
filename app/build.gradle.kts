@@ -155,7 +155,6 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$vNavigation")
     implementation("io.coil-kt:coil-compose:2.3.0")
     implementation("androidx.compose.material3:material3:1.2.0-alpha01")
-    implementation("com.google.accompanist:accompanist-flowlayout:$vAccompanist")
     implementation("com.google.accompanist:accompanist-systemuicontroller:$vAccompanist")
     implementation("com.google.accompanist:accompanist-navigation-animation:$vAccompanist")
     implementation("com.google.accompanist:accompanist-permissions:$vAccompanist")

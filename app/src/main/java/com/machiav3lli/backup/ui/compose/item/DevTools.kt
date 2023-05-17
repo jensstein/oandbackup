@@ -7,10 +7,12 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -39,7 +41,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.flowlayout.FlowRow
 import com.machiav3lli.backup.ERROR_PREFIX
 import com.machiav3lli.backup.ICON_SIZE_SMALL
 import com.machiav3lli.backup.OABX
@@ -86,18 +87,13 @@ var devToolsTab = mutableStateOf("")
 
 val devToolsTabs = listOf<Pair<String, @Composable () -> Any>>(
     "logs" to { DevLogsTab() },
-    "" to {},
     "log" to { DevLogTab() },
     "infolog" to { DevInfoLogTab() },
-    "" to {},
     "tools" to { DevToolsTab() },
     "term" to { TerminalPage() },
-    "" to {},
     "devsett" to { DevSettingsTab() },
-    "" to {},
     "SUPPORT" to { DevSupportTab() },
 ) + if (isDebug) listOf<Pair<String, @Composable () -> Any>>(
-    "" to {},
     "refreshScreen" to {
         OABX.context.recreateActivities()
         devToolsTab.value = ""
@@ -495,7 +491,7 @@ fun DevSupportTab() {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun DevTools(
     expanded: MutableState<Boolean>,
@@ -568,19 +564,24 @@ fun DevTools(
                 }
             }
 
-            FlowRow(modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp, 0.dp, 8.dp, 4.dp)
-                .combinedClickable(
-                    onClick = { expanded.value = false },
-                    onLongClick = { tab = "" }
-                )
+            FlowRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = 8.dp,
+                        top = 0.dp,
+                        end = 8.dp,
+                        bottom = 4.dp
+                    )
+                    .combinedClickable(
+                        onClick = { expanded.value = false },
+                        onLongClick = { tab = "" }
+                    ),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 devToolsTabs.forEach {
-                    if (it.first.isEmpty())
-                        Spacer(modifier = Modifier.width(8.dp))
-                    else
-                        TabButton(it.first)
+                    TabButton(it.first)
                 }
             }
 

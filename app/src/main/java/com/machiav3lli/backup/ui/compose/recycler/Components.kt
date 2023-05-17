@@ -12,6 +12,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -49,7 +51,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.flowlayout.FlowRow
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
@@ -198,7 +199,7 @@ fun <T> HorizontalItemList(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun SelectableChipGroup(
     //TODO hg42 move to item/Components.kt ?
@@ -208,9 +209,8 @@ fun SelectableChipGroup(
     onClick: (Int) -> Unit,
 ) {
     FlowRow(
-        modifier = modifier
-            .fillMaxWidth(),
-        mainAxisSpacing = 8.dp
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         list.forEach { item ->
             SelectionChip(
@@ -223,7 +223,7 @@ fun SelectableChipGroup(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun MultiSelectableChipGroup(
     //TODO hg42 move to item/Components.kt ?
@@ -233,9 +233,8 @@ fun MultiSelectableChipGroup(
     onClick: (Int, Int) -> Unit,
 ) {
     FlowRow(
-        modifier = modifier
-            .fillMaxWidth(),
-        mainAxisSpacing = 8.dp
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         list.forEach { item ->
             SelectionChip(

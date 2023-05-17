@@ -1,6 +1,8 @@
 package com.machiav3lli.backup.ui.compose.recycler
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyRow
@@ -13,8 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.imageLoader
-import com.google.accompanist.flowlayout.FlowMainAxisAlignment
-import com.google.accompanist.flowlayout.FlowRow
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.items.Package
@@ -159,6 +159,7 @@ fun LogRecycler(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun InfoChipsBlock(
     modifier: Modifier = Modifier,
@@ -167,9 +168,8 @@ fun InfoChipsBlock(
     if (pref_multilineInfoChips.value)
         FlowRow(
             modifier = modifier.fillMaxWidth(),
-            mainAxisSpacing = 8.dp,
-            crossAxisSpacing = 4.dp,
-            mainAxisAlignment = FlowMainAxisAlignment.Center
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             list.forEach { chip ->
                 InfoChip(item = chip)
