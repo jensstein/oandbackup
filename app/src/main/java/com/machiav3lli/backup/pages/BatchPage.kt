@@ -158,7 +158,7 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                     allApkChecked = checkBoolean
                     when {
                         checkBoolean -> workList
-                            .filter { backupBoolean || it.latestBackup?.hasApk == true }
+                            .filter { (backupBoolean && !it.isSpecial) || it.latestBackup?.hasApk == true }
                             .map(Package::packageName)
                             .forEach {
                                 viewModel.apkBackupCheckedList[it] = 0
