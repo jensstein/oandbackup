@@ -51,6 +51,7 @@ import com.machiav3lli.backup.items.SortFilterModel
 import com.machiav3lli.backup.preferences.persist_ignoreBatteryOptimization
 import com.machiav3lli.backup.preferences.persist_salt
 import com.machiav3lli.backup.preferences.persist_sortFilter
+import com.machiav3lli.backup.preferences.persist_specialFilters
 import com.machiav3lli.backup.preferences.pref_allowDowngrade
 import com.machiav3lli.backup.preferences.pref_appAccentColor
 import com.machiav3lli.backup.preferences.pref_appSecondaryColor
@@ -469,13 +470,17 @@ var sortFilterModel: SortFilterModel
     get() {
         val sortFilterModel: SortFilterModel
         val sortFilterPref = persist_sortFilter.value
-        sortFilterModel =
-            if (!sortFilterPref.isNullOrEmpty()) SortFilterModel(sortFilterPref)
-            else SortFilterModel()
+        val specialFiltersPref = persist_specialFilters.value
+        sortFilterModel = SortFilterModel(
+            sortFilterPref.takeIf { it.isNotEmpty() },
+            specialFiltersPref.takeIf { it.isNotEmpty() },
+        )
         return sortFilterModel
     }
     set(value) {
-        persist_sortFilter.value = value.toString()
+        val modelString = value.toString().split(",")
+        persist_sortFilter.value = modelString[0]
+        persist_specialFilters.value = modelString[1]
         OABX.main?.viewModel?.modelSortFilter?.value = value   //setSortFilter(value)
     }
 

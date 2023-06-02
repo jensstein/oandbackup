@@ -29,34 +29,64 @@ data class SortFilterModel(
     var sortAsc: Boolean = true,
     var mainFilter: Int = MAIN_FILTER_DEFAULT,
     var backupFilter: Int = BACKUP_FILTER_DEFAULT,
-    var specialFilter: Int = SPECIAL_FILTER_ALL
-): Parcelable {
+    var installedFilter: Int = SPECIAL_FILTER_ALL,
+    var launchableFilter: Int = SPECIAL_FILTER_ALL,
+    var updatedFilter: Int = SPECIAL_FILTER_ALL,
+    var latestFilter: Int = SPECIAL_FILTER_ALL,
+    var enabledFilter: Int = SPECIAL_FILTER_ALL,
+) : Parcelable {
 
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
         parcel.readByte() != 0.toByte(),
         parcel.readInt(),
         parcel.readInt(),
-        parcel.readInt()) {
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readInt(),
+    ) {
     }
 
-    constructor(sortFilterCode: String) : this() {
-        sort = sortFilterCode[0].digitToInt()
-        sortAsc = sortFilterCode[1].digitToInt() == 1
-        mainFilter = sortFilterCode[2].digitToInt()
-        specialFilter = sortFilterCode[3].digitToInt()
-        backupFilter = sortFilterCode.substring(4).toInt()
+    constructor(sortFilterCode: String?, specialFilterCode: String?) : this() {
+        sortFilterCode?.let {
+            sort = sortFilterCode[0].digitToInt()
+            sortAsc = sortFilterCode[1].digitToInt() == 1
+            mainFilter = sortFilterCode[2].digitToInt()
+            backupFilter = sortFilterCode.substring(4).toInt()
+        }
+        specialFilterCode?.let {
+            installedFilter = specialFilterCode[0].digitToInt()
+            launchableFilter = specialFilterCode[1].digitToInt()
+            updatedFilter = specialFilterCode[2].digitToInt()
+            latestFilter = specialFilterCode[3].digitToInt()
+            enabledFilter = specialFilterCode[4].digitToInt()
+        }
     }
+
+    val specialFilter: SpecialFilter
+        get() = SpecialFilter(
+            installedFilter,
+            launchableFilter,
+            updatedFilter,
+            latestFilter,
+            enabledFilter
+        )
 
     override fun toString(): String =
-        "$sort${sortAsc.compareTo(false)}$mainFilter$specialFilter$backupFilter"
+        "$sort${sortAsc.compareTo(false)}${mainFilter}0$backupFilter,$installedFilter$launchableFilter$updatedFilter$latestFilter$enabledFilter"
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(sort)
         parcel.writeByte(if (sortAsc) 1 else 0)
         parcel.writeInt(mainFilter)
         parcel.writeInt(backupFilter)
-        parcel.writeInt(specialFilter)
+        parcel.writeInt(installedFilter)
+        parcel.writeInt(launchableFilter)
+        parcel.writeInt(updatedFilter)
+        parcel.writeInt(latestFilter)
+        parcel.writeInt(enabledFilter)
     }
 
     override fun describeContents(): Int {
@@ -73,3 +103,11 @@ data class SortFilterModel(
         }
     }
 }
+
+class SpecialFilter(
+    var installedFilter: Int = SPECIAL_FILTER_ALL,
+    var launchableFilter: Int = SPECIAL_FILTER_ALL,
+    var updatedFilter: Int = SPECIAL_FILTER_ALL,
+    var latestFilter: Int = SPECIAL_FILTER_ALL,
+    var enabledFilter: Int = SPECIAL_FILTER_ALL,
+)
