@@ -504,7 +504,7 @@ val persist_sortFilter = StringPref(
 )
 
 val persist_specialFilters = StringPref(
-    key = "persist.sortFilter",
+    key = "persist.specialFilters",
     defaultValue = ""
 )
 
