@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-8.3.2 (XX.XX.2023) +220 Commits & +40 Translations
+8.3.2 (XX.XX.2023) +250 Commits & +50 Translations
 ------------
 
 #### Function
@@ -26,6 +26,9 @@ CHANGELOG
 - Fix: Startup single backup scans
 - Fix: Do not disable password preference, if encryption is disabled, as still necessary for restore
 - Fix: Crash on "non-null is null"-exception
+- Fix: Crash on adding tag
+- Fix: Batch backing up updated apps
+- Fix: Reset defaults of yaml prefs
 - Update: /data/local/toybox is now prioritized over others
 - Update: Integrate Intro into Splash & Main
 - Update: Use nsenter to run commands in the global mount namespace
@@ -35,7 +38,8 @@ CHANGELOG
 - Update: Replace apk-/dataCheckedList usage with apk-/dataBackupCheckedList
 - Update: Make prefs reactive
 - Update: Simplify ShellCommands init
-- Udpate: Make exclude asset files react on no_backup preferences
+- Update: Make exclude asset files react on no_backup preferences
+- Update: Debug prefs must default to user value
 - Remove: IntroActivity
 - Remove: Premature refreshing
 - Remove: Automatically added ACCESS NETWORK STATE permission
@@ -60,6 +64,7 @@ CHANGELOG
 - Update: Replace legacy dialogs with composables
 - Update: Revamp all items using ListItem
 - Update: Make TopBar transparent
+- Update: Revamp search bar layout
 
 #### UX
 
@@ -69,14 +74,18 @@ CHANGELOG
 - Add: Option in root missing dialog to share a support log
 - Add: Indicator of backup revisions set limit
 - Add: Indicator if password is set (***) vs. unset (---)
+- Add: Extended special filters
 - Fix: Close context menu if choosing "no"
 - Fix: Batch backups not working when singular backups layout is enable
 - Fix: Check all apk/data not working
 - Fix: Asking for permissions for special backups without restart
 - Fix: duplicate directory picker
+- Fix: Ghost clicking settings when search is expanded
+- Fix: Checking Special backups for apk batch backup
 - Update: Get/Put replaces Load/Save in context menu
 - Update: Keyboard actions in dialogs with editable text (focus, tab, return, done etc.)
 - Update: Allow showing value and description of prefs
+- Update: Move pref to show background laser to UserPrefs
 
 8.3.1 (21.02.2023) +80 Commits & +10 Translations
 ------------
