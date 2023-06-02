@@ -20,14 +20,13 @@ package com.machiav3lli.backup.sheets
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -96,6 +95,41 @@ fun SortFilterSheet(onDismiss: () -> Unit) {
         Scaffold(
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onBackground,
+            topBar = {
+                ListItem(
+                    colors = ListItemDefaults.colors(
+                        containerColor = Color.Transparent,
+                    ),
+                    headlineContent = {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            DoubleVerticalText(
+                                upperText = currentStats().first.toString(),
+                                bottomText = stringResource(id = R.string.stats_apps),
+                                modifier = Modifier.weight(1f)
+                            )
+                            DoubleVerticalText(
+                                upperText = currentStats().second.toString(),
+                                bottomText = stringResource(id = R.string.stats_backups),
+                                modifier = Modifier.weight(1f)
+                            )
+                            DoubleVerticalText(
+                                upperText = currentStats().third.toString(),
+                                bottomText = stringResource(id = R.string.stats_updated),
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    },
+                    trailingContent = {
+                        RoundButton(icon = Phosphor.CaretDown) {
+                            onDismiss()
+                        }
+                    }
+                )
+            },
             bottomBar = {
                 Row(
                     modifier = Modifier.padding(8.dp),
@@ -135,36 +169,6 @@ fun SortFilterSheet(onDismiss: () -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(8.dp)
             ) {
-                item {
-                    Row(
-                        modifier = Modifier
-                            .padding(top = 4.dp)
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        DoubleVerticalText(
-                            upperText = currentStats().first.toString(),
-                            bottomText = stringResource(id = R.string.stats_apps),
-                            modifier = Modifier.weight(1f)
-                        )
-                        DoubleVerticalText(
-                            upperText = currentStats().second.toString(),
-                            bottomText = stringResource(id = R.string.stats_backups),
-                            modifier = Modifier.weight(1f)
-                        )
-                        DoubleVerticalText(
-                            upperText = currentStats().third.toString(),
-                            bottomText = stringResource(id = R.string.stats_updated),
-                            modifier = Modifier.weight(1f)
-                        )
-                        RoundButton(icon = Phosphor.CaretDown) {
-                            onDismiss()
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Divider(thickness = 2.dp)
-                }
                 item { CategoryTitleText(R.string.sorting_order) }
                 item {
                     SelectableChipGroup(
