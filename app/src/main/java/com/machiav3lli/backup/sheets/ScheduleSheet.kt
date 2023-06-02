@@ -62,8 +62,10 @@ import com.machiav3lli.backup.dialogs.CustomListDialogUI
 import com.machiav3lli.backup.dialogs.IntPickerDialogUI
 import com.machiav3lli.backup.dialogs.StringInputDialogUI
 import com.machiav3lli.backup.dialogs.TimePickerDialogUI
+import com.machiav3lli.backup.enabledFilterChipItems
+import com.machiav3lli.backup.latestFilterChipItems
+import com.machiav3lli.backup.launchableFilterChipItems
 import com.machiav3lli.backup.mainFilterChipItems
-import com.machiav3lli.backup.schedSpecialFilterChipItems
 import com.machiav3lli.backup.scheduleBackupModeChipItems
 import com.machiav3lli.backup.traceDebug
 import com.machiav3lli.backup.ui.compose.blockBorder
@@ -82,6 +84,7 @@ import com.machiav3lli.backup.ui.compose.recycler.MultiSelectableChipGroup
 import com.machiav3lli.backup.ui.compose.recycler.SelectableChipGroup
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.item.ChipItem
+import com.machiav3lli.backup.updatedFilterChipItems
 import com.machiav3lli.backup.utils.cancelAlarm
 import com.machiav3lli.backup.utils.specialBackupsEnabled
 import com.machiav3lli.backup.utils.startSchedule
@@ -353,15 +356,49 @@ fun ScheduleSheet(
                     }
                 }
                 item {
-                    //traceDebug { "*** recompose specialFilter ${schedule.specialFilter}" }
-                    TitleText(R.string.other_filters_options)
+                    TitleText(R.string.filters_launchable)
                     SelectableChipGroup(
-                        list = schedSpecialFilterChipItems,
-                        selectedFlag = schedule.specialFilter
+                        list = launchableFilterChipItems,
+                        selectedFlag = schedule.launchableFilter
                     ) { flag ->
-                        traceDebug { "*** onClick specialFilter -> $flag" }
                         refresh(
-                            schedule.copy(specialFilter = flag),
+                            schedule.copy(launchableFilter = flag),
+                            false,
+                        )
+                    }
+                }
+                item {
+                    TitleText(R.string.filters_updated)
+                    SelectableChipGroup(
+                        list = updatedFilterChipItems,
+                        selectedFlag = schedule.updatedFilter
+                    ) { flag ->
+                        refresh(
+                            schedule.copy(updatedFilter = flag),
+                            false,
+                        )
+                    }
+                }
+                item {
+                    TitleText(R.string.filters_latest)
+                    SelectableChipGroup(
+                        list = latestFilterChipItems,
+                        selectedFlag = schedule.latestFilter
+                    ) { flag ->
+                        refresh(
+                            schedule.copy(latestFilter = flag),
+                            false,
+                        )
+                    }
+                }
+                item {
+                    TitleText(R.string.filters_enabled)
+                    SelectableChipGroup(
+                        list = enabledFilterChipItems,
+                        selectedFlag = schedule.enabledFilter
+                    ) { flag ->
+                        refresh(
+                            schedule.copy(enabledFilter = flag),
                             false,
                         )
                     }

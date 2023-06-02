@@ -247,10 +247,27 @@ fun filterToString(context: Context, filter: Int): String {
     }
 }
 
-fun specialFilterToString(context: Context, specialFilter: Int) = when (specialFilter) {
-    SPECIAL_FILTER_LAUNCHABLE  -> context.getString(R.string.radio_launchable)
-    SPECIAL_FILTER_NEW_UPDATED -> context.getString(R.string.showNewAndUpdated)
-    SPECIAL_FILTER_OLD         -> context.getString(R.string.showOldBackups)
-    else                       -> context.getString(R.string.radio_all)
-}
+fun specialFilterToString(context: Context, specialFilter: SpecialFilter) = listOfNotNull(
+    when (specialFilter.launchableFilter) {
+        LAUNCHABLE_FILTER_LAUNCHABLE -> context.getString(R.string.radio_launchable)
+        LAUNCHABLE_FILTER_NOT        -> context.getString(R.string.radio_notlaunchable)
+        else                         -> null
+    },
+    when (specialFilter.enabledFilter) {
+        ENABLED_FILTER_ENABLED  -> context.getString(R.string.show_enabled_apps)
+        ENABLED_FILTER_DISABLED -> context.getString(R.string.showDisabled)
+        else                    -> null
+    },
+    when (specialFilter.latestFilter) {
+        LATEST_FILTER_NEW -> context.getString(R.string.show_new_backups)
+        LATEST_FILTER_OLD -> context.getString(R.string.showOldBackups)
+        else              -> null
+    },
+    when (specialFilter.updatedFilter) {
+        UPDATED_FILTER_UPDATED -> context.getString(R.string.show_updated_apps)
+        UPDATED_FILTER_NEW     -> context.getString(R.string.show_new_apps)
+        UPDATED_FILTER_NOT     -> context.getString(R.string.show_old_apps)
+        else                   -> null
+    },
+).joinToString(", ")
 

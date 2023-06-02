@@ -47,10 +47,13 @@ import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
+import com.machiav3lli.backup.enabledFilterChipItems
+import com.machiav3lli.backup.installedFilterChipItems
 import com.machiav3lli.backup.items.SortFilterModel
+import com.machiav3lli.backup.latestFilterChipItems
+import com.machiav3lli.backup.launchableFilterChipItems
 import com.machiav3lli.backup.mainBackupModeChipItems
 import com.machiav3lli.backup.mainFilterChipItems
-import com.machiav3lli.backup.mainSpecialFilterChipItems
 import com.machiav3lli.backup.sortChipItems
 import com.machiav3lli.backup.ui.compose.blockBorder
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
@@ -68,6 +71,7 @@ import com.machiav3lli.backup.ui.compose.recycler.MultiSelectableChipGroup
 import com.machiav3lli.backup.ui.compose.recycler.SelectableChipGroup
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.item.ChipItem
+import com.machiav3lli.backup.updatedFilterChipItems
 import com.machiav3lli.backup.utils.applyFilter
 import com.machiav3lli.backup.utils.getStats
 import com.machiav3lli.backup.utils.sortFilterModel
@@ -200,12 +204,48 @@ fun SortFilterSheet(onDismiss: () -> Unit) {
                     }
                 }
                 item {
-                    TitleText(R.string.other_filters_options)
+                    TitleText(R.string.filters_installed)
                     SelectableChipGroup(
-                        list = mainSpecialFilterChipItems,
-                        selectedFlag = model.specialFilter
+                        list = installedFilterChipItems,
+                        selectedFlag = model.installedFilter
                     ) { flag ->
-                        model = model.copy(specialFilter = flag)
+                        model = model.copy(installedFilter = flag)
+                    }
+                }
+                item {
+                    TitleText(R.string.filters_launchable)
+                    SelectableChipGroup(
+                        list = launchableFilterChipItems,
+                        selectedFlag = model.launchableFilter
+                    ) { flag ->
+                        model = model.copy(launchableFilter = flag)
+                    }
+                }
+                item {
+                    TitleText(R.string.filters_updated)
+                    SelectableChipGroup(
+                        list = updatedFilterChipItems,
+                        selectedFlag = model.updatedFilter
+                    ) { flag ->
+                        model = model.copy(updatedFilter = flag)
+                    }
+                }
+                item {
+                    TitleText(R.string.filters_latest)
+                    SelectableChipGroup(
+                        list = latestFilterChipItems,
+                        selectedFlag = model.latestFilter
+                    ) { flag ->
+                        model = model.copy(latestFilter = flag)
+                    }
+                }
+                item {
+                    TitleText(R.string.filters_enabled)
+                    SelectableChipGroup(
+                        list = enabledFilterChipItems,
+                        selectedFlag = model.enabledFilter
+                    ) { flag ->
+                        model = model.copy(enabledFilter = flag)
                     }
                 }
             }
