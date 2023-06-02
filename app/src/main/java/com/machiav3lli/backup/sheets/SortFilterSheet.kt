@@ -62,11 +62,11 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretDown
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Check
 import com.machiav3lli.backup.ui.compose.icons.phosphor.SortAscending
 import com.machiav3lli.backup.ui.compose.icons.phosphor.SortDescending
+import com.machiav3lli.backup.ui.compose.item.CategoryTitleText
 import com.machiav3lli.backup.ui.compose.item.DoubleVerticalText
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.SwitchChip
-import com.machiav3lli.backup.ui.compose.item.TitleText
 import com.machiav3lli.backup.ui.compose.recycler.MultiSelectableChipGroup
 import com.machiav3lli.backup.ui.compose.recycler.SelectableChipGroup
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
@@ -165,13 +165,13 @@ fun SortFilterSheet(onDismiss: () -> Unit) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Divider(thickness = 2.dp)
                 }
+                item { CategoryTitleText(R.string.sorting_order) }
                 item {
-                    TitleText(R.string.sort_options)
                     SelectableChipGroup(
                         list = sortChipItems,
                         selectedFlag = model.sort
                     ) { flag ->
-                        model = model.copy().apply { sort = flag }
+                        model = model.copy(sort = flag)
                     }
                     SwitchChip(
                         firstTextId = R.string.sortAsc,
@@ -180,12 +180,12 @@ fun SortFilterSheet(onDismiss: () -> Unit) {
                         secondIcon = Phosphor.SortDescending,
                         firstSelected = model.sortAsc,
                         onCheckedChange = { checked ->
-                            model = model.copy().apply { sortAsc = checked }
+                            model = model.copy(sortAsc = checked)
                         }
                     )
                 }
+                item { CategoryTitleText(R.string.filters_app) }
                 item {
-                    TitleText(R.string.filter_options)
                     MultiSelectableChipGroup(
                         list = if (specialBackupsEnabled) mainFilterChipItems
                         else mainFilterChipItems.minus(ChipItem.Special),
@@ -194,8 +194,8 @@ fun SortFilterSheet(onDismiss: () -> Unit) {
                         model = model.copy(mainFilter = flags)
                     }
                 }
+                item { CategoryTitleText(R.string.filters_backup) }
                 item {
-                    TitleText(R.string.backup_filters)
                     MultiSelectableChipGroup(
                         list = mainBackupModeChipItems,
                         selectedFlags = model.backupFilter
@@ -203,8 +203,8 @@ fun SortFilterSheet(onDismiss: () -> Unit) {
                         model = model.copy(backupFilter = flags)
                     }
                 }
+                item { CategoryTitleText(R.string.filters_installed) }
                 item {
-                    TitleText(R.string.filters_installed)
                     SelectableChipGroup(
                         list = installedFilterChipItems,
                         selectedFlag = model.installedFilter
@@ -212,8 +212,8 @@ fun SortFilterSheet(onDismiss: () -> Unit) {
                         model = model.copy(installedFilter = flag)
                     }
                 }
+                item { CategoryTitleText(R.string.filters_launchable) }
                 item {
-                    TitleText(R.string.filters_launchable)
                     SelectableChipGroup(
                         list = launchableFilterChipItems,
                         selectedFlag = model.launchableFilter
@@ -221,8 +221,8 @@ fun SortFilterSheet(onDismiss: () -> Unit) {
                         model = model.copy(launchableFilter = flag)
                     }
                 }
+                item { CategoryTitleText(R.string.filters_updated) }
                 item {
-                    TitleText(R.string.filters_updated)
                     SelectableChipGroup(
                         list = updatedFilterChipItems,
                         selectedFlag = model.updatedFilter
@@ -230,8 +230,8 @@ fun SortFilterSheet(onDismiss: () -> Unit) {
                         model = model.copy(updatedFilter = flag)
                     }
                 }
+                item { CategoryTitleText(R.string.filters_latest) }
                 item {
-                    TitleText(R.string.filters_latest)
                     SelectableChipGroup(
                         list = latestFilterChipItems,
                         selectedFlag = model.latestFilter
@@ -239,8 +239,8 @@ fun SortFilterSheet(onDismiss: () -> Unit) {
                         model = model.copy(latestFilter = flag)
                     }
                 }
+                item { CategoryTitleText(R.string.filters_enabled) }
                 item {
-                    TitleText(R.string.filters_enabled)
                     SelectableChipGroup(
                         list = enabledFilterChipItems,
                         selectedFlag = model.enabledFilter

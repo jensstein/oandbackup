@@ -416,6 +416,9 @@
     <string name="filters_enabled">Enabled</string>
     <string name="filters_updated">Updated</string>
     <string name="filters_latest">Latest backup</string>
+    <string name="filters_app">App type</string>
+    <string name="filters_backup">Backup types</string>
+    <string name="sorting_order">Sorting order</string>
     <string name="radio_notlaunchable">Not launchable apps</string>
     <string name="show_updated_apps">Updated apps</string>
     <string name="show_new_apps">New apps</string>

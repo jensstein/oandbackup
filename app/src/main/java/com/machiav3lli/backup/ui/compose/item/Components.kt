@@ -1100,6 +1100,17 @@ fun TitleText(
 )
 
 @Composable
+fun CategoryTitleText(
+    textId: Int,
+    modifier: Modifier = Modifier,
+) = Text(
+    modifier = modifier.fillMaxWidth(),
+    text = stringResource(id = textId),
+    textAlign = TextAlign.Center,
+    style = MaterialTheme.typography.titleLarge
+)
+
+@Composable
 fun DoubleVerticalText(
     upperText: String,
     bottomText: String,
