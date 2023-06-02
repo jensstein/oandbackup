@@ -14,7 +14,6 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,7 +49,7 @@ fun BackupItem(
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.large),
         colors = ListItemDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
         ),
         headlineContent = {
             Row(modifier = Modifier.fillMaxWidth()) {
@@ -220,7 +219,7 @@ fun RestoreBackupItem(
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.large),
         colors = ListItemDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
         ),
         leadingContent = {
             Row {

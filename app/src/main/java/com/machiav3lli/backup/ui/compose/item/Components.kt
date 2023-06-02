@@ -449,8 +449,8 @@ fun CardButton(
                 onLongClick = { showTooltip.value = true }
             ),
         colors = ListItemDefaults.colors(
-            containerColor = if (isSystemInDarkTheme()) tint.brighter(0.2f)
-            else tint.darker(0.2f),
+            containerColor = (if (isSystemInDarkTheme()) tint.brighter(0.3f)
+            else tint.darker(0.3f)).copy(alpha = 0.8f),
             headlineColor = MaterialTheme.colorScheme.background,
             leadingIconColor = MaterialTheme.colorScheme.background,
         ),

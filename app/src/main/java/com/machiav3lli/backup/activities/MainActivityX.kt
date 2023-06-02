@@ -305,7 +305,7 @@ class MainActivityX : BaseActivity() {
                                     ) { navController.navigate(NavItem.Settings.destination) }
                                 }
 
-                                barVisible                                               -> Column() {
+                                barVisible                                               -> Column {
                                     TopBar(title = stringResource(id = currentPage.title)) {
                                         ExpandableSearchAction(
                                             expanded = searchExpanded,

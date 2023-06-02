@@ -282,10 +282,12 @@ fun scheduleAlarmsOnce() {
                     scheduleAlreadyRuns -> {
                         traceSchedule { "[${it.id}] *** scheduleAlarms: ignore $it" }
                     }
+
                     it.enabled          -> {
                         traceSchedule { "[${it.id}] *** scheduleAlarms: enable $it" }
                         scheduleAlarm(OABX.context, it.id, false)
                     }
+
                     else                -> {
                         traceSchedule { "[${it.id}] *** scheduleAlarms: cancel $it" }
                         cancelAlarm(OABX.context, it.id)

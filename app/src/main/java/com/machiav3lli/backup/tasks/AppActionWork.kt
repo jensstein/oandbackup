@@ -130,6 +130,7 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
                                             context, work, shellHandler, pi, selectedMode
                                         )
                                     }
+
                                     else          -> {
                                         pi.backupsNewestFirst[backupIndex].let {
                                             BackupRestoreHelper.restore(
@@ -237,8 +238,8 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setContentTitle(
                 when {
-                    backupBoolean -> context.getString(com.machiav3lli.backup.R.string.batchbackup)
-                    else          -> context.getString(com.machiav3lli.backup.R.string.batchrestore)
+                    backupBoolean -> context.getString(R.string.batchbackup)
+                    else          -> context.getString(R.string.batchrestore)
                 }
             )
             .setSmallIcon(R.drawable.ic_launcher_foreground)
