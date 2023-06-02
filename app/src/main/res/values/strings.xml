@@ -411,4 +411,16 @@
     <string name="context_menu">Context menu</string>
     <string name="backup_revisions_limit">Backups limit: %d</string>
     <string name="clear_text">Clear text</string>
+    <string name="filters_installed">Installation</string>
+    <string name="filters_launchable">Launchable</string>
+    <string name="filters_enabled">Enabled</string>
+    <string name="filters_updated">Updated</string>
+    <string name="filters_latest">Latest backup</string>
+    <string name="radio_notlaunchable">Not launchable apps</string>
+    <string name="show_updated_apps">Updated apps</string>
+    <string name="show_new_apps">New apps</string>
+    <string name="show_old_apps">Old apps</string>
+    <string name="show_enabled_apps">Enabled apps</string>
+    <string name="show_installed_apps">Installed apps</string>
+    <string name="show_new_backups">New backups</string>
 </resources>

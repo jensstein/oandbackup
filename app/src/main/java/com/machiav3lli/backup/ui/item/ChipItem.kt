@@ -2,6 +2,14 @@ package com.machiav3lli.backup.ui.item
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.machiav3lli.backup.ENABLED_FILTER_DISABLED
+import com.machiav3lli.backup.ENABLED_FILTER_ENABLED
+import com.machiav3lli.backup.INSTALLED_FILTER_INSTALLED
+import com.machiav3lli.backup.INSTALLED_FILTER_NOT
+import com.machiav3lli.backup.LATEST_FILTER_NEW
+import com.machiav3lli.backup.LATEST_FILTER_OLD
+import com.machiav3lli.backup.LAUNCHABLE_FILTER_LAUNCHABLE
+import com.machiav3lli.backup.LAUNCHABLE_FILTER_NOT
 import com.machiav3lli.backup.MAIN_FILTER_SPECIAL
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
@@ -21,11 +29,9 @@ import com.machiav3lli.backup.MODE_DATA_OBB
 import com.machiav3lli.backup.MODE_NONE
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.SPECIAL_FILTER_ALL
-import com.machiav3lli.backup.SPECIAL_FILTER_DISABLED
-import com.machiav3lli.backup.SPECIAL_FILTER_LAUNCHABLE
-import com.machiav3lli.backup.SPECIAL_FILTER_NEW_UPDATED
-import com.machiav3lli.backup.SPECIAL_FILTER_NOT_INSTALLED
-import com.machiav3lli.backup.SPECIAL_FILTER_OLD
+import com.machiav3lli.backup.UPDATED_FILTER_NEW
+import com.machiav3lli.backup.UPDATED_FILTER_NOT
+import com.machiav3lli.backup.UPDATED_FILTER_UPDATED
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowSquareOut
 import com.machiav3lli.backup.ui.compose.icons.phosphor.AsteriskSimple
@@ -37,11 +43,13 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.FloppyDisk
 import com.machiav3lli.backup.ui.compose.icons.phosphor.FolderNotch
 import com.machiav3lli.backup.ui.compose.icons.phosphor.GameController
 import com.machiav3lli.backup.ui.compose.icons.phosphor.HardDrives
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Leaf
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Placeholder
 import com.machiav3lli.backup.ui.compose.icons.phosphor.PlayCircle
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ProhibitInset
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ShieldCheckered
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Spinner
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Star
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TagSimple
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
 import com.machiav3lli.backup.ui.compose.icons.phosphor.User
@@ -121,31 +129,67 @@ data class ChipItem(
             R.color.ic_apk
         )
         val Launchable = ChipItem(
-            SPECIAL_FILTER_LAUNCHABLE,
+            LAUNCHABLE_FILTER_LAUNCHABLE,
             R.string.radio_launchable,
             Phosphor.ArrowSquareOut,
             R.color.ic_obb
         )
-        val NewUpdated = ChipItem(
-            SPECIAL_FILTER_NEW_UPDATED,
-            R.string.showNewAndUpdated,
+        val NotLaunchable = ChipItem(
+            LAUNCHABLE_FILTER_NOT,
+            R.string.radio_notlaunchable,
+            Phosphor.ProhibitInset,
+            R.color.ic_obb
+        )
+        val UpdatedApps = ChipItem(
+            UPDATED_FILTER_UPDATED,
+            R.string.show_updated_apps,
             Phosphor.CircleWavyWarning,
             R.color.ic_updated
         )
-        val Old = ChipItem(
-            SPECIAL_FILTER_OLD,
+        val NewApps = ChipItem(
+            UPDATED_FILTER_NEW,
+            R.string.show_new_apps,
+            Phosphor.Star,
+            R.color.ic_updated
+        )
+        val OldApps = ChipItem(
+            UPDATED_FILTER_NOT,
+            R.string.show_old_apps,
+            Phosphor.Clock,
+            R.color.ic_updated
+        )
+        val OldBackups = ChipItem(
+            LATEST_FILTER_OLD,
             R.string.showOldBackups,
             Phosphor.Clock,
             R.color.ic_exodus
         )
+        val NewBackups = ChipItem(
+            LATEST_FILTER_NEW,
+            R.string.show_new_backups,
+            Phosphor.CircleWavyWarning,
+            R.color.ic_exodus
+        )
+        val Enabled = ChipItem(
+            ENABLED_FILTER_ENABLED,
+            R.string.show_enabled_apps,
+            Phosphor.Leaf,
+            R.color.ic_de_data
+        )
         val Disabled = ChipItem(
-            SPECIAL_FILTER_DISABLED,
+            ENABLED_FILTER_DISABLED,
             R.string.showDisabled,
             Phosphor.ProhibitInset,
             R.color.ic_de_data
         )
+        val Installed = ChipItem(
+            INSTALLED_FILTER_INSTALLED,
+            R.string.show_installed_apps,
+            Phosphor.DiamondsFour,
+            com.google.android.material.R.color.material_on_surface_emphasis_high_type,
+        )
         val NotInstalled = ChipItem(
-            SPECIAL_FILTER_NOT_INSTALLED,
+            INSTALLED_FILTER_NOT,
             R.string.showNotInstalled,
             Phosphor.TrashSimple,
             com.google.android.material.R.color.material_on_surface_emphasis_high_type,

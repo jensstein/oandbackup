@@ -229,21 +229,53 @@ val possibleMainFilters = listOf(MAIN_FILTER_SYSTEM, MAIN_FILTER_USER, MAIN_FILT
 val mainFilterChipItems = listOf(ChipItem.System, ChipItem.User, ChipItem.Special)
 
 const val SPECIAL_FILTER_ALL = 0
-const val SPECIAL_FILTER_LAUNCHABLE = 1
-const val SPECIAL_FILTER_NEW_UPDATED = 2
-const val SPECIAL_FILTER_OLD = 3
-const val SPECIAL_FILTER_NOT_INSTALLED = 4
-const val SPECIAL_FILTER_DISABLED = 5
 
-val schedSpecialFilterChipItems = listOf(
+const val LAUNCHABLE_FILTER_LAUNCHABLE = 1
+const val LAUNCHABLE_FILTER_NOT = 2
+
+val launchableFilterChipItems = listOf(
     ChipItem.All,
     ChipItem.Launchable,
-    ChipItem.NewUpdated,
-    ChipItem.Old,
-    ChipItem.Disabled
+    ChipItem.NotLaunchable,
 )
 
-val mainSpecialFilterChipItems = schedSpecialFilterChipItems.plus(ChipItem.NotInstalled)
+const val INSTALLED_FILTER_INSTALLED = 1
+const val INSTALLED_FILTER_NOT = 2
+
+val installedFilterChipItems = listOf(
+    ChipItem.All,
+    ChipItem.Installed,
+    ChipItem.NotInstalled,
+)
+
+const val UPDATED_FILTER_UPDATED = 1
+const val UPDATED_FILTER_NEW = 2
+const val UPDATED_FILTER_NOT = 3
+
+val updatedFilterChipItems = listOf(
+    ChipItem.All,
+    ChipItem.UpdatedApps,
+    ChipItem.NewApps,
+    ChipItem.OldApps,
+)
+
+const val LATEST_FILTER_OLD = 1
+const val LATEST_FILTER_NEW = 2
+
+val latestFilterChipItems = listOf(
+    ChipItem.All,
+    ChipItem.OldBackups,
+    ChipItem.NewBackups,
+)
+
+const val ENABLED_FILTER_ENABLED = 1
+const val ENABLED_FILTER_DISABLED = 2
+
+val enabledFilterChipItems = listOf(
+    ChipItem.All,
+    ChipItem.Enabled,
+    ChipItem.Disabled,
+)
 
 val IGNORED_PERMISSIONS = listOfNotNull(
     Manifest.permission.ACCESS_WIFI_STATE,
