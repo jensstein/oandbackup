@@ -21,7 +21,6 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -44,7 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import androidx.navigation.compose.rememberNavController
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.preferences.pref_blackTheme
@@ -73,7 +72,6 @@ class PrefsActivityX : BaseActivity() {
     }
 
     @OptIn(
-        ExperimentalAnimationApi::class,
         ExperimentalFoundationApi::class,
         ExperimentalMaterial3Api::class,
     )
@@ -84,7 +82,7 @@ class PrefsActivityX : BaseActivity() {
         setContent {
             AppTheme {
                 val scope = rememberCoroutineScope()
-                val navController = rememberAnimatedNavController()
+                val navController = rememberNavController()
                 val pages = listOf(
                     NavItem.UserPrefs,
                     NavItem.ServicePrefs,

@@ -1,7 +1,6 @@
 package com.machiav3lli.backup.ui.navigation
 
 import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -15,8 +14,8 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.activity
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import com.machiav3lli.backup.activities.PrefsActivityX
 import com.machiav3lli.backup.pages.PermissionsPage
 import com.machiav3lli.backup.pages.WelcomePage
@@ -27,7 +26,7 @@ import com.machiav3lli.backup.preferences.persist_beenWelcomed
 import com.machiav3lli.backup.viewmodels.ExportsViewModel
 import com.machiav3lli.backup.viewmodels.LogViewModel
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainNavHost(
     modifier: Modifier = Modifier,
@@ -35,7 +34,7 @@ fun MainNavHost(
     pagerState: PagerState,
     pages: List<NavItem>,
 ) {
-    AnimatedNavHost(
+    NavHost(
         modifier = modifier,
         navController = navController,
         startDestination = if (persist_beenWelcomed.value) NavItem.Permissions.destination
@@ -60,7 +59,7 @@ fun MainNavHost(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PrefsNavHost(
     modifier: Modifier = Modifier,
@@ -69,7 +68,7 @@ fun PrefsNavHost(
     pages: List<NavItem>,
     viewModels: List<AndroidViewModel>,
 ) {
-    AnimatedNavHost(
+    NavHost(
         modifier = modifier,
         navController = navController,
         startDestination = NavItem.Settings.destination,
@@ -95,7 +94,6 @@ fun PrefsNavHost(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.slideUpComposable(
     route: String,
     composable: @Composable (AnimatedVisibilityScope.(NavBackStackEntry) -> Unit),
@@ -109,7 +107,6 @@ fun NavGraphBuilder.slideUpComposable(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.slideDownComposable(
     route: String,
     composable: @Composable (AnimatedVisibilityScope.(NavBackStackEntry) -> Unit),
@@ -123,7 +120,6 @@ fun NavGraphBuilder.slideDownComposable(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.fadeComposable(
     route: String,
     composable: @Composable (AnimatedVisibilityScope.(NavBackStackEntry) -> Unit),

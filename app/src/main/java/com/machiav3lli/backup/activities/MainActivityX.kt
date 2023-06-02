@@ -27,7 +27,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -57,10 +56,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Observer
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.machiav3lli.backup.ALT_MODE_APK
 import com.machiav3lli.backup.ALT_MODE_BOTH
 import com.machiav3lli.backup.ALT_MODE_DATA
@@ -150,7 +149,7 @@ class MainActivityX : BaseActivity() {
     }
 
     @OptIn(
-        ExperimentalAnimationApi::class, ExperimentalFoundationApi::class,
+        ExperimentalFoundationApi::class,
         ExperimentalMaterial3Api::class,
     )
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -219,7 +218,7 @@ class MainActivityX : BaseActivity() {
 
             AppTheme {
                 val scope = rememberCoroutineScope()
-                navController = rememberAnimatedNavController()
+                navController = rememberNavController()
                 val pages = listOf(
                     NavItem.Home,
                     NavItem.Backup,
@@ -469,10 +468,6 @@ class MainActivityX : BaseActivity() {
             && this::navController.isInitialized
             && !navController.currentDestination?.route?.equals(NavItem.Permissions.destination)!!
         ) navController.navigate(NavItem.Permissions.destination)
-    }
-
-    override fun onPause() {
-        super.onPause()
     }
 
     override fun onDestroy() {
