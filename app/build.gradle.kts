@@ -156,7 +156,6 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("androidx.compose.material3:material3:1.2.0-alpha02")
     implementation("com.google.accompanist:accompanist-systemuicontroller:$vAccompanist")
-    implementation("com.google.accompanist:accompanist-navigation-animation:$vAccompanist")
     implementation("com.google.accompanist:accompanist-permissions:$vAccompanist")
 
     // Testing
