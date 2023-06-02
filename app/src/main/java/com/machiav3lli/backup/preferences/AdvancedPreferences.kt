@@ -503,6 +503,11 @@ val persist_sortFilter = StringPref(
     defaultValue = ""
 )
 
+val persist_specialFilters = StringPref(
+    key = "persist.sortFilter",
+    defaultValue = ""
+)
+
 val persist_salt = StringPref(
     key = "persist.salt",
     defaultValue = ""
