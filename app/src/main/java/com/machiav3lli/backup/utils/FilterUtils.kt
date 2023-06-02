@@ -19,6 +19,14 @@ package com.machiav3lli.backup.utils
 
 import android.content.Context
 import android.content.Intent
+import com.machiav3lli.backup.ENABLED_FILTER_DISABLED
+import com.machiav3lli.backup.ENABLED_FILTER_ENABLED
+import com.machiav3lli.backup.INSTALLED_FILTER_INSTALLED
+import com.machiav3lli.backup.INSTALLED_FILTER_NOT
+import com.machiav3lli.backup.LATEST_FILTER_NEW
+import com.machiav3lli.backup.LATEST_FILTER_OLD
+import com.machiav3lli.backup.LAUNCHABLE_FILTER_LAUNCHABLE
+import com.machiav3lli.backup.LAUNCHABLE_FILTER_NOT
 import com.machiav3lli.backup.MAIN_FILTER_SPECIAL
 import com.machiav3lli.backup.MAIN_FILTER_SYSTEM
 import com.machiav3lli.backup.MAIN_FILTER_USER
@@ -37,13 +45,13 @@ import com.machiav3lli.backup.MODE_DATA_OBB
 import com.machiav3lli.backup.MODE_NONE
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.SPECIAL_FILTER_DISABLED
-import com.machiav3lli.backup.SPECIAL_FILTER_LAUNCHABLE
-import com.machiav3lli.backup.SPECIAL_FILTER_NEW_UPDATED
-import com.machiav3lli.backup.SPECIAL_FILTER_NOT_INSTALLED
-import com.machiav3lli.backup.SPECIAL_FILTER_OLD
+import com.machiav3lli.backup.SPECIAL_FILTER_ALL
+import com.machiav3lli.backup.UPDATED_FILTER_NEW
+import com.machiav3lli.backup.UPDATED_FILTER_NOT
+import com.machiav3lli.backup.UPDATED_FILTER_UPDATED
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.SortFilterModel
+import com.machiav3lli.backup.items.SpecialFilter
 import com.machiav3lli.backup.possibleMainFilters
 import com.machiav3lli.backup.preferences.pref_oldBackups
 import java.text.Collator
@@ -58,9 +66,9 @@ import java.time.temporal.ChronoUnit
 fun filterPackages(
     packages: List<Package>,
     filter: Int,
-    specialFilter: Int,
+    specialFilter: SpecialFilter,
     whiteList: List<String> = emptyList(),
-    blackList: List<String>
+    blackList: List<String>,
 ): List<Package> {
 
     val startPackages =
@@ -69,42 +77,10 @@ fun filterPackages(
         else
             packages
 
-    var launchableAppsList = listOf<String>()
-    if (specialFilter == SPECIAL_FILTER_LAUNCHABLE) {
-        val mainIntent =
-            Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER)
-        launchableAppsList = OABX.context.packageManager.queryIntentActivities(mainIntent, 0)
-            .map { it.activityInfo.packageName }
-    }
-
     val predicate: (Package) -> Boolean = {
         (if (filter and MAIN_FILTER_SYSTEM == MAIN_FILTER_SYSTEM) it.isSystem and !it.isSpecial else false)
                 || (if (filter and MAIN_FILTER_USER == MAIN_FILTER_USER) !it.isSystem else false)
                 || (if (filter and MAIN_FILTER_SPECIAL == MAIN_FILTER_SPECIAL) it.isSpecial else false)
-    }
-
-    val days = pref_oldBackups.value
-    val specialPredicate: (Package) -> Boolean = when (specialFilter) {
-        SPECIAL_FILTER_LAUNCHABLE  -> { pkg: Package ->
-            launchableAppsList.contains(pkg.packageName)
-        }
-        SPECIAL_FILTER_NEW_UPDATED -> { pkg: Package ->
-            !pkg.hasBackups || pkg.isUpdated
-        }
-        SPECIAL_FILTER_OLD         -> { pkg: Package ->
-            if (pkg.hasBackups) {
-                val lastBackup = pkg.latestBackup?.backupDate
-                val diff = ChronoUnit.DAYS.between(lastBackup, LocalDateTime.now())
-                (diff >= days)
-            } else
-                false
-        }
-        SPECIAL_FILTER_DISABLED    -> { pkg: Package ->
-            pkg.isDisabled
-        }
-        else                       -> { pkg: Package ->
-            true
-        }
     }
 
     return startPackages
@@ -112,7 +88,10 @@ fun filterPackages(
             blackList.contains(it.packageName)
         }
         .filter(predicate)
-        .filter(specialPredicate) // filter last, with fewer packages, e.g. old backups is expensive
+        .applySpecialFilter(
+            specialFilter,
+            OABX.context
+        ) // filter last, with fewer packages, e.g. old backups is expensive
         .sortedWith { m1: Package, m2: Package ->
             m1.packageLabel.compareTo(m2.packageLabel, ignoreCase = true)
         }
@@ -148,41 +127,77 @@ private fun List<Package>.applyBackupFilter(backupFilter: Int): List<Package> {
 }
 
 private fun List<Package>.applySpecialFilter(
-    specialFilter: Int,
-    context: Context
+    specialFilter: SpecialFilter,
+    context: Context,
 ): List<Package> {
     val predicate: (Package) -> Boolean
     var launchableAppsList = listOf<String>()
-    if (specialFilter == SPECIAL_FILTER_LAUNCHABLE) {
+    if (specialFilter.launchableFilter != SPECIAL_FILTER_ALL) {
         val mainIntent = Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER)
         launchableAppsList = context.packageManager.queryIntentActivities(mainIntent, 0)
             .map { it.activityInfo.packageName }
     }
     val days = pref_oldBackups.value
-    predicate = when (specialFilter) {
-        SPECIAL_FILTER_NEW_UPDATED   -> { appInfo: Package ->
-            appInfo.isNewOrUpdated
-        }
-        SPECIAL_FILTER_NOT_INSTALLED -> { appInfo: Package ->
-            !appInfo.isInstalled
-        }
-        SPECIAL_FILTER_OLD           -> {
-            { appInfo: Package ->
-                when {
-                    appInfo.hasBackups -> {
-                        val lastBackup = appInfo.latestBackup?.backupDate
-                        val diff = ChronoUnit.DAYS.between(lastBackup, LocalDateTime.now())
-                        diff >= days
-                    }
-                    else               -> false
-                }
-            }
-        }
-        SPECIAL_FILTER_LAUNCHABLE    -> { appInfo: Package ->
+    val installedPredicate = when (specialFilter.installedFilter) {
+        INSTALLED_FILTER_INSTALLED -> Package::isInstalled
+        INSTALLED_FILTER_NOT       -> { appInfo: Package -> !appInfo.isInstalled }
+        else                       -> { _: Package -> true }
+    }
+    val launchablePredicate = when (specialFilter.launchableFilter) {
+        LAUNCHABLE_FILTER_LAUNCHABLE -> { appInfo: Package ->
             launchableAppsList.contains(appInfo.packageName)
         }
-        SPECIAL_FILTER_DISABLED      -> Package::isDisabled
+
+        LAUNCHABLE_FILTER_NOT        -> { appInfo: Package ->
+            !launchableAppsList.contains(appInfo.packageName)
+        }
+
         else                         -> { _: Package -> true }
+    }
+    val updatedPredicate = when (specialFilter.updatedFilter) {
+        UPDATED_FILTER_UPDATED -> Package::isUpdated
+        UPDATED_FILTER_NEW     -> Package::isNew
+        UPDATED_FILTER_NOT     -> { appInfo: Package -> !appInfo.isUpdated }
+        else                   -> { _: Package -> true }
+    }
+    val enabledPredicate = when (specialFilter.enabledFilter) {
+        ENABLED_FILTER_ENABLED  -> { appInfo: Package -> !appInfo.isDisabled }
+        ENABLED_FILTER_DISABLED -> Package::isDisabled
+        else                    -> { _: Package -> true }
+    }
+    val latestPredicate = when (specialFilter.latestFilter) {
+        LATEST_FILTER_OLD -> { appInfo: Package ->
+            when {
+                appInfo.hasBackups -> {
+                    val lastBackup = appInfo.latestBackup?.backupDate
+                    val diff = ChronoUnit.DAYS.between(lastBackup, LocalDateTime.now())
+                    diff >= days
+                }
+
+                else               -> false
+            }
+        }
+
+        LATEST_FILTER_NEW -> { appInfo: Package ->
+            when {
+                appInfo.hasBackups -> {
+                    val lastBackup = appInfo.latestBackup?.backupDate
+                    val diff = ChronoUnit.DAYS.between(lastBackup, LocalDateTime.now())
+                    diff < days
+                }
+
+                else               -> true
+            }
+        }
+
+        else              -> { _: Package -> true }
+    }
+    predicate = { pkg: Package ->
+        installedPredicate(pkg) and
+                launchablePredicate(pkg) and
+                updatedPredicate(pkg) and
+                enabledPredicate(pkg) and
+                latestPredicate(pkg)
     }
     return filter(predicate)
 }
@@ -193,6 +208,7 @@ private fun List<Package>.applySort(sort: Int, sortAsc: Boolean): List<Package> 
             MAIN_SORT_PACKAGENAME -> sortedWith(
                 compareBy(Collator.getInstance().reversed()) { it.packageName.lowercase() }
             )
+
             MAIN_SORT_APPSIZE     -> sortedByDescending { it.appBytes }
             MAIN_SORT_DATASIZE    -> sortedByDescending { it.dataBytes }
             MAIN_SORT_APPDATASIZE -> sortedByDescending { it.appBytes + it.dataBytes }
@@ -207,6 +223,7 @@ private fun List<Package>.applySort(sort: Int, sortAsc: Boolean): List<Package> 
             MAIN_SORT_PACKAGENAME -> sortedWith(
                 compareBy(Collator.getInstance()) { it.packageName.lowercase() }
             )
+
             MAIN_SORT_APPSIZE     -> sortedBy { it.appBytes }
             MAIN_SORT_DATASIZE    -> sortedBy { it.dataBytes }
             MAIN_SORT_APPDATASIZE -> sortedBy { it.appBytes + it.dataBytes }
