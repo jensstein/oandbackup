@@ -18,7 +18,6 @@
 package com.machiav3lli.backup.sheets
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -28,16 +27,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberTimePickerState
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -51,7 +49,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.R
@@ -72,10 +69,13 @@ import com.machiav3lli.backup.ui.compose.blockBorder
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretDown
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CheckCircle
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Clock
+import com.machiav3lli.backup.ui.compose.icons.phosphor.ClockClockwise
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Play
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Prohibit
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
-import com.machiav3lli.backup.ui.compose.item.ActionChip
+import com.machiav3lli.backup.ui.compose.item.CardButton
+import com.machiav3lli.backup.ui.compose.item.CategoryTitleText
 import com.machiav3lli.backup.ui.compose.item.CheckChip
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.RoundButton
@@ -132,6 +132,45 @@ fun ScheduleSheet(
         Scaffold(
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onBackground,
+            topBar = {
+                ListItem(
+                    colors = ListItemDefaults.colors(
+                        containerColor = Color.Transparent,
+                    ),
+                    leadingContent = {
+                        TitleText(R.string.sched_name)
+                    },
+                    headlineContent = {
+                        OutlinedCard(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.outlinedCardColors(
+                                containerColor = Color.Transparent
+                            ),
+                            shape = MaterialTheme.shapes.large,
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+                            onClick = {
+                                dialogProps.value = Pair(DIALOG_SCHEDULENAME, schedule)
+                                openDialog.value = true
+                            }
+                        ) {
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 12.dp, vertical = 16.dp),
+                                text = schedule.name,
+                                textAlign = TextAlign.Center,
+                            )
+                        }
+                    },
+                    trailingContent = {
+                        RoundButton(
+                            icon = Phosphor.CaretDown,
+                            description = stringResource(id = R.string.dismiss),
+                            onClick = { onDismiss() }
+                        )
+                    }
+                )
+            },
             bottomBar = {
                 Column(
                     modifier = Modifier.padding(8.dp),
@@ -186,146 +225,63 @@ fun ScheduleSheet(
                 contentPadding = PaddingValues(8.dp)
             ) {
                 item {
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
-                            ),
-                            shape = RoundedCornerShape(
-                                topStart = MaterialTheme.shapes.large.topStart,
-                                topEnd = MaterialTheme.shapes.large.topEnd,
-                                bottomStart = MaterialTheme.shapes.small.bottomStart,
-                                bottomEnd = MaterialTheme.shapes.small.bottomEnd,
-                            ),
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(start = 12.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                TitleText(R.string.sched_name)
-                                OutlinedCard(
-                                    modifier = Modifier.weight(1f),
-                                    colors = CardDefaults.outlinedCardColors(
-                                        containerColor = Color.Transparent
-                                    ),
-                                    shape = MaterialTheme.shapes.large,
-                                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
-                                    onClick = {
-                                        dialogProps.value = Pair(DIALOG_SCHEDULENAME, schedule)
-                                        openDialog.value = true
-                                    }
-                                ) {
-                                    Text(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(horizontal = 12.dp, vertical = 16.dp),
-                                        text = schedule.name,
-                                        textAlign = TextAlign.Center,
-                                    )
-                                }
-                                RoundButton(
-                                    icon = Phosphor.CaretDown,
-                                    description = stringResource(id = R.string.dismiss),
-                                    onClick = { onDismiss() }
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        CardButton(
+                            modifier = Modifier.weight(0.5f),
+                            icon = Phosphor.Clock,
+                            tint = MaterialTheme.colorScheme.inverseSurface,
+                            description = "${stringResource(id = R.string.sched_hourOfDay)} ${
+                                LocalTime.of(
+                                    schedule.timeHour,
+                                    schedule.timeMinute
                                 )
-                            }
-
+                            }",
+                        ) {
+                            dialogProps.value = Pair(DIALOG_TIMEPICKER, schedule)
+                            openDialog.value = true
                         }
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
-                            ),
-                            shape = RoundedCornerShape(6.dp),
+                        CardButton(
+                            modifier = Modifier.weight(0.5f),
+                            icon = Phosphor.ClockClockwise,
+                            tint = MaterialTheme.colorScheme.inverseSurface,
+                            description = "${stringResource(id = R.string.sched_interval)} ${schedule.interval}",
                         ) {
-                            Row(
-                                modifier = Modifier
-                                    .clickable {
-                                        dialogProps.value = Pair(DIALOG_TIMEPICKER, schedule)
-                                        openDialog.value = true
-                                    }
-                                    .padding(horizontal = 12.dp, vertical = 16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                TitleText(R.string.sched_hourOfDay)
-                                Text(
-                                    text = LocalTime.of(schedule.timeHour, schedule.timeMinute)
-                                        .toString(),
-                                    modifier = Modifier.weight(1f),
-                                    fontWeight = FontWeight.Black,
-                                    textAlign = TextAlign.End,
-                                )
-                            }
-                        }
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
-                            ),
-                            shape = RoundedCornerShape(
-                                topStart = MaterialTheme.shapes.small.topStart,
-                                topEnd = MaterialTheme.shapes.small.topEnd,
-                                bottomStart = MaterialTheme.shapes.large.bottomStart,
-                                bottomEnd = MaterialTheme.shapes.large.bottomEnd,
-                            ),
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .clickable {
-                                        dialogProps.value = Pair(DIALOG_INTERVALSETTER, schedule)
-                                        openDialog.value = true
-                                    }
-                                    .padding(horizontal = 12.dp, vertical = 16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                TitleText(R.string.sched_interval)
-                                Text(
-                                    text = schedule.interval.toString(),
-                                    modifier = Modifier.weight(1f),
-                                    fontWeight = FontWeight.Black,
-                                    textAlign = TextAlign.End,
-                                )
-                            }
+                            dialogProps.value = Pair(DIALOG_INTERVALSETTER, schedule)
+                            openDialog.value = true
                         }
                     }
                 }
                 item {
                     Row(
-                        verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        ActionChip(
+                        CardButton(
+                            modifier = Modifier.weight(0.5f),
                             icon = Phosphor.CheckCircle,
-                            text = stringResource(id = R.string.customListTitle),
-                            positive = customList.isNotEmpty(),
-                            fullWidth = true,
-                            modifier = Modifier.weight(1f),
-                            onClick = {
-                                dialogProps.value = Pair(DIALOG_CUSTOMLIST, schedule)
-                                openDialog.value = true
-                            }
-                        )
-                        ActionChip(
+                            description = stringResource(id = R.string.customListTitle),
+                            tint = if (customList.isNotEmpty()) MaterialTheme.colorScheme.primaryContainer
+                            else MaterialTheme.colorScheme.tertiaryContainer,
+                        ) {
+                            dialogProps.value = Pair(DIALOG_CUSTOMLIST, schedule)
+                            openDialog.value = true
+                        }
+                        CardButton(
+                            modifier = Modifier.weight(0.5f),
                             icon = Phosphor.Prohibit,
-                            text = stringResource(id = R.string.sched_blocklist),
-                            positive = blockList.isNotEmpty(),
-                            fullWidth = true,
-                            modifier = Modifier.weight(1f),
-                            onClick = {
-                                dialogProps.value = Pair(DIALOG_BLOCKLIST, schedule)
-                                openDialog.value = true
-                            }
-                        )
+                            description = stringResource(id = R.string.sched_blocklist),
+                            tint = if (blockList.isNotEmpty()) MaterialTheme.colorScheme.primaryContainer
+                            else MaterialTheme.colorScheme.tertiaryContainer,
+                        ) {
+                            dialogProps.value = Pair(DIALOG_BLOCKLIST, schedule)
+                            openDialog.value = true
+                        }
                     }
                 }
 
+                item { CategoryTitleText(R.string.filters_app) }
                 item {
-                    //traceDebug { "*** recompose filter ${schedule.filter}" }
-                    TitleText(R.string.filter_options)
                     MultiSelectableChipGroup(
                         list = if (specialBackupsEnabled)
                             mainFilterChipItems
@@ -341,9 +297,8 @@ fun ScheduleSheet(
                         )
                     }
                 }
+                item { CategoryTitleText(R.string.filters_backup) }
                 item {
-                    //traceDebug { "*** recompose mode ${schedule.mode}" }
-                    TitleText(R.string.sched_mode)
                     MultiSelectableChipGroup(
                         list = scheduleBackupModeChipItems,
                         selectedFlags = schedule.mode
@@ -355,8 +310,8 @@ fun ScheduleSheet(
                         )
                     }
                 }
+                item { CategoryTitleText(R.string.filters_launchable) }
                 item {
-                    TitleText(R.string.filters_launchable)
                     SelectableChipGroup(
                         list = launchableFilterChipItems,
                         selectedFlag = schedule.launchableFilter
@@ -367,8 +322,8 @@ fun ScheduleSheet(
                         )
                     }
                 }
+                item { CategoryTitleText(R.string.filters_updated) }
                 item {
-                    TitleText(R.string.filters_updated)
                     SelectableChipGroup(
                         list = updatedFilterChipItems,
                         selectedFlag = schedule.updatedFilter
@@ -379,8 +334,8 @@ fun ScheduleSheet(
                         )
                     }
                 }
+                item { CategoryTitleText(R.string.filters_latest) }
                 item {
-                    TitleText(R.string.filters_latest)
                     SelectableChipGroup(
                         list = latestFilterChipItems,
                         selectedFlag = schedule.latestFilter
@@ -391,8 +346,8 @@ fun ScheduleSheet(
                         )
                     }
                 }
+                item { CategoryTitleText(R.string.filters_enabled) }
                 item {
-                    TitleText(R.string.filters_enabled)
                     SelectableChipGroup(
                         list = enabledFilterChipItems,
                         selectedFlag = schedule.enabledFilter
