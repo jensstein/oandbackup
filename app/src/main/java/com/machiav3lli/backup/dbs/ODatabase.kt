@@ -47,12 +47,13 @@ import com.machiav3lli.backup.dbs.entity.SpecialInfo
         AppInfo::class,
         SpecialInfo::class,
         Backup::class],
-    version = 6,
+    version = 7,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 2, to = 4),
         AutoMigration(from = 4, to = 5),
         AutoMigration(from = 5, to = 6, spec = ODatabase.Companion.AutoMigration5to6::class),
+        AutoMigration(from = 6, to = 7, spec = ODatabase.Companion.AutoMigration6to7::class),
     ]
 )
 @TypeConverters(Converters::class)
@@ -88,5 +89,11 @@ abstract class ODatabase : RoomDatabase() {
             columnName = "id"
         )
         class AutoMigration5to6 : AutoMigrationSpec
+
+        @DeleteColumn(
+            tableName = "Schedule",
+            columnName = "specialFilter"
+        )
+        class AutoMigration6to7 : AutoMigrationSpec
     }
 }

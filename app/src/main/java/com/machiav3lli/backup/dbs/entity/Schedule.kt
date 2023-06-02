@@ -17,10 +17,12 @@
  */
 package com.machiav3lli.backup.dbs.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.RenameColumn
 import androidx.room.migration.AutoMigrationSpec
+import com.machiav3lli.backup.INSTALLED_FILTER_INSTALLED
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
 import com.machiav3lli.backup.MAIN_FILTER_DEFAULT_WITHOUT_SPECIAL
 import com.machiav3lli.backup.MODE_APK
@@ -28,6 +30,7 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.SPECIAL_FILTER_ALL
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
+import com.machiav3lli.backup.items.SpecialFilter
 import com.machiav3lli.backup.items.StorageFile
 import kotlinx.serialization.Serializable
 import java.io.FileNotFoundException
@@ -47,7 +50,14 @@ data class Schedule(
 
     val filter: Int = MAIN_FILTER_DEFAULT,
     val mode: Int = MODE_APK,
-    val specialFilter: Int = SPECIAL_FILTER_ALL,
+    @ColumnInfo(defaultValue = "0")
+    val launchableFilter: Int = SPECIAL_FILTER_ALL,
+    @ColumnInfo(defaultValue = "0")
+    val updatedFilter: Int = SPECIAL_FILTER_ALL,
+    @ColumnInfo(defaultValue = "0")
+    val latestFilter: Int = SPECIAL_FILTER_ALL,
+    @ColumnInfo(defaultValue = "0")
+    val enabledFilter: Int = SPECIAL_FILTER_ALL,
 
     val timeToRun: Long = 0,        //TODO should this be in hashCode and equals ???
 
@@ -69,7 +79,10 @@ data class Schedule(
                 && timePlaced == schedule.timePlaced
                 && filter == schedule.filter
                 && mode == schedule.mode
-                && specialFilter == schedule.specialFilter
+                && launchableFilter == schedule.launchableFilter
+                && updatedFilter == schedule.updatedFilter
+                && latestFilter == schedule.latestFilter
+                && enabledFilter == schedule.enabledFilter
                 && customList == schedule.customList
                 && blockList == schedule.blockList
     }
@@ -85,7 +98,10 @@ data class Schedule(
         hash = 31 * hash + timePlaced.toInt()
         hash = 31 * hash + filter.hashCode()
         hash = 31 * hash + mode.hashCode()
-        hash = 31 * hash + specialFilter.hashCode()
+        hash = 31 * hash + launchableFilter.hashCode()
+        hash = 31 * hash + updatedFilter.hashCode()
+        hash = 31 * hash + latestFilter.hashCode()
+        hash = 31 * hash + enabledFilter.hashCode()
         hash = 31 * hash + customList.hashCode()
         hash = 31 * hash + blockList.hashCode()
         return hash
@@ -103,11 +119,23 @@ data class Schedule(
                 ", timeToRun=" + timeToRun +
                 ", filter=" + filter +
                 ", mode=" + mode +
-                ", specialFilter=" + specialFilter +
+                ", launchableFilter=" + launchableFilter +
+                ", updatedFilter=" + updatedFilter +
+                ", latestFilter=" + latestFilter +
+                ", enabledFilter=" + enabledFilter +
                 ", customList=" + customList +
                 ", blockList=" + blockList +
                 '}'
     }
+
+    val specialFilter: SpecialFilter
+        get() = SpecialFilter(
+            INSTALLED_FILTER_INSTALLED,
+            launchableFilter,
+            updatedFilter,
+            latestFilter,
+            enabledFilter
+        )
 
     fun getBatchName(startTime: Long): String =
         WorkHandler.getBatchName(this.name, startTime)
