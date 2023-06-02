@@ -265,7 +265,9 @@ class MainActivityX : BaseActivity() {
 
                 var query by rememberSaveable { mutableStateOf(viewModel.searchQuery.value) }
                 //val query by viewModel.searchQuery.flow.collectAsState(viewModel.searchQuery.initial)  // doesn't work with rotate (not saveable)...
-                val searchExpanded = query.isNotEmpty()
+                val searchExpanded = remember {
+                    mutableStateOf(false)
+                }
 
                 Timber.d("compose: query = '$query'")
 
@@ -318,12 +320,15 @@ class MainActivityX : BaseActivity() {
                                                 viewModel.searchQuery.value = ""
                                             }
                                         )
-
-                                        RefreshButton() { refreshPackagesAndBackups() }
-                                        RoundButton(
-                                            description = stringResource(id = R.string.prefs_title),
-                                            icon = Phosphor.GearSix
-                                        ) { navController.navigate(NavItem.Settings.destination) }
+                                        AnimatedVisibility(barVisible && !searchExpanded.value) {
+                                            RefreshButton { refreshPackagesAndBackups() }
+                                        }
+                                        AnimatedVisibility(barVisible && !searchExpanded.value) {
+                                            RoundButton(
+                                                description = stringResource(id = R.string.prefs_title),
+                                                icon = Phosphor.GearSix
+                                            ) { navController.navigate(NavItem.Settings.destination) }
+                                        }
                                     }
                                     Row(
                                         modifier = Modifier.padding(horizontal = 8.dp),

@@ -39,7 +39,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -293,16 +292,14 @@ fun TopBar(
 fun ExpandableSearchAction(
     query: String,
     modifier: Modifier = Modifier,
-    expanded: Boolean = false,
+    expanded: MutableState<Boolean> = mutableStateOf(false),
     onClose: () -> Unit,
     onQueryChanged: (String) -> Unit,
 ) {
-    val (expanded, onExpanded) = rememberSaveable {
-        mutableStateOf(expanded)
-    }
+    val (isExpanded, onExpanded) = remember { expanded }
 
     HorizontalExpandingVisibility(
-        expanded = expanded,
+        expanded = isExpanded,
         expandedView = {
             ExpandedSearchView(
                 query = query,
