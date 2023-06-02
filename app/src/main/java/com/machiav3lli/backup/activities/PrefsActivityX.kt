@@ -156,7 +156,6 @@ class PrefsActivityX : BaseActivity() {
                             ModalBottomSheet(
                                 sheetState = helpSheetState,
                                 containerColor = MaterialTheme.colorScheme.background,
-                                dragHandle = null,
                                 scrimColor = Color.Transparent,
                                 onDismissRequest = {
                                     scope.launch { helpSheetState.hide() }

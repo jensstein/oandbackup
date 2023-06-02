@@ -105,7 +105,6 @@ fun SchedulerPage(viewModel: SchedulerViewModel) {
             ModalBottomSheet(
                 sheetState = scheduleSheetState,
                 containerColor = MaterialTheme.colorScheme.background,
-                dragHandle = null,
                 scrimColor = Color.Transparent,
                 onDismissRequest = {
                     mScope.launch { scheduleSheetState.hide() }

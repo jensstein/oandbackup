@@ -392,7 +392,6 @@ class MainActivityX : BaseActivity() {
                             ModalBottomSheet(
                                 sheetState = sortSheetState,
                                 containerColor = MaterialTheme.colorScheme.background,
-                                dragHandle = null,
                                 scrimColor = Color.Transparent,
                                 onDismissRequest = {
                                     scope.launch { sortSheetState.hide() }
@@ -410,7 +409,6 @@ class MainActivityX : BaseActivity() {
                             ModalBottomSheet(
                                 sheetState = batchSheetState,
                                 containerColor = MaterialTheme.colorScheme.background,
-                                dragHandle = null,
                                 scrimColor = Color.Transparent,
                                 onDismissRequest = {
                                     scope.launch { batchSheetState.hide() }
@@ -424,7 +422,6 @@ class MainActivityX : BaseActivity() {
                             ModalBottomSheet(
                                 sheetState = appSheetState,
                                 containerColor = MaterialTheme.colorScheme.background,
-                                dragHandle = null,
                                 scrimColor = Color.Transparent,
                                 onDismissRequest = {
                                     scope.launch { appSheetState.hide() }
