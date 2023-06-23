@@ -39,6 +39,7 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.FingerprintSimple
 import com.machiav3lli.backup.ui.compose.icons.phosphor.FolderNotch
 import com.machiav3lli.backup.ui.compose.icons.phosphor.List
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Lock
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Spinner
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Swatches
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TagSimple
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TextAa
@@ -286,6 +287,7 @@ val pref_busyLaserBackground = BooleanPref(
     key = "user.busyLaserBackground",
     titleId = R.string.prefs_laserbackground,
     summaryId = R.string.prefs_laserbackground_summary,
+    icon = Phosphor.Spinner,
     defaultValue = true
 )
 
