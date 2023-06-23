@@ -32,7 +32,11 @@ fun Modifier.vertical() = layout { measurable, constraints ->
     }
 }
 
-fun Modifier.ifThen(boolean: Boolean, modifier: Modifier.() -> Modifier): Modifier {
+@Composable
+inline fun Modifier.ifThen(
+    boolean: Boolean,
+    crossinline modifier: @Composable Modifier.() -> Modifier,
+): Modifier {
     return if (boolean) {
         modifier.invoke(this)
     } else {
