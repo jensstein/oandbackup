@@ -28,7 +28,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.machiav3lli.backup.preferences.pref_altNavBarItem
 import com.machiav3lli.backup.preferences.pref_squeezeNavText
+import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.compose.item.ResponsiveText
 import kotlinx.coroutines.launch
 
@@ -53,13 +55,22 @@ fun PagerNavBar(pageItems: List<NavItem>, pagerState: PagerState) {
     val scope = rememberCoroutineScope()
 
     NavigationBar(
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.onBackground
+        modifier = Modifier.padding(horizontal = 8.dp),
+        containerColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground,
     ) {
         pageItems.forEachIndexed { index, tab ->
             val selected = pagerState.currentPage == index
 
-            NavBarItem(
+            if (pref_altNavBarItem.value) AltNavBarItem(
+                selected = selected,
+                icon = tab.icon,
+                labelId = tab.title,
+                onClick = {
+                    scope.launch { pagerState.scrollToPage(index) }
+                },
+            ) else NavBarItem(
+                modifier = Modifier.weight(if (selected) 2f else 1f),
                 selected = selected,
                 icon = tab.icon,
                 labelId = tab.title,
@@ -72,7 +83,7 @@ fun PagerNavBar(pageItems: List<NavItem>, pagerState: PagerState) {
 }
 
 @Composable
-fun RowScope.NavBarItem(
+fun RowScope.AltNavBarItem(
     modifier: Modifier = Modifier,
     icon: ImageVector,
     labelId: Int,
@@ -95,12 +106,12 @@ fun RowScope.NavBarItem(
                 contentDescription = stringResource(id = labelId),
                 modifier = Modifier
                     .background(
-                        if (selected) MaterialTheme.colorScheme.surfaceColorAtElevation(48.dp)
+                        if (selected) MaterialTheme.colorScheme.surfaceColorAtElevation(12.dp)
                         else Color.Transparent,
                         CircleShape
                     )
                     .padding(8.dp)
-                    .size(if (selected) 36.dp else 26.dp),
+                    .size(if (selected) 32.dp else 24.dp),
                 tint = if (selected) MaterialTheme.colorScheme.primary
                 else MaterialTheme.colorScheme.onSurface
             )
@@ -118,5 +129,51 @@ fun RowScope.NavBarItem(
                     overflow = TextOverflow.Ellipsis
                 )
         }
+    }
+}
+
+@Composable
+fun RowScope.NavBarItem(
+    modifier: Modifier = Modifier,
+    icon: ImageVector,
+    labelId: Int,
+    selected: Boolean,
+    onClick: () -> Unit = {},
+) {
+    Row(
+        modifier = modifier
+            .padding(vertical = 8.dp)
+            .clickable { onClick() }
+            .ifThen(selected) {
+                background(
+                    MaterialTheme.colorScheme.surfaceColorAtElevation(12.dp),
+                    MaterialTheme.shapes.extraLarge
+                )
+            }
+            .padding(8.dp)
+            .weight(1f),
+        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = stringResource(id = labelId),
+            modifier = Modifier.size(24.dp),
+            tint = if (selected) MaterialTheme.colorScheme.primary
+            else MaterialTheme.colorScheme.onSurface
+        )
+        if (pref_squeezeNavText.value && selected) ResponsiveText(
+            text = stringResource(id = labelId),
+            maxLines = 1,
+            textStyle = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.primary,
+        )
+        else if (selected) Text(
+            text = stringResource(id = labelId),
+            style = MaterialTheme.typography.bodyMedium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            color = MaterialTheme.colorScheme.primary,
+        )
     }
 }
