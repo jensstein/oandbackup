@@ -66,6 +66,14 @@ android {
 
     }
 
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
+                "Neo_Backup_${variant.name}_${variant.versionName}.apk"
+        }
+        true
+    }
+
     buildTypes {
         named("release") {
             proguardFiles(
