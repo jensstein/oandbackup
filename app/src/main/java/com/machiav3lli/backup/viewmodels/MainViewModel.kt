@@ -35,6 +35,7 @@ import com.machiav3lli.backup.dbs.entity.Blocklist
 import com.machiav3lli.backup.handler.toPackageList
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.Package.Companion.invalidateCacheForPackage
+import com.machiav3lli.backup.preferences.pref_newAndUpdatedNotification
 import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.traceFlows
 import com.machiav3lli.backup.ui.compose.MutableComposableFlow
@@ -66,7 +67,9 @@ class MainViewModel(
     private val appContext: Application,
 ) : AndroidViewModel(appContext) {
 
-    init { Timber.w("==================== ${classAndId(this)}") }
+    init {
+        Timber.w("==================== ${classAndId(this)}")
+    }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - FLOWS
 
@@ -275,7 +278,8 @@ class MainViewModel(
         notBlockedList
             .trace { "updatePackages? ..." }
             .mapLatest {
-                it.filter(Package::isUpdated).toMutableList()
+                it.filter { it.isUpdated || (pref_newAndUpdatedNotification.value && it.isNew) }
+                    .toMutableList()
             }
             .trace {
                 "*** updatedPackages <<- updated: (${it.size})${
@@ -300,7 +304,7 @@ class MainViewModel(
             val retrigger = saved + "<RETRIGGERING>"
             searchQuery.value = retrigger
             // wait until we really get that value
-            while(searchQuery.value != retrigger)
+            while (searchQuery.value != retrigger)
                 yield()
             // now switch back
             searchQuery.value = saved

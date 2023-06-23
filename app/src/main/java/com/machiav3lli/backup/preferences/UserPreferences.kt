@@ -33,6 +33,7 @@ import com.machiav3lli.backup.themeItems
 import com.machiav3lli.backup.ui.compose.blockBorder
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowsOutLineVertical
+import com.machiav3lli.backup.ui.compose.icons.phosphor.CircleWavyWarning
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Clock
 import com.machiav3lli.backup.ui.compose.icons.phosphor.EyedropperSample
 import com.machiav3lli.backup.ui.compose.icons.phosphor.FingerprintSimple
@@ -269,6 +270,14 @@ val pref_singularBackupRestore = BooleanPref(
     icon = Phosphor.List,
     iconTint = ColorSpecial,
     defaultValue = true
+)
+
+val pref_newAndUpdatedNotification = BooleanPref(
+    key = "user.newAndUppdatedNotification",
+    titleId = R.string.prefs_newandupdatednotification,
+    summaryId = R.string.prefs_newandupdatednotification_summary,
+    icon = Phosphor.CircleWavyWarning,
+    defaultValue = false
 )
 
 val pref_squeezeNavText = BooleanPref(
