@@ -26,16 +26,17 @@ plugins {
 
 val vKotlin = "1.8.21"
 val vComposeCompiler = "1.4.7"
-val vCompose = "1.5.0-beta01"
+val vCompose = "1.5.0-beta02"
 val vKotlinSerialization = "1.5.1"
-val vRoom = "2.5.1"
-val vNavigation = "2.7.0-alpha01"
-val vAccompanist = "0.31.3-beta"
+val vRoom = "2.5.2"
+val vNavigation = "2.7.0-beta01"
+val vAccompanist = "0.31.4-beta"
 val vLibsu = "5.0.5"
 //val vIconics = "5.3.4"
 
-val vAndroidxTest = "1.5.0"
-val vAndroidxTestExt = "1.1.5"
+val vTest = "1.5.2"
+val vTestRules = "1.5.0"
+val vTestExt = "1.1.5"
 
 android {
     namespace = "com.machiav3lli.backup"
@@ -162,14 +163,14 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:$vCompose")
     implementation("androidx.navigation:navigation-compose:$vNavigation")
     implementation("io.coil-kt:coil-compose:2.4.0")
-    implementation("androidx.compose.material3:material3:1.2.0-alpha02")
+    implementation("androidx.compose.material3:material3:1.2.0-alpha03")
     implementation("com.google.accompanist:accompanist-systemuicontroller:$vAccompanist")
     implementation("com.google.accompanist:accompanist-permissions:$vAccompanist")
 
     // Testing
-    androidTestImplementation("androidx.test:runner:$vAndroidxTest")
-    implementation("androidx.test:rules:$vAndroidxTest")
-    implementation("androidx.test.ext:junit-ktx:$vAndroidxTestExt")
+    androidTestImplementation("androidx.test:runner:$vTest")
+    implementation("androidx.test:rules:$vTestRules")
+    implementation("androidx.test.ext:junit-ktx:$vTestExt")
 
     // compose testing
     //androidTestImplementation("androidx.ui:ui-test:$vCompose")
