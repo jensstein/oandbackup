@@ -37,13 +37,14 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.CalendarX
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ListNumbers
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
 import com.machiav3lli.backup.ui.compose.item.LaunchPreference
-import com.machiav3lli.backup.ui.navigation.NavItem
+import com.machiav3lli.backup.ui.compose.recycler.BusyBackground
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.ColorDeData
 import com.machiav3lli.backup.ui.compose.theme.ColorExodus
 import com.machiav3lli.backup.ui.compose.theme.ColorExtDATA
 import com.machiav3lli.backup.ui.item.LinkPref
 import com.machiav3lli.backup.ui.item.Pref
+import com.machiav3lli.backup.ui.navigation.NavItem
 import com.machiav3lli.backup.utils.applyFilter
 import com.machiav3lli.backup.utils.getBackupRoot
 import com.machiav3lli.backup.utils.show
@@ -71,47 +72,53 @@ fun ToolsPrefsPage(navController: NavHostController) {
             containerColor = Color.Transparent,
             snackbarHost = { SnackbarHost(snackbarHostState) }
         ) { paddingValues ->
-            LazyColumn(
+
+            BusyBackground(
                 modifier = Modifier
-                    .padding(paddingValues)
                     .blockBorder()
-                    .fillMaxSize(),
-                contentPadding = PaddingValues(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                    .fillMaxSize()
             ) {
-                item {
-                    val size = prefs.size
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .fillMaxSize(),
+                    contentPadding = PaddingValues(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    item {
+                        val size = prefs.size
 
-                    PrefsGroup {
-                        prefs.forEachIndexed { index, pref ->
-                            LaunchPreference(
-                                pref = pref,
-                                index = index,
-                                groupSize = size,
-                            ) {
-                                when (pref) {
-                                    // TODO use only compose dialogs
-                                    pref_batchDelete -> context.onClickUninstalledBackupsDelete(
-                                        snackbarHostState,
-                                        coroutineScope
-                                    )
+                        PrefsGroup {
+                            prefs.forEachIndexed { index, pref ->
+                                LaunchPreference(
+                                    pref = pref,
+                                    index = index,
+                                    groupSize = size,
+                                ) {
+                                    when (pref) {
+                                        // TODO use only compose dialogs
+                                        pref_batchDelete -> context.onClickUninstalledBackupsDelete(
+                                            snackbarHostState,
+                                            coroutineScope
+                                        )
 
-                                    pref_copySelfApk -> context.onClickCopySelf(
-                                        snackbarHostState,
-                                        coroutineScope
-                                    )
+                                        pref_copySelfApk -> context.onClickCopySelf(
+                                            snackbarHostState,
+                                            coroutineScope
+                                        )
 
-                                    pref_schedulesExportImport -> navController.navigate(NavItem.Exports.destination)
-                                    pref_saveAppsList -> context.onClickSaveAppsList(
-                                        snackbarHostState,
-                                        coroutineScope
-                                    )
+                                        pref_schedulesExportImport -> navController.navigate(NavItem.Exports.destination)
+                                        pref_saveAppsList -> context.onClickSaveAppsList(
+                                            snackbarHostState,
+                                            coroutineScope
+                                        )
 
-                                    pref_logViewer -> navController.navigate(NavItem.Logs.destination)
-                                    pref_terminal -> navController.navigate(NavItem.Terminal.destination)
+                                        pref_logViewer -> navController.navigate(NavItem.Logs.destination)
+                                        pref_terminal -> navController.navigate(NavItem.Terminal.destination)
+                                    }
                                 }
+                                if (index < size - 1) Spacer(modifier = Modifier.height(4.dp))
                             }
-                            if (index < size - 1) Spacer(modifier = Modifier.height(4.dp))
                         }
                     }
                 }

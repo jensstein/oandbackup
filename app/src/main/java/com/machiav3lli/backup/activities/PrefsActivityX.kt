@@ -52,7 +52,6 @@ import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Info
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TopBar
-import com.machiav3lli.backup.ui.compose.recycler.BusyBackground
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.navigation.NavItem
 import com.machiav3lli.backup.ui.navigation.PagerNavBar
@@ -109,63 +108,61 @@ class PrefsActivityX : BaseActivity() {
                         }
                 }
 
-                BusyBackground {
-                    Scaffold(
-                        containerColor = Color.Transparent,
-                        contentColor = MaterialTheme.colorScheme.onBackground,
-                        topBar = {
-                            Column {
-                                TopBar(
-                                    title = stringResource(
-                                        id = if (barVisible) currentPage.title
-                                        else navController.currentDestination?.destinationToItem()?.title
-                                            ?: NavItem.Settings.title
-                                    )
-                                ) {
-                                    RoundButton(
-                                        icon = Phosphor.Info,
-                                        description = stringResource(id = R.string.help),
-                                    ) {
-                                        showHelpSheet = true
-                                    }
-                                }
-                            }
-                        },
-                        bottomBar = {
-                            AnimatedVisibility(
-                                barVisible,
-                                enter = slideInVertically { height -> height } + fadeIn(),
-                                exit = slideOutVertically { height -> height } + fadeOut(),
+                Scaffold(
+                    containerColor = Color.Transparent,
+                    contentColor = MaterialTheme.colorScheme.onBackground,
+                    topBar = {
+                        Column {
+                            TopBar(
+                                title = stringResource(
+                                    id = if (barVisible) currentPage.title
+                                    else navController.currentDestination?.destinationToItem()?.title
+                                        ?: NavItem.Settings.title
+                                )
                             ) {
-                                PagerNavBar(pageItems = pages, pagerState = pagerState)
+                                RoundButton(
+                                    icon = Phosphor.Info,
+                                    description = stringResource(id = R.string.help),
+                                ) {
+                                    showHelpSheet = true
+                                }
                             }
                         }
-                    ) { paddingValues ->
-                        PrefsNavHost(
-                            modifier = Modifier.padding(paddingValues),
-                            navController = navController,
-                            pagerState = pagerState,
-                            pages = pages,
-                            viewModels = listOf(
-                                exportsViewModel,
-                                logsViewModel,
-                            )
+                    },
+                    bottomBar = {
+                        AnimatedVisibility(
+                            barVisible,
+                            enter = slideInVertically { height -> height } + fadeIn(),
+                            exit = slideOutVertically { height -> height } + fadeOut(),
+                        ) {
+                            PagerNavBar(pageItems = pages, pagerState = pagerState)
+                        }
+                    }
+                ) { paddingValues ->
+                    PrefsNavHost(
+                        modifier = Modifier.padding(paddingValues),
+                        navController = navController,
+                        pagerState = pagerState,
+                        pages = pages,
+                        viewModels = listOf(
+                            exportsViewModel,
+                            logsViewModel,
                         )
+                    )
 
-                        if (showHelpSheet) {
-                            ModalBottomSheet(
-                                sheetState = helpSheetState,
-                                containerColor = MaterialTheme.colorScheme.background,
-                                scrimColor = Color.Transparent,
-                                onDismissRequest = {
-                                    scope.launch { helpSheetState.hide() }
-                                    showHelpSheet = false
-                                }
-                            ) {
-                                HelpSheet {
-                                    scope.launch { helpSheetState.hide() }
-                                    showHelpSheet = false
-                                }
+                    if (showHelpSheet) {
+                        ModalBottomSheet(
+                            sheetState = helpSheetState,
+                            containerColor = MaterialTheme.colorScheme.background,
+                            scrimColor = Color.Transparent,
+                            onDismissRequest = {
+                                scope.launch { helpSheetState.hide() }
+                                showHelpSheet = false
+                            }
+                        ) {
+                            HelpSheet {
+                                scope.launch { helpSheetState.hide() }
+                                showHelpSheet = false
                             }
                         }
                     }

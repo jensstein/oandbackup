@@ -43,12 +43,20 @@ fun HomePackageRecycler(
     productsList.forEach {
         selection.putIfAbsent(it.packageName, false)
     }
-    VerticalItemList(
-        modifier = modifier,
-        list = productsList,
-        itemKey = { it.packageName }
-    ) {
-        MainPackageItem(it, selection[it.packageName] ?: false, imageLoader, onLongClick, onClick)
+    BusyBackground(modifier) {
+        VerticalItemList(
+            modifier = modifier,
+            list = productsList,
+            itemKey = { it.packageName }
+        ) {
+            MainPackageItem(
+                it,
+                selection[it.packageName] ?: false,
+                imageLoader,
+                onLongClick,
+                onClick
+            )
+        }
     }
 }
 
@@ -78,54 +86,58 @@ fun BatchPackageRecycler(
     onBackupDataClick: (String, Boolean, Int) -> Unit = { _: String, _: Boolean, _: Int -> },
     onClick: (Package, Boolean, Boolean) -> Unit = { _: Package, _: Boolean, _: Boolean -> },
 ) {
-    VerticalItemList(
-        modifier = modifier,
-        list = productsList,
-        itemKey = { it.packageName }
-    ) {
-        val apkBackupChecked = remember(apkBackupCheckedList[it.packageName]) {
-            mutableStateOf(apkBackupCheckedList[it.packageName])
-        }
-        val dataBackupChecked = remember(dataBackupCheckedList[it.packageName]) {
-            mutableStateOf(dataBackupCheckedList[it.packageName])
-        }
-
-        if (restore && pref_singularBackupRestore.value) RestorePackageItem(
-            it,
-            apkBackupChecked,
-            dataBackupChecked,
-            onClick,
-            onBackupApkClick,
-            onBackupDataClick,
-        )
-        else BatchPackageItem(
-            it,
-            restore,
-            apkBackupChecked.value == 0,
-            dataBackupChecked.value == 0,
-            onClick,
-            onApkClick = { p, b ->
-                onBackupApkClick(p.packageName, b, 0)
-            },
-            onDataClick = { p, b ->
-                onBackupDataClick(p.packageName, b, 0)
+    BusyBackground(modifier) {
+        VerticalItemList(
+            modifier = modifier,
+            list = productsList,
+            itemKey = { it.packageName }
+        ) {
+            val apkBackupChecked = remember(apkBackupCheckedList[it.packageName]) {
+                mutableStateOf(apkBackupCheckedList[it.packageName])
             }
-        )
+            val dataBackupChecked = remember(dataBackupCheckedList[it.packageName]) {
+                mutableStateOf(dataBackupCheckedList[it.packageName])
+            }
+
+            if (restore && pref_singularBackupRestore.value) RestorePackageItem(
+                it,
+                apkBackupChecked,
+                dataBackupChecked,
+                onClick,
+                onBackupApkClick,
+                onBackupDataClick,
+            )
+            else BatchPackageItem(
+                it,
+                restore,
+                apkBackupChecked.value == 0,
+                dataBackupChecked.value == 0,
+                onClick,
+                onApkClick = { p, b ->
+                    onBackupApkClick(p.packageName, b, 0)
+                },
+                onDataClick = { p, b ->
+                    onBackupDataClick(p.packageName, b, 0)
+                }
+            )
+        }
     }
 }
 
 @Composable
 fun ScheduleRecycler(
-    modifier: Modifier = Modifier.fillMaxSize(),
+    modifier: Modifier = Modifier,
     productsList: List<Schedule>?,
     onClick: (Schedule) -> Unit = {},
     onCheckChanged: (Schedule, Boolean) -> Unit = { _: Schedule, _: Boolean -> },
 ) {
-    VerticalItemList(
-        modifier = modifier,
-        list = productsList
-    ) {
-        ScheduleItem(it, onClick, onCheckChanged)
+    BusyBackground(modifier) {
+        VerticalItemList(
+            modifier = modifier,
+            list = productsList
+        ) {
+            ScheduleItem(it, onClick, onCheckChanged)
+        }
     }
 }
 
@@ -136,11 +148,13 @@ fun ExportedScheduleRecycler(
     onImport: (Schedule) -> Unit = {},
     onDelete: (StorageFile) -> Unit = {},
 ) {
-    VerticalItemList(
-        modifier = modifier,
-        list = productsList
-    ) {
-        ExportedScheduleItem(it.first, it.second, onImport, onDelete)
+    BusyBackground(modifier) {
+        VerticalItemList(
+            modifier = modifier,
+            list = productsList
+        ) {
+            ExportedScheduleItem(it.first, it.second, onImport, onDelete)
+        }
     }
 }
 
@@ -151,11 +165,13 @@ fun LogRecycler(
     onShare: (Log) -> Unit = {},
     onDelete: (Log) -> Unit = {},
 ) {
-    VerticalItemList(
-        modifier = modifier,
-        list = productsList
-    ) {
-        LogItem(it, onShare, onDelete)
+    BusyBackground(modifier) {
+        VerticalItemList(
+            modifier = modifier,
+            list = productsList
+        ) {
+            LogItem(it, onShare, onDelete)
+        }
     }
 }
 

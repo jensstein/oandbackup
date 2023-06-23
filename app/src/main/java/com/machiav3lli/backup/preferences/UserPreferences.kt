@@ -44,6 +44,7 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.Swatches
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TagSimple
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TextAa
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Translate
+import com.machiav3lli.backup.ui.compose.recycler.BusyBackground
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.ColorDeData
 import com.machiav3lli.backup.ui.compose.theme.ColorExodus
@@ -103,17 +104,21 @@ fun UserPrefsPage() {
         }
 
     AppTheme {
-        LazyColumn(
+        BusyBackground(
             modifier = Modifier
                 .blockBorder()
-                .fillMaxSize(),
-            contentPadding = PaddingValues(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .fillMaxSize()
         ) {
-            item {
-                PrefsGroup(prefs = prefs) { pref ->
-                    dialogsPref = pref
-                    openDialog.value = true
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                item {
+                    PrefsGroup(prefs = prefs) { pref ->
+                        dialogsPref = pref
+                        openDialog.value = true
+                    }
                 }
             }
         }

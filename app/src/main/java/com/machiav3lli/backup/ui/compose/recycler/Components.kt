@@ -433,7 +433,11 @@ fun BusyBackgroundPreview() {
                 busy.value = !busy.value
             }
         }
-        BusyBackground(busy = busy) {
+        BusyBackground(
+            modifier = Modifier
+                .fillMaxSize(),
+            busy = busy
+        ) {
             Text(
                 """
                 Hello,

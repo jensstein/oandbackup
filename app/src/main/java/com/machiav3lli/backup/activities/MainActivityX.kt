@@ -95,7 +95,6 @@ import com.machiav3lli.backup.ui.compose.item.ExpandableSearchAction
 import com.machiav3lli.backup.ui.compose.item.RefreshButton
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TopBar
-import com.machiav3lli.backup.ui.compose.recycler.BusyBackground
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.navigation.MainNavHost
 import com.machiav3lli.backup.ui.navigation.NavItem
@@ -283,167 +282,165 @@ class MainActivityX : BaseActivity() {
                         }
                 }
 
-                BusyBackground {
-                    Scaffold(
-                        containerColor = Color.Transparent,
-                        contentColor = MaterialTheme.colorScheme.onBackground,
-                        topBar = {
-                            when {
-                                currentPage.destination == NavItem.Scheduler.destination -> TopBar(
-                                    title = stringResource(id = currentPage.title)
-                                ) {
+                Scaffold(
+                    containerColor = Color.Transparent,
+                    contentColor = MaterialTheme.colorScheme.onBackground,
+                    topBar = {
+                        when {
+                            currentPage.destination == NavItem.Scheduler.destination -> TopBar(
+                                title = stringResource(id = currentPage.title)
+                            ) {
 
-                                    RoundButton(
+                                RoundButton(
+                                    icon = Phosphor.Prohibit,
+                                    description = stringResource(id = R.string.sched_blocklist)
+                                ) {
+                                    openBlocklist.value = true
+                                }
+                                RoundButton(
+                                    description = stringResource(id = R.string.prefs_title),
+                                    icon = Phosphor.GearSix
+                                ) { navController.navigate(NavItem.Settings.destination) }
+                            }
+
+                            barVisible                                               -> Column {
+                                TopBar(title = stringResource(id = currentPage.title)) {
+                                    ExpandableSearchAction(
+                                        expanded = searchExpanded,
+                                        query = query,
+                                        onQueryChanged = { newQuery ->
+                                            //if (newQuery != query)  // empty string doesn't work...
+                                            query = newQuery
+                                            viewModel.searchQuery.value = query
+                                        },
+                                        onClose = {
+                                            query = ""
+                                            viewModel.searchQuery.value = ""
+                                        }
+                                    )
+                                    AnimatedVisibility(barVisible && !searchExpanded.value) {
+                                        RefreshButton { refreshPackagesAndBackups() }
+                                    }
+                                    AnimatedVisibility(barVisible && !searchExpanded.value) {
+                                        RoundButton(
+                                            description = stringResource(id = R.string.prefs_title),
+                                            icon = Phosphor.GearSix
+                                        ) { navController.navigate(NavItem.Settings.destination) }
+                                    }
+                                }
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 8.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    ActionChip(
+                                        modifier = Modifier.weight(1f),
                                         icon = Phosphor.Prohibit,
-                                        description = stringResource(id = R.string.sched_blocklist)
+                                        text = stringResource(id = R.string.sched_blocklist),
+                                        positive = false,
+                                        fullWidth = true,
                                     ) {
                                         openBlocklist.value = true
                                     }
-                                    RoundButton(
-                                        description = stringResource(id = R.string.prefs_title),
-                                        icon = Phosphor.GearSix
-                                    ) { navController.navigate(NavItem.Settings.destination) }
-                                }
-
-                                barVisible                                               -> Column {
-                                    TopBar(title = stringResource(id = currentPage.title)) {
-                                        ExpandableSearchAction(
-                                            expanded = searchExpanded,
-                                            query = query,
-                                            onQueryChanged = { newQuery ->
-                                                //if (newQuery != query)  // empty string doesn't work...
-                                                query = newQuery
-                                                viewModel.searchQuery.value = query
-                                            },
-                                            onClose = {
-                                                query = ""
-                                                viewModel.searchQuery.value = ""
-                                            }
-                                        )
-                                        AnimatedVisibility(barVisible && !searchExpanded.value) {
-                                            RefreshButton { refreshPackagesAndBackups() }
-                                        }
-                                        AnimatedVisibility(barVisible && !searchExpanded.value) {
-                                            RoundButton(
-                                                description = stringResource(id = R.string.prefs_title),
-                                                icon = Phosphor.GearSix
-                                            ) { navController.navigate(NavItem.Settings.destination) }
-                                        }
-                                    }
-                                    Row(
-                                        modifier = Modifier.padding(horizontal = 8.dp),
-                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                    ActionChip(
+                                        modifier = Modifier.weight(1f),
+                                        icon = Phosphor.FunnelSimple,
+                                        text = stringResource(id = R.string.sort_and_filter),
+                                        positive = true,
+                                        fullWidth = true,
                                     ) {
-                                        ActionChip(
-                                            modifier = Modifier.weight(1f),
-                                            icon = Phosphor.Prohibit,
-                                            text = stringResource(id = R.string.sched_blocklist),
-                                            positive = false,
-                                            fullWidth = true,
-                                        ) {
-                                            openBlocklist.value = true
-                                        }
-                                        ActionChip(
-                                            modifier = Modifier.weight(1f),
-                                            icon = Phosphor.FunnelSimple,
-                                            text = stringResource(id = R.string.sort_and_filter),
-                                            positive = true,
-                                            fullWidth = true,
-                                        ) {
-                                            showSortSheet = true
-                                        }
+                                        showSortSheet = true
                                     }
                                 }
+                            }
 
-                                else                                                     ->
-                                    TopBar(title = stringResource(id = R.string.app_name)) {}
-                            }
-                        },
-                        bottomBar = {
-                            AnimatedVisibility(
-                                barVisible,
-                                enter = slideInVertically { height -> height } + fadeIn(),
-                                exit = slideOutVertically { height -> height } + fadeOut(),
-                            ) {
-                                PagerNavBar(pageItems = pages, pagerState = pagerState)
-                            }
+                            else                                                     ->
+                                TopBar(title = stringResource(id = R.string.app_name)) {}
                         }
-                    ) { paddingValues ->
-                        LaunchedEffect(key1 = viewModel) {
-                            if (intent.extras != null) {
-                                val destination =
-                                    intent.extras!!.getString(
-                                        classAddress(".fragmentNumber"),
-                                        NavItem.Welcome.destination
-                                    )
-                                moveTo(destination)
-                            }
+                    },
+                    bottomBar = {
+                        AnimatedVisibility(
+                            barVisible,
+                            enter = slideInVertically { height -> height } + fadeIn(),
+                            exit = slideOutVertically { height -> height } + fadeOut(),
+                        ) {
+                            PagerNavBar(pageItems = pages, pagerState = pagerState)
                         }
+                    }
+                ) { paddingValues ->
+                    LaunchedEffect(key1 = viewModel) {
+                        if (intent.extras != null) {
+                            val destination =
+                                intent.extras!!.getString(
+                                    classAddress(".fragmentNumber"),
+                                    NavItem.Welcome.destination
+                                )
+                            moveTo(destination)
+                        }
+                    }
 
-                        MainNavHost(
-                            modifier = Modifier
-                                .padding(paddingValues),
-                            navController = navController,
-                            pagerState,
-                            pages
-                        )
+                    MainNavHost(
+                        modifier = Modifier
+                            .padding(paddingValues),
+                        navController = navController,
+                        pagerState,
+                        pages
+                    )
 
-                        if (showSortSheet) {
-                            ModalBottomSheet(
-                                sheetState = sortSheetState,
-                                containerColor = MaterialTheme.colorScheme.background,
-                                scrimColor = Color.Transparent,
-                                onDismissRequest = {
-                                    scope.launch { sortSheetState.hide() }
-                                    showSortSheet = false
-                                }
-                            ) {
-                                SortFilterSheet {
-                                    scope.launch { sortSheetState.hide() }
-                                    showSortSheet = false
-                                }
+                    if (showSortSheet) {
+                        ModalBottomSheet(
+                            sheetState = sortSheetState,
+                            containerColor = MaterialTheme.colorScheme.background,
+                            scrimColor = Color.Transparent,
+                            onDismissRequest = {
+                                scope.launch { sortSheetState.hide() }
+                                showSortSheet = false
+                            }
+                        ) {
+                            SortFilterSheet {
+                                scope.launch { sortSheetState.hide() }
+                                showSortSheet = false
                             }
                         }
+                    }
 
-                        if (showBatchSheet.value) {
-                            ModalBottomSheet(
-                                sheetState = batchSheetState,
-                                containerColor = MaterialTheme.colorScheme.background,
-                                scrimColor = Color.Transparent,
-                                onDismissRequest = {
-                                    scope.launch { batchSheetState.hide() }
-                                    showBatchSheet.value = false
-                                }
+                    if (showBatchSheet.value) {
+                        ModalBottomSheet(
+                            sheetState = batchSheetState,
+                            containerColor = MaterialTheme.colorScheme.background,
+                            scrimColor = Color.Transparent,
+                            onDismissRequest = {
+                                scope.launch { batchSheetState.hide() }
+                                showBatchSheet.value = false
+                            }
+                        ) {
+                            BatchPrefsSheet(backupBoolean = backupBatchSheet.value)
+                        }
+                    }
+                    if (appSheetPackage.value != null) {
+                        ModalBottomSheet(
+                            sheetState = appSheetState,
+                            containerColor = MaterialTheme.colorScheme.background,
+                            scrimColor = Color.Transparent,
+                            onDismissRequest = {
+                                scope.launch { appSheetState.hide() }
+                                appSheetPackage.value = null
+                            }
+                        ) {
+                            AppSheet(
+                                appSheetVM!!,
+                                appSheetPackage.value?.packageName ?: "",
                             ) {
-                                BatchPrefsSheet(backupBoolean = backupBatchSheet.value)
+                                scope.launch { appSheetState.hide() }
+                                appSheetPackage.value = null
                             }
                         }
-                        if (appSheetPackage.value != null) {
-                            ModalBottomSheet(
-                                sheetState = appSheetState,
-                                containerColor = MaterialTheme.colorScheme.background,
-                                scrimColor = Color.Transparent,
-                                onDismissRequest = {
-                                    scope.launch { appSheetState.hide() }
-                                    appSheetPackage.value = null
-                                }
-                            ) {
-                                AppSheet(
-                                    appSheetVM!!,
-                                    appSheetPackage.value?.packageName ?: "",
-                                ) {
-                                    scope.launch { appSheetState.hide() }
-                                    appSheetPackage.value = null
-                                }
-                            }
-                        }
-                        if (openBlocklist.value) BaseDialog(openDialogCustom = openBlocklist) {
-                            GlobalBlockListDialogUI(
-                                currentBlocklist = viewModel.getBlocklist().toSet(),
-                                openDialogCustom = openBlocklist,
-                            ) { newSet ->
-                                viewModel.setBlocklist(newSet)
-                            }
+                    }
+                    if (openBlocklist.value) BaseDialog(openDialogCustom = openBlocklist) {
+                        GlobalBlockListDialogUI(
+                            currentBlocklist = viewModel.getBlocklist().toSet(),
+                            openDialogCustom = openBlocklist,
+                        ) { newSet ->
+                            viewModel.setBlocklist(newSet)
                         }
                     }
                 }
@@ -709,6 +706,12 @@ class MainActivityX : BaseActivity() {
                     }
                 }
             )
+        }
+
+        if (worksList.isNotEmpty()) {
+            WorkManager.getInstance(OABX.context)
+                .beginWith(worksList)
+                .enqueue()
         }
     }
 }

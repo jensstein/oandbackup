@@ -36,6 +36,7 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.ShieldCheckered
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ShieldStar
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TagSimple
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Textbox
+import com.machiav3lli.backup.ui.compose.recycler.BusyBackground
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.ColorAPK
 import com.machiav3lli.backup.ui.compose.theme.ColorData
@@ -60,16 +61,20 @@ fun ServicePrefsPage() {
     var dialogsPref by remember { mutableStateOf<Pref?>(null) }
 
     AppTheme {
-        LazyColumn(
+        BusyBackground(
             modifier = Modifier
                 .blockBorder()
-                .fillMaxSize(),
-            contentPadding = PaddingValues(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .fillMaxSize()
         ) {
-            ServicePrefGroups { pref ->
-                dialogsPref = pref
-                openDialog.value = true
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                ServicePrefGroups { pref ->
+                    dialogsPref = pref
+                    openDialog.value = true
+                }
             }
         }
 
