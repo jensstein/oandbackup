@@ -109,6 +109,8 @@
     <string name="prefs_singularbackuprestore_summary">Use alternative restore item layout that allows choosing specific backups for restore.</string>
     <string name="prefs_squeezenavtext">Squeeze navigation item\'s text</string>
     <string name="prefs_squeezenavtext_summary">Allow text under navigation bar items to be resized to fit the available width.</string>
+    <string name="prefs_altnavbaritem">Use alternative navigation bar item</string>
+    <string name="prefs_altnavbaritem_summary">Use the alternative/old navigation bar item layout, which shows label of unselected items.</string>
     <string name="prefs_laserbackground">Show animated laser in background</string>
     <string name="prefs_laserbackground_summary">Use animated colored lights as background when loading/busy.</string>
     <string name="prefs_rememberfiltering">Remember sort and filter</string>

@@ -40,6 +40,7 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.FolderNotch
 import com.machiav3lli.backup.ui.compose.icons.phosphor.List
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Lock
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Swatches
+import com.machiav3lli.backup.ui.compose.icons.phosphor.TagSimple
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TextAa
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Translate
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
@@ -270,6 +271,14 @@ val pref_squeezeNavText = BooleanPref(
     summaryId = R.string.prefs_squeezenavtext_summary,
     icon = Phosphor.TextAa,
     iconTint = ColorOBB,
+    defaultValue = false
+)
+
+val pref_altNavBarItem = BooleanPref(
+    key = "user.altNavBarItem",
+    titleId = R.string.prefs_altnavbaritem,
+    summaryId = R.string.prefs_altnavbaritem_summary,
+    icon = Phosphor.TagSimple,
     defaultValue = false
 )
 
