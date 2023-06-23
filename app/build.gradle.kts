@@ -39,7 +39,7 @@ val vAndroidxTestExt = "1.1.5"
 
 android {
     namespace = "com.machiav3lli.backup"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.machiav3lli.backup"
