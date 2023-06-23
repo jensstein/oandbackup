@@ -56,7 +56,7 @@ fun PagerNavBar(pageItems: List<NavItem>, pagerState: PagerState) {
 
     NavigationBar(
         modifier = Modifier.padding(horizontal = 8.dp),
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onBackground,
     ) {
         pageItems.forEachIndexed { index, tab ->
