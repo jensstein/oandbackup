@@ -394,14 +394,13 @@ fun BusyBackgroundColor(
 
 @Composable
 fun BusyBackground(
+    modifier: Modifier = Modifier,
     busy: State<Boolean>? = null,
     content: @Composable () -> Unit,
 ) {
     val isBusy by remember { busy ?: OABX.busy }
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
+        modifier = modifier.background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
         if (pref_busyLaserBackground.value)
