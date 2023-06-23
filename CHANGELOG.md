@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-8.3.2 (XX.XX.2023) +250 Commits & +50 Translations
+8.3.2 (23.06.2023) +260 Commits & +70 Translations
 ------------
 
 #### Function
@@ -40,6 +40,7 @@ CHANGELOG
 - Update: Simplify ShellCommands init
 - Update: Make exclude asset files react on no_backup preferences
 - Update: Debug prefs must default to user value
+- Update: CompileSdk 34
 - Remove: IntroActivity
 - Remove: Premature refreshing
 - Remove: Automatically added ACCESS NETWORK STATE permission
@@ -50,6 +51,7 @@ CHANGELOG
 - Add: Version text for screenshots and other purposes (preference versionOpacity)
 - Add: PostNotifications permission
 - Add: BlockBorder to pages
+- Add: Option to use alternative NavBar item layout
 - Fix: Help sheet & Welcome page transparent backgrounds
 - Fix: Scrollable message when long in Actions DialogUI
 - Fix: Check all StateChips ripple
@@ -65,6 +67,7 @@ CHANGELOG
 - Update: Revamp all items using ListItem
 - Update: Make TopBar transparent
 - Update: Revamp search bar layout
+- Update: Limit BusyBackground to interaction pages (excluding top and bottom bars)
 
 #### UX
 
@@ -75,6 +78,7 @@ CHANGELOG
 - Add: Indicator of backup revisions set limit
 - Add: Indicator if password is set (***) vs. unset (---)
 - Add: Extended special filters
+- Add: Option to include new user apps with the updated apps notification
 - Fix: Close context menu if choosing "no"
 - Fix: Batch backups not working when singular backups layout is enable
 - Fix: Check all apk/data not working
