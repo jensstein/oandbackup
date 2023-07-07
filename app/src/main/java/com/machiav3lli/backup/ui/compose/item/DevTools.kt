@@ -64,6 +64,7 @@ import com.machiav3lli.backup.preferences.LogsPage
 import com.machiav3lli.backup.preferences.TerminalButton
 import com.machiav3lli.backup.preferences.TerminalPage
 import com.machiav3lli.backup.preferences.TerminalText
+import com.machiav3lli.backup.preferences.logRel
 import com.machiav3lli.backup.preferences.supportInfoLogShare
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
 import com.machiav3lli.backup.traceDebug
@@ -82,6 +83,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 
 var devToolsTab = mutableStateOf("")
 
@@ -94,10 +96,7 @@ val devToolsTabs = listOf<Pair<String, @Composable () -> Any>>(
     "devsett" to { DevSettingsTab() },
     "SUPPORT" to { DevSupportTab() },
 ) + if (isDebug) listOf<Pair<String, @Composable () -> Any>>(
-    "refreshScreen" to {
-        OABX.context.recreateActivities()
-        devToolsTab.value = ""
-    },
+    //"refreshScreen" to { OABX.context.recreateActivities(); devToolsTab.value = "" },
     //"invBackupLoc" to { FileUtils.invalidateBackupLocation() ; devToolsTab.value = "" },
     //"updateAppTables" to { OABX.context.updateAppTables() ; devToolsTab.value = "" },
     //"findBackups" to { OABX.context.findBackups() ; devToolsTab.value = "" },
@@ -106,15 +105,6 @@ val devToolsTabs = listOf<Pair<String, @Composable () -> Any>>(
 
 @Composable
 fun DevInfoLogTab() {
-
-    var recompose by remember { mutableStateOf(0) }
-
-    LaunchedEffect(recompose) {
-        launch {
-            delay(1000)
-            recompose++
-        }
-    }
 
     TerminalText(OABX.infoLogLines)
 }
@@ -128,16 +118,17 @@ fun DevLogsTab() {
 @Composable
 fun DevLogTab() {
 
-    var recompose by remember { mutableStateOf(0) }
+    val lines = remember { mutableStateOf<List<String>>(listOf()) }
 
-    LaunchedEffect(recompose) {
+    LaunchedEffect(true) {
         launch {
-            delay(1000)
-            recompose++
+            lines.value = OABX.lastLogMessages.toList()
+            if (lines.value.isEmpty())
+                lines.value = logRel()
         }
     }
 
-    TerminalText(OABX.lastLogMessages.toList())
+    TerminalText(lines.value)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -496,8 +487,10 @@ fun DevSupportTab() {
 fun DevTools(
     expanded: MutableState<Boolean>,
 ) {
-    if (devToolsTab.value.isEmpty())
-        devToolsTab.value = "devsett"
+    LaunchedEffect(true) {
+        if (devToolsTab.value.isEmpty())
+            devToolsTab.value = "devsett"
+    }
 
     var tab by devToolsTab
     val tempShowInfo = remember { mutableStateOf(false) }
@@ -560,7 +553,15 @@ fun DevTools(
                     name = name,
                     important = (tab == name),
                 ) {
-                    tab = name
+                    if (tab != name)
+                        tab = name
+                    else {
+                        tab = ""
+                        MainScope().launch {
+                            yield()
+                            tab = name
+                        }
+                    }
                 }
             }
 
