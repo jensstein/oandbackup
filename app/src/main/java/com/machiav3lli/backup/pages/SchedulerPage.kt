@@ -23,8 +23,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -43,6 +41,7 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.sheets.ScheduleSheet
+import com.machiav3lli.backup.sheets.Sheet
 import com.machiav3lli.backup.ui.compose.blockBorder
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CalendarPlus
@@ -101,22 +100,19 @@ fun SchedulerPage(viewModel: SchedulerViewModel) {
         )
 
         if (scheduleSheetId.value > 0L) {
-            ModalBottomSheet(
+            val dismiss = {
+                mScope.launch { scheduleSheetState.hide() }
+                scheduleSheetId.value = -1L
+            }
+            Sheet(
                 sheetState = scheduleSheetState,
-                containerColor = MaterialTheme.colorScheme.background,
-                scrimColor = Color.Transparent,
-                onDismissRequest = {
-                    mScope.launch { scheduleSheetState.hide() }
-                    scheduleSheetId.value = -1L
-                }
+                onDismissRequest = dismiss,
             ) {
                 ScheduleSheet(
-                    scheduleSheetVM,
+                    viewModel = scheduleSheetVM,
                     scheduleId = scheduleSheetId.value,
-                ) {
-                    mScope.launch { scheduleSheetState.hide() }
-                    scheduleSheetId.value = -1L
-                }
+                    onDismiss = dismiss
+                )
             }
         }
     }

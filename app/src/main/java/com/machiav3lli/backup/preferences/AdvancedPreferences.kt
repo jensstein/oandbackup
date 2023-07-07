@@ -1,5 +1,6 @@
 package com.machiav3lli.backup.preferences
 
+import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -292,6 +293,13 @@ val pref_cacheFileLists = BooleanPref(
 )
 
 //---------------------------------------- developer settings - workarounds
+
+val pref_fixNavBarOverlap = IntPref(
+    key = "dev-hack.fixNavBarOverlap",
+    summary = "fix UI overlapping system navbars [in 'dp', usually needs something like 42]",
+    entries = (0..64).toList(),
+    defaultValue = if (OABX.minSDK(Build.VERSION_CODES.R)) 0 else 42
+)
 
 val pref_delayBeforeRefreshAppInfo = IntPref(
     key = "dev-hack.delayBeforeRefreshAppInfo",

@@ -33,13 +33,13 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.LaunchedEffect
@@ -84,6 +84,7 @@ import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
 import com.machiav3lli.backup.preferences.pref_blackTheme
 import com.machiav3lli.backup.sheets.AppSheet
 import com.machiav3lli.backup.sheets.BatchPrefsSheet
+import com.machiav3lli.backup.sheets.Sheet
 import com.machiav3lli.backup.sheets.SortFilterSheet
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
@@ -228,7 +229,7 @@ class MainActivityX : BaseActivity() {
                 val currentPage by remember(pagerState.currentPage) { mutableStateOf(pages[pagerState.currentPage]) }   //TODO hg42 remove remember ???
                 var barVisible by remember { mutableStateOf(true) }
                 val openBlocklist = remember { mutableStateOf(false) }
-                var showSortSheet by remember { mutableStateOf(false) }
+                var showSortSheet = remember { mutableStateOf(false) }
                 val sortSheetState = rememberModalBottomSheetState(true)
                 showBatchSheet = remember { mutableStateOf(false) }
                 backupBatchSheet = remember { mutableStateOf(false) }
@@ -347,7 +348,7 @@ class MainActivityX : BaseActivity() {
                                         positive = true,
                                         fullWidth = true,
                                     ) {
-                                        showSortSheet = true
+                                        showSortSheet.value = true
                                     }
                                 }
                             }
@@ -377,69 +378,67 @@ class MainActivityX : BaseActivity() {
                         }
                     }
 
-                    MainNavHost(
-                        modifier = Modifier
-                            .padding(paddingValues),
-                        navController = navController,
-                        pagerState,
-                        pages
-                    )
+                    Box {
+                        MainNavHost(
+                            modifier = Modifier
+                                .padding(paddingValues),
+                            navController = navController,
+                            pagerState,
+                            pages
+                        )
 
-                    if (showSortSheet) {
-                        ModalBottomSheet(
-                            sheetState = sortSheetState,
-                            containerColor = MaterialTheme.colorScheme.background,
-                            scrimColor = Color.Transparent,
-                            onDismissRequest = {
+                        if (showSortSheet.value) {
+                            val dismiss = {
                                 scope.launch { sortSheetState.hide() }
-                                showSortSheet = false
+                                showSortSheet.value = false
                             }
-                        ) {
-                            SortFilterSheet {
-                                scope.launch { sortSheetState.hide() }
-                                showSortSheet = false
+                            Sheet(
+                                sheetState = sortSheetState,
+                                onDismissRequest = dismiss,
+                            ) {
+                                SortFilterSheet(
+                                    onDismiss = dismiss,
+                                )
                             }
                         }
-                    }
 
-                    if (showBatchSheet.value) {
-                        ModalBottomSheet(
-                            sheetState = batchSheetState,
-                            containerColor = MaterialTheme.colorScheme.background,
-                            scrimColor = Color.Transparent,
-                            onDismissRequest = {
+                        if (showBatchSheet.value) {
+                            val dismiss = {
                                 scope.launch { batchSheetState.hide() }
                                 showBatchSheet.value = false
                             }
-                        ) {
-                            BatchPrefsSheet(backupBoolean = backupBatchSheet.value)
-                        }
-                    }
-                    if (appSheetPackage.value != null) {
-                        ModalBottomSheet(
-                            sheetState = appSheetState,
-                            containerColor = MaterialTheme.colorScheme.background,
-                            scrimColor = Color.Transparent,
-                            onDismissRequest = {
-                                scope.launch { appSheetState.hide() }
-                                appSheetPackage.value = null
-                            }
-                        ) {
-                            AppSheet(
-                                appSheetVM!!,
-                                appSheetPackage.value?.packageName ?: "",
+                            Sheet(
+                                sheetState = batchSheetState,
+                                onDismissRequest = dismiss
                             ) {
+                                BatchPrefsSheet(
+                                    backupBoolean = backupBatchSheet.value
+                                )
+                            }
+                        }
+                        if (appSheetPackage.value != null) {
+                            val dismiss = {
                                 scope.launch { appSheetState.hide() }
                                 appSheetPackage.value = null
                             }
+                            Sheet(
+                                sheetState = appSheetState,
+                                onDismissRequest = dismiss
+                            ) {
+                                AppSheet(
+                                    viewModel = appSheetVM!!,
+                                    packageName = appSheetPackage.value?.packageName ?: "",
+                                    onDismiss = dismiss,
+                                )
+                            }
                         }
-                    }
-                    if (openBlocklist.value) BaseDialog(openDialogCustom = openBlocklist) {
-                        GlobalBlockListDialogUI(
-                            currentBlocklist = viewModel.getBlocklist().toSet(),
-                            openDialogCustom = openBlocklist,
-                        ) { newSet ->
-                            viewModel.setBlocklist(newSet)
+                        if (openBlocklist.value) BaseDialog(openDialogCustom = openBlocklist) {
+                            GlobalBlockListDialogUI(
+                                currentBlocklist = viewModel.getBlocklist().toSet(),
+                                openDialogCustom = openBlocklist,
+                            ) { newSet ->
+                                viewModel.setBlocklist(newSet)
+                            }
                         }
                     }
                 }

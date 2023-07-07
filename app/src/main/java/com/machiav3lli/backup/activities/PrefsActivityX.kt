@@ -31,7 +31,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.LaunchedEffect
@@ -48,6 +47,7 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.preferences.pref_blackTheme
 import com.machiav3lli.backup.sheets.HelpSheet
+import com.machiav3lli.backup.sheets.Sheet
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Info
 import com.machiav3lli.backup.ui.compose.item.RoundButton
@@ -151,10 +151,8 @@ class PrefsActivityX : BaseActivity() {
                     )
 
                     if (showHelpSheet) {
-                        ModalBottomSheet(
+                        Sheet(
                             sheetState = helpSheetState,
-                            containerColor = MaterialTheme.colorScheme.background,
-                            scrimColor = Color.Transparent,
                             onDismissRequest = {
                                 scope.launch { helpSheetState.hide() }
                                 showHelpSheet = false

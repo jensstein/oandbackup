@@ -5,8 +5,10 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Divider
@@ -54,6 +56,7 @@ import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.LogsHandler.Companion.unexpectedException
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.items.Package
+import com.machiav3lli.backup.preferences.pref_fixNavBarOverlap
 import com.machiav3lli.backup.traceContextMenu
 import com.machiav3lli.backup.traceTiming
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
@@ -344,7 +347,7 @@ fun SelectionRemoveMenu(
 
 fun openSubMenu(
     subMenu: MutableState<(@Composable () -> Unit)?>,
-    composable: @Composable () -> Unit,
+    content: @Composable () -> Unit,
 ) {
     subMenu.value = {
         DropdownMenu(
@@ -353,7 +356,16 @@ fun openSubMenu(
             modifier = Modifier.background(MaterialTheme.colorScheme.surfaceColorAtElevation(100.dp)),
             onDismissRequest = { subMenu.value = null }
         ) {
-            composable()
+            if (pref_fixNavBarOverlap.value > 0) {
+                Column(
+                    modifier = Modifier
+                        .padding(bottom = pref_fixNavBarOverlap.value.dp)
+                ) {
+                    content()
+                }
+            } else {
+                content()
+            }
         }
     }
 }
