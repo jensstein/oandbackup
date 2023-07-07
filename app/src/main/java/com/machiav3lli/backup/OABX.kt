@@ -86,7 +86,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 val pref_maxLogLines = IntPref(
     key = "dev-log.maxLogLines",
-    summary = "maximum lines in the log (logcat or internal)",
+    summary = "maximum lines for internal logging",
     entries = ((10..90 step 10) +
             (100..450 step 50) +
             (500..1500 step 500) +
@@ -422,12 +422,12 @@ class OABX : Application() {
                 override fun log(
                     priority: Int, tag: String?, message: String, t: Throwable?,
                 ) {
-                    val traceToLogcat = try {
+                    val logToSystemLogcat = try {
                         pref_logToSystemLogcat.value
                     } catch (_: Throwable) {
                         true
                     }
-                    if (traceToLogcat)
+                    if (logToSystemLogcat)
                         super.log(priority, "$tag", message, t)
 
                     val prio =
