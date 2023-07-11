@@ -22,6 +22,9 @@
 * [Why is it not recommended to backup system apps?](#why-is-it-not-recommended-to-backup-system-apps)
 * [Can I backup and restore the settings of NB?](#can-i-backup-and-restore-the-settings-of-nb)
 * [Is there a roadmap / an overview of features planned to be implemented?](#is-there-a-roadmap--an-overview-of-features-planned-to-be-implemented)
+* [Where do I find the so called "DevTools"?](#where-do-i-find-the-so-called-devtools)
+* [I read about selection and context menu in the Telegram group, where do I find this?](#i-read-about-selection-and-context-menu-in-the-telegram-group-where-do-i-find-this)
+* [Can I control NB from scripts or Tasker and similar?](#can-i-control-nb-from-scripts-or-tasker-and-similar)
 * [What is the difference to implementations like Seedvault?](#what-is-the-difference-to-implementations-like-seedvault)
 * [What is the difference to the famous Titanium Backup?](#what-is-the-difference-to-the-famous-titanium-backup)
 * [How can I open encrypted backups on my computer?](#how-can-i-open-encrypted-backups-on-my-computer)
@@ -518,7 +521,7 @@ https://tree.taiga.io/project/machiav3lli-neo-backup/kanban
 
 Not all features will be listed there, but maybe the bigger / frequently asked ones.
 
-### where do I find the so called "DevTools"?
+### Where do I find the so called "DevTools"?
 
 in versions >= 8.3.2 you can long press the page title.
 in older versions you first need to enable the long press by enabling showInfoLogBar in preferences/advanced/developer settings. 
@@ -540,7 +543,7 @@ The menu can be reached by pressing that menu button or by long pressing a selec
 Menu items with "..." at the end will ask something (yes/no or asking for further info) before executing an action.
 Without "..." they wil immediately execute the action.
 
-### can I control NB from scripts or Tasker and similar?  
+### Can I control NB from scripts or Tasker and similar?  
 
 yes, NB has a broadcast receiver for Android "intents", that reacts on commands.
 
@@ -753,8 +756,8 @@ It is also possible to mount remote file systems to local folders.
 * using unix tools (command line), e.g. via Termux
 * using rclone (command line), that can access a lot remotes like Google Drive and others 
 
-rclone can also be used via RCX or the successor (in beta phase) extRact.
-see https://github.com/newhinton/extRact
+rclone can also be used via Round-Sync (RCX, extRact).
+see https://github.com/newhinton/Round-Sync
 
 With using appropriate options, it can also provide the mounts via SAF.
 
@@ -826,19 +829,19 @@ For remote usage some of this could be delayed or combined. This will need some 
 Though it has become much better lately. E.g. the time to read the list is now 1/4 or better.
 
 There might also be limits in the number of packages in one batch etc.
-It's possible, that such things are caused by timeouts in extRact (or RCX).
+It's possible, that such things are caused by timeouts in Round-Sync/extRact/RCX.
 
 
 You might try rclone directly (maybe starting it manually or via Tasker or similar).
 You can also trigger NB by a shell command using intents (see at the end of this text)
 
 NB uses SAF, this allows to use SAF providers.
-RCX and it's successor extRact (shitty name for searching) use rclone to integrate a bunch of remote storages into SAF.
-https://github.com/newhinton/extRact
-search above for settings of extRact
-both don't provide their remotes on SAF by default
+An rclone based solution is
+https://github.com/newhinton/Round-Sync
+(the newest incarnation of the former RCX and it's later successor extRact).
+They use rclone to integrate a bunch of remote storages into SAF.
 
-I know only a few providers:
+I also know these two SAF providers:
 
 CIFS (Windows network)
 https://play.google.com/store/apps/details?id=com.wa2c.android.cifsdocumentsprovider
@@ -848,46 +851,17 @@ https://play.google.com/store/apps/details?id=ru.nsu.bobrofon.easysshfs
 
 Unfortunately the naming of such storage providers isn't very defined, "Document(s) Provider" or "Storage Access Provider", "File System" instead of "Provider" etc. So you never know if you found all.
 
-Google Drive should be a provider, too, but it seems the set of features does not match.
-There are only a few apps that show Google Drive in the sidebar.
+Google Drive should be a provider, too, but it seems the set of features does not match and NB doesn't see it.
+There are only a few apps that show Google Drive in the sidebar of the file selector.
 
 Those providers might have a different behavior... I never tried them more than a small test.
 
 
 note this is experimental, I don't use remote access regularly, so I don't know if it works flawlessly.
 I never restored from it, so I don't know, if the backups are 100% ok or if restore even works.
-In my last test it stopped after 50 min, with about 300 of the 400 apps backed up.
+
+In my last test backup stopped after 50 min, with about 300 of the 400 apps backed up.
 Not sure what happened. At least it seems that less apps could eventually work...
 At least the tar files looked ok from looking at some samples.
-
-
-> control NB via INTENTS:
-
-I added an experiment using intents (for now only to control tests by scripts).
-
-The feature or interface isn't discussed, yet.
-It's probably subject to change.
-Though the general parameters should be obvious.
-
-e.g.
-am broadcast -a schedule -e name "schedule name"  -n com.machiav3lli.backup.hg42/com.machiav3lli.backup.services.CommandReceiver
-
-starts the schedule named "schedule name"
-in this case it's controlling the pumpkin version of NB
-
-release com.machiav3lli.backup
-neo     com.machiav3lli.backup.neo
-pumpkin com.machiav3lli.backup.hg42
-
-
-E.g. this sets a schedule to a new time:
-am broadcast -a reschedule -e name "schedule name" -e time 23:45 -n com.machiav3lli.backup.hg42/com.machiav3lli.backup.services.CommandReceiver
-
-there is also a "cancel" action, that only get the name parameter (or empty for cancel all).
-
-Tasker adds extras like:
-name: schedule name
-Also note that you need to use "broadcast" (not "activity").
-You can use tasker actions "Send Intent" or shell scripting (which is useful, if you also use it outside of tasker, e.g. you could create a shell script and invoke it from tasker)
 
 </details>
