@@ -4,16 +4,19 @@
 * [What is OAndBackupX?](#what-is-oandbackupx)
 * [Which Android Versions are supported?](#which-android-versions-are-supported)
 * [How do I use NB?](#how-do-i-use-nb)
+* [What are all these backup-parts (icons)? / which parts are included in a backup?](#what-are-all-these-backup-parts-icons--which-parts-are-included-in-a-backup)
 * [What are Special Backups?](#what-are-special-backups)
 * [Do I need a rooted phone?](#do-i-need-a-rooted-phone)
 * [What is root access used for?](#what-is-root-access-used-for)
 * [Why is NB so slow?](#why-is-nb-so-slow)
 * [So why use SAF then?](#so-why-use-saf-then)
+* [Below some "performance" or time measuring infos from an older phone](#below-some-performance-or-time-measuring-infos-from-an-older-phone)
 * [I do not see any apps in the list. What can be the reason?](#i-do-not-see-any-apps-in-the-list-what-can-be-the-reason)
 * [What should I do, when I get the "No SAF manager" message?](#what-should-i-do-when-i-get-the-no-saf-manager-message)
-* [I do not see the app which is currently backed up in the notification during batch or scheduled backups.](#i-do-not-see-the-app-which-is-currently-backed-up-in-the-notification-during-batch-or-scheduled-backups)
-* [At restore the data directory of the app does not exist.](#at-restore-the-data-directory-of-the-app-does-not-exist)
+* [I do not see the app which is currently backed up in the notification during batch or scheduled backups](#i-do-not-see-the-app-which-is-currently-backed-up-in-the-notification-during-batch-or-scheduled-backups)
+* [At restore the data directory of the app does not exist](#at-restore-the-data-directory-of-the-app-does-not-exist)
 * [How does NB stop / pause / (un)suspend apps during backup?](#how-does-nb-stop--pause--unsuspend-apps-during-backup)
+* [Do I need to pause apps?](#do-i-need-to-pause-apps)
 * [How can I backup SMS \& Call log?](#how-can-i-backup-sms--call-log)
 * [Are you going to support older Android versions?](#are-you-going-to-support-older-android-versions)
 * [Can I use NB to switch to a new device / new OS / new Custom ROM / new major release of my ROM?](#can-i-use-nb-to-switch-to-a-new-device--new-os--new-custom-rom--new-major-release-of-my-rom)
@@ -23,7 +26,7 @@
 * [Is there a roadmap / an overview of features planned to be implemented?](#is-there-a-roadmap--an-overview-of-features-planned-to-be-implemented)
 * [Where do I find the so called "DevTools"?](#where-do-i-find-the-so-called-devtools)
 * [I read about selection and context menu in the Telegram group, where do I find this?](#i-read-about-selection-and-context-menu-in-the-telegram-group-where-do-i-find-this)
-* [Can I control NB from scripts or Tasker and similar?](#can-i-control-nb-from-scripts-or-tasker-and-similar)
+* [Can I control NB from scripts or Tasker or similar?](#can-i-control-nb-from-scripts-or-tasker-or-similar)
 * [What is the difference to implementations like Seedvault?](#what-is-the-difference-to-implementations-like-seedvault)
 * [What is the difference to the famous Titanium Backup?](#what-is-the-difference-to-the-famous-titanium-backup)
 * [How can I open encrypted backups on my computer?](#how-can-i-open-encrypted-backups-on-my-computer)
@@ -72,7 +75,7 @@ Go forward and backup multiple apps via Batch and finally define schedules e.g. 
 
 In case of any problems report it in [the Telegram or Matrix group](https://github.com/NeoApplications/Neo-Backup#community) first (sometimes there is an easy solution) and/or [raise an issue here in github](https://github.com/NeoApplications/Neo-Backup/issues).
 
-## What are all these backup-parts (icons)? / Which parts does a backup of an app consist of?
+## What are all these backup-parts (icons)? / which parts are included in a backup?
 
 Each backup basically consists of the two different parts:
 
@@ -80,9 +83,9 @@ Each backup basically consists of the two different parts:
 
 2. its **data** (created while using an app, settings, etc.)
 
-   The data can be split again into several data types:
+    The data can be split again into several data types:
 
-   2.1. **"normal"** data
+    * **"normal"** data
 
       <details><summary>Show details ...</summary>
 
@@ -91,16 +94,16 @@ Each backup basically consists of the two different parts:
 
       </details>
 
-   2.2. **external** data
+    * **external** data
 
       <details><summary>Show details ...</summary>
 
-       - Stored usually in `/Android/data/` in the external storage (internal storage in android current terminology)
-       - Not included in the backup by default (can be enabled in preferences)
+        - Stored usually in `/Android/data/` in the external storage (internal storage in android current terminology)
+        - Not included in the backup by default (can be enabled in preferences)
 
       </details>
 
-   2.3. **obb** files
+    * **obb** files
 
       <details><summary>Show details ...</summary>
 
@@ -109,7 +112,7 @@ Each backup basically consists of the two different parts:
 
       </details>
 
-   2.4. **device protected** data
+    * **device protected** data
 
       <details><summary>Show details ...</summary>
 
@@ -126,7 +129,7 @@ Each backup basically consists of the two different parts:
 
       </details>
 
-   2.5. **media** files
+    * **media** files
 
       <details><summary>Show details ...</summary>
 
@@ -145,7 +148,7 @@ Each backup basically consists of the two different parts:
 
       </details>
 
-   2.5. **cache** data
+    * **cache** data
 
       <details><summary>Show details ...</summary>
 
@@ -269,7 +272,7 @@ Todays measurements are like 1-2 sec to scan ~500 backup instances.
 
 <details><summary>Click here to show the test-details ...</summary>
 
-### General facts
+#### General facts
 
 * Device: Fairphone 2 (SoC: Qualcomm MSM8974AB-AB)
 * SoC's CPU: Snapdragon 801 (quad-core) 2.26 GHz
@@ -299,7 +302,7 @@ Advanced-Prefs:
 * Allow downgrading - enabled
 * STOP/CONT - enabled <- default now as well
 
-### Test description
+#### Test description
 
 **Test 1**
 
@@ -319,7 +322,7 @@ If the default revision count (2) is used, of course, the first run, which takes
 
 Refresh after starting NB with all those apps and their bkps created under Test 2
 
-### Measured times
+#### Measured times
 
 (they generally vary a lot - depending on what the device is doing in parallel)
 
@@ -421,6 +424,8 @@ In newer Android versions every app directory is mounted and usually only visibl
 
 ## How does NB stop / pause / (un)suspend apps during backup?
 
+**backup**
+
 NB is using the pair
 
 ```bash
@@ -429,7 +434,8 @@ kill -STOP PID
 kill -CONT PID
 ```
 
-around a backup if `backupPauseApps` is enabled in developer settings.
+around a backup, if `backupPauseApps` is enabled in developer settings.
+
 It also uses
 
 ```bash
@@ -440,6 +446,14 @@ pm unsuspend the.package.name
 
 if `backupSuspendApps` is set additionally.
 
+There is a risk, that NB stops processes that it needs itself, this could result in a dead lock (NB waiting for a result of a process that is stopped).
+
+To prevent this, NB excludes system processes and known package name patterns for "providers" and similar processes that provide services to other apps.
+
+This can never be perfect, so some risk remains.
+
+**restore**
+
 NB uses
 
 ```bash
@@ -447,6 +461,43 @@ am stop-app the.package.name || am force-stop the.package-name
 ```
 
 before a restore if `restoreKillApps` is enabled.
+
+This means, it first tries to gracefully stop the app (which needs a recent Android version).
+If that fails (or stop-app doesn't exist) the stop is forced.
+
+## Do I need to pause apps?
+
+Originally backup software is used when the system is properly shutdown and not running.
+This is the best method, because everything is in a consistent state.
+
+Some modern systems use snapshot file systems to freeze the state of all files.
+Writes to the frozen file system are saved to a temporary storage and updated to the frozen file system when it is unfrozen.
+This way files are consistent, but not necessarily complete.
+
+NB can only run it's backups, while the file system is still active.
+You should be aware of inconsistent files.
+
+When looking at the files, that are open, when a backup runs, there are many less critical files like logs etc.
+
+Other files are written quickly and then closed. The chance to run the backup while the file is written is small.
+
+Then there are databases.
+
+Databases are usually handled in a way, that they always contain consistent data (by writing data first and then validating it via a log).
+
+But I think, *copying* a database is different. E.g. the copy can become inconsistent when you start reading and there is something changed in the portion you just read. When you then read the log (often at the end) you are saving a validation state that doesn't correspond to the data you read, because it was changed afterwards.
+That's because databases are usually written to randomly ("random access"), instead of only appending data at the end.
+
+Pausing all processes that write to the open database files at least increases the chance to copy the database and it's log in a consistent state.
+However, it does not prevent files being incompletely written.
+
+**conclusion**
+
+With pausing, you increase the chance for a consistent backup.
+
+In general you should run backups, when you don't use your system, because there is always a risk of incomplete files.
+
+In practice, pausing seems to matter less than expected, **if** you don't use your system while the backup runs.
 
 ## How can I backup SMS & Call log?
 
@@ -507,9 +558,9 @@ Here are several examples - e.g.:
 
 It's somewhere on the [todo list](#is-there-a-roadmap--an-overview-of-features-planned-to-be-implemented) ...
 
-There are experimental savePreferences and loadPreferences tools in DevTools/tools that save and load the preferences. This does not include schedules and the global blocklist.
+There are experimental `savePreferences` and `loadPreferences` tools in `DevTools/tools` that save and load the preferences. NOTE: this does **not** include schedules and the global blocklist.
 
-Up to now you only have the possibility to (all the options are in preferences -> Tools):
+Up to now, you only have the possibility to (all the options are in preferences -> `Tools`):
 
 * Copy the APK of NB into the backup folder (useful to ramp up a new device)
 * Export/Import the schedules
@@ -555,7 +606,7 @@ Many things are experiments for development purposes, e.g. for work in progress 
 There are also options to fake backups and schedules or crash the app for test purposes.
 Read the Telegram group.
 
-## I read about selection and context menu in the Telegram group, where do I find this?  
+## I read about selection and context menu in the Telegram group, where do I find this?
 
 * long press a list entry in Homepage, this will select the first item.
 * Selection mode is on, if any item is selected.
@@ -576,7 +627,7 @@ Read the Telegram group.
 * Selections are stored in `!-SELECTIONS` folder in the backup directory
 * These files are simple text files with a package name per line, so you can use tools like editors, grep, meld, windiff, etc. or even scripts to process or build them
 
-## Can I control NB from scripts or Tasker and similar?  
+## Can I control NB from scripts or Tasker or similar?
 
 yes, NB has a broadcast receiver for Android "intents", that reacts on commands.
 
@@ -593,7 +644,7 @@ The broadcast receiver is:
 
     com.machiav3lli.backup.services.CommandReceiver
 
-note, this is a fixed name, `com.machiav3lli.backup` is a namespace not a package name.  
+note, this is a fixed name, `com.machiav3lli.backup` is a namespace not a package name.
 
 Additional data is given in so called `extras` of the intent.
 
@@ -602,6 +653,8 @@ Intents can also be sent by a su shell command like this:
 ```bash
 am -a COMMAND -e EXTRANAME1 EXTRADATA1 -e EXTRANAME2 EXTRADATA2 ... -n PACKAGE/BROADCASTRECEIVER
 ```
+
+With tasker et.al. the parameters of the intent must be entered in the corresponding fields.
 
 COMMAND can be one of these:
 
@@ -642,8 +695,6 @@ set a new time of a schedule
   ```bash
   am broadcast -a reschedule -e name "the name of the schedule" -e time 12:34 -n com.machiav3lli.backup/com.machiav3lli.backup.services.CommandReceiver
   ```
-
-with tasker etc. the parameters of the intent must be entered in the corresponding fields.
 
 ## What is the difference to implementations like Seedvault?
 
@@ -823,16 +874,16 @@ With using appropriate options, it can also provide the mounts via SAF.
 
     [ ] Enable SAF Client Preview
         EXPERIMENTAL: Access SD cards and other storage devices
-    
+
     [x] Refresh local drives
         Automatically refresh local storage media when starting
-    
+
     [x] Enable Content Provider Preview
         EXPERIMENTAL: Allows you to grant other apps access to rclone remotes
-    
+
     [x] Declare as local provider
         Some apps (e.g. Google docs) otherwise can't access files
-    
+
     [ ] Allow any app to access your remotes
         WARNING: This will allow any app to read and write any path on any configured remote.
 
