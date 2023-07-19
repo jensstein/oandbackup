@@ -1,11 +1,10 @@
-**OAndBackupX 3.0.0**
-
 ##### DIESE VERSION IST NICHT MIT DEN VORHERIGEN VERSIONEN KOMPATIBEL
-* Behoben: Standard-Sicherungsverzeichnis nach /OABX
-* neu programmiert Verschlüsselung (Danke @Pizze)
-* Hinzugefügt: Sortierung nach Datengröße
-* Hinzugefügt: Warndialog über die Aktivierung der Verschlüsselung
-* Aktualisiert: neu gestaltete Hilfe
+* Update: Standard-Sicherungsverzeichnis nach /OABX
+* Update: Verschlüsselung neu programmiert (Dank an @Pizze)
+* Update: Hilfe und Benutzeroberfläche überarbeitet
+* Update: clearCache-Einstellung zu excludeCache
+* Update: Alle Kommandozeilenbefehle neu geschrieben (Dank an @Pizze)
+* Hinzugefügt: Sortierung nach Dateigröße
 * Hinzugefügt: Tooltips für alle Schaltflächen-Symbole
-* Aktualisiert: adaptive Benutzeroberfläche für das AppSheet
-und mehr ...
+* Hinzugefügt: Button "Cache löschen" zur Benutzeroberfläche hinzugefügt
+* Hinzugefügt: Warndialog für die Aktivierung der Verschlüsselung

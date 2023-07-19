@@ -1,0 +1,8 @@
+- Hinzugefügt: Dynamische Farbunterstützung (auch bekannt als Material You)
+- Hinzugefügt: Sicherungsgröße (nur neue Backups)
+- Hinzufügen: Tags & Notiz
+- Hinzugefügt: Optionales Info-Log in der TopBar
+- Hinzugefügt: Name des Installationspakets
+- Hinzugefügt: Session-Installer (wird auf A13 benötigt)
+- Behoben: Zurücksetzen der Daten nach Neustart
+Weitere Details finden Sie im vollständigen Changelog

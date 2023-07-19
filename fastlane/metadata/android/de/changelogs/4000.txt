@@ -1,10 +1,10 @@
-**OAndBackupX 4.0.0**
-
-**NEUE HAUPT VERSION**: inkompatibel mit den alten Versionen
-**Leistungsveringerung**: verursacht durch die Verwendung von SAF im Vergleich zum direkten Zugriff und macht die Leistung von Ihrem SOC abhängig
-
-* Hinzugefügt: Unterstützung von Storage Access Framework
+INKOMPATIBEL MIT ALTEN VERSIONEN
+**LEISTUNGSVERMINDERUNG** verursacht durch die Verwendung von SAF im Vergleich zum Direktzugriff
+* Hinzugefügt: Unterstützung für Storage Access Framework
 * Hinzugefügt: Symlink/Pipe-Unterstützung
 * Hinzugefügt: Multi-Backup-Unterstützung
-* Hinzugefügt: Parallele Batch-Aufgaben erlauben
-und mehr: https://github.com/machiav3lli/oandbackupx/blob/master/CHANGELOG.md
+* Hinzufügen: Parallele Batch-Aufgaben zulassen
+* Update: Neue Benutzeroberfläche/UX
+* Update: Tag-System
+* Update: Sicherungsstruktur
+* Viele weitere Verbesserungen, Korrekturen und Bereinigungen

@@ -1,8 +1,7 @@
-**NEUE MAJOR VERSION**: inkompatibel mit den alten Versionen.
-**MIGRIERT TO KOTLIN**.
-GEPLANTE AKTIONEN BEENDEN SICH NACH 10 MINUTEN (SYSTEMEINSCHRÄNKUNG): also gruppieren Sie ihre Apps.
-
-* Aktualisiert: Die Auswahl eines Backup-Verzeichnisses erzeugt keinen Unterordner mehr
-* Aktualisiert: Weit weniger unnötige Aktualisierungen
+**NEUE HAUPTVERSION**: INKOMPATIBEL MIT ALTEN VERSIONEN
+**Erste KOTLIN-Veröffentlichung**
+GEPLANTE AKTIONEN KÖNNEN NUR 10 MINUTEN DAUERN (SYSTEMEINSCHRÄNKUNG)
+* Hinzugefügt: Modi für Apps im Batch-Dialog festlegen
+* Behoben: Persistente Speicherberechtigung
 * Behoben: A11-Unterstützung
-* Viel viele andere Verbesserungen, Korrekturen und Bereinigungen (siehe vollständiges Changelog)
+* Viel zu viele andere Verbesserungen, Korrekturen und Aufräumarbeiten
