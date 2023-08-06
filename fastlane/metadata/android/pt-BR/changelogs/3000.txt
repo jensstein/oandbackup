@@ -1,19 +1,10 @@
-**OAndBackupX 3.0.0**
-
 ##### ESTA VERSÃO NÃO É COMPATÍVEL COM AS VERSÕES ANTERIORES
-* Alterado: diretório de backup padrão para /OABX
-* Solução de criptografia reescrita (Créditos @Pizze)
-* Adicionado: classificar por tamanho de dados
-* Adicionado: Alerta de Diálogo sobre a ativação da Criptografia
-* Atualizado: UI de ajuda renovada
-* Adicionado: dicas de ferramentas para todos os ícones dos botões
-* Atualizado: UI AppSheet adaptável
-* Adicionado: limpe o botão Cache para o AppSheet
-* Alterado: Preferência clearCache para excludeCache
-* Corrigido: bordas de caixa para todos os adaptadores
-* Corrigido: fluido Verificado em Lote
-* Corrigido: Preferências não conectados
-* Corrigido: alguns filtros não funcionando
-* Atualização: reescrevendo as funções de comandos shell completamente (Créditos @Pizze)
-* Atualizado: Alemão (Créditos @elea11)
-* muitos ajustes de UI e desempenho
+* Atualização: diretório de backup padrão para /OABX
+* Atualização: Solução de criptografia reescrita (Créditos @Pizze)
+* Atualização: Ajuda renovada e interface do usuário do AppSheet
+* Atualização: preferência clearCache para excludeCache
+* Atualização: reescrita toda a função de comandos do shell (Créditos @Pizze)
+* Adicionar: Classificar por tamanho de dados
+* Adicionar: dicas de ferramentas para todos os ícones
+* Adicionar: botão para limpar o Cache na lista de apps
+* Adicionar: Alerta sobre ativar a Encriptação
