@@ -120,7 +120,7 @@ fun BatchActionDialogUI(
 ) {
     val message = StringBuilder()
     selectedPackageInfos.forEach { pi ->
-        message.append("${pi.packageLabel}")
+        message.append(pi.packageLabel)
         message.append(
             ": ${
                 stringResource(

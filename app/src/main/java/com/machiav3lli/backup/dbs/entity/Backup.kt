@@ -230,6 +230,7 @@ data class Backup @OptIn(ExperimentalSerializationApi::class) constructor(
                 || file?.path != other.file?.path
                 || dir?.path != other.dir?.path
                        -> false
+
         else           -> true
     }
 

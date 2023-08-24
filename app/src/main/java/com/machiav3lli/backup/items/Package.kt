@@ -208,6 +208,7 @@ class Package {
                     create -> {
                         OABX.context.getBackupRoot().ensureDirectory(packageName)
                     }
+
                     else   -> {
                         OABX.context.getBackupRoot().findFile(packageName)
                     }
@@ -338,7 +339,7 @@ class Package {
         get() = packageInfo.isSpecial
 
     val packageLabel: String
-        get() = packageInfo.packageLabel ?: packageName
+        get() = packageInfo.packageLabel.ifEmpty { packageName }
 
     val versionCode: Int
         get() = packageInfo.versionCode

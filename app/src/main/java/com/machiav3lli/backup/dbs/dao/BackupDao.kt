@@ -48,10 +48,10 @@ interface BackupDao : BaseDao<Backup> {
     fun updateList(packageName: String, backups: List<Backup>) {
         deleteAllOf(packageName)
         try {
-            if (backups.size > 0)
+            if (backups.isNotEmpty())
                 insert(*backups.toTypedArray())
-                //replaceInsert(*backups)
-        } catch(e: Throwable) {
+            //replaceInsert(*backups)
+        } catch (e: Throwable) {
             logException(e, backTrace = true)
         }
     }

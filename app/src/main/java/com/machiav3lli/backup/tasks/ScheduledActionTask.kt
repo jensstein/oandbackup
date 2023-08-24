@@ -39,7 +39,7 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
         val blacklistDao = database.getBlocklistDao()
 
         val schedule = scheduleDao.getSchedule(scheduleId)
-                       ?: return Triple("DbFailed", listOf(), MODE_UNSET)
+            ?: return Triple("DbFailed", listOf(), MODE_UNSET)
 
         val name = schedule.name
         val filter = schedule.filter

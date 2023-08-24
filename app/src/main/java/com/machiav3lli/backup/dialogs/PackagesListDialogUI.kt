@@ -64,14 +64,14 @@ fun PackagesListDialogUI(
             if (b1 != b2)
                 if (b1) -1 else 1
             else {
-                val l1 = si1.packageLabel ?: ""
-                val l2 = si2.packageLabel ?: ""
+                val l1 = si1.packageLabel
+                val l2 = si2.packageLabel
                 l1.compareTo(l2, ignoreCase = true)
             }
         }
         packagePairs.addAll(
             specialInfos.map { specialInfo ->
-                Pair(specialInfo.packageName, specialInfo.packageLabel ?: "")
+                Pair(specialInfo.packageName, specialInfo.packageLabel)
             }
         )
     }
