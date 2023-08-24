@@ -32,8 +32,8 @@ open class AppInfo : com.machiav3lli.backup.dbs.entity.PackageInfo {
 
     constructor(
         packageName: String,
-        packageLabel: String?,
-        versionName: String?,
+        packageLabel: String,
+        versionName: String,
         versionCode: Int,
         profileId: Int,
         sourceDir: String?,

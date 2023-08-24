@@ -27,8 +27,8 @@ import java.io.File
 open class PackageInfo(
     @PrimaryKey
     var packageName: String,
-    var packageLabel: String? = null,
-    var versionName: String? = null,
+    var packageLabel: String = "",
+    var versionName: String = "",
     var versionCode: Int = 0,
     var profileId: Int = 0,
     var sourceDir: String? = null,

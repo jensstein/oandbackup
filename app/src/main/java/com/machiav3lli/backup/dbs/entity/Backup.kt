@@ -41,8 +41,8 @@ import java.time.LocalDateTime
 data class Backup @OptIn(ExperimentalSerializationApi::class) constructor(
     var backupVersionCode: Int = 0,
     var packageName: String,
-    var packageLabel: String?,
-    var versionName: String? = "-",
+    var packageLabel: String,
+    var versionName: String = "-",
     var versionCode: Int = 0,
     var profileId: Int = 0,
     var sourceDir: String? = null,
