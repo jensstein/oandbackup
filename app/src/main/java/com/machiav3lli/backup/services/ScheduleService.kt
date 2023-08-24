@@ -286,7 +286,7 @@ open class ScheduleService : Service() {
                     textLog(
                         listOf(
                             message,
-                            "--- autoLogAfterSchedule $scheduleId $name"
+                            "--- autoLogSuspicious $scheduleId $name"
                         ) + supportInfo()
                     )
             }
