@@ -12,9 +12,22 @@ class Converters {
         else string.split(",").toHashSet()
 
 
+    @JvmName("stringSetToString")
     @TypeConverter
-    fun toString(set: Set<String?>?): String =
-        if (set?.isNotEmpty() == true) set.joinToString(",")
+    fun toString(set: Set<String>): String =
+        if (set.isNotEmpty()) set.joinToString(",")
+        else ""
+
+    @TypeConverter
+    fun toStringMutableSet(string: String?): MutableSet<String> =
+        if (string.isNullOrEmpty()) mutableSetOf()
+        else string.split(",").toHashSet()
+
+
+    @JvmName("stringMutableSetToString")
+    @TypeConverter
+    fun toString(set: MutableSet<String>): String =
+        if (set.isNotEmpty()) set.joinToString(",")
         else ""
 
     @TypeConverter
