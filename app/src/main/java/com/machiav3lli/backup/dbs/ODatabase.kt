@@ -47,13 +47,14 @@ import com.machiav3lli.backup.dbs.entity.SpecialInfo
         AppInfo::class,
         SpecialInfo::class,
         Backup::class],
-    version = 7,
+    version = 8,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 2, to = 4),
         AutoMigration(from = 4, to = 5),
         AutoMigration(from = 5, to = 6, spec = ODatabase.Companion.AutoMigration5to6::class),
         AutoMigration(from = 6, to = 7, spec = ODatabase.Companion.AutoMigration6to7::class),
+        AutoMigration(from = 7, to = 8),
     ]
 )
 @TypeConverters(Converters::class)
