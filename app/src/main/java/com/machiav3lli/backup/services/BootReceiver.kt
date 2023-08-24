@@ -29,7 +29,7 @@ class BootReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
-            val scheduleDao = OABX.db.scheduleDao
+            val scheduleDao = OABX.db.getScheduleDao()
             Thread(DatabaseRunnable(context, scheduleDao)).start()
         } else return
     }

@@ -27,11 +27,11 @@ interface BlocklistDao : BaseDao<Blocklist> {
     @Query("SELECT COUNT(*) FROM blocklist")
     fun count(): Long
 
-    @get:Query("SELECT * FROM blocklist ORDER BY blocklistId ASC")
-    val all: List<Blocklist>
+    @Query("SELECT * FROM blocklist ORDER BY blocklistId ASC")
+    fun getAll(): List<Blocklist>
 
-    @get:Query("SELECT * FROM blocklist ORDER BY blocklistId ASC")
-    val allFlow: Flow<List<Blocklist>>
+    @Query("SELECT * FROM blocklist ORDER BY blocklistId ASC")
+    fun getAllFlow(): Flow<List<Blocklist>>
 
     @Query("SELECT packageName FROM blocklist WHERE blocklistId = :blocklistId")
     fun getBlocklistedPackages(blocklistId: Long): List<String>

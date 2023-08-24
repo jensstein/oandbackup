@@ -55,7 +55,7 @@ class AppSheetViewModel(
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    var appExtras = database.appExtrasDao.getFlow(app?.packageName).mapLatest {
+    var appExtras = database.getAppExtrasDao().getFlow(app?.packageName).mapLatest {
         it ?: AppExtras(app?.packageName ?: "")
     }.stateIn(
         viewModelScope,
@@ -90,7 +90,7 @@ class AppSheetViewModel(
                         mPackage.dataPath, mPackage.isSystem
                     )
                     if (mPackage.backupList.isEmpty()) {
-                        database.appInfoDao.deleteAllOf(mPackage.packageName)
+                        database.getAppInfoDao().deleteAllOf(mPackage.packageName)
                         dismissNow.value = true
                     }
                     showNotification(
@@ -145,7 +145,7 @@ class AppSheetViewModel(
             thePackage.value?.let { pkg ->
                 pkg.deleteBackup(backup)
                 if (!pkg.isInstalled && pkg.backupList.isEmpty()) {
-                    database.appInfoDao.deleteAllOf(pkg.packageName)
+                    database.getAppInfoDao().deleteAllOf(pkg.packageName)
                     dismissNow.value = true
                 }
             }
@@ -163,7 +163,7 @@ class AppSheetViewModel(
             thePackage.value?.let { pkg ->
                 pkg.deleteAllBackups()
                 if (!pkg.isInstalled && pkg.backupList.isEmpty()) {
-                    database.appInfoDao.deleteAllOf(pkg.packageName)
+                    database.getAppInfoDao().deleteAllOf(pkg.packageName)
                     dismissNow.value = true
                 }
             }
@@ -180,9 +180,9 @@ class AppSheetViewModel(
     private suspend fun replaceExtras(appExtras: AppExtras?) {
         withContext(Dispatchers.IO) {
             if (appExtras != null)
-                database.appExtrasDao.replaceInsert(appExtras)
+                database.getAppExtrasDao().replaceInsert(appExtras)
             else
-                thePackage.value?.let { database.appExtrasDao.deleteByPackageName(it.packageName) }
+                thePackage.value?.let { database.getAppExtrasDao().deleteByPackageName(it.packageName) }
         }
     }
 

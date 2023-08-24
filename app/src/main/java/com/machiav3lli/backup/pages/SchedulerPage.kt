@@ -62,7 +62,7 @@ fun SchedulerPage(viewModel: SchedulerViewModel) {
     val scheduleSheetVM = remember(scheduleSheetId.value) {
         ScheduleViewModel(
             scheduleSheetId.value,
-            OABX.db.scheduleDao,
+            OABX.db.getScheduleDao(),
         )
     }
 

@@ -58,12 +58,12 @@ import com.machiav3lli.backup.dbs.entity.SpecialInfo
 )
 @TypeConverters(Converters::class)
 abstract class ODatabase : RoomDatabase() {
-    abstract val scheduleDao: ScheduleDao
-    abstract val blocklistDao: BlocklistDao
-    abstract val appExtrasDao: AppExtrasDao
-    abstract val backupDao: BackupDao
-    abstract val appInfoDao: AppInfoDao
-    abstract val specialInfoDao: SpecialInfoDao
+    abstract fun getScheduleDao(): ScheduleDao
+    abstract fun getBlocklistDao(): BlocklistDao
+    abstract fun getAppExtrasDao(): AppExtrasDao
+    abstract fun getBackupDao(): BackupDao
+    abstract fun getAppInfoDao(): AppInfoDao
+    abstract fun getSpecialInfoDao(): SpecialInfoDao
 
     companion object {
         @Volatile

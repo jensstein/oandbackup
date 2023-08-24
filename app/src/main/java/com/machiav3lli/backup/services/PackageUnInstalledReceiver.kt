@@ -50,18 +50,18 @@ class PackageUnInstalledReceiver : BroadcastReceiver() {
                     )?.let { packageInfo ->
                         val appInfo = AppInfo(context, packageInfo)
                         GlobalScope.launch(Dispatchers.IO) {
-                            db.appInfoDao.replaceInsert(appInfo)
+                            db.getAppInfoDao().replaceInsert(appInfo)
                         }
                     }
                 }
                 Intent.ACTION_PACKAGE_REMOVED -> {
                     GlobalScope.launch(Dispatchers.IO) {
-                        val backups = db.backupDao.get(packageName)
+                        val backups = db.getBackupDao().get(packageName)
                         if (backups.isEmpty())
-                            db.appInfoDao.deleteAllOf(packageName)
+                            db.getAppInfoDao().deleteAllOf(packageName)
                         else {
                             val appInfo = backups.maxBy { it.backupDate }.toAppInfo()
-                            db.appInfoDao.replaceInsert(appInfo)
+                            db.getAppInfoDao().replaceInsert(appInfo)
                         }
                     }
                 }

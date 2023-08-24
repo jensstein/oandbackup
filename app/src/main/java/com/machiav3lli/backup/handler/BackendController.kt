@@ -775,8 +775,8 @@ fun Context.updateAppTables() {
         try {
             beginNanoTimer("dbUpdate")
 
-            OABX.db.backupDao.updateList(*backups.toTypedArray())
-            OABX.db.appInfoDao.updateList(*appInfoList.toTypedArray())
+            OABX.db.getBackupDao().updateList(*backups.toTypedArray())
+            OABX.db.getAppInfoDao().updateList(*appInfoList.toTypedArray())
         } catch (e: Throwable) {
             logException(e, backTrace = true)
         } finally {

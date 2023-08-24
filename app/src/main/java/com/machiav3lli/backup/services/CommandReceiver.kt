@@ -37,7 +37,7 @@ class CommandReceiver : //TODO hg42 how to maintain security?
                     Thread {
                         val now = System.currentTimeMillis()
                         val serviceIntent = Intent(context, ScheduleService::class.java)
-                        val scheduleDao = OABX.db.scheduleDao
+                        val scheduleDao = OABX.db.getScheduleDao()
                         scheduleDao.getSchedule(name)?.let { schedule ->
                             serviceIntent.putExtra("scheduleId", schedule.id)
                             serviceIntent.putExtra("name", schedule.getBatchName(now))
@@ -55,7 +55,7 @@ class CommandReceiver : //TODO hg42 how to maintain security?
                     OABX.addInfoLogText("$command $name $time -> $setTime")
                     Timber.d("################################################### command intent reschedule -------------> name=$name time=$time -> $setTime")
                     Thread {
-                        val scheduleDao = OABX.db.scheduleDao
+                        val scheduleDao = OABX.db.getScheduleDao()
                         scheduleDao.getSchedule(name)?.let { schedule ->
                             val (hour, minute) = setTime.split(":").map { it.toInt() }
                             traceSchedule { "[${schedule.id}] command receiver -> re-schedule to hour=$hour minute=$minute" }

@@ -28,11 +28,11 @@ interface AppInfoDao : BaseDao<AppInfo> {
     @Query("SELECT COUNT(*) FROM appinfo")
     fun count(): Long
 
-    @get:Query("SELECT * FROM appinfo ORDER BY packageName ASC")
-    val all: MutableList<AppInfo>
+    @Query("SELECT * FROM appinfo ORDER BY packageName ASC")
+    fun getAll(): MutableList<AppInfo>
 
-    @get:Query("SELECT * FROM appinfo ORDER BY packageName ASC")
-    val allFlow: Flow<MutableList<AppInfo>>
+    @Query("SELECT * FROM appinfo ORDER BY packageName ASC")
+    fun getAllFlow(): Flow<MutableList<AppInfo>>
 
     @Query("SELECT * FROM appinfo WHERE packageName = :packageName")
     fun get(packageName: String): AppInfo

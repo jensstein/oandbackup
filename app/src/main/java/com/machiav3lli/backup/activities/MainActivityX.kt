@@ -145,7 +145,7 @@ class MainActivityX : BaseActivity() {
         BatchViewModel.Factory(application)
     }
     val schedulerViewModel: SchedulerViewModel by viewModels {
-        SchedulerViewModel.Factory(OABX.db.scheduleDao, application)
+        SchedulerViewModel.Factory(OABX.db.getScheduleDao(), application)
     }
 
     @OptIn(

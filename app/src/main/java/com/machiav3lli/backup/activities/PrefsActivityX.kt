@@ -64,7 +64,7 @@ import kotlinx.coroutines.launch
 
 class PrefsActivityX : BaseActivity() {
     private val exportsViewModel: ExportsViewModel by viewModels {
-        ExportsViewModel.Factory(OABX.db.scheduleDao, application)
+        ExportsViewModel.Factory(OABX.db.getScheduleDao(), application)
     }
     private val logsViewModel: LogViewModel by viewModels {
         LogViewModel.Factory(application)

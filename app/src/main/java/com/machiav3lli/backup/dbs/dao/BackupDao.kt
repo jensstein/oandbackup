@@ -29,11 +29,11 @@ interface BackupDao : BaseDao<Backup> {
     @Query("SELECT COUNT(*) FROM backup")
     fun count(): Long
 
-    @get:Query("SELECT * FROM backup ORDER BY packageName ASC")
-    val all: MutableList<Backup>
+    @Query("SELECT * FROM backup ORDER BY packageName ASC")
+    fun getAll(): MutableList<Backup>
 
-    @get:Query("SELECT * FROM backup ORDER BY packageName ASC")
-    val allFlow: Flow<MutableList<Backup>>
+    @Query("SELECT * FROM backup ORDER BY packageName ASC")
+    fun getAllFlow(): Flow<MutableList<Backup>>
 
     @Query("SELECT * FROM backup WHERE packageName = :packageName")
     fun get(packageName: String): MutableList<Backup>

@@ -26,8 +26,8 @@ interface SpecialInfoDao : BaseDao<SpecialInfo> {
     @Query("SELECT COUNT(*) FROM specialinfo")
     fun count(): Long
 
-    @get:Query("SELECT * FROM specialinfo ORDER BY packageName ASC")
-    val all: MutableList<SpecialInfo>
+    @Query("SELECT * FROM specialinfo ORDER BY packageName ASC")
+    fun getAll(): MutableList<SpecialInfo>
 
     @Query("SELECT * FROM specialinfo WHERE packageName = :packageName")
     fun get(packageName: String): MutableList<SpecialInfo>

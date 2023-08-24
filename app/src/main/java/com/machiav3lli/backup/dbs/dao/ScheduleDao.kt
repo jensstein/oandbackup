@@ -53,11 +53,11 @@ interface ScheduleDao : BaseDao<Schedule> {
     fun getBlockListFlow(id: Long): Flow<Set<String>> =
         _getBlockListFlow(id).mapLatest { Converters().toStringSet(it) }
 
-    @get:Query("SELECT * FROM schedule ORDER BY id ASC")
-    val all: List<Schedule>
+    @Query("SELECT * FROM schedule ORDER BY id ASC")
+    fun getAll(): List<Schedule>
 
-    @get:Query("SELECT * FROM schedule ORDER BY id ASC")
-    val allFlow: Flow<List<Schedule>>
+    @Query("SELECT * FROM schedule ORDER BY id ASC")
+    fun getAllFlow(): Flow<List<Schedule>>
 
     @Query("DELETE FROM schedule")
     fun deleteAll()

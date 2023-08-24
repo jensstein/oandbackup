@@ -35,8 +35,8 @@ open class ScheduledActionTask(val context: Context, private val scheduleId: Lon
     override fun doInBackground(vararg params: Void?): Triple<String, List<String>, Int>? {
 
         val database = OABX.db
-        val scheduleDao = database.scheduleDao
-        val blacklistDao = database.blocklistDao
+        val scheduleDao = database.getScheduleDao()
+        val blacklistDao = database.getBlocklistDao()
 
         val schedule = scheduleDao.getSchedule(scheduleId)
                        ?: return Triple("DbFailed", listOf(), MODE_UNSET)

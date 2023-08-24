@@ -87,7 +87,7 @@ class MainViewModel(
 
     val schedules =
         //------------------------------------------------------------------------------------------ blocklist
-        db.scheduleDao.allFlow
+        db.getScheduleDao().getAllFlow()
             .trace { "*** schedules <<- ${it.size}" }
             .stateIn(
                 viewModelScope + Dispatchers.IO,
@@ -97,7 +97,7 @@ class MainViewModel(
 
     val blocklist =
         //------------------------------------------------------------------------------------------ blocklist
-        db.blocklistDao.allFlow
+        db.getBlocklistDao().getAllFlow()
             .trace { "*** blocklist <<- ${it.size}" }
             .stateIn(
                 viewModelScope + Dispatchers.IO,
@@ -108,7 +108,7 @@ class MainViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     val backupsMapDb =
         //------------------------------------------------------------------------------------------ backupsMap
-        db.backupDao.allFlow
+        db.getBackupDao().getAllFlow()
             .mapLatest { it.groupBy(Backup::packageName) }
             .trace { "*** backupsMapDb <<- p=${it.size} b=${it.map { it.value.size }.sum()}" }
             //.trace { "*** backupsMap <<- p=${it.size} b=${it.map { it.value.size }.sum()} #################### egg ${showSortedBackups(it["com.android.egg"])}" }  // for testing use com.android.egg
@@ -134,7 +134,7 @@ class MainViewModel(
                         )
                     }"
                 }
-                db.backupDao.updateList(
+                db.getBackupDao().updateList(
                     it.first,
                     it.second.sortedByDescending { it.backupDate },
                 )
@@ -149,7 +149,7 @@ class MainViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     val appExtrasMap =
         //------------------------------------------------------------------------------------------ appExtrasMap
-        db.appExtrasDao.allFlow
+        db.getAppExtrasDao().getAllFlow()
             .mapLatest { it.associateBy(AppExtras::packageName) }
             .trace { "*** appExtrasMap <<- ${it.size}" }
             .stateIn(
@@ -161,7 +161,7 @@ class MainViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     val packageList =
         //========================================================================================== packageList
-        combine(db.appInfoDao.allFlow, backupsMapDb) { appinfos, backups ->
+        combine(db.getAppInfoDao().getAllFlow(), backupsMapDb) { appinfos, backups ->
 
             traceFlows {
                 "******************** packages-db: ${appinfos.size} backups-db: ${
@@ -332,7 +332,7 @@ class MainViewModel(
                 appPackage?.apply {
                     val new = Package(appContext, packageName)
                     new.refreshFromPackageManager(OABX.context)
-                    if (!isSpecial) db.appInfoDao.update(new.packageInfo as AppInfo)
+                    if (!isSpecial) db.getAppInfoDao().update(new.packageInfo as AppInfo)
                     //new.refreshBackupList()     //TODO hg42 ??? who calls this? take it from backupsMap?
                 }
             } catch (e: AssertionError) {
@@ -349,7 +349,7 @@ class MainViewModel(
 
     private suspend fun updateExtrasWith(appExtras: AppExtras) {
         withContext(Dispatchers.IO) {
-            db.appExtrasDao.replaceInsert(appExtras)
+            db.getAppExtrasDao().replaceInsert(appExtras)
             true
         }
     }
@@ -360,8 +360,8 @@ class MainViewModel(
 
     private suspend fun replaceExtras(appExtras: Collection<AppExtras>) {
         withContext(Dispatchers.IO) {
-            db.appExtrasDao.deleteAll()
-            db.appExtrasDao.insert(*appExtras.toTypedArray())
+            db.getAppExtrasDao().deleteAll()
+            db.getAppExtrasDao().insert(*appExtras.toTypedArray())
         }
     }
 
@@ -379,7 +379,7 @@ class MainViewModel(
 
     private suspend fun insertIntoBlocklistDB(packageName: String) {
         withContext(Dispatchers.IO) {
-            db.blocklistDao.insert(
+            db.getBlocklistDao().insert(
                 Blocklist.Builder()
                     .withId(0)
                     .withBlocklistId(PACKAGES_LIST_GLOBAL_ID)
@@ -410,7 +410,7 @@ class MainViewModel(
 
     private suspend fun insertIntoBlocklistDB(newList: Set<String>) =
         withContext(Dispatchers.IO) {
-            db.blocklistDao.updateList(PACKAGES_LIST_GLOBAL_ID, newList)
+            db.getBlocklistDao().updateList(PACKAGES_LIST_GLOBAL_ID, newList)
         }
 
     class Factory(

@@ -35,7 +35,7 @@ import kotlinx.coroutines.withContext
 class SchedulerViewModel(val database: ScheduleDao, appContext: Application) :
     AndroidViewModel(appContext) {
 
-    var schedules = database.allFlow
+    var schedules = database.getAllFlow()
     private val progress = MutableStateFlow(Pair(true,0.0f))
 
     fun addSchedule(withSpecial: Boolean) {

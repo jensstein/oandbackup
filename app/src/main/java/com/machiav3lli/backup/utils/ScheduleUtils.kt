@@ -166,7 +166,7 @@ fun timeLeft(
 fun scheduleAlarm(context: Context, scheduleId: Long, rescheduleBoolean: Boolean) {
     if (scheduleId >= 0) {
         Thread {
-            val scheduleDao = OABX.db.scheduleDao
+            val scheduleDao = OABX.db.getScheduleDao()
             var schedule = scheduleDao.getSchedule(scheduleId)
             if (schedule?.enabled == true) {
 
@@ -271,8 +271,8 @@ fun scheduleAlarmsOnce() {
     alarmsHaveBeenScheduled = true
 
     Thread {
-        val scheduleDao = OABX.db.scheduleDao
-        scheduleDao.all
+        val scheduleDao = OABX.db.getScheduleDao()
+        scheduleDao.getAll()
             .forEach {
                 // do not set or cancel schedules that are just going to be started
                 // (on boot or fresh start from an alarm)
@@ -365,7 +365,7 @@ fun startSchedule(schedule: Schedule) {
             .setMessage(message)
             .setPositiveButton(R.string.dialogOK) { _: DialogInterface?, _: Int ->
                 if (schedule.mode != MODE_UNSET)
-                    StartSchedule(OABX.context, database.scheduleDao, schedule.id).execute()
+                    StartSchedule(OABX.context, database.getScheduleDao(), schedule.id).execute()
             }
             .setNegativeButton(R.string.dialogCancel) { _: DialogInterface?, _: Int -> }
             .show()

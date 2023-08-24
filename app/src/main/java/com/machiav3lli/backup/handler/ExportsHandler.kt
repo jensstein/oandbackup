@@ -53,8 +53,8 @@ class ExportsHandler(var context: Context) {
     @Throws(IOException::class)
     fun exportSchedules() {
         // TODO improve on folder structure
-        val dataSource = OABX.db.scheduleDao
-        val scheds = dataSource.all
+        val dataSource = OABX.db.getScheduleDao()
+        val scheds = dataSource.getAll()
         scheds.forEach {
             val fileName = String.format(EXPORTS_INSTANCE, it.name)
             exportsDirectory?.createFile(fileName)?.let { exportFile ->
