@@ -50,8 +50,8 @@ android {
         applicationId = "com.machiav3lli.backup"
         minSdk = 26
         targetSdk = 33
-        versionCode = 8309
-        versionName = "8.3.2"
+        versionCode = 8310
+        versionName = "8.3.3"
         buildConfigField("int", "MAJOR", "8")
         buildConfigField("int", "MINOR", "3")
 

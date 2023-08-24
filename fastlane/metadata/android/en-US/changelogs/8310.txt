@@ -1,0 +1,4 @@
+Fix: Force stopping an app
+Fix: Deleting schedule
+Update: Increase pager's pre-composing
++ more than 15 commits and 30 translation contributions

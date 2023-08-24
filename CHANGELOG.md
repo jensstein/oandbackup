@@ -1,6 +1,18 @@
 CHANGELOG
 =========
 
+8.3.3 (24.08.2023) ~20 Commits & +30 Translations
+------------
+
+#### Function
+
+- Fix: Force stopping an app
+- Fix: Deleting schedule
+
+#### UI
+
+- Update: Increase pager's pre-composing
+
 8.3.2 (23.06.2023) +260 Commits & +70 Translations
 ------------
 
