@@ -20,8 +20,8 @@ import com.android.build.gradle.internal.tasks.factory.dependsOn
 plugins {
     id("com.android.application")
     kotlin("android")
-    kotlin("kapt")
     kotlin("plugin.serialization").version("1.9.0")
+    id("com.google.devtools.ksp") version ("1.9.0-1.0.13")
 }
 
 val vKotlin = "1.9.0"
@@ -56,12 +56,10 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments(
-                    mapOf(
-                        "room.schemaLocation" to "$projectDir/schemas",
-                        "room.incremental" to "true"
-                    )
-                )
+                ksp {
+                    arg("room.schemaLocation", "$projectDir/schemas")
+                    arg("room.incremental", "true")
+                }
             }
         }
 
@@ -131,11 +129,12 @@ android {
 dependencies {
     implementation(kotlin("stdlib", vKotlin))
     implementation(kotlin("reflect", vKotlin))
+    implementation("com.google.devtools.ksp:symbol-processing-api:$vKotlin-1.0.13")
 
     // Libs
     implementation("androidx.room:room-runtime:$vRoom")
     implementation("androidx.room:room-ktx:$vRoom")
-    kapt("androidx.room:room-compiler:$vRoom")
+    ksp("androidx.room:room-compiler:$vRoom")
     implementation("androidx.work:work-runtime-ktx:2.8.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$vKotlinSerialization")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$vKotlinSerialization")
