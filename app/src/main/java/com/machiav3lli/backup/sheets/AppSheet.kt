@@ -66,7 +66,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.OABX.Companion.app
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dbs.entity.Backup
@@ -651,7 +650,7 @@ fun AppSheet(
                                         //TODO hg42 force-stop, force-close, ... ? I think these are different ones, and I don't know which.
                                         //TODO hg42 killBackgroundProcesses seems to be am kill
                                         //TODO in api33 A13 there is am stop-app which doesn't kill alarms and
-                                        runAsRoot("am stop-app ${app.packageName} || am force-stop ${app.packageName}")
+                                        runAsRoot("am stop-app ${pkg.packageName} || am force-stop ${pkg.packageName}")
                                     }
                                 )
                             }
