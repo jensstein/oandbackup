@@ -7,8 +7,8 @@ import java.time.format.DateTimeFormatter
 class Converters {
 
     @TypeConverter
-    fun toStringSet(string: String): Set<String> =
-        if (string == "") setOf()
+    fun toStringSet(string: String?): Set<String> =
+        if (string.isNullOrEmpty()) setOf()
         else string.split(",").toHashSet()
 
 
@@ -18,21 +18,21 @@ class Converters {
         else ""
 
     @TypeConverter
-    fun toStringList(string: String): List<String> =
-        if (string == "") emptyList()
+    fun toStringList(string: String?): List<String> =
+        if (string.isNullOrEmpty()) emptyList()
         else string.removeSurrounding("[", "]").split(",")
 
     @TypeConverter
     fun toString(list: List<String>): String = list.toString()
 
     @TypeConverter
-    fun toStringArray(string: String): Array<String> =
-        if (string == "") arrayOf()
+    fun toStringArray(string: String?): Array<String> =
+        if (string.isNullOrEmpty()) arrayOf()
         else string.split(",").toTypedArray()
 
     @TypeConverter
-    fun toString(array: Array<String?>?): String =
-        if (array?.isNotEmpty() == true) array.joinToString(",")
+    fun toString(array: Array<String>): String =
+        if (array.isNotEmpty()) array.joinToString(",")
         else ""
 
 
