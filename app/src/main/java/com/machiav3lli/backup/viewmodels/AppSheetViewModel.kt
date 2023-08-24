@@ -17,12 +17,12 @@
  */
 package com.machiav3lli.backup.viewmodels
 
-import android.app.Application
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.AppExtras
@@ -46,8 +46,7 @@ class AppSheetViewModel(
     app: Package?,
     private val database: ODatabase,
     private var shellCommands: ShellCommands,
-    private val appContext: Application,
-) : AndroidViewModel(appContext) {
+) : AndroidViewModel(OABX.NB) {
 
     var thePackage = flow<Package?> { app }.stateIn(
         viewModelScope,
@@ -95,20 +94,20 @@ class AppSheetViewModel(
                         dismissNow.value = true
                     }
                     showNotification(
-                        appContext,
+                        OABX.NB,
                         MainActivityX::class.java,
                         notificationId++,
                         mPackage.packageLabel,
-                        appContext.getString(com.machiav3lli.backup.R.string.uninstallSuccess),
+                        OABX.NB.getString(com.machiav3lli.backup.R.string.uninstallSuccess),
                         true
                     )
                 } catch (e: ShellCommands.ShellActionFailedException) {
                     showNotification(
-                        appContext,
+                        OABX.NB,
                         MainActivityX::class.java,
                         notificationId++,
                         mPackage.packageLabel,
-                        appContext.getString(com.machiav3lli.backup.R.string.uninstallFailure),
+                        OABX.NB.getString(com.machiav3lli.backup.R.string.uninstallFailure),
                         true
                     )
                     e.message?.let { message -> LogsHandler.logErrors(message) }
@@ -203,12 +202,11 @@ class AppSheetViewModel(
         private val packageInfo: Package?,
         private val database: ODatabase,
         private val shellCommands: ShellCommands,
-        private val application: Application,
     ) : ViewModelProvider.Factory {
         @Suppress("unchecked_cast")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(AppSheetViewModel::class.java)) {
-                return AppSheetViewModel(packageInfo, database, shellCommands, application) as T
+                return AppSheetViewModel(packageInfo, database, shellCommands) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }

@@ -240,7 +240,6 @@ class MainActivityX : BaseActivity() {
                         appSheetPackage.value,
                         OABX.db,
                         ShellCommands(),
-                        OABX.app,
                     ) else null
                 }
 

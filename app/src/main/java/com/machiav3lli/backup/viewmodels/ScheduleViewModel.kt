@@ -22,6 +22,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.dbs.dao.ScheduleDao
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.traceSchedule
@@ -37,8 +38,7 @@ import kotlinx.coroutines.withContext
 class ScheduleViewModel(
     val id: Long,
     private val scheduleDB: ScheduleDao,
-    appContext: Application
-) : AndroidViewModel(appContext) {
+) : AndroidViewModel(OABX.NB) {
 
     val schedule: StateFlow<Schedule> = scheduleDB.getScheduleFlow(id)
         //TODO hg42 .trace { "*** schedule <<- ${it}" }     // what can here be null? (something is null that is not declared as nullable)
@@ -88,12 +88,11 @@ class ScheduleViewModel(
 
     class Factory(
         private val id: Long, private val scheduleDB: ScheduleDao,
-        private val application: Application
     ) : ViewModelProvider.Factory {
         @Suppress("unchecked_cast")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(ScheduleViewModel::class.java)) {
-                return ScheduleViewModel(id, scheduleDB, application) as T
+                return ScheduleViewModel(id, scheduleDB) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }

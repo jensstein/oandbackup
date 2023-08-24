@@ -57,7 +57,7 @@ fun PackagesListDialogUI(
     val packagePairs = mutableListOf<Pair<String, String>>()
 
     if (specialBackupsEnabled && filter and MAIN_FILTER_SPECIAL == MAIN_FILTER_SPECIAL) {
-        var specialInfos = SpecialInfo.getSpecialInfos(OABX.app)
+        var specialInfos = SpecialInfo.getSpecialInfos(OABX.NB)
         specialInfos = specialInfos.sortedWith { si1, si2 ->
             val b1 = selectedPackageNames.contains(si1.packageName)
             val b2 = selectedPackageNames.contains(si2.packageName)

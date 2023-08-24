@@ -112,7 +112,7 @@ fun DevInfoLogTab() {
 @Composable
 fun DevLogsTab() {
 
-    LogsPage(LogViewModel(OABX.app))
+    LogsPage(LogViewModel(OABX.NB))
 }
 
 @Composable

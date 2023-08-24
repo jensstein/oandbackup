@@ -64,7 +64,6 @@ fun SchedulerPage(viewModel: SchedulerViewModel) {
         ScheduleViewModel(
             scheduleSheetId.value,
             OABX.db.scheduleDao,
-            OABX.app,
         )
     }
 

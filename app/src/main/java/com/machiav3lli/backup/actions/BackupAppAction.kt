@@ -26,7 +26,6 @@ import com.machiav3lli.backup.MODE_DATA_EXT
 import com.machiav3lli.backup.MODE_DATA_MEDIA
 import com.machiav3lli.backup.MODE_DATA_OBB
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.OABX.Companion.app
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.BackupBuilder
 import com.machiav3lli.backup.handler.LogsHandler
@@ -241,8 +240,8 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     @Throws(IOException::class)
     protected fun saveBackupProperties(
         propertiesFile: UndeterminedStorageFile,
-        backup: Backup
-    ) : Boolean {
+        backup: Backup,
+    ): Boolean {
         propertiesFile.writeText(backup.toSerialized())?.let {
             Timber.i("Wrote $it for backup: $backup")
             return true
@@ -256,7 +255,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         dataType: String,
         allFilesToBackup: List<ShellHandler.FileInfo>,
         compress: Boolean,
-        iv: ByteArray?
+        iv: ByteArray?,
     ) {
         val password = getEncryptionPassword()
         val shouldCompress = compress && isCompressionEnabled()
@@ -274,7 +273,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         if (iv != null && password.isNotEmpty() && isEncryptionEnabled()) {
             outStream = outStream.encryptStream(password, getCryptoSalt(), iv)
         }
-        
+
         if (shouldCompress) {
             val compressionLevel = getCompressionLevel()
             val gzipParams = GzipParameters()
@@ -353,7 +352,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         backupInstanceDir: StorageFile,
         filesToBackup: List<ShellHandler.FileInfo>,
         compress: Boolean,
-        iv: ByteArray?
+        iv: ByteArray?,
     ): Boolean {
         Timber.i(
             "Backing up %s got %d files to backup",
@@ -391,7 +390,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         backupInstanceDir: StorageFile,
         sourcePath: String,
         compress: Boolean,
-        iv: ByteArray?
+        iv: ByteArray?,
     ): Boolean {
         val filesToBackup = assembleFileList(sourcePath)
         return genericBackupData(dataType, backupInstanceDir, filesToBackup, compress, iv)
@@ -404,7 +403,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         backupInstanceDir: StorageFile,
         sourcePath: String,
         compress: Boolean,
-        iv: ByteArray?
+        iv: ByteArray?,
     ): Boolean {
         if (!ShellUtils.fastCmdResult("test -d ${quote(sourcePath)}"))
             return false
@@ -510,7 +509,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         backupInstanceDir: StorageFile,
         filesToBackup: List<ShellHandler.FileInfo>,
         compress: Boolean,
-        iv: ByteArray?
+        iv: ByteArray?,
     ): Boolean {
         return genericBackupDataTarApi(dataType, backupInstanceDir, filesToBackup, compress, iv)
     }
@@ -521,9 +520,9 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
         backupInstanceDir: StorageFile,
         sourcePath: String,
         compress: Boolean,
-        iv: ByteArray?
+        iv: ByteArray?,
     ): Boolean {
-        Timber.i("${app.packageName} <- $sourcePath")
+        Timber.i("${OABX.NB.packageName} <- $sourcePath")
         if (pref_backupTarCmd.value) {
             return genericBackupDataTarCmd(
                 dataType,
@@ -547,7 +546,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     protected open fun backupData(
         app: Package,
         backupInstanceDir: StorageFile,
-        iv: ByteArray?
+        iv: ByteArray?,
     ): Boolean {
         val dataType = BACKUP_DIR_DATA
         Timber.i(LOG_START_BACKUP, app.packageName, dataType)
@@ -564,7 +563,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     protected open fun backupExternalData(
         app: Package,
         backupInstanceDir: StorageFile,
-        iv: ByteArray?
+        iv: ByteArray?,
     ): Boolean {
         val dataType = BACKUP_DIR_EXTERNAL_FILES
         Timber.i(LOG_START_BACKUP, app.packageName, dataType)
@@ -594,7 +593,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     protected open fun backupObbData(
         app: Package,
         backupInstanceDir: StorageFile,
-        iv: ByteArray?
+        iv: ByteArray?,
     ): Boolean {
         val dataType = BACKUP_DIR_OBB_FILES
         Timber.i(LOG_START_BACKUP, app.packageName, dataType)
@@ -624,7 +623,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     protected open fun backupMediaData(
         app: Package,
         backupInstanceDir: StorageFile,
-        iv: ByteArray?
+        iv: ByteArray?,
     ): Boolean {
         val dataType = BACKUP_DIR_MEDIA_FILES
         Timber.i(LOG_START_BACKUP, app.packageName, dataType)
@@ -654,7 +653,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
     protected open fun backupDeviceProtectedData(
         app: Package,
         backupInstanceDir: StorageFile,
-        iv: ByteArray?
+        iv: ByteArray?,
     ): Boolean {
         val dataType = BACKUP_DIR_DEVICE_PROTECTED_FILES
         Timber.i(LOG_START_BACKUP, app.packageName, dataType)

@@ -248,7 +248,7 @@ class OABX : Application() {
     override fun onCreate() {
 
         // do this early, context will be used immediately
-        appRef = WeakReference(this)
+        refNB = WeakReference(this)
 
         Timber.w("======================================== app ${classAndId(this)} PID=${Process.myPid()}")
 
@@ -294,7 +294,7 @@ class OABX : Application() {
         scheduleAlarmsOnce()
 
         work = work?.release()
-        appRef = WeakReference(null)
+        refNB = WeakReference(null)
         super.onTerminate()
     }
 
@@ -477,8 +477,8 @@ class OABX : Application() {
         }
 
         // app should always be created
-        var appRef: WeakReference<OABX> = WeakReference(null)
-        val app: OABX get() = appRef.get()!!
+        var refNB: WeakReference<OABX> = WeakReference(null)
+        val NB: OABX get() = refNB.get()!!
 
         // service might be null
         var serviceRef: WeakReference<ScheduleService> = WeakReference(null)
@@ -584,9 +584,9 @@ class OABX : Application() {
         // but: only if a context is assigned, this is only used by Preview (and maybe by Tests)
         @SuppressLint("StaticFieldLeak")
         var fakeContext: Context? = null
-        val context: Context get() = fakeContext ?: app.applicationContext
+        val context: Context get() = fakeContext ?: NB.applicationContext
 
-        val work: WorkHandler get() = app.work!!
+        val work: WorkHandler get() = NB.work!!
 
         fun getString(resId: Int) = context.getString(resId)
 
