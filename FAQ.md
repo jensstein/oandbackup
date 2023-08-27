@@ -558,37 +558,71 @@ Here are several examples - e.g.:
 
 It's somewhere on the [todo list](#is-there-a-roadmap--an-overview-of-features-planned-to-be-implemented) ...
 
+### preferences
+
 There are experimental `savePreferences` and `loadPreferences` tools in `DevTools/tools` that save and load the preferences. NOTE: this does **not** include schedules and the global blocklist.
 
-Up to now, you only have the possibility to (all the options are in preferences -> `Tools`):
+### schedules
 
-* Copy the APK of NB into the backup folder (useful to ramp up a new device)
-* Export/Import the schedules
-* Save a list of your apps
+Schedules can be exported to a folder in the backup directory
 
-A workaround for the settings for now (you're all root users, so capable of copying root files, right? at least you **should** be):
+### blocklist
 
-all preferences excluding the password
+You can use "selections" (see another entry here) via the context menu.
+
+Save:
+
+* Get / blocklist (at the end of the menu)
+* Put / "filename"
+  (e.g. "blocklist-saved", don't confuse with the blocklist itself)
+
+Restore:
+
+* Get / "filename"
+* Put / blocklist
+
+Edit:
+
+* save it first to a file like above
+* Deselect All
+* Put / blocklist
+  (otherwise you don't see the current blocklist items)
+* Get / "filename" (from save)
+* change something...
+* Put / "filename"
+* restore from the file saved above
+
+### alternative way - save some files
+
+You're all root users, so capable of copying files, right?
+
+All preferences excluding the password are stored in:
 
     /data/user/0/com.machiav3lli.backup/shared_prefs/com.machiav3lli.backup_preferences.xml
 
-This contains the password (in case you use encryption) and it's encrypted by a key stored in Keystore, so no backup possible, you need to enter it again:
+This file contains the password (in case you use encryption) and it's encrypted by a key stored in Keystore, so no backup possible, you need to enter it again:
 
     /data/user/0/com.machiav3lli.backup/shared_prefs/com.machiav3lli.backup.xml
 
-This includes the tables for the global blocklist and the schedules etc. (there were individual databases at some point...):
+These files include the database tables for the global blocklist and the schedules etc. (there were individual databases at some point in the past...):
 
     /data/user/0/com.machiav3lli.backup/databases/main.db
     /data/user/0/com.machiav3lli.backup/databases/main.db-shm
     /data/user/0/com.machiav3lli.backup/databases/main.db-wal
 
-This is runtime data, the queue that is persistent through boot:
+These files are runtime data, the queue that is persistent through boot, you might want to delete them, if you want to stop NB executing remaining jobs (or you enable the preference to cancel them on startup):
 
     /data/user/0/com.machiav3lli.backup/no_backup/androidx.work.workdb-shm
     /data/user/0/com.machiav3lli.backup/no_backup/androidx.work.workdb-wal
     /data/user/0/com.machiav3lli.backup/no_backup/androidx.work.workdb
 
 You can look into the databases with an SQLite editor app, e.g. MixPlorer can do it or you may use the app "SQLite Editor" (com.speedsoftware.sqleditor) or any other sqlite app, also possible from a PC.
+
+You should kill NB before doing such manipulations and start it afterwards.
+
+### alternative way 2 - use another NB variant to backup
+
+You can use a NB variant with a different package name (e.g. use neo to backup release) to backup/restore NB.
 
 ## Is there a roadmap / an overview of features planned to be implemented?
 
