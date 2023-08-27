@@ -27,10 +27,14 @@ plugins {
 val vKotlin = "1.9.0"
 val vComposeCompiler = "1.5.2"
 val vCompose = "1.6.0-alpha04"
+//val vMaterial3 = "1.2.0-alpha06" // still crashes...
+val vMaterial3 = "1.1.1" // does NOT crash in context menu "Put"
+val vConstraintLayout = "2.1.4"
 val vKotlinSerialization = "1.6.0"
 val vRoom = "2.6.0-beta01"
 val vNavigation = "2.7.0"
 val vAccompanist = "0.33.0-alpha"
+val vCoil = "2.4.0"
 val vLibsu = "5.0.5"
 //val vIconics = "5.3.4"
 
@@ -109,7 +113,7 @@ android {
     }
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_17.toString()
+            jvmTarget = compileOptions.sourceCompatibility.toString()
             freeCompilerArgs = listOf("-Xjvm-default=all")
         }
     }
@@ -144,7 +148,7 @@ dependencies {
     implementation("androidx.security:security-crypto-ktx:1.1.0-alpha06")
     implementation("androidx.biometric:biometric:1.2.0-alpha05")
     implementation("org.apache.commons:commons-compress:1.23.0")
-    implementation("commons-io:commons-io:2.11.0")      // attention, there is an old 20030203.000550 version, that looks higher
+    implementation("commons-io:commons-io:2.12.0")      // attention, there is an old 20030203.000550 version, that looks higher
     implementation("com.jakewharton.timber:timber:5.0.1")
     implementation("com.github.topjohnwu.libsu:core:$vLibsu")
     implementation("com.github.topjohnwu.libsu:io:$vLibsu")
@@ -161,8 +165,8 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:$vCompose")
     implementation("androidx.compose.runtime:runtime-livedata:$vCompose")
     implementation("androidx.navigation:navigation-compose:$vNavigation")
-    implementation("io.coil-kt:coil-compose:2.4.0")
-    implementation("androidx.compose.material3:material3:1.2.0-alpha06")
+    implementation("io.coil-kt:coil-compose:$vCoil")
+    implementation("androidx.compose.material3:material3:$vMaterial3")
     implementation("com.google.accompanist:accompanist-systemuicontroller:$vAccompanist")
     implementation("com.google.accompanist:accompanist-permissions:$vAccompanist")
 
@@ -179,6 +183,11 @@ dependencies {
     // Needed for createComposeRule, but not createAndroidComposeRule:
     debugImplementation("androidx.compose.ui:ui-test-manifest:$vCompose")
 }
+
+//TODO: how to do this with ksp?
+//kapt {
+//    correctErrorTypes = true
+//}
 
 // using a task as a preBuild dependency instead of a function that takes some time insures that it runs
 task("detectAndroidLocals") {
@@ -199,7 +208,6 @@ task("detectAndroidLocals") {
 }
 tasks.preBuild.dependsOn("detectAndroidLocals")
 
-// tells all test tasks to use Gradle's built-in JUnit 5 support
 tasks.withType<Test> {
     useJUnit()          // we still use junit4
     //useTestNG()
