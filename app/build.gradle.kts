@@ -38,7 +38,7 @@ val vCoil = "2.4.0"
 val vLibsu = "5.0.5"
 //val vIconics = "5.3.4"
 
-val vTest = "1.5.2"
+val vTest = "1.5.0"
 val vTestRules = "1.5.0"
 val vTestExt = "1.1.5"
 
