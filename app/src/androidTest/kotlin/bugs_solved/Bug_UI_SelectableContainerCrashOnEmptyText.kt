@@ -1,4 +1,4 @@
-package bugs
+package tests.bugs_solved
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
@@ -7,11 +7,15 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.test.*
+import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onParent
+import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.printToLog
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import kotlinx.coroutines.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -121,7 +125,7 @@ class Bug_UI_SelectableContainerCrashOnEmptyText {
         val timeStep = durationSwipe/nSteps
         Log.d("----------", "timeStep = $timeStep")
 
-        var step = Offset(1f,1f)
+        var step = Offset(1f, 1f)
         parent.performTouchInput {
             step = (bottomCenter-topCenter)*0.8f/ nSteps.toFloat()
         }

@@ -628,7 +628,7 @@ fun TerminalText(
                                 else -> Color.White
                             }
                         Text(
-                            if (it == "") " " else it,     //TODO hg42 workaround
+                            if (it == "") " " else it,     //TODO workaround for solved Bug_UI_SelectableContainerCrashOnEmptyText, remove if material3+compose versions will definitely not decreased anymore
                             fontFamily = FontFamily.Monospace,
                             fontSize = fontSize,
                             lineHeight = lineHeightSp,
