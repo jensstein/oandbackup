@@ -25,15 +25,16 @@ plugins {
 }
 
 val vKotlin = "1.9.0"
-val vComposeCompiler = "1.5.2"
-val vCompose = "1.6.0-alpha04"
+val vKSP = "1.0.13"
+val vComposeCompiler = "1.5.3"
+val vCompose = "1.6.0-alpha05"
 //val vMaterial3 = "1.2.0-alpha06" // still crashes...
 val vMaterial3 = "1.1.1" // does NOT crash in context menu "Put"
 val vConstraintLayout = "2.1.4"
 val vKotlinSerialization = "1.6.0"
 val vRoom = "2.6.0-beta01"
-val vNavigation = "2.7.0"
-val vAccompanist = "0.33.0-alpha"
+val vNavigation = "2.7.2"
+val vAccompanist = "0.33.1-alpha"
 val vCoil = "2.4.0"
 val vLibsu = "5.0.5"
 //val vIconics = "5.3.4"
@@ -134,7 +135,7 @@ android {
 dependencies {
     implementation(kotlin("stdlib", vKotlin))
     implementation(kotlin("reflect", vKotlin))
-    implementation("com.google.devtools.ksp:symbol-processing-api:$vKotlin-1.0.13")
+    implementation("com.google.devtools.ksp:symbol-processing-api:$vKotlin-$vKSP")
 
     // Libs
     implementation("androidx.room:room-runtime:$vRoom")
@@ -145,7 +146,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$vKotlinSerialization")
     implementation("com.charleskorn.kaml:kaml:0.55.0")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     implementation("androidx.security:security-crypto-ktx:1.1.0-alpha06")
     implementation("androidx.biometric:biometric:1.2.0-alpha05")
     implementation("org.apache.commons:commons-compress:1.23.0")
