@@ -265,11 +265,6 @@ class MainActivityX : BaseActivity() {
         super.onDestroy()
     }
 
-    @Deprecated("Deprecated in Java")   //TDOD hg42 why? how to handle now?
-    override fun onBackPressed() {
-        finishAffinity()
-    }
-
     override fun onNewIntent(intent: Intent?) {
         doIntent(intent)
         super.onNewIntent(intent)

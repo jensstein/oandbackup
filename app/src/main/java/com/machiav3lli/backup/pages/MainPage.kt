@@ -20,6 +20,7 @@ package com.machiav3lli.backup.pages
 import android.content.ComponentName
 import android.content.Intent
 import android.os.Looper
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
@@ -122,6 +123,9 @@ fun MainPage(
     Shell.getShell()
 
 
+    BackHandler {
+        OABX.main?.finishAffinity()
+    }
 
     AppTheme {
         val openBlocklist = remember { mutableStateOf(false) }
