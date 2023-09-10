@@ -24,13 +24,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +49,8 @@ import com.machiav3lli.backup.dialogs.BaseDialog
 import com.machiav3lli.backup.dialogs.BatchActionDialogUI
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.preferences.pref_singularBackupRestore
+import com.machiav3lli.backup.sheets.BatchPrefsSheet
+import com.machiav3lli.backup.sheets.Sheet
 import com.machiav3lli.backup.ui.compose.blockBorder
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.DiamondsFour
@@ -59,11 +64,17 @@ import com.machiav3lli.backup.ui.compose.theme.ColorAPK
 import com.machiav3lli.backup.ui.compose.theme.ColorData
 import com.machiav3lli.backup.utils.altModeToMode
 import com.machiav3lli.backup.viewmodels.BatchViewModel
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
     val main = OABX.main!!
+    val scope = rememberCoroutineScope()
     val filteredList by main.viewModel.filteredList.collectAsState(emptyList())
+    val showBatchSheet = remember { mutableStateOf(false) }
+    val backupBatchSheet = remember { mutableStateOf(false) }
+    val batchSheetState = rememberModalBottomSheetState(true)
     val openDialog = remember { mutableStateOf(false) }
 
     val filterPredicate = { item: Package ->
@@ -197,7 +208,7 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
                     }
                 }
                 RoundButton(icon = Phosphor.Nut) {
-                    main.showBatchPrefsSheet(backupBoolean)
+                    showBatchSheet.value = true
                 }
                 ActionButton(
                     modifier = Modifier.weight(1f),
@@ -211,6 +222,21 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
             }
         }
 
+
+        if (showBatchSheet.value) {
+            val dismiss = {
+                scope.launch { batchSheetState.hide() }
+                showBatchSheet.value = false
+            }
+            Sheet(
+                sheetState = batchSheetState,
+                onDismissRequest = dismiss
+            ) {
+                BatchPrefsSheet(
+                    backupBoolean = backupBatchSheet.value
+                )
+            }
+        }
         if (openDialog.value) BaseDialog(openDialogCustom = openDialog) {
             val selectedApk = viewModel.apkBackupCheckedList.filterValues { it != -1 }
             val selectedData = viewModel.dataBackupCheckedList.filterValues { it != -1 }

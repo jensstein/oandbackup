@@ -387,51 +387,6 @@ class MainActivityX : BaseActivity() {
                             pages
                         )
 
-                        if (showSortSheet.value) {
-                            val dismiss = {
-                                scope.launch { sortSheetState.hide() }
-                                showSortSheet.value = false
-                            }
-                            Sheet(
-                                sheetState = sortSheetState,
-                                onDismissRequest = dismiss,
-                            ) {
-                                SortFilterSheet(
-                                    onDismiss = dismiss,
-                                )
-                            }
-                        }
-
-                        if (showBatchSheet.value) {
-                            val dismiss = {
-                                scope.launch { batchSheetState.hide() }
-                                showBatchSheet.value = false
-                            }
-                            Sheet(
-                                sheetState = batchSheetState,
-                                onDismissRequest = dismiss
-                            ) {
-                                BatchPrefsSheet(
-                                    backupBoolean = backupBatchSheet.value
-                                )
-                            }
-                        }
-                        if (appSheetPackage.value != null) {
-                            val dismiss = {
-                                scope.launch { appSheetState.hide() }
-                                appSheetPackage.value = null
-                            }
-                            Sheet(
-                                sheetState = appSheetState,
-                                onDismissRequest = dismiss
-                            ) {
-                                AppSheet(
-                                    viewModel = appSheetVM!!,
-                                    packageName = appSheetPackage.value?.packageName ?: "",
-                                    onDismiss = dismiss,
-                                )
-                            }
-                        }
                         if (openBlocklist.value) BaseDialog(openDialogCustom = openBlocklist) {
                             GlobalBlockListDialogUI(
                                 currentBlocklist = viewModel.getBlocklist().toSet(),
@@ -520,15 +475,11 @@ class MainActivityX : BaseActivity() {
         }
     }
 
-    internal fun showAppSheet(packageValue: Package) {
-        appSheetPackage.value = packageValue
-    }
-
     fun updatePackage(packageName: String) {
         viewModel.updatePackage(packageName)
     }
 
-    private fun refreshPackagesAndBackups() {
+    fun refreshPackagesAndBackups() {
         CoroutineScope(Dispatchers.IO).launch {
             invalidateBackupLocation()
         }
@@ -543,11 +494,6 @@ class MainActivityX : BaseActivity() {
     fun moveTo(destination: String) {
         persist_beenWelcomed.value = destination != NavItem.Welcome.destination
         navController.navigate(destination)
-    }
-
-    fun showBatchPrefsSheet(backupBoolean: Boolean) {
-        backupBatchSheet.value = backupBoolean
-        showBatchSheet.value = true
     }
 
     fun whileShowingSnackBar(message: String, todo: () -> Unit) {

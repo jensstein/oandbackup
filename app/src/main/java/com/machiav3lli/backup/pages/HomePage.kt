@@ -25,16 +25,21 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,9 +56,12 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dialogs.BaseDialog
 import com.machiav3lli.backup.dialogs.BatchActionDialogUI
+import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.preferences.pref_languages
 import com.machiav3lli.backup.preferences.pref_menuButtonAlwaysVisible
+import com.machiav3lli.backup.sheets.AppSheet
+import com.machiav3lli.backup.sheets.Sheet
 import com.machiav3lli.backup.traceCompose
 import com.machiav3lli.backup.ui.compose.blockBorder
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
@@ -71,11 +79,15 @@ import com.machiav3lli.backup.ui.compose.recycler.UpdatedPackageRecycler
 import com.machiav3lli.backup.utils.TraceUtils.beginNanoTimer
 import com.machiav3lli.backup.utils.TraceUtils.endNanoTimer
 import com.machiav3lli.backup.utils.altModeToMode
+import com.machiav3lli.backup.viewmodels.AppSheetViewModel
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomePage() {
     // TODO include tags in search
     val mActivity = OABX.main!!
+    val scope = rememberCoroutineScope()
     val viewModel = mActivity.viewModel
 
     val filteredList by viewModel.filteredList.collectAsState(emptyList())
@@ -88,6 +100,15 @@ fun HomePage() {
     val menuExpanded = viewModel.menuExpanded
     val menuButtonAlwaysVisible = pref_menuButtonAlwaysVisible.value
     val openBatchDialog = remember { mutableStateOf(false) }
+    val appSheetState = rememberModalBottomSheetState(true)
+    val appSheetPackage: MutableState<Package?> = rememberSaveable { mutableStateOf(null) }
+    val appSheetVM = remember(appSheetPackage.value) {
+        if (appSheetPackage.value != null) AppSheetViewModel(
+            appSheetPackage.value,
+            OABX.db,
+            ShellCommands(),
+        ) else null
+    }
 
     traceCompose {
         "HomePage filtered=${
@@ -154,7 +175,7 @@ fun HomePage() {
                                     UpdatedPackageRecycler(
                                         productsList = updatedPackages,
                                         onClick = { item ->
-                                            mActivity.showAppSheet(item)
+                                            appSheetPackage.value = item
                                         }
                                     )
                                 }
@@ -216,7 +237,7 @@ fun HomePage() {
             },
             onClick = { item ->
                 if (filteredList.none { selection[it.packageName] == true }) {
-                    mActivity.showAppSheet(item)
+                    appSheetPackage.value = item
                 } else {
                     selection[item.packageName] = selection[item.packageName] != true
                 }
@@ -235,8 +256,24 @@ fun HomePage() {
                     productsList = filteredList,
                     selection = selection,
                     openSheet = { item ->
-                        mActivity.showAppSheet(item)
+                        appSheetPackage.value = item
                     }
+                )
+            }
+        }
+        if (appSheetPackage.value != null) {
+            val dismiss = {
+                scope.launch { appSheetState.hide() }
+                appSheetPackage.value = null
+            }
+            Sheet(
+                sheetState = appSheetState,
+                onDismissRequest = dismiss
+            ) {
+                AppSheet(
+                    viewModel = appSheetVM!!,
+                    packageName = appSheetPackage.value?.packageName ?: "",
+                    onDismiss = dismiss,
                 )
             }
         }
