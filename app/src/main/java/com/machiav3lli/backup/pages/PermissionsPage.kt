@@ -65,6 +65,7 @@ import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowRight
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.PermissionItem
+import com.machiav3lli.backup.ui.compose.item.TopBar
 import com.machiav3lli.backup.ui.navigation.NavItem
 import com.machiav3lli.backup.ui.item.Permission
 import com.machiav3lli.backup.utils.checkBatteryOptimization
@@ -148,6 +149,9 @@ fun PermissionsPage() {
     })
 
     Scaffold(
+        topBar = {
+            TopBar(title = stringResource(id = R.string.app_name)) {}
+        },
         bottomBar = {
             AnimatedVisibility(visible = permissionsList.isEmpty()) {
                 Row(
