@@ -37,7 +37,7 @@ interface ScheduleDao : BaseDao<Schedule> {
     fun getSchedule(name: String): Schedule?
 
     @Query("SELECT * FROM schedule WHERE id = :id")
-    fun getScheduleFlow(id: Long): Flow<Schedule>
+    fun getScheduleFlow(id: Long): Flow<Schedule?>
 
     @Query("SELECT customList FROM schedule WHERE id = :id")
     fun _getCustomListFlow(id: Long): Flow<String>

@@ -28,6 +28,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -68,6 +69,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -154,13 +156,14 @@ import kotlinx.coroutines.delay
 fun ButtonIcon(
     icon: ImageVector,
     @StringRes textId: Int,
-    tint: Color? = null,
+    tint: Color = LocalContentColor.current,
 ) {
     beginNanoTimer("btnIcon")
-    Icon(
+    Image(
         imageVector = icon,
         contentDescription = stringResource(id = textId),
-        tint = tint ?: LocalContentColor.current
+        modifier = Modifier.size(ICON_SIZE_SMALL),
+        colorFilter = ColorFilter.tint(tint),
     )
     endNanoTimer("btnIcon")
 }
@@ -853,7 +856,7 @@ fun ExpandingFadingVisibility(
 )
 
 @Composable
-fun PackageLabels(
+fun RowScope.PackageLabels(
     item: Package,
 ) {
     beginNanoTimer("pkgLabels")

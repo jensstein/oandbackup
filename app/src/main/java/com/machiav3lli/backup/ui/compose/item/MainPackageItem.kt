@@ -218,7 +218,7 @@ fun Selections(
     }
 
     if (action in listOf("get", "put")) {
-        val scheduleDao = OABX.db.scheduleDao
+        val scheduleDao = OABX.db.getScheduleDao()
         val schedules = OABX.main?.viewModel?.schedules?.value ?: emptyList()
         if (schedules.isEmpty())
             DropdownMenuItem(
@@ -779,6 +779,7 @@ fun MainPackageItem(
     onAction: (Package) -> Unit = {},
 ) {
     //beginBusy("item")
+    val pkg by remember(pkg) { mutableStateOf(pkg) }
     beginNanoTimer("item")
 
     //traceCompose { "<${pkg.packageName}> MainPackageItemX ${pkg.packageInfo.icon} ${imageData.hashCode()}" }

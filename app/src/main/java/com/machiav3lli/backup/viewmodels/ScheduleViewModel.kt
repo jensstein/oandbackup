@@ -40,7 +40,7 @@ class ScheduleViewModel(
     private val scheduleDB: ScheduleDao,
 ) : AndroidViewModel(OABX.NB) {
 
-    val schedule: StateFlow<Schedule> = scheduleDB.getScheduleFlow(id)
+    val schedule: StateFlow<Schedule?> = scheduleDB.getScheduleFlow(id)
         //TODO hg42 .trace { "*** schedule <<- ${it}" }     // what can here be null? (something is null that is not declared as nullable)
         .stateIn(
             viewModelScope,
