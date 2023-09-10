@@ -20,11 +20,11 @@ import com.android.build.gradle.internal.tasks.factory.dependsOn
 plugins {
     id("com.android.application")
     kotlin("android")
-    kotlin("plugin.serialization").version("1.9.0")
-    id("com.google.devtools.ksp") version ("1.9.0-1.0.13")
+    kotlin("plugin.serialization").version("1.9.10")
+    id("com.google.devtools.ksp") version ("1.9.10-1.0.13")
 }
 
-val vKotlin = "1.9.0"
+val vKotlin = "1.9.10"
 val vKSP = "1.0.13"
 val vComposeCompiler = "1.5.3"
 val vCompose = "1.6.0-alpha05"
