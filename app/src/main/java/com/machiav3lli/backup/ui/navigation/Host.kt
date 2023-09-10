@@ -40,13 +40,13 @@ fun MainNavHost(
         startDestination = if (persist_beenWelcomed.value) NavItem.Permissions.destination
         else NavItem.Welcome.destination
     ) {
-        slideDownComposable(NavItem.Welcome.destination) {
+        slideInComposable(NavItem.Welcome.destination) {
             WelcomePage()
         }
-        composable(route = NavItem.Permissions.destination) {
+        slideInComposable(route = NavItem.Permissions.destination) {
             PermissionsPage()
         }
-        slideUpComposable(NavItem.Main.destination) {
+        slideInComposable(NavItem.Main.destination) {
             MainPage(
                 navController = navController
             )
@@ -71,35 +71,35 @@ fun PrefsNavHost(
         navController = navController,
         startDestination = NavItem.Settings.destination,
     ) {
-        slideDownComposable(NavItem.Settings.destination) {
+        slideInComposable(NavItem.Settings.destination) {
             SlidePager(
                 pageItems = pages,
                 pagerState = pagerState,
                 navController = navController,
             )
         }
-        slideUpComposable(NavItem.Exports.destination) {
+        slideInComposable(NavItem.Exports.destination) {
             val viewModel = viewModels.find { it is ExportsViewModel } as ExportsViewModel
             ExportsPage(viewModel)
         }
-        slideUpComposable(NavItem.Logs.destination) {
+        slideInComposable(NavItem.Logs.destination) {
             val viewModel = viewModels.find { it is LogViewModel } as LogViewModel
             LogsPage(viewModel)
         }
-        slideUpComposable(NavItem.Terminal.destination) {
+        slideInComposable(NavItem.Terminal.destination) {
             TerminalPage()
         }
     }
 }
 
-fun NavGraphBuilder.slideUpComposable(
+fun NavGraphBuilder.slideInComposable(
     route: String,
     composable: @Composable (AnimatedVisibilityScope.(NavBackStackEntry) -> Unit),
 ) {
     composable(
         route,
-        enterTransition = { slideInVertically { height -> height } + fadeIn() },
-        exitTransition = { slideOutVertically { height -> -height } + fadeOut() }
+        enterTransition = { slideInHorizontally { width -> width } },
+        exitTransition = { slideOutHorizontally { width -> -width } },
     ) {
         composable(it)
     }
