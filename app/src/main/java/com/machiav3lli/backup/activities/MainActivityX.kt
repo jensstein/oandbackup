@@ -26,34 +26,15 @@ import android.os.PowerManager
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Observer
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -71,35 +52,19 @@ import com.machiav3lli.backup.classAddress
 import com.machiav3lli.backup.dialogs.BaseDialog
 import com.machiav3lli.backup.dialogs.GlobalBlockListDialogUI
 import com.machiav3lli.backup.handler.LogsHandler
-import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.handler.findBackups
 import com.machiav3lli.backup.handler.updateAppTables
-import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.pref_catchUncaughtException
 import com.machiav3lli.backup.pref_uncaughtExceptionsJumpToPreferences
 import com.machiav3lli.backup.preferences.persist_beenWelcomed
 import com.machiav3lli.backup.preferences.persist_ignoreBatteryOptimization
 import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
 import com.machiav3lli.backup.preferences.pref_blackTheme
-import com.machiav3lli.backup.sheets.AppSheet
-import com.machiav3lli.backup.sheets.BatchPrefsSheet
-import com.machiav3lli.backup.sheets.Sheet
-import com.machiav3lli.backup.sheets.SortFilterSheet
 import com.machiav3lli.backup.tasks.AppActionWork
-import com.machiav3lli.backup.ui.compose.icons.Phosphor
-import com.machiav3lli.backup.ui.compose.icons.phosphor.FunnelSimple
-import com.machiav3lli.backup.ui.compose.icons.phosphor.GearSix
-import com.machiav3lli.backup.ui.compose.icons.phosphor.Prohibit
-import com.machiav3lli.backup.ui.compose.item.ActionChip
-import com.machiav3lli.backup.ui.compose.item.ExpandableSearchAction
-import com.machiav3lli.backup.ui.compose.item.RefreshButton
-import com.machiav3lli.backup.ui.compose.item.RoundButton
-import com.machiav3lli.backup.ui.compose.item.TopBar
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.navigation.MainNavHost
 import com.machiav3lli.backup.ui.navigation.NavItem
-import com.machiav3lli.backup.ui.navigation.PagerNavBar
 import com.machiav3lli.backup.utils.FileUtils.invalidateBackupLocation
 import com.machiav3lli.backup.utils.TraceUtils.classAndId
 import com.machiav3lli.backup.utils.TraceUtils.traceBold
@@ -113,7 +78,6 @@ import com.machiav3lli.backup.utils.hasStoragePermissions
 import com.machiav3lli.backup.utils.isEncryptionEnabled
 import com.machiav3lli.backup.utils.isStorageDirSetAndOk
 import com.machiav3lli.backup.utils.postNotificationsPermission
-import com.machiav3lli.backup.viewmodels.AppSheetViewModel
 import com.machiav3lli.backup.viewmodels.BatchViewModel
 import com.machiav3lli.backup.viewmodels.MainViewModel
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
@@ -128,12 +92,8 @@ import kotlin.system.exitProcess
 class MainActivityX : BaseActivity() {
 
     private val mScope: CoroutineScope = MainScope()
-    private val crScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
     private lateinit var navController: NavHostController
     private lateinit var powerManager: PowerManager
-    lateinit var showBatchSheet: MutableState<Boolean>
-    lateinit var backupBatchSheet: MutableState<Boolean>
-    private lateinit var appSheetPackage: MutableState<Package?>
 
     val viewModel by viewModels<MainViewModel> {
         MainViewModel.Factory(OABX.db, application)
@@ -148,13 +108,7 @@ class MainActivityX : BaseActivity() {
         SchedulerViewModel.Factory(OABX.db.getScheduleDao(), application)
     }
 
-    @OptIn(
-        ExperimentalFoundationApi::class,
-        ExperimentalMaterial3Api::class,
-    )
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        val context = this
 
         val mainChanged = (this != OABX.mainSaved)
         OABX.main = this
@@ -217,36 +171,11 @@ class MainActivityX : BaseActivity() {
         setContent {
 
             AppTheme {
-                val scope = rememberCoroutineScope()
                 navController = rememberNavController()
-                val pages = listOf(
-                    NavItem.Home,
-                    NavItem.Backup,
-                    NavItem.Restore,
-                    NavItem.Scheduler,
-                )
-                val pagerState = rememberPagerState(pageCount = { pages.size })
-                val currentPage by remember(pagerState.currentPage) { mutableStateOf(pages[pagerState.currentPage]) }   //TODO hg42 remove remember ???
-                var barVisible by remember { mutableStateOf(true) }
                 val openBlocklist = remember { mutableStateOf(false) }
-                var showSortSheet = remember { mutableStateOf(false) }
-                val sortSheetState = rememberModalBottomSheetState(true)
-                showBatchSheet = remember { mutableStateOf(false) }
-                backupBatchSheet = remember { mutableStateOf(false) }
-                val batchSheetState = rememberModalBottomSheetState(true)
-                appSheetPackage = remember { mutableStateOf(null) }
-                val appSheetState = rememberModalBottomSheetState(true)
-                val appSheetVM = remember(appSheetPackage.value) {
-                    if (appSheetPackage.value != null) AppSheetViewModel(
-                        appSheetPackage.value,
-                        OABX.db,
-                        ShellCommands(),
-                    ) else null
-                }
 
                 LaunchedEffect(viewModel) {
                     navController.addOnDestinationChangedListener { _, destination, _ ->
-                        barVisible = destination.route == NavItem.Main.destination
                         if (destination.route == NavItem.Main.destination && freshStart) {
                             freshStart = false
                             traceBold { "******************** freshStart && Main ********************" }
@@ -262,16 +191,6 @@ class MainActivityX : BaseActivity() {
                     }
                 }
 
-                var query by rememberSaveable { mutableStateOf(viewModel.searchQuery.value) }
-                //val query by viewModel.searchQuery.flow.collectAsState(viewModel.searchQuery.initial)  // doesn't work with rotate (not saveable)...
-                val searchExpanded = remember {
-                    mutableStateOf(false)
-                }
-
-                Timber.d("compose: query = '$query'")
-
-                Timber.d("search: ${viewModel.searchQuery.value} filter: ${viewModel.modelSortFilter.value}")
-
                 LaunchedEffect(key1 = pref_blackTheme.value) {
                     getDefaultSharedPreferences()
                         .registerOnSharedPreferenceChangeListener { _, key ->
@@ -285,87 +204,6 @@ class MainActivityX : BaseActivity() {
                 Scaffold(
                     containerColor = Color.Transparent,
                     contentColor = MaterialTheme.colorScheme.onBackground,
-                    topBar = {
-                        when {
-                            currentPage.destination == NavItem.Scheduler.destination -> TopBar(
-                                title = stringResource(id = currentPage.title)
-                            ) {
-
-                                RoundButton(
-                                    icon = Phosphor.Prohibit,
-                                    description = stringResource(id = R.string.sched_blocklist)
-                                ) {
-                                    openBlocklist.value = true
-                                }
-                                RoundButton(
-                                    description = stringResource(id = R.string.prefs_title),
-                                    icon = Phosphor.GearSix
-                                ) { navController.navigate(NavItem.Settings.destination) }
-                            }
-
-                            barVisible                                               -> Column {
-                                TopBar(title = stringResource(id = currentPage.title)) {
-                                    ExpandableSearchAction(
-                                        expanded = searchExpanded,
-                                        query = query,
-                                        onQueryChanged = { newQuery ->
-                                            //if (newQuery != query)  // empty string doesn't work...
-                                            query = newQuery
-                                            viewModel.searchQuery.value = query
-                                        },
-                                        onClose = {
-                                            query = ""
-                                            viewModel.searchQuery.value = ""
-                                        }
-                                    )
-                                    AnimatedVisibility(barVisible && !searchExpanded.value) {
-                                        RefreshButton { refreshPackagesAndBackups() }
-                                    }
-                                    AnimatedVisibility(barVisible && !searchExpanded.value) {
-                                        RoundButton(
-                                            description = stringResource(id = R.string.prefs_title),
-                                            icon = Phosphor.GearSix
-                                        ) { navController.navigate(NavItem.Settings.destination) }
-                                    }
-                                }
-                                Row(
-                                    modifier = Modifier.padding(horizontal = 8.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    ActionChip(
-                                        modifier = Modifier.weight(1f),
-                                        icon = Phosphor.Prohibit,
-                                        text = stringResource(id = R.string.sched_blocklist),
-                                        positive = false,
-                                        fullWidth = true,
-                                    ) {
-                                        openBlocklist.value = true
-                                    }
-                                    ActionChip(
-                                        modifier = Modifier.weight(1f),
-                                        icon = Phosphor.FunnelSimple,
-                                        text = stringResource(id = R.string.sort_and_filter),
-                                        positive = true,
-                                        fullWidth = true,
-                                    ) {
-                                        showSortSheet.value = true
-                                    }
-                                }
-                            }
-
-                            else                                                     ->
-                                TopBar(title = stringResource(id = R.string.app_name)) {}
-                        }
-                    },
-                    bottomBar = {
-                        AnimatedVisibility(
-                            barVisible,
-                            enter = slideInVertically { height -> height } + fadeIn(),
-                            exit = slideOutVertically { height -> height } + fadeOut(),
-                        ) {
-                            PagerNavBar(pageItems = pages, pagerState = pagerState)
-                        }
-                    }
                 ) { paddingValues ->
                     LaunchedEffect(key1 = viewModel) {
                         if (intent.extras != null) {
@@ -383,8 +221,6 @@ class MainActivityX : BaseActivity() {
                             modifier = Modifier
                                 .padding(paddingValues),
                             navController = navController,
-                            pagerState,
-                            pages
                         )
 
                         if (openBlocklist.value) BaseDialog(openDialogCustom = openBlocklist) {
