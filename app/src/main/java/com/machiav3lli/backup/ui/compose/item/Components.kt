@@ -1,6 +1,7 @@
 package com.machiav3lli.backup.ui.compose.item
 
 import androidx.annotation.StringRes
+import androidx.compose.animation.Animatable
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.EnterTransition
@@ -45,6 +46,7 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -68,6 +70,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
@@ -845,15 +848,37 @@ fun ExpandingFadingVisibility(
     expanded: Boolean = false,
     expandedView: @Composable (AnimatedVisibilityScope.() -> Unit),
     collapsedView: @Composable (AnimatedVisibilityScope.() -> Unit),
-) = StatefulAnimatedVisibility(
-    currentState = expanded,
-    enterPositive = fadeIn() + expandIn(),
-    exitPositive = fadeOut() + shrinkOut(),
-    enterNegative = fadeIn() + expandIn(),
-    exitNegative = fadeOut() + shrinkOut(),
-    collapsedView = collapsedView,
-    expandedView = expandedView
-)
+) {
+    val initColor = FloatingActionButtonDefaults.containerColor
+    val expandedColor = MaterialTheme.colorScheme.surface
+    val bgColor = remember {
+        Animatable(initColor)
+    }
+    LaunchedEffect(key1 = expanded) {
+        bgColor.animateTo(if (expanded) expandedColor else initColor)
+    }
+    Column(
+        modifier = Modifier
+            .shadow(
+                elevation = 6.dp,
+                MaterialTheme.shapes.large
+            )
+            .background(
+                bgColor.value,
+                MaterialTheme.shapes.large
+            )
+    ) {
+        StatefulAnimatedVisibility(
+            currentState = expanded,
+            enterPositive = fadeIn() + expandIn(),
+            exitPositive = fadeOut() + shrinkOut(),
+            enterNegative = fadeIn() + expandIn(),
+            exitNegative = fadeOut() + shrinkOut(),
+            collapsedView = collapsedView,
+            expandedView = expandedView
+        )
+    }
+}
 
 @Composable
 fun RowScope.PackageLabels(
