@@ -19,6 +19,7 @@ package com.machiav3lli.backup.dbs.entity
 
 import android.content.Context
 import android.os.Build
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.File
@@ -28,7 +29,8 @@ open class PackageInfo(
     @PrimaryKey
     var packageName: String,
     var packageLabel: String = "",
-    var versionName: String = "",
+    @ColumnInfo(defaultValue = "-")
+    var versionName: String? = "-",
     var versionCode: Int = 0,
     var profileId: Int = 0,
     var sourceDir: String? = null,
@@ -42,7 +44,7 @@ open class PackageInfo(
     constructor(context: Context, pi: android.content.pm.PackageInfo) : this(
         packageName = pi.packageName,
         packageLabel = pi.applicationInfo.loadLabel(context.packageManager).toString(),
-        versionName = pi.versionName,
+        versionName = pi.versionName ?: "",
         versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) pi.longVersionCode.toInt()
         else pi.versionCode,
         profileId = try {

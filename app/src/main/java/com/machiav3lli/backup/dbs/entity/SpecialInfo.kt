@@ -22,7 +22,7 @@ open class SpecialInfo : PackageInfo {
     constructor(
         packageName: String,
         label: String = "",
-        versionName: String = "",
+        versionName: String? = "",
         versionCode: Int = 0,
         specialFiles: Array<String> = arrayOf(),
         icon: Int = -1,
@@ -33,7 +33,7 @@ open class SpecialInfo : PackageInfo {
     constructor(
         packageName: String,
         packageLabel: String,
-        versionName: String,
+        versionName: String?,
         versionCode: Int,
         profileId: Int,
         sourceDir: String?,
