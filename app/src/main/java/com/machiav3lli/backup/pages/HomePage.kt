@@ -99,7 +99,13 @@ fun HomePage() {
     val menuButtonAlwaysVisible = pref_menuButtonAlwaysVisible.value
     val openBatchDialog = remember { mutableStateOf(false) }
     val appSheetState = rememberModalBottomSheetState(true)
-    val appSheetPackage: MutableState<Package?> = rememberSaveable { mutableStateOf(null) }
+    val appSheetPN: MutableState<String?> = rememberSaveable { mutableStateOf(null) }
+    val appSheetPackage: MutableState<Package?> = remember(appSheetPN.value) {
+        mutableStateOf(
+            (filteredList + updatedPackages)
+                .find { it.packageName == appSheetPN.value }
+        )
+    }
     val appSheetVM = remember(appSheetPackage.value) {
         if (appSheetPackage.value != null) AppSheetViewModel(
             appSheetPackage.value,
@@ -163,7 +169,7 @@ fun HomePage() {
                                     UpdatedPackageRecycler(
                                         productsList = updatedPackages,
                                         onClick = { item ->
-                                            appSheetPackage.value = item
+                                            appSheetPN.value = item.packageName
                                         }
                                     )
                                 }
@@ -227,7 +233,7 @@ fun HomePage() {
             },
             onClick = { item ->
                 if (filteredList.none { selection[it.packageName] == true }) {
-                    appSheetPackage.value = item
+                    appSheetPN.value = item.packageName
                 } else {
                     selection[item.packageName] = selection[item.packageName] != true
                 }
@@ -246,15 +252,15 @@ fun HomePage() {
                     productsList = filteredList,
                     selection = selection,
                     openSheet = { item ->
-                        appSheetPackage.value = item
+                        appSheetPN.value = item.packageName
                     }
                 )
             }
         }
-        if (appSheetPackage.value != null) {
+        if (appSheetPN.value != null) {
             val dismiss = {
                 scope.launch { appSheetState.hide() }
-                appSheetPackage.value = null
+                appSheetPN.value = null
             }
             Sheet(
                 sheetState = appSheetState,
@@ -262,7 +268,7 @@ fun HomePage() {
             ) {
                 AppSheet(
                     viewModel = appSheetVM!!,
-                    packageName = appSheetPackage.value?.packageName ?: "",
+                    packageName = appSheetPN.value ?: "",
                     onDismiss = dismiss,
                 )
             }
