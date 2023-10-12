@@ -1067,7 +1067,7 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
         ).joinToString(" ")
 
     @Throws(PackageManagerDataIncompleteException::class)
-    private fun refreshAppInfo(context: Context, app: Package) {
+    open fun refreshAppInfo(context: Context, app: Package) {
         val sleepTimeMs = 1000L
 
         // delay before first try

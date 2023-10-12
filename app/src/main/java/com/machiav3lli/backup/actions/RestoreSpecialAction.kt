@@ -185,6 +185,10 @@ class RestoreSpecialAction(context: Context, work: AppActionWork?, shell: ShellH
         // stub
     }
 
+    override fun refreshAppInfo(context: Context, app: Package) {
+        // stub
+    }
+
     companion object {
         private fun areBasefilesSubsetOf(
             set: Array<RootFile>,
