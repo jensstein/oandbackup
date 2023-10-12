@@ -19,6 +19,7 @@ package com.machiav3lli.backup.activities
 
 import android.content.Context
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.machiav3lli.backup.ContextWrapperX.Companion.wrap
 import com.machiav3lli.backup.OABX
@@ -37,6 +38,7 @@ abstract class BaseActivity : AppCompatActivity() {
         OABX.addActivity(this)
 
         setCustomTheme()
+        enableEdgeToEdge()
 
         super.onCreate(savedInstanceState)
 

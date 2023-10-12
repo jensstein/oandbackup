@@ -18,7 +18,9 @@
 package com.machiav3lli.backup.activities
 
 import android.os.Bundle
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -33,6 +35,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +48,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.rememberNavController
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.preferences.pref_appTheme
 import com.machiav3lli.backup.preferences.pref_blackTheme
 import com.machiav3lli.backup.sheets.HelpSheet
 import com.machiav3lli.backup.sheets.Sheet
@@ -79,6 +83,20 @@ class PrefsActivityX : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+            DisposableEffect(pref_appTheme.value) {
+                enableEdgeToEdge(
+                    statusBarStyle = SystemBarStyle.auto(
+                        android.graphics.Color.TRANSPARENT,
+                        android.graphics.Color.TRANSPARENT,
+                    ),
+                    navigationBarStyle = SystemBarStyle.auto(
+                        android.graphics.Color.TRANSPARENT,
+                        android.graphics.Color.TRANSPARENT,
+                    ),
+                )
+                onDispose {}
+            }
+
             AppTheme {
                 val scope = rememberCoroutineScope()
                 val navController = rememberNavController()
