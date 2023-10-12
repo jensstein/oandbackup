@@ -173,9 +173,9 @@ fun PermissionsPage() {
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
+                .padding(paddingValues)
                 .blockBorder()
-                .fillMaxSize()
-                .padding(paddingValues),
+                .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(8.dp)
         ) {
