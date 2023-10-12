@@ -1,5 +1,11 @@
 package com.machiav3lli.backup.ui.navigation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -7,7 +13,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
@@ -19,6 +25,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,9 +36,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.machiav3lli.backup.preferences.pref_altNavBarItem
-import com.machiav3lli.backup.preferences.pref_squeezeNavText
-import com.machiav3lli.backup.ui.compose.ifThen
-import com.machiav3lli.backup.ui.compose.item.ResponsiveText
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -90,6 +94,21 @@ fun RowScope.AltNavBarItem(
     selected: Boolean,
     onClick: () -> Unit = {},
 ) {
+    val backgroundColor by animateColorAsState(
+        targetValue = if (selected) MaterialTheme.colorScheme.surfaceColorAtElevation(12.dp)
+        else Color.Transparent,
+        label = "backgroundColor",
+    )
+    val iconSize by animateDpAsState(
+        targetValue = if (selected) 32.dp else 24.dp,
+        label = "iconSize",
+    )
+    val iconColor by animateColorAsState(
+        targetValue = if (selected) MaterialTheme.colorScheme.primary
+        else MaterialTheme.colorScheme.onSurface,
+        label = "iconColor",
+    )
+
     Row(
         modifier = Modifier
             .clickable { onClick() }
@@ -97,7 +116,7 @@ fun RowScope.AltNavBarItem(
         horizontalArrangement = Arrangement.Center,
     ) {
         Column(
-            modifier = modifier.fillMaxHeight(),
+            modifier = modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -105,29 +124,23 @@ fun RowScope.AltNavBarItem(
                 imageVector = icon,
                 contentDescription = stringResource(id = labelId),
                 modifier = Modifier
-                    .background(
-                        if (selected) MaterialTheme.colorScheme.surfaceColorAtElevation(12.dp)
-                        else Color.Transparent,
-                        CircleShape
-                    )
+                    .background(backgroundColor, CircleShape)
                     .padding(8.dp)
-                    .size(if (selected) 32.dp else 24.dp),
-                tint = if (selected) MaterialTheme.colorScheme.primary
-                else MaterialTheme.colorScheme.onSurface
+                    .size(iconSize),
+                tint = iconColor,
             )
-            if (!selected && pref_squeezeNavText.value)
-                ResponsiveText(
-                    text = stringResource(id = labelId),
-                    maxLines = 1,
-                    textStyle = MaterialTheme.typography.bodyMedium,
-                )
-            else if (!selected)
+            AnimatedVisibility(
+                visible = !selected,
+                enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
+            ) {
                 Text(
                     text = stringResource(id = labelId),
                     style = MaterialTheme.typography.bodyMedium,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
+            }
         }
     }
 }
@@ -140,16 +153,24 @@ fun RowScope.NavBarItem(
     selected: Boolean,
     onClick: () -> Unit = {},
 ) {
+    val background by animateColorAsState(
+        targetValue = if (selected) MaterialTheme.colorScheme.surfaceColorAtElevation(12.dp)
+        else Color.Transparent, label = "backgroundColor"
+    )
+    val iconColor by animateColorAsState(
+        targetValue = if (selected) MaterialTheme.colorScheme.primary
+        else MaterialTheme.colorScheme.onSurface,
+        label = "iconColor",
+    )
+
     Row(
         modifier = modifier
             .padding(vertical = 8.dp)
             .clickable { onClick() }
-            .ifThen(selected) {
-                background(
-                    MaterialTheme.colorScheme.surfaceColorAtElevation(12.dp),
-                    MaterialTheme.shapes.extraLarge
-                )
-            }
+            .background(
+                background,
+                MaterialTheme.shapes.extraLarge
+            )
             .padding(8.dp)
             .weight(1f),
         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
@@ -159,21 +180,19 @@ fun RowScope.NavBarItem(
             imageVector = icon,
             contentDescription = stringResource(id = labelId),
             modifier = Modifier.size(24.dp),
-            tint = if (selected) MaterialTheme.colorScheme.primary
-            else MaterialTheme.colorScheme.onSurface
+            tint = iconColor,
         )
-        if (pref_squeezeNavText.value && selected) ResponsiveText(
-            text = stringResource(id = labelId),
-            maxLines = 1,
-            textStyle = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.primary,
-        )
-        else if (selected) Text(
-            text = stringResource(id = labelId),
-            style = MaterialTheme.typography.bodyMedium,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            color = MaterialTheme.colorScheme.primary,
-        )
+        AnimatedVisibility(
+            visible = selected,
+            enter = fadeIn() + expandHorizontally(expandFrom = Alignment.Start),
+        ) {
+            Text(
+                text = stringResource(id = labelId),
+                style = MaterialTheme.typography.bodyMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
     }
 }
