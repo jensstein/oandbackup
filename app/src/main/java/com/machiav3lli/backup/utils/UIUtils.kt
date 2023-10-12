@@ -77,7 +77,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
-import java.util.*
+import java.util.Locale
 
 fun Context.setCustomTheme() {
     AppCompatDelegate.setDefaultNightMode(getThemeStyleX(styleTheme))
@@ -126,7 +126,7 @@ fun Context.setLanguage(lang: String = ""): Configuration {
         config.setLocale(newLocale)
         Locale.setDefault(newLocale)
     }
-    traceDebug { "Locale.===: ${config.locales} $${Locale.getDefault()}" }
+    traceDebug { "Locale.===: ${config.locales} ${Locale.getDefault()}" }
 
     return config
 }

@@ -51,7 +51,7 @@ android {
         applicationId = "com.machiav3lli.backup"
         minSdk = 26
         targetSdk = 33
-        versionCode = 8310
+        versionCode = 8312
         versionName = "8.3.3"
         buildConfigField("int", "MAJOR", "8")
         buildConfigField("int", "MINOR", "3")
@@ -149,7 +149,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     implementation("androidx.security:security-crypto-ktx:1.1.0-alpha06")
     implementation("androidx.biometric:biometric:1.2.0-alpha05")
-    implementation("org.apache.commons:commons-compress:1.23.0")
+    implementation("org.apache.commons:commons-compress:1.24.0")
     implementation("commons-io:commons-io:2.12.0")      // attention, there is an old 20030203.000550 version, that looks higher
     implementation("com.jakewharton.timber:timber:5.0.1")
     implementation("com.github.topjohnwu.libsu:core:$vLibsu")

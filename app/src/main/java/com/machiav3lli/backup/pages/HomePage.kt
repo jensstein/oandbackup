@@ -17,7 +17,6 @@
  */
 package com.machiav3lli.backup.pages
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,8 +26,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -43,7 +42,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -143,17 +141,7 @@ fun HomePage() {
                         ExpandingFadingVisibility(
                             expanded = updaterExpanded,
                             expandedView = {
-                                Column(
-                                    modifier = Modifier
-                                        .shadow(
-                                            elevation = 6.dp,
-                                            MaterialTheme.shapes.large
-                                        )
-                                        .background(
-                                            MaterialTheme.colorScheme.surface,
-                                            MaterialTheme.shapes.large
-                                        )
-                                ) {
+                                Column {
                                     Row(
                                         modifier = Modifier.padding(horizontal = 8.dp),
                                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -194,6 +182,8 @@ fun HomePage() {
                                             contentDescription = text
                                         )
                                     },
+                                    containerColor = Color.Transparent,
+                                    elevation = FloatingActionButtonDefaults.elevation(0.dp),
                                     onClick = { updaterExpanded = !updaterExpanded }
                                 )
                             }

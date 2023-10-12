@@ -105,7 +105,7 @@ fun PrefsGroup(
         if (prefs.size > 0) {
             prefs.forEachIndexed { index, pref ->
                 val value = remember(pref.toString()) { mutableStateOf(pref.toString()) }
-                traceDebug { "${pref.key} = $value" }
+                traceDebug { "${pref.key} = ${value.value}" }
                 PrefsBuilder(
                     pref,
                     onPrefDialog,

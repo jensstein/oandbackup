@@ -1,17 +1,26 @@
 CHANGELOG
 =========
 
-8.3.3 (24.08.2023) ~20 Commits & +30 Translations
+8.3.3 (11.09.2023) +30 Commits & +30 Translations
 ------------
 
 #### Function
 
 - Fix: Force stopping an app
 - Fix: Deleting schedule
+- Fix: Crash on context menu/Put
+- Fix: AutoLog after schedule in case of empty filtered list
+- Update: Abstract Main pages from Activity
+- Update: Generate Kotlin code using Room
 
 #### UI
 
-- Update: Increase pager's pre-composing
+- Update: Pre-load all pages
+- Update: Improve animation of updated apps bar
+
+#### UX
+
+- Fix: Add workaround to NavBar overlap of sheets on specific Android versions
 
 8.3.2 (23.06.2023) +260 Commits & +70 Translations
 ------------
