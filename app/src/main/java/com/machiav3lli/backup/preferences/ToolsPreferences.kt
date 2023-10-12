@@ -1,5 +1,6 @@
 package com.machiav3lli.backup.preferences
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import androidx.appcompat.app.AlertDialog
@@ -8,7 +9,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -59,6 +59,7 @@ import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ToolsPrefsPage(navController: NavHostController) {
     val context = LocalContext.current
@@ -71,7 +72,7 @@ fun ToolsPrefsPage(navController: NavHostController) {
         Scaffold(
             containerColor = Color.Transparent,
             snackbarHost = { SnackbarHost(snackbarHostState) }
-        ) { paddingValues ->
+        ) {
 
             BusyBackground(
                 modifier = Modifier
@@ -80,7 +81,6 @@ fun ToolsPrefsPage(navController: NavHostController) {
             ) {
                 LazyColumn(
                     modifier = Modifier
-                        .padding(paddingValues)
                         .fillMaxSize(),
                     contentPadding = PaddingValues(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)

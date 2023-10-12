@@ -17,6 +17,7 @@
  */
 package com.machiav3lli.backup.pages
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -66,6 +67,7 @@ import com.machiav3lli.backup.utils.altModeToMode
 import com.machiav3lli.backup.viewmodels.BatchViewModel
 import kotlinx.coroutines.launch
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
@@ -102,10 +104,9 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
         selection.putIfAbsent(it, false)
     }
 
-    Scaffold(containerColor = Color.Transparent) { paddingValues ->
+    Scaffold(containerColor = Color.Transparent) {
         Column(
             modifier = Modifier
-                .padding(paddingValues)
                 .fillMaxSize()
         ) {
             BatchPackageRecycler(

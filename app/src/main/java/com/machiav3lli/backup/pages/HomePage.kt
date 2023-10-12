@@ -17,6 +17,7 @@
  */
 package com.machiav3lli.backup.pages
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -80,6 +81,7 @@ import com.machiav3lli.backup.utils.altModeToMode
 import com.machiav3lli.backup.viewmodels.AppSheetViewModel
 import kotlinx.coroutines.launch
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomePage() {
@@ -214,12 +216,10 @@ fun HomePage() {
                 }
             }
         }
-    ) { paddingValues ->
-
+    ) {
         HomePackageRecycler(
             modifier = Modifier
                 .blockBorder()
-                .padding(paddingValues)
                 .fillMaxSize(),
             productsList = filteredList,
             selection = selection,

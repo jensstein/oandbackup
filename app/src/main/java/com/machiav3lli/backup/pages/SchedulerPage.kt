@@ -17,8 +17,8 @@
  */
 package com.machiav3lli.backup.pages
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -51,6 +51,7 @@ import com.machiav3lli.backup.viewmodels.ScheduleViewModel
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
 import kotlinx.coroutines.launch
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SchedulerPage(viewModel: SchedulerViewModel) {
@@ -81,11 +82,10 @@ fun SchedulerPage(viewModel: SchedulerViewModel) {
                 onClick = { viewModel.addSchedule(specialBackupsEnabled) }
             )
         }
-    ) { paddingValues ->
+    ) {
         ScheduleRecycler(
             modifier = Modifier
                 .blockBorder()
-                .padding(paddingValues)
                 .fillMaxSize(),
             productsList = schedules,
             onClick = { item ->

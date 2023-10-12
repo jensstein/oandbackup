@@ -17,6 +17,7 @@
  */
 package com.machiav3lli.backup.activities
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -63,8 +64,8 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowRight
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ShareNetwork
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Warning
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
-import com.machiav3lli.backup.ui.navigation.NavItem
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
+import com.machiav3lli.backup.ui.navigation.NavItem
 import com.machiav3lli.backup.utils.SystemUtils.applicationIssuer
 import com.machiav3lli.backup.utils.checkCallLogsPermission
 import com.machiav3lli.backup.utils.checkContactsPermission
@@ -97,15 +98,15 @@ fun SplashPreview() {
     OABX.fakeContext = null
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun RootMissing(activity: Activity? = null) {
     AppTheme {
-        Scaffold { paddingValues ->
+        Scaffold {
             Column(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
                     .padding(50.dp)
             ) {
                 Text(
@@ -151,15 +152,15 @@ fun RootMissing(activity: Activity? = null) {
     }
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SplashPage() {
     AppTheme {
         Scaffold(
             containerColor = MaterialTheme.colorScheme.background
-        ) { paddingValues ->
+        ) {
             Column(
                 modifier = Modifier
-                    .padding(paddingValues)
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -210,6 +211,7 @@ class SplashActivity : BaseActivity() {
             !persist_beenWelcomed.value -> {
                 launchMainActivity(mainIntent)
             }
+
             hasStoragePermissions && isStorageDirSetAndOk &&
                     checkSMSMMSPermission &&
                     checkCallLogsPermission &&
@@ -226,6 +228,7 @@ class SplashActivity : BaseActivity() {
                 )
                 launchMainActivity(mainIntent)
             }
+
             else                        -> {
                 mainIntent.putExtra(
                     classAddress(".fragmentNumber"),
@@ -240,8 +243,10 @@ class SplashActivity : BaseActivity() {
         when {
             isBiometricLockAvailable() && isBiometricLockEnabled() && isDeviceLockEnabled() ->
                 launchBiometricPrompt(mainIntent, true)
+
             isDeviceLockAvailable() && isDeviceLockEnabled()                                ->
                 launchBiometricPrompt(mainIntent, false)
+
             else                                                                            ->
                 startActivity(mainIntent)
         }
@@ -281,6 +286,7 @@ class SplashActivity : BaseActivity() {
         finish()
     }
 
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @Composable
     fun LockPage(mainIntent: Intent) {
         Scaffold(
@@ -302,10 +308,9 @@ class SplashActivity : BaseActivity() {
                     }
                 }
             }
-        ) { paddingValues ->
+        ) {
             LazyColumn(
                 modifier = Modifier
-                    .padding(paddingValues)
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(8.dp)

@@ -29,7 +29,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.DisposableEffect
@@ -221,7 +220,7 @@ class MainActivityX : BaseActivity() {
                 Scaffold(
                     containerColor = Color.Transparent,
                     contentColor = MaterialTheme.colorScheme.onBackground,
-                ) { paddingValues ->
+                ) {
                     LaunchedEffect(key1 = viewModel) {
                         if (intent.extras != null) {
                             val destination =
@@ -235,8 +234,6 @@ class MainActivityX : BaseActivity() {
 
                     Box {
                         MainNavHost(
-                            modifier = Modifier
-                                .padding(paddingValues),
                             navController = navController,
                         )
 
