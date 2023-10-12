@@ -36,7 +36,7 @@ open class PackageInfo(
     var sourceDir: String? = null,
     var splitSourceDirs: Array<String> = arrayOf(),
     var isSystem: Boolean = false,
-    var icon: Int = -1
+    var icon: Int = -1,
 ) {
     open val isSpecial: Boolean
         get() = false

@@ -16,18 +16,8 @@
  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  -->
 <resources>
+
     <style name="AppTheme.Splash" parent="AppTheme">
         <item name="android:windowBackground">@drawable/splash_background</item>
     </style>
-
-    <!-- Sheets & Dialogs -->
-    <style name="Sheet.Bottom.Style" parent="Widget.Material3.BottomSheet.Modal">
-        <item name="android:minHeight">750dp</item>
-        <item name="backgroundTint">?backgroundColor</item>
-        <item name="enableEdgeToEdge">true</item>
-        <item name="behavior_peekHeight">400dp</item>
-        <item name="behavior_fitToContents">true</item>
-    </style>
-
-    <style name="AppTheme.PopupTheme" parent="ThemeOverlay.Material3.Dark" />
 </resources>

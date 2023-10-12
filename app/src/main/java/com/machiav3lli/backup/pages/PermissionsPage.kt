@@ -66,8 +66,8 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowRight
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.PermissionItem
 import com.machiav3lli.backup.ui.compose.item.TopBar
-import com.machiav3lli.backup.ui.navigation.NavItem
 import com.machiav3lli.backup.ui.item.Permission
+import com.machiav3lli.backup.ui.navigation.NavItem
 import com.machiav3lli.backup.utils.checkBatteryOptimization
 import com.machiav3lli.backup.utils.checkCallLogsPermission
 import com.machiav3lli.backup.utils.checkContactsPermission
@@ -244,7 +244,7 @@ fun AppCompatActivity.showBatteryOptimizationDialog(powerManager: PowerManager?)
         .setMessage(R.string.ignore_battery_optimization_message)
         .setPositiveButton(R.string.dialog_approve) { _: DialogInterface?, _: Int ->
             val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
-            intent.data = Uri.parse("package:" + packageName)
+            intent.data = Uri.parse("package:$packageName")
             try {
                 startActivity(intent)
                 persist_ignoreBatteryOptimization.value =
