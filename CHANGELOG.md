@@ -1,6 +1,24 @@
 CHANGELOG
 =========
 
+8.3.4 (13.10.2023) +10 Commits & +10 Translations
+------------
+
+#### Function
+
+- Fix: Running schedules when app is not open
+- Fix: Missing stub for restorePackage in specials
+
+#### UI
+
+- Fix: NavBar overlap of sheets
+- Add: Animate navigation bar buttons
+
+#### UX
+
+- Fix: Crash on restarting app with open AppSheet
+
+
 8.3.3 (11.09.2023) +30 Commits & +30 Translations
 ------------
 
