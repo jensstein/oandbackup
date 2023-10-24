@@ -36,6 +36,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -73,7 +74,7 @@ import java.lang.Float.max
 @Preview
 @Composable
 fun ProgressPreview() {
-    var count by remember { mutableStateOf(0) }
+    var count by remember { mutableIntStateOf(0) }
 
     val maxCount = 4
 
@@ -240,7 +241,7 @@ fun TitleOrInfoLog(
 fun TopBar(
     modifier: Modifier = Modifier,
     title: String,
-    actions: @Composable (RowScope.() -> Unit),
+    actions: @Composable (RowScope.() -> Unit) = {},
 ) {
     val showDevTools = remember { mutableStateOf(false) }
     val tempShowInfo = remember { mutableStateOf(false) }

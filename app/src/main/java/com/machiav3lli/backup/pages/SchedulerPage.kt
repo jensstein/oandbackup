@@ -29,7 +29,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -58,11 +58,11 @@ fun SchedulerPage(viewModel: SchedulerViewModel) {
     val context = LocalContext.current
     val mScope = rememberCoroutineScope()
     val schedules by viewModel.schedules.collectAsState(emptyList())
-    val scheduleSheetId = remember { mutableStateOf(-1L) }
+    val scheduleSheetId = remember { mutableLongStateOf(-1L) }
     val scheduleSheetState = rememberModalBottomSheetState(true)
-    val scheduleSheetVM = remember(scheduleSheetId.value) {
+    val scheduleSheetVM = remember(scheduleSheetId.longValue) {
         ScheduleViewModel(
-            scheduleSheetId.value,
+            scheduleSheetId.longValue,
             OABX.db.getScheduleDao(),
         )
     }
@@ -89,7 +89,7 @@ fun SchedulerPage(viewModel: SchedulerViewModel) {
                 .fillMaxSize(),
             productsList = schedules,
             onClick = { item ->
-                scheduleSheetId.value = item.id
+                scheduleSheetId.longValue = item.id
             },
             onCheckChanged = { item: Schedule, b: Boolean ->
                 viewModel.updateSchedule(
@@ -99,10 +99,10 @@ fun SchedulerPage(viewModel: SchedulerViewModel) {
             }
         )
 
-        if (scheduleSheetId.value > 0L) {
+        if (scheduleSheetId.longValue > 0L) {
             val dismiss = {
                 mScope.launch { scheduleSheetState.hide() }
-                scheduleSheetId.value = -1L
+                scheduleSheetId.longValue = -1L
             }
             Sheet(
                 sheetState = scheduleSheetState,
@@ -110,7 +110,7 @@ fun SchedulerPage(viewModel: SchedulerViewModel) {
             ) {
                 ScheduleSheet(
                     viewModel = scheduleSheetVM,
-                    scheduleId = scheduleSheetId.value,
+                    scheduleId = scheduleSheetId.longValue,
                     onDismiss = dismiss
                 )
             }

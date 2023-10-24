@@ -79,7 +79,6 @@ import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.ICON_SIZE_SMALL
 import com.machiav3lli.backup.OABX
-import com.machiav3lli.backup.OABX.Companion.isDebug
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logException
 import com.machiav3lli.backup.handler.LogsHandler.Companion.share
@@ -141,12 +140,12 @@ fun shell(command: String, silent: Boolean = false): List<String> {
         lines += result.out
         return lines
     } catch (e: Throwable) {
-        return listOf(
+        return listOfNotNull(
             "--- # $command -> ERROR",
             e::class.simpleName,
             e.message,
             e.cause?.message
-        ).filterNotNull()
+        )
     }
 }
 
@@ -177,24 +176,24 @@ fun logInt() =
     listOf("------ last internal log messages") +
             OABX.lastLogMessages
 
-val maxLogcat = "-t 100000"
+const val maxLogcat = "-t 100000"
 
 fun logApp() =
     listOf("--- logcat app") +
-            shell("logcat -d ${maxLogcat} --pid=${Process.myPid()} | grep -v SHELLOUT:")
+            shell("logcat -d $maxLogcat --pid=${Process.myPid()} | grep -v SHELLOUT:")
 
 fun logRel() =
     listOf("--- logcat related") +
-            shell("logcat -d ${maxLogcat} | grep -v SHELLOUT: | grep -E '(machiav3lli.backup|NeoBackup>)'")
+            shell("logcat -d $maxLogcat | grep -v SHELLOUT: | grep -E '(machiav3lli.backup|NeoBackup>)'")
 
 fun logSys() =
     listOf("--- logcat system") +
-            shell("logcat -d ${maxLogcat} | grep -v SHELLOUT:")
+            shell("logcat -d $maxLogcat | grep -v SHELLOUT:")
 
 fun dumpPrefs() =
     listOf("------ preferences") +
             publicPreferences(persist = true).map {
-                "${it.group}.${it.key} = ${it}"
+                "${it.group}.${it.key} = $it"
             }
 
 fun dumpEnv() =
@@ -239,7 +238,7 @@ fun accessTest() =
             listOf(
                 "--- not using libsu",
                 "uses: echo command | ${
-                    suCommand.map { "'$it'" }.joinToString(" ")
+                    suCommand.joinToString(" ") { "'$it'" }
                 } (used for streaming commands in backup/restore)"
             ) +
             accessTest1("system app", "\$ANDROID_ASSETS", "packages (system app)") +
@@ -286,15 +285,13 @@ fun lastErrorCommand(): List<String> {
 fun onErrorInfo(): List<String> {
     try {
         val logs = logInt() + logApp()
-        val lines =
-            listOf("=== onError log", "") +
-                    baseInfo() +
-                    dumpPrefs() +
-                    dumpEnv() +
-                    lastErrorPkg() +
-                    lastErrorCommand() +
-                    logs
-        return lines
+        return listOf("=== onError log", "") +
+                baseInfo() +
+                dumpPrefs() +
+                dumpEnv() +
+                lastErrorPkg() +
+                lastErrorCommand() +
+                logs
     } finally {
     }
 }
@@ -338,19 +335,17 @@ fun textLogShare(lines: List<String>, temporary: Boolean = false) {
 fun supportInfo(title: String = ""): List<String> {
     try {
         val logs = logInt() + logRel()
-        val lines =
-            listOf("=== ${if (title.isEmpty()) "support log" else title}", "") +
-                    extendedInfo() +
-                    dumpPrefs() +
-                    dumpEnv() +
-                    dumpAlarms() +
-                    dumpTiming() +
-                    accessTest() +
-                    threadsInfo() +
-                    lastErrorPkg() +
-                    lastErrorCommand() +
-                    logs
-        return lines
+        return listOf("=== ${title.ifEmpty { "support log" }}", "") +
+                extendedInfo() +
+                dumpPrefs() +
+                dumpEnv() +
+                dumpAlarms() +
+                dumpTiming() +
+                accessTest() +
+                threadsInfo() +
+                lastErrorPkg() +
+                lastErrorCommand() +
+                logs
     } finally {
     }
 }
@@ -581,12 +576,10 @@ fun TerminalText(
 
     var search by remember { mutableStateOf("") }
 
-    if (scrollOnAdd) {
-        if (autoScroll) {
-            LaunchedEffect(text.size) {
-                listState.scrollToItem(index = text.size)
-                autoScroll = true
-            }
+    if (scrollOnAdd && autoScroll) {
+        LaunchedEffect(text.size) {
+            listState.scrollToItem(index = text.size)
+            autoScroll = true
         }
     }
 
@@ -742,7 +735,7 @@ fun TerminalText(
 
 @Preview
 @Composable
-fun Preview_TerminalText() {
+fun PreviewTerminalText() {
 
     val text = remember {
         mutableStateListOf(
@@ -782,8 +775,7 @@ fun Preview_TerminalText() {
 
 @Preview
 @Composable
-fun Preview_Terminal() {
-
+fun PreviewTerminal() {
     Box(
         modifier = Modifier
             .height(500.dp)

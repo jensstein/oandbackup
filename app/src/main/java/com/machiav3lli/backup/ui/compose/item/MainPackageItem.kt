@@ -26,6 +26,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -79,7 +81,7 @@ import kotlinx.coroutines.yield
 import java.util.concurrent.Executors
 import kotlin.math.roundToInt
 
-val logEachN = 1000L
+const val logEachN = 1000L
 
 val yesNo = listOf(
     "yes" to "no",
@@ -530,8 +532,8 @@ fun MainPackageContextMenu(
     if (!expanded.value)
         closeSubMenu(subMenu)
 
-    var offsetX by remember { mutableStateOf(0f) }
-    var offsetY by remember { mutableStateOf(0f) }
+    var offsetX by remember { mutableFloatStateOf(0f) }
+    var offsetY by remember { mutableFloatStateOf(0f) }
 
     DropdownMenu(
         expanded = expanded.value,
@@ -555,15 +557,15 @@ fun MainPackageContextMenu(
     ) {
 
         if (isDebug) {
-            val number = remember { mutableStateOf(0) }
+            val number = remember { mutableIntStateOf(0) }
             DropdownMenuItem(
-                text = { Text("test = ${number.value}") },
+                text = { Text("test = ${number.intValue}") },
                 onClick = {
                     openSubMenu(subMenu) {
                         TextInput(
-                            text = number.value.toString(),
+                            text = number.intValue.toString(),
                             onAction = {
-                                number.value = it.toInt()
+                                number.intValue = it.toInt()
                                 closeSubMenu(subMenu)
                                 //expanded.value = false
                             }

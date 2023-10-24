@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -64,7 +65,7 @@ fun EnumPrefDialogUI(
     onChanged: (() -> Unit) = {},
 ) {
     val context = LocalContext.current
-    var selected by remember { mutableStateOf(pref.value) }
+    var selected by remember { mutableIntStateOf(pref.value) }
     val entryPairs = pref.entries.toList()
 
     Card(

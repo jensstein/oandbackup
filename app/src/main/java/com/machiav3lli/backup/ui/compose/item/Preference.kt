@@ -21,6 +21,7 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -411,7 +412,7 @@ fun SeekBarPreference(
     onValueChange: ((Int) -> Unit) = {},
 ) {
     var sliderPosition by remember {    //TODO hg42 remove remember ???
-        mutableStateOf(
+        mutableIntStateOf(
             pref.entries.indexOfFirst { it >= pref.value }.let {
                 if (it < 0)
                     pref.entries.indexOfFirst { it >= (pref.defaultValue as Int) }

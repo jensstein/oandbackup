@@ -34,7 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -57,10 +57,10 @@ fun IntPickerDialogUI(
 ) {
     val context = LocalContext.current
     var currentValue by remember {
-        mutableStateOf(value)
+        mutableIntStateOf(value)
     }
     var sliderIndex by remember {
-        mutableStateOf(
+        mutableIntStateOf(
             (entries.indexOfFirst { it >= currentValue }.takeUnless { it < 0 }
                 ?: entries.indexOf(defaultValue))
                 .coerceIn(0, entries.size - 1)

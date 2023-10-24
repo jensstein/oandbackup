@@ -36,6 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -71,13 +72,14 @@ import kotlin.math.sin
 
 @Composable
 fun <T : Any> VerticalItemList(
-    modifier: Modifier = Modifier.fillMaxSize(),
+    modifier: Modifier = Modifier,
     list: List<T>?,
     itemKey: ((T) -> Any)? = null,
     itemContent: @Composable LazyItemScope.(T) -> Unit,
 ) {
     Box(
         modifier = modifier
+            .fillMaxSize()
             .testTag("VerticalItemList"),
         contentAlignment = if (list.isNullOrEmpty()) Alignment.Center else Alignment.TopStart
     ) {
@@ -337,7 +339,7 @@ fun BusyBackgroundAnimated(
                 .fillMaxSize()
         ) {
             //var angle by rememberSaveable { mutableStateOf(70f) }
-            var angle by rememberSaveable { mutableStateOf(System.currentTimeMillis() % turnTime * 360f / turnTime) }
+            var angle by rememberSaveable { mutableFloatStateOf(System.currentTimeMillis() % turnTime * 360f / turnTime) }
             LaunchedEffect(true) {
                 withContext(Dispatchers.IO) {
                     animate(

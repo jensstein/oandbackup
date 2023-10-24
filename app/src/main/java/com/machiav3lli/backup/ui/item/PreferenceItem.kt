@@ -97,10 +97,10 @@ open class Pref(
             onPrefChange(name)
         }
 
-        val toBeEscaped =
+        private val toBeEscaped =
             Regex("""[\\"\n\r\t]""")      // blacklist, only escape those that are necessary
 
-        val toBeUnescaped =
+        private val toBeUnescaped =
             Regex("""\\(.)""")      // blacklist, only escape those that are necessary
 
         fun escape(value: String): String {
@@ -152,12 +152,15 @@ open class Pref(
                             value = unescape(value.removeSurrounding("\""))
                             map.put(key, value)
                         }
+
                         value == "true"                -> {
                             map.put(key, true)
                         }
+
                         value == "false"               -> {
                             map.put(key, false)
                         }
+
                         else                           -> {
                             map.put(key, value.toInt())
                         }
@@ -174,13 +177,13 @@ open class Pref(
                     try {
                         when (pref) {
                             // order from derived to base classes (otherwise base would obscure derived)
-                            is EnumPref     -> pref.key to pref.value
-                            is ListPref     -> pref.key to pref.value
+                            is EnumPref    -> pref.key to pref.value
+                            is ListPref    -> pref.key to pref.value
                             //is PasswordPref -> pref.key to pref.value     // don't store
-                            is StringPref   -> pref.key to pref.value
-                            is BooleanPref  -> pref.key to pref.value
-                            is IntPref      -> pref.key to pref.value
-                            else            -> null
+                            is StringPref  -> pref.key to pref.value
+                            is BooleanPref -> pref.key to pref.value
+                            is IntPref     -> pref.key to pref.value
+                            else           -> null
                         }
                     } catch (e: Throwable) {
                         LogsHandler.unexpectedException(e)

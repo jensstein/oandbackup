@@ -8,8 +8,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.text.Html
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -27,7 +27,7 @@ import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.TraceUtils.traceBold
 import timber.log.Timber
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 class WorkHandler(appContext: Context) {
 
@@ -123,7 +123,7 @@ class WorkHandler(appContext: Context) {
         batchesStarted++
         if (batchesStarted == 1)     // first batch in a series
             beginBatches()
-        Timber.d("%%%%% $batchName begin, ${batchesStarted} batches, thread ${Thread.currentThread().id}")
+        Timber.d("%%%%% $batchName begin, $batchesStarted batches, thread ${Thread.currentThread().id}")
         batchesKnown.put(batchName, BatchState())
     }
 
@@ -159,10 +159,12 @@ class WorkHandler(appContext: Context) {
             return when {
                 startTime == 0L                 ->
                     name
+
                 pref_fakeScheduleDups.value > 0 ->
                     "$name @ ${
                         SimpleDateFormat("EEE HH:mm:ss:SSS", Locale.getDefault()).format(startTime)
                     }"
+
                 else                            ->
                     "$name @ ${
                         SimpleDateFormat("EEE HH:mm:ss", Locale.getDefault()).format(startTime)
@@ -252,7 +254,7 @@ class WorkHandler(appContext: Context) {
         )
 
         val batchesKnown = mutableMapOf<String, BatchState>()
-        var batchesStarted by mutableStateOf(-1)
+        var batchesStarted by mutableIntStateOf(-1)
         var packagesState = mutableStateMapOf<String, String>()
 
         var lockProgress = object {}
@@ -328,26 +330,31 @@ class WorkHandler(appContext: Context) {
                             workFinished++
                             packageName?.let { packagesState.put(it, "OK ") }
                         }
+
                         WorkInfo.State.FAILED    -> {
                             failed++
                             workFinished++
                             packageName?.let { packagesState.put(it, "BAD") }
                         }
+
                         WorkInfo.State.CANCELLED -> {
                             canceled++
                             workFinished++
                             packageName?.let { packagesState.put(it, "STP") }
                         }
+
                         WorkInfo.State.ENQUEUED  -> {
                             queued++
                             workEnqueued++
                             packageName?.let { packagesState.put(it, "...") }
                         }
+
                         WorkInfo.State.BLOCKED   -> {
                             queued++
                             workBlocked++
                             packageName?.let { packagesState.put(it, "...") }
                         }
+
                         WorkInfo.State.RUNNING   -> {
                             workRunning++
                             packageName?.let { packagesState.put(it, operation ?: "...") }
@@ -410,7 +417,7 @@ class WorkHandler(appContext: Context) {
                                 batch.endTime = now
                             val duration =
                                 ((batch.endTime - batch.startTime) / 1000 + 0.5).toInt()
-                            val min = (duration / 60).toInt()
+                            val min = duration / 60
                             val sec = duration - min * 60
                             bigText = "$min min $sec sec"
                             if (canceled > 0)
@@ -505,10 +512,8 @@ class WorkHandler(appContext: Context) {
                                     .setSilent(true)
                                     .setProgress(workCount, processed, false)
                                     .setColor(
-                                        if (failed == 0)
-                                            0x66FF66
-                                        else
-                                            0xFF6666
+                                        if (failed == 0) 0x66FF66
+                                        else 0xFF6666
                                     )
                             else
                                 notificationBuilder
@@ -516,10 +521,8 @@ class WorkHandler(appContext: Context) {
                                     .setSilent(true)
                                     .setProgress(workCount, processed, false)
                                     .setColor(
-                                        if (failed == 0)
-                                            0x009900
-                                        else
-                                            0x990000
+                                        if (failed == 0) 0x009900
+                                        else 0x990000
                                     )
                         }
 
