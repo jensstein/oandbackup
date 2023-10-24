@@ -23,7 +23,7 @@ import com.machiav3lli.backup.EXPORTS_FOLDER_NAME_ALT
 import com.machiav3lli.backup.EXPORTS_INSTANCE
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.activities.PrefsActivityX
+import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.handler.LogsHandler.Companion.logErrors
 import com.machiav3lli.backup.handler.LogsHandler.Companion.unexpectedException
@@ -68,7 +68,7 @@ class ExportsHandler(var context: Context) {
             }
         }
         showNotification(
-            context, PrefsActivityX::class.java, System.currentTimeMillis().toInt(),
+            context, MainActivityX::class.java, System.currentTimeMillis().toInt(),
             context.getString(R.string.sched_exported), null, false
         )
     }

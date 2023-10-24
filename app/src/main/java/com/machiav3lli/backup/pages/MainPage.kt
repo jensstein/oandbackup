@@ -47,7 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.activities.PrefsActivityX
+import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dialogs.BaseDialog
 import com.machiav3lli.backup.dialogs.GlobalBlockListDialogUI
 import com.machiav3lli.backup.handler.LogsHandler
@@ -102,7 +102,7 @@ fun MainPage(
                 if (pref_uncaughtExceptionsJumpToPreferences.value) {
                     context.startActivity(
                         Intent.makeRestartActivityTask(
-                            ComponentName(OABX.context, PrefsActivityX::class.java)
+                            ComponentName(OABX.context, MainActivityX::class.java)
                         )
                     )
                 }

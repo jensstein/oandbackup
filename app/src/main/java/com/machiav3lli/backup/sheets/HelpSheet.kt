@@ -55,7 +55,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.text.HtmlCompat
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.activities.PrefsActivityX
 import com.machiav3lli.backup.legendList
 import com.machiav3lli.backup.linksList
 import com.machiav3lli.backup.ui.compose.blockBorder
@@ -76,7 +75,6 @@ import java.util.Scanner
 @Composable
 fun HelpSheet(onDismiss: () -> Unit) {
     val context = LocalContext.current
-    val pActivity = context as PrefsActivityX
     val nestedScrollConnection = rememberNestedScrollInteropConnection()
 
     AppTheme {

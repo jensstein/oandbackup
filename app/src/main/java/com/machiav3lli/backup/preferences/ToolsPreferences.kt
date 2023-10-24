@@ -24,7 +24,7 @@ import androidx.navigation.NavHostController
 import com.machiav3lli.backup.BACKUP_DATE_TIME_FORMATTER
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.activities.PrefsActivityX
+import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.Package
@@ -181,7 +181,7 @@ private fun Context.deleteBackups(deleteList: List<Package>) {
     deleteList.forEachIndexed { i, ai ->
         showNotification(
             this,
-            PrefsActivityX::class.java,
+            MainActivityX::class.java,
             notificationId,
             "${getString(R.string.batchDeleteMessage)} ($i/${deleteList.size})",
             ai.packageLabel,
@@ -192,7 +192,7 @@ private fun Context.deleteBackups(deleteList: List<Package>) {
     }
     showNotification(
         this,
-        PrefsActivityX::class.java,
+        MainActivityX::class.java,
         notificationId,
         getString(R.string.batchDeleteNotificationTitle),
         "${getString(R.string.batchDeleteBackupsDeleted)} ${deleteList.size}",
@@ -221,7 +221,7 @@ private fun Context.onClickCopySelf(
             ) {
                 showNotification(
                     this@onClickCopySelf,
-                    PrefsActivityX::class.java,
+                    MainActivityX::class.java,
                     System.currentTimeMillis().toInt(),
                     getString(R.string.copyOwnApkSuccess),
                     "",
@@ -234,7 +234,7 @@ private fun Context.onClickCopySelf(
             } else {
                 showNotification(
                     this@onClickCopySelf,
-                    PrefsActivityX::class.java,
+                    MainActivityX::class.java,
                     System.currentTimeMillis().toInt(),
                     getString(R.string.copyOwnApkFailed),
                     "",
@@ -312,7 +312,7 @@ fun Context.writeAppsListFile(appsList: List<String>, filteredBoolean: Boolean) 
     BufferedOutputStream(listFile.outputStream())
         .use { it.write(filesText.toByteArray(StandardCharsets.UTF_8)) }
     showNotification(
-        this, PrefsActivityX::class.java, System.currentTimeMillis().toInt(),
+        this, MainActivityX::class.java, System.currentTimeMillis().toInt(),
         getString(
             if (filteredBoolean) R.string.write_apps_list_filtered
             else R.string.write_apps_list_all

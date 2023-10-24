@@ -35,7 +35,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.Observer
 import androidx.navigation.NavHostController
@@ -157,7 +156,7 @@ class MainActivityX : BaseActivity() {
                     if (pref_uncaughtExceptionsJumpToPreferences.value) {
                         startActivity(
                             Intent.makeRestartActivityTask(
-                                ComponentName(this, PrefsActivityX::class.java)
+                                ComponentName(this, MainActivityX::class.java)
                             )
                         )
                     }
@@ -318,7 +317,7 @@ class MainActivityX : BaseActivity() {
                 .setMessage(R.string.enable_encryption_message)
                 .setPositiveButton(R.string.dialog_approve) { _: DialogInterface?, _: Int ->
                     startActivity(
-                        Intent(applicationContext, PrefsActivityX::class.java).putExtra(
+                        Intent(applicationContext, MainActivityX::class.java).putExtra(
                             ".toEncryption",
                             true
                         )

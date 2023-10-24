@@ -23,7 +23,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.activities.PrefsActivityX
+import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dbs.dao.ScheduleDao
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.handler.ExportsHandler
@@ -84,7 +84,7 @@ class ExportsViewModel(val database: ScheduleDao, private val appContext: Applic
         viewModelScope.launch {
             import(export)
             showNotification(
-                appContext, PrefsActivityX::class.java, System.currentTimeMillis().toInt(),
+                appContext, MainActivityX::class.java, System.currentTimeMillis().toInt(),
                 appContext.getString(R.string.sched_imported), export.name, false
             )
         }

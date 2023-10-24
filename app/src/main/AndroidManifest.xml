@@ -117,13 +117,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.MainActivityX" />
-        <activity
-            android:name=".activities.PrefsActivityX"
-            android:exported="true"
-            android:label="@string/prefs_title"
-            android:launchMode="singleTask"
-            android:parentActivityName=".activities.MainActivityX"
-            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".activities.ComposeSms"
