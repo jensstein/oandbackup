@@ -100,6 +100,8 @@ fun NavGraphBuilder.slideInComposable(
         route,
         enterTransition = { slideInHorizontally { width -> width } },
         exitTransition = { slideOutHorizontally { width -> -width } },
+        popEnterTransition = { slideInHorizontally { width -> -width } },
+        popExitTransition = { slideOutHorizontally { width -> width } },
     ) {
         composable(it)
     }
