@@ -82,6 +82,8 @@ import com.machiav3lli.backup.utils.isEncryptionEnabled
 import com.machiav3lli.backup.utils.isStorageDirSetAndOk
 import com.machiav3lli.backup.utils.postNotificationsPermission
 import com.machiav3lli.backup.viewmodels.BatchViewModel
+import com.machiav3lli.backup.viewmodels.ExportsViewModel
+import com.machiav3lli.backup.viewmodels.LogViewModel
 import com.machiav3lli.backup.viewmodels.MainViewModel
 import com.machiav3lli.backup.viewmodels.SchedulerViewModel
 import com.topjohnwu.superuser.Shell
@@ -109,6 +111,12 @@ class MainActivityX : BaseActivity() {
     }
     val schedulerViewModel: SchedulerViewModel by viewModels {
         SchedulerViewModel.Factory(OABX.db.getScheduleDao(), application)
+    }
+    val exportsViewModel: ExportsViewModel by viewModels {
+        ExportsViewModel.Factory(OABX.db.getScheduleDao(), application)
+    }
+    val logsViewModel: LogViewModel by viewModels {
+        LogViewModel.Factory(application)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
