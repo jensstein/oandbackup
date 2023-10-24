@@ -71,7 +71,7 @@ fun PagerNavBar(pageItems: List<NavItem>, pagerState: PagerState) {
                 icon = tab.icon,
                 labelId = tab.title,
                 onClick = {
-                    scope.launch { pagerState.scrollToPage(index) }
+                    scope.launch { pagerState.animateScrollToPage(index) }
                 },
             ) else NavBarItem(
                 modifier = Modifier.weight(if (selected) 2f else 1f),
@@ -79,7 +79,7 @@ fun PagerNavBar(pageItems: List<NavItem>, pagerState: PagerState) {
                 icon = tab.icon,
                 labelId = tab.title,
                 onClick = {
-                    scope.launch { pagerState.scrollToPage(index) }
+                    scope.launch { pagerState.animateScrollToPage(index) }
                 },
             )
         }
