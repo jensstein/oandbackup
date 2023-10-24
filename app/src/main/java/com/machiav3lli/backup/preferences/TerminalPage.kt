@@ -17,6 +17,7 @@
  */
 package com.machiav3lli.backup.preferences
 
+import android.annotation.SuppressLint
 import android.os.Environment
 import android.os.Process
 import androidx.compose.foundation.background
@@ -46,6 +47,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -66,6 +68,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
@@ -108,6 +111,8 @@ import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.compose.isAtBottom
 import com.machiav3lli.backup.ui.compose.isAtTop
 import com.machiav3lli.backup.ui.compose.item.RoundButton
+import com.machiav3lli.backup.ui.compose.item.TopBar
+import com.machiav3lli.backup.ui.navigation.NavItem
 import com.machiav3lli.backup.utils.SystemUtils
 import com.machiav3lli.backup.utils.SystemUtils.applicationIssuer
 import com.machiav3lli.backup.utils.TraceUtils.listNanoTiming
@@ -404,6 +409,7 @@ fun SmallButton(
     )
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TerminalPage() {
@@ -453,94 +459,100 @@ fun TerminalPage() {
         }
     }
 
-    Column(
-        verticalArrangement = Arrangement.Top
-    ) {
-        Column {
-            OutlinedTextField(modifier = Modifier
-                .padding(padding)
-                .fillMaxWidth(),
-                //.focusRequester(shellFocusRequester),
-                value = command,
-                singleLine = false,
-                placeholder = { Text(text = "shell command", color = Color.Gray) },
-                trailingIcon = {
-                    Row {
-                        if (command.isNotEmpty())
-                            RoundButton(icon = Phosphor.X) {
+    Scaffold(
+        containerColor = Color.Transparent,
+        topBar = {
+            TopBar(title = stringResource(id = NavItem.Terminal.title))
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier.padding(paddingValues),
+            verticalArrangement = Arrangement.Top
+        ) {
+            Column {
+                OutlinedTextField(modifier = Modifier
+                    .padding(padding)
+                    .fillMaxWidth(),
+                    //.focusRequester(shellFocusRequester),
+                    value = command,
+                    singleLine = false,
+                    placeholder = { Text(text = "shell command", color = Color.Gray) },
+                    trailingIcon = {
+                        Row {
+                            if (command.isNotEmpty())
+                                RoundButton(icon = Phosphor.X) {
+                                    command = ""
+                                }
+                            RoundButton(icon = Phosphor.Play) {
+                                command.removeSuffix("\n")
+                                run(command)
                                 command = ""
                             }
-                        RoundButton(icon = Phosphor.Play) {
+                        }
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        autoCorrect = false,
+                        imeAction = ImeAction.Go
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onGo = {
                             command.removeSuffix("\n")
                             run(command)
                             command = ""
                         }
+                    ),
+                    onValueChange = {
+                        //if (it.endsWith("\n")) {
+                        //    run(command)
+                        //    command = ""
+                        //} else
+                        command = it
                     }
-                },
-                keyboardOptions = KeyboardOptions(
-                    autoCorrect = false,
-                    imeAction = ImeAction.Go
-                ),
-                keyboardActions = KeyboardActions(
-                    onGo = {
-                        command.removeSuffix("\n")
-                        run(command)
-                        command = ""
+                )
+                FlowRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(padding),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    TerminalButton("SUPPORT", important = true) { launch { supportInfoLogShare() } }
+                    TerminalButton("share", important = true) { launch { textLogShare(output) } }
+                    TerminalButton("clear", important = true) { output.clear() }
+                    TerminalButton("log/int") { produce { logInt() } }
+                    TerminalButton("log/app") { produce { logApp() } }
+                    TerminalButton("log/rel") { produce { logRel() } }
+                    TerminalButton("log/all") { produce { logSys() } }
+                    TerminalButton("info") { produce { extendedInfo() } }
+                    TerminalButton("prefs") { produce { dumpPrefs() } }
+                    TerminalButton("env") { produce { dumpEnv() } }
+                    TerminalButton("alarms") { produce { dumpAlarms() } }
+                    TerminalButton("timing") { produce { dumpTiming() } }
+                    TerminalButton("threads") { produce { threadsInfo() } }
+                    TerminalButton("access") { produce { accessTest() } }
+                    TerminalButton("dbpkg") { produce { dumpDbAppInfo() } }
+                    TerminalButton("dbsch") { produce { dumpDbSchedule() } }
+                    TerminalButton("errInfo") { produce { lastErrorPkg() + lastErrorCommand() } }
+                    TerminalButton("err->cmd") {
+                        command =
+                            if (OABX.lastErrorCommands.isNotEmpty())
+                                OABX.lastErrorCommands.first()
+                            else
+                                "no error command"
                     }
-                ),
-                onValueChange = {
-                    //if (it.endsWith("\n")) {
-                    //    run(command)
-                    //    command = ""
-                    //} else
-                    command = it
-                }
-            )
-            FlowRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(padding),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-            ) {
-                TerminalButton("SUPPORT", important = true) { launch { supportInfoLogShare() } }
-                TerminalButton("share", important = true) { launch { textLogShare(output) } }
-                TerminalButton("clear", important = true) { output.clear() }
-                TerminalButton("log/int") { produce { logInt() } }
-                TerminalButton("log/app") { produce { logApp() } }
-                TerminalButton("log/rel") { produce { logRel() } }
-                TerminalButton("log/all") { produce { logSys() } }
-                TerminalButton("info") { produce { extendedInfo() } }
-                TerminalButton("prefs") { produce { dumpPrefs() } }
-                TerminalButton("env") { produce { dumpEnv() } }
-                TerminalButton("alarms") { produce { dumpAlarms() } }
-                TerminalButton("timing") { produce { dumpTiming() } }
-                TerminalButton("threads") { produce { threadsInfo() } }
-                TerminalButton("access") { produce { accessTest() } }
-                TerminalButton("dbpkg") { produce { dumpDbAppInfo() } }
-                TerminalButton("dbsch") { produce { dumpDbSchedule() } }
-                TerminalButton("errInfo") { produce { lastErrorPkg() + lastErrorCommand() } }
-                TerminalButton("err->cmd") {
-                    command =
-                        if (OABX.lastErrorCommands.isNotEmpty())
-                            OABX.lastErrorCommands.first()
-                        else
-                            "no error command"
-                }
-                TerminalButton("findBackups") { OABX.context.findBackups(forceTrace = true) }
-                if (isDebug) {
+                    TerminalButton("findBackups") { OABX.context.findBackups(forceTrace = true) }
                 }
             }
-        }
-        Box(
-            modifier = Modifier
-                .padding(vertical = 8.dp)
-                .blockBorder()
-                .weight(1f)
-                .fillMaxSize()
-                .padding(0.dp)
-        ) {
-            TerminalText(output, limitLines = 0, scrollOnAdd = true)
+            Box(
+                modifier = Modifier
+                    .padding(vertical = 8.dp)
+                    .blockBorder()
+                    .weight(1f)
+                    .fillMaxSize()
+                    .padding(0.dp)
+            ) {
+                TerminalText(output, limitLines = 0, scrollOnAdd = true)
+            }
         }
     }
 }

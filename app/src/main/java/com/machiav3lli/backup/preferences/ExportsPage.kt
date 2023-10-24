@@ -19,6 +19,7 @@ package com.machiav3lli.backup.preferences
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -34,8 +35,10 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.ui.compose.blockBorder
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CalendarPlus
+import com.machiav3lli.backup.ui.compose.item.TopBar
 import com.machiav3lli.backup.ui.compose.recycler.ExportedScheduleRecycler
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
+import com.machiav3lli.backup.ui.navigation.NavItem
 import com.machiav3lli.backup.viewmodels.ExportsViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -58,10 +61,14 @@ fun ExportsPage(viewModel: ExportsViewModel) {
                     )
                     Text(text = stringResource(id = R.string.dialog_export_schedules))
                 }
+            },
+            topBar = {
+                TopBar(title = stringResource(id = NavItem.Exports.title))
             }
-        ) {
+        ) { paddingValues ->
             ExportedScheduleRecycler(
                 modifier = Modifier
+                    .padding(paddingValues)
                     .blockBorder()
                     .fillMaxSize(),
                 productsList = exports,
