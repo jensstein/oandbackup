@@ -3,7 +3,6 @@ package com.machiav3lli.backup.ui.compose.recycler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -45,7 +44,6 @@ fun HomePackageRecycler(
     }
     BusyBackground(modifier) {
         VerticalItemList(
-            modifier = modifier,
             list = productsList,
             itemKey = { it.packageName }
         ) {
@@ -77,7 +75,7 @@ fun UpdatedPackageRecycler(
 
 @Composable
 fun BatchPackageRecycler(
-    modifier: Modifier = Modifier.fillMaxSize(),
+    modifier: Modifier = Modifier,
     productsList: List<Package>?,
     restore: Boolean = false,
     apkBackupCheckedList: SnapshotStateMap<String, Int>,
@@ -88,7 +86,6 @@ fun BatchPackageRecycler(
 ) {
     BusyBackground(modifier) {
         VerticalItemList(
-            modifier = modifier,
             list = productsList,
             itemKey = { it.packageName }
         ) {
@@ -133,7 +130,6 @@ fun ScheduleRecycler(
 ) {
     BusyBackground(modifier) {
         VerticalItemList(
-            modifier = modifier,
             list = productsList
         ) {
             ScheduleItem(it, onClick, onCheckChanged)
@@ -150,7 +146,6 @@ fun ExportedScheduleRecycler(
 ) {
     BusyBackground(modifier) {
         VerticalItemList(
-            modifier = modifier,
             list = productsList
         ) {
             ExportedScheduleItem(it.first, it.second, onImport, onDelete)
@@ -167,7 +162,6 @@ fun LogRecycler(
 ) {
     BusyBackground(modifier) {
         VerticalItemList(
-            modifier = modifier,
             list = productsList
         ) {
             LogItem(it, onShare, onDelete)
