@@ -99,7 +99,8 @@ fun BasePreference(
                 .surfaceColorAtElevation(
                     if (pref_allPrefsShouldLookEqual.value) 24.dp
                     else (rank * 24).dp
-                ),
+                )
+                .copy(alpha = 0.8f),
         ),
         leadingContent = icon,
         headlineContent = {
