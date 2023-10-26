@@ -15,6 +15,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.machiav3lli.backup.OABX
+import com.machiav3lli.backup.pages.LockPage
 import com.machiav3lli.backup.pages.MainPage
 import com.machiav3lli.backup.pages.PermissionsPage
 import com.machiav3lli.backup.pages.PrefsPage
@@ -35,6 +36,9 @@ fun MainNavHost(
         startDestination = if (persist_beenWelcomed.value) NavItem.Permissions.destination
         else NavItem.Welcome.destination
     ) {
+        slideInComposable(NavItem.Lock.destination) {
+            LockPage { OABX.main?.resumeMain() }
+        }
         slideInComposable(NavItem.Welcome.destination) {
             WelcomePage()
         }

@@ -25,6 +25,7 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.Flask
 import com.machiav3lli.backup.ui.compose.icons.phosphor.GearSix
 import com.machiav3lli.backup.ui.compose.icons.phosphor.House
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Infinity
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Lock
 import com.machiav3lli.backup.ui.compose.icons.phosphor.SlidersHorizontal
 import com.machiav3lli.backup.ui.compose.icons.phosphor.UserGear
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Warning
@@ -45,6 +46,9 @@ sealed class NavItem(var title: Int, var icon: ImageVector, var destination: Str
 
     object Permissions :
         NavItem(R.string.permission_not_granted, Phosphor.Warning, "intro_permissions")
+
+    object Lock :
+        NavItem(R.string.prefs_devicelock, Phosphor.Lock, "intro_lock")
 
     object Home :
         NavItem(
