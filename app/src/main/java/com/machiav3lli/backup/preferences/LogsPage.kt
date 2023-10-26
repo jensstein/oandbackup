@@ -31,7 +31,6 @@ import com.machiav3lli.backup.items.Log
 import com.machiav3lli.backup.ui.compose.blockBorder
 import com.machiav3lli.backup.ui.compose.item.TopBar
 import com.machiav3lli.backup.ui.compose.recycler.LogRecycler
-import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.navigation.NavItem
 import com.machiav3lli.backup.viewmodels.LogViewModel
 
@@ -45,22 +44,20 @@ fun LogsPage(viewModel: LogViewModel) {
         viewModel.refreshList()
     }
 
-    AppTheme {
-        Scaffold(
-            containerColor = Color.Transparent,
-            topBar = {
-                TopBar(title = stringResource(id = NavItem.Logs.title))
-            }
-        ) { paddingValues ->
-            LogRecycler(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .blockBorder()
-                    .fillMaxSize(),
-                productsList = logs.sortedByDescending(Log::logDate),
-                onShare = { viewModel.shareLog(it, pref_shareAsFile.value) },
-                onDelete = { viewModel.deleteLog(it) }
-            )
+    Scaffold(
+        containerColor = Color.Transparent,
+        topBar = {
+            TopBar(title = stringResource(id = NavItem.Logs.title))
         }
+    ) { paddingValues ->
+        LogRecycler(
+            modifier = Modifier
+                .padding(paddingValues)
+                .blockBorder()
+                .fillMaxSize(),
+            productsList = logs.sortedByDescending(Log::logDate),
+            onShare = { viewModel.shareLog(it, pref_shareAsFile.value) },
+            onDelete = { viewModel.deleteLog(it) }
+        )
     }
 }

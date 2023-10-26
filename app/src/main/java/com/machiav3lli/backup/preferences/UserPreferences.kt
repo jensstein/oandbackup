@@ -46,7 +46,6 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.TagSimple
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TextAa
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Translate
 import com.machiav3lli.backup.ui.compose.recycler.BusyBackground
-import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.ColorDeData
 import com.machiav3lli.backup.ui.compose.theme.ColorExodus
 import com.machiav3lli.backup.ui.compose.theme.ColorExtDATA
@@ -104,48 +103,46 @@ fun UserPrefsPage() {
             }
         }
 
-    AppTheme {
-        BusyBackground(
-            modifier = Modifier
-                .blockBorder()
-                .fillMaxSize()
+    BusyBackground(
+        modifier = Modifier
+            .blockBorder()
+            .fillMaxSize()
+    ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                item {
-                    PrefsGroup(prefs = prefs) { pref ->
-                        dialogsPref = pref
-                        openDialog.value = true
-                    }
+            item {
+                PrefsGroup(prefs = prefs) { pref ->
+                    dialogsPref = pref
+                    openDialog.value = true
                 }
             }
         }
+    }
 
-        if (openDialog.value) {
-            if (dialogsPref == pref_pathBackupFolder) {
-                openDialog.value = false
-                launcher.launch(BACKUP_DIRECTORY_INTENT)
-            } else BaseDialog(openDialogCustom = openDialog) {
-                when (dialogsPref) {
-                    pref_languages,
-                    -> ListPrefDialogUI(
-                        //TODO hg42 encapsulate in pref
-                        pref = dialogsPref as ListPref,
-                        openDialogCustom = openDialog,
-                    )
+    if (openDialog.value) {
+        if (dialogsPref == pref_pathBackupFolder) {
+            openDialog.value = false
+            launcher.launch(BACKUP_DIRECTORY_INTENT)
+        } else BaseDialog(openDialogCustom = openDialog) {
+            when (dialogsPref) {
+                pref_languages,
+                -> ListPrefDialogUI(
+                    //TODO hg42 encapsulate in pref
+                    pref = dialogsPref as ListPref,
+                    openDialogCustom = openDialog,
+                )
 
-                    pref_appTheme,
-                    pref_appAccentColor,
-                    pref_appSecondaryColor,
-                    -> EnumPrefDialogUI(
-                        //TODO hg42 encapsulate in pref
-                        pref = dialogsPref as EnumPref,
-                        openDialogCustom = openDialog,
-                    )
-                }
+                pref_appTheme,
+                pref_appAccentColor,
+                pref_appSecondaryColor,
+                -> EnumPrefDialogUI(
+                    //TODO hg42 encapsulate in pref
+                    pref = dialogsPref as EnumPref,
+                    openDialogCustom = openDialog,
+                )
             }
         }
     }
@@ -214,15 +211,6 @@ val pref_appSecondaryColor = EnumPref(
             else              -> 3
         }
     },
-    onChanged = ::onThemeChanged,
-)
-
-val pref_blackTheme = BooleanPref(
-    key = "user.blackTheme",
-    titleId = R.string.prefs_theme_black,
-    summaryId = R.string.prefs_theme_black_summary,
-    icon = Phosphor.Swatches,
-    defaultValue = false,
     onChanged = ::onThemeChanged,
 )
 

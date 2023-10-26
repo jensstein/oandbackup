@@ -152,24 +152,6 @@ fun PermissionsPage() {
         topBar = {
             TopBar(title = stringResource(id = R.string.app_name)) {}
         },
-        bottomBar = {
-            AnimatedVisibility(visible = permissionsList.isEmpty()) {
-                Row(
-                    modifier = Modifier
-                        .padding(vertical = 8.dp)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    ElevatedActionButton(
-                        modifier = Modifier.padding(horizontal = 24.dp),
-                        text = stringResource(id = R.string.dialog_start),
-                        icon = Phosphor.ArrowRight,
-                    ) {
-                        mainActivity.moveTo(NavItem.Main.destination)
-                    }
-                }
-            }
-        }
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier

@@ -33,24 +33,16 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.Wrench
 
 sealed class NavItem(var title: Int, var icon: ImageVector, var destination: String) {
 
-    init {
-        navItems[destination] = this
-    }
-
-    companion object {
-        val navItems = mutableMapOf<String, NavItem>()
-    }
-
-    object Welcome :
+    data object Welcome :
         NavItem(R.string.welcome_to_oabx, Phosphor.House, "intro_welcome")
 
-    object Permissions :
+    data object Permissions :
         NavItem(R.string.permission_not_granted, Phosphor.Warning, "intro_permissions")
 
-    object Lock :
+    data object Lock :
         NavItem(R.string.prefs_devicelock, Phosphor.Lock, "intro_lock")
 
-    object Home :
+    data object Home :
         NavItem(
             R.string.home,
             when {
@@ -62,43 +54,43 @@ sealed class NavItem(var title: Int, var icon: ImageVector, var destination: Str
             "home"
         )
 
-    object Backup :
+    data object Backup :
         NavItem(R.string.backup, Phosphor.ArchiveTray, "batch_backup")
 
-    object Restore :
+    data object Restore :
         NavItem(R.string.restore, Phosphor.ClockCounterClockwise, "batch_restore")
 
-    object Scheduler :
+    data object Scheduler :
         NavItem(R.string.sched_title, Phosphor.CalendarX, "scheduler")
 
-    object Main :
+    data object Main :
         NavItem(R.string.main, Phosphor.House, "main")
 
-    object Settings :
+    data object Settings :
         NavItem(R.string.prefs_title, Phosphor.GearSix, "settings")
 
-    object UserPrefs :
+    data object UserPrefs :
         NavItem(R.string.prefs_user_short, Phosphor.UserGear, "prefs_user")
 
-    object ServicePrefs :
+    data object ServicePrefs :
         NavItem(R.string.prefs_service_short, Phosphor.SlidersHorizontal, "prefs_service")
 
-    object AdvancedPrefs :
+    data object AdvancedPrefs :
         NavItem(R.string.prefs_advanced_short, Phosphor.Flask, "prefs_advanced")
 
-    object ToolsPrefs :
+    data object ToolsPrefs :
         NavItem(R.string.prefs_tools_short, Phosphor.Wrench, "prefs_tools")
 
-    object Terminal :
+    data object Terminal :
         NavItem(R.string.prefs_tools_terminal, Phosphor.Bug, "prefs_tools/terminal")
 
-    object Exports : NavItem(
+    data object Exports : NavItem(
         R.string.prefs_schedulesexportimport,
         Phosphor.CalendarX,
         "prefs_tools/exports"
     )
 
-    object Logs : NavItem(
+    data object Logs : NavItem(
         R.string.prefs_logviewer,
         Phosphor.Bug,
         "prefs_tools/logs"
@@ -116,11 +108,13 @@ sealed class NavItem(var title: Int, var icon: ImageVector, var destination: Str
                     BatchPage(viewModel = it, backupBoolean = destination == Backup.destination)
                 }
             }
+
             Scheduler.destination                   -> {
                 OABX.main?.schedulerViewModel?.let { viewModel ->
                     SchedulerPage(viewModel)
                 }
             }
+
             UserPrefs.destination                   -> UserPrefsPage()
             ServicePrefs.destination                -> ServicePrefsPage()
             AdvancedPrefs.destination               -> AdvancedPrefsPage()

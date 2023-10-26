@@ -36,7 +36,6 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.ClockCounterClockwise
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ShieldStar
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Warning
 import com.machiav3lli.backup.ui.compose.recycler.BusyBackground
-import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.ColorDeData
 import com.machiav3lli.backup.ui.compose.theme.ColorSpecial
 import com.machiav3lli.backup.ui.compose.theme.ColorUpdated
@@ -84,48 +83,46 @@ fun AdvancedPrefsPage() {
 
     val prefs = Pref.prefGroups["adv"] ?: listOf()
 
-    AppTheme {
-        BusyBackground(
-            modifier = Modifier
-                .blockBorder()
-                .fillMaxSize()
+    BusyBackground(
+        modifier = Modifier
+            .blockBorder()
+            .fillMaxSize()
+    ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                item {
-                    PrefsGroup(prefs = prefs) { pref ->
-                        if (pref == pref_enableSpecialBackups) {        //TODO hg42 encapsulate in pref
-                            val newModel = sortFilterModel
-                            newModel.mainFilter = newModel.mainFilter and MAIN_FILTER_DEFAULT
-                            sortFilterModel = newModel
-                        }
+            item {
+                PrefsGroup(prefs = prefs) { pref ->
+                    if (pref == pref_enableSpecialBackups) {        //TODO hg42 encapsulate in pref
+                        val newModel = sortFilterModel
+                        newModel.mainFilter = newModel.mainFilter and MAIN_FILTER_DEFAULT
+                        sortFilterModel = newModel
                     }
                 }
-                item {
-                    PrefsExpandableGroupHeader(
-                        titleId = R.string.prefs_dev_settings,
-                        summaryId = R.string.prefs_dev_settings_summary,
-                        icon = Phosphor.Warning
-                    ) {
-                        expand(!expanded)
-                    }
+            }
+            item {
+                PrefsExpandableGroupHeader(
+                    titleId = R.string.prefs_dev_settings,
+                    summaryId = R.string.prefs_dev_settings_summary,
+                    icon = Phosphor.Warning
+                ) {
+                    expand(!expanded)
                 }
-                item {
-                    //Box {  // hg42: use Box as workaround for weird animation behavior  //TODO hg42 seems to be fixed now? //TODO wech
-                    AnimatedVisibility(
-                        visible = expanded,
-                        //enter = EnterTransition.None,
-                        //exit = ExitTransition.None
-                        enter = expandVertically() + fadeIn(),
-                        exit = shrinkVertically() + fadeOut()
-                    ) {
-                        DevPrefGroups()
-                    }
-                    //}
+            }
+            item {
+                //Box {  // hg42: use Box as workaround for weird animation behavior  //TODO hg42 seems to be fixed now? //TODO wech
+                AnimatedVisibility(
+                    visible = expanded,
+                    //enter = EnterTransition.None,
+                    //exit = ExitTransition.None
+                    enter = expandVertically() + fadeIn(),
+                    exit = shrinkVertically() + fadeOut()
+                ) {
+                    DevPrefGroups()
                 }
+                //}
             }
         }
     }
@@ -538,14 +535,14 @@ val persist_skippedEncryptionCounter = IntPref(
 fun publicPreferences(persist: Boolean = false) =
     Pref.prefGroups.map {
         val (group, prefs) = it
-        prefs.map {
-            if (it.private ||
-                it is LaunchPref ||
-                it.group == "kill" ||
-                (persist && it.group == "persist")
+        prefs.mapNotNull { pref ->
+            if (pref.private ||
+                pref is LaunchPref ||
+                pref.group == "kill" ||
+                (persist && pref.group == "persist")
             )
                 null
             else
-                it
-        }.filterNotNull()
+                pref
+        }
     }.flatten()

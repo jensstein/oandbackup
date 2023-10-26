@@ -65,7 +65,6 @@ import com.machiav3lli.backup.ui.compose.item.LegendItem
 import com.machiav3lli.backup.ui.compose.item.LinkItem
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TitleText
-import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.utils.SystemUtils.applicationIssuer
 import com.machiav3lli.backup.utils.gridItems
 import java.io.IOException
@@ -77,132 +76,130 @@ fun HelpSheet(onDismiss: () -> Unit) {
     val context = LocalContext.current
     val nestedScrollConnection = rememberNestedScrollInteropConnection()
 
-    AppTheme {
-        Scaffold(
-            containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.onBackground,
-            topBar = {
-                ListItem(
-                    colors = ListItemDefaults.colors(
-                        containerColor = Color.Transparent,
+    Scaffold(
+        containerColor = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.onBackground,
+        topBar = {
+            ListItem(
+                colors = ListItemDefaults.colors(
+                    containerColor = Color.Transparent,
+                ),
+                headlineContent = {
+                    Row(
+                        verticalAlignment = Alignment.Bottom,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.app_name),
+                            style = MaterialTheme.typography.headlineMedium,
+                            maxLines = 1,
+                        )
+                        Text(
+                            text = BuildConfig.VERSION_NAME,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                },
+                supportingContent = {
+                    applicationIssuer?.let {
+                        Text(
+                            text = "signed by $it",
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                },
+                trailingContent = {
+                    RoundButton(icon = Phosphor.CaretDown) {
+                        onDismiss()
+                    }
+                }
+            )
+        }
+    ) { paddingValues ->
+        LazyColumn(
+            modifier = Modifier
+                .padding(paddingValues)
+                .blockBorder()
+                .nestedScroll(nestedScrollConnection)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(8.dp)
+        ) {
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
                     ),
-                    headlineContent = {
-                        Row(
-                            verticalAlignment = Alignment.Bottom,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.app_name),
-                                style = MaterialTheme.typography.headlineMedium,
-                                maxLines = 1,
-                            )
-                            Text(
-                                text = BuildConfig.VERSION_NAME,
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
-                    },
-                    supportingContent = {
-                        applicationIssuer?.let {
-                            Text(
-                                text = "signed by $it",
-                                modifier = Modifier.padding(horizontal = 8.dp),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
-                    },
-                    trailingContent = {
-                        RoundButton(icon = Phosphor.CaretDown) {
-                            onDismiss()
-                        }
-                    }
-                )
-            }
-        ) { paddingValues ->
-            LazyColumn(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .blockBorder()
-                    .nestedScroll(nestedScrollConnection)
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(8.dp)
-            ) {
-                item {
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
-                        ),
-                        shape = MaterialTheme.shapes.large,
-                    ) {
-                        linksList.forEach {
-                            LinkItem(
-                                item = it,
-                                onClick = { uriString ->
-                                    context.startActivity(
-                                        Intent(
-                                            Intent.ACTION_VIEW,
-                                            Uri.parse(uriString)
-                                        )
-                                    )
-                                }
-                            )
-                        }
-                    }
-                }
-                item { TitleText(R.string.help_legend) }
-                gridItems(
-                    items = legendList,
-                    columns = 2,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    shape = MaterialTheme.shapes.large,
                 ) {
-                    LegendItem(item = it)
-                }
-                item {
-                    Text(
-                        text = stringResource(id = R.string.help_appTypeHint),
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                }
-                item {
-                    val (showNotes, extendNotes) = remember { mutableStateOf(false) }
-
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.background,
-                        ),
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface),
-                        shape = MaterialTheme.shapes.large,
-                    ) {
-                        ListItem(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { extendNotes(!showNotes) },
-                            headlineContent = {
-                                TitleText(R.string.usage_notes_title)
-                            },
-                            trailingContent = {
-                                Icon(
-                                    imageVector = if (showNotes) Phosphor.CaretUp
-                                    else Phosphor.CaretDown,
-                                    contentDescription = null
+                    linksList.forEach {
+                        LinkItem(
+                            item = it,
+                            onClick = { uriString ->
+                                context.startActivity(
+                                    Intent(
+                                        Intent.ACTION_VIEW,
+                                        Uri.parse(uriString)
+                                    )
                                 )
                             }
                         )
-                        AnimatedVisibility(
-                            visible = showNotes,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text(text = context.getUsageNotes(), modifier = Modifier.padding(8.dp))
+                    }
+                }
+            }
+            item { TitleText(R.string.help_legend) }
+            gridItems(
+                items = legendList,
+                columns = 2,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                LegendItem(item = it)
+            }
+            item {
+                Text(
+                    text = stringResource(id = R.string.help_appTypeHint),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
+            item {
+                val (showNotes, extendNotes) = remember { mutableStateOf(false) }
+
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                    ),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface),
+                    shape = MaterialTheme.shapes.large,
+                ) {
+                    ListItem(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { extendNotes(!showNotes) },
+                        headlineContent = {
+                            TitleText(R.string.usage_notes_title)
+                        },
+                        trailingContent = {
+                            Icon(
+                                imageVector = if (showNotes) Phosphor.CaretUp
+                                else Phosphor.CaretDown,
+                                contentDescription = null
+                            )
                         }
+                    )
+                    AnimatedVisibility(
+                        visible = showNotes,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = context.getUsageNotes(), modifier = Modifier.padding(8.dp))
                     }
                 }
             }

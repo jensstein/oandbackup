@@ -37,7 +37,6 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.ShieldStar
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TagSimple
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Textbox
 import com.machiav3lli.backup.ui.compose.recycler.BusyBackground
-import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.compose.theme.ColorAPK
 import com.machiav3lli.backup.ui.compose.theme.ColorData
 import com.machiav3lli.backup.ui.compose.theme.ColorDeData
@@ -60,44 +59,42 @@ fun ServicePrefsPage() {
     val openDialog = remember { mutableStateOf(false) }
     var dialogsPref by remember { mutableStateOf<Pref?>(null) }
 
-    AppTheme {
-        BusyBackground(
-            modifier = Modifier
-                .blockBorder()
-                .fillMaxSize()
+    BusyBackground(
+        modifier = Modifier
+            .blockBorder()
+            .fillMaxSize()
+    ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                ServicePrefGroups { pref ->
-                    dialogsPref = pref
-                    openDialog.value = true
-                }
+            ServicePrefGroups { pref ->
+                dialogsPref = pref
+                openDialog.value = true
             }
         }
+    }
 
-        if (openDialog.value) {
-            BaseDialog(openDialogCustom = openDialog) {
-                when (dialogsPref) {
-                    is PasswordPref -> StringPrefDialogUI(              //TODO hg42 encapsulate in pref
-                        pref = dialogsPref as PasswordPref,
-                        isPrivate = true,
-                        confirm = true,
-                        openDialogCustom = openDialog
-                    )
+    if (openDialog.value) {
+        BaseDialog(openDialogCustom = openDialog) {
+            when (dialogsPref) {
+                is PasswordPref -> StringPrefDialogUI(              //TODO hg42 encapsulate in pref
+                    pref = dialogsPref as PasswordPref,
+                    isPrivate = true,
+                    confirm = true,
+                    openDialogCustom = openDialog
+                )
 
-                    is StringPref   -> StringPrefDialogUI(              //TODO hg42 encapsulate in pref
-                        pref = dialogsPref as StringPref,
-                        openDialogCustom = openDialog
-                    )
+                is StringPref   -> StringPrefDialogUI(              //TODO hg42 encapsulate in pref
+                    pref = dialogsPref as StringPref,
+                    openDialogCustom = openDialog
+                )
 
-                    is EnumPref     -> EnumPrefDialogUI(                //TODO hg42 encapsulate in pref
-                        pref = dialogsPref as EnumPref,
-                        openDialogCustom = openDialog
-                    )
-                }
+                is EnumPref     -> EnumPrefDialogUI(                //TODO hg42 encapsulate in pref
+                    pref = dialogsPref as EnumPref,
+                    openDialogCustom = openDialog
+                )
             }
         }
     }

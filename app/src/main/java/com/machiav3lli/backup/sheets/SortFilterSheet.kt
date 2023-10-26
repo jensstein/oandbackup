@@ -69,7 +69,6 @@ import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.SwitchChip
 import com.machiav3lli.backup.ui.compose.recycler.MultiSelectableChipGroup
 import com.machiav3lli.backup.ui.compose.recycler.SelectableChipGroup
-import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.item.ChipItem
 import com.machiav3lli.backup.updatedFilterChipItems
 import com.machiav3lli.backup.utils.applyFilter
@@ -92,168 +91,166 @@ fun SortFilterSheet(onDismiss: () -> Unit) {
         )
     )  //TODO hg42 use central function for all the filtering
 
-    AppTheme {
-        Scaffold(
-            containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.onBackground,
-            topBar = {
-                ListItem(
-                    colors = ListItemDefaults.colors(
-                        containerColor = Color.Transparent,
-                    ),
-                    headlineContent = {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(4.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            DoubleVerticalText(
-                                upperText = currentStats().first.toString(),
-                                bottomText = stringResource(id = R.string.stats_apps),
-                                modifier = Modifier.weight(1f)
-                            )
-                            DoubleVerticalText(
-                                upperText = currentStats().second.toString(),
-                                bottomText = stringResource(id = R.string.stats_backups),
-                                modifier = Modifier.weight(1f)
-                            )
-                            DoubleVerticalText(
-                                upperText = currentStats().third.toString(),
-                                bottomText = stringResource(id = R.string.stats_updated),
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
-                    },
-                    trailingContent = {
-                        RoundButton(icon = Phosphor.CaretDown) {
-                            onDismiss()
-                        }
+    Scaffold(
+        containerColor = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.onBackground,
+        topBar = {
+            ListItem(
+                colors = ListItemDefaults.colors(
+                    containerColor = Color.Transparent,
+                ),
+                headlineContent = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        DoubleVerticalText(
+                            upperText = currentStats().first.toString(),
+                            bottomText = stringResource(id = R.string.stats_apps),
+                            modifier = Modifier.weight(1f)
+                        )
+                        DoubleVerticalText(
+                            upperText = currentStats().second.toString(),
+                            bottomText = stringResource(id = R.string.stats_backups),
+                            modifier = Modifier.weight(1f)
+                        )
+                        DoubleVerticalText(
+                            upperText = currentStats().third.toString(),
+                            bottomText = stringResource(id = R.string.stats_updated),
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                },
+                trailingContent = {
+                    RoundButton(icon = Phosphor.CaretDown) {
+                        onDismiss()
+                    }
+                }
+            )
+        },
+        bottomBar = {
+            Row(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .navigationBarsPadding(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                ElevatedActionButton(
+                    text = stringResource(id = R.string.resetFilter),
+                    icon = Phosphor.ArrowUUpLeft,
+                    modifier = Modifier.weight(1f),
+                    fullWidth = true,
+                    positive = false,
+                    onClick = {
+                        sortFilterModel = SortFilterModel()
+                        onDismiss()
                     }
                 )
-            },
-            bottomBar = {
-                Row(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .navigationBarsPadding(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    ElevatedActionButton(
-                        text = stringResource(id = R.string.resetFilter),
-                        icon = Phosphor.ArrowUUpLeft,
-                        modifier = Modifier.weight(1f),
-                        fullWidth = true,
-                        positive = false,
-                        onClick = {
-                            sortFilterModel = SortFilterModel()
-                            onDismiss()
-                        }
-                    )
-                    ElevatedActionButton(
-                        text = stringResource(id = R.string.applyFilter),
-                        icon = Phosphor.Check,
-                        modifier = Modifier.weight(1f),
-                        fullWidth = true,
-                        positive = true,
-                        onClick = {
-                            sortFilterModel = model
-                            onDismiss()
-                        }
-                    )
+                ElevatedActionButton(
+                    text = stringResource(id = R.string.applyFilter),
+                    icon = Phosphor.Check,
+                    modifier = Modifier.weight(1f),
+                    fullWidth = true,
+                    positive = true,
+                    onClick = {
+                        sortFilterModel = model
+                        onDismiss()
+                    }
+                )
+            }
+        }
+    ) { paddingValues ->
+        LazyColumn(
+            modifier = Modifier
+                .padding(paddingValues)
+                .blockBorder()
+                .nestedScroll(nestedScrollConnection)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(8.dp)
+        ) {
+            item { CategoryTitleText(R.string.sorting_order) }
+            item {
+                SelectableChipGroup(
+                    list = sortChipItems,
+                    selectedFlag = model.sort
+                ) { flag ->
+                    model = model.copy(sort = flag)
+                }
+                SwitchChip(
+                    firstTextId = R.string.sortAsc,
+                    firstIcon = Phosphor.SortAscending,
+                    secondTextId = R.string.sortDesc,
+                    secondIcon = Phosphor.SortDescending,
+                    firstSelected = model.sortAsc,
+                    onCheckedChange = { checked ->
+                        model = model.copy(sortAsc = checked)
+                    }
+                )
+            }
+            item { CategoryTitleText(R.string.filters_app) }
+            item {
+                MultiSelectableChipGroup(
+                    list = if (specialBackupsEnabled) mainFilterChipItems
+                    else mainFilterChipItems.minus(ChipItem.Special),
+                    selectedFlags = model.mainFilter
+                ) { flags, _ ->
+                    model = model.copy(mainFilter = flags)
                 }
             }
-        ) { paddingValues ->
-            LazyColumn(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .blockBorder()
-                    .nestedScroll(nestedScrollConnection)
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(8.dp)
-            ) {
-                item { CategoryTitleText(R.string.sorting_order) }
-                item {
-                    SelectableChipGroup(
-                        list = sortChipItems,
-                        selectedFlag = model.sort
-                    ) { flag ->
-                        model = model.copy(sort = flag)
-                    }
-                    SwitchChip(
-                        firstTextId = R.string.sortAsc,
-                        firstIcon = Phosphor.SortAscending,
-                        secondTextId = R.string.sortDesc,
-                        secondIcon = Phosphor.SortDescending,
-                        firstSelected = model.sortAsc,
-                        onCheckedChange = { checked ->
-                            model = model.copy(sortAsc = checked)
-                        }
-                    )
+            item { CategoryTitleText(R.string.filters_backup) }
+            item {
+                MultiSelectableChipGroup(
+                    list = mainBackupModeChipItems,
+                    selectedFlags = model.backupFilter
+                ) { flags, _ ->
+                    model = model.copy(backupFilter = flags)
                 }
-                item { CategoryTitleText(R.string.filters_app) }
-                item {
-                    MultiSelectableChipGroup(
-                        list = if (specialBackupsEnabled) mainFilterChipItems
-                        else mainFilterChipItems.minus(ChipItem.Special),
-                        selectedFlags = model.mainFilter
-                    ) { flags, _ ->
-                        model = model.copy(mainFilter = flags)
-                    }
+            }
+            item { CategoryTitleText(R.string.filters_installed) }
+            item {
+                SelectableChipGroup(
+                    list = installedFilterChipItems,
+                    selectedFlag = model.installedFilter
+                ) { flag ->
+                    model = model.copy(installedFilter = flag)
                 }
-                item { CategoryTitleText(R.string.filters_backup) }
-                item {
-                    MultiSelectableChipGroup(
-                        list = mainBackupModeChipItems,
-                        selectedFlags = model.backupFilter
-                    ) { flags, _ ->
-                        model = model.copy(backupFilter = flags)
-                    }
+            }
+            item { CategoryTitleText(R.string.filters_launchable) }
+            item {
+                SelectableChipGroup(
+                    list = launchableFilterChipItems,
+                    selectedFlag = model.launchableFilter
+                ) { flag ->
+                    model = model.copy(launchableFilter = flag)
                 }
-                item { CategoryTitleText(R.string.filters_installed) }
-                item {
-                    SelectableChipGroup(
-                        list = installedFilterChipItems,
-                        selectedFlag = model.installedFilter
-                    ) { flag ->
-                        model = model.copy(installedFilter = flag)
-                    }
+            }
+            item { CategoryTitleText(R.string.filters_updated) }
+            item {
+                SelectableChipGroup(
+                    list = updatedFilterChipItems,
+                    selectedFlag = model.updatedFilter
+                ) { flag ->
+                    model = model.copy(updatedFilter = flag)
                 }
-                item { CategoryTitleText(R.string.filters_launchable) }
-                item {
-                    SelectableChipGroup(
-                        list = launchableFilterChipItems,
-                        selectedFlag = model.launchableFilter
-                    ) { flag ->
-                        model = model.copy(launchableFilter = flag)
-                    }
+            }
+            item { CategoryTitleText(R.string.filters_latest) }
+            item {
+                SelectableChipGroup(
+                    list = latestFilterChipItems,
+                    selectedFlag = model.latestFilter
+                ) { flag ->
+                    model = model.copy(latestFilter = flag)
                 }
-                item { CategoryTitleText(R.string.filters_updated) }
-                item {
-                    SelectableChipGroup(
-                        list = updatedFilterChipItems,
-                        selectedFlag = model.updatedFilter
-                    ) { flag ->
-                        model = model.copy(updatedFilter = flag)
-                    }
-                }
-                item { CategoryTitleText(R.string.filters_latest) }
-                item {
-                    SelectableChipGroup(
-                        list = latestFilterChipItems,
-                        selectedFlag = model.latestFilter
-                    ) { flag ->
-                        model = model.copy(latestFilter = flag)
-                    }
-                }
-                item { CategoryTitleText(R.string.filters_enabled) }
-                item {
-                    SelectableChipGroup(
-                        list = enabledFilterChipItems,
-                        selectedFlag = model.enabledFilter
-                    ) { flag ->
-                        model = model.copy(enabledFilter = flag)
-                    }
+            }
+            item { CategoryTitleText(R.string.filters_enabled) }
+            item {
+                SelectableChipGroup(
+                    list = enabledFilterChipItems,
+                    selectedFlag = model.enabledFilter
+                ) { flag ->
+                    model = model.copy(enabledFilter = flag)
                 }
             }
         }

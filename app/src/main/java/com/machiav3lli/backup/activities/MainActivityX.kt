@@ -37,7 +37,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.graphics.Color
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.NavHostController
@@ -66,7 +65,6 @@ import com.machiav3lli.backup.preferences.persist_beenWelcomed
 import com.machiav3lli.backup.preferences.persist_ignoreBatteryOptimization
 import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
 import com.machiav3lli.backup.preferences.pref_appTheme
-import com.machiav3lli.backup.preferences.pref_blackTheme
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.navigation.MainNavHost
@@ -238,18 +236,8 @@ class MainActivityX : BaseActivity() {
                     }
                 }
 
-                LaunchedEffect(key1 = pref_blackTheme.value) {
-                    getDefaultSharedPreferences()
-                        .registerOnSharedPreferenceChangeListener { _, key ->
-                            when (key) {
-                                pref_blackTheme.key -> recreate()
-                                else                -> {}
-                            }
-                        }
-                }
-
                 Scaffold(
-                    containerColor = Color.Transparent,
+                    containerColor = MaterialTheme.colorScheme.background,
                     contentColor = MaterialTheme.colorScheme.onBackground,
                 ) {
                     LaunchedEffect(key1 = viewModel) {
@@ -300,9 +288,9 @@ class MainActivityX : BaseActivity() {
         val command = intent.action
         Timber.i("Main: command $command")
         when (command) {
-            null -> {}
+            null                         -> {}
             "android.intent.action.MAIN" -> {}
-            else -> {
+            else                         -> {
                 addInfoLogText("Main: command '$command'")
             }
         }
