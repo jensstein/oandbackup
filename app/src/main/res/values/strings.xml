@@ -91,7 +91,11 @@
     <string name="prefs_theme_light">Light</string>
     <string name="prefs_theme_dark">Dark</string>
     <string name="prefs_theme_system">System\'s theme</string>
-    <string name="prefs_theme_dynamic">Dynamic theme (if available)</string>
+    <string name="prefs_theme_system_black">System\'s theme (Black)</string>
+    <string name="prefs_theme_dynamic">Dynamic theme</string>
+    <string name="prefs_theme_dynamic_light">Light with dynamic colors</string>
+    <string name="prefs_theme_dynamic_dark">Dark with dynamic colors</string>
+    <string name="prefs_theme_dynamic_black">Black with dynamic colors</string>
     <string name="prefs_theme_black">Black theme</string>
     <string name="prefs_theme_black_summary">Enforces black background when on dark theme</string>
     <string name="prefs_languages">Language</string>

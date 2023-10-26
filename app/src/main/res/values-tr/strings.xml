@@ -334,7 +334,6 @@
     <string name="edit_note">Not düzenle</string>
     <string name="add_tag">Yeni etiket ekle</string>
     <string name="prefs_loadingtoasts">Toast\'lar yükleniyor</string>
-    <string name="prefs_theme_dynamic">Dinamik tema (uygunsa)</string>
     <string name="prefs_dev_settings">Geliştirici seçenekleri</string>
     <string name="prefs_user_short">Kişisel</string>
     <string name="prefs_tools_short">Araçlar</string>

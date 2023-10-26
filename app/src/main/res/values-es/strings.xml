@@ -342,7 +342,6 @@
     <string name="dismiss">Descartar</string>
     <string name="supended_apps_cleanup">limpiar las aplicaciones suspendidas sobrantes</string>
     <string name="prefs_loadingtoasts">Barras de carga</string>
-    <string name="prefs_theme_dynamic">Tema dinámico (si está disponible)</string>
     <string name="add_tag">Agregar nueva etiqueta</string>
     <string name="edit_note">Editar nota</string>
     <string name="root_is_mandatory">Dado que las aplicaciones están aisladas entre sí, se requiere acceso de superusuario para realizar copias de seguridad y restaurar sus datos.</string>

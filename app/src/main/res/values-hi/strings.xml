@@ -116,7 +116,6 @@
     <string name="prefs_altnavbaritem_summary">वैकल्पिक/पुराने नेविगेशन बार आइटम लेआउट का उपयोग करें, जो अचयनित आइटमों का लेबल दिखाता है।</string>
     <string name="prefs_laserbackground">पृष्ठभूमि में एनिमेटेड लेज़र दिखाएँ</string>
     <string name="prefs_rememberfiltering_summary">चुनी गई क्रमबद्ध और फ़िल्टरिंग विधि को याद रखता है। केवल मेनू में चेकबॉक्स द्वारा चिह्नित किए गए पर ही विचार किया जाता है।</string>
-    <string name="prefs_theme_dynamic">डायनामिक थीम (यदि उपलब्ध हो)</string>
     <string name="prefs_biometriclock">बायोमेट्रिक लॉक</string>
     <string name="prefs_devicelock_summary">ऐप को डिवाइस क्रेडेंशियल्स से सुरक्षित करें</string>
     <string name="prefs_theme">थीम</string>

@@ -275,7 +275,6 @@
     <string name="prefs_multilineinfochips">Informació multilínia</string>
     <string name="prefs_squeezenavtext">Comprimeix els textos</string>
     <string name="error_pmDataIncompleteException_dataRestoreFailed">No s\'han restaurat les dades de l\'aplicació.</string>
-    <string name="prefs_theme_dynamic">Tema dinàmic (si és disponible)</string>
     <string name="prefs_theme_black">Tema fosc</string>
     <string name="prefs_theme_black_summary">Força el fons negre en utilitzar el tema fosc</string>
     <string name="prefs_multilineinfochips_summary">Permet que la informació sigui mostrada en diverses línies.</string>

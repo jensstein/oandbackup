@@ -130,15 +130,29 @@ const val EXTRA_STATS = "stats"
 
 const val THEME_LIGHT = 0
 const val THEME_DARK = 1
+const val THEME_BLACK = 4
 const val THEME_SYSTEM = 2
+const val THEME_SYSTEM_BLACK = 5
 const val THEME_DYNAMIC = 3
+const val THEME_DYNAMIC_LIGHT = 6
+const val THEME_DYNAMIC_DARK = 7
+const val THEME_DYNAMIC_BLACK = 8
 
 val themeItems = mutableMapOf(
     THEME_LIGHT to R.string.prefs_theme_light,
     THEME_DARK to R.string.prefs_theme_dark,
-    THEME_SYSTEM to R.string.prefs_theme_system,
+    THEME_BLACK to R.string.prefs_theme_black,
 ).apply {
-    if (OABX.minSDK(31)) set(THEME_DYNAMIC, R.string.prefs_theme_dynamic)
+    if (OABX.minSDK(29)) {
+        set(THEME_SYSTEM, R.string.prefs_theme_system)
+        set(THEME_SYSTEM_BLACK, R.string.prefs_theme_system_black)
+    }
+    if (OABX.minSDK(31)) {
+        set(THEME_DYNAMIC, R.string.prefs_theme_dynamic)
+        set(THEME_DYNAMIC_LIGHT, R.string.prefs_theme_dynamic_light)
+        set(THEME_DYNAMIC_DARK, R.string.prefs_theme_dynamic_dark)
+        set(THEME_DYNAMIC_BLACK, R.string.prefs_theme_dynamic_black)
+    }
 }
 
 val BUTTON_SIZE_MEDIUM = 48.dp

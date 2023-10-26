@@ -351,7 +351,6 @@
     <string name="prefs_squeezenavtext">Suspausti navigacijos elemento tekstą</string>
     <string name="prefs_squeezenavtext_summary">Leidžia keisti teksto, esančio po naršymo juostos elementais, dydį, kad jis atitiktų turimą plotį.</string>
     <string name="intro_permission_contacts">Programėlei reikia šio leidimo, kad būtų galima suderinti kontaktą su priklausančiomis SMS / MMS.</string>
-    <string name="prefs_theme_dynamic">Dinaminė tema (jei yra)</string>
     <string name="prefs_nobackupdata">Kurti atsargines no_backup failų kopijas</string>
     <string name="prefs_nobackupdata_summary">Kuria atsargines failų kopijas duomenims, kuriems pažymėta nekurti atsarginių kopijų</string>
     <string name="prefs_tools_terminal">Terminalas</string>

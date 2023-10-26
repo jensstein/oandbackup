@@ -348,7 +348,6 @@
     <string name="prefs_sessionIinstaller">Usar instalador de sessão</string>
     <string name="prefs_sessionIinstaller_summary">Usar instalador de sessão invés do instalador padrão. Lento porém evita problemas com Android 13+</string>
     <string name="prefs_installerpackagename">O nome do instalador de pacotes:</string>
-    <string name="prefs_theme_dynamic">Tema dinâmico (se disponível)</string>
     <string name="sortAppDataSize">Tamanho dos dados do app</string>
     <string name="sortAppSize">Tamanho do App</string>
     <string name="sortBackupSize">Tamanho do backup</string>

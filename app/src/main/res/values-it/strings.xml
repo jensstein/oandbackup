@@ -345,7 +345,6 @@
     <string name="sortAppSize">Dimensione app</string>
     <string name="sortAppDataSize">"Dimensione App  dati"</string>
     <string name="edit_note">Modifica nota</string>
-    <string name="prefs_theme_dynamic">Tema dinamico (se disponibile)</string>
     <string name="prefs_dev_settings">Impostazioni sviluppatore</string>
     <string name="prefs_dev_settings_summary">Non modificare a meno che non te lo dica uno sviluppatore!</string>
     <string name="prefs_tools_short">Strumenti</string>

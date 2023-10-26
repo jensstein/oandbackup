@@ -91,7 +91,6 @@
     <string name="prefs_user_short">Osobní</string>
     <string name="prefs_service">Předvolby služeb</string>
     <string name="prefs_theme_system">Motiv systému</string>
-    <string name="prefs_theme_dynamic">Dynamický motiv (pokud je dostupný)</string>
     <string name="prefs_languages">Jazyk</string>
     <string name="prefs_language_system">Podle systému</string>
     <string name="prefs_pathbackupfolder">Složka zálohy</string>

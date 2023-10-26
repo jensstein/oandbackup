@@ -322,7 +322,6 @@
     <string name="prefs_mediadata">Tworzenie kopii zapasowych plików multimedialnych</string>
     <string name="prefs_mediadata_summary">Tworzy kopię zapasową plików multimedialnych aplikacji umieszczonych w pamięci zewnętrznej (np. /storage/emulated/0/Android/media/)</string>
     <string name="prefs_secondary_4">Lawowa Pomarańcz</string>
-    <string name="prefs_theme_dynamic">Motyw dynamiczny (jeśli jest dostępny)</string>
     <string name="prefs_nobackupdata">Tworzenie kopii zapasowych plików no_backup</string>
     <string name="prefs_nobackupdata_summary">Tworzenie kopii zapasowych plików w danych, które są oznaczone jako nie objęte kopią zapasową</string>
     <string name="radio_mediadata">Dane mediów</string>

@@ -44,13 +44,15 @@ import com.google.android.material.color.DynamicColors
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.PREFS_LANGUAGES_SYSTEM
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.THEME_BLACK
 import com.machiav3lli.backup.THEME_DARK
 import com.machiav3lli.backup.THEME_DYNAMIC
+import com.machiav3lli.backup.THEME_DYNAMIC_BLACK
 import com.machiav3lli.backup.THEME_LIGHT
+import com.machiav3lli.backup.THEME_SYSTEM_BLACK
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.items.ActionResult
-import com.machiav3lli.backup.preferences.pref_blackTheme
 import com.machiav3lli.backup.traceDebug
 import com.machiav3lli.backup.ui.compose.theme.ApricotOrange
 import com.machiav3lli.backup.ui.compose.theme.ArcticCyan
@@ -86,9 +88,19 @@ fun Context.setCustomTheme() {
         theme.applyAccentStyle()
         theme.applySecondaryStyle()
     } // TODO allow fine control on using custom accent/secondary colors?
-    if (pref_blackTheme.value && isNightMode())
+    if (isBlackTheme && isNightMode())
         theme.applyStyle(R.style.Black, true)
 }
+
+val isBlackTheme: Boolean
+    get() = when (styleTheme) {
+        THEME_BLACK,
+        THEME_SYSTEM_BLACK,
+        THEME_DYNAMIC_BLACK,
+             -> true
+
+        else -> false
+    }
 
 private var sysLocale: LocaleList? = null
 private var sysLocaleJVM: Locale? = null

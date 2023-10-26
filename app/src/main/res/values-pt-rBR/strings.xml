@@ -325,7 +325,6 @@
     <string name="prefs_sessionIinstaller">Usar instalador de sessão</string>
     <string name="prefs_sessionIinstaller_summary">Usar o instalador de sessão ao invés do instalador básico. É mais lento, mas evita problemas com o Android 13+</string>
     <string name="prefs_installerpackagename">Nome do instalador de pacote:</string>
-    <string name="prefs_theme_dynamic">Tema dinâmico (se disponível)</string>
     <string name="sortBackupSize">Tamanho do backup</string>
     <string name="prefs_theme_black">Tema escuro</string>
     <string name="prefs_theme_black_summary">Aplica fundo preto quando em tema escuro</string>

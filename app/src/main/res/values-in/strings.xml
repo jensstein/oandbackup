@@ -335,7 +335,6 @@
     <string name="batch">Kumpulan</string>
     <string name="sortAsc">naik</string>
     <string name="sortDesc">turun</string>
-    <string name="prefs_theme_dynamic">Tema dinamis (jika tersedia)</string>
     <string name="prefs_user_short">Pribadi</string>
     <string name="prefs_service_short">Layanan</string>
     <string name="prefs_advanced_short">Lanjutan</string>

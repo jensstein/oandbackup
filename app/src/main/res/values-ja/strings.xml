@@ -160,7 +160,6 @@
     <string name="prefs_advanced_short">高度</string>
     <string name="prefs_service_short">サービス</string>
     <string name="prefs_user_short">個人設定</string>
-    <string name="prefs_theme_dynamic">ダイナミックテーマ（可能な場合）</string>
     <string name="prefs_loadingtoasts">ロード中トースト</string>
     <string name="prefs_multilineinfochips">複数行情報チップ</string>
     <string name="prefs_multilineinfochips_summary">アプリシートで複数行の情報チップを許可する。</string>
