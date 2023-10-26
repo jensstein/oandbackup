@@ -28,6 +28,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -36,6 +38,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -49,13 +52,14 @@ import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.addInfoLogText
 import com.machiav3lli.backup.OABX.Companion.startup
 import com.machiav3lli.backup.R
-import com.machiav3lli.backup.classAddress
 import com.machiav3lli.backup.dialogs.BaseDialog
 import com.machiav3lli.backup.dialogs.GlobalBlockListDialogUI
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.WorkHandler
 import com.machiav3lli.backup.handler.findBackups
 import com.machiav3lli.backup.handler.updateAppTables
+import com.machiav3lli.backup.pages.RootMissing
+import com.machiav3lli.backup.pages.SplashPage
 import com.machiav3lli.backup.pref_catchUncaughtException
 import com.machiav3lli.backup.pref_uncaughtExceptionsJumpToPreferences
 import com.machiav3lli.backup.preferences.persist_beenWelcomed
@@ -73,10 +77,14 @@ import com.machiav3lli.backup.utils.TraceUtils.traceBold
 import com.machiav3lli.backup.utils.altModeToMode
 import com.machiav3lli.backup.utils.checkCallLogsPermission
 import com.machiav3lli.backup.utils.checkContactsPermission
+import com.machiav3lli.backup.utils.checkRootAccess
 import com.machiav3lli.backup.utils.checkSMSMMSPermission
 import com.machiav3lli.backup.utils.checkUsageStatsPermission
-import com.machiav3lli.backup.utils.getDefaultSharedPreferences
 import com.machiav3lli.backup.utils.hasStoragePermissions
+import com.machiav3lli.backup.utils.isBiometricLockAvailable
+import com.machiav3lli.backup.utils.isBiometricLockEnabled
+import com.machiav3lli.backup.utils.isDeviceLockAvailable
+import com.machiav3lli.backup.utils.isDeviceLockEnabled
 import com.machiav3lli.backup.utils.isEncryptionEnabled
 import com.machiav3lli.backup.utils.isStorageDirSetAndOk
 import com.machiav3lli.backup.utils.postNotificationsPermission
@@ -176,6 +184,22 @@ class MainActivityX : BaseActivity() {
 
         Shell.getShell()
 
+        setContent {
+            AppTheme {
+                SplashPage()
+            }
+            navController = rememberNavController()
+        }
+
+        if (!checkRootAccess()) {
+            setContent {
+                AppTheme {
+                    RootMissing(this)
+                }
+            }
+            return
+        }
+
         powerManager = this.getSystemService(POWER_SERVICE) as PowerManager
 
         setContent {
@@ -229,14 +253,7 @@ class MainActivityX : BaseActivity() {
                     contentColor = MaterialTheme.colorScheme.onBackground,
                 ) {
                     LaunchedEffect(key1 = viewModel) {
-                        if (intent.extras != null) {
-                            val destination =
-                                intent.extras!!.getString(
-                                    classAddress(".fragmentNumber"),
-                                    NavItem.Welcome.destination
-                                )
-                            moveTo(destination)
-                        }
+                        resumeMain()
                     }
 
                     Box {
@@ -264,19 +281,6 @@ class MainActivityX : BaseActivity() {
     override fun onResume() {
         OABX.main = this
         super.onResume()
-        if (!(hasStoragePermissions && isStorageDirSetAndOk &&
-                    checkSMSMMSPermission &&
-                    checkCallLogsPermission &&
-                    checkContactsPermission &&
-                    checkUsageStatsPermission &&
-                    postNotificationsPermission &&
-                    (persist_ignoreBatteryOptimization.value
-                            || powerManager.isIgnoringBatteryOptimizations(packageName)
-                            )
-                    )
-            && this::navController.isInitialized
-            && !navController.currentDestination?.route?.equals(NavItem.Permissions.destination)!!
-        ) navController.navigate(NavItem.Permissions.destination)
     }
 
     override fun onDestroy() {
@@ -509,5 +513,70 @@ class MainActivityX : BaseActivity() {
                 .beginWith(worksList)
                 .enqueue()
         }
+    }
+
+    fun resumeMain() {
+        when {
+            !persist_beenWelcomed.value
+                 -> navController.navigate(NavItem.Welcome.destination)
+
+
+            hasStoragePermissions &&
+                    isStorageDirSetAndOk &&
+                    checkSMSMMSPermission &&
+                    checkCallLogsPermission &&
+                    checkContactsPermission &&
+                    checkUsageStatsPermission &&
+                    postNotificationsPermission &&
+                    (persist_ignoreBatteryOptimization.value
+                            || powerManager.isIgnoringBatteryOptimizations(packageName))
+                    && this::navController.isInitialized
+                    && !navController.currentDestination?.route?.equals(NavItem.Main.destination)!!
+                 -> launchMain()
+
+            else -> navController.navigate(NavItem.Permissions.destination)
+        }
+    }
+
+    private fun launchMain() {
+        when {
+            isBiometricLockAvailable() && isBiometricLockEnabled() && isDeviceLockEnabled() ->
+                launchBiometricPrompt(true)
+
+            isDeviceLockAvailable() && isDeviceLockEnabled()                                ->
+                launchBiometricPrompt(false)
+
+            else                                                                            -> {
+                navController.navigate(NavItem.Main.destination)
+                navController.clearBackStack(NavItem.Main.destination)
+            }
+        }
+    }
+
+    private fun launchBiometricPrompt(withBiometric: Boolean) {
+        navController.navigate(NavItem.Lock.destination)
+        navController.clearBackStack(NavItem.Lock.destination)
+        try {
+            val biometricPrompt = createBiometricPrompt()
+            val promptInfo = BiometricPrompt.PromptInfo.Builder()
+                .setTitle(getString(R.string.prefs_biometriclock))
+                .setConfirmationRequired(true)
+                .setAllowedAuthenticators(BiometricManager.Authenticators.DEVICE_CREDENTIAL or (if (withBiometric) BiometricManager.Authenticators.BIOMETRIC_WEAK else 0))
+                .build()
+            biometricPrompt.authenticate(promptInfo)
+        } catch (e: Throwable) {
+            navController.navigate(NavItem.Main.destination)
+        }
+    }
+
+    private fun createBiometricPrompt(): BiometricPrompt {
+        return BiometricPrompt(this,
+            ContextCompat.getMainExecutor(this),
+            object : BiometricPrompt.AuthenticationCallback() {
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                    super.onAuthenticationSucceeded(result)
+                    navController.navigate(NavItem.Main.destination)
+                }
+            })
     }
 }
