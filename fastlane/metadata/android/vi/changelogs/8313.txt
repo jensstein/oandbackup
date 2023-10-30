@@ -1,0 +1,6 @@
+Thêm: Tạo hiệu ứng cho các nút thanh điều hướng
+Sửa: Chạy lịch trình khi ứng dụng không mở
+Sửa: Thiếu phần khôi phục trong gói đặc biệt
+Sửa: NavBar chồng chéo các trang tính
+Sửa: Sự cố khi khởi động lại ứng dụng khi mở AppSheet
++ hơn 10 đóng góp dịch thuật

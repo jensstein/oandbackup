@@ -1,0 +1,6 @@
+<p>Tạo và khôi phục bản sao lưu ứng dụng trên thiết bị của bạn và lưu dữ liệu ứng dụng vào vị trí mà người dùng có thể truy cập. Hỗ trợ sao lưu và khôi phục một hoặc nhiều ứng dụng.</p>
+<p>Một phần của Bộ ứng dụng Neo.</p>
+<p>Nhánh rẽ của OAndBackup mang đến sự hỗ trợ cho các phiên bản Android mới và giao diện cập nhật.</p>
+<p><br><b>Giúp dịch nó trên Weblate:</b> https://hosted.weblate.org/engage/oandbackupx/.</p>
+<p><br><b>Yêu cầu root:</b> Vì nó sao chép các tệp từ /data/data, /data/app và /system/app.</p>
+<p>Trạng thái: Beta</p>

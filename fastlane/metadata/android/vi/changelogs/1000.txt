@@ -1,0 +1,2 @@
+**OAndBackupX 1.0.0**
+* Đã thêm: tùy chọn dọn dẹp bộ nhớ đệm trước khi sao lưu dữ liệu
