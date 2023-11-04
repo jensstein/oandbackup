@@ -1,0 +1,9 @@
+**OAndBackupX 2.0.0**
+* Prebačeno na sulib (Zahvala @Tiefkuehlpizze)
+* Kompletno uklonjen oab-utils (Zahvala @Tiefkuehlpizze)
+* Novi elementi korisničkog sučelja za Aplikacije-, Filter- i ScheduleSheet
+* Popravljeno zakazivanje sigurnosnih kopija za podatke (sam)
+* Popravljeno spakiravanje external/deData/obb prema Prefs
+*  Popravljeno spakiravanje praznih external/deData/obb mapa
+* Unaprijeđena mogućnost čišćenja međuspremnika
+* Ostale promjene vezane za korisničko sučelje i Performanse

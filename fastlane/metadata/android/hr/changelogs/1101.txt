@@ -1,0 +1,7 @@
+**OAndBackupX 1.1.1**
+* Dodano: prečac za Exodus izvješće u AppSheet
+* Popravljeno: neuspješno pokretanje ako postoji aplikacija za dimenzijama ikone <= 0
+* Promjenjeno: zadano je sada postavljeno da kopira OAndBackupX u nadređenu mapu sigurnosne kopije
+* Dodano: Grčki (Zahvala @tsiflimagas)
+* Ažurirano: Velika i mala slova te Engleski nizovi (Zahvala @atrate)
+* Ažurirano: generaliziranje Kineskog, Nizozemskog, Poljskog i Švedskog

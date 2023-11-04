@@ -1,0 +1,9 @@
+**OAndBackupX 1.3.0**
+* Ažurirano: novi sistem Filtera
+* Ažurirano: smanjeno vrijeme čekanja kod Početnog Zaslona
+* Dodano: Split-APK podrška (potrebno još testiranja, Zahvala @Tiefkuehlpizze)
+* Ažurirano: Podrška za Pretraživanje Naziva Paketa
+* Popravljeno: međuspremnik nije pronađen/ greška kod Simboličkih Linkova
+* Dodano: OBB podrška (potrebno još testiranja)
+* Dodani jezici: Talijanski, Kineski, Turski, Poljski (Zahvale @Urnyx05 @tuchit @scrubjay55 @Antyradek)
+* Ostalo: promjene vezane za korisničko sučelje i performanse

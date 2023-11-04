@@ -1,0 +1,4 @@
+**OAndBackupX 1.2.0**
+* Ažurirano: korisničko sučelje
+* Popravljeno: rušenje prilikom dijeljenja
+* Dodano: mogućnost za sigurnosno kopiranje Datoteka Zaštićenih Uređajem i Vanjskih Podataka
