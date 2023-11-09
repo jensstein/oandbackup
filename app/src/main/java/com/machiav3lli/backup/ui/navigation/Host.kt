@@ -111,3 +111,9 @@ fun NavGraphBuilder.fadeComposable(
         composable(it)
     }
 }
+
+fun NavHostController.clearBackStack() {
+    while (this.currentBackStack.value.isNotEmpty()) {
+        popBackStack()
+    }
+}
