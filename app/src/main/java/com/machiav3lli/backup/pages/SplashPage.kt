@@ -2,6 +2,7 @@ package com.machiav3lli.backup.pages
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -148,6 +149,9 @@ fun LockPage(launchMain: () -> Unit) {
             }
         }
     ) {
+        BackHandler {
+            OABX.main?.finishAffinity()
+        }
         Box(modifier = Modifier.fillMaxSize()) {}
     }
 }
