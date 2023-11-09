@@ -5,15 +5,20 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import com.machiav3lli.backup.traceFlows
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -58,6 +63,26 @@ fun Modifier.blockBorder() = composed {
 fun SelectionContainerX(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     SelectionContainer(modifier = modifier, content = content)
     //content()
+}
+
+@Composable
+fun <T> ObservedEffect(flow: Flow<T?>, onChange: (T?) -> Unit) {
+    val lcOwner = LocalLifecycleOwner.current
+    LaunchedEffect(flow, lcOwner.lifecycle) {
+        lcOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            flow.collect(onChange)
+        }
+    }
+}
+
+@Composable
+fun ObservedEffect(onChange: () -> Unit) {
+    val lcOwner = LocalLifecycleOwner.current
+    LaunchedEffect(lcOwner.lifecycle) {
+        lcOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            onChange()
+        }
+    }
 }
 
 
