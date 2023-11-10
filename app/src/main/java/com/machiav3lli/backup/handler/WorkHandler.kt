@@ -184,9 +184,9 @@ class WorkHandler(appContext: Context) {
             return vars
         }
 
-        fun getTagVar(tags: MutableSet<String>, name: String): String? {
+        private fun getTagVar(tags: Set<String>, name: String): String? {
             tags.forEach { tag ->
-                val parts = tag.toString().split(':', limit = 2)
+                val parts = tag.split(':', limit = 2)
                 if (parts.size > 1) {
                     val (key, value) = parts
                     if (key == name)
