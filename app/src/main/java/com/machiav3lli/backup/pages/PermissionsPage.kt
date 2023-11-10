@@ -32,19 +32,16 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -61,9 +58,6 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.preferences.persist_ignoreBatteryOptimization
 import com.machiav3lli.backup.ui.compose.blockBorder
-import com.machiav3lli.backup.ui.compose.icons.Phosphor
-import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowRight
-import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.PermissionItem
 import com.machiav3lli.backup.ui.compose.item.TopBar
 import com.machiav3lli.backup.ui.item.Permission
@@ -91,7 +85,7 @@ fun PermissionsPage() {
     val mainActivity = context as MainActivityX
     val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
     val permissionsList = remember {
-        mutableStateListOf<Pair<Permission, () -> Unit>>()
+        mutableStateMapOf<Permission, () -> Unit>()
     }
 
     val permissionStatePostNotifications = if (OABX.minSDK(Build.VERSION_CODES.TIRAMISU)) {
@@ -115,31 +109,53 @@ fun PermissionsPage() {
     DisposableEffect(key1 = lifecycleOwner, effect = {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
-                permissionsList.clear()
-                permissionsList.addAll(buildList {
-                    if (!context.hasStoragePermissions)
-                        add(Pair(Permission.StorageAccess) { mainActivity.getStoragePermission() })
-                    if (!context.isStorageDirSetAndOk)
-                        add(Pair(Permission.StorageLocation) {
+                permissionsList.apply {
+                    if (!context.hasStoragePermissions && none { it.key == Permission.StorageAccess })
+                        set(Permission.StorageAccess) { mainActivity.getStoragePermission() }
+
+                    if (!context.isStorageDirSetAndOk && none { it.key == Permission.StorageLocation })
+                        set(Permission.StorageLocation) {
                             mainActivity.requireStorageLocation(askForDirectory)
-                        })
-                    if (!context.checkBatteryOptimization(powerManager))
-                        add(Pair(Permission.BatteryOptimization) {
+                        }
+
+                    if (!context.checkBatteryOptimization(powerManager) && none { it.key == Permission.BatteryOptimization })
+                        set(Permission.BatteryOptimization) {
                             mainActivity.showBatteryOptimizationDialog(powerManager)
-                        })
-                    if (!context.checkUsageStatsPermission)
-                        add(Pair(Permission.UsageStats) { mainActivity.usageStatsPermission })
-                    if (!context.checkSMSMMSPermission)
-                        add(Pair(Permission.SMSMMS) { mainActivity.smsmmsPermission })
-                    if (!context.checkCallLogsPermission)
-                        add(Pair(Permission.CallLogs) { mainActivity.callLogsPermission })
-                    if (!context.checkContactsPermission)
-                        add(Pair(Permission.Contacts) { mainActivity.contactsPermission })
-                    if (permissionStatePostNotifications?.status?.isGranted == false)
-                        add(Pair(Permission.PostNotifications) {
+                        }
+
+                    if (!context.checkUsageStatsPermission && none { it.key == Permission.UsageStats })
+                        set(Permission.UsageStats) { mainActivity.usageStatsPermission }
+
+                    if (!context.checkSMSMMSPermission && none { it.key == Permission.SMSMMS })
+                        set(Permission.SMSMMS) { mainActivity.smsmmsPermission }
+
+                    if (!context.checkCallLogsPermission && none { it.key == Permission.CallLogs })
+                        set(Permission.CallLogs) { mainActivity.callLogsPermission }
+
+                    if (!context.checkContactsPermission && none { it.key == Permission.Contacts })
+                        set(Permission.Contacts) { mainActivity.contactsPermission }
+
+                    if (permissionStatePostNotifications?.status?.isGranted == false && none { it.key == Permission.PostNotifications })
+                        set(Permission.PostNotifications) {
                             permissionStatePostNotifications.launchPermissionRequest()
-                        })
-                })
+                        }
+                    if (context.hasStoragePermissions)
+                        remove(Permission.StorageAccess)
+                    if (context.isStorageDirSetAndOk)
+                        remove(Permission.StorageLocation)
+                    if (context.checkBatteryOptimization(powerManager))
+                        remove(Permission.BatteryOptimization)
+                    if (context.checkUsageStatsPermission)
+                        remove(Permission.UsageStats)
+                    if (context.checkSMSMMSPermission)
+                        remove(Permission.SMSMMS)
+                    if (context.checkCallLogsPermission)
+                        remove(Permission.CallLogs)
+                    if (context.checkContactsPermission)
+                        remove(Permission.Contacts)
+                    if (permissionStatePostNotifications?.status?.isGranted == true)
+                        remove(Permission.PostNotifications)
+                }
                 if (permissionsList.isEmpty()) mainActivity.moveTo(NavItem.Main.destination)
             }
         }
@@ -161,8 +177,8 @@ fun PermissionsPage() {
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(8.dp)
         ) {
-            items(permissionsList) {
-                PermissionItem(it.first, it.second)
+            items(permissionsList.toList(), key = { it.first.nameId }) { (permission, onClick) ->
+                PermissionItem(permission, onClick)
             }
         }
     }
