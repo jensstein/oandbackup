@@ -117,3 +117,10 @@ fun NavHostController.clearBackStack() {
         popBackStack()
     }
 }
+
+fun NavHostController.safeNavigate(route: String) {
+    if (currentDestination?.route != route) {
+        popBackStack()
+        navigate(route)
+    }
+}
