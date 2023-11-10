@@ -62,30 +62,25 @@ import com.machiav3lli.backup.pages.SplashPage
 import com.machiav3lli.backup.pref_catchUncaughtException
 import com.machiav3lli.backup.pref_uncaughtExceptionsJumpToPreferences
 import com.machiav3lli.backup.preferences.persist_beenWelcomed
-import com.machiav3lli.backup.preferences.persist_ignoreBatteryOptimization
 import com.machiav3lli.backup.preferences.persist_skippedEncryptionCounter
 import com.machiav3lli.backup.preferences.pref_appTheme
 import com.machiav3lli.backup.tasks.AppActionWork
+import com.machiav3lli.backup.ui.compose.ObservedEffect
 import com.machiav3lli.backup.ui.compose.theme.AppTheme
 import com.machiav3lli.backup.ui.navigation.MainNavHost
 import com.machiav3lli.backup.ui.navigation.NavItem
+import com.machiav3lli.backup.ui.navigation.clearBackStack
+import com.machiav3lli.backup.ui.navigation.safeNavigate
 import com.machiav3lli.backup.utils.FileUtils.invalidateBackupLocation
 import com.machiav3lli.backup.utils.TraceUtils.classAndId
 import com.machiav3lli.backup.utils.TraceUtils.traceBold
+import com.machiav3lli.backup.utils.allPermissionsGranted
 import com.machiav3lli.backup.utils.altModeToMode
-import com.machiav3lli.backup.utils.checkCallLogsPermission
-import com.machiav3lli.backup.utils.checkContactsPermission
 import com.machiav3lli.backup.utils.checkRootAccess
-import com.machiav3lli.backup.utils.checkSMSMMSPermission
-import com.machiav3lli.backup.utils.checkUsageStatsPermission
-import com.machiav3lli.backup.utils.hasStoragePermissions
 import com.machiav3lli.backup.utils.isBiometricLockAvailable
 import com.machiav3lli.backup.utils.isBiometricLockEnabled
-import com.machiav3lli.backup.utils.isDeviceLockAvailable
 import com.machiav3lli.backup.utils.isDeviceLockEnabled
 import com.machiav3lli.backup.utils.isEncryptionEnabled
-import com.machiav3lli.backup.utils.isStorageDirSetAndOk
-import com.machiav3lli.backup.utils.postNotificationsPermission
 import com.machiav3lli.backup.viewmodels.BatchViewModel
 import com.machiav3lli.backup.viewmodels.ExportsViewModel
 import com.machiav3lli.backup.viewmodels.LogViewModel
@@ -240,7 +235,7 @@ class MainActivityX : BaseActivity() {
                     containerColor = MaterialTheme.colorScheme.background,
                     contentColor = MaterialTheme.colorScheme.onBackground,
                 ) {
-                    LaunchedEffect(key1 = viewModel) {
+                    ObservedEffect {
                         resumeMain()
                     }
 
@@ -506,64 +501,66 @@ class MainActivityX : BaseActivity() {
     fun resumeMain() {
         when {
             !persist_beenWelcomed.value
-                 -> navController.navigate(NavItem.Welcome.destination)
+                 -> if (!navController.currentDestination?.route?.equals(NavItem.Welcome.destination)!!) {
+                navController.clearBackStack()
+                navController.safeNavigate(NavItem.Welcome.destination)
+            }
 
-
-            hasStoragePermissions &&
-                    isStorageDirSetAndOk &&
-                    checkSMSMMSPermission &&
-                    checkCallLogsPermission &&
-                    checkContactsPermission &&
-                    checkUsageStatsPermission &&
-                    postNotificationsPermission &&
-                    (persist_ignoreBatteryOptimization.value
-                            || powerManager.isIgnoringBatteryOptimizations(packageName))
-                    && this::navController.isInitialized
-                    && !navController.currentDestination?.route?.equals(NavItem.Main.destination)!!
+            allPermissionsGranted && this::navController.isInitialized
                  -> launchMain()
 
-            else -> navController.navigate(NavItem.Permissions.destination)
+            else -> navController.safeNavigate(NavItem.Permissions.destination)
         }
     }
 
     private fun launchMain() {
         when {
-            isBiometricLockAvailable() && isBiometricLockEnabled() && isDeviceLockEnabled() ->
-                launchBiometricPrompt(true)
+            isBiometricLockAvailable() && isDeviceLockEnabled() -> {
+                val currentDestination =
+                    navController.currentDestination?.route ?: NavItem.Main.destination
+                val wasInited = !listOf(
+                    NavItem.Welcome.destination,
+                    NavItem.Permissions.destination,
+                    NavItem.Lock.destination
+                ).contains(currentDestination)
+                navController.safeNavigate(NavItem.Lock.destination)
+                launchBiometricPrompt(
+                    if (wasInited) currentDestination
+                    else NavItem.Main.destination
+                )
+            }
 
-            isDeviceLockAvailable() && isDeviceLockEnabled()                                ->
-                launchBiometricPrompt(false)
-
-            else                                                                            -> {
-                navController.navigate(NavItem.Main.destination)
-                navController.clearBackStack(NavItem.Main.destination)
+            listOf(
+                NavItem.Welcome.destination,
+                NavItem.Permissions.destination,
+                NavItem.Lock.destination
+            ).contains(navController.currentDestination?.route) -> {
+                navController.safeNavigate(NavItem.Main.destination)
             }
         }
     }
 
-    private fun launchBiometricPrompt(withBiometric: Boolean) {
-        navController.navigate(NavItem.Lock.destination)
-        navController.clearBackStack(NavItem.Lock.destination)
+    private fun launchBiometricPrompt(destination: String) {
         try {
-            val biometricPrompt = createBiometricPrompt()
+            val biometricPrompt = createBiometricPrompt(destination)
             val promptInfo = BiometricPrompt.PromptInfo.Builder()
                 .setTitle(getString(R.string.prefs_biometriclock))
                 .setConfirmationRequired(true)
-                .setAllowedAuthenticators(BiometricManager.Authenticators.DEVICE_CREDENTIAL or (if (withBiometric) BiometricManager.Authenticators.BIOMETRIC_WEAK else 0))
+                .setAllowedAuthenticators(BiometricManager.Authenticators.DEVICE_CREDENTIAL or (if (isBiometricLockEnabled()) BiometricManager.Authenticators.BIOMETRIC_WEAK else 0))
                 .build()
             biometricPrompt.authenticate(promptInfo)
         } catch (e: Throwable) {
-            navController.navigate(NavItem.Main.destination)
+            navController.safeNavigate(destination)
         }
     }
 
-    private fun createBiometricPrompt(): BiometricPrompt {
+    private fun createBiometricPrompt(destination: String): BiometricPrompt {
         return BiometricPrompt(this,
             ContextCompat.getMainExecutor(this),
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
-                    navController.navigate(NavItem.Main.destination)
+                    navController.safeNavigate(destination)
                 }
             })
     }
