@@ -26,7 +26,7 @@ plugins {
 
 val vAccompanist = "0.33.2-alpha"
 val vBiometric = "1.2.0-alpha05"
-val vCoil = "2.4.0"
+val vCoil = "2.5.0"
 val vCommonsCompress = "1.24.0"
 val vCommonsIO = "2.14.0"
 val vComposeCompiler = "1.5.3"
@@ -39,14 +39,14 @@ val vKSP = "1.0.13"
 val vLibsu = "5.2.1"
 val vLifecycle = "2.6.2"
 val vMaterial = "1.10.0"
-val vNavigation = "2.7.4"
+val vNavigation = "2.7.5"
 val vPreference = "1.2.1"
-val vRoom = "2.6.0-rc01"
+val vRoom = "2.6.0"
 val vSecurity = "1.1.0-alpha06"
 val vSemVer = "4.1.0"
 val vSerialization = "1.6.0"
 val vTimber = "5.0.1"
-val vWork = "2.8.1"
+val vWork = "2.9.0-rc01"
 
 val vTest = "1.5.0"
 val vTestRules = "1.5.0"
@@ -150,7 +150,7 @@ dependencies {
     implementation("androidx.room:room-runtime:$vRoom")
     implementation("androidx.room:room-ktx:$vRoom")
     ksp("androidx.room:room-compiler:$vRoom")
-    implementation("androidx.work:work-runtime-ktx:$vWork")
+    implementation("androidx.work:work-runtime:$vWork")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$vSerialization")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$vSerialization")
     implementation("com.charleskorn.kaml:kaml:$vKAML")
