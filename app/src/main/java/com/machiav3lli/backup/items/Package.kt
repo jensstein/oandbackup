@@ -29,6 +29,7 @@ import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.findBackups
 import com.machiav3lli.backup.handler.getPackageStorageStats
 import com.machiav3lli.backup.preferences.pref_flatStructure
+import com.machiav3lli.backup.preferences.pref_ignoreLockedInHousekeeping
 import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
@@ -294,18 +295,35 @@ class Package {
         // the algorithm could eventually be more elegant, without managing two lists,
         // but it's on the safe side for now
         val backups = backupsNewestFirst.toMutableList()
-        val deletableBackups = backups.filterNot { it.persistent }.drop(1).toMutableList()
-        traceBackups {
-            "<$packageName> deleteOldestBackups keep=$keep ${
-                TraceUtils.formatBackups(
-                    backups
-                )
-            } --> delete ${TraceUtils.formatBackups(deletableBackups)}"
-        }
-        while (keep < backups.size && deletableBackups.size > 0) {
-            val backup = deletableBackups.removeLast()
-            backups.remove(backup)
-            _deleteBackup(backup)
+        if (pref_ignoreLockedInHousekeeping.value) {
+            val deletableBackups = backups.filterNot { it.persistent }.drop(keep).toMutableList()
+            traceBackups {
+                "<$packageName> deleteOldestBackups keep=$keep ${
+                    TraceUtils.formatBackups(
+                        backups
+                    )
+                } --> delete ${TraceUtils.formatBackups(deletableBackups)}"
+            }
+            while (deletableBackups.size > 0) {
+                val backup = deletableBackups.removeLast()
+                backups.remove(backup)
+                _deleteBackup(backup)
+            }
+        } else {
+            val deletableBackups = backups.filterNot { it.persistent }.drop(1).toMutableList()
+            traceBackups {
+                "<$packageName> deleteOldestBackups keep=$keep ${
+                    TraceUtils.formatBackups(
+                        backups
+                    )
+                } --> delete ${TraceUtils.formatBackups(deletableBackups)}"
+            }
+            while (keep < backups.size && deletableBackups.size > 0) {
+
+                val backup = deletableBackups.removeLast()
+                backups.remove(backup)
+                _deleteBackup(backup)
+            }
         }
         backupList = backups
         OABX.main?.viewModel?.viewModelScope?.launch {

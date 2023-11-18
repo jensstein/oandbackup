@@ -314,6 +314,12 @@ val pref_refreshAppInfoTimeout = IntPref(
 
 //---------------------------------------- developer settings - implementation alternatives
 
+val pref_ignoreLockedInHousekeeping = BooleanPref(
+    key = "dev-alt.ignoreLockedInHousekeeping",
+    summary = "keep the configured number of unlocked backups, instead of also counting locked backups",
+    defaultValue = true
+)
+
 val pref_restartAppOnLanguageChange = BooleanPref(
     key = "dev-alt.restartAppOnLanguageChange",
     summary = "create human readable yaml format for preferences",
