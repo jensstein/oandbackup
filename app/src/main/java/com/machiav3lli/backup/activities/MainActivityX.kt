@@ -31,12 +31,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.NavHostController
@@ -234,12 +236,12 @@ class MainActivityX : BaseActivity() {
                 Scaffold(
                     containerColor = MaterialTheme.colorScheme.background,
                     contentColor = MaterialTheme.colorScheme.onBackground,
-                ) {
+                ) { paddingValues ->
                     ObservedEffect {
                         resumeMain()
                     }
 
-                    Box {
+                    Box(modifier = Modifier.padding(paddingValues)) {
                         MainNavHost(
                             navController = navController,
                         )

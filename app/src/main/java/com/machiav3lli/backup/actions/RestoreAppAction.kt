@@ -30,6 +30,7 @@ import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.findAssetFile
+import com.machiav3lli.backup.handler.ShellHandler.Companion.hasPmBypassLowTargetSDKBlock
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quote
 import com.machiav3lli.backup.handler.ShellHandler.Companion.quoteMultiple
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
@@ -1011,21 +1012,22 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     }
 
     private fun getPackageInstallCommand(
-        apkPath: RootFile,
+        apkFile: RootFile,
         profileId: Int,
         basePackageName: String? = null,
     ): String =
         listOfNotNull(
-            "cat", quote(apkPath.absolutePath),
+            "cat", quote(apkFile.absolutePath),
             "|",
             "pm", "install",
             basePackageName?.let { "-p $basePackageName" },
             if (isRestoreAllPermissions) "-g" else null,
             if (isAllowDowngrade) "-d" else null,
+            if (hasPmBypassLowTargetSDKBlock) "--bypass-low-target-sdk-block" else null,
             "-i ${pref_installationPackage.value}",
             "-t",
             "-r",
-            "-S", apkPath.length().toString(),
+            "-S", apkFile.length(),
             "--user", profileId,
         ).joinToString(" ")
 
@@ -1036,26 +1038,27 @@ open class RestoreAppAction(context: Context, work: AppActionWork?, shell: Shell
     ): String =
         listOfNotNull(
             "pm", "install-create",
-            "-i", pref_installationPackage.value,
-            "--user", profileId,
-            "-r",
-            "-t",
             if (isRestoreAllPermissions) "-g" else null,
             if (isAllowDowngrade) "-d" else null,
-            "-S", sumSize
+            if (hasPmBypassLowTargetSDKBlock) "--bypass-low-target-sdk-block" else null,
+            "-i", pref_installationPackage.value,
+            "-t",
+            "-r",
+            "-S", sumSize,
+            "--user", profileId,
         ).joinToString(" ")
 
     private fun getSessionWriteCommand(
-        apkPath: RootFile,
+        apkFile: RootFile,
         sessionId: Int,
     ): String =
         listOfNotNull(
-            "cat", quote(apkPath.absolutePath),
+            "cat", quote(apkFile.absolutePath),
             "|",
             "pm", "install-write",
-            "-S", apkPath.length(),
+            "-S", apkFile.length(),
             sessionId,
-            apkPath.name,
+            apkFile.name,
         ).joinToString(" ")
 
 

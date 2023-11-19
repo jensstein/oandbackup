@@ -87,6 +87,7 @@ import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRootPipeOutCollectErr
 import com.machiav3lli.backup.handler.ShellHandler.Companion.suCommand
 import com.machiav3lli.backup.handler.ShellHandler.Companion.suInfo
+import com.machiav3lli.backup.handler.ShellHandler.Companion.sysInfo
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.Companion.utilBoxInfo
 import com.machiav3lli.backup.handler.findBackups
@@ -152,14 +153,16 @@ fun shell(command: String, silent: Boolean = false): List<String> {
 fun appInfo(): List<String> {
     return listOf(
         "------ application",
-        BuildConfig.APPLICATION_ID,
-        BuildConfig.VERSION_NAME,
-        applicationIssuer?.let { "signed by $it" } ?: "",
+        "package   = ${BuildConfig.APPLICATION_ID}",
+        "version   = ${BuildConfig.VERSION_NAME}",
+        applicationIssuer?.let { "signed by = $it" } ?: "unsigned",
     )
 }
 
 fun baseInfo(): List<String> {
     return appInfo() +
+            listOf("------ system") +
+            sysInfo() +
             listOf("------ superuser") +
             suInfo() +
             listOf("------ shell utility box") + utilBoxInfo()

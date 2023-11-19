@@ -19,12 +19,14 @@ package com.machiav3lli.backup.handler
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
 import android.os.Environment.DIRECTORY_DOCUMENTS
 import androidx.core.text.isDigitsOnly
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.addErrorCommand
 import com.machiav3lli.backup.OABX.Companion.isDebug
 import com.machiav3lli.backup.handler.ShellHandler.FileInfo.Companion.utilBoxInfo
+import com.machiav3lli.backup.preferences.baseInfo
 import com.machiav3lli.backup.traceDebug
 import com.machiav3lli.backup.utils.BUFFER_SIZE
 import com.machiav3lli.backup.utils.FileUtils.translatePosixPermissionToMode
@@ -164,7 +166,7 @@ class ShellHandler {
         Shell.setDefaultBuilder(shellDefaultBuilder())
         needFreshShell(startup = true)
 
-        suInfo().forEach { Timber.i(it) }
+        baseInfo().forEach { Timber.i(it) }
 
         utilBoxes = mutableListOf<UtilBox>()
         try {
@@ -644,25 +646,41 @@ class ShellHandler {
         val hasRootShell get() = Shell.getShell().status >= Shell.ROOT_SHELL
         val hasMountMaster get() = Shell.getShell().status >= Shell.ROOT_MOUNT_MASTER
 
-        val hasMountMasterOption: Boolean
-            get() {
+        val hasMountMasterOption: Boolean by lazy {
                 // only return true if command does not choke on the option and exits with code 0
-                val ok = runCatching {
+                runCatching {
                     ShellUtils.fastCmdResult("echo true | su --mount-master")
                 }.getOrNull() ?: false
-                //traceDebug { "detected mount master option = $ok" }
-                return ok
             }
 
-        val hasNsEnter: Boolean
-            get() {
+        val hasNsEnter: Boolean by lazy {
                 // only return true if command does not choke on the option and exits with code 0
-                val ok = runCatching {
+            runCatching {
                     ShellUtils.fastCmdResult("nsenter --help")
                 }.getOrNull() ?: false
-                //traceDebug { "detected nsenter can be invoked = $ok" }
-                return ok
             }
+
+        val hasPmBypassLowTargetSDKBlock: Boolean by lazy {
+            runCatching {
+                // the option is not include in usage output, instead check,
+                // if the error message is complaining about the missing file
+                // and not about that option
+                ShellUtils.fastCmdResult(
+                    "pm install --bypass-low-target-sdk-block not-existing.apk 2>&1 | grep not-existing.apk"
+                )
+                        &&
+                        ! ShellUtils.fastCmdResult(
+                            "pm install --bypass-low-target-sdk-block not-existing.apk 2>&1 | grep bypass-low-target-sdk-block"
+                        )
+            }.getOrNull() ?: false
+        }
+
+        fun sysInfo() =
+            listOf(
+                "system       = Android ${Build.VERSION.RELEASE} - ${ShellUtils.fastCmd("uname -r -m -o")}",
+                "has nsenter  = $hasNsEnter",
+                "has bypass-low-target-sdk-block = $hasPmBypassLowTargetSDKBlock",
+            )
 
         fun suInfo() =
             listOf(
@@ -679,7 +697,6 @@ class ShellHandler {
                 "libsu has root shell       = $hasRootShell",
                 "libsu has mount master     = $hasMountMaster",
                 "su has mount master option = $hasMountMasterOption",
-                "system has nsenter         = $hasNsEnter",
             )
 
         class ShellInit : Shell.Initializer() {
