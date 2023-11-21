@@ -402,4 +402,6 @@
     <string name="prefs_theme_dynamic_light">Světlý s dynamickými barvami</string>
     <string name="prefs_theme_system_black">Systémový motiv (černý)</string>
     <string name="prefs_theme_dynamic_dark">Tmavý s dynamickými barvami</string>
+    <string name="enforce_backups_limit">Vynutit limit záloh</string>
+    <string name="enforce_backups_limit_description">Smazat starší zálohy pro vynucení limitu na %d</string>
 </resources>
