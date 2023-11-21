@@ -58,7 +58,6 @@ data class ChipItem(
     val flag: Int,
     val textId: Int,
     val icon: ImageVector,
-    val colorId: Int = -1,
 ) {
 
     companion object {
@@ -66,175 +65,146 @@ data class ChipItem(
             MODE_NONE,
             R.string.showNotBackedup,
             Phosphor.Placeholder,
-            com.google.android.material.R.color.material_on_surface_emphasis_high_type,
         )
         val Apk = ChipItem(
             MODE_APK,
             R.string.radio_apk,
-            Phosphor.DiamondsFour,
-            R.color.ic_apk
+            Phosphor.DiamondsFour
         )
         val Data = ChipItem(
             MODE_DATA,
             R.string.radio_data,
-            Phosphor.HardDrives,
-            R.color.ic_data
+            Phosphor.HardDrives
         )
         val DeData = ChipItem(
             MODE_DATA_DE,
             R.string.radio_deviceprotecteddata,
-            Phosphor.ShieldCheckered,
-            R.color.ic_de_data
+            Phosphor.ShieldCheckered
         )
         val ExtData = ChipItem(
             MODE_DATA_EXT,
             R.string.radio_externaldata,
-            Phosphor.FloppyDisk,
-            R.color.ic_ext_data
+            Phosphor.FloppyDisk
         )
         val MediaData = ChipItem(
             MODE_DATA_MEDIA,
             R.string.radio_mediadata,
-            Phosphor.PlayCircle,
-            R.color.ic_media
+            Phosphor.PlayCircle
         )
         val ObbData = ChipItem(
             MODE_DATA_OBB,
             R.string.radio_obbdata,
-            Phosphor.GameController,
-            R.color.ic_obb
+            Phosphor.GameController
         )
         val System = ChipItem(
             MAIN_FILTER_SYSTEM,
             R.string.radio_system,
-            Phosphor.Spinner,
-            R.color.ic_system
+            Phosphor.Spinner
         )
         val User = ChipItem(
             MAIN_FILTER_USER,
             R.string.radio_user,
-            Phosphor.User,
-            R.color.ic_user
+            Phosphor.User
         )
         val Special = ChipItem(
             MAIN_FILTER_SPECIAL,
             R.string.radio_special,
-            Phosphor.AsteriskSimple,
-            R.color.ic_special
+            Phosphor.AsteriskSimple
         )
         val All = ChipItem(
             SPECIAL_FILTER_ALL,
             R.string.radio_all,
-            Phosphor.Checks,
-            R.color.ic_apk
+            Phosphor.Checks
         )
         val Launchable = ChipItem(
             LAUNCHABLE_FILTER_LAUNCHABLE,
             R.string.radio_launchable,
-            Phosphor.ArrowSquareOut,
-            R.color.ic_obb
+            Phosphor.ArrowSquareOut
         )
         val NotLaunchable = ChipItem(
             LAUNCHABLE_FILTER_NOT,
             R.string.radio_notlaunchable,
-            Phosphor.ProhibitInset,
-            R.color.ic_obb
+            Phosphor.ProhibitInset
         )
         val UpdatedApps = ChipItem(
             UPDATED_FILTER_UPDATED,
             R.string.show_updated_apps,
-            Phosphor.CircleWavyWarning,
-            R.color.ic_updated
+            Phosphor.CircleWavyWarning
         )
         val NewApps = ChipItem(
             UPDATED_FILTER_NEW,
             R.string.show_new_apps,
-            Phosphor.Star,
-            R.color.ic_updated
+            Phosphor.Star
         )
         val OldApps = ChipItem(
             UPDATED_FILTER_NOT,
             R.string.show_old_apps,
-            Phosphor.Clock,
-            R.color.ic_updated
+            Phosphor.Clock
         )
         val OldBackups = ChipItem(
             LATEST_FILTER_OLD,
             R.string.showOldBackups,
-            Phosphor.Clock,
-            R.color.ic_exodus
+            Phosphor.Clock
         )
         val NewBackups = ChipItem(
             LATEST_FILTER_NEW,
             R.string.show_new_backups,
-            Phosphor.CircleWavyWarning,
-            R.color.ic_exodus
+            Phosphor.CircleWavyWarning
         )
         val Enabled = ChipItem(
             ENABLED_FILTER_ENABLED,
             R.string.show_enabled_apps,
-            Phosphor.Leaf,
-            R.color.ic_de_data
+            Phosphor.Leaf
         )
         val Disabled = ChipItem(
             ENABLED_FILTER_DISABLED,
             R.string.showDisabled,
-            Phosphor.ProhibitInset,
-            R.color.ic_de_data
+            Phosphor.ProhibitInset
         )
         val Installed = ChipItem(
             INSTALLED_FILTER_INSTALLED,
             R.string.show_installed_apps,
             Phosphor.DiamondsFour,
-            com.google.android.material.R.color.material_on_surface_emphasis_high_type,
         )
         val NotInstalled = ChipItem(
             INSTALLED_FILTER_NOT,
             R.string.showNotInstalled,
             Phosphor.TrashSimple,
-            com.google.android.material.R.color.material_on_surface_emphasis_high_type,
         )
         val Label = ChipItem(
             MAIN_SORT_LABEL,
             R.string.sortByLabel,
-            Phosphor.TagSimple,
-            R.color.ic_obb
+            Phosphor.TagSimple
         )
         val PackageName = ChipItem(
             MAIN_SORT_PACKAGENAME,
             R.string.sortPackageName,
-            Phosphor.Placeholder,
-            R.color.ic_de_data
+            Phosphor.Placeholder
         )
         val AppSize = ChipItem(
             MAIN_SORT_APPSIZE,
             R.string.sortAppSize,
-            Phosphor.DiamondsFour,
-            R.color.ic_apk
+            Phosphor.DiamondsFour
         )
         val DataSize = ChipItem(
             MAIN_SORT_DATASIZE,
             R.string.sortDataSize,
-            Phosphor.HardDrives,
-            R.color.ic_data
+            Phosphor.HardDrives
         )
         val AppDataSize = ChipItem(
             MAIN_SORT_APPDATASIZE,
             R.string.sortAppDataSize,
-            Phosphor.FloppyDisk,
-            R.color.ic_de_data_trans
+            Phosphor.FloppyDisk
         )
         val BackupSize = ChipItem(
             MAIN_SORT_BACKUPSIZE,
             R.string.sortBackupSize,
-            Phosphor.FolderNotch,
-            R.color.ic_ext_data
+            Phosphor.FolderNotch
         )
         val BackupDate = ChipItem(
             MAIN_SORT_BACKUPDATE,
             R.string.sortBackupDate,
-            Phosphor.Clock,
-            R.color.ic_exodus
+            Phosphor.Clock
         )
     }
 }
