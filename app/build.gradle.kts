@@ -20,22 +20,23 @@ import com.android.build.gradle.internal.tasks.factory.dependsOn
 plugins {
     id("com.android.application")
     kotlin("android")
-    kotlin("plugin.serialization").version("1.9.10")
-    id("com.google.devtools.ksp") version ("1.9.10-1.0.13")
+    kotlin("plugin.serialization").version("1.9.20")
+    id("com.google.devtools.ksp") version ("1.9.20-1.0.14")
 }
 
+val vActivity = "1.8.1"
 val vAccompanist = "0.33.2-alpha"
 val vBiometric = "1.2.0-alpha05"
 val vCoil = "2.5.0"
-val vCommonsCompress = "1.24.0"
+val vCommonsCompress = "1.25.0"
 val vCommonsIO = "2.14.0"
-val vComposeCompiler = "1.5.3"
+val vComposeCompiler = "1.5.4"
 val vCompose = "1.6.0-alpha07"
 val vComposeM3 = "1.1.2" // does NOT crash in context menu "Put"
 val vDatastore = "1.0.0"
 val vKAML = "0.55.0"
-val vKotlin = "1.9.10"
-val vKSP = "1.0.13"
+val vKotlin = "1.9.20"
+val vKSP = "1.0.14"
 val vLibsu = "5.2.1"
 val vLifecycle = "2.6.2"
 val vMaterial = "1.10.0"
@@ -44,7 +45,7 @@ val vPreference = "1.2.1"
 val vRoom = "2.6.0"
 val vSecurity = "1.1.0-alpha06"
 val vSemVer = "4.1.0"
-val vSerialization = "1.6.0"
+val vSerialization = "1.6.1"
 val vTimber = "5.0.1"
 val vWork = "2.9.0-rc01"
 
@@ -147,9 +148,11 @@ dependencies {
     implementation("com.google.devtools.ksp:symbol-processing-api:$vKotlin-$vKSP")
 
     // Libs
+    implementation("androidx.activity:activity-compose:$vActivity")
     implementation("androidx.room:room-runtime:$vRoom")
     implementation("androidx.room:room-ktx:$vRoom")
     ksp("androidx.room:room-compiler:$vRoom")
+    // TODO use the new WorkInfo.stopReason (report stopReason), WorkManager.getWorkInfosFlow (Flow instead of LiveData), setNextScheduleTimeOverride (Precise scheduling), Configuration.Builder.setContentUriTriggerWorkersLimit (limit for content uri workers)
     implementation("androidx.work:work-runtime:$vWork")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$vSerialization")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$vSerialization")
