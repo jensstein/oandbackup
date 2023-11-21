@@ -76,6 +76,7 @@ import com.machiav3lli.backup.dialogs.BaseDialog
 import com.machiav3lli.backup.dialogs.RestoreDialogUI
 import com.machiav3lli.backup.dialogs.StringInputDialogUI
 import com.machiav3lli.backup.exodusUrl
+import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.ShellCommands
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
@@ -92,6 +93,7 @@ import com.machiav3lli.backup.ui.compose.icons.icon.Exodus
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ArchiveTray
 import com.machiav3lli.backup.ui.compose.icons.phosphor.ArrowSquareOut
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretDown
+import com.machiav3lli.backup.ui.compose.icons.phosphor.Hash
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Info
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Leaf
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Prohibit
@@ -100,7 +102,6 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Warning
 import com.machiav3lli.backup.ui.compose.item.BackupItem
 import com.machiav3lli.backup.ui.compose.item.CardButton
-import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
 import com.machiav3lli.backup.ui.compose.item.PackageIcon
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TagsBlock
@@ -123,6 +124,7 @@ const val DIALOG_ENABLEDISABLE = 7
 const val DIALOG_UNINSTALL = 8
 const val DIALOG_ADDTAG = 9
 const val DIALOG_NOTE = 10
+const val DIALOG_ENFORCE_LIMIT = 11
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -463,6 +465,21 @@ fun AppSheet(
                         }
                     }
                 }
+                item {
+                    AnimatedVisibility(
+                        visible = pkg.hasBackups
+                    ) {
+                        CardButton(
+                            icon = Phosphor.Hash,
+                            description = stringResource(id = R.string.enforce_backups_limit),
+                            enabled = !snackbarVisible,
+                            contentColor = colorResource(id = R.color.ic_updated),
+                        ) {
+                            dialogProps.value = Pair(DIALOG_ENFORCE_LIMIT, pkg)
+                            openDialog.value = true
+                        }
+                    }
+                }
                 item(span = { GridItemSpan(columns) }) {
                     Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                         TitleText(textId = R.string.stats_backups)
@@ -697,6 +714,22 @@ fun AppSheet(
                             ) {
                                 viewModel.setExtras(appExtras.copy(note = it))
                             }
+                        }
+
+                        DIALOG_ENFORCE_LIMIT -> {
+                            ActionsDialogUI(
+                                titleText = thePackage.packageLabel,
+                                messageText = stringResource(
+                                    id = R.string.enforce_backups_limit_description,
+                                    pref_numBackupRevisions.value
+                                ),
+                                openDialogCustom = openDialog,
+                                primaryText = stringResource(id = R.string.dialogYes),
+                                primaryAction = {
+                                    BackupRestoreHelper.housekeepingPackageBackups(obj as Package)
+                                    Package.invalidateCacheForPackage(obj.packageName)
+                                }
+                            )
                         }
 
                         DIALOG_ADDTAG        -> {

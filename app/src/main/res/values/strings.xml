@@ -434,4 +434,6 @@
     <string name="show_enabled_apps">Enabled apps</string>
     <string name="show_installed_apps">Installed apps</string>
     <string name="show_new_backups">New backups</string>
+    <string name="enforce_backups_limit">Enforce backups limit</string>
+    <string name="enforce_backups_limit_description">Delete older backups to enforce the limit to %d</string>
 </resources>
