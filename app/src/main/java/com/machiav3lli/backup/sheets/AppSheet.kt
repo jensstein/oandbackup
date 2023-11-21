@@ -418,54 +418,48 @@ fun AppSheet(
                     }
                 }
                 item(span = { GridItemSpan(columns) }) {
-                    Column {
-                        TitleText(textId = R.string.available_actions)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                    TitleText(textId = R.string.available_actions)
+                }
+                item {
+                    AnimatedVisibility(visible = pkg.isInstalled || pkg.isSpecial) {
+                        CardButton(
+                            icon = Phosphor.ArchiveTray,
+                            description = stringResource(id = R.string.backup),
+                            enabled = !snackbarVisible,
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         ) {
-                            AnimatedVisibility(visible = pkg.isInstalled || pkg.isSpecial) {
-                                ElevatedActionButton(
-                                    icon = Phosphor.ArchiveTray,
-                                    text = stringResource(id = R.string.backup),
-                                    fullWidth = true,
-                                    enabled = !snackbarVisible,
-                                    onClick = {
-                                        dialogProps.value = Pair(DIALOG_BACKUP, pkg)
-                                        openDialog.value = true
-                                    }
-                                )
-                            }
-                            AnimatedVisibility(visible = hasBackups) {
-                                ElevatedActionButton(
-                                    icon = Phosphor.TrashSimple,
-                                    text = stringResource(id = R.string.delete_all_backups),
-                                    fullWidth = true,
-                                    positive = false,
-                                    enabled = !snackbarVisible,
-                                    onClick = {
-                                        dialogProps.value = Pair(DIALOG_DELETEALL, pkg)
-                                        openDialog.value = true
-                                    }
-                                )
-                            }
-                            AnimatedVisibility(
-                                visible = pkg.isInstalled &&
-                                        !pkg.isSpecial &&
-                                        ((pkg.storageStats?.dataBytes ?: 0L) >= 0L)
-                            ) {
-                                ElevatedActionButton(
-                                    icon = Phosphor.TrashSimple,
-                                    text = stringResource(id = R.string.clear_cache),
-                                    fullWidth = true,
-                                    colored = false,
-                                    onClick = {
-                                        dialogProps.value = Pair(DIALOG_CLEANCACHE, pkg)
-                                        openDialog.value = true
-                                    }
-                                )
-                            }
+                            dialogProps.value = Pair(DIALOG_BACKUP, pkg)
+                            openDialog.value = true
+                        }
+                    }
+                }
+                item {
+                    AnimatedVisibility(
+                        visible = pkg.isInstalled &&
+                                !pkg.isSpecial &&
+                                ((pkg.storageStats?.dataBytes ?: 0L) >= 0L)
+                    ) {
+                        CardButton(
+                            icon = Phosphor.TrashSimple,
+                            description = stringResource(id = R.string.clear_cache),
+                            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        ) {
+                            dialogProps.value = Pair(DIALOG_CLEANCACHE, pkg)
+                            openDialog.value = true
+                        }
+                    }
+                }
+                item {
+                    AnimatedVisibility(visible = hasBackups) {
+                        CardButton(
+                            icon = Phosphor.TrashSimple,
+                            description = stringResource(id = R.string.delete_all_backups),
+                            enabled = !snackbarVisible,
+                            contentColor = MaterialTheme.colorScheme.tertiary,
+                        ) {
+                            dialogProps.value = Pair(DIALOG_DELETEALL, pkg)
+                            openDialog.value = true
                         }
                     }
                 }
