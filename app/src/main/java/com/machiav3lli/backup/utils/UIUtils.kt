@@ -48,6 +48,8 @@ import com.machiav3lli.backup.THEME_BLACK
 import com.machiav3lli.backup.THEME_DARK
 import com.machiav3lli.backup.THEME_DYNAMIC
 import com.machiav3lli.backup.THEME_DYNAMIC_BLACK
+import com.machiav3lli.backup.THEME_DYNAMIC_DARK
+import com.machiav3lli.backup.THEME_DYNAMIC_LIGHT
 import com.machiav3lli.backup.THEME_LIGHT
 import com.machiav3lli.backup.THEME_SYSTEM_BLACK
 import com.machiav3lli.backup.activities.MainActivityX
@@ -83,7 +85,7 @@ import java.util.Locale
 
 fun Context.setCustomTheme() {
     AppCompatDelegate.setDefaultNightMode(getThemeStyleX(styleTheme))
-    if (!(styleTheme == THEME_DYNAMIC && DynamicColors.isDynamicColorAvailable())) {
+    if (!(isDynamicTheme && DynamicColors.isDynamicColorAvailable())) {
         setTheme(R.style.AppTheme)
         theme.applyAccentStyle()
         theme.applySecondaryStyle()
@@ -101,6 +103,18 @@ val isBlackTheme: Boolean
 
         else -> false
     }
+
+val isDynamicTheme: Boolean
+    get() = when (styleTheme) {
+        THEME_DYNAMIC,
+        THEME_DYNAMIC_LIGHT,
+        THEME_DYNAMIC_DARK,
+        THEME_DYNAMIC_BLACK,
+             -> true
+
+        else -> false
+    }
+
 
 private var sysLocale: LocaleList? = null
 private var sysLocaleJVM: Locale? = null
@@ -189,9 +203,16 @@ fun Activity.showWarning(
 }
 
 fun getThemeStyleX(theme: Int) = when (theme) {
-    THEME_LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
-    THEME_DARK  -> AppCompatDelegate.MODE_NIGHT_YES
-    else        -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+    THEME_LIGHT,
+    THEME_DYNAMIC_LIGHT,
+    -> AppCompatDelegate.MODE_NIGHT_NO
+
+    THEME_DARK,
+    THEME_DYNAMIC_DARK,
+    THEME_DYNAMIC_BLACK,
+    -> AppCompatDelegate.MODE_NIGHT_YES
+
+    else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 }
 
 fun Context.isNightMode() =

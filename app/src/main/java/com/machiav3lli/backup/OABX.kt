@@ -61,8 +61,8 @@ import com.machiav3lli.backup.utils.TraceUtils.classAndId
 import com.machiav3lli.backup.utils.TraceUtils.endNanoTimer
 import com.machiav3lli.backup.utils.TraceUtils.methodName
 import com.machiav3lli.backup.utils.getInstalledPackageInfosWithPermissions
+import com.machiav3lli.backup.utils.isDynamicTheme
 import com.machiav3lli.backup.utils.scheduleAlarmsOnce
-import com.machiav3lli.backup.utils.styleTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -257,7 +257,7 @@ class OABX : Application() {
         DynamicColors.applyToActivitiesIfAvailable(
             this,
             DynamicColorsOptions.Builder()
-                .setPrecondition { _, _ -> styleTheme == THEME_DYNAMIC }
+                .setPrecondition { _, _ -> isDynamicTheme }
                 .build()
         )
 

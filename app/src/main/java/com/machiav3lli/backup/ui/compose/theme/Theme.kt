@@ -13,17 +13,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import com.machiav3lli.backup.THEME_DYNAMIC
-import com.machiav3lli.backup.THEME_DYNAMIC_BLACK
-import com.machiav3lli.backup.THEME_DYNAMIC_DARK
-import com.machiav3lli.backup.THEME_DYNAMIC_LIGHT
 import com.machiav3lli.backup.preferences.pref_appTheme
 import com.machiav3lli.backup.utils.brighter
 import com.machiav3lli.backup.utils.darker
 import com.machiav3lli.backup.utils.isBlackTheme
+import com.machiav3lli.backup.utils.isDynamicTheme
 import com.machiav3lli.backup.utils.primaryColor
 import com.machiav3lli.backup.utils.secondaryColor
-import com.machiav3lli.backup.utils.styleTheme
 
 @Composable
 fun AppTheme(
@@ -35,13 +31,13 @@ fun AppTheme(
 
     MaterialTheme(
         colorScheme = when {
-            styleTheme == THEME_DYNAMIC_BLACK
+            isDynamicTheme && isSystemInDarkTheme() && blackTheme
             -> dynamicBlackColorScheme(context)
 
-            (styleTheme == THEME_DYNAMIC && darkTheme) || styleTheme == THEME_DYNAMIC_DARK
+            isDynamicTheme && isSystemInDarkTheme()
             -> dynamicDarkColorScheme(context)
 
-            styleTheme == THEME_DYNAMIC || styleTheme == THEME_DYNAMIC_LIGHT
+            isDynamicTheme
             -> dynamicLightColorScheme(context)
 
             darkTheme && blackTheme
