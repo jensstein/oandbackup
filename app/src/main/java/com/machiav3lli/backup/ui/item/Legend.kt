@@ -24,7 +24,7 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.User
 data class Legend(
     val nameId: Int,
     val icon: ImageVector,
-    val iconColorId: Int = -1
+    val iconColorId: Int = -1,
 ) {
 
     companion object {
@@ -36,7 +36,6 @@ data class Legend(
         val Launch = Legend(
             R.string.launch_app,
             Phosphor.ArrowSquareOut,
-            R.color.ic_obb
         )
         val Disable = Legend(
             R.string.disablePackage,

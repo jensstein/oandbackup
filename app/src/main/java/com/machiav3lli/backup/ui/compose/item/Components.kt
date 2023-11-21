@@ -401,12 +401,12 @@ fun ElevatedActionButton(
         modifier = modifier,
         colors = ButtonDefaults.elevatedButtonColors(
             contentColor = when {
-                !colored -> MaterialTheme.colorScheme.onSurface
+                !colored -> MaterialTheme.colorScheme.onSurfaceVariant
                 positive -> MaterialTheme.colorScheme.onPrimaryContainer
                 else     -> MaterialTheme.colorScheme.onTertiaryContainer
             },
             containerColor = when {
-                !colored -> MaterialTheme.colorScheme.surface
+                !colored -> MaterialTheme.colorScheme.surfaceVariant
                 positive -> MaterialTheme.colorScheme.primaryContainer
                 else     -> MaterialTheme.colorScheme.tertiaryContainer
             }
