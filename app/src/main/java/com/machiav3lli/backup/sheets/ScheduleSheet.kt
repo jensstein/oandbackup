@@ -235,7 +235,7 @@ fun ScheduleSheet(
                         CardButton(
                             modifier = Modifier.weight(0.5f),
                             icon = Phosphor.Clock,
-                            tint = MaterialTheme.colorScheme.inverseSurface,
+                            contentColor = MaterialTheme.colorScheme.inverseSurface,
                             description = "${stringResource(id = R.string.sched_hourOfDay)} ${
                                 LocalTime.of(
                                     schedule.timeHour,
@@ -249,7 +249,7 @@ fun ScheduleSheet(
                         CardButton(
                             modifier = Modifier.weight(0.5f),
                             icon = Phosphor.ClockClockwise,
-                            tint = MaterialTheme.colorScheme.inverseSurface,
+                            contentColor = MaterialTheme.colorScheme.inverseSurface,
                             description = "${stringResource(id = R.string.sched_interval)} ${schedule.interval}",
                         ) {
                             dialogProps.value = Pair(DIALOG_INTERVALSETTER, schedule)
@@ -265,7 +265,7 @@ fun ScheduleSheet(
                             modifier = Modifier.weight(0.5f),
                             icon = Phosphor.CheckCircle,
                             description = stringResource(id = R.string.customListTitle),
-                            tint = if (customList.isNotEmpty()) MaterialTheme.colorScheme.primaryContainer
+                            containerColor = if (customList.isNotEmpty()) MaterialTheme.colorScheme.primaryContainer
                             else MaterialTheme.colorScheme.tertiaryContainer,
                         ) {
                             dialogProps.value = Pair(DIALOG_CUSTOMLIST, schedule)
@@ -275,7 +275,7 @@ fun ScheduleSheet(
                             modifier = Modifier.weight(0.5f),
                             icon = Phosphor.Prohibit,
                             description = stringResource(id = R.string.sched_blocklist),
-                            tint = if (blockList.isNotEmpty()) MaterialTheme.colorScheme.primaryContainer
+                            containerColor = if (blockList.isNotEmpty()) MaterialTheme.colorScheme.primaryContainer
                             else MaterialTheme.colorScheme.tertiaryContainer,
                         ) {
                             dialogProps.value = Pair(DIALOG_BLOCKLIST, schedule)

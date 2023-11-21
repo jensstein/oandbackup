@@ -282,7 +282,7 @@ fun AppSheet(
                         CardButton(
                             modifier = Modifier.fillMaxHeight(),
                             icon = Icon.Exodus,
-                            tint = colorResource(id = R.color.ic_exodus),
+                            contentColor = colorResource(id = R.color.ic_exodus),
                             description = stringResource(id = R.string.exodus_report)
                         ) {
                             context.startActivity(
@@ -298,7 +298,6 @@ fun AppSheet(
                     CardButton(
                         modifier = Modifier,
                         icon = Phosphor.Prohibit,
-                        tint = MaterialTheme.colorScheme.tertiary,
                         description = stringResource(id = R.string.global_blocklist_add)
                     ) {
                         mActivity.viewModel.addToBlocklist(
@@ -313,7 +312,7 @@ fun AppSheet(
                         CardButton(
                             modifier = Modifier.fillMaxHeight(),
                             icon = Phosphor.ArrowSquareOut,
-                            tint = colorResource(id = R.color.ic_obb),
+                            contentColor = MaterialTheme.colorScheme.primary,
                             description = stringResource(id = R.string.launch_app)
                         ) {
                             launchIntent?.let {
@@ -329,7 +328,7 @@ fun AppSheet(
                         CardButton(
                             modifier = Modifier,
                             icon = Phosphor.Warning,
-                            tint = colorResource(id = R.color.ic_updated),
+                            contentColor = colorResource(id = R.color.ic_updated),
                             description = stringResource(id = R.string.forceKill)
                         ) {
                             dialogProps.value = Pair(DIALOG_FORCEKILL, pkg)
@@ -345,8 +344,8 @@ fun AppSheet(
                             modifier = Modifier.fillMaxHeight(),
                             icon = if (pkg.isDisabled) Phosphor.Leaf
                             else Phosphor.ProhibitInset,
-                            tint = if (pkg.isDisabled) MaterialTheme.colorScheme.primaryContainer
-                            else MaterialTheme.colorScheme.tertiaryContainer,
+                            contentColor = if (pkg.isDisabled) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.tertiary,
                             description = stringResource(
                                 id = if (pkg.isDisabled) R.string.enablePackage
                                 else R.string.disablePackage
@@ -365,7 +364,7 @@ fun AppSheet(
                         CardButton(
                             modifier = Modifier.fillMaxHeight(),
                             icon = Phosphor.TrashSimple,
-                            tint = MaterialTheme.colorScheme.tertiary,
+                            contentColor = MaterialTheme.colorScheme.tertiary,
                             description = stringResource(id = R.string.uninstall),
                             onClick = {
                                 dialogProps.value = Pair(DIALOG_UNINSTALL, pkg)

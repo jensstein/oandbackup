@@ -25,7 +25,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -151,8 +150,6 @@ import com.machiav3lli.backup.ui.compose.theme.ColorUpdated
 import com.machiav3lli.backup.ui.compose.theme.ColorUser
 import com.machiav3lli.backup.utils.TraceUtils.beginNanoTimer
 import com.machiav3lli.backup.utils.TraceUtils.endNanoTimer
-import com.machiav3lli.backup.utils.brighter
-import com.machiav3lli.backup.utils.darker
 import kotlinx.coroutines.delay
 
 @Composable
@@ -441,24 +438,30 @@ fun ElevatedActionButton(
 fun CardButton(
     modifier: Modifier = Modifier,
     icon: ImageVector,
-    tint: Color,
+    contentColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
     description: String,
+    enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
     val showTooltip = remember { mutableStateOf(false) }
 
     ListItem(
         modifier = modifier
-            .clip(MaterialTheme.shapes.large)
+            .clip(MaterialTheme.shapes.extraLarge)
             .combinedClickable(
                 onClick = onClick,
-                onLongClick = { showTooltip.value = true }
+                onLongClick = { showTooltip.value = true },
+                enabled = enabled,
             ),
         colors = ListItemDefaults.colors(
-            containerColor = (if (isSystemInDarkTheme()) tint.brighter(0.3f)
-            else tint.darker(0.3f)).copy(alpha = 0.8f),
-            headlineColor = MaterialTheme.colorScheme.background,
-            leadingIconColor = MaterialTheme.colorScheme.background,
+            /*headlineColor = (if (isSystemInDarkTheme()) contentColor.brighter(0.3f)
+            else contentColor.darker(0.3f)).copy(alpha = 0.8f),
+            leadingIconColor = (if (isSystemInDarkTheme()) contentColor.brighter(0.3f)
+            else contentColor.darker(0.3f)).copy(alpha = 0.8f),*/
+            leadingIconColor = contentColor,
+            headlineColor = contentColor,
+            containerColor = containerColor,
         ),
         leadingContent = {
             Icon(imageVector = icon, contentDescription = description)
