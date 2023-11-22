@@ -409,4 +409,6 @@
     <string name="prefs_theme_dynamic_light">Chiaro con colori dinamici</string>
     <string name="prefs_theme_system_black">Tema del sistema (nero)</string>
     <string name="prefs_theme_dynamic_dark">Scuro con colori dinamici</string>
+    <string name="enforce_backups_limit">Applica limite backup</string>
+    <string name="enforce_backups_limit_description">Elimina backup più vecchi per applicare il limite a %d</string>
 </resources>
