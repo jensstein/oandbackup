@@ -1,6 +1,32 @@
 CHANGELOG
 =========
 
+8.3.5 (??.??.2023) +30 Commits & +40 Translations
+------------
+
+#### Function
+
+- Add: Enforce backups limit button to AppSheet
+- Update: Move to one-activity structure
+- Update: Revamp permissions management
+
+#### UI
+
+- Add: Animated switch of pages
+- Add: Different dynamic and black themes
+- Fix: Pages popup animation
+- Fix: Navigation bar item's ripple
+- Fix: StatusBar visibility in custom dynamic themes
+- Update: Revamp AppSheet's buttons
+- Update: Make Prefs backgrounds a bit transparent
+- Update: Improve colors contrast to background
+
+#### UX
+
+- Update: Revamp resume logic (relock on each resume)
+- Add: Opt-in dev-option to ignore locked backups in housekeeping
+
+
 8.3.4 (13.10.2023) +10 Commits & +10 Translations
 ------------
 
