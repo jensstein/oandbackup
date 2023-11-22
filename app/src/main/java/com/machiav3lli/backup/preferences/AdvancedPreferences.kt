@@ -317,7 +317,7 @@ val pref_refreshAppInfoTimeout = IntPref(
 val pref_ignoreLockedInHousekeeping = BooleanPref(
     key = "dev-alt.ignoreLockedInHousekeeping",
     summary = "keep the configured number of unlocked backups, instead of also counting locked backups",
-    defaultValue = true
+    defaultValue = false
 )
 
 val pref_restartAppOnLanguageChange = BooleanPref(
