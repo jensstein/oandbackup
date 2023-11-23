@@ -408,4 +408,6 @@
     <string name="prefs_theme_dynamic_light">Claro con colores dinámicos</string>
     <string name="prefs_theme_system_black">Temas del sistema (negro)</string>
     <string name="prefs_theme_dynamic_dark">Oscuro con colores dinámicos</string>
+    <string name="enforce_backups_limit">Aplicar el límite de las copias de seguridad</string>
+    <string name="enforce_backups_limit_description">Borra las copias de seguridad más antiguas para cumplir con el límite a %d</string>
 </resources>
