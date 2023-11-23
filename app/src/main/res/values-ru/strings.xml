@@ -411,4 +411,6 @@
     <string name="prefs_theme_dynamic_light">Светлая динамичная</string>
     <string name="prefs_theme_system_black">Как в системе (чёрная)</string>
     <string name="prefs_theme_dynamic_dark">Тёмная динамичная</string>
+    <string name="enforce_backups_limit">Жёсткое соблюдение лимита</string>
+    <string name="enforce_backups_limit_description">Удалять старые рез. копии и жёстко установить лимит на %d</string>
 </resources>
