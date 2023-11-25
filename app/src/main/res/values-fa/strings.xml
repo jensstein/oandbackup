@@ -124,4 +124,8 @@
     <string name="prefs_service_short">خدمت</string>
     <string name="prefs_newandupdatednotification">نمایش اطلاعیه‌های جدید و به‌روز</string>
     <string name="prefs_tools_short">ابزار‌ها</string>
+    <string name="prefs_theme_dynamic_black">سیاه با رنگ های پویا</string>
+    <string name="prefs_theme_dynamic_light">روشن با رنگ های پویا</string>
+    <string name="prefs_theme_system_black">پوسته سیستم (سیاه)</string>
+    <string name="prefs_theme_dynamic_dark">تیره با رنگ های پویا</string>
 </resources>
