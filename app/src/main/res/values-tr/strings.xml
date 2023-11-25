@@ -366,4 +366,9 @@
     <string name="prefs_singularbackuprestore">Tekil yedekleme geri yükleme</string>
     <string name="prefs_newandupdatednotification">Yeni ve güncellenmiş bildirimi göster</string>
     <string name="prefs_altnavbaritem_summary">Seçili olmayan öğelerin etiketini gösteren alternatif/eski gezinti çubuğu öğe düzenini kullan.</string>
+    <string name="prefs_theme_dynamic_black">Dinamik renklerle siyah</string>
+    <string name="prefs_theme_dynamic">Dinamik tema</string>
+    <string name="prefs_theme_dynamic_light">Dinamik renklerle aydınlık</string>
+    <string name="prefs_theme_system_black">Sistem teması (Siyah)</string>
+    <string name="prefs_theme_dynamic_dark">Dinamik renklerle karanlık</string>
 </resources>
