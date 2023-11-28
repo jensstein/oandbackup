@@ -648,7 +648,7 @@ class ShellHandler {
             get() {
                 // only return true if command does not choke on the option and exits with code 0
                 val ok = runCatching {
-                    ShellUtils.fastCmdResult("echo true | su --mount-master 0")
+                    ShellUtils.fastCmdResult("echo true | su --mount-master")
                 }.getOrNull() ?: false
                 //traceDebug { "detected mount master option = $ok" }
                 return ok
