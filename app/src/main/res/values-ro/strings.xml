@@ -305,4 +305,19 @@
     <string name="backupFailure">Eroare la backup</string>
     <string name="errorDialogTitle">Au apărut erori</string>
     <string name="noSu">Nu s-au putut obține permisiunile de super-utilizator</string>
+    <string name="prefs_theme_dynamic_black">Neagră cu culori dinamice</string>
+    <string name="prefs_laserbackground">Afișează laserul animat în fundal</string>
+    <string name="prefs_mediadata_rst">Restaurează fișierele media</string>
+    <string name="prefs_deviceprotecteddata_rst">Restaurează datele protejate de dispozitiv</string>
+    <string name="prefs_laserbackground_summary">Utilizează lumini colorate animate ca fundal atunci când se încarcă/este ocupat.</string>
+    <string name="prefs_password_summary">Folosit și pentru decriptare la restaurare</string>
+    <string name="prefs_theme_dynamic">Temă dinamică</string>
+    <string name="prefs_theme_dynamic_light">Luminoasă cu culori dinamice</string>
+    <string name="prefs_theme_system_black">Tema sistemului (neagră)</string>
+    <string name="prefs_stopcont">STOP-CONT pre- și postprocesare a aplicațiilor la backup/restaurare</string>
+    <string name="prefs_acquirewakelock_summary">Obține un wakelock în timpul operațiunilor în lot pentru a preveni adormirea. Accelerează considerabil backup-urile și restaurările, dar consumă mai multă energie.</string>
+    <string name="prefs_altnavbaritem_summary">Utilizează aspect alternativ/vechi al elementelor din bara de navigare, care arată eticheta elementelor neselectate.</string>
+    <string name="prefs_theme_dynamic_dark">Întunecată cu culori dinamice</string>
+    <string name="prefs_externaldata_rst">Restaurează datele externe</string>
+    <string name="prefs_obbdata_rst">Restaurează fișierele obb</string>
 </resources>
