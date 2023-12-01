@@ -154,7 +154,7 @@
     <string name="prefs_acquirewakelock_summary">Nhận một wakelock trong các hoạt động hàng loạt để ngăn chặn ngủ. Tăng tốc đáng kể việc sao lưu và khôi phục, nhưng tiêu tốn nhiều năng lượng hơn.</string>
     <string name="prefs_acquirewakelock">Ngăn chặn ngủ</string>
     <string name="prefs_numBackupRevisions_summary">Phiên bản cũ nhất sẽ bị xoá khi tạo một bản sao lưu mới nếu con số này bị vượt quá. Đặt là không để giữ tất cả phiên bản.</string>
-    <string name="prefs_numBackupRevisions">Số phiên bản bản sao lưu</string>
+    <string name="prefs_numBackupRevisions">Số bản sửa đổi sao lưu</string>
     <string name="prefs_deviceprotecteddata">Sao lưu dữ liệu được thiết bị bảo vệ</string>
     <string name="prefs_obbdata">Sao lưu các tệp obb</string>
     <string name="prefs_excludecache">Loại trừ bộ nhớ đệm của ứng dụng</string>
@@ -396,4 +396,6 @@
     <string name="prefs_theme_dynamic_light">Sáng với màu sắc năng động</string>
     <string name="prefs_theme_system_black">Chủ đề của hệ thống (Đen)</string>
     <string name="prefs_theme_dynamic_dark">Tối với màu sắc năng động</string>
+    <string name="enforce_backups_limit">Thực thi giới hạn sao lưu</string>
+    <string name="enforce_backups_limit_description">Xóa các bản sao lưu cũ hơn để thực thi giới hạn ở %d</string>
 </resources>
