@@ -396,4 +396,5 @@
     <string name="prefs_newandupdatednotification">显示未备份应用提醒</string>
     <string name="prefs_altnavbaritem">使用备用导航栏布局</string>
     <string name="prefs_altnavbaritem_summary">使用替代/旧的导航栏布局，该布局会显示未选定选项页的标签名。</string>
+    <string name="prefs_theme_system_black">跟随系统(深色)</string>
 </resources>
