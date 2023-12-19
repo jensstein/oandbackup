@@ -666,7 +666,7 @@ Read the Telegram group.
 
 ## Can I control NB from scripts or Tasker or similar?
 
-yes, NB has a broadcast receiver for Android "intents", that reacts on commands.
+yes, NB has a broadcast receiver for Android "intents", that reacts on commands (note, it's still experimental, so subject to change, also consider security, it's not protected).
 
 The Intent must contain the package name, that is:
 
@@ -732,6 +732,16 @@ set a new time of a schedule
   ```bash
   am broadcast -a reschedule -e name "the name of the schedule" -e time 12:34 -n com.machiav3lli.backup/com.machiav3lli.backup.services.CommandReceiver
   ```
+### now I want to detect the end of the operation
+
+For a single app you can check the properties file, because this is only written, when the backup is finished and succcessful.
+
+Though, this doesn't help much for a batch backup of several apps, unless you know which are included.
+
+Also note, that the name of the properties file to look for includes the time, so it changes on each backup.
+
+You can use the logcat command to tail the messages written by NB and check either for the end of a batch or the end of all batches.
+You need to enable logToSystemLogcat perference, otherwise the messages are only stored internal.
 
 ## What is the difference to implementations like Seedvault?
 
