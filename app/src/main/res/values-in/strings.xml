@@ -391,4 +391,12 @@
     <string name="prefs_theme_dynamic_dark">Gelap dengan warna dinamis</string>
     <string name="prefs_externaldata_rst">Pulihkan data eksternal</string>
     <string name="prefs_obbdata_rst">Pulihkan berkas obb</string>
+    <string name="prefs_altnavbaritem">Gunakan item bilah navigasi alternatif</string>
+    <string name="prefs_squeezenavtext_summary">Izinkan teks dibawah item bilah navigasi diubah ukurannya agar sesuai dengan lebar yang tersedia.</string>
+    <string name="enforce_backups_limit">Terapkan batas cadangan</string>
+    <string name="prefs_squeezenavtext">Peras teks item navigasi</string>
+    <string name="prefs_tools_terminal">Terminal</string>
+    <string name="clear_text">Bersihkan teks</string>
+    <string name="post_notifications_permission_title">Post Pemberitahuan</string>
+    <string name="enforce_backups_limit_description">Hapus cadangan lama untuk menerapkan batas hingga %d</string>
 </resources>
