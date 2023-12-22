@@ -338,4 +338,5 @@
     <string name="prefs_restorepermissions_summary">還原應用程式在備份時已獲得的權限。注意：有些權限無法自動被還原，而使得應用程式還原失敗，此時 Neo Backup 會還原應用程式而不還原權限。</string>
     <string name="prefs_deviceprotecteddata_summary">備份位於 data/user_de 中的資料</string>
     <string name="prefs_obbdata_summary">備份應用程式位於外部儲存空間的 obb 檔案（例如：/storage/emulated/0/Android/obb/）</string>
+    <string name="prefs_theme_system_black">系統主題（黑色）</string>
 </resources>
