@@ -405,4 +405,6 @@
     <string name="prefs_theme_dynamic_light">Світла динамічна</string>
     <string name="prefs_theme_system_black">Системна тема (Чорна)</string>
     <string name="prefs_theme_dynamic_dark">Темна динамічна</string>
+    <string name="enforce_backups_limit">Ліміт на резервне копіювання</string>
+    <string name="enforce_backups_limit_description">Видаліть старіші резервні копії, щоб застосувати ліміт до %d</string>
 </resources>
