@@ -250,7 +250,7 @@ val pref_deleteERROR = LaunchPref(
 
 val pref_savePreferences = LaunchPref(
     key = "dev-tool.savePreferences",
-    summary = "save preferences to $PREFS_BACKUP_FILE"
+    summary = "save preferences to $PREFS_BACKUP_FILE, note, that the PASSWORD is NOT INCLUDED"
 ) {
     MainScope().launch(Dispatchers.IO) {
         val serialized = preferencesToSerialized()
@@ -269,7 +269,7 @@ val pref_savePreferences = LaunchPref(
 
 val pref_loadPreferences = LaunchPref(
     key = "dev-tool.loadPreferences",
-    summary = "load preferences from $PREFS_BACKUP_FILE"
+    summary = "load preferences from $PREFS_BACKUP_FILE, note, that the PASSWORD is NOT INCLUDED, please set it manually"
 ) {
     MainScope().launch(Dispatchers.IO) {
         runCatching {
