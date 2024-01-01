@@ -404,4 +404,11 @@
     <string name="prefs_mediadata_rst">Restaure les fichiers média</string>
     <string name="prefs_mediadata_rst_summary">Restaure les fichiers média de l\'application qui sont placés sur le stockage externe (par exemple /storage/emulated/0/Android/media/)</string>
     <string name="backup_revisions_limit">Limite de sauvegardes : %d</string>
+    <string name="prefs_theme_dynamic_black">Noir avec des couleurs dynamiques</string>
+    <string name="prefs_theme_dynamic">Thème dynamique</string>
+    <string name="enforce_backups_limit">Imposer la limite de sauvegardes</string>
+    <string name="prefs_theme_dynamic_light">Clair avec des couleurs dynamiques</string>
+    <string name="prefs_theme_system_black">Thème du système (sombre)</string>
+    <string name="enforce_backups_limit_description">Supprimer les anciennes sauvegardes pour imposer la limite à %d</string>
+    <string name="prefs_theme_dynamic_dark">Sombre avec des couleurs dynamiques</string>
 </resources>
