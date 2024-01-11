@@ -103,7 +103,8 @@ Before that, translations were done analog/offline by those great people:
 
 I, myself acknowledge the role of the donations to motivate the work on FOSS projects, but in the state of how dynamic everything around my FOSS-contributions is, I would prefer to not take donations for now (the same answer as the last years). Nevertheless this project wouldn't have the accessibility it has without translations, which you the community drive and for which Weblate provides a platform. That's why I would you suggest you to consider [donating to Weblate](https://weblate.org/donate).
 
-Following the application on their grant for open-source projects, my Tutanota email account got promoted to premium. For that thanks to [Tutanota](https://tutanota.com) for their support!
+Thanks to [Tuta](https://tuta.com) for the premium account.
+[![Tutanota](tuta_logo.png)](https://tuta.com)
 
 ## Authors
 
