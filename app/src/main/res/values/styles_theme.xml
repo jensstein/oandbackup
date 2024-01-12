@@ -3,6 +3,7 @@
 
     <style name="Black">
         <item name="backgroundColor">@android:color/black</item>
+        <item name="colorSurfaceContainerLowest">@android:color/black</item>
     </style>
 
     <style name="Accent0">

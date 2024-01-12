@@ -80,6 +80,7 @@ import com.machiav3lli.backup.utils.altModeToMode
 import com.machiav3lli.backup.utils.checkRootAccess
 import com.machiav3lli.backup.utils.isBiometricLockAvailable
 import com.machiav3lli.backup.utils.isBiometricLockEnabled
+import com.machiav3lli.backup.utils.isDarkTheme
 import com.machiav3lli.backup.utils.isDeviceLockEnabled
 import com.machiav3lli.backup.utils.isEncryptionEnabled
 import com.machiav3lli.backup.viewmodels.BatchViewModel
@@ -203,11 +204,11 @@ class MainActivityX : BaseActivity() {
                     statusBarStyle = SystemBarStyle.auto(
                         android.graphics.Color.TRANSPARENT,
                         android.graphics.Color.TRANSPARENT,
-                    ),
+                    )  { isDarkTheme },
                     navigationBarStyle = SystemBarStyle.auto(
                         android.graphics.Color.TRANSPARENT,
                         android.graphics.Color.TRANSPARENT,
-                    ),
+                    )  { isDarkTheme },
                 )
                 onDispose {}
             }

@@ -205,15 +205,31 @@ fun Activity.showWarning(
 fun getThemeStyleX(theme: Int) = when (theme) {
     THEME_LIGHT,
     THEME_DYNAMIC_LIGHT,
-    -> AppCompatDelegate.MODE_NIGHT_NO
+         -> AppCompatDelegate.MODE_NIGHT_NO
 
     THEME_DARK,
+    THEME_BLACK,
     THEME_DYNAMIC_DARK,
     THEME_DYNAMIC_BLACK,
-    -> AppCompatDelegate.MODE_NIGHT_YES
+         -> AppCompatDelegate.MODE_NIGHT_YES
 
     else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 }
+
+val Context.isDarkTheme: Boolean
+    get() = when (styleTheme) {
+        THEME_LIGHT,
+        THEME_DYNAMIC_LIGHT,
+             -> false
+
+        THEME_DARK,
+        THEME_BLACK,
+        THEME_DYNAMIC_DARK,
+        THEME_DYNAMIC_BLACK,
+             -> true
+
+        else -> isNightMode()
+    }
 
 fun Context.isNightMode() =
     resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
