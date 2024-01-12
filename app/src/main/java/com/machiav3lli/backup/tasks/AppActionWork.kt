@@ -24,6 +24,7 @@ import android.app.job.JobService
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.pm.ServiceInfo
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
@@ -255,7 +256,12 @@ class AppActionWork(val context: Context, workerParams: WorkerParameters) :
             )
             .build()
 
-        return ForegroundInfo(this.notificationId + 1, notification)
+        return ForegroundInfo(
+            this.notificationId + 1,
+            notification,
+            if (OABX.minSDK(Build.VERSION_CODES.Q)) ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+            else 0
+        )
     }
 
     private fun createNotificationChannel() {
