@@ -33,6 +33,7 @@ val vCommonsIO = "2.15.1"
 val vComposeCompiler = "1.5.8"
 val vCompose = "1.6.0-beta03"
 val vComposeM3 = "1.1.2" // does NOT crash in context menu "Put"
+// TODO migration val vComposeM3 = "1.2.0-beta02"
 val vDatastore = "1.0.0"
 val vKAML = "0.56.0"
 val vKotlin = "1.9.22"
@@ -61,8 +62,8 @@ android {
         applicationId = "com.machiav3lli.backup"
         minSdk = 26
         targetSdk = 33
-        versionCode = 8314
-        versionName = "8.3.5-alpha01"
+        versionCode = 8315
+        versionName = "8.3.5"
         buildConfigField("int", "MAJOR", "8")
         buildConfigField("int", "MINOR", "3")
 

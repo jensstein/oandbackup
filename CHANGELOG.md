@@ -1,12 +1,14 @@
 CHANGELOG
 =========
 
-8.3.5 (??.??.2023) +30 Commits & +40 Translations
+8.3.5 (12.01.2024) +40 Commits & +60 Translations
 ------------
 
 #### Function
 
 - Add: Enforce backups limit button to AppSheet
+- Add: Allow restoring old apps (older than Android 6) on Android 14+
+- Fix: KernelSU support
 - Update: Move to one-activity structure
 - Update: Revamp permissions management
 
@@ -15,6 +17,7 @@ CHANGELOG
 - Add: Animated switch of pages
 - Add: Different dynamic and black themes
 - Fix: Pages popup animation
+- Fix: Crash on resume after launching from AppSheet
 - Fix: Navigation bar item's ripple
 - Fix: StatusBar visibility in custom dynamic themes
 - Update: Revamp AppSheet's buttons
@@ -23,8 +26,9 @@ CHANGELOG
 
 #### UX
 
-- Update: Revamp resume logic (relock on each resume)
 - Add: Opt-in dev-option to ignore locked backups in housekeeping
+- Add: Warning about password on save/loadPreferences dev-tool
+- Update: Revamp resume logic (relock on each resume)
 
 
 8.3.4 (13.10.2023) +10 Commits & +10 Translations
