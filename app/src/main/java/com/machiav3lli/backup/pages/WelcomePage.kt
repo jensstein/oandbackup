@@ -59,7 +59,7 @@ fun WelcomePage() {
 
     Scaffold(
         containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.onBackground,
+        contentColor = MaterialTheme.colorScheme.onSurface,
         topBar = {
             TopBar(title = stringResource(id = R.string.app_name)) {}
         },
@@ -95,7 +95,8 @@ fun WelcomePage() {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.background
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                            contentColor = MaterialTheme.colorScheme.onSurface,
                         ),
                         border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface)
                     ) {
@@ -117,7 +118,6 @@ fun WelcomePage() {
                 item {
                     Text(
                         text = stringResource(id = R.string.intro_welcome_message),
-                        color = MaterialTheme.colorScheme.onBackground
                     )
                 }
             }

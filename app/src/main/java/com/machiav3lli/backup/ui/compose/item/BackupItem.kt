@@ -49,7 +49,7 @@ fun BackupItem(
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.large),
         colors = ListItemDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
         ),
         headlineContent = {
             Row(modifier = Modifier.fillMaxWidth()) {
@@ -219,7 +219,7 @@ fun RestoreBackupItem(
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.large),
         colors = ListItemDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
         ),
         leadingContent = {
             Row {

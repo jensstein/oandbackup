@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
@@ -71,10 +72,12 @@ fun StringInputDialogUI(
     SideEffect { mainFocusRequester.requestFocus() }
 
     Card(
-        shape = RoundedCornerShape(8.dp),
+        shape = MaterialTheme.shapes.extraLarge,
         modifier = Modifier.padding(8.dp),
-        elevation = CardDefaults.elevatedCardElevation(8.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background)
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+        ),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -90,14 +93,15 @@ fun StringInputDialogUI(
             ) {
                 TextField(
                     modifier = Modifier
+                        .shadow(1.dp, MaterialTheme.shapes.large)
                         .fillMaxWidth()
                         .focusRequester(mainFocusRequester),
                     value = savedValue,
                     colors = TextFieldDefaults.colors(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
-                        focusedTextColor = MaterialTheme.colorScheme.onBackground,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                     ),
                     shape = MaterialTheme.shapes.large,
                     singleLine = true,

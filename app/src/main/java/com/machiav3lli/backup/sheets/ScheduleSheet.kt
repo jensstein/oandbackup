@@ -133,7 +133,7 @@ fun ScheduleSheet(
 
         Scaffold(
             containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.onBackground,
+            contentColor = MaterialTheme.colorScheme.onSurface,
             topBar = {
                 ListItem(
                     colors = ListItemDefaults.colors(

@@ -3,7 +3,6 @@ package com.machiav3lli.backup.ui.compose.item
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
@@ -47,17 +46,16 @@ fun selectableChipTransition(selected: Boolean): SelectableChipTransition {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectionChip(
     item: ChipItem,
     isSelected: Boolean,
     colors: SelectableChipColors = FilterChipDefaults.filterChipColors(
-        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-        labelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        labelColor = MaterialTheme.colorScheme.onSurface,
         selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-        iconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        iconColor = MaterialTheme.colorScheme.onSurface,
         selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
     ),
     onClick: () -> Unit,
@@ -95,11 +93,11 @@ fun InfoChip(
             Text(text = item.text)
         },
         colors = SuggestionChipDefaults.suggestionChipColors(
-            containerColor = item.color ?: MaterialTheme.colorScheme.surfaceVariant,
-            labelColor = if (item.color != null) MaterialTheme.colorScheme.background
-            else MaterialTheme.colorScheme.onSurfaceVariant,
-            iconContentColor = if (item.color != null) MaterialTheme.colorScheme.background
-            else MaterialTheme.colorScheme.onSurfaceVariant,
+            containerColor = item.color ?: MaterialTheme.colorScheme.surfaceContainer,
+            labelColor = if (item.color != null) MaterialTheme.colorScheme.surfaceContainerLowest
+            else MaterialTheme.colorScheme.onSurface,
+            iconContentColor = if (item.color != null) MaterialTheme.colorScheme.surfaceContainerLowest
+            else MaterialTheme.colorScheme.onSurface,
         ),
         onClick = {}
     )

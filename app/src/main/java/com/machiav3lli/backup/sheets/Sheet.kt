@@ -25,7 +25,7 @@ fun Sheet(
 ) {
     ModalBottomSheet(
         sheetState = sheetState,
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
         scrimColor = Color.Transparent,
         dragHandle = null,
         onDismissRequest = onDismissRequest

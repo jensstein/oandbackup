@@ -42,7 +42,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -178,7 +177,7 @@ fun PrefIcon(
         imageVector = icon,
         contentDescription = text,
         modifier = Modifier.size(ICON_SIZE_MEDIUM),   //TODO BUTTON_ICON_SIZE?
-        tint = tint ?: MaterialTheme.colorScheme.onBackground
+        tint = tint ?: MaterialTheme.colorScheme.onSurface
     )
 }
 
@@ -209,7 +208,7 @@ fun PackageIcon(
 fun RefreshButton(
     modifier: Modifier = Modifier,
     size: Dp = ICON_SIZE_SMALL,
-    tint: Color = MaterialTheme.colorScheme.onBackground,
+    tint: Color = MaterialTheme.colorScheme.onSurface,
     hideIfNotBusy: Boolean = false,
     onClick: () -> Unit = {},
 ) {
@@ -401,12 +400,12 @@ fun ElevatedActionButton(
         modifier = modifier,
         colors = ButtonDefaults.elevatedButtonColors(
             contentColor = when {
-                !colored -> MaterialTheme.colorScheme.onSurfaceVariant
+                !colored -> MaterialTheme.colorScheme.onSurface
                 positive -> MaterialTheme.colorScheme.onPrimaryContainer
                 else     -> MaterialTheme.colorScheme.onTertiaryContainer
             },
             containerColor = when {
-                !colored -> MaterialTheme.colorScheme.surfaceVariant
+                !colored -> MaterialTheme.colorScheme.surfaceContainer
                 positive -> MaterialTheme.colorScheme.primaryContainer
                 else     -> MaterialTheme.colorScheme.tertiaryContainer
             }
@@ -438,8 +437,8 @@ fun ElevatedActionButton(
 fun CardButton(
     modifier: Modifier = Modifier,
     icon: ImageVector,
-    contentColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
-    containerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
+    contentColor: Color = MaterialTheme.colorScheme.onSurface,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
     description: String,
     enabled: Boolean = true,
     onClick: () -> Unit,
@@ -523,7 +522,7 @@ fun RoundButton(
     modifier: Modifier = Modifier,
     size: Dp = ICON_SIZE_SMALL,
     icon: ImageVector,
-    tint: Color = MaterialTheme.colorScheme.onBackground,
+    tint: Color = MaterialTheme.colorScheme.onSurface,
     description: String = "",
     onClick: () -> Unit,
 ) {
@@ -560,7 +559,7 @@ fun StateChip(
                 onClick = onClick,
                 onLongClick = { openPopup.value = true }
             ),
-        contentColor = if (checked) MaterialTheme.colorScheme.background else color,
+        contentColor = if (checked) MaterialTheme.colorScheme.surfaceContainerLowest else color,
         color = if (checked) color else Color.Transparent,
         shape = MaterialTheme.shapes.small,
         border = BorderStroke(1.dp, color),
@@ -577,7 +576,6 @@ fun StateChip(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CheckChip(
     modifier: Modifier = Modifier,
@@ -592,9 +590,9 @@ fun CheckChip(
         modifier = modifier,
         selected = checked,
         colors = FilterChipDefaults.filterChipColors(
-            labelColor = MaterialTheme.colorScheme.onBackground,
+            labelColor = MaterialTheme.colorScheme.onSurface,
             selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            iconColor = MaterialTheme.colorScheme.onBackground,
+            iconColor = MaterialTheme.colorScheme.onSurface,
             selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
             containerColor = Color.Transparent,
             selectedContainerColor = MaterialTheme.colorScheme.primaryContainer
@@ -659,7 +657,6 @@ fun ActionChip(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SwitchChip(
     firstTextId: Int,
@@ -670,16 +667,16 @@ fun SwitchChip(
     colors: SelectableChipColors = FilterChipDefaults.filterChipColors(
         containerColor = Color.Transparent,
         selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-        labelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        labelColor = MaterialTheme.colorScheme.onSurface,
         selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-        iconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        iconColor = MaterialTheme.colorScheme.onSurface,
         selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
     ),
     onCheckedChange: (Boolean) -> Unit,
 ) {
     Row(
         modifier = Modifier
-            .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.medium)
+            .background(MaterialTheme.colorScheme.surfaceContainer, MaterialTheme.shapes.medium)
             .padding(horizontal = 8.dp)
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -1169,7 +1166,7 @@ fun CardSubRow(
     modifier: Modifier = Modifier,
     text: String,
     icon: ImageVector,
-    iconColor: Color = MaterialTheme.colorScheme.onBackground,
+    iconColor: Color = MaterialTheme.colorScheme.onSurface,
     onClick: () -> Unit = {},
 ) {
     ListItem(

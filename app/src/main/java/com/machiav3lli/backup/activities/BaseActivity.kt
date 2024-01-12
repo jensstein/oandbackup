@@ -38,7 +38,6 @@ abstract class BaseActivity : AppCompatActivity() {
         OABX.addActivity(this)
 
         setCustomTheme()
-        enableEdgeToEdge()
 
         super.onCreate(savedInstanceState)
 

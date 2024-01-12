@@ -74,8 +74,8 @@ fun PrefsPage(
     }
 
     Scaffold(
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.onBackground,
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+        contentColor = MaterialTheme.colorScheme.onSurface,
         topBar = {
             TopBar(title = stringResource(id = currentPage.title)) {
                 RoundButton(

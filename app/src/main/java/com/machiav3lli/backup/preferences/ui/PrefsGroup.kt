@@ -23,7 +23,6 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
@@ -46,14 +45,15 @@ import com.machiav3lli.backup.ui.item.Pref
 fun PrefsGroupCollapsed(prefs: List<Pref>, heading: String) {
     val (expanded, expand) = remember { mutableStateOf(false) }
 
-    if (prefs.size > 0)
+    if (prefs.isNotEmpty())
         Card(
             modifier = Modifier
                 .clip(CardDefaults.shape)
                 .clickable { expand(!expanded) },
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp)
-            )
+                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+            ),
         ) {
             PrefsGroupHeading(heading = heading)
             AnimatedVisibility(
@@ -137,7 +137,6 @@ fun PrefsGroupHeading(
                 style = MaterialTheme.typography.headlineMedium,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
             )
         }
     } else {
@@ -160,10 +159,10 @@ fun PrefsExpandableGroupHeader(
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.medium)
             .clickable { onClick() },
-        colors = CardDefaults.elevatedCardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = MaterialTheme.colorScheme.primary
-        )
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+        ),
     ) {
         Row(
             modifier = modifier

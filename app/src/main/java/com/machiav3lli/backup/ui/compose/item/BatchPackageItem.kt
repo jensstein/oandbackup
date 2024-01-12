@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
@@ -38,7 +37,6 @@ import com.machiav3lli.backup.ui.compose.theme.ColorUpdated
 import com.machiav3lli.backup.ui.compose.theme.ColorUser
 import com.machiav3lli.backup.utils.getFormattedDate
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BatchPackageItem(
     item: Package,

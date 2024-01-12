@@ -15,7 +15,7 @@ fun LegendItem(item: Legend) {
         text = stringResource(id = item.nameId),
         icon = item.icon,
         iconColor = if (item.iconColorId != -1) colorResource(id = item.iconColorId)
-        else MaterialTheme.colorScheme.onBackground,
+        else MaterialTheme.colorScheme.onSurface,
         modifier = Modifier
             .fillMaxWidth()
             .clickable(enabled = false) {}

@@ -278,9 +278,9 @@ fun TopBar(
             },
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = Color.Transparent,
-                titleContentColor = MaterialTheme.colorScheme.onBackground,
-                actionIconContentColor = MaterialTheme.colorScheme.onBackground,
-                navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
+                titleContentColor = MaterialTheme.colorScheme.onSurface,
+                actionIconContentColor = MaterialTheme.colorScheme.onSurface,
+                navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
             ),
             actions = actions
         )

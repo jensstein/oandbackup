@@ -76,7 +76,6 @@ import com.machiav3lli.backup.utils.getStats
 import com.machiav3lli.backup.utils.sortFilterModel
 import com.machiav3lli.backup.utils.specialBackupsEnabled
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SortFilterSheet(onDismiss: () -> Unit) {
     val context = LocalContext.current
@@ -93,7 +92,7 @@ fun SortFilterSheet(onDismiss: () -> Unit) {
 
     Scaffold(
         containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.onBackground,
+        contentColor = MaterialTheme.colorScheme.onSurface,
         topBar = {
             ListItem(
                 colors = ListItemDefaults.colors(

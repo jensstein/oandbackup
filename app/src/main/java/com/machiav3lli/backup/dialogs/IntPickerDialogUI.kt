@@ -68,10 +68,12 @@ fun IntPickerDialogUI(
     }
 
     Card(
-        shape = RoundedCornerShape(8.dp),
+        shape = MaterialTheme.shapes.extraLarge,
         modifier = Modifier.padding(8.dp),
-        elevation = CardDefaults.elevatedCardElevation(8.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background)
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+        ),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),

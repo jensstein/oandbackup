@@ -39,7 +39,6 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -78,7 +77,7 @@ fun HelpSheet(onDismiss: () -> Unit) {
 
     Scaffold(
         containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.onBackground,
+        contentColor = MaterialTheme.colorScheme.onSurface,
         topBar = {
             ListItem(
                 colors = ListItemDefaults.colors(
@@ -136,7 +135,8 @@ fun HelpSheet(onDismiss: () -> Unit) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        contentColor = MaterialTheme.colorScheme.onSurface,
                     ),
                     shape = MaterialTheme.shapes.large,
                 ) {
@@ -166,7 +166,6 @@ fun HelpSheet(onDismiss: () -> Unit) {
             item {
                 Text(
                     text = stringResource(id = R.string.help_appTypeHint),
-                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
             item {
@@ -175,7 +174,8 @@ fun HelpSheet(onDismiss: () -> Unit) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.background,
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                        contentColor = MaterialTheme.colorScheme.onSurface,
                     ),
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface),
                     shape = MaterialTheme.shapes.large,
@@ -187,6 +187,9 @@ fun HelpSheet(onDismiss: () -> Unit) {
                         headlineContent = {
                             TitleText(R.string.usage_notes_title)
                         },
+                        colors = ListItemDefaults.colors(
+                            containerColor = Color.Transparent
+                        ),
                         trailingContent = {
                             Icon(
                                 imageVector = if (showNotes) Phosphor.CaretUp

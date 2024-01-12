@@ -39,7 +39,6 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -126,7 +125,6 @@ const val DIALOG_ADDTAG = 9
 const val DIALOG_NOTE = 10
 const val DIALOG_ENFORCE_LIMIT = 11
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppSheet(
     viewModel: AppSheetViewModel,
@@ -179,7 +177,7 @@ fun AppSheet(
 
         Scaffold(
             containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.onBackground,
+            contentColor = MaterialTheme.colorScheme.onSurface,
             topBar = {
                 Column(
                     modifier = Modifier.padding(
@@ -445,7 +443,6 @@ fun AppSheet(
                         CardButton(
                             icon = Phosphor.TrashSimple,
                             description = stringResource(id = R.string.clear_cache),
-                            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         ) {
                             dialogProps.value = Pair(DIALOG_CLEANCACHE, pkg)
                             openDialog.value = true

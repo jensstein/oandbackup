@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
@@ -32,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
@@ -69,10 +69,12 @@ fun EnumPrefDialogUI(
     val entryPairs = pref.entries.toList()
 
     Card(
-        shape = RoundedCornerShape(8.dp),
+        shape = MaterialTheme.shapes.extraLarge,
         modifier = Modifier.padding(8.dp),
-        elevation = CardDefaults.elevatedCardElevation(8.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background)
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+        ),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -127,10 +129,12 @@ fun ListPrefDialogUI(
     val entryPairs = pref.entries.toList()
 
     Card(
-        shape = RoundedCornerShape(8.dp),
+        shape = MaterialTheme.shapes.large,
         modifier = Modifier.padding(8.dp),
-        elevation = CardDefaults.elevatedCardElevation(8.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background)
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+        ),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -205,7 +209,7 @@ fun StringPrefDialogUI(
             else
                 Color.Green
         } else
-            MaterialTheme.colorScheme.onBackground
+            MaterialTheme.colorScheme.onSurface
 
     fun submit() {
         focusManager.clearFocus()
@@ -242,10 +246,12 @@ fun StringPrefDialogUI(
     }
 
     Card(
-        shape = RoundedCornerShape(8.dp),
+        shape = MaterialTheme.shapes.large,
         modifier = Modifier.padding(8.dp),
-        elevation = CardDefaults.elevatedCardElevation(8.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background)
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+        ),
     ) {
         // from https://stackoverflow.com/questions/65304229/toggle-password-field-jetpack-compose
         var isPasswordVisible by remember { mutableStateOf(!isPrivate) }  // rememberSavable?
@@ -258,6 +264,7 @@ fun StringPrefDialogUI(
             Text(text = stringResource(pref.titleId), style = MaterialTheme.typography.titleLarge)
             TextField(
                 modifier = Modifier
+                    .shadow(1.dp, MaterialTheme.shapes.medium)
                     .fillMaxWidth()
                     .focusRequester(mainFocusRequester),
                 value = savedValue,
@@ -266,6 +273,8 @@ fun StringPrefDialogUI(
                     unfocusedIndicatorColor = Color.Transparent,
                     focusedTextColor = textColor,
                     unfocusedTextColor = textColor,
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                 ),
                 shape = MaterialTheme.shapes.medium,
                 singleLine = true,
@@ -319,6 +328,7 @@ fun StringPrefDialogUI(
             if (confirm) {
                 TextField(
                     modifier = Modifier
+                        .shadow(1.dp, MaterialTheme.shapes.medium)
                         .fillMaxWidth()
                         .focusRequester(confirmFocusRequester),
                     value = savedValueConfirm,
@@ -327,6 +337,8 @@ fun StringPrefDialogUI(
                         unfocusedIndicatorColor = Color.Transparent,
                         focusedTextColor = textColor,
                         unfocusedTextColor = textColor,
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                     ),
                     shape = MaterialTheme.shapes.medium,
                     singleLine = true,

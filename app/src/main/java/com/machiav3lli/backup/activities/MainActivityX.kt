@@ -235,8 +235,8 @@ class MainActivityX : BaseActivity() {
                 }
 
                 Scaffold(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    contentColor = MaterialTheme.colorScheme.onBackground,
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
                 ) {
                     ObservedEffect {
                         resumeMain()

@@ -29,7 +29,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -86,12 +85,12 @@ fun <T : Any> VerticalItemList(
         when {
             list == null   -> Text(
                 text = stringResource(id = R.string.loading_list),
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             list.isEmpty() -> Text(
                 text = stringResource(id = R.string.empty_filtered_list),
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             else           -> {
@@ -138,19 +137,19 @@ fun <T> SizedItemList(
 ) {
     Box(
         modifier = modifier
-            .background(MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.surfaceContainerLowest)
             .requiredHeight(if (list != null) (list.size * (8 + itemHeight) + 8).dp else 20.dp),
         contentAlignment = if (list.isNullOrEmpty()) Alignment.Center else Alignment.TopStart
     ) {
         when {
             list == null   -> Text(
                 text = stringResource(id = R.string.loading_list),
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             list.isEmpty() -> Text(
                 text = stringResource(id = R.string.empty_filtered_list),
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             else           -> {
@@ -180,12 +179,12 @@ fun <T> HorizontalItemList(
         when {
             list == null   -> Text(
                 text = stringResource(id = R.string.loading_list),
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             list.isEmpty() -> Text(
                 text = stringResource(id = R.string.empty_filtered_list),
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             else           -> {
@@ -200,8 +199,7 @@ fun <T> HorizontalItemList(
     }
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SelectableChipGroup(
     //TODO hg42 move to item/Components.kt ?
@@ -225,7 +223,7 @@ fun SelectableChipGroup(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun MultiSelectableChipGroup(
     //TODO hg42 move to item/Components.kt ?
@@ -402,7 +400,7 @@ fun BusyBackground(
 ) {
     val isBusy by remember { busy ?: OABX.busy }
     Box(
-        modifier = modifier.background(MaterialTheme.colorScheme.background),
+        modifier = modifier.background(MaterialTheme.colorScheme.surfaceContainerLowest),
         contentAlignment = Alignment.Center
     ) {
         if (pref_busyLaserBackground.value)
@@ -414,7 +412,7 @@ fun BusyBackground(
             Text(
                 text = "${BuildConfig.VERSION_NAME} $applicationIssuer",
                 fontSize = 8.sp,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = pref_versionOpacity.value / 100f),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = pref_versionOpacity.value / 100f),
                 modifier = Modifier
                     .fillMaxSize()
                     .wrapContentSize(Alignment.TopStart)

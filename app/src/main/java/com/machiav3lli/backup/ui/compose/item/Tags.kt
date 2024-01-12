@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.InputChip
@@ -68,8 +67,6 @@ fun TagsBlock(
     }
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TagItem(
     modifier: Modifier = Modifier,
@@ -82,8 +79,8 @@ fun TagItem(
         modifier = modifier,
         selected = false,
         colors = InputChipDefaults.inputChipColors(
-            containerColor = if (action) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant,
-            labelColor = if (action) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant,
+            containerColor = if (action) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainer,
+            labelColor = if (action) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
             trailingIconColor = if (action) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.tertiary,
         ),
         shape = MaterialTheme.shapes.small,
@@ -126,7 +123,7 @@ fun AddTagView(
         modifier = modifier
             .fillMaxWidth()
             .background(
-                color = MaterialTheme.colorScheme.background,
+                color = MaterialTheme.colorScheme.surfaceContainerLowest,
                 shape = MaterialTheme.shapes.large
             )
             .border(

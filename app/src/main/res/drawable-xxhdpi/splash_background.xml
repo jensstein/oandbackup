@@ -17,7 +17,7 @@
  -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
-        <color android:color="?backgroundColor" />
+        <color android:color="?colorSurfaceContainerLowest" />
     </item>
     <item
         android:width="72dp"

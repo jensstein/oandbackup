@@ -45,7 +45,8 @@ import kotlin.system.exitProcess
 @Composable
 fun SplashPage() {
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+        contentColor = MaterialTheme.colorScheme.onSurface
     ) {
         Column(
             modifier = Modifier
@@ -67,7 +68,7 @@ fun SplashPage() {
                     SystemUtils.applicationIssuer?.let { "signed by $it" } ?: "",
                 ).joinToString("\n"),
                 textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -76,7 +77,10 @@ fun SplashPage() {
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun RootMissing(activity: Activity? = null) {
-    Scaffold {
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+        contentColor = MaterialTheme.colorScheme.onSurface
+    ) {
         Column(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
@@ -130,7 +134,7 @@ fun RootMissing(activity: Activity? = null) {
 fun LockPage(launchMain: () -> Unit) {
     Scaffold(
         containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.onBackground,
+        contentColor = MaterialTheme.colorScheme.onSurface,
         bottomBar = {
             Row(
                 modifier = Modifier

@@ -368,14 +368,10 @@ fun TerminalButton(
     important: Boolean = false,
     action: () -> Unit,
 ) {
-    val color = if (important)
-        MaterialTheme.colorScheme.primaryContainer
-    else
-        MaterialTheme.colorScheme.surfaceVariant
-    val textColor = if (important)
-        MaterialTheme.colorScheme.onPrimaryContainer
-    else
-        MaterialTheme.colorScheme.onSurfaceVariant
+    val color = if (important) MaterialTheme.colorScheme.primaryContainer
+    else MaterialTheme.colorScheme.surfaceContainerHighest
+    val textColor = if (important) MaterialTheme.colorScheme.onPrimaryContainer
+    else MaterialTheme.colorScheme.onSurface
     SmallFloatingActionButton(
         modifier = Modifier
             .padding(2.dp, 0.dp)
@@ -461,92 +457,90 @@ fun TerminalPage() {
         containerColor = Color.Transparent,
         topBar = {
             TopBar(title = stringResource(id = NavItem.Terminal.title))
-        }
+        },
     ) { paddingValues ->
         Column(
-            modifier = Modifier.padding(paddingValues),
-            verticalArrangement = Arrangement.Top
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
         ) {
-            Column {
-                OutlinedTextField(modifier = Modifier
-                    .padding(padding)
-                    .fillMaxWidth(),
-                    //.focusRequester(shellFocusRequester),
-                    value = command,
-                    singleLine = false,
-                    placeholder = { Text(text = "shell command", color = Color.Gray) },
-                    trailingIcon = {
-                        Row {
-                            if (command.isNotEmpty())
-                                RoundButton(icon = Phosphor.X) {
-                                    command = ""
-                                }
-                            RoundButton(icon = Phosphor.Play) {
-                                command.removeSuffix("\n")
-                                run(command)
+            OutlinedTextField(modifier = Modifier
+                .padding(padding)
+                .fillMaxWidth(),
+                //.focusRequester(shellFocusRequester),
+                value = command,
+                singleLine = false,
+                placeholder = { Text(text = "shell command", color = Color.Gray) },
+                trailingIcon = {
+                    Row {
+                        if (command.isNotEmpty())
+                            RoundButton(icon = Phosphor.X) {
                                 command = ""
                             }
-                        }
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        autoCorrect = false,
-                        imeAction = ImeAction.Go
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onGo = {
+                        RoundButton(icon = Phosphor.Play) {
                             command.removeSuffix("\n")
                             run(command)
                             command = ""
                         }
-                    ),
-                    onValueChange = {
-                        //if (it.endsWith("\n")) {
-                        //    run(command)
-                        //    command = ""
-                        //} else
-                        command = it
                     }
-                )
-                FlowRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(padding),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                ) {
-                    TerminalButton("SUPPORT", important = true) { launch { supportInfoLogShare() } }
-                    TerminalButton("share", important = true) { launch { textLogShare(output) } }
-                    TerminalButton("clear", important = true) { output.clear() }
-                    TerminalButton("log/int") { produce { logInt() } }
-                    TerminalButton("log/app") { produce { logApp() } }
-                    TerminalButton("log/rel") { produce { logRel() } }
-                    TerminalButton("log/all") { produce { logSys() } }
-                    TerminalButton("info") { produce { extendedInfo() } }
-                    TerminalButton("prefs") { produce { dumpPrefs() } }
-                    TerminalButton("env") { produce { dumpEnv() } }
-                    TerminalButton("alarms") { produce { dumpAlarms() } }
-                    TerminalButton("timing") { produce { dumpTiming() } }
-                    TerminalButton("threads") { produce { threadsInfo() } }
-                    TerminalButton("access") { produce { accessTest() } }
-                    TerminalButton("dbpkg") { produce { dumpDbAppInfo() } }
-                    TerminalButton("dbsch") { produce { dumpDbSchedule() } }
-                    TerminalButton("errInfo") { produce { lastErrorPkg() + lastErrorCommand() } }
-                    TerminalButton("err->cmd") {
-                        command =
-                            if (OABX.lastErrorCommands.isNotEmpty())
-                                OABX.lastErrorCommands.first()
-                            else
-                                "no error command"
+                },
+                keyboardOptions = KeyboardOptions(
+                    autoCorrect = false,
+                    imeAction = ImeAction.Go
+                ),
+                keyboardActions = KeyboardActions(
+                    onGo = {
+                        command.removeSuffix("\n")
+                        run(command)
+                        command = ""
                     }
-                    TerminalButton("findBackups") { OABX.context.findBackups(forceTrace = true) }
+                ),
+                onValueChange = {
+                    //if (it.endsWith("\n")) {
+                    //    run(command)
+                    //    command = ""
+                    //} else
+                    command = it
                 }
+            )
+            FlowRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(padding),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                TerminalButton("SUPPORT", important = true) { launch { supportInfoLogShare() } }
+                TerminalButton("share", important = true) { launch { textLogShare(output) } }
+                TerminalButton("clear", important = true) { output.clear() }
+                TerminalButton("log/int") { produce { logInt() } }
+                TerminalButton("log/app") { produce { logApp() } }
+                TerminalButton("log/rel") { produce { logRel() } }
+                TerminalButton("log/all") { produce { logSys() } }
+                TerminalButton("info") { produce { extendedInfo() } }
+                TerminalButton("prefs") { produce { dumpPrefs() } }
+                TerminalButton("env") { produce { dumpEnv() } }
+                TerminalButton("alarms") { produce { dumpAlarms() } }
+                TerminalButton("timing") { produce { dumpTiming() } }
+                TerminalButton("threads") { produce { threadsInfo() } }
+                TerminalButton("access") { produce { accessTest() } }
+                TerminalButton("dbpkg") { produce { dumpDbAppInfo() } }
+                TerminalButton("dbsch") { produce { dumpDbSchedule() } }
+                TerminalButton("errInfo") { produce { lastErrorPkg() + lastErrorCommand() } }
+                TerminalButton("err->cmd") {
+                    command =
+                        if (OABX.lastErrorCommands.isNotEmpty())
+                            OABX.lastErrorCommands.first()
+                        else
+                            "no error command"
+                }
+                TerminalButton("findBackups") { OABX.context.findBackups(forceTrace = true) }
             }
             Box(
                 modifier = Modifier
                     .padding(vertical = 8.dp)
                     .blockBorder()
                     .weight(1f)
-                    .fillMaxSize()
                     .padding(0.dp)
             ) {
                 TerminalText(output, limitLines = 0, scrollOnAdd = true)
@@ -654,7 +648,7 @@ fun TerminalText(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color = MaterialTheme.colorScheme.surfaceVariant),
+                .background(color = MaterialTheme.colorScheme.surfaceContainer),
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically,
         ) {
