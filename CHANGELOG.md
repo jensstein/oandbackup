@@ -1,6 +1,21 @@
 CHANGELOG
 =========
 
+8.3.6 (12.01.2024) 6 Commits
+------------
+
+#### Function
+
+- Add: ForegroundServiceType for works (Required on A14)
+- Fix: Crash on backup/restore
+- Update: TargetSDK 34
+
+#### UI
+
+- Remove: Theme color options temporarily
+- Update: Revamp theme colors
+
+
 8.3.5 (12.01.2024) +40 Commits & +60 Translations
 ------------
 
