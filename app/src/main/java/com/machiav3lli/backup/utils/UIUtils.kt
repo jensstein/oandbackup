@@ -87,8 +87,8 @@ fun Context.setCustomTheme() {
     AppCompatDelegate.setDefaultNightMode(getThemeStyleX(styleTheme))
     if (!(isDynamicTheme && DynamicColors.isDynamicColorAvailable())) {
         setTheme(R.style.AppTheme)
-        theme.applyAccentStyle()
-        theme.applySecondaryStyle()
+        //theme.applyAccentStyle()
+        //theme.applySecondaryStyle()
     } // TODO allow fine control on using custom accent/secondary colors?
     if (isBlackTheme && isNightMode())
         theme.applyStyle(R.style.Black, true)

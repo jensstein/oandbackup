@@ -183,7 +183,7 @@ val pref_appTheme = EnumPref(
 )
 
 val pref_appAccentColor = EnumPref(
-    key = "user.appAccentColor",
+    key = ".appAccentColor", //TODO restore in future
     titleId = R.string.prefs_accent_color,
     icon = Phosphor.EyedropperSample,
     //iconTint = MaterialTheme.colorScheme.primary,
@@ -199,7 +199,7 @@ val pref_appAccentColor = EnumPref(
 )
 
 val pref_appSecondaryColor = EnumPref(
-    key = "user.appSecondaryColor",
+    key = ".appSecondaryColor", //TODO restore in future
     titleId = R.string.prefs_secondary_color,
     icon = Phosphor.EyedropperSample,
     //iconTint = MaterialTheme.colorScheme.secondary,
