@@ -2,7 +2,6 @@
 * [The experimental flatStructure scheme](#the-experimental-flatstructure-scheme)
   * [Why?](#why)
   * [Technicalities](#technicalities)
-* [Troubleshooting](#troubleshooting)
 * [Reliability of schedules and WorkManager items](#reliability-of-schedules-and-workmanager-items)
   * [WorkManager](#workmanager)
 * [nsenter](#nsenter)
@@ -99,25 +98,6 @@ so it looks like this:
 
   → `the.package.name (1)/YYYY-MM-DD-hh-mm-ss-mmm-user_x`
 
-## Troubleshooting
-
-- DevTools: for trouble shooting / power users that have showInfoLogBar enabled:
-    - long press on Title will show the DevTools popup for faster access to dev settings, log,
-      terminal and other tools
-- DevTools: add log autoscroll
-- option to autosave a log if an unexpected exception happens, even if it is catched later, so we
-  get better info from the inner circles
-    - → `advanced/devsettings/logging/autoLogExceptions`
-- option to autosave a support log after each schedule, because it's difficult to do this manually
-    - → `advanced/devsettings/logging/autoLogAfterSchedule`
-- option to autosave a support log on suspicious events, e.g. duplicate schedules
-    - situations that are not necessarily an error, only "interesting" sometimes to have a look at
-    - → `advanced/devsettings/logging/autoLogSuspicious`
-- `SUPPORT` button in the terminal, that can create the interesting infos as a new log item and
-  opens share menu in one go
-- `share` button saves the text in the terminal and opens share menu
-    - if you want to review it, cancel the menu and goto the "View the log" tool instead, you can
-      still share from there
 
 ## Reliability of schedules and WorkManager items
 
