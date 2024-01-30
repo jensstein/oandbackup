@@ -1,5 +1,7 @@
 # Frequently Asked Questions
 
+**also see other *.md files, e.g. NOTES.md for some more technical info thast do not fit well in this FAQ, or TROUBLESHOOTING.md**
+
 * [What is Neo Backup?](#what-is-neo-backup)
 * [What is OAndBackupX?](#what-is-oandbackupx)
 * [Which Android Versions are supported?](#which-android-versions-are-supported)
@@ -23,16 +25,23 @@
 * [Why do I have to login/register to app x y z again after restore?](#why-do-i-have-to-loginregister-to-app-x-y-z-again-after-restore)
 * [Why is it not recommended to backup system apps?](#why-is-it-not-recommended-to-backup-system-apps)
 * [Can I backup and restore the settings of NB?](#can-i-backup-and-restore-the-settings-of-nb)
+  * [preferences](#preferences)
+  * [schedules](#schedules)
+  * [blocklist](#blocklist)
+  * [alternative way - save some files](#alternative-way---save-some-files)
+  * [alternative way 2 - use another NB variant to backup](#alternative-way-2---use-another-nb-variant-to-backup)
 * [Is there a roadmap / an overview of features planned to be implemented?](#is-there-a-roadmap--an-overview-of-features-planned-to-be-implemented)
 * [Where do I find the so called "DevTools"?](#where-do-i-find-the-so-called-devtools)
 * [I read about selection and context menu in the Telegram group, where do I find this?](#i-read-about-selection-and-context-menu-in-the-telegram-group-where-do-i-find-this)
 * [Can I control NB from scripts or Tasker or similar?](#can-i-control-nb-from-scripts-or-tasker-or-similar)
+  * [now I want to detect the end of the operation](#now-i-want-to-detect-the-end-of-the-operation)
 * [What is the difference to implementations like Seedvault?](#what-is-the-difference-to-implementations-like-seedvault)
 * [What is the difference to the famous Titanium Backup?](#what-is-the-difference-to-the-famous-titanium-backup)
 * [How can I open encrypted backups on my computer?](#how-can-i-open-encrypted-backups-on-my-computer)
 * [What does the notification of schedules and batch jobs tell me?](#what-does-the-notification-of-schedules-and-batch-jobs-tell-me)
 * [Does NB support multi-user setups / work-profile?](#does-nb-support-multi-user-setups--work-profile)
 * [Does NB support remote backup locations?](#does-nb-support-remote-backup-locations)
+* [Troubleshooting](#troubleshooting)
 
 ## What is Neo Backup?
 
@@ -57,7 +66,7 @@ See also - [Are you going to support older Android versions?](#are-you-going-to-
 
 ## How do I use NB?
 
-The first start will guide you through the most important preferences. It is still quite useful to quickly check the preferences, to see what else can be set. E.g. you can define the amount of kept backup revisions or decide which [app parts](#what-are-all-these-backup-parts-icons--which-parts-does-a-backup-of-an-app-consist-of) should be included.
+The first start will guide you through the most important preferences. It is still quite useful to quickly check the preferences, to see what else can be set. E.g. you can define the amount of kept backup revisions or decide which [app parts](#what-are-all-these-backup-parts-icons--which-parts-are-included-in-a-backup) should be included.
 
 There are 4 screens/tabs:
 
@@ -89,8 +98,8 @@ Each backup basically consists of the two different parts:
 
       <details><summary>Show details ...</summary>
 
-        - Stored usually in `/data/data`
-        - Included in the backup by default
+        * Stored usually in `/data/data`
+        * Included in the backup by default
 
       </details>
 
@@ -98,8 +107,8 @@ Each backup basically consists of the two different parts:
 
       <details><summary>Show details ...</summary>
 
-        - Stored usually in `/Android/data/` in the external storage (internal storage in android current terminology)
-        - Not included in the backup by default (can be enabled in preferences)
+        * Stored usually in `/Android/data/` in the external storage (internal storage in android current terminology)
+        * Not included in the backup by default (can be enabled in preferences)
 
       </details>
 
@@ -107,8 +116,8 @@ Each backup basically consists of the two different parts:
 
       <details><summary>Show details ...</summary>
 
-        - Stored usually in `/Android/obb/` in the external storage (internal storage in android current terminology)
-        - Not included in the backup by default (can be enabled in preferences)
+        * Stored usually in `/Android/obb/` in the external storage (internal storage in android current terminology)
+        * Not included in the backup by default (can be enabled in preferences)
 
       </details>
 
@@ -116,16 +125,16 @@ Each backup basically consists of the two different parts:
 
       <details><summary>Show details ...</summary>
 
-        - Stored usually in `/data/user_de/`
-        - introduced in Android version 7
-        - It's usual data, but can be accessed before even unlocking your phone (authentication).
-        - It's usually data that is needed for the pre-start phase of your device.
+        * Stored usually in `/data/user_de/`
+        * introduced in Android version 7
+        * It's usual data, but can be accessed before even unlocking your phone (authentication).
+        * It's usually data that is needed for the pre-start phase of your device.
           E.g. a preference which decides if your app should start on device boot or not.
-        - It is also called Device Encrypted (user_*DE*) Data because it is encrypted by a key which is tied to the physical device
-        - there are a lot of articles out there which explains it in more detail and  how it differs from credential encrypted storage (CES)
+        * It is also called Device Encrypted (user_*DE*) Data because it is encrypted by a key which is tied to the physical device
+        * there are a lot of articles out there which explains it in more detail and  how it differs from credential encrypted storage (CES)
           e.g. this one: https://lampham.medium.com/device-encrypted-storage-and-direct-boot-mode-in-android-6e5e25d173f3
-        - if apps store important data in this area it depends on how the developer in charge has implemented it
-        - Included in the backup by default
+        * if apps store important data in this area it depends on how the developer in charge has implemented it
+        * Included in the backup by default
 
       </details>
 
@@ -133,18 +142,18 @@ Each backup basically consists of the two different parts:
 
       <details><summary>Show details ...</summary>
 
-        - this type is related to a controversial change that originally was slated for Android 10
+        * this type is related to a controversial change that originally was slated for Android 10
           it is mandatory for all new apps since August 2020 and/or every app targeting Android 11 (SDK 30)
-        - the main thing here is called "Scoped Storage"
-        - Storage is then divided into Shared Storage and Private Storage
-        - as part of SAF this is Android's approach to secure the access to media files
+        * the main thing here is called "Scoped Storage"
+        * Storage is then divided into Shared Storage and Private Storage
+        * as part of SAF this is Android's approach to secure the access to media files
           and limit it to the ones of each app individually
-        - e.g. chat apps have/had to move their media data into data directories, instead of generic folders
+        * e.g. chat apps have/had to move their media data into data directories, instead of generic folders
           (e.g. WhatsApp's well known WhatsApp folder)
-        - Android might wants to move all the data directories to `/storage/emulated/0/Android`
+        * Android might wants to move all the data directories to `/storage/emulated/0/Android`
           Below this folder you could find folders for `data`, `obb`, `media`
           ... an in them, a folder of each app's package name
-        - Not included in the backup by default (can be enabled in preferences)
+        * Not included in the backup by default (can be enabled in preferences)
 
       </details>
 
@@ -152,7 +161,7 @@ Each backup basically consists of the two different parts:
 
       <details><summary>Show details ...</summary>
 
-        - Included in the backup by default
+        * Included in the backup by default
 
       </details>
 
@@ -182,7 +191,7 @@ Yes, Oui, Si, Si, Ja, Ja, Da, Ay...
 ## What is root access used for?
 
 In short:
-Accessing the APK+data of all apps (including system apps and special backups), so to access [all the necessary paths in the filesystem](#what-are-all-these-backup-parts-icons--which-parts-does-a-backup-of-an-app-consist-of).
+Accessing the APK+data of all apps (including system apps and special backups), so to access [all the necessary paths in the filesystem](#what-are-all-these-backup-parts-icons--which-parts-are-included-in-a-backup).
 
 More Details?:
 
@@ -424,7 +433,7 @@ In newer Android versions every app directory is mounted and usually only visibl
 
 ## How does NB stop / pause / (un)suspend apps during backup?
 
-**backup**
+#### backup
 
 NB is using the pair
 
@@ -452,7 +461,7 @@ To prevent this, NB excludes system processes and known package name patterns fo
 
 This can never be perfect, so some risk remains.
 
-**restore**
+#### restore
 
 NB uses
 
@@ -491,7 +500,7 @@ That's because databases are usually written to randomly ("random access"), inst
 Pausing all processes that write to the open database files at least increases the chance to copy the database and it's log in a consistent state.
 However, it does not prevent files being incompletely written.
 
-**conclusion**
+#### conclusion
 
 With pausing, you increase the chance for a consistent backup.
 
@@ -506,7 +515,7 @@ Generally please see [What are Special Backups?](#what-are-special-backups) firs
 **SMS/MMS and Call-logs** </br>
 NB starts supporting backup SMS/MMS and Call logs beginning with version 8. The current implementation (of [DL](https://github.com/dl200010)) writes all the details into a JSON format.
 
-The Call-Logs are saved in data providers like some other special data (`com.android.providers.telephony`). 
+The Call-Logs are saved in data providers like some other special data (`com.android.providers.telephony`).
 
 *You may need to restart your device after restoring special data, to see the restored data*.
 
@@ -898,24 +907,43 @@ Just use the appropriate tool for a different task, instead of putting all of it
 You can sync the backup directory to the remote directory using tools like syncthing, which is recommended.
 If you have space for a complete backup, this is the preferred way (syncthing is known to work well).
 
-You can use the SAF (Storage Access Framework) to access remote locations.
-This can be done by installing so called document providers.
-Unfortunately these apps are rare, we only know these two:
+However, in cases when you don't have enough local storage, it is possible to
+* use the Storage Access Framework (SAF) to access remote locations or
+* use a remote directory mounted to the local file system.
+This means, writing to the local directory actually writes to the remote directory.
+
+Note, that Neo Backup (as derived from it's predecessors) was developed with local storage in mind. So it is not optimized for remote storage. It will need a lot of work on it's mechanisms to change that.
+It's kind of open when or even if this will happen.
+
+When using a mounted directory, you should at least enable the `flatStructure` preference in developer settings / alternates, because Neo Backup does housekeeping after each application backup. Scanning the backup directory reads all directories that may contain `*.properties` files. Reading a directory is usually the most expensive remote operation.
+
+The `flatStructure` option ideally reduces this to only one directory scan. Note, that `flatStructure` backups can be mixed with others and the speed advantage doesn't fully show up, if there are still non-flat backups. You may want to start with a clean directory.
+
+For some more info about `flatStructure` see `NOTES.md`.
+
+#### **SAF** remote access
+
+works by installing so called document providers.
+Unfortunately these apps are rare, we only know these two pure providers:
 
 [CIFS (Windows network)](https://play.google.com/store/apps/details?id=com.wa2c.android.cifsdocumentsprovider)
 
 [SSH](https://play.google.com/store/apps/details?id=ru.nsu.bobrofon.easysshfs)
 
-You can also mount remote file systems to a local folder.
+In theory Google Drive should also be possible, but practically it does not work. It is not offered as a remote location.
 
-It is also possible to mount remote file systems to local folders.
+#### **Mounting** remote file systems to local folders
 
-* using unix tools (command line), e.g. via Termux
-* using `rclone` (command line), that can mount several remote storage types
+works with
 
-[Round-Sync](https://github.com/newhinton/Round-Sync) (former RCX, extRact) uses `rclone` to mount remote storagfe and make it available via SAF.
+* unix tools (command line), e.g. via Termux
+* `rclone` (command line), an awesome command line program that can also mount several remote storage types.
 
-With using appropriate options, it can also provide the mounts via SAF.
+[Round-Sync](https://github.com/newhinton/Round-Sync) (former RCX, extRact) is kind of hybrid.
+It's an app that uses rclone to mount remote storage and can also make it accessible via SAF.
+
+Neo backup should use the SAF option.
+To enable SAF in RoundSync, you need to configure some options:
 
     File Access
 
@@ -934,7 +962,8 @@ With using appropriate options, it can also provide the mounts via SAF.
     [ ] Allow any app to access your remotes
         WARNING: This will allow any app to read and write any path on any configured remote.
 
-"Enable Content Provider Preview" is the necessary part to allow to make the whole provider available in the sidebar of the directory selection.
+"Enable Content Provider Preview" is the necessary part to make the RoundSync SAF provider available in the sidebar of the directory selection.
+
 "Declare as local provider" might also be necessary, at least it doesn't hurt.
 
 Then you connect by choosing a remote backup directory via the provider entry in the DocumentsUI directory selector.
@@ -1017,3 +1046,24 @@ Not sure what happened. At least it seems that less apps could eventually work..
 At least the tar files looked ok from looking at some samples.
 
 </details>
+
+## Troubleshooting
+
+* DevTools: for trouble shooting:
+    * long press on Title will show the DevTools popup for faster access to developer settings, log,
+      terminal and other tools
+* option to autosave a log if an unexpected exception happens, even if it is catched later, so we
+  get better info from the inner circles
+    * → `logging/autoLogExceptions`
+* option to autosave a support log after each schedule, because it's difficult to do this manually
+    * → `logging/autoLogAfterSchedule`
+* option to autosave a support log on suspicious events, e.g. duplicate schedules
+    * situations that are not necessarily an error, only "interesting" sometimes to have a look at
+    * → `logging/autoLogSuspicious`
+* `SUPPORT` button in DevTools or Terminal
+  * `prepareSupport` enables the usual preferences to trace what happens
+  * `shareSupport` button saves the text in the terminal and opens share menu
+      * if you want to review it, cancel the menu and goto the "View the log" tool instead, you can
+        still share from there
+  * `afterSupport` reset them to defaults (less intensive tracing)
+* you may enable `logToSystemLogcat`, if the internal log isn't long enough and you need to use an app to capture a longer log (or catch it in case of crashes etc.)

@@ -1,3 +1,13 @@
+
+* [The experimental flatStructure scheme](#the-experimental-flatstructure-scheme)
+  * [Why?](#why)
+  * [Technicalities](#technicalities)
+* [Troubleshooting](#troubleshooting)
+* [Reliability of schedules and WorkManager items](#reliability-of-schedules-and-workmanager-items)
+  * [WorkManager](#workmanager)
+* [nsenter](#nsenter)
+* [keystore](#keystore)
+
 ## The experimental flatStructure scheme
 
 where `the.package.name/YYYY-MM-DD-hh-mm-ss-mmm-user_x*`
@@ -205,3 +215,22 @@ Use `nsenter` to run commands in the global mount namespace (of init process -> 
   is available since Andorid 10
 - For older android versions it falls back to the --mount-master method if available
 - The availability of each option is logged at start and in support log
+
+## keystore
+I once predicted, that the number of apps using keystore will increase over time...at least for my apps I see this effect, the percentage is growing.
+
+as we experienced with NB itself, the crashes probably originate from the common java strategy to throw an exception instead of returning values.
+It also seems like security people prefer this strategy over informing the user instead.
+
+If an app uses the keystore, it often does not expect that using it may fail with an exception, but it does in certain cases (e.g. changing the device). So instead of a failing login (or only a missing password in case of NB) the app just crashes.
+
+If the app would catch the exception like NB does since we fixed it, then it would often only need a new login instead of making the whole app unusable, which leads to clearing the whole data.
+In case of NB you only end up in an unset password, which is not dramatic.
+
+Some developers learned how to do it, but most seem to ignore it or don't even onow about it.
+Maybe it's only happening in case of restores.
+That's one aspect of "we don't support root".
+
+The bad thing is, the user cannot do anything about it, but clear the data, so the backup is useless.
+
+I guess it would be possible to write a magisk/ksu module to intercept the function call and catch that exception and return some nonsense instead (garbage in -> garbage out, instead of garbage in -> crash).
