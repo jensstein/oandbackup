@@ -47,7 +47,7 @@ elif [[ $command == "extract" ]]; then
   dir=$1
   shift
 
-  $utilbox tar -x -f "$archive" -C "$dir" $exclude
+  $utilbox tar -x -o -f "$archive" -C "$dir" $exclude
 
   exit $?
 fi
