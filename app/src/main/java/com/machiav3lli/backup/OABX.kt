@@ -77,7 +77,6 @@ import kotlinx.serialization.modules.SerializersModule
 import timber.log.Timber
 import java.lang.Integer.max
 import java.lang.ref.WeakReference
-import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -118,8 +117,8 @@ val pref_uncaughtExceptionsJumpToPreferences = BooleanPref(
 
 val pref_logToSystemLogcat = BooleanPref(
     key = "dev-log.logToSystemLogcat",
-    summary = "log to Android logcat, otherwise only internal (internal doesn't help if the app is restarted)",
-    defaultValue = false
+    summary = "log to Android logcat, otherwise only internal (internal doesn't help if the app is restarted or if you are catching logs externally, e.g. via Scoop)",
+    defaultValue = true
 )
 
 val pref_autoLogExceptions = BooleanPref(
