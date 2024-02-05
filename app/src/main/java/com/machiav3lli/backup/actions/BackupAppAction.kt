@@ -492,6 +492,10 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             }
 
             result = true
+        } catch (e: IOException) {
+            val message = "${e.javaClass.canonicalName} occurred on $dataType backup: $e"
+            Timber.e(message)
+            throw BackupFailedException(message, e)
         } catch (e: Throwable) {
             val message = "${e.javaClass.canonicalName} occurred on $dataType backup: $e"
             LogsHandler.unexpectedException(e, message)
