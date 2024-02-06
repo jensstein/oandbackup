@@ -33,6 +33,7 @@ import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.StorageFile.Companion.invalidateCache
 import com.machiav3lli.backup.preferences.pref_numBackupRevisions
+import com.machiav3lli.backup.preferences.pref_paranoidHousekeeping
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.FileUtils.BackupLocationInAccessibleException
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
@@ -140,7 +141,8 @@ object BackupRestoreHelper {
 
     fun housekeepingPackageBackups(app: Package) {
 
-        app.refreshBackupList()
+        if (pref_paranoidHousekeeping.value)
+            app.refreshBackupList()
 
         val numBackupRevisions =
             pref_numBackupRevisions.value

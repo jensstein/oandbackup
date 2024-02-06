@@ -31,6 +31,8 @@ import com.machiav3lli.backup.items.StorageFile
 import com.machiav3lli.backup.items.UndeterminedStorageFile
 import com.machiav3lli.backup.preferences.pref_flatStructure
 import com.machiav3lli.backup.preferences.pref_propertiesInDir
+import timber.log.Timber
+import java.io.IOException
 import java.time.LocalDateTime
 
 class BackupBuilder(
@@ -49,7 +51,7 @@ class BackupBuilder(
     private var cipherType: String? = null
     private val cpuArch: String = Build.SUPPORTED_ABIS[0]
     private var size: Long = 0L
-    val backupPath = ensureBackupPath(backupRoot)
+    val backupDir = ensureBackupPath(backupRoot)
     val backupPropsFile = getPropsFile(backupRoot)
 
     private fun ensureBackupPath(backupRoot: StorageFile): StorageFile {
@@ -75,14 +77,16 @@ class BackupBuilder(
         when {
             pref_propertiesInDir.value ->
                 return UndeterminedStorageFile(
-                    backupPath,
+                    backupDir,
                     BACKUP_INSTANCE_PROPERTIES_INDIR
                 )
+
             pref_flatStructure.value   ->
                 return UndeterminedStorageFile(
                     backupRoot,
                     backupInstancePropsFlat(packageInfo, dateTimeStr)
                 )
+
             else                       ->
                 return UndeterminedStorageFile(
                     backupRoot,
@@ -131,24 +135,40 @@ class BackupBuilder(
         this.size = size
     }
 
+    @Throws(IOException::class)
+    protected fun saveBackupProperties(
+        propertiesFile: UndeterminedStorageFile,
+        backup: Backup,
+    ): StorageFile? {
+        propertiesFile.writeText(backup.toSerialized())?.let {
+            Timber.i("Wrote $it for backup: $backup")
+            return it
+        }
+        return null
+    }
+
     fun createBackup(): Backup {
-        return Backup(
-            base = packageInfo,
-            backupDate = backupDate,
-            hasApk = hasApk,
-            hasAppData = hasAppData,
-            hasDevicesProtectedData = hasDevicesProtectedData,
-            hasExternalData = hasExternalData,
-            hasObbData = hasObbData,
-            hasMediaData = hasMediaData,
-            compressionType = compressionType,
-            cipherType = cipherType,
-            iv = iv,
-            cpuArch = cpuArch,
-            permissions = if (packageInfo is AppInfo) packageInfo.permissions else emptyList(),
-            size = size,
-            persistent = false,
-        )
+        val backup =
+            Backup(
+                base = packageInfo,
+                backupDate = backupDate,
+                hasApk = hasApk,
+                hasAppData = hasAppData,
+                hasDevicesProtectedData = hasDevicesProtectedData,
+                hasExternalData = hasExternalData,
+                hasObbData = hasObbData,
+                hasMediaData = hasMediaData,
+                compressionType = compressionType,
+                cipherType = cipherType,
+                iv = iv,
+                cpuArch = cpuArch,
+                permissions = if (packageInfo is AppInfo) packageInfo.permissions else emptyList(),
+                size = size,
+                persistent = false,
+            )
+        backup.dir = backupDir
+        backup.file = saveBackupProperties(backupPropsFile, backup)
+        return backup
     }
 
     /*fun createBackupProperties(): BackupProperties {

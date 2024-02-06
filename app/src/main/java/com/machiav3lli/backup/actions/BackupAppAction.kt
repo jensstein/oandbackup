@@ -39,7 +39,6 @@ import com.machiav3lli.backup.items.ActionResult
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.items.RootFile
 import com.machiav3lli.backup.items.StorageFile
-import com.machiav3lli.backup.items.UndeterminedStorageFile
 import com.machiav3lli.backup.preferences.pref_backupPauseApps
 import com.machiav3lli.backup.preferences.pref_backupTarCmd
 import com.machiav3lli.backup.preferences.pref_excludeCache
@@ -139,7 +138,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             val iv = initIv(CIPHER_ALGORITHM) // as we're using a static Cipher Algorithm
             backupBuilder.setIv(iv)
 
-            val backupInstanceDir = backupBuilder.backupPath
+            val backupInstanceDir = backupBuilder.backupDir
             val pauseApp = pref_backupPauseApps.value
             if (pauseApp) {
                 Timber.d("pre-process package (to avoid file inconsistencies during backup etc.)")
@@ -204,7 +203,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
 
                 backup = backupBuilder.createBackup()
 
-                ok = saveBackupProperties(backupBuilder.backupPropsFile, backup)
+                ok = backup.file != null
 
             } catch (e: BackupFailedException) {
                 return handleException(e)
@@ -224,7 +223,7 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
                     backup = backupBuilder.createBackup()
                 // TODO maybe need to handle some emergent props
                 if (ok)
-                    app.addBackup(backup)
+                    app.addNewBackup(backup)
                 else {
                     Timber.d("Backup failed -> deleting it")
                     app.deleteBackup(backup)
@@ -235,18 +234,6 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             Timber.i("${app.packageName}: Backup done: ${backup}")
         }
         return ActionResult(app, backup, "", true)
-    }
-
-    @Throws(IOException::class)
-    protected fun saveBackupProperties(
-        propertiesFile: UndeterminedStorageFile,
-        backup: Backup,
-    ): Boolean {
-        propertiesFile.writeText(backup.toSerialized())?.let {
-            Timber.i("Wrote $it for backup: $backup")
-            return true
-        }
-        return false
     }
 
     @Throws(IOException::class, CryptoSetupException::class)

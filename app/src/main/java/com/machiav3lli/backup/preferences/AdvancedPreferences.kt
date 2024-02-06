@@ -289,6 +289,7 @@ val pref_cacheFileLists = BooleanPref(
     defaultValue = true
 )
 
+
 //---------------------------------------- developer settings - workarounds
 
 val pref_fixNavBarOverlap = IntPref(
@@ -313,6 +314,18 @@ val pref_refreshAppInfoTimeout = IntPref(
 )
 
 //---------------------------------------- developer settings - implementation alternatives
+
+val pref_paranoidBackupLists = BooleanPref(
+    key = "dev-alt.paranoidBackupLists",
+    summary = "verify file system after adding or deleting backups (slower, especially remote)",
+    defaultValue = false
+)
+
+val pref_paranoidHousekeeping = BooleanPref(
+    key = "dev-alt.paranoidHousekeeping",
+    summary = "verify file system before housekeeping (slower, especially remote)",
+    defaultValue = false
+)
 
 val pref_ignoreLockedInHousekeeping = BooleanPref(
     key = "dev-alt.ignoreLockedInHousekeeping",

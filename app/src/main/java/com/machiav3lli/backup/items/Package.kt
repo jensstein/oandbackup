@@ -30,6 +30,7 @@ import com.machiav3lli.backup.handler.findBackups
 import com.machiav3lli.backup.handler.getPackageStorageStats
 import com.machiav3lli.backup.preferences.pref_flatStructure
 import com.machiav3lli.backup.preferences.pref_ignoreLockedInHousekeeping
+import com.machiav3lli.backup.preferences.pref_paranoidBackupLists
 import com.machiav3lli.backup.traceBackups
 import com.machiav3lli.backup.utils.FileUtils
 import com.machiav3lli.backup.utils.StorageLocationNotConfiguredException
@@ -84,6 +85,7 @@ class Package {
         refreshStorageStats(context)
     }
 
+    // updateDataOf, NOLABEL (= packageName not found)
     constructor(
         context: Context,
         packageName: String,
@@ -221,12 +223,12 @@ class Package {
         }
     }
 
-    fun addBackup(backup: Backup) {
+    fun addNewBackup(backup: Backup) {
         traceBackups { "<${backup.packageName}> add backup ${backup.backupDate}" }
-        //TODO hg42  update... is not enough, file/dir/tag is only set by creating backup from the file
-        //    file/dir/tag could be added by the caller
-        //    don't do that: updateBackupListAndDatabase(backupList + backup)
-        refreshBackupList()                                     // or real state of file system
+        if (pref_paranoidBackupLists.value)
+            refreshBackupList()  // no more necessary, because members file/dir/tag are set by createBackup
+        else
+            updateBackupListAndDatabase(backupList + backup)
     }
 
     private fun _deleteBackup(backup: Backup) {
@@ -245,16 +247,18 @@ class Package {
                     // ignore
                 }
         }
-        //runChecked {
-        //    updateBackupListAndDatabase(backupList - backup)  // prevents reading file system
-        //}
+        if (pref_paranoidBackupLists.value.not())
+            runChecked {
+                updateBackupListAndDatabase(backupList - backup)  // prevents reading file system
+            }
     }
 
     fun deleteBackup(backup: Backup) {
         _deleteBackup(backup)
-        runChecked {
-            refreshBackupList()                                 // get real state of file system
-        }
+        if (pref_paranoidBackupLists.value)
+            runChecked {
+                refreshBackupList()                                 // get real state of file system
+            }
     }
 
     fun rewriteBackup(
@@ -274,24 +278,24 @@ class Package {
                 writeText(changedBackup.toSerialized())
             }
         }
-        runChecked {
-            //updateBackupListAndDatabase(backupList - backup + changedBackup)
-            refreshBackupList()
-        }
+        if (pref_paranoidBackupLists.value)
+            runChecked {
+                refreshBackupList()                                 // get real state of file system
+            }
+        //else updateBackupListAndDatabase(backupList - backup + changedBackup) // done in _deleteBackup
     }
 
     fun deleteAllBackups() {
         val backups = backupsNewestFirst.toMutableList()
         while (backups.isNotEmpty())
             _deleteBackup(backups.removeLast())
-        runChecked {
-            refreshBackupList()                                 // get real state of file system
-        }
+        if (pref_paranoidBackupLists.value)
+            runChecked {
+                refreshBackupList()                         // get real state of file system only once
+            }
     }
 
     fun deleteOldestBackups(keep: Int) {
-        //refreshBackupList()   // should usually be up to date, not dramatic if not
-
         // the algorithm could eventually be more elegant, without managing two lists,
         // but it's on the safe side for now
         val backups = backupsNewestFirst.toMutableList()

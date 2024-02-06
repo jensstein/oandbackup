@@ -18,7 +18,7 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -152,7 +152,7 @@ fun PrefsExpandableGroupHeader(
     icon: ImageVector,
     onClick: (() -> Unit),
 ) {
-    Divider(thickness = 2.dp)
+    HorizontalDivider(thickness = 2.dp)
     Spacer(modifier = Modifier.height(8.dp))
     Card(
         modifier = modifier

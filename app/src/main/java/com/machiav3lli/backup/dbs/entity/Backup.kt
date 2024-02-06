@@ -275,14 +275,21 @@ data class Backup @OptIn(ExperimentalSerializationApi::class) constructor(
     @Transient
     var file: StorageFile? = null
 
-    val dir: StorageFile?
-        get() = if (file?.name == BACKUP_INSTANCE_PROPERTIES_INDIR) {
-            file?.parent
-        } else {
-            val baseName = file?.name?.removeSuffix(".$PROP_NAME")
-            baseName?.let { dirName ->
-                file?.parent?.findFile(dirName)
+    @Ignore
+    @Transient
+    var dir: StorageFile? = null
+        get() {
+            if (field == null) {
+                field = if (file?.name == BACKUP_INSTANCE_PROPERTIES_INDIR) {
+                    file?.parent
+                } else {
+                    val baseName = file?.name?.removeSuffix(".$PROP_NAME")
+                    baseName?.let { dirName ->
+                        file?.parent?.findFile(dirName)
+                    }
+                }
             }
+            return field
         }
 
     val tag: String
