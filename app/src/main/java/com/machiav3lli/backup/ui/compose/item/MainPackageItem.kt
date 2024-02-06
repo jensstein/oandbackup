@@ -11,9 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -190,12 +190,12 @@ fun Selections(
     else {
         DropdownMenuItem(
             enabled = false, onClick = {},
-            text = { Text("selections saved:") }
+            text = { Text("--- selections saved ---") }
         )
         files.forEach { file ->
             file.name?.let { name ->
                 DropdownMenuItem(
-                    text = { Text(name) },
+                    text = { Text("  $name") },
                     onClick = {
                         when (action) {
                             "get" -> {
@@ -230,12 +230,12 @@ fun Selections(
         else {
             DropdownMenuItem(
                 enabled = false, onClick = {},
-                text = { Text("schedules include:") }
+                text = { Text("--- schedules include ---") }
             )
             schedules.forEach { schedule ->
                 schedule.name.let { name ->
                     DropdownMenuItem(
-                        text = { Text(name) },
+                        text = { Text("  $name") },
                         onClick = {
                             when (action) {
                                 "get" -> {
@@ -258,12 +258,12 @@ fun Selections(
             }
             DropdownMenuItem(
                 enabled = false, onClick = {},
-                text = { Text("schedules exclude:") }
+                text = { Text("--- schedules exclude ---") }
             )
             schedules.forEach { schedule ->
                 schedule.name.let { name ->
                     DropdownMenuItem(
-                        text = { Text(name) },
+                        text = { Text("  $name") },
                         onClick = {
                             when (action) {
                                 "get" -> {
@@ -284,29 +284,29 @@ fun Selections(
                     )
                 }
             }
-            DropdownMenuItem(
-                enabled = false, onClick = {},
-                text = { Text("global:") }
-            )
-            DropdownMenuItem(
-                text = { Text("blocklist") },
-                onClick = {
-                    when (action) {
-                        "get" -> {
-                            val newSelection =
-                                OABX.main?.viewModel?.getBlocklist()
-                                    ?: emptyList()
-                            onAction(newSelection)
-                        }
+        }
+        DropdownMenuItem(
+            enabled = false, onClick = {},
+            text = { Text("--- global ---") }
+        )
+        DropdownMenuItem(
+            text = { Text("  blocklist") },
+            onClick = {
+                when (action) {
+                    "get" -> {
+                        val newSelection =
+                            OABX.main?.viewModel?.getBlocklist()
+                                ?: emptyList()
+                        onAction(newSelection)
+                    }
 
-                        "put" -> {
-                            OABX.main?.viewModel?.setBlocklist(selection.toSet())
-                            onAction(selection)
-                        }
+                    "put" -> {
+                        OABX.main?.viewModel?.setBlocklist(selection.toSet())
+                        onAction(selection)
                     }
                 }
-            )
-        }
+            }
+        )
     }
 }
 
@@ -469,11 +469,11 @@ fun launchRestore(packages: List<Package>) {
     )
 }
 
-fun launchToBlocklist(packages: List<Package>) {
-    launchEachPackage(packages, "blocklist <-", parallel = false) {
-        OABX.main?.viewModel?.addToBlocklist(it.packageName)
-    }
-}
+// fun launchToBlocklist(packages: List<Package>) {
+//     launchEachPackage(packages, "blocklist <-", parallel = false) {
+//         OABX.main?.viewModel?.addToBlocklist(it.packageName)
+//     }
+// }
 
 fun launchEnable(packages: List<Package>) {
     launchEachPackage(packages, "enable", parallel = false) {
@@ -590,7 +590,7 @@ fun MainPackageContextMenu(
                 }
             )
 
-            Divider() //----------------------------------------------------------------------------
+            HorizontalDivider() //----------------------------------------------------------------------------
         }
 
         DropdownMenuItem(
@@ -673,7 +673,7 @@ fun MainPackageContextMenu(
 
         if (selection.count { it.value } > 0) {
 
-            Divider() //----------------------------------------------------------------------------
+            HorizontalDivider() //----------------------------------------------------------------------------
 
             DropdownMenuItem(
                 enabled = false, onClick = {},
@@ -699,20 +699,20 @@ fun MainPackageContextMenu(
                 }
             )
 
-            Divider() //----------------------------------------------------------------------------
+            //  Divider() //----------------------------------------------------------------------------
 
-            DropdownMenuItem(
-                text = { Text("Add to Blocklist...") },
-                onClick = {
-                    openSubMenu(subMenu) {
-                        Confirmation(expanded) {
-                            launchToBlocklist(selectedVisible)
-                        }
-                    }
-                }
-            )
+            //  DropdownMenuItem(
+            //      text = { Text("Add to Blocklist...") },
+            //      onClick = {
+            //          openSubMenu(subMenu) {
+            //              Confirmation(expanded) {
+            //                  launchToBlocklist(selectedVisible)
+            //              }
+            //          }
+            //      }
+            //  )
 
-            Divider() //----------------------------------------------------------------------------
+            HorizontalDivider() //----------------------------------------------------------------------------
 
             DropdownMenuItem(
                 text = { Text("Enable") },
@@ -744,7 +744,7 @@ fun MainPackageContextMenu(
                 }
             )
 
-            Divider() //----------------------------------------------------------------------------
+            HorizontalDivider() //----------------------------------------------------------------------------
 
             DropdownMenuItem(
                 text = { Text("Delete All Backups...") },
