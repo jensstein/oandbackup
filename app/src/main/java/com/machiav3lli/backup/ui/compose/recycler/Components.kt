@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -415,8 +414,7 @@ fun BusyBackground(
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = pref_versionOpacity.value / 100f),
                 modifier = Modifier
                     .fillMaxSize()
-                    .wrapContentSize(Alignment.TopStart)
-                    .padding(16.dp, 0.dp, 0.dp, 0.dp)
+                    .wrapContentSize(Alignment.TopCenter)
             )
     }
 }
