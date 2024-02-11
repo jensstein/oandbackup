@@ -293,8 +293,10 @@ class Package {
             throw RuntimeException("Asked to rewrite a backup from ${changedBackup.backupDate} but the original backup is from ${backup.backupDate}")
         }
         runChecked {
-            backup.file?.apply {
-                writeText(changedBackup.toSerialized())
+            synchronized(this) {
+                backup.file?.apply {
+                    writeText(changedBackup.toSerialized())
+                }
             }
         }
         if (pref_paranoidBackupLists.value)
