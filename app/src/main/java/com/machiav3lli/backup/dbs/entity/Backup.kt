@@ -182,29 +182,31 @@ data class Backup @OptIn(ExperimentalSerializationApi::class) constructor(
     )
 
     override fun toString(): String = "Backup{" +
-            "backupDate=" + backupDate +
+            "packageName=" + packageName +
+            ", backupDate=" + backupDate +
             ", hasApk=" + hasApk +
             ", hasAppData=" + hasAppData +
             ", hasDevicesProtectedData=" + hasDevicesProtectedData +
             ", hasExternalData=" + hasExternalData +
             ", hasObbData=" + hasObbData +
             ", hasMediaData=" + hasMediaData +
+            ", persistent='" + persistent + '\'' +
+            ", size=" + size +
+            ", backupVersionCode='" + backupVersionCode + '\'' +
+            ", cpuArch='" + cpuArch + '\'' +
             ", compressionType='" + compressionType + '\'' +
             ", cipherType='" + cipherType + '\'' +
             ", iv='" + iv + '\'' +
-            ", cpuArch='" + cpuArch + '\'' +
-            ", backupVersionCode='" + backupVersionCode + '\'' +
-            ", size=" + size +
             ", permissions='" + permissions + '\'' +
-            ", persistent='" + persistent + '\'' +
             '}'
 
     override fun equals(other: Any?): Boolean = when {
         this === other -> true
         javaClass != other?.javaClass
                 || other !is Backup
-                || backupVersionCode != other.backupVersionCode
                 || packageName != other.packageName
+                || backupDate != other.backupDate
+                || backupVersionCode != other.backupVersionCode
                 || packageLabel != other.packageLabel
                 || versionName != other.versionName
                 || versionCode != other.versionCode
@@ -212,7 +214,6 @@ data class Backup @OptIn(ExperimentalSerializationApi::class) constructor(
                 || sourceDir != other.sourceDir
                 || !splitSourceDirs.contentEquals(other.splitSourceDirs)
                 || isSystem != other.isSystem
-                || backupDate != other.backupDate
                 || hasApk != other.hasApk
                 || hasAppData != other.hasAppData
                 || hasDevicesProtectedData != other.hasDevicesProtectedData

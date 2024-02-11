@@ -223,12 +223,28 @@ class Package {
         }
     }
 
+    fun removeBackupFromList(backup: Backup): List<Backup> {
+        backupList = backupList.filterNot {
+            it.packageName == backup.packageName
+                    && it.backupDate == backup.backupDate
+        }
+        return backupList
+    }
+
+    fun addBackupToList(backup: Backup): List<Backup> {
+        backupList = backupList + backup
+        return backupList
+    }
+
     fun addNewBackup(backup: Backup) {
         traceBackups { "<${backup.packageName}> add backup ${backup.backupDate}" }
         if (pref_paranoidBackupLists.value)
             refreshBackupList()  // no more necessary, because members file/dir/tag are set by createBackup
-        else
-            updateBackupListAndDatabase(backupList + backup)
+        else {
+            //backupList = backupList + changedBackup
+            addBackupToList(backup)
+            updateBackupListAndDatabase(backupList)
+        }
     }
 
     private fun _deleteBackup(backup: Backup) {
@@ -247,9 +263,11 @@ class Package {
                     // ignore
                 }
         }
-        if (pref_paranoidBackupLists.value.not())
+        if (!pref_paranoidBackupLists.value)
             runChecked {
-                updateBackupListAndDatabase(backupList - backup)  // prevents reading file system
+                //backupList = backupList - backup
+                removeBackupFromList(backup)
+                updateBackupListAndDatabase(backupList)
             }
     }
 
@@ -266,7 +284,8 @@ class Package {
         changedBackup: Backup,
     ) {      //TODO hg42 change to rewriteBackup(backup: Backup, applyParameters)
         traceBackups { "<${changedBackup.packageName}> rewrite backup ${changedBackup.backupDate}" }
-        changedBackup.file = backup.file
+        if (changedBackup.dir == null) changedBackup.dir = backup.dir
+        if (changedBackup.file == null) changedBackup.file = backup.file
         if (changedBackup.packageName != packageName) {             //TODO hg42 probably paranoid
             throw RuntimeException("Asked to rewrite a backup of ${changedBackup.packageName} but this object is for $packageName")
         }
@@ -282,7 +301,12 @@ class Package {
             runChecked {
                 refreshBackupList()                                 // get real state of file system
             }
-        //else updateBackupListAndDatabase(backupList - backup + changedBackup) // done in _deleteBackup
+        else {
+            //backupList = backupList - backup + changedBackup
+            removeBackupFromList(backup)
+            addBackupToList(changedBackup)
+            updateBackupListAndDatabase(backupList)
+        }
     }
 
     fun deleteAllBackups() {
