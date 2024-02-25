@@ -93,7 +93,7 @@ class LogsHandler {
                 if (logsDir.isDirectory) {
                     logsDir.listFiles().forEach {
 
-                        hitBusy(1000L)
+                        hitBusy(1000)
 
                         if (it.isFile) try {
                             logs.add(Log(it))

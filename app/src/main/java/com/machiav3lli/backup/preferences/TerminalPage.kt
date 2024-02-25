@@ -426,8 +426,8 @@ fun TerminalPage() {
             val hittingBusy = CoroutineScope(Dispatchers.Default)
             hittingBusy.launch {
                 while (true) {
-                    delay(50)
                     OABX.hitBusy(50)
+                    delay(50)
                 }
             }
 

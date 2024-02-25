@@ -226,8 +226,8 @@ class MainActivityX : BaseActivity() {
                                 runCatching { findBackups() }
                                 startup = false     // ensure backups are no more reported as empty
                                 runCatching { updateAppTables() }
-                                val time = OABX.endBusy(OABX.startupMsg)
-                                addInfoLogText("startup: ${"%.3f".format(time / 1E9)} sec")
+                                //TODO hg42 val time = OABX.endBusy(OABX.startupMsg)
+                                //TODO hg42 addInfoLogText("startup: ${"%.3f".format(time / 1E9)} sec")
                             }
                             runOnUiThread { showEncryptionDialog() }
                         }
