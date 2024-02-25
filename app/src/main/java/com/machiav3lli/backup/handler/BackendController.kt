@@ -218,10 +218,23 @@ suspend fun scanBackups(
         renamer: (() -> Unit)? = null,
     ) {
         hitBusy()
+
         try {
-            beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
-            onPropsFile(file)
-            endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
+            if (file.name == BACKUP_INSTANCE_PROPERTIES_INDIR
+                ||
+                (file.name?.removeSuffix(
+                    ".$PROP_NAME"
+                )?.let {
+                    file.parent?.findFile(
+                        it
+                    )
+                } != null)
+            ) {
+                beginNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
+                onPropsFile(file)
+                endNanoTimer("scanBackups.${if (packageName.isEmpty()) "" else "package."}onPropsFile")
+            } else
+                renameDamagedToERROR(file, "no-dir")
         } catch (_: Throwable) {
             if (renamer != null)
                 renamer()
@@ -278,7 +291,6 @@ suspend fun scanBackups(
     suspend fun processFile(
         file: StorageFile,
     ) {
-
         checkThreadStats()
 
         val name = file.name ?: ""
@@ -431,6 +443,7 @@ suspend fun scanBackups(
             }
         }
     }
+
     if (packageName.isEmpty()) {
         traceBackupsScanPackage { "queue total ----> $total" }
         if (suspicious.get() > 0)
