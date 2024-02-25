@@ -23,12 +23,9 @@ import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
-import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBox
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
-import com.machiav3lli.backup.preferences.pref_backupNoBackupData
 import com.machiav3lli.backup.preferences.pref_backupSuspendApps
-import com.machiav3lli.backup.preferences.pref_restoreNoBackupData
 import com.machiav3lli.backup.tasks.AppActionWork
 import com.machiav3lli.backup.utils.TraceUtils.traceBold
 import com.topjohnwu.superuser.Shell
@@ -87,9 +84,9 @@ abstract class BaseAppAction protected constructor(
                 )
             }
         } catch (e: PackageManager.NameNotFoundException) {
-            Timber.w("$type $packageName: cannot preprocess: package does not exist")
+            Timber.i("$type $packageName: cannot preprocess: package does not exist")
         } catch (e: ShellCommandFailedException) {
-            Timber.w("$type $packageName: cannot preprocess: ${e.shellResult.err.joinToString(" ")}")
+            Timber.i("$type $packageName: cannot preprocess: ${e.shellResult.err.joinToString(" ")}")
         } catch (e: Throwable) {
             LogsHandler.unexpectedException(e)
         }
