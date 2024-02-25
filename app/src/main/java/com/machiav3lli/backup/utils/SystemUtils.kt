@@ -93,7 +93,7 @@ object SystemUtils {
                     throw Exception("${file.name} is empty or cannot be read")
                 val sendIntent = Intent().apply {
                     action = Intent.ACTION_SEND
-                    type = "text/*"
+                    type = "text/plain"
                     flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
                     putExtra(Intent.EXTRA_SUBJECT, "[NeoBackup] ${file.name}")
                     if (asFile)
