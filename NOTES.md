@@ -15,7 +15,7 @@ is substituted by `the.package.name@YYYY-MM-DD-hh-mm-ss-mmm-user_x*`
 
 so all backups are stored flat in the backup folder.
 
-It is not enabled by default, because it may still change it's format and the last word isn't
+It is not enabled by default, because it may still change its format and the last word isn't
 spoken, maybe official in 9.0 or even dropped, there are also some possible alternatives.
 
 You find flatStructure under
@@ -40,7 +40,7 @@ Note: it uses `@` as separator instead of the former `-`
 
 the backups are now scanned differently, which allows to
 
-- collect backups from subfolders (experimental, don't rely on it, though it's easy to chnage it
+- collect backups from subfolders (experimental, don't rely on it, though it's easy to change it
   back)
 - backups that were renamed (e.g. by bug + SAF design problem)
 - handle different backups schemes
@@ -109,7 +109,7 @@ this is really a multipart problem. I'll try to list all the parts:
     * alarmclock -> alarmManager.setAlarmClock(...)
     * reliability may mean as exact as possible or within certain contraints
     * current tests suggest that even inexact alarms work within 5 minutes
-    * exact alarms may be equivalent to alarmclock (need to investiagte Android sources)
+    * exact alarms may be equivalent to alarmclock (need to investigate Android sources)
 * when the service receives the alarm event, it must run uninterrupted until all work items are
   queued
     * the latest docs say this can/should be achieved by a wakelock
@@ -207,7 +207,7 @@ If an app uses the keystore, it often does not expect that using it may fail wit
 If the app would catch the exception like NB does since we fixed it, then it would often only need a new login instead of making the whole app unusable, which leads to clearing the whole data.
 In case of NB you only end up in an unset password, which is not dramatic.
 
-Some developers learned how to do it, but most seem to ignore it or don't even onow about it.
+Some developers learned how to do it, but most seem to ignore it or don't even know about it.
 Maybe it's only happening in case of restores.
 That's one aspect of "we don't support root".
 

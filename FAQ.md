@@ -1,6 +1,6 @@
 # Frequently Asked Questions
 
-**also see other *.md files, e.g. NOTES.md for some more technical info thast do not fit well in this FAQ, or TROUBLESHOOTING.md**
+**also see other *.md files, e.g. NOTES.md for some more technical info that do not fit well in this FAQ, or TROUBLESHOOTING.md**
 
 * [What is Neo Backup?](#what-is-neo-backup)
 * [What is OAndBackupX?](#what-is-oandbackupx)
@@ -225,7 +225,7 @@ You cannot access `/data/data/*` at all, so app data is protected between apps.
 
 ## Why is NB so slow?
 
-NB is not slow any more...
+NB is not slow anymore...
 a lot of work was put into optimizations and parallel execution.
 
 The startup including scanning for backups on internal or external storage (which is the most time consuming) should be done in 4-5 seconds.
@@ -273,7 +273,7 @@ In the next Android versions Google will (most probably) force apps more and mor
 
 * Performance, more of Performance and tons of Performance
 * obfuscation of the classical path structure
-* unrealiable file names (providers can rename the files as they like)
+* unreliable file names (providers can rename the files as they like)
 
 ## Below some "performance" or time measuring infos from an older phone
 
@@ -410,7 +410,7 @@ Some allegories which may help to better understand it:
 
 ## I do not see the app which is currently backed up in the notification during batch or scheduled backups
 
-*obsolate beginning with version 8* - see also [What does the notification of schedules and batch jobs tell me?](#what-does-the-notification-of-schedules-and-batch-jobs-tell-me)
+*obsolete beginning with version 8* - see also [What does the notification of schedules and batch jobs tell me?](#what-does-the-notification-of-schedules-and-batch-jobs-tell-me)
 
 To optimize the performance of scheduled and batch backups, these tasks are executed in parallel, based on the amount of cores, your SOC's CPU contains.
 So notification always shows the last app backup, which was started on whatever free core of your SOC's CPU.
@@ -420,7 +420,7 @@ So notification always shows the last app backup, which was started on whatever 
 You got an error like "...failed root command...directory `/data/user/0/`*the.package.name* does not exist...".
 
 You look into `/data/user/0/` with a root file manager and the directory *the.package.name* is missing
-(and may be there are only a few directories, but there should be one directory for each of the packages in the system, even for system apps).
+(and maybe there are only a few directories, but there should be one directory for each of the packages in the system, even for system apps).
 
 &rarr; Check if you use namespace isolation for root commands in Magisk (other root solutions might have this, too).
 
@@ -429,7 +429,7 @@ Eventually something like "inherit namespace..." could also work, never tested t
 
 Background:
 If mounts of root applications are isolated, each cannot see the mounts of others.
-In newer Android versions every app directory is mounted and usually only visible to it's own user id.
+In newer Android versions every app directory is mounted and usually only visible to its own user id.
 
 ## How does NB stop / pause / (un)suspend apps during backup?
 
@@ -483,7 +483,7 @@ Some modern systems use snapshot file systems to freeze the state of all files.
 Writes to the frozen file system are saved to a temporary storage and updated to the frozen file system when it is unfrozen.
 This way files are consistent, but not necessarily complete.
 
-NB can only run it's backups, while the file system is still active.
+NB can only run its backups, while the file system is still active.
 You should be aware of inconsistent files.
 
 When looking at the files, that are open, when a backup runs, there are many less critical files like logs etc.
@@ -497,7 +497,7 @@ Databases are usually handled in a way, that they always contain consistent data
 But I think, *copying* a database is different. E.g. the copy can become inconsistent when you start reading and there is something changed in the portion you just read. When you then read the log (often at the end) you are saving a validation state that doesn't correspond to the data you read, because it was changed afterwards.
 That's because databases are usually written to randomly ("random access"), instead of only appending data at the end.
 
-Pausing all processes that write to the open database files at least increases the chance to copy the database and it's log in a consistent state.
+Pausing all processes that write to the open database files at least increases the chance to copy the database and its log in a consistent state.
 However, it does not prevent files being incompletely written.
 
 #### conclusion
@@ -520,7 +520,7 @@ The Call-Logs are saved in data providers like some other special data (`com.and
 *You may need to restart your device after restoring special data, to see the restored data*.
 
 Next to this users asked quite often about **contacts, calendar** and todo-lists:
-We advice to use [DecSync](https://github.com/39aldo39/DecSync) with its diverse apps.
+We advise to use [DecSync](https://github.com/39aldo39/DecSync) with its diverse apps.
 Alternatively use a CalDAV/CardDAV management app (like DavX5) and sync them with a trustworthy mail provider account (or your private Mailserver, a Nextcloud, etc. etc.).
 
 For contacts it should also work to back up the data of "Contacts Storage" (package `com.android.providers.contacts`) system app.
@@ -657,7 +657,7 @@ Read the Telegram group.
 * long press a list entry in Homepage, this will select the first item.
 * Selection mode is on, if any item is selected.
 * In selection mode you can select further items by single click.
-* The selection mode finishes when nothing is selected any more.
+* The selection mode finishes when nothing is selected anymore.
 * You will see a menu button in the lower right with a selection count.
 * You can also enable this button all the time (= even with a count of zero) in developer settings.
 * The menu can be reached by pressing that menu button or by long pressing a selected item.
@@ -743,7 +743,7 @@ set a new time of a schedule
   ```
 ### now I want to detect the end of the operation
 
-For a single app you can check the properties file, because this is only written, when the backup is finished and succcessful.
+For a single app you can check the properties file, because this is only written, when the backup is finished and successful.
 
 Though, this doesn't help much for a batch backup of several apps, unless you know which are included.
 
@@ -841,7 +841,7 @@ Here is a quick status overview, what NB is capable of - to be edited.
 
 You can find the encryption algorithm and setup in this class: [Neo-Backup - Crypto.kt · GitHub](https://github.com/NeoApplications/Neo-Backup/blob/main/app/src/main/java/com/machiav3lli/backup/utils/CryptoUtils.kt) . The rest depends on the version you used.
 
-One of the contriburs ([Pizze](https://github.com/Tiefkuehlpizze)) took the last Java version this Crypto class and built a wrapper around it. <br/>
+One of the contributors ([Pizze](https://github.com/Tiefkuehlpizze)) took the last Java version this Crypto class and built a wrapper around it. <br/>
 --> https://github.com/Tiefkuehlpizze/OABXDecrypt <br/>
 So for those who really want to decryp the backups on their PCs, this might be a good start and a helpful tool.
 

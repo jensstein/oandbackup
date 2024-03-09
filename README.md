@@ -36,7 +36,7 @@ A combination with your favourite sync solution (e.g. Syncthing, Nextcloud...)  
 
 You can join either our [Telegram](https://t.me/neo_backup) or [Matrix](https://matrix.to/#/#neo-backup:matrix.org) groups to make suggestions, ask questions, receive news, or just chat.
 
-Our **[Code of Conduct](COC.md)** applies to the communication in the community same as for all contributers.
+Our **[Code of Conduct](COC.md)** applies to the communication in the community same as for all contributors.
 
 ## Encryption
 
@@ -101,7 +101,7 @@ Before that, translations were done analog/offline by those great people:
 
 ## Donations
 
-I, myself acknowledge the role of the donations to motivate the work on FOSS projects, but in the state of how dynamic everything around my FOSS-contributions is, I would prefer to not take donations for now (the same answer as the last years). Nevertheless this project wouldn't have the accessibility it has without translations, which you the community drive and for which Weblate provides a platform. That's why I would you suggest you to consider [donating to Weblate](https://weblate.org/donate).
+I, myself acknowledge the role of the donations to motivate the work on FOSS projects, but in the state of how dynamic everything around my FOSS-contributions is, I would prefer to not take donations for now (the same answer as the last years). Nevertheless this project wouldn't have the accessibility it has without translations, which you the community drive and for which Weblate provides a platform. That's why I would suggest you to consider [donating to Weblate](https://weblate.org/donate).
 
 Thanks to [Tuta](https://tuta.com) for the premium account.
 [![Tutanota](tuta_logo.png)](https://tuta.com)
