@@ -1,0 +1,7 @@
+- Aktualizace: Úplná migrace navigace do aplikace Compose
+- Aktualizace: Rozložení BackupItem, uvítací stránky, stránky s oprávněními a AppSheet
+- Aktualizace: Použití možností třídění/filtrů na statistiky listu
+- Aktualizace: Přepracování uživatelského rozhraní předvoleb
+- Aktualizace: Uživatelské rozhraní položek v navigační liště
+- Oprava: Nekonzistentní výchozí předvolby tématu (@hg42)
+- Oprava: Oříznutí názvu balíčku v AppSheet

@@ -1,0 +1,9 @@
+** OAndBackupX 1.3.0**
+* Güncelleme: Yeni filtre sistemi
+* Güncelleme: azaltılmış sıçrama bekleme süresi
+* Eklendi: Split-APK desteği (Tiefkuehlpizze @ daha fazla test, kredi ihtiyacı)
+* Güncelleme: arama paket adını destekler
+* Sabit: önbellek bulunamadı / Symlinks hataları
+* Eklendi: OBB desteği(Daha fazla test gerekiyor)
+* Eklenen diller: Türkçe, Çince, Lehçe, İtalyanca (kredi @ Urnyx05 @tuchit @ scrubjay55 @ Antyradek)
+* Diğer: UI ve performans tweaks

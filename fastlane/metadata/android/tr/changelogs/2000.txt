@@ -1,0 +1,9 @@
+** OAndBackupX 2.0.0**
+* Sulib'e geçti (kredi @ Tiefkuehlpizze)
+* İyileştirme için OAB-utils kaldırıldı (kredi @ Tiefkuehlpizze)
+* * Uygulama, filtre ve program sayfası için yeni UI öğeleri
+* Sabit zamanlanmış veri yedekleme(tek başına)
+* * Prefs göre sabit sıkıştırma harici / veri / obb
+* * Sabit: boş harici/veri/obb klasörlerinin sıkıştırılması
+* Güncelleme temiz önbellek fonksiyonu
+* Diğer bazı UI ve performans tweaks

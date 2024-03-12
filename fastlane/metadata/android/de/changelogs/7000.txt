@@ -1,0 +1,7 @@
+* Hinzufügt: Theming-Engine
+* Hinzufügt: Sicherung von Mediendateien
+* Hinzufügt: Extras [Notizen und Tags]
+* Sprachen hinzufügen: Chinesisch (traditionell/Taiwan), Portugiesisch (Brasilien), Litauisch.
+* Aktualisieren: Überarbeitung der Benutzeroberfläche (Material Design 3 & neuer Icon-Satz)
+* Beheben: Firefox-Wiederherstellung (@hg42)
+und mehr... lesen Sie den vollständigen Changelog

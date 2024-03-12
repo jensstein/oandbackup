@@ -1,0 +1,6 @@
+Přidat: List s dávkovými nastaveními
+Přidat: Dávkové nastavení: Doplňte tipy nástrojů pro kontrolu všech tlačítek v Dávkovém nastavení.
+Oprava: Poznámka a značky v AppSheet
+Oprava: Záznam se neaktualizuje při odstraňování položek
+Aktualizace: Přepracování rozvržení žetonů
+více v úplném seznamu změn…

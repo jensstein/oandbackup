@@ -1,88 +1,111 @@
-oandbackup
-=======
-[![pipeline status](https://gitlab.com/jensstein/oandbackup/badges/master/pipeline.svg)](https://gitlab.com/jensstein/oandbackup/commits/master)
+# Neo Backup  <img title="" src="./fastlane/metadata/android/en-US/images/icon.png" align="left" width="64">
 
-a backup program for android. requires root and allows you to backup individual apps and their data.
-both backup and restore of individual programs one at a time and batch backup and restore of multiple programs are supported (with silent / unattended restores).  
-restoring system apps should be possible without requiring a reboot afterwards. oandbackup is also able to uninstall system apps. handling system apps in this way depends on whether /system/ can be remounted as writeable though, so this will probably not work for all devices (e.g. htc devices with the security flag on).  
-backups can be scheduled with no limit on the number of individual schedules and there is the possibility of creating custom lists from the list of installed apps.
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](COC.md)
+[![GitHub repo stars](https://img.shields.io/github/stars/NeoApplications/Neo-Backup?style=flat)](https://github.com/NeoApplications/Neo-Backup/stargazers)
+[![GitHub License](https://img.shields.io/github/license/NeoApplications/Neo-Backup)](https://github.com/NeoApplications/Neo-Backup/blob/master/COPYING)
+[![GitHub All Releases](https://img.shields.io/github/downloads/NeoApplications/Neo-Backup/total.svg)](https://github.com/NeoApplications/Neo-Backup/releases/)
+[![GitHub release](https://img.shields.io/github/v/release/NeoApplications/Neo-Backup?display_name=tag)](https://github.com/NeoApplications/Neo-Backup/releases/latest)
+[![Small translation badge](https://hosted.weblate.org/widgets/neo-backup/-/svg-badge.svg)](https://hosted.weblate.org/engage/neo-backup/?utm_source=widget)
 
-building
-========
-oandbackup is built with gradle. you need the android sdk, rust for building the oab-utils binary, and bash or a compatible shell for executing the oab-utils build script (patches for making this buildable on windows are welcomed).
-```
-./gradlew build
-# building only debug
-./gradlew assembleDebug
-# building for a specific abi target
-./gradlew assembleArm64
-```
+Neo Backup (formerly OAndBackupX) is a fork of the famous OAndBackup with the aim to bring OAndBackup to 202X and part of Neo Applications suite. For now the app is already fully rewritten, coming up would be making it robust and adding some lengthily planned features which could ease the backup/restore workflow with any device. Therefore all types of contribution are always welcome.
 
-version control
-==============
-oandbackup is handled on both gitlab and github:   
-https://gitlab.com/jensstein/oandbackup/   
-https://github.com/jensstein/oandbackup   
-debug apks are built by gitlab for each commit on every branch. the latest successful build can be found here (substitute $branch for the desired branch, e.g. master):   
-https://gitlab.com/jensstein/oandbackup/-/jobs/artifacts/$branch/browse/apks?job=build  
-(e.g. https://gitlab.com/jensstein/oandbackup/-/jobs/artifacts/master/browse/apks?job=build)  
-and signed release apks are built for every commit on the master branch:  
-https://gitlab.com/jensstein/oandbackup/-/jobs/artifacts/master/browse?job=sign
+[![Neo Applications Banner](neo_banner.png)](https://github.com/NeoApplications)
 
-busybox / toybox / oab-utils
-======
+Now on functionality of our App:
 
-a working busybox or toybox installation is required at the moment, but work is in progress to include all the needed functionality in a binary included in the apk. this program is called oab-utils and is written in rust.
+* It requires root and allows you to backup individual apps and their data.
+* Both backup and restore of individual programs one at a time and batch backup and restore of multiple programs are supported.
+* Restoring system apps should be possible without requiring a reboot afterwards.
+* Backups can be scheduled with no limit on the number of individual schedules and there is the possibility of creating custom lists from the list of installed apps.
 
-you can get the source for busybox here: https://busybox.net/. you then need to cross-compile it for the architecture of your device (e.g. armv6). you can also try the binaries found here: https://busybox.net/downloads/binaries/.   
-if you have a working toolchain for your target device, you should only need to run the following commands on the busybox source:
-```
-    make defconfig # makes a config file with the default options
-    make menuconfig # brings up an ncurses-based menu for editing the options
-        # set the prefix for your toolchain under busybox settings -> build options 
-        # (remember the trailing dash, e.g. 'arm-unknown-linux-gnueabihf-')
-        # build as a static binary if needed
-    make
-```
-copy the busybox binary to your system, for example /system/xbin or /data/local, and make it executable. symlinking is not necessary for use with oandbackup. in the oandbackup preferences, provide the whole path to the busybox binary, including the binary's file name (e.g. /data/local/busybox).
+And here's the project's [FAQ](FAQ.md).
 
-an apk build of oandbackup is available on f-droid's servers: https://f-droid.org/repository/browse/?fdid=dk.jens.backup
+### A Stance: I stand with Ukraine, as I stood and still stand with Yemen, Syria, Afghanistan, Myanmar, Sudan, Columbia, Somalia, Hong Kong (not China) and everywhere human beings are being oppressed by bigger states and/or local dictatorships.
 
-translations are currently being managed on transifex: https://www.transifex.com/projects/p/oandbackup/
-so please come help us there or spread the link if you want the app available in your own language.
+## Installation
 
-if you have any questions, critique, bug reports or suggestions, please write me an email: j.stn.oab@gmail.com
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/com.machiav3lli.backup/)
+[<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" alt="Get it on IzzyOnDroid" height="80">](https://apt.izzysoft.de/fdroid/index/apk/com.machiav3lli.backup)
+[<img src="badge_github.png" alt="Get it on GitHub" height="80">](https://github.com/machiav3lli/oandbackupx/releases)
 
-Cryptography
-============
-oandbackup supports encrypting the backups using an external cryptography provider.
-First you need to install an app which implements the openpgp-api, e.g. OpenKeychain: https://www.openkeychain.org/, and set up an identity.
-The "Cryptography" section of the preferences of oandbackup is then enabled and here you can choose which openpgp and identity to use.
+## Recommendation
 
-special usage notes
-===========
- * long press an item in the list of apps to get the context menu. 
-   * delete backup: deletes the backup files for the chosen app.
-   * uninstall: somewhat more aggresive than a normal uninstall. in addition to doing a normal uninstall via android commands (via pm and thereby uninstalling for all users of the device), uninstalling from oandbackup deletes files the app might have left over in /data/app-lib/. this is useful, as a normal uninstall via android settings in rare circumstances can leave files there making a reinstall of the same app impossible while they are there.
-   this also works on system apps (although this is still somewhat experimental), which are deleted with a normal rm after the system partition has been remounted as read-write. it is afterwards remounted as read-only.
-   * enable / disable: uses the android script `pm` to enable or disable an app. disabling an app removes it from the normal user interface without uninstalling. this can be used for enabling or disabling an app for muliple users at a time (if the device has multiple users enabled). users are identified with an id: 0 is the first user (owner).
- * multiple users: multi-user is still somewhat experimental but should work. when restoring in a multi-user setting, `pm install -r $apk` gets called and subsequently the app is disabled for every user who has the app listed in /data/system/user/$user/package-restrictions.xml (unless the app is listed as enabled="1").   
-this can create problems for users installing the same app at some later point, but is necessary to prevent the app from being installed to all users at the same time. the context menu has an option to enable or disable apps which can be used if other users become unable to use a specific app due to disabling on restore.   
-enabling and disabling only works after an initial install (not necessarily from oandbackup) or restore of the app.
+A combination with your favourite sync solution (e.g. Syncthing, Nextcloud...)  keeping an encrypted copy of your apps and their data on your server or "stable" device could bring a lot of benefits and save you a lot of work while changing ROMs or just cleaning your mobile device.
 
-restoring data can also be done manually from the backup files. oandbackup stores the program data files in zip-compressed archives so they can be uncompressed and unpacked with any tool supporting that format (e.g. ```unzip dk.jens.backup.zip```). the unpacked files should then be placed in the directory indicated by "dataDir" in the log file stored with the backup files. this directory will usually be in /data/data/.  
-after restoring the files, the user and group id of the package need to be set. therefore data can only be restored for packages where an apk has been installed successfully. uid and gid can be obtained with the ```stat``` program (e.g. ```stat /data/data/dk.jens.backup```) and set with ```chown```. finally, the correct permissions need to be set with ```chmod```. oandbackup does this by setting 771 for all data files although this is probably not the best method. the subdirectory lib/ needs to be excluded from both ```chown``` and ```chmod```.  
-on android 6 / marshmallow (api 23) you would also need to use the ```restorecon``` command on the data directory (e.g. ```restorecon -R /data/data/dk.jens.backup```) or use another method of restoring the file security contexts.  
-the code which does these things are in the methods doRestore and setPermissions of ShellCommands.java.
+## Community
 
-licenses
-=======
-oandbackup is licensed under the MIT license (see LICENSE.txt)
+You can join either our [Telegram](https://t.me/neo_backup) or [Matrix](https://matrix.to/#/#neo-backup:matrix.org) groups to make suggestions, ask questions, receive news, or just chat.
 
-android-support-v4 is written by The Android Open Source Project and licensed under the Apache License, Version 2.0 (see NOTICE.txt in the libs directory)
+Our **[Code of Conduct](COC.md)** applies to the communication in the community same as for all contributors.
 
-openpgp-api-lib is written by Dominik Schürmann and licensed under Apache License, Version 2.0
+## Encryption
 
-author
-======
-jens stein
+If enabled the data backup will be encrypted with AES256 based on a password you can set in the settings, which you'll have to use when you want to restore the data. This way you can store your backups more securely, worrying less about their readability.
+
+## Compatibility
+
+Version 5.0.0 uses new encryption, new databases, fixes most of reported bugs in 4.0.0 and boost the performance to something near the 3.2.0's. With that said, it's incompatible with the older versions.
+
+Version 4.0.0 marks a full overhaul of the app structure and thus breaks compatibility with previous versions.
+
+Till the version 0.9.3 there's been no structural change in how the app handles backup/restore. So you could use that version to restore the old backups, then move to the newest version and renew your backups so that they'll stay compatible as long as the logic of the app doesn't radically change.
+
+## Changes & TODOs
+
+#### [Changelog](CHANGELOG.md)  &  [Known Issues](ISSUES.md)
+
+if you have some kotlin and android knowledge and like to contribute to the project, see our Taiga.io project **[here](https://tree.taiga.io/project/machiav3lli-neo-backup/kanban)** to see what is still needed to be done, where a help could be needed or if you'd like to fix one of the issues.
+
+The communication and each contribution in the project community should follow our **[Code of Conduct](COC.md)**.
+
+## Screenshots
+
+<p float="left">
+ <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" width="170" />
+ <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" width="170" />
+ <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" width="170" />
+ <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" width="170" />
+</p>
+
+## Building
+
+OAndBackupX is built with gradle, for that you need the android sdk.
+
+## Licenses <img align="right" src="agplv3.png" width="64" />
+
+OAndBackupX is licensed under the [GNU's Affero GPL v3](LICENSE.md).
+
+App's icon is based on an Icon made by [Catalin Fertu](https://www.flaticon.com/authors/catalin-fertu) from [www.flaticon.com](https://www.flaticon.com)
+
+All new icons in 7.0.0 based on CC0 icons found on [SVG Repo](https://www.svgrepo.com). A huge thanks for the project's maintainers.
+
+## Credits
+
+[Jens Stein](https://github.com/jensstein) for his unbelievably valuable work on OAndBackup.
+
+[Nils](https://github.com/Tiefkuehlpizze), [Martin](https://github.com/Smojo) and [DL](https://github.com/dl200010) for their active contribution to the project.
+
+[Oliver Pepperell](https://github.com/opepp) for his contribution to the new anniversary design.
+
+Open-Source libs: [FastAdapter](https://github.com/mikepenz/FastAdapter), [RootBeer](https://github.com/scottyab/rootbeer), [NumberPicker](https://github.com/ShawnLin013/NumberPicker), [Apache Commons](https://commons.apache.org).
+
+### Languages: [<img align="right" src="https://hosted.weblate.org/widgets/oandbackupx/-/287x66-white.png" alt="Übersetzungsstatus" />](https://hosted.weblate.org/engage/neo-backup/?utm_source=widget)
+
+[<img src="https://hosted.weblate.org/widgets/oandbackupx/-/multi-auto.svg" alt="Übersetzungsstatus" />](https://hosted.weblate.org/engage/neo-backup/)
+
+The Translations are now being hosted by [Weblate.org](https://hosted.weblate.org/engage/neo-backup/).
+
+Before that, translations were done analog/offline by those great people:
+
+[Kostas Giapis](https://github.com/tsiflimagas), [Urnyx05](https://github.com/Urnyx05), [Atrate](https://github.com/Atrate), [Tuchit](https://github.com/tuchit), [Linsui](https://github.com/linsui), [scrubjay55](https://github.com/scrubjay55), [Antyradek](https://github.com/Antyradek), [Ninja1998](https://github.com/NiNjA1998), [elea11](https://github.com/elea11).
+
+## Donations
+
+I, myself acknowledge the role of the donations to motivate the work on FOSS projects, but in the state of how dynamic everything around my FOSS-contributions is, I would prefer to not take donations for now (the same answer as the last years). Nevertheless this project wouldn't have the accessibility it has without translations, which you the community drive and for which Weblate provides a platform. That's why I would suggest you to consider [donating to Weblate](https://weblate.org/donate).
+
+Thanks to [Tuta](https://tuta.com) for the premium account.
+[![Tutanota](tuta_logo.png)](https://tuta.com)
+
+## Authors
+
+Antonios Hazim & Harald Gutsche

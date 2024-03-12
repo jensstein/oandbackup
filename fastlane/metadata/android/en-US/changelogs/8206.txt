@@ -1,0 +1,6 @@
+Add: Batch settings Sheet
+Add: Tooltips to check all buttons in Batch
+Fix: Note & Tags in AppSheet
+Fix: Log not updated when deleting items
+Update: Revamp Chips layout
+more in the full changelog…

@@ -1,0 +1,4 @@
+**OAndBackupX 0.9.6**
+* Toegevoegd: controleren op Update
+* Opgelost: consistentie van thema consistent 
+* Opgelost: enkele Strings

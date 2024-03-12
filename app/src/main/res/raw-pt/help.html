@@ -1,0 +1,20 @@
+<html>
+    <body>
+        <p><strong>Modos de backup</strong>: uma app pode ser copiado apenas com o apk dela, apenas com os dados dela ou ambos. Uma app não instalada atualmente só pode ser restaurada se o apk estiver presente.
+        </p>
+        <p><strong>Apagar backup</strong>: apaga os ficheiros de backup para uma instância de backup específica. Enquanto "apagar backups" apaga todos os backups da aplicação escolhida.
+        </p>
+        <p><strong>Desinstalar</strong>: Um pouco mais agressivo do que uma desinstalação normal. Além de fazer uma desinstalação normal via comandos Android, desinstalar do OAndBackupX apaga ficheiros que a app pode ter deixado em /data/app-lib/.
+        </p>
+        <p><strong> ativa/desativa</strong>&gt; Usa o script android`pm` para ativar ou desativar uma app. Desativar uma app remove-a da interface de utilizador normal sem desinstalá-la. Isso pode ser usado para ativar ou desativar uma app para múltiplos utilizadores ao mesmo tempo (Se o aparelho tem múltiplos utilizadores ativados). Utilizadores são identificados com uma id 0 é o primeiro utilizador (proprietário).
+        </p>
+        <p><strong>Multiple users</strong>: Multi-user is still somewhat experimental but should work. When restoring in a multi-user scenario, `pm install -r $apk` gets called and subsequently the app is disabled for every user who has the app listed in /data/system/user/$user/package-restrictions.xml (unless the app is listed as enabled="1"). <br /> This can create problems for users installing the same app at some later point, but is necessary to prevent the app from being installed to all users at the same time. The context menu has an option to enable or disable apps which can be used if other users become unable to use a specific app due to disabling on restore. <br /> Enabling and disabling only works after an initial install (not necessarily from OAndBackupx) or restore of the app.
+        </p>
+        <p><strong>Aplicações sem sistema</strong>: o backup e restauração de apps sem sistema instalados como módulos Magisk não é suportado e tentar isso pode levar à falha do sistema e forçá-lo a formatá-lo e flashá-lo novamente.
+        </p>
+        <p><strong>Navegação</strong>: a barra de navegação tem "Settings", "Home", "Batch backup", "Batch restore" e "Schedule backups" (nessa ordem). A quantidade de aplicações atualizados após último backup dele será apresentado como uma notificação no botão "Home".
+        </p>
+        <p><strong>Apps a usar Keystore</strong>: o Android tem um armazenamento encriptado para dados sensíveis. Apps que fazem uso disso para armazenar dados de login ou algumas chaves para a função delas não podem ser restaurados com sucesso. Dois exemplos de tais aplicações são Sinal e Elemento(Riot).
+        </p>
+    </body>
+</html>

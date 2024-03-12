@@ -1,0 +1,12 @@
+**OAndBackupX 3.0.0**
+
+##### DEZE RELEASE IS NIET COMPATIBLE MET DE VERSIES HIERVOOR
+* Aangepast: standaard backup folder naar /OABX
+* Herschreven Encryptie Oplossingen (Credits @Pizze)
+* Toegevoegd: sorteer op Data Grootte
+* Toegevoegd: Alert Dialoog m.b.t. inschakelen van Encryptie
+* Bijgewerkt: vernieuwd Hulp UI
+* Toegevoegd: tooltips voor alle Iconen van de Buttons
+* Bijgewerkt: AppSheet adaptieve UI
+* Toegevoegd: verwijder Cache knop bij AppSheet
+* Aangepast: clearCache voorkeur om excludeC

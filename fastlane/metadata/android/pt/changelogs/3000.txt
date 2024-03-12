@@ -1,0 +1,10 @@
+##### ESTA VERSÃO NÃO É COMPATÍVEL COM AS VERSÕES ANTERIORES
+* Atualização: diretório de backup padrão alterado para /OABX
+* Atualização: solução de criptografia reescrita (Créditos @Pizze)
+* Atualização: renovamos a interface da seção de ajuda e da lista de apps
+* Atualização: preferência clearCache para excludeCache
+* Atualização: reescrevemos todas as funções dos comandos em shell (Créditos @Pizze)
+* Adicionado: classificar por tamanho de dados
+* Adicionado: dicas para todos os ícones
+* Adicionado: botão de limpar Cache na lista de apps
+* Adicionado: alerta sobre ativar a Criptografia

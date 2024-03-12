@@ -1,0 +1,4 @@
+**OndBackupX 1.2.0**
+* Actualizado: UI
+* Corregido: bloqueo de recursos compartidos
+* Añadido: opciones de copia de seguridad de datos protegidos por el dispositivo y de datos externos

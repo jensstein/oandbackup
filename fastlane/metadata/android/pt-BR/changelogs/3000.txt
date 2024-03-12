@@ -1,0 +1,10 @@
+##### ESTA VERSÃO NÃO É COMPATÍVEL COM AS VERSÕES ANTERIORES
+* Atualização: diretório de backup padrão para /OABX
+* Atualização: Solução de criptografia reescrita (Créditos @Pizze)
+* Atualização: Ajuda renovada e interface do usuário do AppSheet
+* Atualização: preferência clearCache para excludeCache
+* Atualização: reescrita toda a função de comandos do shell (Créditos @Pizze)
+* Adicionar: Classificar por tamanho de dados
+* Adicionar: dicas de ferramentas para todos os ícones
+* Adicionar: botão para limpar o Cache na lista de apps
+* Adicionar: Alerta sobre ativar a Encriptação

@@ -1,0 +1,8 @@
+- Adicionado: suporte a cores dinâmicas (também conhecido como Material You)
+- Adicionado: tamanho do backup (somente novos backups)
+- Adicionado: Tags e Nota
+- Adicionado: log de informações opcional no barra do topo
+- Adicionado: nome do pacote do instalador
+- Adicionado: instalador de sessão (necessário em A13)
+- Correção: redefinição de dados após a reinicialização
+para mais detalhes, leia o changelog completo

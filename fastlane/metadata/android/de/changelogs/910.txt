@@ -1,0 +1,5 @@
+**OAndBackupX 0.9.10**
+* neu programmiert: Zeitplaner (muss ausgiebig getestet werden)
+* Repariert: Links in der Hilfe
+* Quell-Code bereinigt
+* Benutzeroberfläche hier und da optimiert

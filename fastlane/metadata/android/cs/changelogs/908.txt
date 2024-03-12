@@ -1,0 +1,6 @@
+**OndBackupX 0.9.8**
+* Opraveno: zapamatování filtru
+* Opraveno: výběr hodnoty pro staré zálohy
+* Opraveno: prázdný filtrovaný seznam způsobující pád systému
+* Upraveno: Uživatelské rozhraní plánovače
+* Další vylepšení

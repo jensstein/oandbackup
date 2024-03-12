@@ -1,0 +1,20 @@
+<html>
+    <body>
+        <p><strong>Backup modes</strong>: An app can be backed up with only its apk, only its data or both. An app not currently installed can only be restored if the apk is present.
+        </p>
+        <p><strong>Slett sikkerhetskopi</strong>: Sletter sikkerhetskopifiler for en spesifikk sikkerhetskopiinstans, der "Slett alle sikkerhetskopier" sletter alle sikkerhetskopier for valgt program.
+        </p>
+        <p><strong>Avinstaller</strong>: Noe mer aggresivt enn en vanlig avinstallasjon. I tillegg til å utføre vanlig avinstallasjon via Android-kommandoer, vil avinstallering fra OAndBackupX slette filer programmet kanskje har etterlatt i /data/app-lib/.
+        </p>
+        <p><strong>Enable / disable</strong>: Uses the android script `pm` to enable or disable an app. Disabling an app removes it from the normal user interface without uninstalling it. This can be used for enabling or disabling an app for multiple users at a time (if the device has multiple users enabled). Users are identified with an id e.g. 0 is the first user (owner) 10 is usually the work profile.
+        </p>
+        <p><strong>Multiple users</strong>: Multi-user is still somewhat experimental but should work. Enabling and disabling only works after an initial install (not necessarily from OAndBackupx) or restore of the app.
+        </p>
+        <p><strong>System-less apps</strong>: backup and restore of system-less apps installed as Magisk module is not supported and trying it could lead to failure in the system and forcing you to format and flash anew.
+        </p>
+        <p><strong>Navigation</strong>: The navigation bar leads to settings, home, batch backup, batch restore and schedule backups in that order. The notification on home means there's a number of apps that got updated since their last backup.
+        </p>
+        <p><strong>Apps using Keystore</strong>: Android has an encrypted storage for sensitive data. Apps that make use of this to store login data or some keys for its function can't be restored successfully. Two examples of such apps are Signal and Element(Riot).
+        </p>
+    </body>
+</html>

@@ -1,0 +1,7 @@
+* Přidat: Theming engine
+* Přidat: Zálohování mediálních souborů
+* Přidat: Doplňky [Poznámka a značky]
+* Přidat jazyky: Přidat další přídavky: čínština(tradiční/Taiwan), portugalština(Brazílie), litevština.
+* Aktualizovat: * Přidat nové jazyky a jazykové mutace: Přepracované uživatelské rozhraní (Material design 3 a nová sada ikon)
+* Oprava: Obnovení Firefoxu (@hg42)
+a další... přečtěte si celý seznam změn

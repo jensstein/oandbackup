@@ -1,0 +1,5 @@
+Questo è un hot-fix-release basato su 8.0.0-alpha14 siccome un versione involontaria è stata rilasciata un paio di settimane fa.
+Risolve i problemi della versione rilasciata sbagliata ma ancora lento, poiché Compose non fornisce ancora le migliori prestazioni e un vero rilascio richiederebbe molto. Punti salienti:
+* Aggiornato: Nuovo formato di aggiornamento (L'applicazione supporta ancora quelli vecchi)
+* Aggiunto: Backup/ ripristino autorizzazioni date
+* Miglioramenti e molto altro

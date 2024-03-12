@@ -1,0 +1,2 @@
+Corretto: gestione delle pianificazioni
+Aggiunto: icona basata sul tema del sistema

@@ -1,0 +1,5 @@
+**OAndBackupX 0.9.10**
+* Rwritten: Scheduler (need to be tested extensively)
+* Fixed: links in help
+* Clean up the code
+* UI tweaks here and there

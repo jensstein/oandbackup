@@ -1,0 +1,2 @@
+**OndBackupX 1.0.0**
+* Přidáno: možnost vymazání mezipaměti před zálohováním dat

@@ -1,0 +1,11 @@
+**OAndBackupX 3.1.1**
+
+* Toegevoegd: de Intro
+* Toegevoegd: encryptie wachtwoord controle veld
+* Verwijderd: Busybox pad voorkeur
+* Opgelost: laat de huidige datum zien i.p.v. de laatste back-up
+* Opgelost: niet updaten van de update tag van item na een nieuwe back-up
+* Bijgewerkt: Vertalingen (Noors, Russisch, Italiaans, Frans, Nederlands, Duits)
+* Bijgewerkt: stel onthoud sorteer/filter in als standaard
+* Bijgewerkt: zet de biometrische vergrendeling standaard uit
+* Bijgewerkt: verberg de log

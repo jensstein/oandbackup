@@ -1,0 +1,6 @@
+* Aktualisiert: UI/UX-Revamp (in Zusammenarbeit mit @opepp)
+* Hinzugefügt: Werkzeug zum Speichern der App-Liste in einer Datei
+* Hinzugefügt: Diverse neue Funktionalitäten
+* Behoben: Geplante Backups
+* Aktualisierte Übersetzungen
+* Neben vielen anderen Verbesserungen

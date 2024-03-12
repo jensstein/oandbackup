@@ -1,0 +1,7 @@
+**OAndBackupX 0.9.11**
+* Added: clear cache before backing up
+* Updated: chips styling
+* Added: prompt for battery optimization exclusion
+* Fixed: the profiles bug (needs testing)
+* Switched: from FilePicker to SAF
+* Tweaked up the code

@@ -1,0 +1,6 @@
+**OAndBackupX 0.9.8**
+* Behoben: Filter merken
+* Behoben: Auswählen des Wertes für alte Backups
+* Behoben: leere gefilterte Liste verursacht Absturz
+* Optimiert: Scheduler-Benutzeroberfläche
+* Andere Optimierungen

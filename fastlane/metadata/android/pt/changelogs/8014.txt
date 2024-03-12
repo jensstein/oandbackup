@@ -1,0 +1,9 @@
+Esta é uma versão hot-fix baseada na 8.0.0-alpha14 pois uma versão não intencional foi lançada há algumas semanas.
+Ela corrige os problemas da mesma e está bem estável, mas ainda com lentidão pois o Compose ainda não tem um bom desempenho e uma real versão exigiria muito.
+Veja os destaques:
+* Atualização: Novo formato de atualização (o app ainda suporte formatos antigos)
+* Fix: Problemas A12 na v7
+* Add: Permissões para fazer backup/restauração
+* Atualização: Diminuiu necessidade de atualiza pra manuais
+* Fix: A maioria dos backups especiais (ainda precisa de testes)
+* Tags e notas estão desabilitadas por enquanto para mais detalhes, leia o changelog completo

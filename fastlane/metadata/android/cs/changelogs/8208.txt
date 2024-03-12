@@ -1,0 +1,5 @@
+Oprava: Plány ignorující speciální nabídky v seznamech bloků
+Oprava: Spouštění rozvrhů dvakrát
+Přidání: Falešné rozvrhy
+Přidání: Další předvolby trasování
+Oprava: Přidání mezery do informačních čipů

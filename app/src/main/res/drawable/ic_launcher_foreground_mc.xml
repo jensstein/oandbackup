@@ -1,0 +1,43 @@
+<!--
+ ~ Neo Backup: open-source apps backup and restore app.
+ ~ Copyright (C) 2020  Antonios Hazim
+ ~
+ ~ This program is free software: you can redistribute it and/or modify
+ ~ it under the terms of the GNU Affero General Public License as
+ ~ published by the Free Software Foundation, either version 3 of the
+ ~ License, or (at your option) any later version.
+ ~
+ ~ This program is distributed in the hope that it will be useful,
+ ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ ~ GNU Affero General Public License for more details.
+ ~
+ ~ You should have received a copy of the GNU Affero General Public License
+ ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:scaleX="0.14765625"
+        android:scaleY="0.14765625"
+        android:translateX="16.2"
+        android:translateY="16.2">
+        <path
+            android:fillColor="#FFF"
+            android:fillType="evenOdd"
+            android:pathData="m293.56,209.65c-23.42,9.16 -35.45,-13.73 -20.5,-32.03 2.36,-2.42 4.37,-4.45 5.57,-5.59 19.96,-19.01 39.64,-27.03 72.37,-27.03 59.5,0 111,48.07 111,111 0,62.93 -49.37,109.4 -108.86,109.4 -43.15,0 -92.81,-20.21 -109.37,-103.41C230.7,196.34 198.02,182 166,182 124.36,182 92,216.56 92,256c0,39.61 32.1,74 74,74 19.3,0 42.9,-3.94 57.17,-27.63 14.64,-11.73 38.29,6.27 25.52,27.03 -18.47,26 -54.74,37.6 -82.7,37.6 -62.93,0 -111,-51.5 -111,-111 0,-59.35 48.36,-111 111,-111 52.77,0 90.15,24.78 109.37,101.27 16.78,66.78 34.95,83.59 75.63,83.73 40.58,0.13 74,-32.1 74,-74 0,-41.9 -34.39,-74 -74,-74 -23.14,0 -33.71,4.3 -46.85,16.82 -1.74,1.65 -10.58,10.82 -10.58,10.82z"
+            android:strokeWidth="18.5" />
+        <path
+            android:fillAlpha="0.6"
+            android:fillColor="#FFF"
+            android:pathData="m122.26,213.21c0,-5.62 4.56,-10.23 10.19,-10.19L198.08,203.56c5.62,0.05 10.19,4.56 10.19,10.19 0,5.62 -4.56,10.23 -10.19,10.19L132.45,223.4c-5.62,-0.05 -10.19,-4.56 -10.19,-10.19zM213.57,247.39L107.87,247.39c-5.62,0 -10.19,4.56 -10.19,10.19 0,5.62 4.56,10.19 10.19,10.19L213.57,267.77c5.62,0 10.19,-4.56 10.19,-10.19 0,-5.62 -4.56,-10.19 -10.19,-10.19zM194.87,289.09 L132.45,289.62c-5.62,0.05 -10.19,4.56 -10.19,10.19 0,5.62 4.56,10.24 10.19,10.19L194.87,309.46c5.62,-0.05 10.19,-4.56 10.19,-10.19 0,-5.62 -4.56,-10.24 -10.19,-10.19z" />
+        <path
+            android:fillAlpha="0.6"
+            android:fillColor="#FFF"
+            android:pathData="m352.29,285.75c-20.21,-7.91 -36.52,-14.63 -55.06,-21.78 -1.29,2.94 -1.09,9.1 1.46,11.73l48.55,19.13c4.24,1.59 6.06,1.59 10.66,0l48.55,-17.11c2.14,-1.68 3.19,-9.33 2.41,-11.81 -19.12,6.77 -37.52,13.46 -56.56,19.84zM352.86,219.01c0.35,0.33 0.26,0.07 0,0zM297.33,260.99 L347.53,280.51c4.24,1.59 6.06,1.59 10.66,0l49.07,-17.33c3.7,-2.49 3.06,-9.88 1.49,-12.1 -18.69,6.49 -36.13,13.27 -56.4,20.03 -18.26,-6.74 -35.29,-13.89 -54.61,-20.71 -1.57,1.72 -2.73,7.27 -0.41,10.58zM299.52,247.44 L346.47,265.38c4.24,1.59 7.1,1.59 11.69,0l48.78,-17.2c3.53,-1.31 2.85,-10.91 -0.8,-12.49l-48.29,-18.17c-3.77,-1.77 -5.39,-2 -9.63,-0.32l-48.64,18.49c-3.65,1.87 -3.83,10.17 -0.06,11.76zM353.16,223.34 L398.57,240.19 352.09,256.09 305.97,240.19z"
+            android:strokeWidth="0.16" />
+    </group>
+</vector>

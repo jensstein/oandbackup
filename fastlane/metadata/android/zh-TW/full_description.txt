@@ -1,0 +1,6 @@
+<p>建立與還原您的裝置上應用程式的備份，並將應用程式資料儲存到使用者可以存取的位置。支援備份與還原單一或多個應用程式。</p>
+<p>Neo Applications的一部分。</p>
+<p>OAndBackup的分支，帶來對新版 Android 的支援與更新的外觀。</p>
+<p><br><b>在 Weblate 上幫助翻譯：</b> https://hosted.weblate.org/engage/oandbackupx/ 。</p>
+<p><br><b>需要 root 權限：</b> 因為它會從 /data/data、/data/app 與 /system/app 複製檔案。</p>
+<p>狀態：Beta</p>

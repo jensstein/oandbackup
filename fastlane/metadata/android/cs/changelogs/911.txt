@@ -1,0 +1,7 @@
+**OndBackupX 0.9.11**
+* Přidáno: vymazání mezipaměti před zálohováním
+* Aktualizováno: stylování čipů
+* Přidáno: výzva k vyloučení optimalizace baterie
+* Opraveno: chyba v profilech (je třeba otestovat)
+* Přepnuto: z FilePicker na SAF
+* Vyladěn kód

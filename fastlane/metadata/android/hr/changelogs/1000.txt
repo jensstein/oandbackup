@@ -1,0 +1,2 @@
+**OAndBackupX 1.0.0**
+* Dodano: mogućnost za brisanje predmemorije prije sigurnosne kopije podataka

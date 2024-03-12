@@ -1,0 +1,10 @@
+** OAndBackupX 3.1.0**
+
+* Kaldırıldı: Android Nougat desteği düştü
+* Eklendi: yeni etiket sistemi
+* Eklendi: biyometrik kilit tercihi
+* Güncelleme: tüm kullanıcı arayüzü
+* Güncelleme: varsayılan harici verileri ve Obb tercihlerini kapalı olarak ayarlayın
+* Sabit: bazı UI çöker
+* Affero GPL v3 taşındı
+ve çok daha fazlası

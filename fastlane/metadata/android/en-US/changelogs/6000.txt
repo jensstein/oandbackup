@@ -1,0 +1,9 @@
+CLEAR DATA NEEDED
+* Added: Export/import of schedules
+* Added: Ascending/descending sort support
+* Updated: Global blocklist applies to Main
+* Updated: Use modes' checkboxes in the backup/restore/schedule dialogs
+* Fixed: Schedules not firing on time
+* Fixed: Delayed notifications of some restored apps
+* Added Catalan
+* Ton of other improvements/fixes

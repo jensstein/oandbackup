@@ -1,0 +1,6 @@
+**OAndBackupX 1.1.0**
+* Додано: data backup encryption
+* Виправлено: schedules
+* Оновлено: notifications' format
+* Tweaked some UI elements
+* and improved performance

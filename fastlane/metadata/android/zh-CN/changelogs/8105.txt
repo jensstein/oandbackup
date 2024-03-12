@@ -1,0 +1,6 @@
+修复：pmSuspend的默认值错误
+修复：在应用程序表中禁用应用程序的文本颜色
+修复：列表项选择
+修复：Pref的滑块文本颜色
+添加：Pref的滑块自适应步骤
+更新：Prefs的BottomNavBar UI

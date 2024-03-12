@@ -1,0 +1,10 @@
+INKOMPATIBEL MIT ALTEN VERSIONEN
+**LEISTUNGSVERMINDERUNG** verursacht durch die Verwendung von SAF im Vergleich zum Direktzugriff
+* Hinzugefügt: Unterstützung für Storage Access Framework
+* Hinzugefügt: Symlink/Pipe-Unterstützung
+* Hinzugefügt: Multi-Backup-Unterstützung
+* Hinzufügen: Parallele Batch-Aufgaben zulassen
+* Update: Neue Benutzeroberfläche/UX
+* Update: Tag-System
+* Update: Sicherungsstruktur
+* Viele weitere Verbesserungen, Korrekturen und Bereinigungen

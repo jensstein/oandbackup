@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Neo Backup</string>
+    <string name="backup">Backup</string>
+    <string name="restore">Restore</string>
+    <string name="backupConfirmation">Backup?</string>
+    <string name="restoreConfirmation">Restore?</string>
+    <string name="handleApk">APK</string>
+    <string name="handleData">Data</string>
+    <string name="handleBoth">Both</string>
+    <string name="radio_all">All apps</string>
+    <string name="radio_user">User Apps</string>
+    <string name="radio_system">System Apps</string>
+    <string name="radio_both">APK and Data</string>
+    <string name="radio_apk">APK</string>
+    <string name="radio_data">Data</string>
+    <string name="radio_special">Special Backups</string>
+    <string name="radio_updated">Updated</string>
+    <string name="radio_externaldata">External Data</string>
+    <string name="radio_deviceprotecteddata">Device Protected Data</string>
+    <string name="radio_obbdata">OBB Data</string>
+    <string name="radio_mediadata">Media Data</string>
+    <string name="de_selectAll">De/select all</string>
+    <string name="refresh">Refresh</string>
+    <string name="batchbackup">Batch backup</string>
+    <string name="batchrestore">Batch restore</string>
+    <string name="search">Search</string>
+    <string name="searchHint">Search for apps</string>
+    <string name="deleteBackup">Delete backup</string>
+    <string name="uninstall">Uninstall app</string>
+    <string name="uninstallProgress">Uninstalling…</string>
+    <string name="showOnlySystem">Only system apps</string>
+    <string name="showOnlyUser">Only user apps</string>
+    <string name="showNotBackedup">Apps without backup</string>
+    <string name="showNotInstalled">Not installed apps</string>
+    <string name="showNewAndUpdated">New and updated apps</string>
+    <string name="showOldBackups">Old backups</string>
+    <string name="showSplitAPKs">Split-APK</string>
+    <string name="showOnlyApkBackedUp">Apps with only APK backed up</string>
+    <string name="showOnlyDataBackedUp">Apps with only data backed up</string>
+    <string name="sortByLabel">Sort by label</string>
+    <string name="sortByPackageName">Sort by packagename</string>
+    <string name="sort">Sort and filter</string>
+    <string name="uninstallDialogMessage">Uninstall this app?</string>
+    <string name="deleteBackupDialogMessage">Delete backup files?</string>
+    <string name="restoreDataWithoutApkError">Cannot restore data without restoring the APK, the package is not installed.</string>
+    <string name="utilboxCheck" translatable="false">Checking for BusyBox/Toybox…</string>
+    <string name="noSu">Couldn\'t get superuser permissions</string>
+    <!-- mkfileError: an error occured while creating a file. format: string + " " + filename -->
+    <string name="mkfileError">Couldn\'t create</string>
+    <!-- fallbackToDefault: indicates a fallback to the default for creation of a specific file. used in the same way as mkfileError -->
+    <string name="fallbackToDefault">Fall back to default</string>
+    <string name="backupFolderError">Please set the correct path in the preferences and ensure it exists or is createable</string>
+    <string name="shellReturnSuccess">Success</string>
+    <string name="shellReturnError">Error</string>
+    <string name="backupProgress">Backing up…</string>
+    <string name="backupSuccess">Backup complete</string>
+    <string name="backupFailure">Error on backup</string>
+    <string name="restoreProgress">Restoring…</string>
+    <string name="restoreSuccess">Restore complete</string>
+    <string name="restoreFailure">Error on restore</string>
+    <string name="batchSuccess">Operation complete</string>
+    <string name="batchFailure">Complete with errors</string>
+    <string name="uninstallSuccess">Uninstall complete</string>
+    <string name="uninstallFailure">Error on uninstall</string>
+    <string name="errorDialogTitle">Errors occurred</string>
+    <string name="customListTitle">Custom list</string>
+    <string name="notInstalledModeDataWarning">App cannot be restored from a backup without APK</string>
+    <string name="shareTitle">Share</string>
+    <string name="batchDeleteMessage">Deleting backups…</string>
+    <string name="batchDeleteNotificationTitle">Delete backups</string>
+    <!-- tools_backupsDeleted: shown in a notification followed by the number of backups deleted -->
+    <string name="batchDeleteBackupsDeleted">Backups deleted:</string>
+    <string name="batchDeleteNothingToDelete">No backups to delete</string>
+    <string name="enablePackage">Enable app</string>
+    <!-- enablePackageTitle: title for a list of checkable users -->
+    <string name="enablePackageTitle">Enable app for users</string>
+    <string name="disablePackage">Disable app</string>
+    <string name="disablePackageTitle">Disable app for users</string>
+    <string name="error_pmDataIncompleteException_dataRestoreFailed">App data has not been restored.</string>
+    <string name="prefs_title">Preferences</string>
+    <string name="prefs_user">User preferences</string>
+    <string name="prefs_user_short">Personal</string>
+    <string name="prefs_service">Service preferences</string>
+    <string name="prefs_service_short">Service</string>
+    <string name="prefs_advanced">Advanced preferences</string>
+    <string name="prefs_advanced_short">Advanced</string>
+    <string name="prefs_tools">Tools</string>
+    <string name="prefs_tools_short">Tools</string>
+    <string name="prefs_theme">Theme</string>
+    <string name="prefs_theme_light">Light</string>
+    <string name="prefs_theme_dark">Dark</string>
+    <string name="prefs_theme_system">System\'s theme</string>
+    <string name="prefs_theme_system_black">System\'s theme (Black)</string>
+    <string name="prefs_theme_dynamic">Dynamic theme</string>
+    <string name="prefs_theme_dynamic_light">Light with dynamic colors</string>
+    <string name="prefs_theme_dynamic_dark">Dark with dynamic colors</string>
+    <string name="prefs_theme_dynamic_black">Black with dynamic colors</string>
+    <string name="prefs_theme_black">Black theme</string>
+    <string name="prefs_theme_black_summary">Enforces black background when on dark theme</string>
+    <string name="prefs_languages">Language</string>
+    <string name="prefs_language_system">System default</string>
+    <string name="prefs_pathbackupfolder">Backup folder</string>
+    <string name="prefs_loadingtoasts">Loading toasts</string>
+    <string name="prefs_loadingtoasts_summary">Show toasts while the list is being loaded</string>
+    <string name="prefs_devicelock">Device lock</string>
+    <string name="prefs_devicelock_summary">Secure the app with device credentials</string>
+    <string name="prefs_biometriclock">Biometric lock</string>
+    <string name="prefs_biometriclock_summary">Secure the app with the device\'s biometric lock (e.g. fingerprint, face unlock)</string>
+    <string name="prefs_multilineinfochips">Multi-line info chips</string>
+    <string name="prefs_multilineinfochips_summary">Allow info chips in app sheet to span over multi-lines.</string>
+    <string name="prefs_newandupdatednotification">Show new and updated notification</string>
+    <string name="prefs_newandupdatednotification_summary">Show new user apps beside the updated apps in the notification bar in home page.</string>
+    <string name="prefs_singularbackuprestore">Singular backup restore</string>
+    <string name="prefs_singularbackuprestore_summary">Use alternative restore item layout that allows choosing specific backups for restore.</string>
+    <string name="prefs_squeezenavtext">Squeeze navigation item\'s text</string>
+    <string name="prefs_squeezenavtext_summary">Allow text under navigation bar items to be resized to fit the available width.</string>
+    <string name="prefs_altnavbaritem">Use alternative navigation bar item</string>
+    <string name="prefs_altnavbaritem_summary">Use the alternative/old navigation bar item layout, which shows label of unselected items.</string>
+    <string name="prefs_laserbackground">Show animated laser in background</string>
+    <string name="prefs_laserbackground_summary">Use animated colored lights as background when loading/busy.</string>
+    <string name="prefs_rememberfiltering">Remember sort and filter</string>
+    <string name="prefs_rememberfiltering_summary">Saves the chosen sorting and filtering method. Only those marked by a checkbox in the menu are considered.</string>
+    <string name="prefs_oldbackups">Filter backups by age</string>
+    <string name="prefs_oldbackups_summary">Filter backups older than value in days. Used with the filter \'Show old backups\'.</string>
+    <string name="prefs_encryption">Encryption</string>
+    <string name="prefs_encryption_summary">Enable to encrypt data backups</string>
+    <string name="prefs_password">Encryption password</string>
+    <string name="prefs_password_summary">Also used for decryption on restore</string>
+    <string name="prefs_passwordconfirmation">Encryption password confirmation</string>
+    <string name="prefs_password_match_true">The passwords match</string>
+    <string name="prefs_password_match_false">The passwords don\'t match</string>
+    <string name="prefs_enablespecial">Enable special backups</string>
+    <string name="prefs_enablespecial_summary">Still needs intensive testing, try knowing the danger that it can cause boot loops. Feedback is always welcome.</string>
+    <string name="prefs_excludecache">Exclude app\'s cache</string>
+    <string name="prefs_excludecache_summary">Exclude app\'s cache from data backup</string>
+    <string name="prefs_externaldata">Back up external data</string>
+    <string name="prefs_externaldata_summary">Backs up data that is placed on the external storage (e.g. /storage/emulated/0/Android/data/)</string>
+    <string name="prefs_obbdata">Back up obb files</string>
+    <string name="prefs_obbdata_summary">Backs up the app\'s obb files that is placed on the external storage (e.g. /storage/emulated/0/Android/obb/)</string>
+    <string name="prefs_mediadata">Back up media files</string>
+    <string name="prefs_mediadata_summary">Backs up the app\'s media files that is placed on the external storage (e.g. /storage/emulated/0/Android/media/)</string>
+    <string name="prefs_nobackupdata">Back up no_backup files</string>
+    <string name="prefs_nobackupdata_summary">Back up files in data that are labeled to be not backed up</string>
+    <string name="prefs_deviceprotecteddata_rst">Restore device-protected data</string>
+    <string name="prefs_deviceprotecteddata_rst_summary">Restores data that is placed in data/user_de</string>
+    <string name="prefs_externaldata_rst">Restore external data</string>
+    <string name="prefs_externaldata_rst_summary">Restores data that is placed on the external storage (e.g. /storage/emulated/0/Android/data/)</string>
+    <string name="prefs_obbdata_rst">Restore obb files</string>
+    <string name="prefs_obbdata_rst_summary">Restores the app\'s obb files that is placed on the external storage (e.g. /storage/emulated/0/Android/obb/)</string>
+    <string name="prefs_mediadata_rst">Restore media files</string>
+    <string name="prefs_mediadata_rst_summary">Restores the app\'s media files that is placed on the external storage (e.g. /storage/emulated/0/Android/media/)</string>
+    <string name="prefs_nobackupdata_rst">Restore no_backup files</string>
+    <string name="prefs_nobackupdata_rst_summary">Restores files in data that are labeled to be not backed up</string>
+    <string name="prefs_sessionIinstaller">Use session installer</string>
+    <string name="prefs_sessionIinstaller_summary">Use session installer instead of the basic installer. Slower but avoids issues with Android 13+</string>
+    <string name="prefs_installerpackagename">The installer package name:</string>
+    <string name="prefs_restorepermissions">Restore permissions</string>
+    <string name="prefs_restorepermissions_summary">Restore permissions that were granted to the app at the moment of the backup. Note that some permissions can\'t be granted programmatically and so cause the package restore to fail as a whole, which Neo Backup then covers restoring the package without permissions.</string>
+    <string name="prefs_deviceprotecteddata">Back up device-protected data</string>
+    <string name="prefs_deviceprotecteddata_summary">Backs up data that is placed in data/user_de</string>
+    <string name="prefs_numBackupRevisions">Number of backup revisions</string>
+    <string name="prefs_numBackupRevisions_summary">The oldest revision will be deleted upon creation of a new backup if the number is exceeded. Set it to zero to keep all revisions.</string>
+    <string name="prefs_compression_level">Compression Level</string>
+    <string name="prefs_compression_level_summary">A lower value compresses faster but results in larger files. A higher value compresses better but takes more time.</string>
+    <string name="prefs_acquirewakelock">Prevent sleep</string>
+    <string name="prefs_acquirewakelock_summary">Acquire a wakelock during batch operations to prevent sleep. Speeds up backups and restorations considerably, but consumes more energy.</string>
+    <string name="prefs_disableverification">Disable "Verify apps over USB"</string>
+    <string name="prefs_disableverification_summary">Disables this developer option while restoring APKs and re-enables it afterwards. Solves the error: INSTALL_FAILED_VERIFICATION_FAILURE.</string>
+    <string name="prefs_restoreallpermissions_summary">Give the restored app all the permissions it asks for.</string>
+    <string name="prefs_restoreallpermissions">Restore with all permissions</string>
+    <string name="prefs_allowdowngrade_summary">Allow restoring an older version of the installed app (applies only to debuggable versions).</string>
+    <string name="prefs_allowdowngrade">Allow downgrading</string>
+    <string name="prefs_stopcont">STOP-CONT pre- and postprocessing of apps on backup/restore</string>
+    <string name="prefs_stopcont_summary">Experts only: This can help, if the app is changing files during backup and the backup fails.</string>
+    <string name="prefs_batchdelete">Delete backups\?</string>
+    <string name="prefs_batchdelete_summary">Delete backups of all apps not currently installed.</string>
+    <string name="prefs_copyselfapk">Copy own APK</string>
+    <string name="prefs_copyselfapk_summary">Place a copy of Neo Backup in the top level of the backup folder</string>
+    <string name="prefs_saveappslist">Save apps list</string>
+    <string name="prefs_saveappslist_summary">Writes apps list to a txt file in the user\'s backup directory</string>
+    <string name="prefs_logviewer">View the log</string>
+    <string name="prefs_unset">Unset</string>
+    <!-- dev settings begin -->
+    <string name="prefs_dev_settings">Developer settings</string>
+    <string name="prefs_dev_settings_summary">Don\'t change unless a developer tells you to!</string>
+    <string name="prefs_showinfologbar_summary" translatable="false">show the info log in top bar</string>
+    <string name="prefs_cachepackages_summary" translatable="false">cache Packages</string>
+    <string name="prefs_usepackagecacheonupdate_summary" translatable="false">use cached Package in updateDataOf</string>
+    <string name="prefs_usecolumnnamesaf_summary" translatable="false">eventually disable this, if you have problems with SAF storage</string>
+    <string name="prefs_cancelonstart_summary" translatable="false">cancel all remaining jobs on OAndBackupX start [needs reboot]</string>
+    <string name="prefs_usealarmclock_summary" translatable="false">use the alarm clock to schedule backups, this shows an alarm icon in the notification bar [needs reboot]</string>
+    <string name="prefs_useexactalarm_summary" translatable="false">if not using useAlarmClock, then use exact alarms, otherwise use inexact alarms which may be better for battery [needs reboot]</string>
+    <string name="prefs_backuptarcmd_summary" translatable="false">use tar shell command for backup</string>
+    <string name="prefs_restoretarcmd_summary" translatable="false">use tar shell command for restore</string>
+    <string name="prefs_stricthardlinks_summary" translatable="false">for API tar only: unpack hard links as hard links (otherwise they become symlinks)</string>
+    <string name="prefs_restoreavoidtempcopy_summary" translatable="false">for API tar only: avoid using a temporary directory to extract files</string>
+    <string name="prefs_shadowrootfile_summary" translatable="false">use superuser file system access instead of SAF if the real file system can be found</string>
+    <string name="prefs_allowshadowingdefault_summary" translatable="false">the default for StorageFile creation (enable for now, if you want to use root shadow at all)</string>
+    <string name="prefs_usefindls_summary" translatable="false">use \'find \.\.\. | xargs \.\.\. ls \.\.\.\' for recursive FileInfo collection</string>
+    <string name="prefs_assemblefilelistonestep_summary" translatable="false">(tarapi) collect whole tree in one step</string>
+    <string name="prefs_catchuncaughtexception_summary" translatable="false">unexpected exceptions are caught and output to logcat and app is restarted [needs reboot]</string>
+    <string name="prefs_invalidateselective_summary" translatable="false">only invalidate cache for specific package</string>
+    <string name="prefs_cacheuris_summary" translatable="false">cache StorageFile per URI</string>
+    <string name="prefs_cachefilelists_summary" translatable="false">cache file lists per directory</string>
+    <string name="prefs_maxretriesperpackage_summary" translatable="false">maximum number of retires per Package per Batch</string>
+    <string name="prefs_delaybeforerefreshappinfo_summary" translatable="false">[seconds] delay between pm install and refreshing AppInfo</string>
+    <string name="prefs_refreshappinfotimeout_summary" translatable="false">[seconds] maximum time to retry on refreshing AppInfo after pm install</string>
+    <string name="prefs_useforeground_summary" translatable="false">use foreground notifications to ensure app keeps running (if wakelock isn\'t enough)</string>
+    <string name="prefs_useexpedited_summary" translatable="false">use work manager forground to overcome 10 minute job timeouts</string>
+    <string name="prefs_fakebackupseconds_summary" translatable="false">[seconds] time for faked backups, 0 = do not fake</string>
+    <!-- dev settings end -->
+    <string name="sched_name">Name:</string>
+    <string name="sched_title">Scheduling</string>
+    <string name="sched_add">Add Schedule</string>
+    <string name="sched_notificationMessage">Scheduled backup</string>
+    <string name="sched_interval">Interval in days:</string>
+    <string name="sched_hourOfDay">Time of day:</string>
+    <string name="sched_checkbox">Enable</string>
+    <string name="sched_activateButton">Start now</string>
+    <string name="sched_startingbackup">Starting scheduled backup…</string>
+    <string name="sched_mode">Backup mode:</string>
+    <string name="sched_timeLeft">Time left:</string>
+    <string name="sched_excludeSystemCheckBox">Exclude system apps</string>
+    <string name="sched_blocklist">Blocklist</string>
+    <string name="spec_accounts">Accounts</string>
+    <string name="spec_smsmmsjson">SMS/MMS JSON</string>
+    <string name="spec_calllogsjson">Call Logs JSON</string>
+    <string name="spec_appwidgets">App Widgets</string>
+    <string name="spec_bluetooth">Bluetooth</string>
+    <string name="spec_data">Data Usage and Policy</string>
+    <string name="spec_wallpaper">Wallpaper</string>
+    <string name="spec_fingerprint">Fingerprints</string>
+    <string name="spec_wifiAccessPoints">Wireless access points</string>
+    <string name="error_creating_notification_channel">Unable to create notification channel</string>
+    <string name="error_updating_schedule_mode">Error updating %1$s of schedule %2$d</string>
+    <string name="permission_not_granted">Permission to access external storage is required</string>
+    <string name="restart_dialog">The app seems needing to be restarted</string>
+    <string name="dialogOK">OK</string>
+    <string name="dialogCancel">Cancel</string>
+    <string name="dialogCancelAll">Cancel all</string>
+    <string name="dialogYes">Yes</string>
+    <string name="dialogNo">No</string>
+    <string name="dialogSave">Save</string>
+    <string name="dialog_refuse">Won\'t do it</string>
+    <string name="dialog_approve">Let\'s do it!</string>
+    <string name="dialog_start">Let\'s go!</string>
+    <string name="dialog_unlock">Unlock</string>
+    <string name="filter_options">Filters:</string>
+    <string name="sort_options">Sort by:</string>
+    <string name="sortLabel">Label</string>
+    <string name="sortPackageName">Package Name</string>
+    <string name="sortAppSize">App size</string>
+    <string name="sortDataSize">Data size</string>
+    <string name="sortAppDataSize"><![CDATA[App \& data size]]></string>
+    <string name="sortBackupSize">Backup size</string>
+    <string name="app_s_icon">App\'s icon</string>
+    <string name="bothBackedUp">APK and data</string>
+    <string name="all">All</string>
+    <string name="apptype_system">System app</string>
+    <string name="apptype_user">User app</string>
+    <string name="apptype_special">Special backup</string>
+    <string name="resetFilter">Reset</string>
+    <string name="applyFilter">Apply</string>
+    <string name="available_actions">Available actions:</string>
+    <string name="version_name_title">Version name:</string>
+    <string name="backup_mode_title">Backup mode:</string>
+    <string name="last_backup_title">Last backup:</string>
+    <string name="app_s_type_title">App\'s type:</string>
+    <string name="encrypted_data_title">Encrypted data:</string>
+    <string name="other_filters_options">Special filters:</string>
+    <string name="deleted_backup">Deleted the backup</string>
+    <string name="empty_filtered_list">The filtered list is empty.</string>
+    <string name="ignore_battery_optimization_title">Battery Optimization</string>
+    <string name="ignore_battery_optimization_message">Backups could stop sometimes. To prevent this, you should turn off the battery optimization</string>
+    <string name="post_notifications_permission_title">Post Notifications</string>
+    <string name="post_notifications_permission_message">Starting Android 13 apps require this permission to be able to post notifications.</string>
+    <string name="ignore_battery_optimization_not_supported">This device doesn\'t support ignoring battery optimizations unfortunately!</string>
+    <string name="failed_unzipping">Error while unzipping the data, check the encryption password!</string>
+    <string name="split_apks">Split-APKs</string>
+    <string name="backup_filters">Backup Filters:</string>
+    <string name="smsmms_permission_title">SMS/MMS Permissions</string>
+    <string name="grant_smsmms_message">This is essential to be able to backup/restore your SMS/MMS.</string>
+    <string name="calllogs_permission_title">Call Logs Permissions</string>
+    <string name="grant_calllogs_message">This is essential to be able to backup/restore your Call Logs.</string>
+    <string name="contacts_permission_title">Contacts Permissions</string>
+    <string name="grant_contacts_message">This is essential to be able to match a contact to a SMS/MMS.</string>
+    <string name="grant_usage_access_title">Grant Usage Access</string>
+    <string name="grant_usage_access_message">This is essential to get the information about sizes of app\'s files</string>
+    <string name="app_size">App Size:</string>
+    <string name="data_size">Data Size:</string>
+    <string name="cache_size">Cache Size:</string>
+    <string name="logfileSavedAt" translatable="false">Logfile saved at %s</string>
+    <string name="help_license">License</string>
+    <string name="help_group_telegram">Our Group on Telegram</string>
+    <string name="help_group_matrix">Our Group on Matrix</string>
+    <string name="help_faq">Frequently Asked Questions</string>
+    <string name="help_legend">Legend:</string>
+    <string name="help_appTypeHint">* App type\'s icon would be gray if the app is uninstalled and dark gray if the app is disabled.</string>
+    <string name="enable_encryption_title">Data Encryption</string>
+    <string name="enable_encryption_message">It\'s not safe to keep your data on your device not encrypted. For the safety of your data, enable encryption and set a password.</string>
+    <string name="sort_and_filter"><![CDATA[Sort & Filter]]></string>
+    <string name="storage_access">Storage Access</string>
+    <string name="welcome_to_oabx">Welcome to Neo Backup!</string>
+    <string name="intro_welcome_message"> Neo Backup (formerly OAndBackupX) is a fork of the famous OAndBackup with the aim to bring OAndBackup to 202X and part of Neo Applications suite. For now the app is already fully rewritten, coming up would be making it robust and adding some lengthily planned features which could ease the backup/restore workflow with any device.
+        \n Therefore all types of contribution are always welcome.
+        \n
+        \n Now on functionality of our App:
+        \n • It requires root and allows you to backup individual apps and their data.
+        \n • Both backup and restore of individual programs one at a time and batch backup and restore of multiple programs are supported.
+        \n • Restoring system apps should be possible without requiring a reboot afterwards.
+        \n • Backups can be scheduled with no limit on the number of individual schedules and there is the possibility of creating custom lists from the list of installed apps.</string>
+    <string name="intro_permission_storage">The app uses read/write permission of storage to be able to access the external storage and provide the possibility for the backup of external data/obb of other apps.</string>
+    <string name="intro_permission_storage_location">The app needs a backup location to store the backups. The app may need a few gigabytes of storage for a full backup and is querying the filesystem a lot. Please keep that in mind when choosing network based storage locations.</string>
+    <string name="intro_permission_smsmms">The app needs this permission to be able to backup/restore your SMS/MMS.</string>
+    <string name="intro_permission_calllogs">The app needs this permission to be able to backup/restore your Call Logs.</string>
+    <string name="intro_permission_contacts">The app needs this permission to be able to match a contact to a SMS/MMS.</string>
+    <string name="intro_permission_usageaccess">The app needs this permission to be able to check the stats and sizes of data and cache of your apps.</string>
+    <string name="intro_permission_batteryoptimization">The app can face some problems doing scheduled backups on some ROMs that adopt an aggressive battery optimizations e.g. MIUI, but even on vanilla AOSP such a problem can happen.</string>
+    <string name="msg_appkill_warning">The selected app(s) will be given the stop signal, and continue after the task is done. Check on your processed apps afterwards (and avoid launching them while the process is still running).</string>
+    <string name="delete_all_backups">Delete all backups</string>
+    <string name="logs_text_empty">There\'s nothing to show!</string>
+    <string name="fetching_action_list">Fetching apps list for the %1$s…</string>
+    <string name="help_issues">Known issues</string>
+    <string name="radio_launchable">Launchable Apps</string>
+    <string name="stats_updated">Updated</string>
+    <string name="stats_backups">Backups</string>
+    <string name="stats_apps">Apps</string>
+    <string name="help">Help</string>
+    <string name="main">Main</string>
+    <string name="usage_notes_title">Usage Notes</string>
+    <string name="clear_cache">Clear cache</string>
+    <string name="exodus_report">Exodus report</string>
+    <string name="launch_app">Launch app</string>
+    <string name="app_info">App-info</string>
+    <string name="forceKillMessage">Are you sure you want to force kill the app\?</string>
+    <string name="place_holder" translatable="false">PLACE HOLDER</string>
+    <string name="copyOwnApkSuccess">Copied app\'s APK to the backup directory</string>
+    <string name="copyOwnApkFailed">Failed to copy app\'s APK to the backup directory</string>
+    <string name="wait_noappslist">Apps\' list is still not fetched. Wait…</string>
+    <string name="filtered_list">Filtered list</string>
+    <string name="write_apps_list_filtered">Wrote filtered apps list file</string>
+    <string name="write_apps_list_all">Wrote all apps list file</string>
+    <string name="prefs_schedulesexportimport">Export/import schedules</string>
+    <string name="prefs_schedulesexportimport_summary">Exports or imports the list of schedules you\'ve created.</string>
+    <string name="no_file_manager_title">No SAF manager</string>
+    <string name="no_file_manager_message">There\'s no file manager to manage SAF. Maybe you\'ve disabled the built-in file manager. Please restore it or reenable it.</string>
+    <string name="shell_initproblem">Couldn\'t initiate the shell handler. Either missing toybox/busybox or disabled root permission for the app.</string>
+    <string name="schedule_failed">Running schedule failed</string>
+    <string name="dialog_export">Export</string>
+    <string name="dialog_export_schedules">Export my schedules</string>
+    <string name="dialog_import">Import</string>
+    <string name="error_datachanged">The app\'s data has been actively changed while doing the backup. Try killing its process before doing backup</string>
+    <string name="sched_exported">Schedules were exported successfully</string>
+    <string name="sched_imported">Schedule imported successfully</string>
+    <string name="logs_share_failed">Log file not found</string>
+    <string name="sortAscDesc">Ascending-Descending</string>
+    <string name="forceKill">Force kill</string>
+    <string name="global_blocklist_add">Add to the global blocklist</string>
+    <string name="intro_permission_storage_location_warning">Don\'t pick the main storage directory or Downloads folder, create a folder only for your backups. More on this in the FAQ</string>
+    <string name="backup_all_updated">Backup all updated apps</string>
+    <string name="prefs_accent_0">Red Comet</string>
+    <string name="prefs_accent_1">Fine Purple</string>
+    <string name="prefs_accent_2">Calm Indigo</string>
+    <string name="prefs_accent_3">Turquoise</string>
+    <string name="prefs_accent_4">Bold Green</string>
+    <string name="prefs_accent_5">Chartreuse Lime</string>
+    <string name="prefs_accent_6">Thunder Yellow</string>
+    <string name="prefs_accent_7">Apricot Orange</string>
+    <string name="prefs_accent_8">Pumpkin Perano</string>
+    <string name="prefs_secondary_0">Arctic Cyan</string>
+    <string name="prefs_secondary_1">Ocean Teal</string>
+    <string name="prefs_secondary_2">Limette</string>
+    <string name="prefs_secondary_3">Tiger Amber</string>
+    <string name="prefs_secondary_4">Lava Orange</string>
+    <string name="prefs_secondary_5">Flamingo Pink</string>
+    <string name="prefs_secondary_6">Slate</string>
+    <string name="prefs_secondary_7">Azure Blue</string>
+    <string name="prefs_secondary_8">Mint</string>
+    <string name="prefs_accent_color">Accent color</string>
+    <string name="prefs_secondary_color">Secondary color</string>
+    <string name="error_encryptionpassword">The encryption password is either not set or wrong!</string>
+    <string name="title_note">Note:</string>
+    <string name="title_tags">Tags:</string>
+    <plurals name="sched_interval_formal">
+        <item quantity="one">each day</item>
+        <item quantity="other">each %d days</item>
+    </plurals>
+    <plurals name="days_left">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+    <plurals name="updated_apps">
+        <item quantity="one">%d updated app</item>
+        <item quantity="other">%d updated apps</item>
+    </plurals>
+    <string name="sortBackupDate">Backup Date</string>
+    <string name="help_changelog">Changelog</string>
+    <string name="home">Homepage</string>
+    <string name="all_data">Check all data</string>
+    <string name="all_apk">Check all APK</string>
+    <string name="showDisabled">Disabled apps</string>
+    <string name="schedule">Schedule</string>
+    <string name="finished">finished</string>
+    <string name="batch">Batch</string>
+    <string name="loading_list">Loading list…</string>
+    <string name="delete">Delete</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="enabled">Enabled</string>
+    <string name="sortAsc">Ascending</string>
+    <string name="sortDesc">Descending</string>
+    <string name="supended_apps_cleanup">cleanup any left over suspended apps</string>
+    <string name="root_missing">ROOT missing!</string>
+    <string name="root_is_mandatory">Because applications are isolated from each other, superuser access is mandatory to be able to backup and restore their data.</string>
+    <string name="see_faq">See FAQ!</string>
+    <string name="add_tag">Add new tag</string>
+    <string name="edit_note">Edit note</string>
+    <string name="prefs_tools_terminal">Terminal</string>
+    <string name="context_menu">Context menu</string>
+    <string name="backup_revisions_limit">Backups limit: %d</string>
+    <string name="clear_text">Clear text</string>
+    <string name="filters_installed">Installation</string>
+    <string name="filters_launchable">Launchable</string>
+    <string name="filters_enabled">Enabled</string>
+    <string name="filters_updated">Updated</string>
+    <string name="filters_latest">Latest backup</string>
+    <string name="filters_app">App type</string>
+    <string name="filters_backup">Backup types</string>
+    <string name="sorting_order">Sorting order</string>
+    <string name="radio_notlaunchable">Not launchable apps</string>
+    <string name="show_updated_apps">Updated apps</string>
+    <string name="show_new_apps">New apps</string>
+    <string name="show_old_apps">Old apps</string>
+    <string name="show_enabled_apps">Enabled apps</string>
+    <string name="show_installed_apps">Installed apps</string>
+    <string name="show_new_backups">New backups</string>
+    <string name="enforce_backups_limit">Enforce backups limit</string>
+    <string name="enforce_backups_limit_description">Delete older backups to enforce the limit to %d</string>
+</resources>

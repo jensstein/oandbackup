@@ -1,0 +1,6 @@
+**OAndBackupX 0.9.8**
+* Opgelost: onthoud filter
+* Opgelost: kiezen van de waarde voor oude back-ups
+* Opgelost: lege gefilterde lijst verzoorzaakt een crash
+* Verbeterd: Scheduler UI
+* Overige verbeteringen

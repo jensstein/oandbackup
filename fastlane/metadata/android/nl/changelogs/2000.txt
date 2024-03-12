@@ -1,0 +1,9 @@
+**OAndBackupX 2.0.0**
+* Omgeschakeld naar sulib (Credits @Tiefkuehlpizze)
+* Verwijderd: oab-utils, voor altijd (Credits @Tiefkuehlpizze)
+* Nieuwe UI elmenten voor App-, Filter- & ScheduleSheet
+* Opgelost: geplande back-ups voor data(alleen)
+* Opgelost: inpakken external/deData/obb volgens Prefs
+* Opgelost: inpakken lege external/deData/obb folders
+* Bijgewerkt: opschonen cache functie
+* Sommige andere UI en prestatie verbeteringen

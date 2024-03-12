@@ -1,0 +1,6 @@
+Fix: Force stopping an app
+Fix: Deleting schedule
+Fix: Crash on context menu/Put
+Update: Improve animation of updated apps bar
+Update: Pre-load all pages
++ more than 30 commits and 30 translation contributions

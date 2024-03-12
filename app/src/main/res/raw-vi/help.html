@@ -1,0 +1,20 @@
+<html>
+    <body>
+        <p><strong>Các chế độ sao lưu</strong>: Một ứng dụng chỉ có thể được sao lưu bằng gói ứng dụng, chỉ dữ liệu của ứng dụng đó hoặc cả hai. Một ứng dụng hiện chưa được cài đặt chỉ có thể được khôi phục nếu có apk. Ba loại dữ liệu đặc biệt được hỗ trợ bổ sung cho dữ liệu chính: dữ liệu được bảo vệ bởi thiết bị, dữ liệu bên ngoài và dữ liệu obb.
+        </p>
+        <p><strong>Xóa bản sao lưu</strong>: Xóa các tệp sao lưu cho một phiên bản sao lưu cụ thể. Trong khi "xóa bản sao lưu", hãy xóa tất cả các bản sao lưu của ứng dụng đã chọn.
+        </p>
+        <p><strong>Uninstall</strong>: Somewhat more aggressive than a normal uninstall. In addition to doing a normal uninstall via Android commands, uninstalling from OAndBackupX deletes files the app might have left over in /data/app-lib/.
+        </p>
+        <p><strong>Enable / disable</strong>: Uses the Android `pm` script to enable or disable an app. Disabling an app removes it from the normal user interface without uninstalling it. This can be used for enabling or disabling an app for multiple users at a time (if the device has multiple users). Users are identified with an ID e.g. 0 is the first user (owner) 10 is usually the work profile.
+        </p>
+        <p><strong>Multiple users</strong>: Multi-user is still somewhat experimental but should work. Enabling and disabling only works after an initial install (not necessarily from OAndBackupx) or restore of the app.
+        </p>
+        <p><strong>System-less apps</strong>: Backup and restore of system-less apps installed as Magisk modules is not supported and trying it could lead to system failure and forcing you to format and flash it anew.
+        </p>
+        <p><strong>Navigation</strong>: The navigation bar has "Settings", "Home", "Batch backup", "Batch restore" and "Schedule backups" (in that order). The number of apps upgraded after their last backup will be presented as a notification on "Home" button.
+        </p>
+        <p><strong>Apps using Keystore</strong>: Android has an encrypted storage for sensitive data. Apps that make use of this to store login data or some keys for its function can't be restored successfully. Two examples of such apps are Signal and Element(Riot).
+        </p>
+    </body>
+</html>

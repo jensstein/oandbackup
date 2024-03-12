@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="showOnlyUser">ഇൻസ്റ്റാൾ ചെയ്തവ മാത്രം</string>
+    <string name="showOnlySystem">സിസ്റ്റം ആപ്പുകൾ മാത്രം</string>
+    <string name="uninstallProgress">നീക്കം ചെയ്യുന്നു…</string>
+    <string name="uninstall">ആപ്പ് നീക്കം ചെയ്യുക</string>
+    <string name="deleteBackup">ബാക്കപ്പ് ഒഴിവാക്കുക</string>
+    <string name="searchHint">ആപ്പുകൾ തിരയുക</string>
+    <string name="search">തിരയുക</string>
+    <string name="batchrestore">കൂട്ടമായി റിസ്റോർ</string>
+    <string name="refresh">ലോഡ്</string>
+    <string name="de_selectAll">മുഴുവൻ തിരഞ്ഞെടുക്കുക</string>
+    <string name="radio_obbdata">OBB ഡാറ്റ</string>
+    <string name="radio_externaldata">മറ്റ് ഡാറ്റകൾ</string>
+    <string name="radio_updated">അപ്ഡേറ്റ് ചെയ്തവ</string>
+    <string name="radio_special">മറ്റുള്ളവ</string>
+    <string name="radio_apk">APK</string>
+    <string name="radio_data">ഡാറ്റ</string>
+    <string name="handleApk">APK</string>
+    <string name="radio_both">APK- യും ഡാറ്റയും</string>
+    <string name="radio_system">സിസ്റ്റം ആപ്പുകൾ</string>
+    <string name="radio_user">ഇൻസ്റ്റാൾ ചെയ്ത ആപ്പുകൾ</string>
+    <string name="radio_all">എല്ലാം ആപ്പും</string>
+    <string name="handleBoth">രണ്ടും</string>
+    <string name="handleData">ഡാറ്റ</string>
+    <string name="backupConfirmation">ബാക്കപ്പ് ചെയ്യണോ\?</string>
+    <string name="restoreConfirmation">റിസ്റോർ ചെയ്യണോ\?</string>
+    <string name="restore">റിസ്റ്റോർ</string>
+    <string name="backup">ബാക്കപ്പ്</string>
+</resources>

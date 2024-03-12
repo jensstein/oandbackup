@@ -1,0 +1,7 @@
+**OAndBackupX 1.0.2**
+* Agregado: Botón de opiniones
+* Actualizado: desplazamiento eXperience
+* Reparado: Pantalla de bienvenida
+* Reparado: deslizar para refrescar 
+* Reparado: tema de la Barra de estado
+* y algunos otros ajustes de la IU

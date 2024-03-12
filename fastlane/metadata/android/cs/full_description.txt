@@ -1,0 +1,6 @@
+<p>Vytvářejte a obnovujte zálohy aplikací v zařízení a ukládejte data aplikací do uživatelsky přístupného umístění. Podporuje zálohování a obnovení jednotlivých nebo více aplikací.</p>
+<p>Součást Neo Applications.</p>
+<p>Vývojová verze aplikace OAndBackup přinášející podporu nových verzí systému Android a aktualizovaný vzhled.</p>
+<p><br><b>Pomozte s překladem na Weblate:</b> https://hosted.weblate.org/engage/oandbackupx/.</p>
+<p><br><b>Vyžaduje root:</b> Protože kopíruje soubory z /data/data, /data/app a /system/app.</p>
+<p>Stav: Beta</p>

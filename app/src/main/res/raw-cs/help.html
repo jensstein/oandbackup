@@ -1,0 +1,20 @@
+<html>
+    <body>
+        <p><strong>Režimy zálohování</strong>: Aplikace může být zálohována pouze se svým souborem apk, pouze se svými daty nebo s oběma. Aplikaci, která není aktuálně nainstalována, lze obnovit pouze v případě, že je přítomen soubor apk. Kromě hlavních dat jsou podporovány tři speciální typy dat: data chráněná zařízením, externí data a data obb.
+        </p>
+        <p><strong>Odstranit zálohu</strong>: Odstraní záložní soubory pro konkrétní instanci zálohy. Zatímco „odstranit zálohy“ odstraní všechny zálohy vybrané aplikace.
+        </p>
+        <p><strong>Odinstalovat</strong>: Poněkud agresivnější než normální odinstalace. Kromě normální odinstalace pomocí příkazů systému Android odstraní odinstalace z OAndBackupX soubory, které aplikace mohla zanechat v /data/app-lib/.
+        </p>
+        <p><strong>Povolit / zakázat</strong>: Používá skript Android `pm` k povolení nebo zakázání aplikace. Zakázáním aplikace ji odstraníte z běžného uživatelského rozhraní, aniž byste ji odinstalovali. To lze použít pro povolení nebo zakázání aplikace pro více uživatelů najednou (pokud má zařízení více uživatelů). Uživatelé jsou identifikováni pomocí ID, např. 0 je první uživatel (vlastník) 10 je obvykle pracovní profil.
+        </p>
+        <p><strong>Více uživatelů</strong>: Funkce více uživatelů je stále experimentální, ale měla by fungovat. Povolení a zakázání funguje pouze po první instalaci (ne nutně z OAndBackupx) nebo obnovení aplikace.
+        </p>
+        <p><strong>Bezsystémová aplikace</strong>: Zálohování a obnovení bezsystémových aplikací nainstalovaných jako moduly Magisk není podporováno a pokusy o něj by mohly vést k selhání systému a nutnosti jeho nového formátování a flashování.
+        </p>
+        <p><strong>Navigace</strong>: V navigační liště se nachází „Nastavení“, "„Domů“, „Dávkové zálohování“, „Dávkové obnovení“ a „Plánování zálohování“ (v tomto pořadí). Počet aktualizovaných aplikací po jejich posledním zálohování se zobrazí jako oznámení na tlačítku „Domů“.
+        </p>
+        <p><strong>Aplikace používající úložiště klíčů</strong>: Android má šifrované úložiště pro citlivá data. Aplikace, které jej využívají k ukládání přihlašovacích údajů nebo některých klíčů pro svou funkci, nelze úspěšně obnovit. Dva příklady takových aplikací jsou Signal a Element(Riot).
+        </p>
+    </body>
+</html>

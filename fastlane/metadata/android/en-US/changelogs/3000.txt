@@ -1,0 +1,10 @@
+##### THIS RELEASE ISN'T COMPATIBLE WITH THE VERSIONS BEFORE
+* Update: default backup directory to /OABX
+* Update: Rewritten Encryption Solution (Credits @Pizze)
+* Update: revamped Help and AppSheet UI
+* Update: clearCache preference to excludeCache
+* Update: rewritten the whole shell commands functions (Credits @Pizze)
+* Add: Sort by Data Size
+* Add: Tooltips for all Icons
+* Add: wipe Cache button to AppSheet
+* Add: Alert Dialog about enabling Encrylption

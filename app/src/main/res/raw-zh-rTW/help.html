@@ -1,0 +1,20 @@
+<html>
+    <body>
+        <p><strong>備份模式</strong>：應用程式可以只備份 apk、只備份資料或兩者都備份。目前未安裝的應用程式只有在 apk 存在時才能還原。
+        </p>
+        <p><strong>刪除備份</strong>刪除選取的應用程式的備份檔案。
+        </p>
+        <p><strong>啟用 / 停用</strong>：使用 Android 腳本 `pm` 啟用或停用應用程式。停用應用程式會將其從正常使用者界面中移除而沒有解除安裝。這也可以用於一次為多個使用者啟用或停用應用程式（如果裝置已啟用多個使用者）。被標識為 id. 0 的使用者是第一個使用者（所有者）。
+        </p>
+        <p><strong>啟用 / 停用</strong>：使用 Android `pm` 腳本啟用或停用應用程式。停用應用程式會將其從正常使用者界面中移除，但不會解除安裝。這可以用於一次為多個使用者啟用或停用應用程式（如果裝置有多個使用者）。使用者以 ID 標識，例如 0 是第一個使用者（永有者），10 通常是工作資料夾。
+        </p>
+        <p><strong>多位使用者</strong>: 多位使用者仍多少處於實驗階段，但應該能運作。啟用和停用只有在初始安裝（不一定要從 OAndBackupx）或還原應用程式後才能運作。
+        </p>
+        <p><strong>System-less apps</strong>: Backup and restore of system-less apps installed as Magisk modules is not supported and trying it could lead to system failure and forcing you to format and flash it anew.
+        </p>
+        <p><strong>Navigation</strong>: The navigation bar has "Settings", "Home", "Batch backup", "Batch restore" and "Schedule backups" (in that order). The number of apps upgraded after their last backup will be presented as a notification on "Home" button.
+        </p>
+        <p><strong>Apps using Keystore</strong>: Android has an encrypted storage for sensitive data. Apps that make use of this to store login data or some keys for its function can't be restored successfully. Two examples of such apps are Signal and Element(Riot).
+        </p>
+    </body>
+</html>

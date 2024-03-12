@@ -1,0 +1,4 @@
+**OAndBackupX 0.9.7**
+* Fixed: update logic
+* Removed: PGP encryption and follow symbolic links
+* Cleaned up code

@@ -1,9 +1,14 @@
 *.iml
 *.pyc
 *.swp
+*.hprof
 .gradle
 .idea
-src/main/assets
-build
+app/src/main/assets
+assets
+build/
+app/build
 local.properties
-sonarqube-env
+app/src/main/jniLibs/
+release/
+app/neo/

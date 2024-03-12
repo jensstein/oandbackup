@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="logs_share_failed">Log file not found</string>
+    <string name="global_blocklist_add">Add to the global blocklist</string>
+    <string name="intro_permission_storage_location_warning">Don\'t pick the main storage directory or Downloads folder, create a folder only for your backups. More on this in the FAQ</string>
+    <plurals name="sched_interval_formal">
+        <item quantity="other">each %d days</item>
+    </plurals>
+    <plurals name="days_left">
+        <item quantity="other">%d days</item>
+    </plurals>
+    <plurals name="updated_apps">
+        <item quantity="other">%d updated apps</item>
+    </plurals>
+    <string name="sched_imported">Schedule imported successfully</string>
+    <string name="sched_exported">Schedules were exported sucessfully</string>
+    <string name="error_datachanged">The app\'s data has been actively changed while doing the backup. Try killing its process before doing backup</string>
+    <string name="dialog_import">Import</string>
+    <string name="dialog_export">Export</string>
+    <string name="schedule_failed">Running schedule failed</string>
+    <string name="shell_initproblem">Couldn\'t initiate the shell handler. Either missing toybox/busybox or disabled root permission for the app.</string>
+    <string name="no_file_manager_message">There\'s no file manager to manage SAF. Maybe you\'ve disabled the built-in file manager. Please restore it or reenable it.</string>
+    <string name="no_file_manager_title">No SAF manager</string>
+    <string name="prefs_schedulesexportimport_summary">Exports or imports the list of schedules you\'ve created.</string>
+    <string name="prefs_schedulesexportimport">Export/import schedules</string>
+    <string name="write_apps_list_all">Wrote all apps list file</string>
+    <string name="write_apps_list_filtered">Wrote filtered apps list file</string>
+    <string name="filtered_list">Filtered list</string>
+    <string name="wait_noappslist">Apps\' list is still not fetched. Wait…</string>
+    <string name="copyOwnApkFailed">Failed to copy app\'s APK to the backup directory</string>
+    <string name="copyOwnApkSuccess">Copied app\'s APK to the backup directory</string>
+    <string name="forceKillMessage">Are you sure you want to force kill the app\?</string>
+    <string name="app_info">App-info</string>
+    <string name="launch_app">Launch app</string>
+    <string name="exodus_report">Exodus report</string>
+    <string name="clear_cache">Clear cache</string>
+    <string name="usage_notes_title">Usage Notes</string>
+    <string name="main">Main</string>
+    <string name="help">Help</string>
+    <string name="stats_apps">Apps</string>
+    <string name="stats_backups">Backups</string>
+    <string name="stats_updated">Updated</string>
+    <string name="radio_launchable">Launchable Apps</string>
+    <string name="help_issues">Known issues</string>
+    <string name="fetching_action_list">Fetching apps list for the %1$s…</string>
+    <string name="logs_text_empty">There\'s nothing to show!</string>
+    <string name="intro_permission_batteryoptimization">The app can face some problems doing scheduled backups on some ROMs that adopt an aggressive battery optimizations e.g. MIUI, but even on vanilla AOSP such a problem can happen.</string>
+    <string name="intro_permission_usageaccess">The app needs this permission to be able to check the stats and sizes of data and cache of your apps.</string>
+    <string name="intro_permission_storage">The app uses read/write permission of storage to be able to access the external storage and provide the possibility for the backup of external data/obb of other apps.</string>
+    <string name="welcome_to_oabx">Welcome to OABX!</string>
+    <string name="storage_access">Storage Access</string>
+    <string name="sort_and_filter">Sort &amp; Filter</string>
+    <string name="enable_encryption_message">It\'s not safe to keep your data on your device not encrypted. For the safety of your data enable encryption and set a password.</string>
+    <string name="enable_encryption_title">Data Encryption</string>
+    <string name="delete_all_backups">Delete all backups</string>
+    <string name="msg_appkill_warning">The selected app(s) will be given the stop signal, and continue after the task is done. Check on your processed apps afterwards (and avoid launching them while the process is still running).</string>
+    <string name="intro_permission_storage_location">The app needs a backup location to store the backups. The app may need a few gigabytes of storage for a full backup and is querying the filesystem a lot. Please keep that in mind when choosing network based storage locations.</string>
+    <string name="intro_welcome_message">OAndBackupX is a fork of the infamous OAndBackup with the aim to bring it to 2020 and further. For now most of the functionality and UI of the app are rewritten and some are added.
+\n The app is still in beta stages and a lot of rebasing is done often. So please read the changelog carefully with each new release.
+\n All types of contribution are welcome was it translation, ideas, reporting bugs or code work.
+\n
+\n Now on functionality of our App:
+\n • It requires root and allows you to back up individual apps and their data.
+\n • Both backing up and restoring individual programs one-at-a-time and batch backup and restoration of multiple programs are supported.
+\n • Restoring system apps should be possible without requiring a reboot afterwards, but still we don\'t advise to do it.
+\n • Backups can be scheduled with no limit on the number of individual schedules and there is the possibility of creating unique custom lists.</string>
+</resources>

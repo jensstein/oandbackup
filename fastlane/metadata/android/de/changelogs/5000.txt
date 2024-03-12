@@ -1,0 +1,7 @@
+**NEUE HAUPTVERSION**: INKOMPATIBEL MIT ALTEN VERSIONEN
+**Erste KOTLIN-Veröffentlichung**
+GEPLANTE AKTIONEN KÖNNEN NUR 10 MINUTEN DAUERN (SYSTEMEINSCHRÄNKUNG)
+* Hinzugefügt: Modi für Apps im Batch-Dialog festlegen
+* Behoben: Persistente Speicherberechtigung
+* Behoben: A11-Unterstützung
+* Viel zu viele andere Verbesserungen, Korrekturen und Aufräumarbeiten

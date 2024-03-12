@@ -1,0 +1,2 @@
+**OAndBackupX 1.0.0**
+* Menambahkan: opsi untuk membersihkan sampah sebelum mencadangkan data

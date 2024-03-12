@@ -1,0 +1,7 @@
+* Adicionado: Motor de Temas
+* Adicionado: Backup de arquivos de mídia
+* Adicionado: Extras [Nota e Tags]
+* Idiomas adicionados: Chinês (tradicional/Taiwan), Português (Brasil), Lituano.
+* Atualizado: Reformulação da interface (Material design 3 & novo conjunto de ícones)
+* Corrigido: Restauração do Firefox (@hg42)
+e mais… leia o registro de alterações completo

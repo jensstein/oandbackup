@@ -1,0 +1,4 @@
+**OAndBackupX 0.9.6**
+* Hinzugefügt: Nach Aktualisierungen suchen
+* Behoben: festgelegtes Farbschema bleibt bestehen
+* Behoben: einige Zeichenketten

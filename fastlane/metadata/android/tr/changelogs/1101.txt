@@ -1,0 +1,7 @@
+** OAndBackupX 1.1.1**
+* Eklendi: Appsheet için Exodus raporu kısayolu
+* Sabit: simge boyutlarına sahip bir uygulama varsa başlatılmıyor < = 0
+* Değiştirildi: varsayılan şimdi Oandbackupx'i ana yedekleme klasörüne kopyalamak için ayarlandı
+* Eklendi: Yunanca (kredi @ tsiflimagas)
+* Güncelleme: büyük harf ve İngilizce dizeleri (kredi: @ atrate)
+* Güncelleme: Çince, Hollandaca, Lehçe ve İsveççe genelleme

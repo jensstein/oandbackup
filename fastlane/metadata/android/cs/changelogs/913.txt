@@ -1,0 +1,2 @@
+**OndBackupX 0.9.13 (aka 1.0.0-rc2)**
+* Vráceno: zpět na cp (rsync není součástí všech ROM)

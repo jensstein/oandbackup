@@ -1,0 +1,7 @@
+**OAndBackupX 0.9.11**
+* Hinzugefügt: Zwischenspeicher vor dem Sichern löschen
+* Aktualisiert: Chips-Styling
+* Hinzugefügt: Aufforderung zum Ausschluss der Batterieoptimierung
+* Korrigiert: der Profil-Fehler (muss getestet werden)
+* Umgestellt: von FilePicker auf SAF
+* Quell-Code optimiert

@@ -1,0 +1,2 @@
+** OAndBackupX 0.9.9 **
+* Rimosso: controlla l'aggiornamento (preparazione per il rilascio di F-Droid)

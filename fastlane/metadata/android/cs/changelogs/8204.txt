@@ -1,0 +1,7 @@
+Přidat: Trvalé zálohování
+Přidat: Výběr kontextové nabídky Uložit/Načíst
+Oprava: Podpora implementací SU, které nejsou založeny na magisku
+Oprava: Přidání nových funkcí: Oprava: Opětovné spuštění stavu aplikace při otočení obrazovky
+Aktualizace: Povolení přecházení mezi stránkami
+Aktualizace: Zjednodušení uživatelského rozhraní
+a mnoho dalších v úplném seznamu změn…

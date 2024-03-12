@@ -1,0 +1,2 @@
+* Opraveno: Odeslání zprávy při chybě (@hg42)
+* Opraveno: Problém s citacemi v procesu zálohování (@hg42)

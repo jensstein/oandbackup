@@ -1,0 +1,2 @@
+**OndBackupX 0.9.14 (aka 1.0.0-rc3)**
+* Vráceno: zpět k čištění mezipaměti

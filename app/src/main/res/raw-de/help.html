@@ -1,0 +1,20 @@
+<html>
+    <body>
+        <p><strong>Sicherungsmodi</strong>: Eine App kann nur mit ihrer APK, nur ihren Daten oder beiden gesichert werden. Eine derzeit nicht installierte App kann nur wiederhergestellt werden, wenn die APK vorhanden ist. Zusätzlich zu den internen Daten werden drei spezielle Datentypen unterstützt: gerätegeschützte Daten, externe Daten und obb-Daten.
+        </p>
+        <p><strong>Sicherung löschen</strong>: Löscht die Sicherungsdateien für eine bestimmte Sicherungsinstanz. Während "Alle Backups löschen" alle Backups der gewählten App löscht.
+        </p>
+        <p><strong>Deinstallieren</strong>: Etwas aggressiver als eine normale Deinstallation. Zusätzlich zu einer normalen Deinstallation über Android-Befehle werden bei der Deinstallation via OAndBackupX Dateien gelöscht, die die Anwendung möglicherweise in /data/app-lib/ zurückgelassen hat.
+        </p>
+        <p><strong>Aktivieren / Deaktivieren</strong>: Verwendet das `pm` Android-Skript zum Aktivieren oder Deaktivieren einer App. Das Deaktivieren einer App entfernt sie aus der normalen Benutzeroberfläche, ohne sie zu deinstallieren. Dies kann verwendet werden, um eine App für mehrere Benutzer gleichzeitig zu aktivieren oder zu deaktivieren (wenn das Gerät mehrere Benutzer hat). Benutzer werden mit einer ID identifiziert, z. B. 0 ist der erste Benutzer (Eigentümer), 10 ist normalerweise das Arbeitsprofil.
+        </p>
+        <p><strong>Mehrere Benutzer</strong>: Mehrere-Benutzer ist noch etwas experimentell, sollte aber funktionieren. Das Aktivieren und Deaktivieren funktioniert nur nach einer Erstinstallation (nicht unbedingt von OAndBackupX) oder Wiederherstellung der App.
+        </p>
+        <p><strong>Systemlose Apps</strong>: Das Sichern und Wiederherstellen von systemlosen Apps, die als Magisk-Module installiert sind, wird nicht unterstützt und das herumprobieren damit könnte zu einem Systemabsturz führen und Sie zwingen, neu zu formatieren und zu flashen.
+        </p>
+        <p><strong> Navigation </strong>: Die Navigationsleiste enthält „Einstellungen“, „Startseite“, „Stapelsicherung“, „Stapelwiederherstellung“ und „Sicherungen planen“ (in dieser Reihenfolge). Die Anzahl der Anwendungen, die nach ihrer letzten Sicherung aktualisiert wurden, wird als Benachrichtigungspunkt auf der Schaltfläche „Startseite“ angezeigt.
+        </p>
+        <p><strong>Anwendungen mit Keystore</strong>: Android verfügt über einen verschlüsselten Speicher für sensible Daten. Anwendungen, die diesen nutzen, um Anmeldedaten oder einige Schlüssel für ihre Funktion zu speichern, können nicht erfolgreich wiederhergestellt werden. Zwei Beispiele für solche Anwendungen sind Signal und Element (Riot).
+        </p>
+    </body>
+</html>

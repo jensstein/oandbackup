@@ -1,0 +1,20 @@
+<html>
+    <body>
+        <p><strong>Backup modes</strong>: An app can be backed up with only its apk, only its data or both. An app not currently installed can only be restored if the apk is present.
+        </p>
+        <p><strong>Delete backup</strong>: Deletes the backup files for the chosen app.
+        </p>
+        <p><strong>Odinstaluj</strong>: Nieco bardziej agresywne niż normalne odinstalowanie. Oprócz normalnego odinstalowywania za pomocą poleceń Androida, odinstalowanie z OAndBackupX usuwa pliki, które aplikacja mogła pozostać w /data/app-lib/.
+        </p>
+        <p><strong> Włącz / wyłącz</strong>: Używa Androidowego skryptu 'pm', aby włączyć lub wyłączyć aplikację. Wyłączenie aplikacji powoduje usunięcie jej z normalnego interfejsu użytkownika bez odinstalowywania. Może to służyć do włączania lub wyłączania aplikacji dla wielu użytkowników na raz (jeśli urządzenie ma wielu użytkowników). Użytkownicy są identyfikowane za pomocą identyfikatora. 0 jest pierwszym użytkownikiem (właścicielem).
+        </p>
+        <p><strong>Wielu użytkowników</strong>: Tryb wielu użytkowników jest jeszcze trochę eksperymentalny, ale powinien działać. Podczas przywracania w scenariuszu wieloużytkownikowym, `pm install -r $apk` zostaje wywołany i następnie aplikacja jest wyłączona dla każdego użytkownika, który ma aplikację wymienioną w /data/system/user/$user/package-restrictions.xml (chyba że aplikacja jest wymieniona jako włączona="1"). <br> Może to spowodować problemy dla użytkowników instalujących tę samą aplikację w późniejszym czasie, ale jest konieczne, aby uniemożliwić instalację aplikacji dla wszystkich użytkowników w tym samym czasie. Menu kontekstowe posiada opcję włączania lub wyłączania aplikacji, z której można korzystać, gdy inni użytkownicy nie będą mogli korzystać z konkretnej aplikacji z powodu wyłączenia funkcji przywracania. <br> Włączanie i wyłączanie działa tylko po pierwszej instalacji (niekoniecznie z OAndBackupx) lub przywróceniu aplikacji.
+        </p>
+        <p><strong>Aplikacje system-less</strong>: Kopia zapasowa i przywracanie aplikacji system-less zainstalowanych jako moduły Magisk nie jest obsługiwana, a jej wypróbowanie może doprowadzić do awarii systemu i zmuszenia do sformatowania i flashowania go od nowa.
+        </p>
+        <p><strong>Nawigacja</strong>: Na pasku nawigacji znajdują się "Ustawienia", "Strona główna", "Masowa kopia zapasowa", "Masowe przywracanie" i "Zaplanuj kopie zapasowe" (w tej kolejności). Liczba aplikacji zaktualizowanych po ostatniej kopii zapasowej będzie prezentowana w formie powiadomienia na przycisku "Strona główna".
+        </p>
+        <p><strong>Aplikacje korzystające z Keystore</strong>: Android posiada zaszyfrowany magazyn dla wrażliwych danych. Aplikacje, które wykorzystują to do przechowywania danych logowania lub niektórych kluczy do swoich funkcji, nie mogą zostać pomyślnie przywrócone. Dwa przykłady takich aplikacji to Signal i Element(Riot).
+        </p>
+    </body>
+</html>

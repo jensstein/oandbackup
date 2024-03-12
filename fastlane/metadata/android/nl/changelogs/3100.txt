@@ -1,0 +1,11 @@
+**OAndBackupX 3.1.0**
+
+* Verwijderd: Android Nougat ondersteuning vervallen
+* Toegevoegd: nieuw tags systeem
+* Toegevoegd: voorkeur biometrische vergrendeling
+* Toegevoegd: persistent aangevinkte items in Batch
+* Bijgewerkt: de gehele UI
+* Bijgewerkt: verander planning van aangepaste app lijst naar het tonen van labels in plaats van pakketnamen
+* Bijgewerkt: verminder de herhaalbaarheid van encryptie AlertDialog
+* Bijgewerkt: zet standaard external data and obb voorkeuren op uit
+* Bijgewerkt:

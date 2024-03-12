@@ -1,0 +1,20 @@
+<html>
+    <body>
+        <p><strong>Moduri de backup</strong>: Unei aplicații i se poate face backup numai cu apk-ul său, numai cu datele sale sau cu ambele. O aplicație neinstalată în prezent poate fi restaurată numai dacă apk-ul este prezent. Trei tipuri speciale de date sunt suportate în plus față de datele principale: datele protejate ale dispozitivului, datele externe și datele obb.
+        </p>
+        <p><strong>Șterge backupul</strong>: Șterge fișierele backupului pentru o anumită instanță a unui backup. În timp ce „șterge backupurile” șterge toate backupurile aplicației alese.
+        </p>
+        <p><strong>Dezinstalează</strong>: Oarecum mai agresiv decât o dezinstalare normală. În plus față de dezinstalarea normală via comenzi de Android, dezinstalarea din OAndBackupX șterge fișierele pe care aplicația le-ar fi putut lăsa în /data/app-lib/.
+        </p>
+        <p><strong>Activează / dezactivează</strong>: Folosește scriptul `pm` al Androidului pentru a activa sau dezactiva o aplicație. Dezactivarea unei aplicații o elimină din interfața normală a utilizatorului fără a o dezinstala. Acest lucru poate fi folosit pentru activarea sau dezactivarea unei aplicații pentru mai mulți utilizatori concomitent (dacă dispozitivul are mai mulți utilizatori). Utilizatorii sunt identificați cu un ID, de ex. 0 este primul utilizator (proprietar), 10 este, de obicei, profilul de lucru.
+        </p>
+        <p><strong>Utilizatori multipli</strong>: Multiutilizator este încă oarecum experimental, dar ar trebui să funcționeze. Activarea și dezactivarea funcționează numai după o instalare inițială (nu neapărat din OAndBackupx) sau după o restaurare a aplicației.
+        </p>
+        <p><strong>Aplicații system-less</strong>: Crearea de backupuri și restaurarea aplicațiilor system-less precum modulele Magisk nu sunt suportate, iar încercarea de a face acest lucru ar putea duce la o defecțiune a sistemului, obligându-te să formatezi și să rescrii SO-ul de la zero.
+        </p>
+        <p><strong>Navigare</strong>: Bara de navigare are „Setări”, „Start”, „Backup în lot”, „Restaurare în lot” și „Planifică backupuri” (în această ordine). Numărul de aplicații actualizate după ultimul lor backup va fi prezentat sub forma unei notificări pe butonul „Start”.
+        </p>
+        <p><strong>Aplicații folosind Keystore</strong>: Android dispune de un spațiu de stocare criptat pentru datele sensibile. Aplicațiile care se folosesc de acesta pentru a stoca date de autentificare sau anumite chei pentru funcționarea sa nu pot fi restaurate cu succes. Două exemple de astfel de aplicații sunt Signal și Element(Riot).
+        </p>
+    </body>
+</html>

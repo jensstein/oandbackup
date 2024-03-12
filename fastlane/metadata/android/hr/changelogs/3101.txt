@@ -1,0 +1,11 @@
+**OAndBackupX 3.1.1**
+
+* Dodano: Uvod
+* Dodano: polje za provjeru lozinke za enkripciju
+* Uklonjeno: preferencija putanje do Busyboxa
+* Popravljeno: prikazivanje trenutnog datuma umjesto zadnje sigurnosne kopije
+* Popravljeno: ne ažurira se oznaka ažuriranja stavki nakon nove sigurnosne kopije
+* Ažurirano: Prijevodi (Norveški, Ruski, Talijanski, Francuski, Nizozemski, Njemački)
+* Ažurirano: zapamti postavljeno sortiranje/filter zadane vrijednosti na true
+* Ažurirano: zadana vrijednost biometrijskog zaključavanja na isključeno
+* Ažurirano: sakrij preglednik zapisa

@@ -1,0 +1,7 @@
+Add: Enable backup/restore in context menu
+Add: DevTools for advanced users
+Update: Revamp the backend for faster loading
+Update: More informative log file format
+Fix: Remove and dismiss AppSheet of uninstalled package with no backups
+Fix: Duplicated schedules
++ more than 350 commits and 60 tranlation contributions
