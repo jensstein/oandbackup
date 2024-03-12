@@ -41,6 +41,7 @@ import com.machiav3lli.backup.activities.MainActivityX
 import com.machiav3lli.backup.dbs.ODatabase
 import com.machiav3lli.backup.dbs.entity.Backup
 import com.machiav3lli.backup.dbs.entity.SpecialInfo
+import com.machiav3lli.backup.handler.AssetHandler
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
 import com.machiav3lli.backup.handler.WorkHandler
@@ -481,6 +482,8 @@ class OABX : Application() {
         // app should always be created
         var refNB: WeakReference<OABX> = WeakReference(null)
         val NB: OABX get() = refNB.get()!!
+
+        val assets get() = AssetHandler(context)
 
         // service might be null
         var serviceRef: WeakReference<ScheduleService> = WeakReference(null)

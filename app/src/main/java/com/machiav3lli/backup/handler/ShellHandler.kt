@@ -20,7 +20,6 @@ package com.machiav3lli.backup.handler
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
-import android.os.Environment.DIRECTORY_DOCUMENTS
 import androidx.core.text.isDigitsOnly
 import com.machiav3lli.backup.OABX
 import com.machiav3lli.backup.OABX.Companion.addErrorCommand
@@ -54,8 +53,6 @@ const val verBugDotDotDirHang = "0.8.3 - 0.8.6"
 const val verBugDotDotDirExtract = "0.8.0 - 0.8.0"  //TODO hg42 more versions?
 
 class ShellHandler {
-
-    var assets: AssetHandler
 
     class UtilBox(
         var name: String = "",
@@ -222,14 +219,6 @@ class ShellHandler {
             Timber.e("No good utilbox found (using $utilBox)")
             //throw UtilboxNotAvailableException(message)
         }
-
-        assets = AssetHandler(OABX.context)
-        scriptDir = assets.directory
-        scriptUserDir = File(
-            OABX.activity?.getExternalFilesDir(DIRECTORY_DOCUMENTS),
-            SCRIPTS_SUBDIR
-        )
-        scriptUserDir?.mkdirs()
     }
 
     @Throws(ShellCommandFailedException::class, UnexpectedCommandResult::class)
@@ -633,14 +622,9 @@ class ShellHandler {
         var utilBox: UtilBox = UtilBox()
         val utilBoxQ get() = utilBox.quote()
 
-        lateinit var scriptDir: File
-            private set
-        var scriptUserDir: File? = null
-            private set
-        val SCRIPTS_SUBDIR = "scripts"
-        val EXCLUDE_CACHE_FILE = "tar_EXCLUDE_CACHE"
-        val BACKUP_EXCLUDE_FILE = "tar_BACKUP_EXCLUDE"
-        val RESTORE_EXCLUDE_FILE = "tar_RESTORE_EXCLUDE"
+        val EXCLUDE_CACHE_FILE = File(OABX.assets.directory, "tar_EXCLUDE_CACHE").toString()
+        val BACKUP_EXCLUDE_FILE = File(OABX.assets.directory, "tar_BACKUP_EXCLUDE").toString()
+        val RESTORE_EXCLUDE_FILE = File(OABX.assets.directory, "tar_RESTORE_EXCLUDE").toString()
 
         val isGrantedRoot get() = Shell.isAppGrantedRoot()
         val hasRootShell get() = Shell.getShell().status >= Shell.ROOT_SHELL
@@ -967,14 +951,22 @@ class ShellHandler {
             }
         }
 
-        fun findAssetFile(assetFileName: String): File? {
+        fun findUserOverridableFile(subDirName: String, fileName: String): File? {
             var found: File? = null
-            scriptUserDir?.let {
-                found = File(it, assetFileName)
+            val userDir = File(
+                OABX.activity?.getExternalFilesDir(null),
+                subDirName
+            )
+            userDir.mkdirs()
+            found = File(userDir, fileName)
+            if (found.isFile != true) {
+                val assetDir = File(OABX.assets.directory, subDirName)
+                found = File(assetDir, fileName)
             }
-            if (found?.isFile != true)
-                found = File(scriptDir, assetFileName)
             return found
         }
+
+        fun findScript(fileName: String): File? = findUserOverridableFile("script", fileName)
+        fun findDefinition(fileName: String): File? = findUserOverridableFile("definition", fileName)
     }
 }

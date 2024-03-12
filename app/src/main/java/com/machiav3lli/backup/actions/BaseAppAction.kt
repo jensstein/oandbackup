@@ -22,6 +22,7 @@ import android.content.pm.PackageManager
 import com.machiav3lli.backup.BuildConfig
 import com.machiav3lli.backup.handler.LogsHandler
 import com.machiav3lli.backup.handler.ShellHandler
+import com.machiav3lli.backup.handler.ShellHandler.Companion.findDefinition
 import com.machiav3lli.backup.handler.ShellHandler.Companion.runAsRoot
 import com.machiav3lli.backup.handler.ShellHandler.Companion.utilBoxQ
 import com.machiav3lli.backup.handler.ShellHandler.ShellCommandFailedException
@@ -63,7 +64,7 @@ abstract class BaseAppAction protected constructor(
     open fun preprocessPackage(type: String, packageName: String) {
         try {
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
-            val script = ShellHandler.findAssetFile("package.sh").toString()
+            val script = ShellHandler.findScript("package.sh").toString()
             traceBold { "---------------------------------------- preprocess $type $packageName uid ${applicationInfo.uid}" }
             if (applicationInfo.uid < android.os.Process.FIRST_APPLICATION_UID) { // exclude several system users, e.g. system, radio
                 Timber.w("$type $packageName: ignore processes of system user UID < ${android.os.Process.FIRST_APPLICATION_UID}")
@@ -95,7 +96,7 @@ abstract class BaseAppAction protected constructor(
     open fun postprocessPackage(type: String, packageName: String) {
         try {
             val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
-            val script = ShellHandler.findAssetFile("package.sh").toString()
+            val script = ShellHandler.findScript("package.sh").toString()
             traceBold { "........................................ postprocess $type $packageName uid ${applicationInfo.uid}" }
             if (applicationInfo.uid < android.os.Process.FIRST_APPLICATION_UID) { // exclude several system users, e.g. system, radio
                 Timber.w("$type $packageName: ignore processes of system user UID < ${android.os.Process.FIRST_APPLICATION_UID}")
@@ -135,36 +136,19 @@ abstract class BaseAppAction protected constructor(
         const val BACKUP_DIR_MEDIA_FILES = "media_files"
 
 
-        val ignoredPackages = Regex(
-                """(?x)(^(
-                  android
-                | com\.(google\.)?android\.shell
-                | com\.(google\.)?android\.systemui
-                | com\.(google\.)?android\.externalstorage
-                | com\.(google\.)?android\.mtp
-                | com\.(google\.)?android\.providers\.downloads\.ui
-                | com\.(google\.)?android\.gms
-                | com\.(google\.)?android\.gsf
-                | com\.(google\.)?android\.providers\.media\b.*
-                )$)"""
+        val ignoredPackages = Regex("""(?x)(^(""" +
+                findDefinition("ignored_packages.regex")!!.readText()
+                + """)$)"""
+        )
+        val doNotStop = Regex("""(?x)(^(""" +
+                findDefinition("do_not_stop.regex")!!.readText()
+                + "|" + Regex.escape(BuildConfig.APPLICATION_ID) + """)$)"""
         )
 
-        val doNotStop = Regex(
-                """(?x)(^(                    
-                  android
-                | com\.(google\.)?android\.shell
-                | com\.(google\.)?android\.systemui
-                | com\.(google\.)?android\.externalstorage
-                | com\.(google\.)?android\.mtp
-                | com\.(google\.)?android\.providers\.downloads\.ui
-                | com\.(google\.)?android\.gms
-                | com\.(google\.)?android\.gsf
-                | com\.(google\.)?android\.providers\.media\b.*
-                | com\.(google\.)?android\.providers\..*
-                | com\.topjohnwu\.magisk
-                | """ + Regex.escape(BuildConfig.APPLICATION_ID) + """
-                )$)"""
-        )
+        init {
+            Timber.i("ignoredPackages = $ignoredPackages")
+            Timber.i("doNotStop = $doNotStop")
+        }
 
         private val preResults = mutableMapOf<String, List<String>>()
 

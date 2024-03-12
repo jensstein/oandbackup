@@ -1,0 +1,18 @@
+# this is an extended regular expression (using flag x)
+# and anchored at both ends (^$)
+
+# alternatives starting with "|" can be disabled by putting "#" at the begin of the line
+
+# processes used by NB should not be stopped (this would be a dead lock)
+
+  android                                               # *the* system
+| com\.(google\.)?android\.systemui                     # *the* ui
+| com\.(google\.)?android\.externalstorage              # storage
+| com\.(google\.)?android\.mtp                          # storage
+| com\.(google\.)?android\.providers\.downloads\.ui     # storage
+| com\.(google\.)?android\.providers\.media\b.*         # storage
+| com\.(google\.)?android\.providers\..*                # service providers might be used by NB
+| com\.(google\.)?android\.shell                        # adb
+| com\.(google\.)?android\.gms                          # framework
+| com\.(google\.)?android\.gsf                          # framework
+| com\.topjohnwu\.magisk                                # not sure if the manager app is used, just stay on the safe side

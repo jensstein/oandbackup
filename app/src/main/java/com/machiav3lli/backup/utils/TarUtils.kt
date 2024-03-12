@@ -204,11 +204,11 @@ fun TarArchiveInputStream.suUnpackTo(targetDir: RootFile, forceOldVersion: Boole
         val relPath = targetFile.relativeTo(targetDir).toString()
         when {
             relPath.isEmpty() ||
-                    relPath in OABX.shellHandler!!.assets.DATA_RESTORE_EXCLUDED_BASENAMES ||
-                    relPath in OABX.shellHandler!!.assets.DATA_EXCLUDED_CACHE_DIRS -> {
+                    relPath in OABX.assets.DATA_RESTORE_EXCLUDED_BASENAMES ||
+                    relPath in OABX.assets.DATA_EXCLUDED_CACHE_DIRS -> {
                 return@forEach
             }
-            tarEntry.isDirectory                        -> {
+            tarEntry.isDirectory                                    -> {
                 if (!targetFile.mkdirs()) {
                     throw IOException("Unable to create folder ${targetFile.absolutePath}")
                 }

@@ -321,9 +321,9 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
             val excludeCache = pref_excludeCache.value
             val allFilesToBackup =
                 shell.suGetDetailedDirectoryContents(sourcePath, true, sourcePath)
-                    .filterNot { f: ShellHandler.FileInfo -> f.filename in OABX.shellHandler!!.assets.DATA_BACKUP_EXCLUDED_BASENAMES } //TODO basenames! not all levels
-                    .filterNot { f: ShellHandler.FileInfo -> f.filename in OABX.shellHandler!!.assets.DATA_EXCLUDED_NAMES }
-                    .filterNot { f: ShellHandler.FileInfo -> excludeCache && f.filename in OABX.shellHandler!!.assets.DATA_EXCLUDED_CACHE_DIRS }
+                    .filterNot { f: ShellHandler.FileInfo -> f.filename in OABX.assets.DATA_BACKUP_EXCLUDED_BASENAMES } //TODO basenames! not all levels
+                    .filterNot { f: ShellHandler.FileInfo -> f.filename in OABX.assets.DATA_EXCLUDED_NAMES }
+                    .filterNot { f: ShellHandler.FileInfo -> excludeCache && f.filename in OABX.assets.DATA_EXCLUDED_CACHE_DIRS }
             allFilesToBackup
         } catch (e: ShellCommandFailedException) {
             throw BackupFailedException("Could not list contents of $sourcePath", e)
@@ -425,15 +425,12 @@ open class BackupAppAction(context: Context, work: AppActionWork?, shell: ShellH
 
         var result = false
         try {
-            val tarScript = ShellHandler.findAssetFile("tar.sh").toString()
-            val exclude = ShellHandler.findAssetFile(ShellHandler.BACKUP_EXCLUDE_FILE).toString()
-            val excludeCache =
-                ShellHandler.findAssetFile(ShellHandler.EXCLUDE_CACHE_FILE).toString()
+            val tarScript = ShellHandler.findScript("tar.sh").toString()
 
             var options = ""
-            options += " --exclude ${quote(exclude)}"
+            options += " --exclude ${quote(ShellHandler.BACKUP_EXCLUDE_FILE)}"
             if (pref_excludeCache.value) {
-                options += " --exclude ${quote(excludeCache)}"
+                options += " --exclude ${quote(ShellHandler.EXCLUDE_CACHE_FILE)}"
             }
 
             val cmd = "sh ${quote(tarScript)} create $utilBoxQ $options ${quote(sourcePath)}"

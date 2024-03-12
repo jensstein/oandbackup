@@ -195,7 +195,7 @@ val pref_backupNoBackupData = BooleanPref(
     icon = Phosphor.ProhibitInset,
     iconTint = ColorData,
     defaultValue = false,
-    onChanged = { OABX.shellHandler!!.assets.updateExcludeFiles() },
+    onChanged = { OABX.assets.updateExcludeFiles() },
 )
 
 val pref_restoreDeviceProtectedData = BooleanPref(
@@ -241,7 +241,7 @@ val pref_restoreNoBackupData = BooleanPref(
     icon = Phosphor.ProhibitInset,
     iconTint = ColorData,
     defaultValue = false,
-    onChanged = { OABX.shellHandler!!.assets.updateExcludeFiles() },
+    onChanged = { OABX.assets.updateExcludeFiles() },
 )
 
 val pref_restorePermissions = BooleanPref(

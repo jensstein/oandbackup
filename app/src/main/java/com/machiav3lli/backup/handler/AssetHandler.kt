@@ -18,10 +18,13 @@ class AssetHandler(context: Context) {
         private set
 
     init {
-        // copy scripts to file storage
+        // copy asset files to file storage
+        // but not if the version file exists and is already from the current app version
+        // the version file is written at the end of the copy to validate the transaction
+        // this may upgrade or downgrade files, but always all at once
+
         directory = File(context.filesDir, ASSETS_SUBDIR)
         directory.mkdirs()
-        // don't copy if the files exist and are from the current app version
         val appVersion = BuildConfig.VERSION_NAME
         val version = try {
             File(directory, VERSION_FILE).readText()
@@ -30,14 +33,14 @@ class AssetHandler(context: Context) {
         }
         if (version != appVersion) {
             try {
-                // cleans assetDir and copiers asset files
+                // cleans each directory and then copies the files
                 context.assets.copyRecursively("files", directory)
-                // additional generated files
+                // add some generated files because the app version changed
                 updateExcludeFiles()
-                // validate with version file if completed
+                // finish transaction by writing the version file
                 File(directory, VERSION_FILE).writeText(appVersion)
             } catch (e: Throwable) {
-                Timber.w("cannot copy scripts to ${directory}")
+                Timber.w("cannot copy asset files to ${directory}")
             }
         }
     }
@@ -72,19 +75,19 @@ class AssetHandler(context: Context) {
 
     fun updateExcludeFiles() {
 
-        File(directory, ShellHandler.BACKUP_EXCLUDE_FILE)
+        File(ShellHandler.BACKUP_EXCLUDE_FILE)
             .writeText(
                 (DATA_BACKUP_EXCLUDED_BASENAMES.map { "./$it" }
                         + DATA_EXCLUDED_NAMES)
                     .joinToString("") { it + "\n" }
             )
-        File(directory, ShellHandler.RESTORE_EXCLUDE_FILE)
+        File(ShellHandler.RESTORE_EXCLUDE_FILE)
             .writeText(
                 (DATA_RESTORE_EXCLUDED_BASENAMES.map { "./$it" }
                         + DATA_EXCLUDED_NAMES)
                     .joinToString("") { it + "\n" }
             )
-        File(directory, ShellHandler.EXCLUDE_CACHE_FILE)
+        File(ShellHandler.EXCLUDE_CACHE_FILE)
             .writeText(
                 DATA_EXCLUDED_CACHE_DIRS.map { "./$it" }
                     .joinToString("") { it + "\n" }
