@@ -139,7 +139,7 @@ fun ProgressIndicator() {
                 .height(4.dp),
             trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
             color = MaterialTheme.colorScheme.primary,
-            progress = max(0.02f, progress.second)
+            progress = { max(0.02f, progress.second) }
         )
     }
 }

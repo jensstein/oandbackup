@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
@@ -120,44 +119,6 @@ fun <T : Any> VerticalItemList(
                             // unfortunately the sizes are private
                         )
                     }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun <T> SizedItemList(
-    modifier: Modifier = Modifier,
-    itemHeight: Int,
-    list: List<T>?,
-    itemKey: ((T) -> Any)? = null,
-    itemContent: @Composable LazyItemScope.(T) -> Unit,
-) {
-    Box(
-        modifier = modifier
-            .background(MaterialTheme.colorScheme.surfaceContainerLowest)
-            .requiredHeight(if (list != null) (list.size * (8 + itemHeight) + 8).dp else 20.dp),
-        contentAlignment = if (list.isNullOrEmpty()) Alignment.Center else Alignment.TopStart
-    ) {
-        when {
-            list == null   -> Text(
-                text = stringResource(id = R.string.loading_list),
-                color = MaterialTheme.colorScheme.onSurface
-            )
-
-            list.isEmpty() -> Text(
-                text = stringResource(id = R.string.empty_filtered_list),
-                color = MaterialTheme.colorScheme.onSurface
-            )
-
-            else           -> {
-                // TODO add scrollbars
-                LazyColumn(
-                    verticalArrangement = Arrangement.Absolute.spacedBy(8.dp),
-                    contentPadding = PaddingValues(vertical = 8.dp, horizontal = 8.dp),
-                ) {
-                    items(items = list, key = itemKey, itemContent = itemContent)
                 }
             }
         }

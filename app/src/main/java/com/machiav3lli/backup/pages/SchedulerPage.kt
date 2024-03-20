@@ -42,7 +42,6 @@ import com.machiav3lli.backup.R
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.sheets.ScheduleSheet
 import com.machiav3lli.backup.sheets.Sheet
-import com.machiav3lli.backup.ui.compose.blockBorder
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CalendarPlus
 import com.machiav3lli.backup.ui.compose.recycler.ScheduleRecycler
@@ -84,9 +83,7 @@ fun SchedulerPage(viewModel: SchedulerViewModel) {
         }
     ) {
         ScheduleRecycler(
-            modifier = Modifier
-                .blockBorder()
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             productsList = schedules,
             onClick = { item ->
                 scheduleSheetId.longValue = item.id

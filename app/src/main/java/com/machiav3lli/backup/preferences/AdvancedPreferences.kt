@@ -179,12 +179,6 @@ val pref_hideBackupLabels = BooleanPref(
     defaultValue = false
 )
 
-val pref_allPrefsShouldLookEqual = BooleanPref(
-    key = "dev-adv.allPrefsShouldLookEqual",
-    summary = "all preferences should be worth the same 🙂 regardless of their position in the list, meaning: don't shade backgrounds from top to bottom",
-    defaultValue = false
-)
-
 val pref_cancelOnStart = BooleanPref(
     key = "dev-adv.cancelOnStart",
     summaryId = R.string.prefs_cancelonstart_summary,

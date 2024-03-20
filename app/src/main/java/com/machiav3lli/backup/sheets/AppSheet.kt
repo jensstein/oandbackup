@@ -249,6 +249,7 @@ fun AppSheet(
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
+                    InfoChipsBlock(list = pkg.infoChips())
                     Spacer(Modifier.height(8.dp))
                     if (snackbarVisible)
                         LinearProgressIndicator(
@@ -273,9 +274,6 @@ fun AppSheet(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(8.dp)
             ) {
-                item(span = { GridItemSpan(columns) }) {
-                    InfoChipsBlock(list = pkg.infoChips())
-                }
                 item {
                     AnimatedVisibility(visible = !pkg.isSpecial) {
                         CardButton(

@@ -55,7 +55,6 @@ import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.preferences.pref_singularBackupRestore
 import com.machiav3lli.backup.sheets.BatchPrefsSheet
 import com.machiav3lli.backup.sheets.Sheet
-import com.machiav3lli.backup.ui.compose.blockBorder
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.DiamondsFour
 import com.machiav3lli.backup.ui.compose.icons.phosphor.HardDrives
@@ -114,7 +113,6 @@ fun BatchPage(viewModel: BatchViewModel, backupBoolean: Boolean) {
         ) {
             BatchPackageRecycler(
                 modifier = Modifier
-                    .blockBorder()
                     .weight(1f, true)
                     .fillMaxSize(),
                 productsList = workList,

@@ -218,7 +218,7 @@ fun RefreshButton(
         return
 
     val (angle, scale) = if (isBusy) {
-        val infiniteTransition = rememberInfiniteTransition()
+        val infiniteTransition = rememberInfiniteTransition(label = "infiniteTransition")
 
         // Animate from 0f to 1f
         val animationProgress by infiniteTransition.animateFloat(
@@ -229,7 +229,7 @@ fun RefreshButton(
                     durationMillis = pref_busyIconTurnTime.value,
                     easing = LinearEasing
                 )
-            )
+            ), label = "animationProgress"
         )
         val angle = 360f * animationProgress
         val scale = 0.01f * pref_busyIconScale.value
@@ -454,10 +454,6 @@ fun CardButton(
                 enabled = enabled,
             ),
         colors = ListItemDefaults.colors(
-            /*headlineColor = (if (isSystemInDarkTheme()) contentColor.brighter(0.3f)
-            else contentColor.darker(0.3f)).copy(alpha = 0.8f),
-            leadingIconColor = (if (isSystemInDarkTheme()) contentColor.brighter(0.3f)
-            else contentColor.darker(0.3f)).copy(alpha = 0.8f),*/
             leadingIconColor = contentColor,
             headlineColor = contentColor,
             containerColor = containerColor,
@@ -1129,17 +1125,6 @@ fun TitleText(
     style = MaterialTheme.typography.titleMedium,
     fontWeight = FontWeight.Bold,
     modifier = modifier
-)
-
-@Composable
-fun CategoryTitleText(
-    textId: Int,
-    modifier: Modifier = Modifier,
-) = Text(
-    modifier = modifier.fillMaxWidth(),
-    text = stringResource(id = textId),
-    textAlign = TextAlign.Center,
-    style = MaterialTheme.typography.titleLarge
 )
 
 @Composable

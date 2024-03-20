@@ -29,7 +29,6 @@ import com.machiav3lli.backup.handler.BackupRestoreHelper
 import com.machiav3lli.backup.handler.showNotification
 import com.machiav3lli.backup.items.Package
 import com.machiav3lli.backup.preferences.ui.PrefsGroup
-import com.machiav3lli.backup.ui.compose.blockBorder
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.AndroidLogo
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Bug
@@ -73,9 +72,7 @@ fun ToolsPrefsPage(navController: NavHostController) {
     ) {
 
         BusyBackground(
-            modifier = Modifier
-                .blockBorder()
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
             LazyColumn(
                 modifier = Modifier

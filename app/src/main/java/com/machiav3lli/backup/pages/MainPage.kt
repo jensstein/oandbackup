@@ -55,6 +55,7 @@ import com.machiav3lli.backup.pref_catchUncaughtException
 import com.machiav3lli.backup.pref_uncaughtExceptionsJumpToPreferences
 import com.machiav3lli.backup.sheets.Sheet
 import com.machiav3lli.backup.sheets.SortFilterSheet
+import com.machiav3lli.backup.ui.compose.blockBorder
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.FunnelSimple
 import com.machiav3lli.backup.ui.compose.icons.phosphor.GearSix
@@ -216,7 +217,9 @@ fun MainPage(
     ) { paddingValues ->
 
         SlidePager(
-            modifier = Modifier.padding(paddingValues),
+            modifier = Modifier
+                .padding(paddingValues)
+                .blockBorder(),
             pagerState = pagerState,
             pageItems = pages,
             navController = navController

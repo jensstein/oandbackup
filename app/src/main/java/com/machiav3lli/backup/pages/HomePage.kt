@@ -62,7 +62,6 @@ import com.machiav3lli.backup.preferences.pref_menuButtonAlwaysVisible
 import com.machiav3lli.backup.sheets.AppSheet
 import com.machiav3lli.backup.sheets.Sheet
 import com.machiav3lli.backup.traceCompose
-import com.machiav3lli.backup.ui.compose.blockBorder
 import com.machiav3lli.backup.ui.compose.icons.Phosphor
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CaretDown
 import com.machiav3lli.backup.ui.compose.icons.phosphor.CircleWavyWarning
@@ -218,9 +217,7 @@ fun HomePage() {
         }
     ) {
         HomePackageRecycler(
-            modifier = Modifier
-                .blockBorder()
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             productsList = filteredList,
             selection = selection,
             onLongClick = { item ->
