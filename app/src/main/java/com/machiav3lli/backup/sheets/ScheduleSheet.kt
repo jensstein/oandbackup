@@ -52,7 +52,11 @@ import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.machiav3lli.backup.MAIN_FILTER_DEFAULT
+import com.machiav3lli.backup.MAIN_FILTER_DEFAULT_WITHOUT_SPECIAL
+import com.machiav3lli.backup.MODE_APK
 import com.machiav3lli.backup.R
+import com.machiav3lli.backup.SPECIAL_FILTER_ALL
 import com.machiav3lli.backup.dbs.entity.Schedule
 import com.machiav3lli.backup.dialogs.BaseDialog
 import com.machiav3lli.backup.dialogs.BlockListDialogUI
@@ -76,9 +80,9 @@ import com.machiav3lli.backup.ui.compose.icons.phosphor.Play
 import com.machiav3lli.backup.ui.compose.icons.phosphor.Prohibit
 import com.machiav3lli.backup.ui.compose.icons.phosphor.TrashSimple
 import com.machiav3lli.backup.ui.compose.item.CardButton
-import com.machiav3lli.backup.ui.compose.item.CategoryTitleText
 import com.machiav3lli.backup.ui.compose.item.CheckChip
 import com.machiav3lli.backup.ui.compose.item.ElevatedActionButton
+import com.machiav3lli.backup.ui.compose.item.ExpandableBlock
 import com.machiav3lli.backup.ui.compose.item.RoundButton
 import com.machiav3lli.backup.ui.compose.item.TitleText
 import com.machiav3lli.backup.ui.compose.recycler.MultiSelectableChipGroup
@@ -113,7 +117,7 @@ fun ScheduleSheet(
     val dialogProps: MutableState<Pair<Int, Schedule>> = remember {
         mutableStateOf(Pair(DIALOG_NONE, Schedule()))
     }
-    val schedule by viewModel.schedule.collectAsState(Schedule(0))
+    val schedule by viewModel.schedule.collectAsState(null)
     val customList by viewModel.customList.collectAsState(emptySet())
     val blockList by viewModel.blockList.collectAsState(emptySet())
     val nestedScrollConnection = rememberNestedScrollInteropConnection()
@@ -121,8 +125,6 @@ fun ScheduleSheet(
     schedule?.let { schedule ->
         val (absTime, relTime) = timeLeft(schedule, CoroutineScope(Dispatchers.Default))
             .collectAsState().value
-
-        //traceDebug { "*** recompose schedule <<- ${schedule}" }
 
 
         fun refresh(
@@ -283,83 +285,105 @@ fun ScheduleSheet(
                         }
                     }
                 }
-
-                item { CategoryTitleText(R.string.filters_app) }
                 item {
-                    MultiSelectableChipGroup(
-                        list = if (specialBackupsEnabled)
-                            mainFilterChipItems
-                        else
-                            mainFilterChipItems.minus(ChipItem.Special),
-                        //selectedFlags = schedule.filter
-                        selectedFlags = schedule.filter
-                    ) { flags, flag ->
-                        //traceDebug { "*** onClick filter ${schedule.filter} xor ${flag} -> $flags (${schedule.filter xor flag})" }
-                        refresh(
-                            schedule.copy(filter = flags),
-                            false,
-                        )
+                    ExpandableBlock(
+                        heading = stringResource(id = R.string.filters_app),
+                        preExpanded = schedule.filter != if (specialBackupsEnabled) MAIN_FILTER_DEFAULT
+                        else MAIN_FILTER_DEFAULT_WITHOUT_SPECIAL,
+                    ) {
+                        MultiSelectableChipGroup(
+                            list = if (specialBackupsEnabled)
+                                mainFilterChipItems
+                            else
+                                mainFilterChipItems.minus(ChipItem.Special),
+                            selectedFlags = schedule.filter
+                        ) { flags, flag ->
+                            refresh(
+                                schedule.copy(filter = flags),
+                                false,
+                            )
+                        }
                     }
                 }
-                item { CategoryTitleText(R.string.filters_backup) }
                 item {
-                    MultiSelectableChipGroup(
-                        list = scheduleBackupModeChipItems,
-                        selectedFlags = schedule.mode
-                    ) { flags, flag ->
-                        traceDebug { "*** onClick mode ${schedule.mode} xor $flag -> $flags (${schedule.mode xor flag})" }
-                        refresh(
-                            schedule.copy(mode = flags),
-                            false,
-                        )
+                    ExpandableBlock(
+                        heading = stringResource(id = R.string.filters_backup),
+                        preExpanded = schedule.mode != MODE_APK,
+                    ) {
+                        MultiSelectableChipGroup(
+                            list = scheduleBackupModeChipItems,
+                            selectedFlags = schedule.mode
+                        ) { flags, flag ->
+                            traceDebug { "*** onClick mode ${schedule.mode} xor $flag -> $flags (${schedule.mode xor flag})" }
+                            refresh(
+                                schedule.copy(mode = flags),
+                                false,
+                            )
+                        }
                     }
                 }
-                item { CategoryTitleText(R.string.filters_launchable) }
                 item {
-                    SelectableChipGroup(
-                        list = launchableFilterChipItems,
-                        selectedFlag = schedule.launchableFilter
-                    ) { flag ->
-                        refresh(
-                            schedule.copy(launchableFilter = flag),
-                            false,
-                        )
+                    ExpandableBlock(
+                        heading = stringResource(id = R.string.filters_launchable),
+                        preExpanded = schedule.launchableFilter != SPECIAL_FILTER_ALL,
+                    ) {
+                        SelectableChipGroup(
+                            list = launchableFilterChipItems,
+                            selectedFlag = schedule.launchableFilter
+                        ) { flag ->
+                            refresh(
+                                schedule.copy(launchableFilter = flag),
+                                false,
+                            )
+                        }
                     }
                 }
-                item { CategoryTitleText(R.string.filters_updated) }
                 item {
-                    SelectableChipGroup(
-                        list = updatedFilterChipItems,
-                        selectedFlag = schedule.updatedFilter
-                    ) { flag ->
-                        refresh(
-                            schedule.copy(updatedFilter = flag),
-                            false,
-                        )
+                    ExpandableBlock(
+                        heading = stringResource(id = R.string.filters_updated),
+                        preExpanded = schedule.updatedFilter != SPECIAL_FILTER_ALL,
+                    ) {
+                        SelectableChipGroup(
+                            list = updatedFilterChipItems,
+                            selectedFlag = schedule.updatedFilter
+                        ) { flag ->
+                            refresh(
+                                schedule.copy(updatedFilter = flag),
+                                false,
+                            )
+                        }
                     }
                 }
-                item { CategoryTitleText(R.string.filters_latest) }
                 item {
-                    SelectableChipGroup(
-                        list = latestFilterChipItems,
-                        selectedFlag = schedule.latestFilter
-                    ) { flag ->
-                        refresh(
-                            schedule.copy(latestFilter = flag),
-                            false,
-                        )
+                    ExpandableBlock(
+                        heading = stringResource(id = R.string.filters_latest),
+                        preExpanded = schedule.latestFilter != SPECIAL_FILTER_ALL,
+                    ) {
+                        SelectableChipGroup(
+                            list = latestFilterChipItems,
+                            selectedFlag = schedule.latestFilter
+                        ) { flag ->
+                            refresh(
+                                schedule.copy(latestFilter = flag),
+                                false,
+                            )
+                        }
                     }
                 }
-                item { CategoryTitleText(R.string.filters_enabled) }
                 item {
-                    SelectableChipGroup(
-                        list = enabledFilterChipItems,
-                        selectedFlag = schedule.enabledFilter
-                    ) { flag ->
-                        refresh(
-                            schedule.copy(enabledFilter = flag),
-                            false,
-                        )
+                    ExpandableBlock(
+                        heading = stringResource(id = R.string.filters_enabled),
+                        preExpanded = schedule.enabledFilter != SPECIAL_FILTER_ALL,
+                    ) {
+                        SelectableChipGroup(
+                            list = enabledFilterChipItems,
+                            selectedFlag = schedule.enabledFilter
+                        ) { flag ->
+                            refresh(
+                                schedule.copy(enabledFilter = flag),
+                                false,
+                            )
+                        }
                     }
                 }
             }
