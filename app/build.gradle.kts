@@ -21,31 +21,31 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("plugin.serialization").version("1.9.22")
-    id("com.google.devtools.ksp") version ("1.9.22-1.0.16")
+    id("com.google.devtools.ksp") version ("1.9.22-1.0.18")
 }
 
 val vActivity = "1.8.2"
-val vAccompanist = "0.33.2-alpha"
+val vAccompanist = "0.34.0"
 val vBiometric = "1.2.0-alpha05"
-val vCoil = "2.5.0"
-val vCommonsCompress = "1.25.0"
+val vCoil = "2.6.0"
+val vCommonsCompress = "1.26.1"
 val vCommonsIO = "2.15.1"
-val vComposeCompiler = "1.5.8"
-val vCompose = "1.6.0-beta03"
-val vComposeM3 = "1.2.0-beta02"
+val vComposeCompiler = "1.5.10"
+val vCompose = "1.6.3"
+val vComposeM3 = "1.2.1"
 val vDatastore = "1.0.0"
-val vKAML = "0.56.0"
+val vKAML = "0.57.0"
 val vKotlin = "1.9.22"
-val vKSP = "1.0.16"
+val vKSP = "1.0.18"
 val vLibsu = "5.2.2"
-val vLifecycle = "2.6.2"
+val vLifecycle = "2.7.0"
 val vMaterial = "1.11.0"
-val vNavigation = "2.7.6"
+val vNavigation = "2.7.7"
 val vPreference = "1.2.1"
 val vRoom = "2.6.1"
 val vSecurity = "1.1.0-alpha06"
 val vSemVer = "4.2.1"
-val vSerialization = "1.6.2"
+val vSerialization = "1.6.3"
 val vTimber = "5.0.1"
 val vWork = "2.9.0"
 
