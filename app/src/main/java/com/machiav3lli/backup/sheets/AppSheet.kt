@@ -214,8 +214,7 @@ fun AppSheet(
                                 softWrap = true,
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                style = MaterialTheme.typography.labelMedium,
                             )
                         }
                         AnimatedVisibility(visible = pkg.isInstalled && !pkg.isSpecial) {

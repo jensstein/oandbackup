@@ -538,10 +538,9 @@ fun TerminalPage() {
             }
             Box(
                 modifier = Modifier
-                    .padding(vertical = 8.dp)
+                    .padding(4.dp)
                     .blockBorder()
                     .weight(1f)
-                    .padding(0.dp)
             ) {
                 TerminalText(output, limitLines = 0, scrollOnAdd = true)
             }
@@ -648,14 +647,13 @@ fun TerminalText(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color = MaterialTheme.colorScheme.surfaceContainer),
+                .background(color = MaterialTheme.colorScheme.surfaceContainerHigh),
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically,
         ) {
             //val focusManager = LocalFocusManager.current
 
             TextField(modifier = Modifier
-                .padding(0.dp)
                 .weight(1f),
                 value = search,
                 singleLine = true,

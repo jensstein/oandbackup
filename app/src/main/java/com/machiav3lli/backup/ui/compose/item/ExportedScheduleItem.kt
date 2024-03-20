@@ -83,7 +83,7 @@ fun ExportedScheduleItem(
                         softWrap = true,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1,
-                        style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.labelMedium,
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     ScheduleTypes(item = item)

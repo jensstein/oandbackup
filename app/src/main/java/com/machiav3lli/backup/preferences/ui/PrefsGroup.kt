@@ -1,24 +1,19 @@
 package com.machiav3lli.backup.preferences.ui
 
 import androidx.annotation.StringRes
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -27,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -37,37 +31,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.machiav3lli.backup.BUTTON_SIZE_MEDIUM
+import com.machiav3lli.backup.ICON_SIZE_MEDIUM
 import com.machiav3lli.backup.traceDebug
-import com.machiav3lli.backup.ui.compose.item.PrefIcon
+import com.machiav3lli.backup.ui.compose.item.ExpandableBlock
 import com.machiav3lli.backup.ui.item.Pref
 
 @Composable
 fun PrefsGroupCollapsed(prefs: List<Pref>, heading: String) {
-    val (expanded, expand) = remember { mutableStateOf(false) }
-
     if (prefs.isNotEmpty())
-        Card(
-            modifier = Modifier
-                .clip(CardDefaults.shape)
-                .clickable { expand(!expanded) },
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                contentColor = MaterialTheme.colorScheme.onSurface,
-            ),
+        ExpandableBlock(
+            heading = heading,
         ) {
-            PrefsGroupHeading(heading = heading)
-            AnimatedVisibility(
-                visible = expanded,
-                modifier = Modifier.padding(
-                    start = 12.dp,
-                    end = 12.dp,
-                    bottom = 12.dp,
-                ),
-                enter = expandVertically() + fadeIn(),
-                exit = shrinkVertically() + fadeOut(),
-            ) {
-                PrefsGroup(prefs = prefs, heading = null)
-            }
+            PrefsGroup(prefs = prefs, heading = null)
         }
 }
 
@@ -102,7 +77,7 @@ fun PrefsGroup(
         modifier = modifier,
         heading = heading
     ) {
-        if (prefs.size > 0) {
+        if (prefs.isNotEmpty()) {
             prefs.forEachIndexed { index, pref ->
                 val value = remember(pref.toString()) { mutableStateOf(pref.toString()) }
                 traceDebug { "${pref.key} = ${value.value}" }
@@ -152,42 +127,41 @@ fun PrefsExpandableGroupHeader(
     icon: ImageVector,
     onClick: (() -> Unit),
 ) {
-    HorizontalDivider(thickness = 2.dp)
+    HorizontalDivider(thickness = 2.dp, modifier = Modifier.clip(MaterialTheme.shapes.extraLarge))
     Spacer(modifier = Modifier.height(8.dp))
-    Card(
+
+    ListItem(
         modifier = modifier
             .fillMaxWidth()
-            .clip(MaterialTheme.shapes.medium)
+            .clip(MaterialTheme.shapes.large)
             .clickable { onClick() },
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-            contentColor = MaterialTheme.colorScheme.onSurface,
+        colors = ListItemDefaults.colors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            leadingIconColor = MaterialTheme.colorScheme.onSurface,
         ),
-    ) {
-        Row(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            PrefIcon(icon = icon, text = stringResource(id = titleId))
-            Spacer(modifier = Modifier.requiredWidth(8.dp))
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
+        leadingContent = {
+            Icon(
+                imageVector = icon,
+                contentDescription = stringResource(id = titleId),
+                modifier = Modifier
+                    .padding(vertical = 12.dp)
+                    .size(ICON_SIZE_MEDIUM),
+            )
+        },
+        headlineContent = {
+            Text(
+                text = stringResource(id = titleId),
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.titleMedium
+            )
+        },
+        supportingContent = {
+            if (summaryId != -1) {
                 Text(
-                    text = stringResource(id = titleId),
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.titleMedium
+                    text = stringResource(id = summaryId),
+                    style = MaterialTheme.typography.labelMedium,
                 )
-                if (summaryId != -1) {
-                    Text(
-                        text = stringResource(id = summaryId),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
             }
-        }
-    }
+        },
+    )
 }

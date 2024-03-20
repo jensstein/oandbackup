@@ -49,7 +49,7 @@ fun BackupItem(
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.large),
         colors = ListItemDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
         ),
         headlineContent = {
             Row(modifier = Modifier.fillMaxWidth()) {
@@ -70,28 +70,28 @@ fun BackupItem(
                     softWrap = true,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    style = MaterialTheme.typography.labelMedium,
                 )
                 BackupLabels(item = item)
             }
         },
         supportingContent = {
             Column {
-                Row(modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Row(
-                        modifier = Modifier
-                            .align(Alignment.Top)
-                            .weight(1f, fill = true)
+                        modifier = Modifier.weight(1f, fill = true)
                     ) {
                         Text(
                             text = item.backupDate.format(BACKUP_DATE_TIME_SHOW_FORMATTER),
                             modifier = Modifier.align(Alignment.Top),
                             softWrap = true,
                             overflow = TextOverflow.Ellipsis,
-                            maxLines = 2,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            maxLines = 1,
+                            style = MaterialTheme.typography.labelMedium,
                         )
                         if (item.tag.isNotEmpty())
                             Text(
@@ -99,64 +99,52 @@ fun BackupItem(
                                 modifier = Modifier.align(Alignment.Top),
                                 softWrap = true,
                                 overflow = TextOverflow.Ellipsis,
-                                maxLines = 2,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                maxLines = 1,
+                                style = MaterialTheme.typography.labelMedium,
                             )
                     }
-                    Text(
-                        text = if (item.backupVersionCode == 0) "old" else "${item.backupVersionCode / 1000}.${item.backupVersionCode % 1000}",
-                        modifier = Modifier.align(Alignment.Top),
-                        softWrap = true,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    AnimatedVisibility(visible = item.isEncrypted) {
-                        val description = "${item.cipherType}"
-                        val showTooltip = remember { mutableStateOf(false) }
-                        if (showTooltip.value) {
-                            Tooltip(description, showTooltip)
-                        }
+                    Row {
                         Text(
-                            text = " - enc",
-                            modifier = Modifier
-                                .combinedClickable(
-                                    onClick = {},
-                                    onLongClick = { showTooltip.value = true }
-                                )
-                                .align(Alignment.Top),
+                            text = if (item.backupVersionCode == 0) "old" else "${item.backupVersionCode / 1000}.${item.backupVersionCode % 1000}",
                             softWrap = true,
                             overflow = TextOverflow.Ellipsis,
-                            maxLines = 2,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            maxLines = 1,
+                            style = MaterialTheme.typography.labelMedium,
                         )
-                    }
-                    AnimatedVisibility(visible = item.isCompressed) {
+                        AnimatedVisibility(visible = item.isEncrypted) {
+                            val description = "${item.cipherType}"
+                            val showTooltip = remember { mutableStateOf(false) }
+                            if (showTooltip.value) {
+                                Tooltip(description, showTooltip)
+                            }
+                            Text(
+                                text = " - enc",
+                                modifier = Modifier
+                                    .combinedClickable(
+                                        onClick = {},
+                                        onLongClick = { showTooltip.value = true }
+                                    ),
+                                softWrap = true,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 2,
+                                style = MaterialTheme.typography.labelMedium,
+                            )
+                        }
+                        val compressionText = if (item.isCompressed)
+                            " - ${item.compressionType?.replace("/", " ")}"
+                        else ""
+                        val fileSizeText = if (item.backupVersionCode != 0)
+                            " - ${Formatter.formatFileSize(LocalContext.current, item.size)}"
+                        else ""
                         Text(
-                            text = " - ${item.compressionType?.replace("/", " ")}",
+                            text = compressionText + fileSizeText,
                             modifier = Modifier.align(Alignment.Top),
                             softWrap = true,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            style = MaterialTheme.typography.labelMedium,
                         )
                     }
-                    Text(
-                        text = if (item.backupVersionCode == 0) "" else " - ${
-                            Formatter.formatFileSize(
-                                LocalContext.current,
-                                item.size
-                            )
-                        }",
-                        modifier = Modifier.align(Alignment.Top),
-                        maxLines = 1,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
                 }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -219,7 +207,7 @@ fun RestoreBackupItem(
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.large),
         colors = ListItemDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
         ),
         leadingContent = {
             Row {
@@ -259,92 +247,77 @@ fun RestoreBackupItem(
                     softWrap = true,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    style = MaterialTheme.typography.labelMedium,
                 )
                 BackupLabels(item = item)
             }
         },
         supportingContent = {
-            Row(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Row(
-                    modifier = Modifier
-                        .align(Alignment.Top)
-                        .weight(1f, fill = true)
+                    modifier = Modifier.weight(1f, fill = true)
                 ) {
                     Text(
                         text = item.backupDate.format(BACKUP_DATE_TIME_SHOW_FORMATTER),
-                        modifier = Modifier.align(Alignment.Top),
                         softWrap = true,
                         overflow = TextOverflow.Ellipsis,
-                        maxLines = 2,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        maxLines = 1,
+                        style = MaterialTheme.typography.labelMedium,
                     )
                     if (item.tag.isNotEmpty())
                         Text(
                             text = " - ${item.tag}",
-                            modifier = Modifier.align(Alignment.Top),
                             softWrap = true,
                             overflow = TextOverflow.Ellipsis,
-                            maxLines = 2,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            maxLines = 1,
+                            style = MaterialTheme.typography.labelMedium,
                         )
                 }
-                Text(
-                    text = if (item.backupVersionCode == 0) "old" else "${item.backupVersionCode / 1000}.${item.backupVersionCode % 1000}",
-                    modifier = Modifier.align(Alignment.Top),
-                    softWrap = true,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                AnimatedVisibility(visible = item.isEncrypted) {
-                    val description = "${item.cipherType}"
-                    val showTooltip = remember { mutableStateOf(false) }
-                    if (showTooltip.value) {
-                        Tooltip(description, showTooltip)
-                    }
+                Row {
                     Text(
-                        text = " - enc",
-                        modifier = Modifier
-                            .combinedClickable(
-                                onClick = {},
-                                onLongClick = { showTooltip.value = true }
-                            )
-                            .align(Alignment.Top),
-                        softWrap = true,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 2,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-                AnimatedVisibility(visible = item.isCompressed) {
-                    Text(
-                        text = " - ${item.compressionType?.replace("/", " ")}",
-                        modifier = Modifier.align(Alignment.Top),
+                        text = if (item.backupVersionCode == 0) "old" else "${item.backupVersionCode / 1000}.${item.backupVersionCode % 1000}",
                         softWrap = true,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        style = MaterialTheme.typography.labelMedium,
+                    )
+                    AnimatedVisibility(visible = item.isEncrypted) {
+                        val description = "${item.cipherType}"
+                        val showTooltip = remember { mutableStateOf(false) }
+                        if (showTooltip.value) {
+                            Tooltip(description, showTooltip)
+                        }
+                        Text(
+                            text = " - enc",
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onClick = {},
+                                    onLongClick = { showTooltip.value = true }
+                                ),
+                            softWrap = true,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1,
+                            style = MaterialTheme.typography.labelMedium,
+                        )
+                    }
+                    val compressionText = if (item.isCompressed)
+                        " - ${item.compressionType?.replace("/", " ")}"
+                    else ""
+                    val fileSizeText = if (item.backupVersionCode != 0)
+                        " - ${Formatter.formatFileSize(LocalContext.current, item.size)}"
+                    else ""
+                    Text(
+                        text = compressionText + fileSizeText,
+                        softWrap = true,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.labelMedium,
                     )
                 }
-                Text(
-                    text = if (item.backupVersionCode == 0) "" else " - ${
-                        Formatter.formatFileSize(
-                            LocalContext.current,
-                            item.size
-                        )
-                    }",
-                    modifier = Modifier.align(Alignment.Top),
-                    maxLines = 1,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
             }
         }
     )

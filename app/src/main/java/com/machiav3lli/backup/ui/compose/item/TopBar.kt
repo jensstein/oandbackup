@@ -30,7 +30,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -138,7 +137,7 @@ fun ProgressIndicator() {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(4.dp),
-            trackColor = MaterialTheme.colorScheme.surfaceColorAtElevation(10.dp),
+            trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
             color = MaterialTheme.colorScheme.primary,
             progress = max(0.02f, progress.second)
         )
@@ -203,10 +202,9 @@ fun TitleOrInfoLog(
 
                 Text(
                     text = infoLogText,
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.labelMedium,
                     fontSize = 9.0.sp,
                     lineHeight = 9.0.sp,
-                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(
@@ -343,10 +341,13 @@ fun ExpandedSearchView(
             onQueryChanged(it.text)
         },
         modifier = modifier
+            .padding(horizontal = 8.dp)
             .fillMaxWidth()
             .focusRequester(textFieldFocusRequester),
         singleLine = true,
         colors = TextFieldDefaults.colors(
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
             unfocusedIndicatorColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
         ),

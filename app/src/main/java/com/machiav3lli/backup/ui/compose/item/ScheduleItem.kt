@@ -82,7 +82,7 @@ fun ScheduleItem(
                     softWrap = true,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 2,
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.labelMedium,
                 )
                 ScheduleTypes(item = schedule)
             }

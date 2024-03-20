@@ -74,7 +74,7 @@ fun PrefsPage(
     }
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+        containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onSurface,
         topBar = {
             TopBar(title = stringResource(id = currentPage.title)) {

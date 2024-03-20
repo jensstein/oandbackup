@@ -125,7 +125,7 @@ fun BatchPackageItem(
                     softWrap = true,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.labelMedium,
                 )
                 AnimatedVisibility(visible = packageItem.hasBackups) {
                     Text(
@@ -135,7 +135,7 @@ fun BatchPackageItem(
                         modifier = Modifier.align(Alignment.CenterVertically),
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1,
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.labelMedium,
                     )
                 }
             }
@@ -220,26 +220,25 @@ fun RestorePackageItem(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    Row(modifier = Modifier.fillMaxWidth()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
                         Text(
                             text = packageItem.packageName,
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .weight(1f),
-                            softWrap = true,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1,
-                            style = MaterialTheme.typography.bodySmall
+                            style = MaterialTheme.typography.labelMedium,
                         )
                         AnimatedVisibility(visible = packageItem.hasBackups) {
                             Text(
                                 text = (packageItem.latestBackup?.backupDate?.getFormattedDate(
                                     false
                                 ) ?: "") + " • ${packageItem.numberOfBackups}",
-                                modifier = Modifier.align(Alignment.CenterVertically),
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1,
-                                style = MaterialTheme.typography.bodySmall,
+                                style = MaterialTheme.typography.labelMedium,
                             )
                         }
                     }

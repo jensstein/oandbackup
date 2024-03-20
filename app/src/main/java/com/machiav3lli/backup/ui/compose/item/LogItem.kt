@@ -67,7 +67,7 @@ fun LogItem(
                                         text = "${item.deviceName} ",
                                         overflow = TextOverflow.Ellipsis,
                                         maxLines = 1,
-                                        style = MaterialTheme.typography.bodySmall,
+                                        style = MaterialTheme.typography.labelMedium,
                                     )
                                 if (!item.sdkCodename.isNullOrEmpty())
                                     Text(
@@ -75,14 +75,14 @@ fun LogItem(
                                         softWrap = true,
                                         overflow = TextOverflow.Ellipsis,
                                         maxLines = 1,
-                                        style = MaterialTheme.typography.bodySmall
+                                        style = MaterialTheme.typography.labelMedium,
                                     )
                                 if (!item.cpuArch.isNullOrEmpty())
                                     Text(
                                         text = "${item.cpuArch} ",
                                         overflow = TextOverflow.Ellipsis,
                                         maxLines = 1,
-                                        style = MaterialTheme.typography.bodySmall,
+                                        style = MaterialTheme.typography.labelMedium,
                                     )
                             }
                         }

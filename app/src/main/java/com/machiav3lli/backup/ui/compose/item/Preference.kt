@@ -17,7 +17,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
@@ -34,7 +33,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.machiav3lli.backup.ICON_SIZE_SMALL
-import com.machiav3lli.backup.preferences.pref_allPrefsShouldLookEqual
 import com.machiav3lli.backup.ui.compose.ifThen
 import com.machiav3lli.backup.ui.item.BooleanPref
 import com.machiav3lli.backup.ui.item.EnumPref
@@ -82,25 +80,20 @@ fun BasePreference(
             .clip(
                 RoundedCornerShape(
                     topStart = if (base == 0f) MaterialTheme.shapes.large.topStart
-                    else MaterialTheme.shapes.small.topStart,
+                    else MaterialTheme.shapes.extraSmall.topStart,
                     topEnd = if (base == 0f) MaterialTheme.shapes.large.topEnd
-                    else MaterialTheme.shapes.small.topEnd,
+                    else MaterialTheme.shapes.extraSmall.topEnd,
                     bottomStart = if (rank == 1f) MaterialTheme.shapes.large.bottomStart
-                    else MaterialTheme.shapes.small.bottomStart,
+                    else MaterialTheme.shapes.extraSmall.bottomStart,
                     bottomEnd = if (rank == 1f) MaterialTheme.shapes.large.bottomEnd
-                    else MaterialTheme.shapes.small.bottomEnd
+                    else MaterialTheme.shapes.extraSmall.bottomEnd
                 )
             )
             .ifThen(onClick != null) {
                 clickable(enabled = isEnabled, onClick = onClick!!)
             },
         colors = ListItemDefaults.colors(
-            containerColor = MaterialTheme.colorScheme
-                .surfaceColorAtElevation(
-                    if (pref_allPrefsShouldLookEqual.value) 24.dp
-                    else (rank * 24).dp
-                )
-                .copy(alpha = 0.8f),
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
         ),
         leadingContent = icon,
         headlineContent = {
@@ -121,7 +114,7 @@ fun BasePreference(
                 if (summary != null) {
                     Text(
                         text = summary,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
@@ -129,7 +122,7 @@ fun BasePreference(
                     val summaryText = stringResource(id = summaryId)
                     Text(
                         text = summaryText,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }

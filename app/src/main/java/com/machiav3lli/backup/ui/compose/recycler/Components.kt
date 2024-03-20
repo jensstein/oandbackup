@@ -399,7 +399,7 @@ fun BusyBackground(
 ) {
     val isBusy by remember { busy ?: OABX.busy }
     Box(
-        modifier = modifier.background(MaterialTheme.colorScheme.surfaceContainerLowest),
+        modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
         if (pref_busyLaserBackground.value)

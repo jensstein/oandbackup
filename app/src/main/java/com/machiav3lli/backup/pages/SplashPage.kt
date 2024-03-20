@@ -45,8 +45,8 @@ import kotlin.system.exitProcess
 @Composable
 fun SplashPage() {
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
-        contentColor = MaterialTheme.colorScheme.onSurface
+        containerColor = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.onSurface,
     ) {
         Column(
             modifier = Modifier
@@ -78,8 +78,8 @@ fun SplashPage() {
 @Composable
 fun RootMissing(activity: Activity? = null) {
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
-        contentColor = MaterialTheme.colorScheme.onSurface
+        containerColor = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.onSurface,
     ) {
         Column(
             verticalArrangement = Arrangement.Center,

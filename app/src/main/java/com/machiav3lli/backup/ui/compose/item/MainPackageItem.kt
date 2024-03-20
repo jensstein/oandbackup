@@ -21,7 +21,6 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -355,7 +354,7 @@ fun openSubMenu(
         DropdownMenu(
             expanded = true,
             offset = DpOffset(100.dp, (-1000).dp),
-            modifier = Modifier.background(MaterialTheme.colorScheme.surfaceColorAtElevation(100.dp)),
+            modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainerHighest),
             onDismissRequest = { subMenu.value = null }
         ) {
             if (pref_fixNavBarOverlap.value > 0) {
@@ -545,7 +544,7 @@ fun MainPackageContextMenu(
             )
         },
         modifier = Modifier
-            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(0.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainerHighest)
             .pointerInput(Unit) {
                 detectDragGestures { change, dragAmount ->
                     change.consume()
@@ -840,8 +839,7 @@ fun MainPackageItem(
                     softWrap = true,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    style = MaterialTheme.typography.labelMedium,
                 )
                 endNanoTimer("item.package")
 
@@ -854,7 +852,7 @@ fun MainPackageItem(
                         modifier = Modifier.align(Alignment.CenterVertically),
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1,
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.labelMedium,
                     )
                 }
                 endNanoTimer("item.backups")

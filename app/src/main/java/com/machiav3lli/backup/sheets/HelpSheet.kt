@@ -96,7 +96,7 @@ fun HelpSheet(onDismiss: () -> Unit) {
                         Text(
                             text = BuildConfig.VERSION_NAME,
                             style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            color = MaterialTheme.colorScheme.onSurface,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -107,8 +107,7 @@ fun HelpSheet(onDismiss: () -> Unit) {
                         Text(
                             text = "signed by $it",
                             modifier = Modifier.padding(horizontal = 8.dp),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = MaterialTheme.typography.labelMedium,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -135,7 +134,7 @@ fun HelpSheet(onDismiss: () -> Unit) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                         contentColor = MaterialTheme.colorScheme.onSurface,
                     ),
                     shape = MaterialTheme.shapes.large,
@@ -174,7 +173,7 @@ fun HelpSheet(onDismiss: () -> Unit) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
                         contentColor = MaterialTheme.colorScheme.onSurface,
                     ),
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.surface),

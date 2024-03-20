@@ -1,5 +1,6 @@
 package com.machiav3lli.backup.ui.compose
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -16,6 +17,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import com.machiav3lli.backup.preferences.pref_altBlockLayout
 import com.machiav3lli.backup.traceFlows
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -49,13 +51,33 @@ inline fun Modifier.ifThen(
     }
 }
 
-fun Modifier.blockBorder() = composed {
+@Composable
+inline fun Modifier.ifThenElse(
+    boolean: Boolean,
+    crossinline modifier: @Composable Modifier.() -> Modifier,
+    crossinline elseModifier: @Composable Modifier.() -> Modifier,
+): Modifier {
+    return if (boolean) {
+        modifier.invoke(this)
+    } else {
+        elseModifier.invoke(this)
+    }
+}
+
+fun Modifier.blockBorder(style: Boolean = pref_altBlockLayout.value) = composed {
     this
         .clip(MaterialTheme.shapes.extraLarge)
-        .border(
-            2.dp,
-            MaterialTheme.colorScheme.outlineVariant,
-            MaterialTheme.shapes.extraLarge,
+        .ifThenElse(style,
+            modifier = {
+                border(
+                    1.dp,
+                    MaterialTheme.colorScheme.outline,
+                    MaterialTheme.shapes.extraLarge,
+                )
+            },
+            elseModifier = {
+                background(MaterialTheme.colorScheme.surfaceContainer)
+            }
         )
 }
 

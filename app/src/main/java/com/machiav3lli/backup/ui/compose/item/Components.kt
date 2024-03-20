@@ -438,7 +438,7 @@ fun CardButton(
     modifier: Modifier = Modifier,
     icon: ImageVector,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
-    containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainerHigh,
     description: String,
     enabled: Boolean = true,
     onClick: () -> Unit,
@@ -677,7 +677,7 @@ fun SwitchChip(
     Row(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.surfaceContainer, MaterialTheme.shapes.medium)
-            .padding(horizontal = 8.dp)
+            .padding(horizontal = 6.dp)
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -700,7 +700,9 @@ fun SwitchChip(
                 Text(
                     text = stringResource(id = firstTextId),
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(vertical = 8.dp),
                 )
             }
         )
@@ -718,7 +720,9 @@ fun SwitchChip(
                 Text(
                     text = stringResource(id = secondTextId),
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(vertical = 8.dp),
                 )
             },
             trailingIcon = {
@@ -1156,7 +1160,7 @@ fun DoubleVerticalText(
             text = bottomText,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.bodyMedium.copy(MaterialTheme.colorScheme.onSurfaceVariant)
+            style = MaterialTheme.typography.bodyMedium.copy(MaterialTheme.colorScheme.onSurface)
         )
     }
 }
