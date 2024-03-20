@@ -285,6 +285,14 @@ val pref_altNavBarItem = BooleanPref(
     defaultValue = false
 )
 
+val pref_altBlockLayout = BooleanPref(
+    key = "user.altBlockLayout",
+    titleId = R.string.prefs_altblocklayout,
+    summaryId = R.string.prefs_altblocklayout_summary,
+    icon = Phosphor.Swatches,
+    defaultValue = false
+)
+
 val pref_busyLaserBackground = BooleanPref(
     key = "user.busyLaserBackground",
     titleId = R.string.prefs_laserbackground,

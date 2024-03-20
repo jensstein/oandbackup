@@ -436,4 +436,6 @@
     <string name="show_new_backups">New backups</string>
     <string name="enforce_backups_limit">Enforce backups limit</string>
     <string name="enforce_backups_limit_description">Delete older backups to enforce the limit to %d</string>
+    <string name="prefs_altblocklayout">Use alternative layout for page blocks</string>
+    <string name="prefs_altblocklayout_summary">Use an alternative/old layout for page blocks with borders instead of colored surfaces.</string>
 </resources>
