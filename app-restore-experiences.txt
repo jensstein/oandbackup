@@ -1,0 +1,430 @@
+
+-------------------------------------------------------------------------------- CRASH
+
+TeamViewer: com.teamviewer.teamviewer.market.mobile @ 15.48.354
+  CRASH
+    (infinite loop, no chance to stop,
+     though there are several occasions but none works) -> clear data
+  login
+  add to trusted devices
+  confimation email
+  relogin
+
+DKB: com.dkbcodefactory.banking @ 2.9.0
+heise online: de.heise.android.heiseonlineapp @ 3.7.2
+Post & DHL: de.dhl.paket @ 9.5.2.76 (f93e63fc0f)
+Netto-App: com.valuephone.vpnetto @ 7.0.3
+  CRASH (probably keystore) -> clear data
+  relogin
+
+FRITZ!⁠App Fon: de.avm.android.fritzapp @ 2.12.0
+  CRASH (probably keystore) -> clear data
+  reconnect
+
+DeepL: com.deepl.mobiletranslator @ 2.8
+  CRASH (probably keystore) -> clear data
+  also on same device
+
+-------------------------------------------------------------------------------- more work
+
+Signal: org.thoughtcrime.securesms @ 6.40.5
+  transfer account
+  or restore from backup (create one!)
+
+BARMER: de.barmergek.serviceapp @ 4.13.11
+  at least with a new device,
+    you need to identify via
+      * Personal-Ausweis with pin or
+      * code via snail mail
+
+-------------------------------------------------------------------------------- easy, but some work
+
+Tasker: net.dinglisch.android.taskerm @ 6.1.32
+Type Machine: fi.rojekti.typemachine @ 2.1.1
+  permissions
+
+Amazon Shopping: com.amazon.mShop.android.shopping @ 26.22.0.100
+  relogin
+  cookies
+  OTP
+
+-------------------------------------------------------------------------------- relogin but still bad
+
+Digit Cam: com.yunyi.smartcamera.yuanren @ 1.1.9_20200814
+  relogin
+  looses all devices, need to add them again
+
+-------------------------------------------------------------------------------- cloud, other reconnect
+
+Fork Client: org.forkclient.messenger.beta @ 10.3.2.0
+  cloud, so easy
+  reconnect, phone number, qrcode
+
+ElsterSecure: de.elster.elstersecure.app @ 23.2.3
+  reconnect to website via QR
+
+-------------------------------------------------------------------------------- cloud, relogin
+
+Bitwarden: com.x8bit.bitwarden @ 2023.10.0
+  relogin
+  OTP
+  reconfigure some settings (or all? at least timeout etc.)
+
+PAYBACK: de.payback.client.android @ 23.10.3101
+  logout
+  choose card to relogin
+
+eBay: com.ebay.mobile @ 6.137.0.1
+E wie einfach: de.ewieeinfach.apps.csc @ 9.0.6
+GitHub: com.github.android @ 1.141.0
+GLS Pakete: com.gls.glsappde.consumer @ 5.5.0
+movA: de.aseag.mova @ 1.37.1
+netzclub: com.telefonica.netzclub.csc @ 2.7.2
+Reddit: com.reddit.frontpage @ 2023.49.1
+REWE: de.rewe.app.mobile @ 3.14.1
+zero: de.gratisbroker.android.mobileapp @ 4.5.0
+  relogin
+
+Deliveries: de.orrs.deliveries @ 5.7.23
+  relogin google or deliveries account if you use sync
+
+Contacts: com.google.android.contacts @ 4.22.37.586680692
+Calendar: com.google.android.calendar @ 2023.46.0-581792699-release
+Docs: com.google.android.apps.docs.editors.docs @ 1.23.462.03.90
+Drive: com.google.android.apps.docs @ 2.23.477.2.all.alldpi
+Gmail: com.google.android.gm @ 2023.11.12.582736815.Release
+Maps: com.google.android.apps.maps @ 11.108.0100
+Phone: com.google.android.dialer @ 119.0.586820070
+Sheets: com.google.android.apps.docs.editors.sheets @ 1.23.462.00.90
+  google, one login for all
+
+-------------------------------------------------------------------------------- minor
+
+Iceraven: io.github.forkmaintainers.iceraven @ iceraven-2.13.3
+Kiwi Browser: com.kiwibrowser.browser @ 120.0.6099.26
+  homescreen shortcuts do not work
+
+MiXplorer: com.mixplorer.silver @ 6.64.3-Silver
+  just works
+  needs root permission
+  obviously, ext sdcard have a code and that changed, renew the bookmark
+
+AdAway: org.adaway @ 6.1.1
+  just works
+  needs root permission
+
+App Manager: io.github.muntashirakon.AppManager @ 4.0.0-alpha02
+  enter keystore password or delete it and save new one
+
+DeutschlandCard: de.deutschlandcard.app @ 3.28.1
+  cookies
+
+Neo Backup: com.machiav3lli.backup @ 8.3.4
+Neo Backup: com.machiav3lli.backup.neo @ 8.3.5-alpha01
+NB🎃hg42: com.machiav3lli.backup.hg42
+NB🎃hg42: com.machiav3lli.backup.hg42.rel
+NB🐞hg42: com.machiav3lli.backup.debug
+NB🐞hg42: com.machiav3lli.backup.hg42.debug
+  just works
+  needs to configure the password again (it's stored with keystore)
+
+-------------------------------------------------------------------------------- works without any action
+
+Abfall App ZEW: de.regioit.abfallapp.zew @ 2.5.15
+Advanced Root Checker: com.anu.developers3k.rootchecker @ 1.8.1
+Advanced Tools: scd.atools @ 2.3.0
+Aegis: com.beemdevelopment.aegis @ 2.2.2
+Alertify: com.nebz.alertify @ Live 2.7
+Amazon Alexa: com.amazon.dee.app @ 2.2.545469.0
+AliExpress: com.alibaba.aliexpresshd @ 8.84.3
+Aurora Droid: com.aurora.adroid @ 1.0.8
+Aurora Store: com.aurora.store @ 4.3.5
+AusweisApp: com.governikus.ausweisapp2 @ 2.0.0
+Authenticator Pro: me.jmh.authenticatorpro @ 1.23.0
+Bardx App: digital.taranila.bard_ai.bard_ai @ 1.0.3
+c't Magazin: de.heise.android.ct.magazin @ 3.5.2
+ChatGPT: com.openai.chatgpt @ 1.2023.314
+ConnectBot: org.connectbot @ 1.9.9
+DPD: de.dpd.mobile @ 4.0.10
+eLabels: com.applay.glabels @ 2.1.6
+FastHub: com.fastaccess.github @ 4.7.3
+FRITZ!⁠App WLAN: de.avm.android.wlanapp @ 2.13.1
+gReader Pro: com.noinnion.android.greader.readerpro @ 4.3.1_pro
+handyCalc: org.mmin.handycalc @ 0.63
+Hermes: de.myhermes.app @ 12.7.0
+Joplin: net.cozic.joplin @ 2.13.10
+Kleinanzeigen: com.ebay.kleinanzeigen @ 15.15.1
+Multiling O Keyboard: kl.ime.oh @ pie.1.0.2
+NotificationLog: de.jl.notificationlog @ 1.20
+Pinterest: com.pinterest @ 11.42.0
+Shazam: com.shazam.android @ 14.4.0-231123 (without account)
+WhatsApp: com.whatsapp @ 2.23.24.82 (but using it's own backup)
+  just works
+
+dict.cc: cc.dict.dictcc @ 12.0.4
+Files by Google: com.google.android.apps.nbu.files @ 1.1737.587592893
+Gallery: com.google.android.apps.photosgo @ 1.9.0.473991075 release
+Kaossilator: jp.co.korg.kaossilator.android @ 1.1.4
+Öffi: de.schildbach.oeffi @ 12.1.16-aosp
+  apps without login or user data etc. just work
+
+
+-------------------------------------------------------------------------------- not tried yet
+
+/r/Android App store: subreddit.android.appstore @ 0.9.2
+All-In-One Offline Maps: net.psyberia.offlinemaps @ 3.14
+Android-Iconics: com.mikepenz.iconics.sample @ 5.3.0
+Androidacy Module Manager: com.fox2code.mmm.fdroid @ 2.3.4-fdroid
+APKMirror: cf.vojtechh.apkmirror @ 3.3.4
+APKUpdater: com.apkupdater @ 3.0.2
+AppDash: flar2.appdashboard @ 1.73
+ArtFlow: com.bytestorm.artflow @ 2.9.26
+Audio Cutter: com.inverseai.audio_cutter @ 0.3.6
+AutoIdent: io.idnow.autoident @ 5.6.0
+Autostarts: io.github.muntashirakon.autostarts @ 2.1.0
+Aves Libre: deckers.thibault.aves.libre @ 1.10.0
+Binary Eye: de.markusfisch.android.binaryeye @ 1.61.2
+Bing: com.microsoft.bing @ 27.5.411205314
+BirdNET: de.tu_chemnitz.mi.kahst.birdnet @ 1.92
+Bluetooth Meter: dev.egl.com.intensidadbluetooth @ 1.1.5
+bVNC Pro: com.iiordanov.bVNC @ v5.1.3
+Calculator: com.google.android.calculator @ 8.4.1 (520193683)
+Camera: com.android.MGC_8_5_300 @ 8.5.300.450594193.08
+Camera: com.android.MGC_8_9_097 @ 8.9.097.540104718.33
+Camera: com.google.android.GoogleCamera.Urnyx @ 7.3.018.291816413
+Camera: com.shamim.cam @ 9.1.098.571038950.24
+Camera2Test: com.camera2.test.all.id @ 1.0
+CameraFi: com.vaultmicro.camerafi @ 2.18.3.0111
+CameraFi2: com.vaultmicro.camerafi2 @ 1.5.24.0403
+Canny: app.bhupesh.armorking.canny @ 27.06.05.21
+CellMapper: cellmapper.net.cellmapper @ 5.6.0
+Character.AI: ai.character.app @ 1.7.4
+ChatSonic: com.writesonic.chatsonic @ 1.1.4
+Colors & Gradients Wallpaper: sk.michalec.colorsandgradientswp @ 2.2.2
+Compose Material Catalog: androidx.compose.material.catalog @ 2.2.0
+Compose Material Theming: compose.material.theme @ 1.0.20
+Corona-Warn: de.rki.coronawarnapp @ 3.2.1
+Daff Moon: com.dafftin.android.moon_phase @ 3.31
+DataBackup: com.xayah.databackup @ 1.0.1-alpha06
+DB Navigator: de.hafas.android.db @ 24.6.2
+DEGIRO: nl.degiro.trader @ 2.14.9
+DevCheck: flar2.devcheck @ 4.85
+DNS66: org.jak_linux.dns66 @ 0.6.8
+DontKillMyApp: com.urbandroid.dontkillmyapp @ 2.6
+Draw: com.simplemobiletools.draw.pro @ 6.9.6
+DroidFish: org.petero.droidfish @ 1.89
+DSU Sideloader: vegabobo.dsusideloader @ 2.03
+F-Droid: org.fdroid.fdroid @ 1.18.0
+FaceApp: io.faceapp @ 11.8.1.1
+Fast Burst Camera Lite: com.spritefish.fastburstcameralite @ 8.0.8
+FFUpdater: de.marmaro.krt.ffupdater @ 79.1.0
+FileManagerUtils: com.island.filemanagerutils @ 0.1.1
+Files: com.github.axet.filemanager @ 0.5.8
+Find My Device: com.google.android.apps.adm @ 3.0.046-6
+FinWiz: com.pandonee.finwiz @ 2.8.8-RELEASE
+Flora Incognita: com.floraincognita.app.floraincognita @ 3.7.24
+FreezeYou!: cf.playhi.freezeyou @ 11.5.151.20220530-gh
+Gallery: com.simplemobiletools.gallery.pro @ 6.28.1
+Gboard: com.google.android.inputmethod.latin @ 13.6.11.574113912-release-arm64-v8a
+GdP: fahrerlaubnisse.app3null.com.fahrerlaubnisse @ 5.5
+Geizhals: at.geizhals.pv @ 3.8.3.31131
+Ghost Commander: com.ghostsq.commander @ 1.62.3
+Git+: com.gitlabplus.app @ 1.1.2
+Google Earth: com.google.earth @ 10.40.0.2
+Google PDF Viewer: com.google.android.apps.pdfviewer @ 2.19.381.03.40
+Google Play Services for AR: com.google.ar.core @ 1.41.233110993
+GpsFix: com.androidlab.gpsfix @ 1.33
+GPSTest: com.android.gpstest.osmdroid @ 3.10.3
+GSMArena: com.gsmarena.android @ 1.7.6
+HedgeCam 2: com.caddish_hedgehog.hedgecam2 @ 2.15b
+Home: com.google.android.apps.chromecast.app @ 3.10.1.6
+Home Remote Control: com.inspiredandroid.linuxcontrolcenterpro @ 1.7.6
+HomeSwitch: com.jamminc.my_tasmota @ 2.0.3
+HScope: com.martinloren.hscope @ 2.4.2
+IDnow Online-Ident: de.idnow @ 7.4.1
+inskam: com.ypcc.otgcamera @ 1.1.196
+IP Webcam: com.pas.webcam @ 1.17.15.868 (multiarch)
+Jetnews: com.example.jetnews @ 1.0
+Jetpack Compose Playground: com.steleot.jetpackcompose.playground @ 5.3.0
+justTRADE: com.justtradenative @ 1.31.0
+KDE Connect: org.kde.kdeconnect_tp @ 1.29.0
+KernelSU: me.weishu.kernelsu @ v0.7.1
+Kill Camera: info.aario.killcamera @ 1.0
+KitchenSink: com.codename1.demos.kitchen @ 3.06
+KitchenSink: org.kivymd.kitchensink @ 0.0.1
+Klipperoid: com.didwkrrk.klipperoid @ 2.10.1
+Last Launcher: io.github.subhamtyagi.lastlauncher @ 0.19
+Lens: com.google.ar.lens @ 1.15.221129089
+LG ThinQ: com.lgeha.nuts @ 5.0.10861
+LG webOS Magic Remote: com.lgerp.mobilemagicremote @ 2.3
+LibChecker: com.absinthe.libchecker @ 2.4.2
+lichess: org.lichess.mobileapp @ 8.0.0
+Lieferando: com.yopeso.lieferando @ 10.18.0
+Linguee: com.linguee.linguee @ 1.3.0
+Magic Earth: com.generalmagic.magicearth @ 7.1.23.48.4A4BF01E.4A493E36
+Material Files: me.zhanghai.android.files @ 1.6.2
+Meet: com.google.android.apps.tachyon @ 221.0.586116588.duo.android_20231126.13_p2
+Mein O₂: canvasm.myo2 @ 7.33.1
+Messages: com.google.android.apps.messaging @ messages.android_20231114_01_RC10.phone_dynamic
+meteoblue: com.meteoblue.droid @ Cirrus Uncinus 2.4.4
+Meteogram Pro: com.cloud3squared.meteogram.pro @ 5.1.5
+Meteomatics: com.meteomatics.app @ 1.1.2
+Mi Home: com.xiaomi.smarthome @ 8.11.708
+MiX Archive: com.mixplorer.addon.archive @ 3.14
+MiX Codecs: com.mixplorer.addon.codecs @ 2.6
+MiX Image: com.mixplorer.addon.image @ 2.11
+MiX Metadata: com.mixplorer.addon.metadata @ 1.11
+MiX PDF: com.mixplorer.addon.pdf @ 1.15
+MiX SMB: com.mixplorer.addon.smb @ 2.1
+MiX Tagger: com.mixplorer.addon.tagger @ 1.6
+Mobileraker: com.mobileraker.android @ 2.6.7
+Momo: io.github.vvb2060.mahoshojo @ 4.4.1
+Mp3 Cutter: thirddream.ringdroid @ 1.23
+MRepo: com.sanmer.mrepo @ 2.3.5.a9548a3
+Music Folder Player Full: de.zorillasoft.musicfolderplayer.donate @ 3.1.31
+MyFRITZ!⁠App: de.avm.android.myfritz2 @ 2.21.0
+Myibidder: com.myibidder.aclient1 @ 2.2.59
+Navigation for Maps Go: com.google.android.apps.navlite @ 10.74.3
+Neo Launcher: com.saggitt.omega @ 0.9.3
+Neo Store-beta: com.machiav3lli.fdroid.neo @ 1.0.0-beta01
+NetMonster: cz.mroczis.netmonster @ 2.23.6
+Netstat Plus: com.rinacode.android.netstatplus @ 1.6.6.20151008
+Network Cell Info Lite: com.wilysis.cellinfolite @ 6.7.4
+Network Tools: net.he.networktools @ 0.6.4
+NetX: com.tools.netgel.netx @ 10.2.4.0
+NewPipe SponsorBlock: org.polymorphicshade.newpipe @ 0.25.2
+NFC Tools: com.wakdev.wdnfc @ 8.10
+NINA: de.materna.bbk.mobile.app @ 3.5.0
+Notes: com.simplemobiletools.notes.pro @ 6.17.0
+Nova Launcher Prime: com.teslacoilsw.launcher.prime @ 2023
+Nova7: com.teslacoilsw.launcher @ 7.0.57
+Now in Android: com.google.samples.apps.nowinandroid @ 0.1.2
+Obtainium: dev.imranr.obtainium @ 0.14.25
+Official TWRP App: me.twrp.twrpapp @ 1.22
+OI File Manager: org.openintents.filemanager @ 2.2.3
+Open Shared URL: com.kakkun61.opensharedurl @ 2.1
+Open with Browser: vg.angels.openwithbrowser @ 4.0.0
+OpenWeather: uk.co.openweather @ 1.1.3
+OsmAnd: net.osmand @ 4.5.10
+Package Manager: com.smartpack.packagemanager @ v7.0
+PayPal: com.paypal.android.p2pmobile @ 8.52.1
+Permission Manager X: com.mirfatif.permissionmanagerx @ v1.23-fd
+Permission Pilot: eu.darken.myperm @ 1.6.11-rc0
+Perplexity: ai.perplexity.app.android @ 2.7.0
+Phone Genie: com.apptuners.phonegenie @ 1.35
+Photo Editor: com.axiemsystems.photoeditorminus @ 2.0.1
+Photos: com.google.android.apps.photos @ 6.64.0.587894741
+PhotoScan: com.google.android.apps.photos.scanner @ 1.7.1.539739820
+phyphox: de.rwth_aachen.phyphox @ 1.1.12
+Physics Toolbox Suite: com.chrystianvieyra.physicstoolboxsuite @ 2023.01.07
+Pict2Cam: com.adriangl.pict2cam @ 1.0.70
+Play Integrity API Checker: gr.nikolasspyr.integritycheck @ 1.2
+PocketBook: com.obreey.reader @ 5.50.572.357.release
+Port Authority: com.aaronjwood.portauthority.free @ 2.4.5-free
+Postident: de.deutschepost.postident @ 17.0.0
+PowerLine: com.urbandroid.inline @ 5.30
+Proton Mail: ch.protonmail.android @ 3.0.17
+QR & Barcode Scanner: com.example.barcodescanner @ 1.10
+QR Droid: la.droid.qr @ 7.0.6
+RadioDroid: net.programmierecke.radiodroid2 @ 0.86
+Reface: video.reface.app @ 3.56.0
+Rethink: com.celzero.bravedns @ v055a
+Reverse Image Search: com.thinkfree.rsi @ 5.0.2
+Ringtone Picker: de.kumpewo.ringtones @ 1.1
+RoBo Home: com.tst.blesaodiji @ 1.220712.1
+Root Validator: eu.thedarken.rootvalidator @ 3.1
+Round Sync: de.felixnuesse.extract @ 2.2.2
+Ruler: com.ruler.csw @ 1.4.1
+RustDesk: com.carriez.flutter_hbb @ 1.1.10-1
+SAF Picker Demo: com.virudhairaj.saf.demo @ 1.0.3
+SAFTest: nextapp.saftest @ 1.0
+Satellites: com.app.satellite @ 4.7
+Scoop: taco.scoop @ 2.4.2
+Screen Master: pro.capture.screenshot @ 1.8.0.18
+ScreenCam: com.orpheusdroid.screenrecorder @ 2.0.3-fdroid
+Screenshot Easy: com.icecoldapps.screenshoteasy @ 7.2.26
+Search By Image: com.binjafar.imagesearch @ 1.9
+Secure Settings: com.intangibleobject.securesettings.plugin @ 1.3.6u2
+SecureTask: com.balda.securetask @ 4.2.1
+Seeker: com.companyname.andriodapp1 @ 2.9.19
+Shizuku: moe.shizuku.privileged.api @ 13.5.2.r1028.2bbf671
+Should I Answer?: org.mistergroup.shouldianswer @ 1.3.263
+Show WiFi Password: com.myapp.thiranja.showwifipassword @ 2.3.2
+Simple System Monitor: com.dp.sysmonitor.app @ 3.7.5
+SkEye: com.lavadip.skeye @ 9.3.0
+Smart Recorder: com.andrwq.recorder @ 13.0
+Snapseed: com.niksoftware.snapseed @ 2.21.0.566275366
+SnoopSnitch: de.srlabs.snoopsnitch @ 2.0.13
+SnoreClock: de.ralphsapps.snorecontrol @ 5.3.0
+SongTube: com.artxdev.songtube @ 7.2.0
+Spotify: com.spotify.music @ 8.8.92.700
+SQLite Editor: com.speedsoftware.sqleditor @ 2.5.2
+stock3: de.boersego.gmt.android @ 9.11.2
+Street View: com.google.android.street @ 2.0.0.484371618
+SuperFreezZ: superfreeze.tool.android @ 1.0
+Swift Backup: org.swiftapps.swiftbackup @ 4.2.5
+Syncthing-Fork: com.github.catfriend1.syncthingandroid @ 1.27.0.1
+SystemUI Tuner: com.zacharee1.systemuituner @ 354
+Tai Chi Chuan: tk.myessentialoils.ideasapp @ 2.1
+Tasmota Control: de.grings_software.TasmotaControl @ 1.15.3
+TB Checker: krypton.tbsafetychecker @ 2.7.4.r344.d28eb46
+Telegram: org.telegram.messenger.web @ 8.9.2
+Termux: com.termux @ 0.118.0
+Termux:API: com.termux.api @ 0.50.1
+Termux:Float: com.termux.window @ 0.15.0
+Termux:Styling: com.termux.styling @ 0.31
+Termux:Tasker: com.termux.tasker @ 0.6.0
+Termux:Widget: com.termux.widget @ 0.13.0
+TeslaUnread: com.teslacoilsw.notifier @ 5.1.2
+Text Scanner: com.peace.TextScanner @ 10.3.1
+Text2Speech: appinventor.ai_niclasonline.Text2Speech @ 1.0.5
+ThinkDiag+: com.us.thinkdiag.plus @ 2.9.3
+tinyCam: com.alexvas.dvr @ 17.0.5 - Google Play
+Torchie: in.blogspot.anselmbros.torchie @ 3.2.1
+Total Commander: com.ghisler.android.TotalCommander @ 3.42
+Totalcmd-Drive: com.ghisler.tcplugins.drive @ 2.30
+TotalCmd-FTP (File Transfers): com.ghisler.tcplugins.FTP @ 2.45
+TotalCmd-LAN (Windows shares): com.ghisler.tcplugins.LAN @ 3.40
+TotalCmd-SFTP: com.ghisler.tcplugins.SFTP @ 2.8
+TotalCmd-WebDAV (WEB Folders): com.ghisler.tcplugins.WebDAV @ 3.50
+TotalCmd-Wifi Transfer: com.ghisler.tcplugins.wifitransfer @ 4.2
+Totalcmd-Windows Live OneDrive: com.ghisler.tcplugins.WindowsLive @ 2.50
+TotalDrip Total Commander Plugin: com.ghisler.tcplugins.totaldrip @ 1.11
+Trade Republic: de.traderepublic.app @ 2.2345.0
+TradingView: com.tradingview.tradingviewapp @ 1.20.18.0.1171
+Translate: com.google.android.apps.translate @ 7.17.60.578892159.1-release
+Treble Check: com.kevintresuelo.treble @ 3.0.2
+Treble Info: tk.hack5.treblecheck @ 5.2.3
+Treble Support Check: com.appiclogics.treblesupportcheck @ 1.0
+Tuner: de.moekadu.tuner @ 6.5.0
+Tuya Smart: com.tuya.smart @ 5.7.0
+UpgradeAll: net.xzos.upgradeall @ 0.13-beta.4
+UPS: com.ups.mobile.android @ 9.12.1.4
+USB Camera: com.shenyaocn.android.usbcamera @ 10.8.9
+USB endoscope camera for Samsung, Redmi, Sony, Huawei: net.usb.usby4 @ 12-nov2023
+USB_CAMERA: com.tony.usbcamera.molink @ 4.3
+Video Cutter: com.naing.cutter @ 1.3.8
+ViMusic: it.vfsfitvnm.vimusic @ 0.5.4
+VLC: org.videolan.vlc @ 3.5.4
+Waistline: com.waist.line @ 3.7.3
+WarnWetter: de.dwd.warnapp @ 4.2.2
+Weather&Radar: de.wetteronline.wetterapp @ 2023.25
+Wifi Password: ua.sytor.wifipass @ 3.0
+Wifi QR Code Creator: tk.superl2.xwifi @ 0.2.0
+Windy: com.windyty.android @ 40.1.0
+WireGuard: com.wireguard.android @ 1.0.20231018
+WiseTimer: com.foxek.simpletimer @ 2.1.3
+X-plore: com.lonelycatgames.Xplore @ 4.34.07
+XPlayer - Video Player: video.player.videoplayer @ 2.3.6.6
+XRecorder: videoeditor.videorecorder.screenrecorder @ 2.3.4.5
+Y2D: com.dstore.y2d @ 1.0.0
+Yet Another Call Blocker: dummydomain.yetanothercallblocker @ 0.5.17
+Yet Another SafetyNet Attestation Checker: rikka.safetynetchecker @ v1.1.5.r65.15110ef310
+YI IoT: com.yunyi.smartcamera @ 4.1.7_20231026
+YouCut - Video Editor: com.camerasideas.trimmer @ 1.602.1180
+YoutubeDL: nl.dirkkok.android.youtubedl @ 0.1.14
+YT Studio: com.google.android.apps.youtube.creator @ 23.47.100
+Yuzu Browser: jp.hazuki.yuzubrowser @ 6.0.2
+Yuzu Browser Theme Creator: jp.hazuki.yuzubrowser.themecreator @ 0.2.2
+ZArchiver: ru.zdevs.zarchiver @ 1.0.8
+Zoom: us.zoom.videomeetings @ 5.16.10.17646
