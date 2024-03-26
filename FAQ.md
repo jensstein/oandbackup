@@ -926,11 +926,22 @@ For some more info about `flatStructure` see `NOTES.md`.
 works by installing so called document providers.
 Unfortunately these apps are rare, we only know these two pure providers:
 
-[CIFS (Windows network)](https://play.google.com/store/apps/details?id=com.wa2c.android.cifsdocumentsprovider)
-
 [SSH](https://play.google.com/store/apps/details?id=ru.nsu.bobrofon.easysshfs)
 
+[CIFS (Windows network)](https://play.google.com/store/apps/details?id=com.wa2c.android.cifsdocumentsprovider)
+
 In theory Google Drive should also be possible, but practically it does not work. It is not offered as a remote location.
+
+**Attention:** the CIFS app seems to have a critical bug (our user Michael tested it with 2.1.1 and 2.2.0 doesn't mention a solution)
+
+the bug is described in this fork:
+
+[SMB Documents Provider](https://github.com/fuenor/smb-documents-provider)
+
+the workaround is an older version, which you probably should use until the bug is solved:
+
+[SMB Documents Provider 1.6.0](https://github.com/fuenor/smb-documents-provider/releases/tag/Ver.1.6.0)
+
 
 #### **Mounting** remote file systems to local folders
 
