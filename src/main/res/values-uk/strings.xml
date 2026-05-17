@@ -486,4 +486,6 @@
     <string name="keep_android_open_notice">Відкритість Android знаходиться під загрозою з боку Google. Нам потрібна ваша допомога: https://keepandroidopen.org/</string>
     <string name="shortcut_run_schedule">Запустити %s</string>
     <string name="schedule_not_found_or_disabled">Розклад не знайдено або вимкнено</string>
+    <string name="setup_FORMAT">Налаштування: %s</string>
+    <string name="permissions">Дозволи</string>
 </resources>
