@@ -476,4 +476,6 @@
     <string name="keep_android_open_notice">Google ohustab Androidi avatust. Me vajame sinu abi https://keepandroidopen.org/</string>
     <string name="shortcut_run_schedule">Käivita %s</string>
     <string name="schedule_not_found_or_disabled">Ajastust ei leidu või see on lülitatud välja</string>
+    <string name="setup_FORMAT">Seadistused: %s</string>
+    <string name="permissions">Õigused</string>
 </resources>
