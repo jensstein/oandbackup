@@ -474,4 +474,7 @@
     <string name="keep_android_open">Paturēt Android atvērtu</string>
     <string name="keep_android_open_notice">Google apdraud Android atvērtību. Mums ir nepieciešama Tava palīdzība: https://keepandroidopen.org</string>
     <string name="shortcut_run_schedule">Palaist %s</string>
+    <string name="permissions">Atļaujas</string>
+    <string name="schedule_not_found_or_disabled">Grafiks nav atrasts vai ir atspējots</string>
+    <string name="setup_FORMAT">Iestatīt: %s</string>
 </resources>
