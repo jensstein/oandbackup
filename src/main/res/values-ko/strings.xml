@@ -474,4 +474,6 @@
     <string name="prefs_multilineinfochips">앱 정보 줄바꿈</string>
     <string name="prefs_multilineinfochips_summary">목록에서 앱 정보가 여러 줄에 걸치도록 허용합니다.</string>
     <string name="enforce_backups_limit_summary">설정한 백업 리비전 한도를 초과하는 앱에 대해 제한을 적용합니다.</string>
+    <string name="setup_FORMAT">설정: %s</string>
+    <string name="permissions">권한</string>
 </resources>
