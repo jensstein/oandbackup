@@ -1,0 +1,8 @@
+- Añadido: Compatibilidad con colores dinámicos (también conocido como Material You)
+- Añadido: Tamaño de la copia de respaldo (solo para copias de respaldo nuevas)
+- Añadido: Etiquetas y notas
+- Añadido: Registro de información opcional en la barra superior
+- Añadido: Nombre del paquete del instalador
+- Añadido: Instalador de sesión (necesario en A13)
+- Corregido: Restablecimiento de datos tras el reinicio. Para más detalles,
+consulte el registro de cambios completo

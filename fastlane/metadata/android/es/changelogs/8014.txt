@@ -5,5 +5,5 @@ Soluciona los problemas de la versión no intencionada y funciona de forma fiabl
 * Añadido: Copia de seguridad/restauración con permisos asignados.
 * Actualización: Se requiere menos actualización manual.
 * Corrección: La mayoría de las copias de seguridad especiales (aún se necesitan pruebas).
-* Las etiquetas y notas están deshabilitadas por el momento.
+* Las etiquetas y notas están inhabilitadas por el momento.
 Para más detalles, consulta el registro de cambios completo
