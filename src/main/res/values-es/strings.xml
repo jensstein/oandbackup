@@ -458,7 +458,7 @@
     <plurals name="package_num">
         <item quantity="one">%d paquete</item>
         <item quantity="many">%d paquetes</item>
-        <item quantity="other"/>
+        <item quantity="other">%d paquetes</item>
     </plurals>
     <string name="packagesToBackup">Número de paquetes a respaldar: %d</string>
     <string name="addBlocklistDialogMessage">¿Añadir aplicación a la lista de bloqueos global?</string>
@@ -488,4 +488,6 @@
     <string name="keep_android_open_notice">La apertura de Android se ve amenazada por Google. Necesitamos tu ayuda: https://keepandroidopen.org/</string>
     <string name="shortcut_run_schedule">Ejecuta %s</string>
     <string name="schedule_not_found_or_disabled">Planificación no encontrada o inhabilitada</string>
+    <string name="setup_FORMAT">Configuración: %s</string>
+    <string name="permissions">Permisos</string>
 </resources>
