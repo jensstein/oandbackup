@@ -1,0 +1,5 @@
+Aggiunto: Flusso della pagina di onboarding
+Aggiunto: Nomi dei pacchetti nelle finestre di dialogo di selezione dei pacchetti
+Corretto: Aggiornamento dell'app al cambio della preferenza di contrasto del tema
+Rimosso: Finestra di dialogo di avviso sulla crittografia
++ più di 20 commit, 30 traduzioni
