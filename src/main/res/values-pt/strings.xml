@@ -419,4 +419,15 @@
     <string name="filters_tags">Tags</string>
     <string name="search_package">Procurar app na loja</string>
     <string name="dialogDelete">Apagar</string>
+    <string name="prefs_useexactalarm_summary">Se não usar um despertador, use alarmes precisos; caso contrário, use alarmes imprecisos, que podem ser melhores para a bateria</string>
+    <string name="prefs_altbackupdate">Exibir o formato de data ISO nos backups</string>
+    <string name="prefs_altbackupdate_summary">Use o formato de data ISO nos elementos de backup em vez do formato local.</string>
+    <string name="light_medium_contrast">Claro (contraste médio)</string>
+    <string name="light_high_contrast">Claro (contraste alto)</string>
+    <string name="dark_medium_contrast">Escuro (contraste médio)</string>
+    <string name="dark_high_contrast">Escuro (contraste alto)</string>
+    <string name="black_medium_contrast">Preto (contraste médio)</string>
+    <string name="black_high_contrast">Preto (contaste alto)</string>
+    <string name="sort_appdata_size">Tamanho da app e dos dados</string>
+    <string name="prefs_pgp_key">Chave PGP</string>
 </resources>
