@@ -1,4 +1,4 @@
-添加：新应用程序图标
+添加：新应用图标
 添加：旋转刷新按钮
 修复：隐藏的Lucky Patcher问题
 修复：Phh-su+ inherited+enforcing

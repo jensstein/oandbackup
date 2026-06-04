@@ -1,5 +1,5 @@
 添加：对 AppSheet 强制执行备份限制按钮
-添加：允许在Android 14+恢复 Android 6及之前的旧应用程序
+添加：允许在Android 14+恢复 Android 6及之前的旧应用
 添加：不同的动态和黑色主题
 修复：KernelSU 支持
 修复：从 AppSheet 启动后恢复崩溃
