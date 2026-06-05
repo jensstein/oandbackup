@@ -99,13 +99,13 @@
     <string name="apptype_system">Aplicació del sistema</string>
     <string name="all">Totes</string>
     <string name="bothBackedUp">APK i dades</string>
-    <string name="app_s_icon">Icones de les aplicacions</string>
+    <string name="app_s_icon">Icona de l\'aplicació</string>
     <string name="sortDataSize">Mida de les dades</string>
     <string name="sortPackageName">Nom del paquet</string>
     <string name="sortLabel">Etiqueta</string>
     <string name="sort_options">Ordena per:</string>
     <string name="filter_options">Filtres:</string>
-    <string name="dialog_unlock">Desbloquejar</string>
+    <string name="dialog_unlock">Desbloca</string>
     <string name="dialog_start">Som-hi!</string>
     <string name="dialog_approve">Fem-ho!</string>
     <string name="dialog_refuse">No ho faré</string>
@@ -174,10 +174,10 @@
     <string name="prefs_oldbackups">Filtra les còpies de seguretat per edat</string>
     <string name="prefs_rememberfiltering_summary">Desa el mètode d\'ordenació i filtratge escollit. Només es consideren els marcats per una casella de selecció al menú.</string>
     <string name="prefs_rememberfiltering">Recordeu ordenar i filtrar</string>
-    <string name="prefs_biometriclock_summary">Protegiu l\'aplicació amb el bloqueig biomètric del dispositiu (per exemple, empremta digital, desbloqueig facial)</string>
-    <string name="prefs_biometriclock">Bloqueig biomètric</string>
+    <string name="prefs_biometriclock_summary">Protegiu l\'aplicació amb el blocatge biomètric del dispositiu (per exemple, empremta digital, desbloqueig facial)</string>
+    <string name="prefs_biometriclock">Blocatge biomètric</string>
     <string name="prefs_devicelock_summary">Protegiu l\'aplicació amb les credencials del dispositiu</string>
-    <string name="prefs_devicelock">Bloqueig del dispositiu</string>
+    <string name="prefs_devicelock">Blocatge del dispositiu</string>
     <string name="prefs_pathbackupfolder">Directori de la còpia de seguretat</string>
     <string name="prefs_language_system">Sistema per defecte</string>
     <string name="prefs_languages">Idioma</string>
@@ -328,4 +328,11 @@
     <string name="stats_data_size">Mida de les dades</string>
     <string name="notification_app_action">Accions de l\'aplicació</string>
     <string name="invalidating_all">S\'estan netejant les memòries cau…</string>
+    <string name="context_menu">Menú contextual</string>
+    <string name="clear_text">Neteja el text</string>
+    <string name="filters_app">Tipus d\'aplicació</string>
+    <string name="show_updated_apps">Aplicacions actualitzades</string>
+    <string name="sort_filter">Ordena i filtra</string>
+    <string name="see_faq">Vegeu les preguntes freqüents.</string>
+    <string name="edit_note">Edita la nota</string>
 </resources>
