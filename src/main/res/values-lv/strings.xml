@@ -52,7 +52,7 @@
     <string name="prefs_biometriclock_summary">Aizsargāt lietotni ar ierīces biometrisko slēdzeni (piemēram, pirkstu nospiedumu, sejas atpazīšanu)</string>
     <string name="backupConfirmation">Veikt rezerves kopēšanu?</string>
     <string name="radio_deviceprotecteddata">Ierīces aizsargātie dati</string>
-    <string name="prefs_oldbackups_summary">Atlasīt rezerves kopijas, kuras vecākas par norādīto vērtību dienās. Izmantojams kopā ar atlasītāju \"Rādīt vecās rezerves kopijas\".</string>
+    <string name="prefs_oldbackups_summary">Atlasīt rezerves kopijas, kuras vecākas par norādīto vērtību dienās. Izmantojams kopā ar atsijātāju \"Rādīt vecās rezerves kopijas\".</string>
     <string name="prefs_tools">Rīki</string>
     <string name="prefs_enablespecial_summary">Joprojām ir nepieciešama kārtīga pārbaudīšana, var mēģināt, apzinoties apdraudējumu, ka tas var izraisīt sāknēšanas cilpas. Atgriezeniskā saite vienmēr tiek laipni gaidīta.</string>
     <string name="shareTitle">Koplietot</string>
@@ -295,11 +295,11 @@
     <string name="available_actions">Pieejamās darbības:</string>
     <string name="version_name_title">Versijas nosaukums:</string>
     <string name="encrypted_data_title">Šifrēti dati:</string>
-    <string name="other_filters_options">Īpaši atlasītāji:</string>
+    <string name="other_filters_options">Īpaši atsijātāji:</string>
     <string name="post_notifications_permission_title">Nosūtīt paziņojumus</string>
     <string name="failed_unzipping">Kļūda datu atspiešanas laikā, jāpārbauda šifrēšanas parole.</string>
     <string name="split_apks">Sadalītie APK</string>
-    <string name="backup_filters">Rezerves kopiju atlasītāji:</string>
+    <string name="backup_filters">Rezerves kopiju atsijātāji:</string>
     <string name="copyOwnApkSuccess">Lietotnes APK kopēts rezerves kopiju mapē</string>
     <string name="copyOwnApkFailed">Neizdevās kopēt lietotnes APK rezerves kopiju mapē</string>
     <string name="filtered_list">Atlasīts saraksts</string>
@@ -322,7 +322,7 @@
     <string name="spec_wifiAccessPoints">Bezvadu piekļuves punkti</string>
     <string name="error_creating_notification_channel">Nav iespējams izveidot paziņojumu plūsmu</string>
     <string name="grant_calllogs_message">Tas ir būtiski, lai varētu veikt zvanu žurnālu rezerves kopēšanu / atjaunošanu.</string>
-    <string name="empty_filtered_list">Atlasītāju saraksts ir tukšs.</string>
+    <string name="empty_filtered_list">Atsijātais saraksts ir tukšs.</string>
     <string name="grant_contacts_message">Tas ir būtiski, lai varētu sasaistīt kontaktpersonu ar SMS/MMS.</string>
     <string name="prefs_pgp_key">PGP atslēga</string>
     <string name="create_pgp_key">Izveidot jaunu PGP atslēgu</string>
@@ -376,7 +376,7 @@
     <string name="finished">pabeigts</string>
     <string name="dialog_approve">Darām to!</string>
     <string name="dialog_start">Aiziet!</string>
-    <string name="filter_options">Atlasītāji:</string>
+    <string name="filter_options">Atsijātāji:</string>
     <string name="restart_dialog">Šķiet, ka lietotni ir nepieciešams palaist no jauna</string>
     <string name="dialogOK">Labi</string>
     <string name="dialogYes">Jā</string>
