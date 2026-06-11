@@ -1,0 +1,9 @@
+Neu: Unterstützung für Symboldesigns auf A13
+Neu: Auswählbare Startbildschirm-Elemente über Kontextmenü (muss noch getestet werden)
+Update: Neue Symbole (Phosphor)
+Update: Möglichkeit zum Selbst-Sichern der App
+Update: Überarbeitung des Passwort-Dialogs
+Fehlerbehebung: Prozess, wenn die APK nicht „base.apk“ heißt
+Fehlerbehebung: Auto-Aktualisierung von AppSheet nach Deinstall./Aktiv./Deaktiv./Wiederherst.
+Fehlerbehebung: Absturz beim Wiederaufbau der App durch ein Sheet
+und mehr…

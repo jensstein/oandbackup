@@ -1,0 +1,7 @@
+Neu: Speichern von Backups
+Neu: Speichern/Laden von Kontextmenü-Auswahlen
+Behoben: Unterstützung von SU-Implementierungen ohne Magisk
+Behoben: Neuladen des App-Zustands beim Drehen des Bildschirms
+Aktualisiert: Wischen zwischen Seiten
+Aktualisiert: Vereinfachung der Benutzeroberfläche
+und vieles mehr im vollständigen Changelog…

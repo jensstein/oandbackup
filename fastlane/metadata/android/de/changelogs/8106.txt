@@ -1,0 +1,7 @@
+- Update: Vollständige Umstellung der Navigation auf Compose
+- Update: Layouts von „BackupItem“, „Welcome Page“, „Permissions Page“ und „AppSheet“
+- Update: Sortier- und Filteroptionen auf die Statistiken des Sheets anwenden
+- Update: Überarbeitung der Benutzeroberfläche für die Einstellungen
+- Update: Benutzeroberfläche der NavBar-Elemente
+- Fehlerbehebung: Inkonsistente Standardeinstellung für das Design (@hg42)
+- Fehlerbehebung: Paketname wird in AppSheet abgeschnitten

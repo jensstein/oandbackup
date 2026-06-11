@@ -1,0 +1,2 @@
+Behoben: Verarbeitung von Zeitplänen
+Hinzugefügt: Symbol basierend auf dem Systemdesign

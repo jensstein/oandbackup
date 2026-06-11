@@ -1,0 +1,5 @@
+Behoben: Zeitpläne ignorieren Sonderfälle in Sperrlisten
+Behoben: Zeitpläne werden zweimal ausgeführt
+Neu: Scheinzitpläne
+Neu: Weitere Trace-Einstellungen
+Behoben: Platz in den Info-Feldern hinzugefügt

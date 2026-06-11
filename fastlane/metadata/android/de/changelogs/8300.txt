@@ -1,0 +1,7 @@
+Neu: Backup/Wiederherstellung im Kontextmenü aktivieren
+Neu: DevTools für fortgeschrittene Benutzer
+Update: Überarbeitung des Backends für schnelleres Laden
+Update: Aussagekräftigeres Logdateiformat
+Behoben: AppSheet von deinstallierten Paketen ohne Backups entfernen und schließen
+Behoben: Doppelte Zeitpläne
++ mehr als 350 Commits und 60 Übersetzungsbeiträge
