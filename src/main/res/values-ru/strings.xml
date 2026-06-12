@@ -483,4 +483,15 @@
     <string name="refresh_failed">Обновить не удалось</string>
     <string name="backupdir_inaccessible">Местоположение резервной копии недоступно</string>
     <string name="unknown_error">Неизвестная ошибка</string>
+    <string name="permissions">Разрешения</string>
+    <string name="prefs_useexactalarm_summary">если не используется useAlarmClock, то используйте точные уведомления, иначе использование неточных уведомлений может быть лучше для батареи</string>
+    <string name="prefs_useexactalarm_title">Используйте точные уведомления для расписаний</string>
+    <string name="dialog_ignore">Игнорировать</string>
+    <string name="prefs_enablestoragecheck">Включить проверку хранилища</string>
+    <string name="prefs_enablestoragecheck_summary">Проверить доступное место хранилища перед началом резервной копии.</string>
+    <string name="keep_android_open">Сохранить Android Открытым</string>
+    <string name="keep_android_open_notice">Открытости Android угрожает Google. Мы нуждаемся в вашей помощи: https://keepandroidopen.org/</string>
+    <string name="shortcut_run_schedule">Запустить %s</string>
+    <string name="schedule_not_found_or_disabled">Расписание не найдено или выключено</string>
+    <string name="setup_FORMAT">Настроить: %s</string>
 </resources>
