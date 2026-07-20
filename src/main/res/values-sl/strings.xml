@@ -479,4 +479,6 @@
     <string name="keep_android_open_notice">Googla ogroža odprtost sistema Android. Potrebujemo tvojo pomoč: https://keepandroidopen.org/</string>
     <string name="shortcut_run_schedule">Zaženi %s</string>
     <string name="schedule_not_found_or_disabled">Razpored ni najden ali je onemogočen</string>
+    <string name="setup_FORMAT">Nastavitve: %s</string>
+    <string name="permissions">Dovoljenja</string>
 </resources>
