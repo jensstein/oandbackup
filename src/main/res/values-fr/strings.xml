@@ -449,4 +449,10 @@
     <string name="dialogLabel">Simplement étiqueter</string>
     <string name="enforce_backups_limit_FORMAT">Appliquer la limite de sauvegardes de %d aux applications suivantes : %s</string>
     <string name="enforced_backups_limit_FORMAT">Limite de sauvegardes de %d appliquée aux applications suivantes : %s</string>
+    <string name="no_apps_to_enforce_backups_limit">Pas d\'appli sur laquelle mettre une limite de sauvegarde</string>
+    <string name="enforce_backups_limit_summary">Appliquer la limite de version de sauvegarde sur toutes les applis qui la dépassent</string>
+    <string name="title_app_management">Gestion des Applications :</string>
+    <string name="title_backup_management">Gestion de sauvegardes :</string>
+    <string name="dialogUndo">Annuler</string>
+    <string name="deleteScheduleDialogMessage">Agenda d\'effacement ?</string>
 </resources>
