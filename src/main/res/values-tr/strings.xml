@@ -478,4 +478,6 @@
     <string name="schedule_not_found_or_disabled">Zamanlayıcı bulunamadı veya devredışı bırakılmış</string>
     <string name="shortcut_run_schedule">%s başlatı</string>
     <string name="keep_android_open_notice">Android\'in özgürlüğü Google tarafından tehlikeye girmiştir. Yardımınıza ihtiyacımız var: https://keepandroidopen.org/</string>
+    <string name="setup_FORMAT">Kurulum: %s</string>
+    <string name="permissions">İzinler</string>
 </resources>
