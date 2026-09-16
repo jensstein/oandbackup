@@ -330,7 +330,7 @@
     <string name="app_s_icon">Appens ikon</string>
     <string name="apptype_special">Särskild säkerhetskopia</string>
     <string name="backup_mode_title">Säkerhetskopieringsläge:</string>
-    <string name="ignore_battery_optimization_message">Säkerhetskopior kan ibland stoppas. Stäng av batterioptimeringen för att förhindra detta.</string>
+    <string name="ignore_battery_optimization_message">Säkerhetskopieringar kan ibland avbrytas. Stäng av batterioptimeringen för att förhindra detta.</string>
     <string name="post_notifications_permission_title">Publicera aviseringar</string>
     <string name="post_notifications_permission_message">Från Android 13 behöver appar denna behörighet för att kunna publicera aviseringar.</string>
     <string name="ignore_battery_optimization_not_supported">Den här enheten har tyvärr inte stöd för att ignorera batterioptimeringar!</string>
@@ -385,7 +385,7 @@
     <string name="sched_imported">Schemat har importerats</string>
     <string name="logs_share_failed">Loggfilen hittades inte</string>
     <string name="global_blocklist_add">Lägg till i den globala blockeringslistan</string>
-    <string name="intro_permission_storage_location_warning">Välj inte huvudkatalogen för lagring eller mappen Hämtade filer; skapa en särskild mapp för säkerhetskopior. Läs mer i vanliga frågor.</string>
+    <string name="intro_permission_storage_location_warning">Välj inte huvudlagringskatalogen eller mappen Hämtade filer; skapa en särskild mapp för säkerhetskopior. Läs mer i vanliga frågor.</string>
     <string name="backup_all_updated">Säkerhetskopiera alla uppdaterade appar</string>
     <string name="prefs_accent_0">Röd komet</string>
     <string name="prefs_accent_1">Fin lila</string>
@@ -454,7 +454,7 @@
     <string name="sched_customlist_dialog_message">Anpassad lista: %s</string>
     <string name="packagesToBackup">Antal paket att säkerhetskopiera: %d</string>
     <string name="addBlocklistDialogMessage">Lägg till appen i den globala blockeringslistan?</string>
-    <string name="stats_app_size">Appstorlek</string>
+    <string name="stats_app_size">Appars storlek</string>
     <string name="stats_data_size">Datastorlek</string>
     <string name="enabled_schedules">Aktiverade scheman</string>
     <string name="notification_app_action">Appåtgärder</string>
