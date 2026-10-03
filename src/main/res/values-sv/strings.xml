@@ -287,7 +287,7 @@
     <string name="prefs_laserbackground_summary">Använd animerat färgat ljus som bakgrund vid inläsning eller väntan.</string>
     <string name="prefs_password_summary">Används också för dekryptering vid återställning</string>
     <string name="prefs_externaldata_summary">Säkerhetskopierar data som finns på extern lagring (t.ex. /storage/emulated/0/Android/data/)</string>
-    <string name="prefs_obbdata_summary">Säkerhetskopierar appens OBB-filer som finns på extern lagring (t.ex. /storage/emulated/0/Android/obb/)</string>
+    <string name="prefs_obbdata_summary">Säkerhetskopierar appens obb-filer som finns på extern lagring (t.ex. /storage/emulated/0/Android/obb/)</string>
     <string name="prefs_mediadata_summary">Säkerhetskopierar appens mediefiler som finns på extern lagring (t.ex. /storage/emulated/0/Android/media/)</string>
     <string name="prefs_nobackupdata">Säkerhetskopiera no_backup-filer</string>
     <string name="prefs_nobackupdata_summary">Säkerhetskopiera filer i data som är märkta att inte säkerhetskopieras</string>
@@ -295,8 +295,8 @@
     <string name="prefs_deviceprotecteddata_rst_summary">Återställer data som finns i data/user_de</string>
     <string name="prefs_externaldata_rst">Återställ externa data</string>
     <string name="prefs_externaldata_rst_summary">Återställer data som finns på extern lagring (t.ex. /storage/emulated/0/Android/data/)</string>
-    <string name="prefs_obbdata_rst">Återställ OBB-filer</string>
-    <string name="prefs_obbdata_rst_summary">Återställer appens OBB-filer som finns på extern lagring (t.ex. /storage/emulated/0/Android/obb/)</string>
+    <string name="prefs_obbdata_rst">Återställ obb-filer</string>
+    <string name="prefs_obbdata_rst_summary">Återställer appens obb-filer som finns på den externa lagringen (t.ex. /storage/emulated/0/Android/obb/)</string>
     <string name="prefs_mediadata_rst">Återställ mediefiler</string>
     <string name="prefs_mediadata_rst_summary">Återställer appens mediefiler som finns på extern lagring (t.ex. /storage/emulated/0/Android/media/)</string>
     <string name="prefs_nobackupdata_rst">Återställ no_backup-filer</string>
@@ -351,7 +351,7 @@
     <string name="enable_encryption_message">Det är inte säkert att behålla data okrypterade på enheten. Aktivera kryptering och ange ett lösenord för att skydda data.</string>
     <string name="storage_access">Lagringsåtkomst</string>
     <string name="welcome_to_oabx">Välkommen till Neo Backup!</string>
-    <string name="intro_permission_storage">Appen använder läs-/skrivbehörighet för lagring för att få åtkomst till extern lagring och möjliggöra säkerhetskopiering av externa data/OBB för andra appar.</string>
+    <string name="intro_permission_storage">Appen använder läs-/skrivbehörighet för lagring för att få åtkomst till extern lagring och för att möjliggöra säkerhetskopiering av externa data/obb för andra appar.</string>
     <string name="intro_permission_storage_location">Appen behöver en lagringsplats för säkerhetskopiorna. En fullständig säkerhetskopia kan kräva några gigabyte lagring och frågar ofta filsystemet. Tänk på detta när du väljer nätverksbaserade lagringsplatser.</string>
     <string name="intro_permission_smsmms">Appen behöver denna behörighet för att kunna säkerhetskopiera/återställa SMS/MMS.</string>
     <string name="intro_permission_calllogs">Appen behöver denna behörighet för att kunna säkerhetskopiera/återställa samtalsloggar.</string>
