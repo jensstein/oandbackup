@@ -1,0 +1,6 @@
+Korrigering: Tvingad avslutning av en app 
+Korrigering: Tar bort schemat 
+Korrigering: Krasch vid snabbmeny/Placera 
+Uppdatering: Förbättra animering av fältet med uppdaterade appar 
+Uppdatering: Ladda alla sidor i förväg 
++ mer än 30 commit och 30 översättningsbidrag

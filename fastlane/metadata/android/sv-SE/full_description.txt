@@ -1,0 +1,6 @@
+<p>Skapa och återställ säkerhetskopior av appar på din enhet och spara appdata på en plats som är tillgänglig för användaren. Stöder säkerhetskopiering och återställning av en eller flera appar.</p> 
+<p>Del utav Neo Applications.</p> 
+<p>En avgrening av OAndBackup som erbjuder stöd för nya Android-versioner och ett uppdaterat utseende.</p> 
+<p><br><b>Hjälp till att översätta den på Weblate:</b> https://hosted.weblate.org/engage/oandbackupx/.</p> 
+<p><br><b>Kräver root-behörighet:</b> Eftersom den kopierar filer från /data/data, /data/app och /system/app.</p> 
+<p>Status: Beta</p>
