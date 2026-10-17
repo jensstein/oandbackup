@@ -44,7 +44,8 @@ kotlin {
 
 android {
     namespace = "com.machiav3lli.backup"
-    compileSdk = 36
+    compileSdk = 37
+    compileSdkMinor = 1
 
     defaultConfig {
         applicationId = "com.machiav3lli.backup"
