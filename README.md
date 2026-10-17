@@ -81,7 +81,7 @@ Our **[Code of Conduct](COC.md)** applies to the communication in the community 
 
 Contribute your translations to Neo Backup on [Hosted Weblate](https://hosted.weblate.org/engage/neo-backup/). <br> Adding new languages is always accepted and supported.
 
-[![Translation stats](https://hosted.weblate.org/widgets/neo-backup/-/multi-auto.svg)](https://hosted.weblate.org/engage/neo-backup/?utm_source=widget)
+[![Translation stats](https://hosted.weblate.org/widget/neo-backup/matrix-auto.svg)](https://hosted.weblate.org/engage/neo-backup/)
 
 Before being hosted at Weblate, translations were done manually by those great people:
 
