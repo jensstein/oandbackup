@@ -1,0 +1,5 @@
+Corretto: BlockList nelle pianificazioni
+Corretto: Programmi di esecuzione ripetitivi
+Corretto: Ripristinare l'intera altezza del terminale
+Aggiornato: Separa le preferenze del servizio in backup e ripristino
+Aggiornato: Disabilitazione predefinita della traccia

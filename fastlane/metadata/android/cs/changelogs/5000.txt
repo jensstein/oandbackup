@@ -1,0 +1,7 @@
+**NOVÁ HLAVNÍ VERZE**: NEKOMPATIBILNÍ SE STARÝMI VERZEMI
+**První vydání KOTLIN**
+NAPLÁNOVANÉ AKCE MOHOU TRVAT POUZE 10 MINUT (SYSTÉMOVÉ OMEZENÍ)
+* Přidáno: Zadání režimů pro aplikace v dialogovém okně Dávka
+* Opraveno: Povolení trvalého úložiště
+* Opraveno: Podpora A11
+* Příliš mnoho dalších vylepšení, oprav a vyčištění

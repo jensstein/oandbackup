@@ -1,0 +1,8 @@
+Add: Check if available storage enough for backup
+Add: Random name for new schedules
+Fix: Reduce checkroot false-negatives
+Update: Improve schedule clean up reliability
+Update: Reduce recompositions where possible
+Update: Simplify multiple UI components and pages
+Remove: Animated background options
++ more than 70 commits, 20 translations

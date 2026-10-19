@@ -1,0 +1,6 @@
+<p>Stvori i vrati sigurnosne kopije aplikacija na vašem uređaju i spasi podatke aplikacija u lokaciju pristupnu krajnjem korisniku. Podržava spašavanje i vraćanje pojedinačnih i višestrukih aplikacija.</p>
+<p>Dio paketa Neo Applications.</p>
+<p>Fork od OAndBackup koji donosi podršku za nove Android verzije i unaprijeđuje sučelje.</p>
+<p><br><b>Pomozi prevesti aplikaciju na Weblate-u:</b> https://hosted.weblate.org/engage/oandbackupx/.</p>
+<p><br><b>Zahtijeva root:</b> Zato što kopira podatke iz /data/data, /data/app i /system/app.</p>
+<p>Status: Beta</p>

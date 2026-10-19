@@ -1,0 +1,10 @@
+INCOMPATÍVEL COM VERSÕES ANTIGAS
+**DEGRADAÇÃO DE DESEMPENHO**: causada pelo uso do SAF em comparação com o acesso direto
+* Adicionado: Suporte ao Storage Access Framework
+* Adicionado: Suporte a links simbólicos/pipes
+* Adicionado: Suporte a múltiplos backups
+* Adicionado: Permitir tarefas em lote paralelas
+* Atualizado: Nova interface de usuário/experiência do usuário
+* Atualizado: Sistema de tags
+* Atualizado: Estrutura de backup
+* Muitas outras melhorias, correções e otimizações

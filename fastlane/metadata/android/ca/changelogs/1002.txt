@@ -1,0 +1,7 @@
+** OAndBackupX 1.0.2 **
+* Afegit: comentaris sobre els clics sobre els elements
+* Actualitzat: desplaçament eXperience
+* Corregit: pantalla de presentació
+* Solucionat: feu lliscar el dit per actualitzar el comportament
+* Corregit: tema de la barra d'estat
+* i alguns altres ajustaments de la IU

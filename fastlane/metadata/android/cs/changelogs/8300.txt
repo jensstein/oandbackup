@@ -1,0 +1,7 @@
+Přidáno: Povolení zálohování/obnovy v kontextovém menu
+Přidáno: DevTools pro pokročilé uživatele
+Aktualizace: Přepracování backendu pro rychlejší načítání
+Aktualizace: Informativnější formát souborů protokolu
+Oprava: Odstranění a odmítnutí AppSheet odinstalovaného balíčku bez zálohování
+Oprava: Duplicitní plány
++ více než 350 revizí a 60 příspěvků k překladu

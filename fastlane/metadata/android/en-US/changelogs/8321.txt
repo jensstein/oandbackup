@@ -1,0 +1,6 @@
+Fix: Disfunction after coming back from prefs (Koin calls and scoping)
+Fix: Crash of using repository database calls on UI thread
+Update: Improve coroutines handling in repositories
+Update: Make alternative block design default
+Update: Revamp preferences coloring
++ more than 15 commits, 6 translations

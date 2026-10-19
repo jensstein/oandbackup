@@ -1,0 +1,2 @@
+* Behoben: Anzeige der Meldugen bei Fehler (@hg42)
+* Behoben: Sonderzeichenbehandlung bei den Kommandos im Backup-Prozess (@hg42)

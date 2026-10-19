@@ -1,0 +1,10 @@
+**OndBackupX 3.2.0**
+
+* Přidáno: nová navigace
+* Přidáno: odznak pro aktualizované aplikace v hlavním okně
+* Opraveno: ukládání zaškrtnutých položek v Dávce
+* Opraveno: synchronizace kontroly všeho v Dávce
+* Opraveno: neočekávané chování filtrování vyhledávání (způsobené ukládáním do mezipaměti)
+* Opraveno: chování při obnovení
+* Aktualizováno: zlepšení výkonu obnovení
+* Aktualizováno: zlepšení vizuálního výkonu (instance akcí a rychlost spouštění listů)

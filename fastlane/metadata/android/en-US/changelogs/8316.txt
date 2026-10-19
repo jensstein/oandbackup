@@ -1,0 +1,5 @@
+Add: ForegroundServiceType for works (Required on A14)
+Fix: Crash on backup/restore
+Update: TargetSDK 34
+Remove: Theme color options temporarily
+Update: Revamp theme colors

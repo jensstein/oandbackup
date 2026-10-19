@@ -1,0 +1,6 @@
+Fehlerbehebung: Falsche Standardeinstellung für „pmSuspend“
+Fehlerbehebung: Textfarbe der deaktivierten App im App-Sheet
+Fehlerbehebung: Auswahl von Listenelementen
+Fehlerbehebung: Textfarbe des Schiebereglers in den Einstellungen
+Neu: Adaptive Stufen für den Schieberegler in den Einstellungen
+Aktualisierung: Benutzeroberfläche der BottomNavBar in den Einstellungen

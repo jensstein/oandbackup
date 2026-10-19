@@ -1,0 +1,6 @@
+* Atualizado: renovação de UI/UX (em cooperação com @opepp)
+* Adicionado: Ferramenta para gravar a lista de apps num ficheiro
+* Adicionado: Muitas funcionalidades novas
+* Corrigido: Agendamento de backups
+* Traduções atualizadas
+* Entre outras toneladas de melhorias

@@ -1,0 +1,7 @@
+- Aggiornato: Migra completamente la navigazione su Componi
+- Aggiornato: Layout di BackupItem, pagina di benvenuto, pagina delle autorizzazioni e foglio dell'applicazione
+- Aggiornato: Applica le opzioni di ordinamento/filtro alle statistiche del foglio
+- Aggiornato: Rinnova l'interfaccia utente delle preferenze
+- Aggiornato: UI degli elementi NavBar
+- Corretto: Preferenza tema predefinita incoerente (@hg42)
+- Corretto: Ritaglio del nome del pacchetto in AppSheet

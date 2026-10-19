@@ -1,0 +1,14 @@
+<html>
+    <body>
+        <p><strong>Backup modes</strong>: An app can be backed up with only its apk, only its data or both. An app not currently installed can only be restored if the apk is present.
+        </p>
+        <p><strong>Delete backup</strong>: Deletes the backup files for the chosen app.
+        </p>
+        <p><strong>Deïnstalleer</strong>: Enigszins agressiever dan een normale deïnstallatie. Als aanvulling op een normale deïnstallatie via android commando's zal een deïnstallatie vanuit OAndBackupX ook bestanden die de app heeft achtergelaten in /data/app-lib/ verwijderen.
+        </p>
+        <p><strong>Inschakelen / Uitschakelen</strong>: Gebruikt het android script `pm` om een app in of uit te schakelen. Uitschakeling van een app zorgt ervoor dat het zonder deïnstallatie uit de normale gebruikers interface wordt verwijderd. Dit kan gebruikt worden om een app in één keer in of uit te schakelen voor meer gebruikers (indien het apparaat meer gebruikers ingeschakeld heeft). Gebruikers worden geïdentificeerd door middel van een id. 0 is de eerste gebruiker (eigenaar).
+        </p>
+        <p><strong>Meer gebruikers</strong>: Multi-user is op het moment nog experimenteel maar behoort te werken. Wanneer herstellen in een multi-user scenario wordt aangeroepen, wordt `pm install -r $apk` gebruikt. Daarmee wordt de app uitgezet voor alle gebruikers die de app in /data/system/user/$user/package-restrictions.xml hebben staan (tenzij de app geregistreerd staat als enabled="1"). <br> Dit kan problemen veroorzaken bij gebruikers die dezelfde app op een later tijdstip installeren, maar is noodzakelijk om te voorkomen dat de app voor alle gebruikers op hetzelfde moment geïnstalleerd wordt. Het context menu heeft een optie om apps aan en uit te zetten, die gebruikt kan worden als andere gebruikers niet in staat zijn om een specifieke app te gebruiken wegens uit zetten tijdens herstel.<br> In- en uitschakelen werkt alleen na een initiële installatie (niet noodzakelijkerwijs van OAndBackupx) of terugzetting van de app.
+        </p>
+    </body>
+</html>

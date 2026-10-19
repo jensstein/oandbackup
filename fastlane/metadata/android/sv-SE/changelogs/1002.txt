@@ -1,0 +1,7 @@
+**OAndBackupX 1.0.2** 
+* Tillagt: Återkoppling vid klick på objekt 
+* Uppdaterat: Bläddringsupplevelse 
+* Fixat: Startskärm 
+* Fixat: Uppdatering genom att svepa 
+* Fixat: Tema för statusfältet 
+* samt några andra justeringar av användargränssnittet

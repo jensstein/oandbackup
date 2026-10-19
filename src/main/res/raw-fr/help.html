@@ -1,13 +1,20 @@
-<html><body>
-        <h2>usage notes</h2>
-        <p><strong>backup modes</strong>: an app can be backed up with only its apk, only its data or both. an app not currently installed can only be restored if the apk is present.</p>
-        <p><strong>context menu</strong>: long press an item in the list of apps to get the context menu.</p>
-        <p><strong>delete backup</strong>: deletes the backup files for the chosen app.</p>
-        <p><strong>uninstall</strong>: somewhat more aggressive than a normal uninstall. in addition to doing a normal uninstall via android commands, uninstalling from oandbackup deletes files the app might have left over in /data/app-lib/. it also works on system apps.</p>
-        <p><strong>enable / disable</strong>: uses the android script `pm` to enable or disable an app. disabling an app removes it from the normal user interface without uninstalling. this can be used for enabling or disabling an app for muliple users at a time (if the device has multiple users enabled). users are identified with an id. 0 is the first user (owner).</p>
-        <p><strong>multiple users</strong>: multi-user is still somewhat experimental but should work. when restoring in a multi-user scenario, `pm install -r $apk` gets called and subsequently the app is disabled for every user who has the app listed in /data/system/user/$user/package-restrictions.xml (unless the app is listed as enabled="1").<br>this can create problems for users installing the same app at some later point, but is necessary to prevent the app from being installed to all users at the same time. the context menu has an option to enable or disable apps which can be used if other users become unable to use a specific app due to disabling on restore.<br>enabling and disabling only works after an initial install (not necessarily from oandbackup) or restore of the app.</p>
-        <h2>changelog</h2>
-<a href="https://github.com/jensstein/oandbackup/blob/master/changelog.md">changelog</a><h2>license</h2>
-        <p>oandbackup is licensed under the MIT license and is free to download, modify and share without restrictions</p>
-<a href="https://github.com/jensstein/oandbackup/blob/master/LICENSE.txt">license</a>
-</body></html>
+<html>
+    <body>
+        <p><strong>Modes de sauvegarde</strong>&nbsp;: Il est possible de ne sauvegarder que l'APK d'une app, que ses données, ou bien les deux. Une app qui n'est pas installée ne peut seulement être restaurée si l'APK a été sauvegardée. Trois types spéciaux de données sont pris en charge en plus des données principales : les données protégées par l'appareil, les données externes et les données obb.
+        </p>
+        <p><strong>Supprimer la sauvegarde</strong>&nbsp;: Supprime une sauvegarde spécifique de l'application sélectionnée. "Supprimer les sauvegardes" supprime toutes les sauvegardes de l’application sélectionnée.
+        </p>
+        <p><strong>Désinstaller</strong>&nbsp;: Un peu plus aggressif qu'une désinstallation normale. En plus d'une désinstallation normale via les commandes Android, OAndBackupX supprime les fichiers que l'appli aurait pu laisser dans /data/app-lib/.
+        </p>
+        <p><strong>Activer / désactiver</strong>&nbsp;: Utilise le script Android `pm` pour activer ou désactiver une app. Désactiver une app la retire de l'interface utilisateur normale sans la désinstaller. Il est aussi possible d'activer ou désactiver une app pour plusieurs utilisateurices à la fois (si l'appareil est configuré pour). Les utilisateur·ices sont identifié⋅e·s par un identifiant. Le premier est le numéro 0 (propriétaire).
+        </p>
+        <p><strong> Utilisateurs multiples </strong>&nbsp;: Le multi-utilisateur est encore quelque peu expérimental mais devrait fonctionner. L'activation et la désactivation ne fonctionnent qu'après une installation initiale (pas nécessairement à partir d'OAndBackupx) ou une restauration de l'application.
+        </p>
+        <p><strong> Applications sans système</strong> : La sauvegarde et la restauration des applications sans système installées en tant que modules Magisk ne sont pas prises en charge et leur tentative pourrait entraîner une défaillance du système et vous obliger à le formater et à le flasher à nouveau.
+        </p>
+        <p><strong>Navigation</strong>&nbsp;: La barre de navigation a «&nbsp;Paramètres&nbsp;», «&nbsp;Accueil&nbsp;», «&nbsp;Sauvegarde par lots&nbsp;», «&nbsp;Restauration de lots&nbsp;» et «&nbsp;Sauvegardes d’horaire&nbsp;» (dans cet ordre). Le nombre d’applications mises à niveau après leur dernière sauvegarde sera présenté sous forme de notification sur le bouton «&nbsp;Accueil&nbsp;».
+        </p>
+        <p><strong>Applications utilisant Keystore</strong>&nbsp;: Android dispose d'un stockage chiffré pour les données sensibles. Les applications qui l'utilisent pour stocker des données de connexion ou certaines clés pour sa fonction ne peuvent pas être restaurées avec succès. Signal et Element (Riot) sont deux exemples de telles applications.
+        </p>
+    </body>
+</html>

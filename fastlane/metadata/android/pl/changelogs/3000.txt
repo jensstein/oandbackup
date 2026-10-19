@@ -1,0 +1,10 @@
+##### BRAK ZGODNOŚCI Z WCZEŚNIEJSZYMI WERSJAMI
+* Aktualizacja: domyślny katalog kopii do / OABX
+* Aktualizacja: Przepisane Rozwiązanie Szyfrujące (@Pizze)
+* Aktualizacja: odnowiona pomoc i AppSheet UI
+* Aktualizacja: clearcache preferencji do excludeCache
+* Aktualizacja: przepisane całe funkcje poleceń powłoki (@Pizze)
+* Dodano: Sortuj według rozmiaru danych
+* Dodano: podpowiedzi dla wszystkich ikon
+* Dodano: przycisk wipe Cache do AppSheet
+* Dodano: okno dialogowe alertu o włączeniu Szyfrowania

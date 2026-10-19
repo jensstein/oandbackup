@@ -1,0 +1,6 @@
+<p>Realizează și restaurează backupuri ale aplicațiilor de pe dispozitiv și salvează datele aplicațiilor într-o locație accesibilă utilizatorului. Suportă crearea de backupuri și restaurarea unei singure aplicații sau a mai multor aplicații.</p>
+<p>Parte din Neo Applications.</p>
+<p>Fork al OAndBackup care aduce suport pentru noile versiuni de Android și un aspect actualizat.</p>
+<p><br><b>Ajută la traducerea lui pe Weblate:</b> https://hosted.weblate.org/engage/oandbackupx/.</p>
+<p><br><b>Necesită root:</b> Deoarece copiază fișiere din /data/data, /data/app și /system/app.</p>
+<p>Stare: Beta</p>

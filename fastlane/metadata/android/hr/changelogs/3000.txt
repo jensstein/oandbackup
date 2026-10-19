@@ -1,0 +1,10 @@
+##### THIS RELEASE ISN'T COMPATIBLE WITH THE VERSIONS BEFORE
+* Unaprijeđeno: zadana mapa sigurnosnih kopija u /OABX
+* Unaprijeđeno: Ponovno napisano rješenje za enkripciju (Zahvala @Pizze)
+* Unaprijeđeno: obnovljeno korisničko sučelje za Pomoć i AppSheet
+* Unaprijeđeno: clearCache postavke za excludeCache
+* Unaprijeđeno: ponovno napisane potpune naredbene funkcije ljuske (Zahvala @Pizze)
+* Dodano: Poredaj po Veličini Podataka
+* Dodano: Opisi za sve Ikone
+* Dodano: izbriši Međuspremnik gumb za AppSheet
+* Dodano: Dijalog upozorenja o omogućavanju Enkripcije

@@ -1,0 +1,5 @@
+新增：ForegroundServiceType for works（在 A14 上是必需的）
+修復：備份/還原時崩潰
+更新：升級至TargetSDK 34
+移除：暫時的主題顏色選項
+更新：修改主題顏色

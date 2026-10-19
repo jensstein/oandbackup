@@ -1,0 +1,6 @@
+* Aggiornato: UI / UX revamp (in co-op con @opepp)
+* Aggiunto: Strumento per salvare l'elenco delle app in un file
+* Aggiunto: Troppe nuove funzionalità
+* Corretto: Pianificazione dei backup
+* Traduzioni aggiornate
+* Tanti altri miglioramenti

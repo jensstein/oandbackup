@@ -1,0 +1,8 @@
+Add: New app icon
+Add: Rotating refresh button
+Fix: hidden Lucky Patcher issue
+Fix: Phh su + inherited+enforcing
+Fix: missing refresh of packages on start
+Update: Revamp NavBar & SearchBar
+Update: Another option for busy background with grey fade
++ more than 80 commits and 10 tranlation contributions

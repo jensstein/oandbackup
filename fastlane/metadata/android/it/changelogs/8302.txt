@@ -1,0 +1,8 @@
+Aggiunto: Nuova icona dell'app
+Aggiunto: Pulsante di aggiornamento rotante
+Corretto: Problema nascosto con Lucky Patcher
+Corretto: Phh su + ereditato + applicazione
+Corretto: Mancato aggiornamento dei pacchetti all'avvio
+Aggiornato: Revamp NavBar e SearchBar
+Aggiornato: Un'altra opzione per lo sfondo occupato con dissolvenza grigia
++ più di 80 commit e 10 contributi di traduzione

@@ -1,0 +1,7 @@
+** OAndBackupX 1.1.1 **
+* Aggiunto: Collegamento al rapporto Exodus ad AppSheet
+* Corretto: Non si avvia se è presente un'app con dimensioni dell'icona <= 0
+* Modificato: L'impostazione predefinita è ora impostata per copiare OAndBackupX nella cartella di backup principale
+* Aggiunto: Greco (crediti @tsiflimagas)
+* Aggiornato: Lettere maiuscole e stringhe inglesi
+* Aggiornato: Generalizza cinese, olandese, polacco e svedese

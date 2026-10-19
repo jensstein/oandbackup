@@ -1,0 +1,9 @@
+**OAndBackupX 1.3.0**
+* Оновлено: new Filters System
+* Оновлено: reduced Splash waiting time
+* Додано: Split-APK support (needs more testing, Credits @Tiefkuehlpizze)
+* Оновлено: Search supports Package Name
+* Виправлено: cache not found/ Symlinks errors
+* Додано: OBB support(needs more testing)
+* Додані переклади: Italian, Chinese, Turkish, Polish (Credits @Urnyx05 @tuchit @scrubjay55 @Antyradek)
+* Інше: UI and performance tweaks

@@ -1,0 +1,9 @@
+BORRAR DATOS NECESARIOS
+* Añadido: Exportación/importación de horarios
+* Añadido: Soporte de ordenación ascendente/descendente
+* Actualizado: Lista de bloqueo global se aplica a Principal
+* Actualizado: Casillas de verificación "Usar modos" en los diálogos de copia de seguridad/restauración/programación
+* Corregido: Las programaciones no se ejcutaban
+* Corregido: Retraso en las notificaciones de algunas aplicaciones restauradas
+* Añadido catalán
+* Toneladas de otras mejoras/correcciones

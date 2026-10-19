@@ -1,0 +1,6 @@
+Opraveno: vynucené zastavení aplikace
+Opraveno: odstranění plánu
+Opraveno: pád na kontextovém menu
+Vylepšeno: animace lišty aktualizovaných aplikací
+Aktualizace: předběžné načtení všech stránek
++ více než 30 příspěvků a 30 překladů

@@ -1,0 +1,6 @@
+Aggiunto: Foglio impostazioni batch
+Aggiunto: Suggerimenti per controllare tutti i pulsanti in Batch
+Corretto: Nota e tag in AppSheet
+Corretto: Registro non aggiornato durante l'eliminazione di elementi
+Aggiornato: Rinnovamento del layout dei chip
+altro nel log delle modifiche completo…

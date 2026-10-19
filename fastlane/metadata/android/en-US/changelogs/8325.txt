@@ -1,0 +1,8 @@
+- Add: Search bar to block and custom list dialogs
+- Add: Contrast themes
+- Fix: Scheduling (Return to ScheduleService scheduling)
+- Fix: Missing/overdoing delete of backups
+- Fix: Check working su-command if pref_suCommand is empty (credits @hg42)
+- Update: Restore main NB icon colors
+- Update: Make last backup choices default for backup dialog
++ more than 15 commits, 30 translations

@@ -1,0 +1,7 @@
+Add: Zstd compression option
+Add: Tags support to schedules
+Add: Respecting tags & notes when searching
+Add: Button to search for uninstalled app in store
+Fix: Work profile support
+Update: OAndBackup-attribution icon
++ more than 100 commits and 20 translation contributions

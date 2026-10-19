@@ -1,0 +1,5 @@
+Hot-Fix-Release (des Hot-Fix-Release - vor ein paar Wochen unbeabsichtigtes Release)
+behebt Probleme dieseses ungewollten Releases; funktioniert zuverlässig, aber immer noch vergleichsweise stockend, da Compose noch nicht die beste Performance bietet; ein echtes Release würde viel Zeit in Anspruch nehmen. Highlights:
+* Update: Neues Update-Format (Die App unterstützt weiterhin ältere Formate)
+* Behebung: Alle A12-Probleme auf v7
+für weitere Details, lesen Sie das vollständige Changelog

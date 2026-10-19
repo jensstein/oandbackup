@@ -1,0 +1,2 @@
+**OAndBackupX 1.0.0**
+* Afegit: opció per esborrar la memòria cau abans de fer una còpia de seguretat de dades

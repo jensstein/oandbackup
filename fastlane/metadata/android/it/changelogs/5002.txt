@@ -1,0 +1,2 @@
+* Corretto: Visualizzazione messaggio in caso di errore (@ hg42)
+* Corretto: Problema di quote nel processo di backup (@ hg42)

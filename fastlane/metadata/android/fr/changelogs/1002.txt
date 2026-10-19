@@ -1,0 +1,7 @@
+**OAndBackupX 1.02**
+Ajouté : Bouton "feedback"
+Mis à jour : Amélioration du scrolling
+Corrigé : Splash screen
+Corrigé : Comportement du "balayer pour rafraîchir"
+*Corrigé : Thème de la barre de statut
+*Ainsi que d'autres ajustements d'UI

@@ -1,0 +1,7 @@
+Neu: Inject DB und WorkHandler benutzen Koin
+Neu: Plugin-Seite (im Entwicklerpanel)
+Korrigiert: Zähler für laufende Arbeiten
+Neu: Sekundenanzeige im Zeitplanzähler nur wenn weniger als 10 Minuten verbleiben
+Neu: Farbanzeige ob das Kennwortzeichen (in)aktiv ist
+Neu: Aktualisierte Dialogknöpfe
++ mehr als 30 Aktualisierungen und 20 neue Übersetzungsbeiträge

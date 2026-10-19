@@ -1,0 +1,10 @@
+**OAndBackupX 3.1.0**
+
+* Dihapus: menghentikan dukungan Android Nougat
+* Ditambahkan: Sistem tag baru
+* Ditambahkan: preferensi kunci biometrik
+* Diperbarui: Seluruh UI
+* Diperbarui: menyetel preferensi data eksternal dan obb default ke nonaktif
+* Diperbaiki: Beberapa UI mogok
+* Dipindahkan ke Affero GPL v3
+dan masih banyak lagi

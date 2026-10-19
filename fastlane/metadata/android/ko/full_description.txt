@@ -1,0 +1,6 @@
+<p>기기에서 앱 백업을 만들고 복원하고 사용자가 액세스할 수 있는 위치에 앱 데이터를 저장합니다. 하나 또는 여러 개의 앱 백업 및 복원을 지원합니다.</p>
+<p>네오 애플리케이션의 일부입니다.</p>
+<p>새로운 Android 버전 및 업데이트된 외관에 대한 지원을 제공하는 OAndBackup의 포크입니다.</p>
+<p><br><b>Weblate에서 번역을 도와주세요:</b> https://hosted.weblate.org/engage/oandbackupx/.</p>
+<p><br><b>루트 필요:</b> /data/data, /data/app 및 /system/app에서 파일을 복사하기 때문입니다.</p>
+<p>상태: 베타</p>

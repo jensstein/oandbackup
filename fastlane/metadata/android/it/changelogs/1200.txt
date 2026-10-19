@@ -1,0 +1,4 @@
+** OAndBackupX 1.2.0 **
+* Aggiornato: Interfaccia utente
+* Corretto: Blocco della condivisione
+* Aggiunto: Opzioni per il backup dei dati protetti del dispositivo e dei dati esterni

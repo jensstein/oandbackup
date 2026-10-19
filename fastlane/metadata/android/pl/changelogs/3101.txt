@@ -1,0 +1,11 @@
+**OAndBackupX 3.1.1**
+
+* Dodano: Wprowadzenie
+* Dodano: pole sprawdzania hasła szyfrującego
+* Usunięto: preferencje ścieżki Busybox
+* Naprawiono: wyświetlanie aktualnej daty zamiast ostatniej kopii
+* Naprawiono: brak aktualizacji tagu elementów po nowej kopii
+* Zaktualizowano: (norweski, rosyjski, włoski, francuski, holenderski, niemiecki)
+* Zaktualizowano: domyślnie sortowanie/filtrowanie ustawione na true
+* Zaktualizowano: biometria domyślnie wyłączona
+* Zaktualizowano: ukryto dziennik

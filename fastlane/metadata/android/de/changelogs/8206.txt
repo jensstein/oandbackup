@@ -1,0 +1,6 @@
+Neu: Blatt „Stapel-Einstellungen“
+Neu: Tooltips zum Aktivieren aller Schaltflächen im Stapel
+Behoben: Notizen und Tags in AppSheet
+Behoben: Protokoll wurde beim Löschen von Elementen nicht aktualisiert
+Aktualisiert: Layout der Chips überarbeitet
+Mehr dazu im vollständigen Änderungsprotokoll…

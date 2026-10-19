@@ -1,0 +1,6 @@
+**OAndBackupX 0.9.8**
+* Fixed: remember filter
+* Fixed: picking the value for old backups
+* Fixed: empty filtered list causing crash
+* Tweaked: Scheduler UI
+* Other tweaks

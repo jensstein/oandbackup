@@ -1,0 +1,7 @@
+Add: Option to group invalid backups (pref_createInvalidBackups)
+Fix: Repeated unscheduled run of scheduled schedules
+Update: Replace WorkHandler & WorkManager calls with inject
+Update: Make ViewModels singleton
+Fix: Blocking launching apps after force dismiss
+Fix: Reactivity of schedule timer & app page
++ more than 15 commits

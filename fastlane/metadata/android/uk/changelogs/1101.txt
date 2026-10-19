@@ -1,0 +1,7 @@
+**OAndBackupX 1.1.1**
+* Додано: Exodus report shortcut to AppSheet
+* Виправлено: not launching if there's an app with icon dimensions <= 0
+* Змінено: default is set now to copy OAndBackupX to parent backup folder
+* Додано: Greek (Credits @tsiflimagas)
+* Оновлено: Capitalisation and English Strings (Credits: @atrate)
+* Оновлено: generalize Chinese, Dutch, Polish and Swedish

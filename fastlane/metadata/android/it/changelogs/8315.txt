@@ -1,0 +1,7 @@
+Aggiunto: Forza il pulsante di limitazione dei backup su AppSheet
+Aggiunto: Consenti il ripristino di vecchie app (precedenti ad Android 6) su Android 14+
+Aggiunti: Diversi temi dinamici e neri
+Corretto: Supporto KernelSU
+Corretto: Arresto anomalo al ripristino dopo l'avvio da AppSheet
+Aggiornato: Rimodernati i pulsanti di AppSheet
++ più di 40 commit e 60 contributi di traduzione

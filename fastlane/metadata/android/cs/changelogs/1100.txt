@@ -1,0 +1,6 @@
+**OndBackupX 1.1.0**
+* Přidáno: šifrování zálohování dat
+* Opraveno: plány
+* Aktualizováno: formát oznámení
+* Upraveny některé prvky uživatelského rozhraní
+* a vylepšen výkon

@@ -1,0 +1,20 @@
+<html>
+    <body>
+        <p><strong>Backup modes</strong>: An app can be backed up with only its apk, only its data or both. An app not currently installed can only be restored if the apk is present.
+        </p>
+        <p><strong>Delete backup</strong>: Deletes the backup files for the chosen app.
+        </p>
+        <p><strong>Uninstall</strong>: Somewhat more aggressive than a normal uninstall. In addition to doing a normal uninstall via android commands, uninstalling from OAndBackupX deletes files the app might have left over in /data/app-lib/.
+        </p>
+        <p><strong>Enable / disable</strong>: Uses the android script `pm` to enable or disable an app. Disabling an app removes it from the normal user interface without uninstalling. This can be used for enabling or disabling an app for muliple users at a time (if the device has multiple users enabled). Users are identified with an id. 0 is the first user (owner).
+        </p>
+        <p><strong>Mitme kasutajaga nutiseadmed</strong>: Varundamine ja taastamine mitme kasutajaga seadmetel on osaliselt katseline, kuid peaks toimima. Sisse- ja väljalülitamine toimib ainult peale algset paigaldust (tingimata mitte OAndBackupxist) või rakenduste taastamist.
+        </p>
+        <p><strong>Süsteemivälised rakendused</strong>: Magiski moodulitena paigaldatud süsteemiväliseid rakendusi ei saa varundada ega taastada ning selle üritamine võib põhjustada kogu nutiseadme alustarkvara katkimineku, mille kordategemine eeldab operatsioonisüsteemi uut paigaldust.
+        </p>
+        <p><strong>Liikumine</strong>: Menüüribal on nupud „Seadistused“, „Avaleht“, „Pakkvarundus“, „Pakktaastamine“ ja „Varunduse ajastamine“ (selles järjekorras). Peale viimast varundust uuendatud rakenduste arv on kuvatud teavitusena nupul „Avaleht“.
+        </p>
+        <p><strong>Rakendused, mis kasutavad võtmerõngast</strong>: Androidis on olemas võtmerõngas (Keystore) privaatsete andmete salvestamiseks krüptituna. Rakendusi, mis kasutavad seda sisselogimis- või muude andmete turvaliseks hoidmiseks, ei saa töökindlalt taastada. Kaks näidet sellistest rakendustest on Signal ja Element (vana nimega Riot).
+        </p>
+    </body>
+</html>

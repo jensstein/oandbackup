@@ -1,0 +1,7 @@
+Přidáno: možnost komprimace Zstd
+Přidáno: podpora štítků u plánů
+Přidáno: respektování štítků a poznámek při hledání
+Přidáno: tlačítko pro hledání odinstalovaných aplikací v obchodě
+Opraveno: podpora pracovního profilu
+Aktualizováno: ikona atribuce OAndBackup
++ dalších více než 80 příspěvků a 20 překladů

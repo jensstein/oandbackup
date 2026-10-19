@@ -1,0 +1,7 @@
+Add: Enforce backups limit button to AppSheet
+Add: Allow restoring old apps (older than Android 6) on Android 14+
+Add: Different dynamic and black themes
+Fix: KernelSU support
+Fix: Crash on resume after launching from AppSheet
+Update: Revamp AppSheet's buttons
++ more than 40 commits and 60 translation contributions

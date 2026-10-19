@@ -1,0 +1,10 @@
+INCOMPATIBLE CON LAS VERSIONES ANTIGUAS
+**DEGRADACIÓN DEL RENDIMIENTO**: causada por el uso de SAF en comparación con el acceso directo
+* Añadir: Soporte de Storage Access Framework
+* Añadir: Soporte de enlace simbólico/tubería
+* Añadir: Soporte de copia de seguridad múltiple
+* Añadir: permitir tareas de lote paralelo
+* Actualización: nueva interfaz de usuario/UX
+* Actualización: sistema de etiquetas
+* Actualización: estructura de copia de seguridad
+* Muchas otras mejoras, correcciones y limpiezas

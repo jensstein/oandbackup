@@ -1,0 +1,4 @@
+** OAndBackupX 0.9.7 **
+* Corretto: Aggiorna la logica
+* Rimosso: Crittografia PGP e seguire collegamenti simbolici
+* Codice ripulito

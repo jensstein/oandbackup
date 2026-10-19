@@ -1,0 +1,4 @@
+**OndBackupX 0.9.6**
+* Přidána kontrola aktualizace
+* Opraveno konzistentní téma 
+* Opraveny některé řetězce

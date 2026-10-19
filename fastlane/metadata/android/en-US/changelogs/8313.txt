@@ -1,0 +1,6 @@
+Add: Animate navigation bar buttons
+Fix: Running schedules when app is not open
+Fix: Missing stub for restorePackage in specials
+Fix: NavBar overlap of sheets
+Fix: Crash on restarting app with open AppSheet
++ more than 10 translation contributions

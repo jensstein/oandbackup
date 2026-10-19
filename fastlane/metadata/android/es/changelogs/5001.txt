@@ -1,0 +1,6 @@
+* Actualizado: comandos shell (@hg42)
+* Corregido: Contexto SELinux correcto (@jakeler & @hg42)
+* Corregido: Copias de seguridad fallidas con archivos con nombres con espacios dobles (@jakeler)
+* Corregido: excepción en sockets y otros archivos especiales (@hg42)
+* Corregido: copias de seguridad de archivos con nombres con espacios dobles (@jakeler)
+* Traducciones actualizadas: Polaco, Portugués, Chino, Griego, Alemán, Francés, Noruego, Holandés, Español, Italiano, Indonesio, Japonés, Ruso

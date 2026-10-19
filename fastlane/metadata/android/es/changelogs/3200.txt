@@ -1,0 +1,12 @@
+**OndBackupX 3.2.0**
+
+* Añadido: nueva Navegación
+
+* Añadido: insignia para aplicaciones actualizadas en Principal
+* Corregido: guardar elementos comprobados en Lote
+* Corregido: sincronización de comprobar todo en Lote
+* Corregido: comportamiento inesperado del filtro de búsqueda (causado por el almacenamiento en caché)
+* Corregido: comportamiento de reanudación
+* Actualizado: mejora del rendimiento de actualización
+* Actualizado: mejora del rendimiento visual (instancias de Acción y velocidad de lanzamiento de Hojas)
+* Actualizado: Traducciones (Noruego, Holandés, Turco, Chino, Portugués)

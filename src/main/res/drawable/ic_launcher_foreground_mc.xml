@@ -1,0 +1,120 @@
+<!--
+ ~ Neo Backup: open-source apps backup and restore app.
+ ~ Copyright (C) 2020  Antonios Hazim
+ ~
+ ~ This program is free software: you can redistribute it and/or modify
+ ~ it under the terms of the GNU Affero General Public License as
+ ~ published by the Free Software Foundation, either version 3 of the
+ ~ License, or (at your option) any later version.
+ ~
+ ~ This program is distributed in the hope that it will be useful,
+ ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ ~ GNU Affero General Public License for more details.
+ ~
+ ~ You should have received a copy of the GNU Affero General Public License
+ ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="570"
+    android:viewportHeight="570">
+    <group
+        android:scaleX="0.7"
+        android:scaleY="0.7"
+        android:translateX="85.5"
+        android:translateY="85.5">
+        <path
+            android:fillAlpha="0.6"
+            android:fillColor="#FFF"
+            android:pathData="m377.16,395.16c-29.6,0 -55.81,-11.97 -75.78,-34.61 -20.41,-23.15 -29.75,-51.83 -33.99,-71.81 -7.99,-37.66 -31.76,-77.89 -74.55,-77.89 -40.89,0 -74.16,33.27 -74.16,74.16s33.27,74.16 74.16,74.16c19.81,0 38.43,-7.71 52.44,-21.72 7.03,-7.03 18.43,-7.03 25.46,0 7.03,7.03 7.03,18.43 0,25.46 -20.81,20.81 -48.47,32.27 -77.89,32.27 -60.74,0 -110.16,-49.42 -110.16,-110.16s49.42,-110.16 110.16,-110.16c29.5,0 55.78,12.25 76,35.43 15.94,18.27 27.93,43.49 33.77,71 3.88,18.27 20.7,77.89 74.55,77.89 40.89,0 74.16,-33.27 74.16,-74.16s-33.27,-74.16 -74.16,-74.16c-19.81,0 -38.43,7.71 -52.44,21.72 -7.03,7.03 -18.43,7.03 -25.46,0 -7.03,-7.03 -7.03,-18.43 0,-25.46 20.81,-20.81 48.47,-32.27 77.89,-32.27 60.74,0 110.16,49.42 110.16,110.16s-49.42,110.16 -110.16,110.16Z" />
+        <path
+            android:fillColor="#FFF"
+            android:pathData="m237.84,294h-90c-4.97,0 -9,-4.03 -9,-9 0,-4.97 4.03,-9 9,-9h90c4.97,0 9,4.03 9,9 0,4.97 -4.03,9 -9,9z" />
+        <path
+            android:fillColor="#FFF"
+            android:pathData="m222.7,255.25h-60c-4.97,0 -9,-4.03 -9,-9 0,-4.97 4.03,-9 9,-9h60c4.97,0 9,4.03 9,9 0,4.97 -4.03,9 -9,9z" />
+        <path
+            android:fillColor="#FFF"
+            android:pathData="m222.7,332.75h-60c-4.97,0 -9,-4.03 -9,-9 0,-4.97 4.03,-9 9,-9h60c4.97,0 9,4.03 9,9 0,4.97 -4.03,9 -9,9z" />
+        <path
+            android:fillColor="#FFF"
+            android:pathData="m377.66,334.65c-1.57,0 -3.14,-0.41 -4.55,-1.23l-38.66,-22.65c-4.29,-2.51 -5.73,-8.03 -3.22,-12.31 2.51,-4.29 8.03,-5.73 12.31,-3.22l34.15,20 34.81,-20.04c4.31,-2.48 9.81,-1 12.29,3.31 2.48,4.31 1,9.81 -3.31,12.29l-39.34,22.65c-1.39,0.8 -2.94,1.2 -4.49,1.2z" />
+        <path
+            android:fillColor="#FFF"
+            android:pathData="m416.43,277.65c-1.52,0 -3.07,-0.39 -4.48,-1.2l-34.81,-20.04 -34.15,20c-4.29,2.51 -9.8,1.07 -12.31,-3.22 -2.51,-4.29 -1.07,-9.8 3.22,-12.31l38.66,-22.65c2.79,-1.63 6.24,-1.65 9.04,-0.03l39.34,22.65c4.31,2.48 5.79,7.98 3.31,12.29 -1.66,2.89 -4.69,4.51 -7.81,4.51z" />
+        <path
+            android:fillColor="#FFF"
+            android:pathData="m377.09,300.29c-1.57,0 -3.14,-0.41 -4.55,-1.23l-38.66,-22.64c-4.29,-2.51 -5.73,-8.03 -3.22,-12.31 2.51,-4.29 8.03,-5.73 12.31,-3.22l34.15,20 34.81,-20.04c4.31,-2.48 9.81,-1 12.29,3.31 2.48,4.31 1,9.81 -3.31,12.29l-39.34,22.64c-1.39,0.8 -2.94,1.2 -4.49,1.2z" />
+        <path
+            android:fillAlpha="0.4"
+            android:pathData="m268.84,210.27c15.94,18.27 27.93,43.49 33.77,71 2.24,10.57 8.82,34.97 24.38,53.67l-25.61,25.61c-20.41,-23.15 -29.75,-51.83 -33.99,-71.81 -3.98,-18.76 -11.88,-38.17 -24.1,-52.92l25.55,-25.55Z"
+            android:strokeWidth="0"
+            android:strokeAlpha="0.4">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:endX="253.38"
+                    android:endY="217.47"
+                    android:startX="316.76"
+                    android:startY="353.38"
+                    android:type="linear">
+                    <item
+                        android:color="#00FFFFFF"
+                        android:offset="0" />
+                    <item
+                        android:color="#33FFFFFF"
+                        android:offset="0.3" />
+                    <item
+                        android:color="#4CFFFFFF"
+                        android:offset="0.5" />
+                    <item
+                        android:color="#33FFFFFF"
+                        android:offset="0.7" />
+                    <item
+                        android:color="#00FFFFFF"
+                        android:offset="1" />
+                </gradient>
+            </aapt:attr>
+        </path>
+        <path
+            android:pathData="m270.73,362.89c-8.86,8.86 -18.98,16.04 -29.94,21.34l-13.81,-33.35c6.67,-3.47 12.84,-7.97 18.3,-13.44 7.03,-7.03 18.42,-7.03 25.45,0 7.03,7.03 7.03,18.42 0,25.45Z"
+            android:strokeWidth="0">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:endX="273.16"
+                    android:endY="340.42"
+                    android:startX="230.86"
+                    android:startY="370.04"
+                    android:type="linear">
+                    <item
+                        android:color="#00000000"
+                        android:offset="0.1" />
+                    <item
+                        android:color="#33000000"
+                        android:offset="1" />
+                </gradient>
+            </aapt:attr>
+        </path>
+        <path
+            android:pathData="m299.27,207.11c8.86,-8.86 18.98,-16.04 29.94,-21.34l13.81,33.35c-6.67,3.47 -12.84,7.97 -18.3,13.44 -7.03,7.03 -18.42,7.03 -25.45,0 -7.03,-7.03 -7.03,-18.42 0,-25.45Z"
+            android:strokeWidth="0">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:endX="296.84"
+                    android:endY="229.58"
+                    android:startX="339.14"
+                    android:startY="199.96"
+                    android:type="linear">
+                    <item
+                        android:color="#00000000"
+                        android:offset="0.1" />
+                    <item
+                        android:color="#33000000"
+                        android:offset="1" />
+                </gradient>
+            </aapt:attr>
+        </path>
+    </group>
+</vector>

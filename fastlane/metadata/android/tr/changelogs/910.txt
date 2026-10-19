@@ -1,0 +1,5 @@
+** OAndBackupX 0.9.10**
+* * Yeniden yazıldı: Zamanlayıcı (kapsamlı test edilmesi gerekir)
+* Sabit: yardım bağlantıları
+* Kodu Temizle
+* UI tweaks burada ve orada

@@ -1,0 +1,8 @@
+Oprava: Posouvání listů
+Oprava: Neohrabané tlačítko aktualizace na zařízeních s nízkým rozlišením dpi
+Oprava: Omezení detekce pozastavení procesu
+Oprava: Vyčištění vyhledávacího panelu při zavření
+Aktualizace: Přepracování předvoleb (na základě Compose)
+Aktualizace: Přepracování nástroje pro export/import
+Aktualizace: Omezení uchovávání záloh na 100
+Aktualizace: Dynamické téma

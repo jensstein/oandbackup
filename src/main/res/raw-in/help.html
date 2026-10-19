@@ -1,0 +1,21 @@
+<html>
+    <body>
+        <p><strong>Backup modes</strong>: An app can be backed up with only its apk, only its data or both. An app not currently installed can only be restored if the apk is present.
+        </p>
+        <p><strong>Delete backup</strong>: Deletes the backup files for the chosen app.
+        </p>
+        <p><strong>Uninstall</strong>: Somewhat more aggressive than a normal uninstall. In addition to doing a normal uninstall via android commands, uninstalling from OAndBackupX deletes files the app might have left over in /data/app-lib/.
+        </p>
+        <p><strong>Enable / disable</strong>: Uses the android script `pm` to enable or disable an app. Disabling an app removes it from the normal user interface without uninstalling. This can be used for enabling or disabling an app for muliple users at a time (if the device has multiple users enabled). Users are identified with an id. 0 is the first user (owner).
+        </p>
+        <p><strong>Multi Pengguna</strong>: Multi-Pengguna dapat dikatakan masih eksperimental tapi harusnya bekerja. Menghidupkan dan Mematikannya hanya bekerja setelah melakukan penginstalan (bukan berasal dari OAndBackupx) atau pemulihan dari aplikasi.
+        </p>
+        <p><strong>Aplikasi tersistem</strong>: Pencadangan dan Pemulihan dari aplikasi tersistem not tidaklah di dukung dan mencobanya dapat menyebabkan kegagalan sistem dan memaksa anda untuk meng-flash perangkat.
+        </p>
+        <p><strong>Navigasi</strong>: Pada bar navigasi terdapat "Pengaturan","Utama","Pencadangan Paket","Pemulihan Paket","Pencadangan secara teratur" (pada urutan tersebut). Jumlah aplikasi yang ditingkatkan setelah pencadangan terakhir mereka akan dipersembahkan sebagai notifikasi pada tombol "utama".
+        </p>
+        <p><strong>Aplikasi menggunakan Keystore</strong>:
+Android memiliki penyimpanan terenkripsi untuk data sensitif. Aplikasi memanfaatkan layanan ini untuk menyimpan data login atau beberapa kunci yang fungsinya tidak akan dapat dipulihkan dengan benar. Dua contoh aplikasinya adalah : Signal dan Element (Riot).
+        </p>
+    </body>
+</html>

@@ -1,0 +1,8 @@
+Fehlerbehebung: Bildlauf in Listen
+Fehlerbehebung: Schwer zugängliche Schaltfläche „Aktualisieren“ auf Geräten mit niedriger dpi-Auflösung
+Fehlerbehebung: Weniger strikte Erkennung von Prozesspausen
+Fehlerbehebung: Suchleiste beim Schließen bereinigen
+Update: Überarbeitung der Einstellungen (Compose-basiert)
+Update: Überarbeitung des Export-/Import-Tools
+Update: Begrenzung der Aufbewahrungsdauer für Sicherungen auf 100
+Update: Dynamisches Design

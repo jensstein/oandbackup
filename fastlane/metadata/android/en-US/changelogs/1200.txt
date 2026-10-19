@@ -1,0 +1,4 @@
+**OAndBackupX 1.2.0**
+* Updated: UI
+* Fixed: share crashing
+* Added: options to backup Device Protected Data and External Data

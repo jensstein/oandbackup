@@ -1,0 +1,4 @@
+**OndBackupX 0.9.7**
+* Opraveno: logika aktualizace
+* Odstraněno: Šifrování PGP a sledování symbolických odkazů
+* Vyčištěn kód

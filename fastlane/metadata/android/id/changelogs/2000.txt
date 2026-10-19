@@ -1,0 +1,9 @@
+**OAndBackupX 2.0.0**
+* Beralih ke sulib (Kredit @Tiefkuehlpizze)
+* Menghapus oab-utils untuk selamanya (Kredit @Tiefkuehlpizze)
+* Elemen UI baru untuk App-, Filter- & ScheduleSheet
+* Memperbaiki pencadangan terjadwal untuk data (saja)
+* Memperbaiki zipping eksternal/deData/obb sesuai dengan Prefs
+* Memperbaiki: zipping folder eksternal/deData/obb yang kosong
+* Memperbarui fungsi cache bersih
+* Beberapa penyesuaian UI dan Performa lainnya

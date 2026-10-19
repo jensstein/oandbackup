@@ -1,0 +1,5 @@
+<p>Forgrening av OAndBackup for å ta funksjonaliteten til et moderne nivå, noe som legger til støtte for nyeste versjon av Android og oppdatert utseende.</p>
+<p>Programmet lar deg utføre og gjenopprette programmer på din enhet. <i>OAndBackupX</i> lar deg lagre programdata til et sted brukeren har tilgang. Både sikkerhetskopiering og gjenoppretting av enkelte og flerfoldige programmer støtter.</p>
+<p><br><b>Bistå oversettelsen på Weblate:</b> https://hosted.weblate.org/engage/oandbackupx/.</p>
+<p><br><b>Krever rot-tilgang:</b> Fordi det kopierer filer fra /data/data, /data/app og /system/app.</p>
+<p>Status: Beta</p>

@@ -1,0 +1,2 @@
+**OAndBackupX 0.9.13 (aka 1.0.0-rc2) **
+* 回歸：回到 cp（不是所有 ROM 都捆綁 rsync）

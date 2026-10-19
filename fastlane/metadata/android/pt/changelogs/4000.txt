@@ -1,0 +1,10 @@
+INCOMPATÍVEL COM VERSÕES ANTERIORES
+**DEGRAU DE DESEMPENHO**: causado pela utilização do SAF em comparação com o acesso direto
+* Adicionar: Suporte ao Storage Access Framework
+* Adicionar: Suporte a Symlink/Pipe
+* Adicionar: Suporte a backups múltiplos
+* Adicionar: Permitir tarefas em lote paralelas
+* Atualização: Nova UI/UX
+* Atualização: Sistema de etiquetas
+* Atualização: Estrutura de cópias de segurança
+* Muitas outras melhorias, correcções e limpezas

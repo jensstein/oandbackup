@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Translate Neo Backup
+    url: https://hosted.weblate.org/engage/neo-backup/
+    about: Help translate Neo Backup on Weblate
+  - name: Matrix Community
+    url: https://matrix.to/#/#neo-backup:matrix.org
+    about: 'Join our Matrix community group!'
+  - name: Telegram Community
+    url: https://t.me/neo_backup
+    about: 'Join our Telegram community group!'

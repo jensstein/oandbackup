@@ -1,0 +1,5 @@
+Fix: Schedules ignoring specials in blocklists
+Fix: Running schedules twice
+Add: Fake schedules
+Add: More tracing prefs
+Fix: Add space to info chips

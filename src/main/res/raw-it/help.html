@@ -1,13 +1,20 @@
-<html><body>
-        <h2>note d'uso</h2>
-        <p><strong>modalità backup</strong>: ogni app può essere salvata con solo l'apk, solo i dati o entrambi. Un app attualmente non installata può essere ripristinata solo se l'apk è presente nel backup.</p>
-        <p><strong>menu contestuale</strong>: premere a lungo su un oggetto nella lista delle app per aprire il menu contestuale.</p>
-        <p><strong>cancella backup</strong>: cancella il file di backup dell'app selezionata.</p>
-        <p><strong>disinstalla</strong>: leggermente più aggressivo di una disinstallazione normale. Oltre ad effettuare una normale disinstallazione tramite comandi di Android, disinstallare da oandbackup elimina anche i file che l'app potrebbe aver lasciato in /data/app-lib/. Funziona anche con app di sistema.</p>
-        <p><strong>abilita / disabilita</strong>: usa lo script android `pm` per abilitare o disabilitare un app. Disabilitare un app la rimuove dalla normale interfaccia utente senza disinstallarla. Questo può servire per abilitare o disabilitare un app per più utenti allo stesso tempo (se la modalità multi utente è abilitata). Gli utenti sono identificati con un id. 0 è il primo utente (owner).</p>
-        <p><strong>multi utente</strong>: multi-utente è ancora in qualche modo sperimenttale ma dovrebbe funzionare. Ripristinando in una situazione multi utente, `pm install -r $apk` viene eseguito e in seguito l'app è disabilitata per ogni utente che ha l'app elencata in /data/system/user/$user/package-restrictions.xml (ad eccezione che l'app non sia elencata come: enabled="1").<br>questo può creare di problemi agli utenti che installeranno la stessa app in futuro, ma è necessario per prevenire l'installazione dell'app a tutti gli utenti contemporaneamete. Il menu contestuale contiene un'opzione per abilitare o disabilitare le app e può esser usata dagli utenti che han problemi con un app disabilitata al ripristino.<br>abilitazione disabilitazione funzionano solo dopo un' installazione iniziale (non necessariamente da oandbackup) o rirpistino dell'app.</p>
-        <h2>modifiche</h2>
-<a href="https://github.com/jensstein/oandbackup/blob/master/changelog.md">modifiche</a><h2>licenza</h2>
-        <p>oandbackup è distribuito sotto la MIT license ed il download è gratis, senza restrizioni per modifiche e condivisione</p>
-<a href="https://github.com/jensstein/oandbackup/blob/master/LICENSE.txt">licenza</a>
-</body></html>
+<html>
+    <body>
+        <p><strong>Modalità di backup</strong>: è possibile sottoporre a backup di un'app solo l'apk, solo i dati o entrambi. Un'app non installata può essere ripristinata solo se l'apk è presente nel backup. Sono supportati tre tipi speciali di dati in aggiunta ai dati principali: dati protetti dal dispositivo, dati esterni e dati obb.
+        </p>
+        <p><strong>Elimina backup</strong>: elimina i file di backup per un'istanza di backup specifica. Mentre "Elimina i backup" elimina tutti i backup dell'app scelta.
+        </p>
+        <p><strong>Disinstalla</strong>: un po' più aggressivo di una normale disinstallazione. Oltre ad una normale disinstallazione tramite i comandi Android, la disinstallazione da Neo Backup elimina anche i file che l'app potrebbe aver lasciato in /data/app-lib/.
+        </p>
+        <p><strong>Abilita/disabilita</strong>: utilizza lo script Android `pm` per abilitare o disabilitare un'app. Un'app disabilitata viene rimossa dalla normale interfaccia utente senza che venga disinstallata. Può essere utile per abilitare o disabilitare un'app per più utenti alla volta (se il dispositivo ha più utenti). Gli utenti sono identificati con un ID, ad es. 0 è il primo utente (proprietario) 10 è in genere il profilo di lavoro.
+        </p>
+        <p><strong>Utenti multipli</strong>: la modalità multiutente è ancora sperimentale ma dovrebbe funzionare. L'abilitazione e la disabilitazione funzionano solo dopo un'installazione iniziale (non necessariamente da Neo Backup) o un ripristino dell'app.
+        </p>
+        <p><strong>App systemless</strong>: il backup e il ripristino di app installate systemless come moduli Magisk non sono supportati e applicarli potrebbe portare a un errore di sistema che obbliga a formattarlo e flasharlo nuovamente.
+        </p>
+        <p><strong>Navigazione</strong>: la barra di navigazione contiene "Impostazioni", "Home", "Backup", "Ripristino" e "Pianificazione" (in quest'ordine). Il numero di app aggiornate dopo l'ultimo backup verrà visualizzato come notifica su "Home".
+        </p>
+        <p><strong>App che usano Keystore</strong>: Android dispone di una memoria crittografata per i dati sensibili. Le app che ne fanno uso per memorizzare i dati di accesso o alcune chiavi non possono essere ripristinate correttamente. Due esempi di queste app sono Signal ed Element (Riot).
+        </p>
+    </body>
+</html>

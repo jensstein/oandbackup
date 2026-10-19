@@ -1,0 +1,7 @@
+**OAndBackupX 1.0.2**
+* Dodano: Povratne informacije o kliku na stavku
+* Ažurirano: iskustvo prilikom listanja
+* Popravljeno: Početni zaslon
+* Popravljeno: ponašanje prilikom povlačenja za osvježavanje
+* Popravljeno: Tema statusne trake
+* također ostale promjene korisničkog sučelja

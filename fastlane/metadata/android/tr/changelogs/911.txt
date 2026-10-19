@@ -1,0 +1,7 @@
+** OAndBackupX 0.9.11**
+* Eklendi: yedeklemeden önce önbelleği Temizle
+* Güncelleme: cips styling
+* Eklendi: pil optimizasyonu dışlama için istemi
+* Sabit: profilleri hata (test ihtiyacı)
+* * Anahtarlamalı: FİLEPİCKER güvenli
+* Kodu Tweaked

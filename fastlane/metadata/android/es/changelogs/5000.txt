@@ -1,0 +1,7 @@
+**NUEVA VERSIÓN PRINCIPAL**: INCOMPATIBLE CON VERSIONES ANTERIORES
+***Primera versión de KOTLIN**
+LAS ACCIONES PROGRAMADAS SOLO PUEDEN DURAR 10 MINUTOS (RESTRICCIÓN DEL SISTEMA)
+* Añadido: Especificar modos para aplicaciones en el diálogo de lote
+* Corregido: permiso de almacenamiento persistente
+* Fijo: A11 apoyo
+* Demasiadas otras mejoras, correcciones y limpiezas

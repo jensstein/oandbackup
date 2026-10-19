@@ -1,0 +1,10 @@
+**OAndBackupX 3.1.0**
+
+* Removed: dropped Android Nougat support
+* Added: New tags system
+* Added: biometric lock preference
+* Updated: The whole UI
+* Updated: set default external data and obb preference to off
+* Fixed: Some UI crashes
+* Moved to Affero GPL v3
+and far more

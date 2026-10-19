@@ -1,0 +1,7 @@
+Add: Inject DB and WorkHandler using Koin
+Add: Plugins page (in dev panel)
+Fix: Running jobs count
+Update: Show seconds in schedule counter only when < 10min remaining time
+Update: Color the password icon when (in)active
+Update: Revamp all dialog buttons
++ more than 30 commits and 20 translation contributions

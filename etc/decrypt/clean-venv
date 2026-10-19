@@ -1,0 +1,6 @@
+#!/bin/sh
+
+which pipenv && pipenv --rm
+rm --rec --verbose .venv
+rm Pipfile Pipfile.lock
+rm pyproject.toml uv.lock

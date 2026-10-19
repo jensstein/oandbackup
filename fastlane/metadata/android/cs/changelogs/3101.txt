@@ -1,0 +1,9 @@
+**OndBackupX 3.1.1**
+
+* Přidáno: Intro
+* Přidáno: pole pro kontrolu šifrovacího hesla
+* Odstraněno: Busybox předvolba cesty
+* Opraveno: zobrazování aktuálního data místo poslední zálohy
+* Opraveno: neaktualizování značky aktualizace položek po nové záloze
+* Aktualizováno: Překlady (norština, ruština, italština, francouzština, holandština, němčina)
+* Aktualizováno: nastavení výchozího nastavení zapamatování třídění/filtrů na hodnotu true

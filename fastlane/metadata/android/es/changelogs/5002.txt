@@ -1,0 +1,2 @@
+* Corregido: Visualización de mensajes en caso de errores (@hg42)
+* Corregido: Manejo de caracteres especiales para comandos en el proceso de respaldo (@hg42)

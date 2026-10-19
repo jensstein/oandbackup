@@ -1,0 +1,6 @@
+* Updated: Improving shell commands function (@hg42)
+* Fixed: Correct SELinux context (@jakeler & @hg42)
+* Fixed: Failed backups with files with names with double spaces (@jakeler)
+* Fixed: Throwing exception on sockets and other special files (@hg42)
+* Fixed: Failed backups with files with names with double spaces (@jakeler)
+* Updated translations: Polish, Portuguese, Chinese, Greek, German, French, Norwegian, Dutch, Spanish, Italian, Indonesian, Japanese, Russian

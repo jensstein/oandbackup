@@ -1,0 +1,9 @@
+** OAndBackupX 1.3.0 ** 
+* Aggiornato: Nuovo sistema di filtri 
+* Aggiornato: Tempo di attesa di Splash ridotto 
+* Aggiunto: Supporto Split-APK (necessita di ulteriori test) 
+* Aggiornato: La ricerca supporta il nome pacchetto 
+* Corretto: Cache non trovata / Symlinks 
+* Aggiunto: Supporto OBB (ulteriori test) 
+* Lingue aggiunte: Italiano, cinese, turco, polacco
+* Altro: Ottimizzazione dell'UI e delle prestazioni

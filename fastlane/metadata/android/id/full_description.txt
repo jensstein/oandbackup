@@ -1,0 +1,6 @@
+<p>Buat dan pulihkan cadangan aplikasi pada perangkat Anda dan simpan data aplikasi pada lokasi yang bisa diakses oleh user. Mendukung pencadangan dan pemulihan satu atau banyak aplikasi.</p>
+<p>Fork dari OAndroidBackup membawa dukungan untuk Android versi baru dan tampilan yang terbaru.</p>
+<p><br><b>Bantu menerjemahkannya di Weblate:</b>
+https://hosted.weblate.org/engage/oandbackupx/.</p>
+<p><br><b>Membutuhkan Root:</b> Karena aplikasi ini menyalin file dari /data/data, /data/app and /system/app.</p>
+<p>Status : Beta</p>

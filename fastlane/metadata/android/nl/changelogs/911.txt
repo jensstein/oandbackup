@@ -1,0 +1,7 @@
+**OAndBackupX 0.9.11**
+* Toegevoegd: verwijder cache voor het backuppen
+* Bijgewerkt: stylen chips
+* Toegevoegd: prompt for battery optimization exclusion
+* Opgelost: de profielen bug (vereist testen)
+* Omgeschakeld: van FilePicker naar SAF
+* Verbeteringen van de code

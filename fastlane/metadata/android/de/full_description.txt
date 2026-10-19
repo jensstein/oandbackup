@@ -1,0 +1,6 @@
+<p>Erstellen und Wiederherstellen von Sicherungen von Apps auf deinem Gerät und Speichern von App-Daten an einem für den Benutzer zugänglichen Ort. Unterstützt das Sichern und Wiederherstellen von einzelnen oder mehreren Apps.</p>
+<p>Ein Teil der Neo Applikationen</p>
+<p>Nachfolger von OAndBackup bringt die Unterstützung für neue Android-Versionen und eine aktualisierte Benutzeroberfläche.</p>
+<p><br><b>Trage zur Übersetzung auf Weblate bei:</b> https://hosted.weblate.org/engage/oandbackupx/.</p>
+<p><br><b>Benötigt Superuser-Rechte:</b> Damit es Dateien aus /data/data, /data/app und /system/app kopieren kann.</p>
+<p>Status: Beta</p>

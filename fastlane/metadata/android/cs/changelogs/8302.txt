@@ -1,0 +1,8 @@
+Přidáno: Nová ikona aplikace
+Přidáno: Otočné tlačítko pro obnovení
+Oprava: skrytý problém s aplikací Lucky Patcher
+Oprava: Phh su + dědictví + vynucení
+Oprava: chybějící obnovení balíčků při spuštění
+Aktualizace: Přepracování panelu NavBar & SearchBar
+Aktualizace: Další možnost pro obsazené pozadí s šedým stínem
++ více než 80 revizí a 10 příspěvků k překladu

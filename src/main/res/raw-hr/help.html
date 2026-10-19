@@ -1,0 +1,20 @@
+<html>
+    <body>
+        <p><strong>Načini rada sigurnosnog kopiranja</strong>: Aplikacija se može sigurnosno kopirati sa samo instalacijskom datotekom, samo sa podacima ili sa oboje. Aplikacija koja trenutno nije instalirana se može vratiti samo ako je prisutna instalacijska datoteka. Tri posebna tipa podataka su podržana uz glavne podatke: podaci zaštićeni uređajem, vanjski podaci i obb podaci.
+        </p>
+        <p><strong>Izbriši sigurnosnu kopiju</strong>: Briše sigurnosne kopije podataka za specifičnu instancu sigurnosne kopije. Dok gumb "izbriši sigurnosne kopije" briše sve sigurnosne kopije odabrane aplikacije.
+        </p>
+        <p><strong>Izbriši</strong>: Nešto agresivnije od normalnog brisanja (deinstaliranja). Ne samo da radi normalno brisanje sa Android naredbama, brisanje sa OAndBackupX briše podatke koje aplikacija možda ostavi u /data/app-lib/.
+        </p>
+        <p><strong>Omogući / onemogući</strong>: Koristi Android `pm` skriptu da omogući ili onemogući aplikaciju. Onemogućavanje aplikacije uklanja je sa normalnog korisničkog sučelja bez da je obriše. Ovo se može koristiti za omogućavanje ili onemogućavanje aplikacije za više korisnika istovremeno (ako uređaj sadrži više korisnika). Korisnici su identificirani sa ID-em npr. 0 je prvi korisnik (vlasnik) dok je 10 obično radni profil.
+        </p>
+        <p><strong>Više korisnike</strong>: Opcija za više korisnika je još donekle eksperimentalna ali bi trebala raditi. Omogućavanje i onemogućavanje radi samo nakon prvog inicijalnog instaliranja (ne nužno od OAndBackupX) ili vraćanja aplikacije.
+        </p>
+        <p><strong>Aplikacije neovisne o sistemu</strong>: Spremanje i vraćanje aplikacija neovisnih o sistemu instalirane kao Magisk moduli nije podržano i pokušavanje sigurnosnog kopiranja istih može dovesti do pada sistema nakon čega je potrebno formatiranje i flashanje nanovo.
+        </p>
+        <p><strong> Navigacija</strong>: Navigacijska traka ima "Postavke", "Početna", "Skupno sigurnosno kopiranje", "Skupno vraćanje" i "Zakazivanje sigurnosnih kopija" (tim redoslijedom). Broj aplikacija nadograđenih nakon njihove zadnje sigurnosne kopije bit će prikazan kao obavijest na gumbu "Početna".
+        </p>
+        <p><strong>Aplikacije koje koriste Keystore</strong>: Android ima šifriranu pohranu za osjetljive podatke. Aplikacije koje to koriste za pohranjivanje podataka za prijavu ili nekih ključeva za njihovu funkciju ne mogu se uspješno vratiti (samo instalirati bez vraćanja podataka). Dva primjera takvih aplikacija su Signal i Element(Riot).
+        </p>
+    </body>
+</html>

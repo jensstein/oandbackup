@@ -1,0 +1,8 @@
+Corretto: Scorrimento dei fogli
+Corretto: Pulsante Aggiornamenti goffi su dispositivi con dpi bassi
+Corretto: Limita il rilevamento della sospensione del processo
+Corretto: Pulizia della barra di ricerca alla chiusura
+Aggiornato: Revamp Prefs (basato su Compose)
+Aggiornato: Rinnova lo strumento di esportazione/importazione
+Aggiornato: Limite di conservazione dei backup a 100
+Aggiornato: Tema dinamico

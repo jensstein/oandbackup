@@ -1,0 +1,9 @@
+Este é um lançamento de hot-fix (do lançamento de hot-fix), já que um lançamento não intencional foi lançado há algumas semanas.
+Ele corrige os problemas do lançamento não intencional e funciona de maneira confiável, mas ainda comparativamente lento, já que o Compose ainda não oferece o melhor desempenho e um lançamento verdadeiro demoraria muito. Até então, aqui estão alguns destaques:
+* Atualização: Novo formato de atualização (o aplicativo ainda oferece suporte aos mais antigos)
+* Correção: todos os problemas do A12 na v7
+* Adição: backup/restauração de permissões fornecidas
+* Atualização: é necessária menos atualização manual
+* Corrigido: a maioria dos backups especiais (ainda precisam de testes)
+* Tags e notas estão desativadas por enquanto
+para mais detalhes, leia o changelog completo

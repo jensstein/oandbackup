@@ -1,0 +1,11 @@
+**OAndBackupX 3.2.0**
+
+* Dodano: nova Navigacija
+* Dodano: značka za ažurirane aplikacije na Početnoj
+* Popravljeno: spremanje označenih stavki u Skupnim operacijama
+* Popravljeno: sinkronizacija provjere svih u Skupnim operacijama
+* Popravljeno: neočekivano ponašanje filtriranja pretraživanja (uzrokovano predmemoriranjem)
+* Popravljeno: ponašanje prilikom nastavljanja
+* Ažurirano: poboljšane performanse osvježavanja
+* Ažurirano: poboljšanje vizualnih performansi (instance radnji i brzina pokretanja tablica)
+* Ažurirano: Prijevodi (Norveški, Nizozemski, Turski, Kineski, Portugalski)

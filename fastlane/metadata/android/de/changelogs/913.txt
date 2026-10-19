@@ -1,0 +1,2 @@
+**OAndBackupX 0.9.13 (alias 1.0.0-rc2)**
+* zurück zu cp (rsync ist nicht bei allen ROMs verfügbar)

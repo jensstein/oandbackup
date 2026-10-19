@@ -1,0 +1,6 @@
+** OAndBackupX 0.9.8**
+* Sabit: filtreyi hatırla
+* Sabit: eski yedeklemeler için değer seçimi
+* Sabit: boş filtrelenmiş liste çökmesine neden olur
+* Tweaked: Zamanlayıcı UI
+* Diğer tweaks

@@ -1,0 +1,20 @@
+<html>
+    <body>
+        <p><strong>Modes de còpia de seguretat</strong>: Es pot fer una còpia de seguretat d’una aplicació només amb el seu APK, només les seves dades o ambdues. Una aplicació no instal·lada actualment només es pot restaurar si hi ha l’APK. S'admeten tres tipus especials de dades addicionals a les dades principals: dades protegides per dispositiu, dades externes i dades OBB.
+        </p>
+        <p><strong>Esborrar còpia de seguretat</strong>: Esborra els fitxers de còpia de seguretat d'una instància de còpia de seguretat específica. Mentre que "suprimiu còpies de seguretat", suprimiu totes les còpies de seguretat de l'aplicació escollida.
+        </p>
+        <p><strong>Desinstal·la</strong>: Una mica més agressiu que una desinstal·lació normal. A més de fer una desinstal·lació normal mitjançant ordres d'Android, la desinstal·lació d'OAndBackupX suprimeix els fitxers que pot haver sobrat a l'aplicació /data/app-lib/.
+        </p>
+        <p><strong>Habilita / Deshabilita</strong>: Utilitza l'script d'Android `pm` per habilitar o desactivar una aplicació. La desactivació d’una aplicació l’elimina de la interfície d’usuari normal sense desinstal·lar-la. Es pot utilitzar per habilitar o desactivar una aplicació per a diversos usuaris alhora (si el dispositiu té diversos usuaris). Els usuaris s’identifiquen amb un identificador, per exemple 0 és el primer usuari (propietari). 10 sol ser el perfil de treball.
+        </p>
+        <p><strong>Multiusuari</strong>:El multiusuari encara és una mica experimental, però hauria de funcionar. L'activació i la desactivació només funcionen després d'una instal·lació inicial (no necessàriament d'OAndBackupx) o de la restauració de l'aplicació.
+        </p>
+        <p><strong>Aplicacions sense sistema</strong>: La còpia de seguretat i la restauració d’aplicacions sense sistema instal·lades com a mòduls Magisk no s’admeten i provar-les pot provocar un error del sistema i obligar-vos a formatar-lo i tornar-lo a flashear.
+        </p>
+        <p><strong>Navegació</strong>: La barra de navegació té "Configuració", "Inici", "Còpia de seguretat per lots", "Restauració per lots" i "Programar còpies de seguretat" (en aquest ordre). El nombre d'aplicacions actualitzades després de la seva última còpia de seguretat es mostrarà com a notificació al botó "Inici".
+        </p>
+        <p><strong>Aplicacions que fan servir Keystore</strong>: Android té un emmagatzematge xifrat per a dades sensibles. Les aplicacions que en fan ús per emmagatzemar dades d’inici de sessió o algunes claus per a la seva funció no es poden restaurar correctament. Dos exemples d’aquestes aplicacions són Signal i Element (Riot).
+        </p>
+    </body>
+</html>

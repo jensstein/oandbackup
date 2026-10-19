@@ -1,0 +1,6 @@
+* Actualizado: Renovación UI/UX (en colaboración con @opepp)
+* Añadido: Herramienta para guardar la lista de aplicaciones en un archivo
+*Añadido: Demasiadas nuevas funcionalidades
+* Corregido: Programación de copias de seguridad
+* Traducciones actualizadas
+* Entre otras muchas mejoras

@@ -1,0 +1,4 @@
+** OAndBackupX 0.9.6**
+* Güncelleme kontrolü eklendi
+* Sabit tema tutarlı 
+* Bazı dizeler düzeltildi

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Black">
+        <item name="backgroundColor">@android:color/black</item>
+        <item name="colorSurfaceContainerLowest">@android:color/black</item>
+    </style>
+
+    <style name="Accent0">
+        <item name="colorPrimary">@color/accent_0</item>
+        <item name="colorOnPrimary">@color/accent_0_trans</item>
+    </style>
+
+    <style name="Accent1">
+        <item name="colorPrimary">@color/accent_1</item>
+        <item name="colorOnPrimary">@color/accent_1_trans</item>
+    </style>
+
+    <style name="Accent2">
+        <item name="colorPrimary">@color/accent_2</item>
+        <item name="colorOnPrimary">@color/accent_2_trans</item>
+    </style>
+
+    <style name="Accent3">
+        <item name="colorPrimary">@color/accent_3</item>
+        <item name="colorOnPrimary">@color/accent_3_trans</item>
+    </style>
+
+    <style name="Accent4">
+        <item name="colorPrimary">@color/accent_4</item>
+        <item name="colorOnPrimary">@color/accent_4_trans</item>
+    </style>
+
+    <style name="Accent5">
+        <item name="colorPrimary">@color/accent_5</item>
+        <item name="colorOnPrimary">@color/accent_5_trans</item>
+    </style>
+
+    <style name="Accent6">
+        <item name="colorPrimary">@color/accent_6</item>
+        <item name="colorOnPrimary">@color/accent_6_trans</item>
+    </style>
+
+    <style name="Accent7">
+        <item name="colorPrimary">@color/accent_7</item>
+        <item name="colorOnPrimary">@color/accent_7_trans</item>
+    </style>
+
+    <style name="Accent8">
+        <item name="colorPrimary">@color/accent_8</item>
+        <item name="colorOnPrimary">@color/accent_8_trans</item>
+    </style>
+
+    <style name="Secondary0">
+        <item name="colorSecondary">@color/secondary_0</item>
+        <item name="colorOnSecondary">@color/secondary_0_trans</item>
+    </style>
+
+    <style name="Secondary1">
+        <item name="colorSecondary">@color/secondary_1</item>
+        <item name="colorOnSecondary">@color/secondary_1_trans</item>
+    </style>
+
+    <style name="Secondary2">
+        <item name="colorSecondary">@color/secondary_2</item>
+        <item name="colorOnSecondary">@color/secondary_2_trans</item>
+    </style>
+
+    <style name="Secondary3">
+        <item name="colorSecondary">@color/secondary_3</item>
+        <item name="colorOnSecondary">@color/secondary_3_trans</item>
+    </style>
+
+    <style name="Secondary4">
+        <item name="colorSecondary">@color/secondary_4</item>
+        <item name="colorOnSecondary">@color/secondary_4_trans</item>
+    </style>
+
+    <style name="Secondary5">
+        <item name="colorSecondary">@color/secondary_5</item>
+        <item name="colorOnSecondary">@color/secondary_5_trans</item>
+    </style>
+
+    <style name="Secondary6">
+        <item name="colorSecondary">@color/secondary_6</item>
+        <item name="colorOnSecondary">@color/secondary_6_trans</item>
+    </style>
+
+    <style name="Secondary7">
+        <item name="colorSecondary">@color/secondary_7</item>
+        <item name="colorOnSecondary">@color/secondary_7_trans</item>
+    </style>
+
+    <style name="Secondary8">
+        <item name="colorSecondary">@color/secondary_8</item>
+        <item name="colorOnSecondary">@color/secondary_8_trans</item>
+    </style>
+</resources>

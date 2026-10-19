@@ -1,0 +1,9 @@
+Přidat: Podpora tematické ikony na A13
+Přidat: Vybíratelné položky na domovské obrazovce s kontextovou nabídkou (ještě je třeba otestovat)
+Aktualizace: Nové ikony (fosforové ikony)
+Aktualizace: Umožňuje zálohování sebe sama
+Aktualizace: Umožňuje zálohování: Přepracovat dialogové okno hesla
+Oprava: Zacházení s případy, kdy se apk nejmenuje base.apk
+Oprava: Automatická aktualizace AppSheetu po odinstalování/povolení/vypnutí/obnovení.
+Oprava: Pád při znovuvytvoření aplikace s iniciovaným listem
+…

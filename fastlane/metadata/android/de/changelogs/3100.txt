@@ -1,0 +1,10 @@
+**OAndBackupX 3.1.0**
+
+* Entfernt: Unterstützung von Android-Nougat
+* Hinzugefügt: neues Tag-System
+* Hinzugefügt: biometrisches Schloss
+* Hinzugefügt: Elemente in der Stapelverarbeitung merken
+* Aktualisiert: gesamte Benutzeroberfläche
+* Aktualisiert: Standardeinstellung für externe Daten und obb - aus
+* Lizenz nun Affero GPL v3
+und vieles mehr ...

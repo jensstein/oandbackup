@@ -1,0 +1,7 @@
+**NOVA VERSÃO PRINCIPAL**: INCOMPATÍVEL COM VERSÕES ANTIGAS
+**Primeira versão em Kotlin**
+AÇÕES AGENDADAS PODEM DURAR APENAS 10 MINUTOS (RESTRIÇÃO DO SISTEMA)
+* Adicionado: Especificar modos para aplicativos na caixa de diálogo de lote
+* Corrigido: Permissão de armazenamento persistente
+* Corrigido: Suporte ao A11
+* Muitas outras melhorias, correções e otimizações

@@ -1,0 +1,9 @@
+DATEN LÖSCHEN ERFORDERLICH
+* Hinzugefügt: Export/Import von geplanten Backups
+* Hinzugefügt: Unterstützung für aufsteigende/absteigende Sortierung
+* Aktualisiert: Globale Blockliste gilt für Main
+* Aktualisiert: Kontrollkästchen 'Modi verwenden' in den Dialogen zum Sichern/Wiederherstellen/Zeitplan
+* Behoben: Zeitpläne werden nicht pünktlich abgefeuert
+* Behoben: Verzögerte Benachrichtigungen bei einigen wiederhergestellten Apps
+* Katalanisch hinzugefügt
+* Viele weitere Verbesserungen

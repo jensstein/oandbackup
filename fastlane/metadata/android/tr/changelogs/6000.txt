@@ -1,0 +1,8 @@
+* Eklendi: Zamanlamaları dışa/içe aktarma
+* Eklendi: Artan/azalan sıralama desteği
+* Güncellendi: Genel engelleme listesi Ana kısmı için geçerli
+* Güncellendi: Yedekleme/geri yükleme/zamanlama iletişim kutularında modların onay kutularını kullan
+* Düzeltildi: Zamanlamaların zamanında tetiklenmemesi
+* Düzeltildi: Geri yüklenen bazı uygulamaların gecikmeli bildirimleri
+* Katalanca eklendi
+* Tonlarca başka iyileştirme/düzeltme

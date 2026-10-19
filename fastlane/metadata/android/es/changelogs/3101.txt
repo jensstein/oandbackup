@@ -1,0 +1,11 @@
+**OAndBackupX 3.1.1**
+
+* Añadido: la Introducción
+* Agregado: campo de verificación de contraseña de cifrado
+* Eliminado: preferencia de ruta Busybox
+* Solucionado: mostrar la fecha actual en lugar de la última copia de seguridad
+* Solucionado: no actualizar la etiqueta de actualización de los elementos después de una nueva copia de seguridad
+* Actualizado: Traducciones (noruego, ruso, italiano, francés, holandés, alemán)
+* Actualizado: establecer recordar ordenar/filtrar por defecto en verdadero
+* Actualizado: establecer el bloqueo biométrico predeterminado en desactivado
+* Actualizado: ocultar visor de registro

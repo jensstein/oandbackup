@@ -1,0 +1,11 @@
+**OAndBackupX 3.1.1**
+
+* Ditambahkan: Intro
+* Ditambahkan: pemeriksaan kata sandi enkripsi
+* Dihapus: preferensi jalur Busybox
+* Diperbaiki: menampilkan tgl saat ini alih² pencadangan terakhir
+* Diperbaiki: tidak memperbarui tag pembaruan item setelah pencadangan baru
+* Diperbarui: Terjemahan (Norwegia, Rusia, Italia, Prancis, Belanda, Jerman)
+* Diperbarui: atur pengingat filter default ke true
+* Diperbarui: atur kunci biometrik default ke off
+* Diperbarui: sembunyikan penampil log

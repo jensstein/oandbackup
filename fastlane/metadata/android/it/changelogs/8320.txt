@@ -1,0 +1,7 @@
+Aggiunto: Opzione per raggruppare i backup non validi (pref_createInvalidBackups)
+Corretto: Esecuzione ripetuta non pianificata di pianificazioni pianificate
+Aggiornato: Sostituisci le chiamate WorkHandler e WorkManager con inject
+Aggiornato: Rendi ViewModels singleton
+Corretto: Blocco dell'avvio delle app dopo la chiusura forzata
+Corretto: Reattività del timer di pianificazione e della pagina dell'app
++ più di 15 commit

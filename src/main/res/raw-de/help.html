@@ -1,13 +1,20 @@
-<html><body>
-        <h2>Benutzungshinweise</h2>
-        <p><strong>Sicherungsmodus</strong>: Von einer App kann nur ihre APK, nur ihre Benutzerdaten oder beides gesichert werden. Falls die App zum Zeitpunkt der Wiederherstellung nicht installiert ist, wird die APK dennoch dafür benötigt.</p>
-        <p><strong>Kontextmenü</strong>: Lange  auf einen Eintrag in der App-Liste  drücken, um das Kontextmenü zu sehen.</p>
-        <p><strong>Sicherung löschen</strong>: Löscht die Sicherungsdateien der angewählten App.</p>
-        <p><strong>Deinstallieren</strong>: Aggressiver als normales Deinstallieren. Zusätzlich zum entsprechenden Kommando via Android, löscht die Deinstallation aus Oandbackup heraus auch Dateien, die eine App evtl. in /data/app-lib/ zurückgelassen hat. Funktioniert auch bei System-Apps.</p>
-        <p><strong>Aktivieren / Deaktivieren</strong>: Verwendet Androids `pm`-Skript um eine App zu aktivieren oder deaktivieren. Letzteres entfernt sie aus der Benutzeroberfläche ohne sie zu deinstallieren. Dies kann verwendet werden, um eine App für mehrere Benutzer zu (de)aktivieren, wenn das Gerät den Mehrfachbenutzer-Modus aktiviert hat. Diese werden mittels ID-Nummern identifiziert, wobei die 0 für den ersten Benutzer (Besitzer) steht.</p>
-        <p><strong>Mehrfachbenutzer</strong>: Diese Funktion ist noch experimentell, sollte aber funktionieren. Die Wiederherstellung einer Sicherung in einem Mehrbenutzerszenario führt `pm install -r $apk` aus und deaktiviert die App für alle Benutzer, für die sie unter /data/system/user/$user/package-restrictions.xml nicht als aktiviert ("1") eingetragen ist.<br>Dies kann zu Problemen für Benutzer führen, die die gleiche App später installieren. Allerdings ist es notwendig, um zu verhindern, dass die App für alle Benutzer gleichzeitig installiert wird. Das Kontextmenü bietet "Aktivieren"- und "Deaktivieren"-Optionen an, die benutzt werden können, wenn andere Benutzer aufgrund einer Deaktivierung oder Wiederherstellung eine App nicht mehr nutzen können.<br>Aktivieren und Deaktivieren funktioniert nur nach der ersten Installation (nicht notwendigerweise von Oandbackup) oder Wiederherstellung einer App.</p>
-        <h2>Änderungen</h2>
-<a href="https://github.com/jensstein/oandbackup/blob/master/changelog.md">Änderungen</a><h2>Lizenz</h2>
-        <p>Oandbackup ist MIT-lizenziert und somit frei und ohne Einschränkungen herunterladbar, änder- und weiterverteilbar.</p>
-<a href="https://github.com/jensstein/oandbackup/blob/master/LICENSE.txt">Lizenz</a>
-</body></html>
+<html>
+    <body>
+        <p><strong>Sicherungsmodi</strong>: Eine App kann nur mit ihrer APK, nur ihren Daten oder beiden gesichert werden. Eine derzeit nicht installierte App kann nur wiederhergestellt werden, wenn die APK vorhanden ist. Zusätzlich zu den internen Daten werden drei spezielle Datentypen unterstützt: gerätegeschützte Daten, externe Daten und obb-Daten.
+        </p>
+        <p><strong>Sicherung löschen</strong>: Löscht die Sicherungsdateien für eine bestimmte Sicherungsinstanz. Während "Alle Backups löschen" alle Backups der gewählten App löscht.
+        </p>
+        <p><strong>Deinstallieren</strong>: Etwas aggressiver als eine normale Deinstallation. Zusätzlich zu einer normalen Deinstallation über Android-Befehle werden bei der Deinstallation via OAndBackupX Dateien gelöscht, die die Anwendung möglicherweise in /data/app-lib/ zurückgelassen hat.
+        </p>
+        <p><strong>Aktivieren / Deaktivieren</strong>: Verwendet das `pm` Android-Skript zum Aktivieren oder Deaktivieren einer App. Das Deaktivieren einer App entfernt sie aus der normalen Benutzeroberfläche, ohne sie zu deinstallieren. Dies kann verwendet werden, um eine App für mehrere Benutzer gleichzeitig zu aktivieren oder zu deaktivieren (wenn das Gerät mehrere Benutzer hat). Benutzer werden mit einer ID identifiziert, z. B. 0 ist der erste Benutzer (Eigentümer), 10 ist normalerweise das Arbeitsprofil.
+        </p>
+        <p><strong>Mehrere Benutzer</strong>: Mehrere-Benutzer ist noch etwas experimentell, sollte aber funktionieren. Das Aktivieren und Deaktivieren funktioniert nur nach einer Erstinstallation (nicht unbedingt von OAndBackupX) oder Wiederherstellung der App.
+        </p>
+        <p><strong>Systemlose Apps</strong>: Das Sichern und Wiederherstellen von systemlosen Apps, die als Magisk-Module installiert sind, wird nicht unterstützt und das herumprobieren damit könnte zu einem Systemabsturz führen und Sie zwingen, neu zu formatieren und zu flashen.
+        </p>
+        <p><strong> Navigation </strong>: Die Navigationsleiste enthält „Einstellungen“, „Startseite“, „Stapelsicherung“, „Stapelwiederherstellung“ und „Sicherungen planen“ (in dieser Reihenfolge). Die Anzahl der Anwendungen, die nach ihrer letzten Sicherung aktualisiert wurden, wird als Benachrichtigungspunkt auf der Schaltfläche „Startseite“ angezeigt.
+        </p>
+        <p><strong>Anwendungen mit Keystore</strong>: Android verfügt über einen verschlüsselten Speicher für sensible Daten. Anwendungen, die diesen nutzen, um Anmeldedaten oder einige Schlüssel für ihre Funktion zu speichern, können nicht erfolgreich wiederhergestellt werden. Zwei Beispiele für solche Anwendungen sind Signal und Element (Riot).
+        </p>
+    </body>
+</html>

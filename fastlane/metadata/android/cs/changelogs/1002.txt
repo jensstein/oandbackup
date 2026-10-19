@@ -1,0 +1,7 @@
+**OndBackupX 1.0.2**
+* Přidáno: Zpětná vazba po kliknutí na položku
+* Aktualizováno: Posouvání eXperience
+* Opraveno: úvodní obrazovka
+* Opraveno: chování při obnovení přejetím prstu po obrazovce
+* Opraveno: téma stavového řádku
+* a několik dalších úprav uživatelského rozhraní

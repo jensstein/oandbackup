@@ -1,0 +1,10 @@
+Esta es una actualización de corrección urgente (de la actualización de corrección urgente anterior), ya que hace un par de semanas se publicó una versión no intencionada.
+
+Soluciona las incidencias de la versión no intencionada y funciona de forma fiable, aunque sigue presentando cierta lentitud, dado que Compose aún no ofrece el mejor rendimiento y una versión definitiva requeriría mucho tiempo. Mientras tanto, aquí tienes algunos aspectos destacados:
+* Actualización: Nuevo formato de actualización (la aplicación sigue siendo compatible con formatos anteriores)
+* Corrección: Todos los problemas de A12 en la versión 7
+* Añadido: Copia de seguridad/restauración con permisos asignados
+* Actualización: Se requiere menos actualización manual
+* Corrección: La mayoría de las copias de seguridad especiales (aún requieren pruebas)
+* Las etiquetas y notas están deshabilitadas por el momento
+Para más detalles, consulta el registro de cambios completo

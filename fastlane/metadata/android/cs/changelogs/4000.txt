@@ -1,0 +1,10 @@
+NEKOMPATIBILNÍ SE STARÝMI VYDÁNÍMI
+**SNÍŽENÍ VÝKONU**: způsobeno použitím SAF ve srovnání s přímým přístupem
+* Přidat: Podpora Storage Access Framework
+* Přidat: Podpora Symlink/Pipe
+* Přidat: Podpora vícenásobného zálohování
+* Přidat: Povolit paralelní dávkové úlohy
+* Aktualizace: Nové uživatelské rozhraní/UX
+* Aktualizace: Systém značek
+* Aktualizace: Struktura zálohování
+* Mnoho dalších vylepšení, oprav a vyčištění

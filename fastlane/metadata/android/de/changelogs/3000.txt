@@ -1,0 +1,10 @@
+##### DIESE VERSION IST NICHT MIT DEN VORHERIGEN KOMPATIBEL
+* Neu: Standard-Sicherungsverzeichnis nach /OABX
+* Neu: Verschlüsselung neu geschrieben (Danke @Pizze)
+* Neu: Hilfe und Benutzeroberfläche überarbeitet
+* Neu: clearCache-Einstellung zu excludeCache
+* Neu: Alle Kommandozeilenbefehle neu geschrieben (Danke @Pizze)
+* Neu: Sortierung nach Dateigröße
+* Neu: Tooltips für alle Schaltflächen-Symbole
+* Neu: "Cache löschen" zur Benutzeroberfläche hinzugefügt
+* Neu: Warndialog für die Aktivierung der Verschlüsselung

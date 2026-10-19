@@ -1,0 +1,6 @@
+**OAndBackupX 1.1.0**
+* Dodano: enkripcija podataka sigurnosnih kopija
+* Popravljeno: zakazivanja
+* Ažurirano: format obavijesti
+* Podešeni poneki elementi korisničkog sučelja
+* također poboljšane performanse

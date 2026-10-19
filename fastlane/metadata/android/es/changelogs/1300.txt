@@ -1,0 +1,9 @@
+**OndBackupX 1.3.0**
+* Actualizado: nuevo Sistema de Filtros
+* Actualizado: reducción del tiempo de espera del Splash
+* Añadido: soporte de Split-APK (necesita más pruebas, Créditos @Tiefkuehlpizze)
+* Actualizado: La búsqueda soporta el nombre del paquete
+* Corregido: errores de caché no encontrados / Symlinks
+* Añadido: soporte de OBB (necesita más pruebas)
+* Añadido: idiomas: Italiano, Chino, Turco, Polaco (Créditos @Urnyx05 @tuchit @scrubjay55 @Antyradek)
+* Otros: Ajustes de la interfaz de usuario y el rendimiento

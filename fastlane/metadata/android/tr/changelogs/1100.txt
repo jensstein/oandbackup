@@ -1,0 +1,6 @@
+** OAndBackupX 1.1.0**
+* Eklendi: Veri yedekleme şifreleme
+* Sabitlendi: Zamanlamalar
+* Güncelleme: Bildirimlerin biçimi
+* Bazı UI öğeleri Tweaked
+* ve geliştirilmiş performans

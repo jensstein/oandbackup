@@ -1,0 +1,6 @@
+Behoben: Disfunktion wenn man von den Präferenzen zurück kommt (Koin-Aufrufe und Gültigkeitsbereiche)
+Behoben: Absturz bei Nutzung von Depot-Datenbank-Aufrufen in der Benutzeroberfläche
+Neu: Bessere Koroutinenbehandlung in Depots
+Neu: Das alternative Block-Design ist jetzt standard
+Neu: Verbessere Farben in den Präferenzen
++ mehr als 15 Verbesserungen, 6 Übersetzungen

@@ -1,0 +1,7 @@
+Přidáno: Možnost seskupovat neplatné zálohy (pref_createInvalidBackups)
+Oprava: Opakované neplánované spuštění naplánovaných plánů
+Aktualizace: Nahrazení volání WorkHandler a WorkManager pomocí inject
+Aktualizace: Vytvoření singletonu ViewModels
+Oprava: Blokování spouštění aplikací po vynuceném ukončení
+Oprava: Reaktivita časovače rozvrhu a stránky aplikace
++ více než 15 commitů

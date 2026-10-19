@@ -1,0 +1,6 @@
+* Updated: UI/UX revamp (in co-op with @opepp)
+* Added: Tool to save apps' list to a file
+* Added: Too many new functionalities
+* Fixed: Scheduling backups
+* Updated Translations
+* Among ton of other improvements

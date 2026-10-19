@@ -1,0 +1,10 @@
+**OAndBackupX 3.1.0**
+
+* Uklonjeno: ukinuta podrška za Android Nougat
+* Dodano: Novi sustav tagova
+* Dodano: postavka biometrijskog zaključavanja
+* Ažurirano: Cijelo korisničko sučelje
+* Ažurirano: postavljene zadane postavke vanjskih podataka i obb na isključeno
+* Popravljeno: neka rušenja korisničkog sučelja
+* Premješteno na Affero GPL v3
+i daleko više

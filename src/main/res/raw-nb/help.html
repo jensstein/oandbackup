@@ -1,13 +1,20 @@
-<html><body>
-        <h2>Bruksanvisning</h2>
-        <p><strong>Type av sikkerhetskopi</strong>: En app kan sikres ved å lagre en sikkerhetskopi av bare APKen, bare dataen eller begge deler. En app som ikke er installert kan bare gjenopprettes når sikkerhetskopien inneholder APKen.</p>
-        <p><strong>Lokalmeny</strong>: Trykk lenge på et element i app-listen for å åpne lokalmenyen.</p>
-        <p><strong>Slett sikkerhetskopi</strong>: Sletter filene til sikkerhetskopier for den valgte appen.</p>
-        <p><strong>Avinstaller</strong>: Litt mer aggressiv enn en vanlig avinstallering. I tillegg til bruk av vanlige Android kommandoer sletter oandbackup filer som en app kunne ha etterlatt i /data/app-lib/. Kan også brukes for system apper.</p>
-        <p><strong>Aktiver/deaktiver</strong>: Bruker Android skripten 'pm' for å aktivere eller deaktivere en app. Å deaktivere en app fjerner appen fra brukergrensesnittet uten å avinstallere den. Det kan også brukes for å aktivere eller deaktivere apper for flere brukere med en gang. Brukere identifiseres ved hjelp av en ID. '0' er den første brukeren (eier av enheten).</p>
-        <p><strong>Flerbruker</strong>: Funksjonen for flerbruker er fortsatt eksperimentelt men burde fungere. Når en sikkerhetskopi gjenopprettes på en enhet med aktiv flerbruker-modus, kjører oandbackup 'pm install -r $apk' og appen blir deaktivert for alle brukere som har denne appen i /data/system/user/$user/package-restrictions.xml (hvis appen ikke står på listen med enabled="1").<br>Det kan forårsake problemer for brukere som installerte den samme appen som en annen bruker på et senere tidspunkt, men det er nøtvendig for å hindre at appen blir installert for alle brukere med en gang. Lokalmenyen har en opsjon for å aktivere eller deaktivere apper, som kan brukes når andre bruker ikke lenger kan bruke en spesifikk app fordi den ble deaktivert under gjenoppretting.<br>Aktivering og deaktivering fungerer bare etter første installering (ikke nødvendigvis fra oandbackup) eller gjenoppretting av appen.</p>
-        <h2>Endringsliste</h2>
-<a href="https://github.com/jensstein/oandbackup/blob/master/changelog.md">Endringsliste</a><h2>Lisens</h2>
-        <p>oandbackup er lisensiert under MIT lisensen og er gratis å laste ned, å modifisere og å dele uten restriksjoner</p>
-<a href="https://github.com/jensstein/oandbackup/blob/master/LICENSE.txt">Lisens</a>
-</body></html>
+<html>
+    <body>
+        <p><strong>Backup modes</strong>: An app can be backed up with only its apk, only its data or both. An app not currently installed can only be restored if the apk is present.
+        </p>
+        <p><strong>Slett sikkerhetskopi</strong>: Sletter sikkerhetskopifiler for en spesifikk sikkerhetskopiinstans, der "Slett alle sikkerhetskopier" sletter alle sikkerhetskopier for valgt program.
+        </p>
+        <p><strong>Avinstaller</strong>: Noe mer aggresivt enn en vanlig avinstallasjon. I tillegg til å utføre vanlig avinstallasjon via Android-kommandoer, vil avinstallering fra OAndBackupX slette filer programmet kanskje har etterlatt i /data/app-lib/.
+        </p>
+        <p><strong>Enable / disable</strong>: Uses the android script `pm` to enable or disable an app. Disabling an app removes it from the normal user interface without uninstalling it. This can be used for enabling or disabling an app for multiple users at a time (if the device has multiple users enabled). Users are identified with an id e.g. 0 is the first user (owner) 10 is usually the work profile.
+        </p>
+        <p><strong>Multiple users</strong>: Multi-user is still somewhat experimental but should work. Enabling and disabling only works after an initial install (not necessarily from OAndBackupx) or restore of the app.
+        </p>
+        <p><strong>System-less apps</strong>: backup and restore of system-less apps installed as Magisk module is not supported and trying it could lead to failure in the system and forcing you to format and flash anew.
+        </p>
+        <p><strong>Navigation</strong>: The navigation bar leads to settings, home, batch backup, batch restore and schedule backups in that order. The notification on home means there's a number of apps that got updated since their last backup.
+        </p>
+        <p><strong>Apps using Keystore</strong>: Android has an encrypted storage for sensitive data. Apps that make use of this to store login data or some keys for its function can't be restored successfully. Two examples of such apps are Signal and Element(Riot).
+        </p>
+    </body>
+</html>

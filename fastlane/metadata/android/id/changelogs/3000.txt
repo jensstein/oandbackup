@@ -1,0 +1,10 @@
+RILIS INI TIDAK KOMPATIBEL DENGAN VERSI SEBELUMNYA
+* Pembaruan: direktori cadangan default ke /OABX
+* Pembaruan: Solusi Enkripsi yang Ditulis Ulang (Kredit @Pizze)
+* Pembaruan: UI Bantuan dan AppSheet yang dirubah
+* Pembaruan: preferensi clearCache ke excludeCache
+* Pembaruan: menulis ulang seluruh fungsi perintah shell (Kredit @Pizze)
+* Tambah: Urutkan menurut Ukuran Data
+* Tambah: Tooltip untuk semua Ikon
+* Tambah: hapus tombol Cache ke AppSheet
+* Tambah: Dialog Peringatan pengaktifan Enkripsi

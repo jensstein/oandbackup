@@ -1,0 +1,4 @@
+Add: Scene overlays and respective strategy
+Fix: Running ScheduleReceiver on reboot
+Update: Replace BottomSheetScaffold with Nav3 bottom sheet navigation
++ more than 70 commits, 14 translations

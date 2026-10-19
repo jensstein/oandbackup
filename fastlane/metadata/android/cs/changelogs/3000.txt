@@ -1,0 +1,9 @@
+##### TATO VERZE NENÍ KOMPATIBILNÍ S PŘEDCHOZÍMI VERZEMI
+* Aktualizace: výchozí adresář pro zálohování na /OABX
+* Aktualizace: Přepracované řešení šifrování (Credits @Pizze)
+* Aktualizace: přepracovaná nápověda a uživatelské rozhraní AppSheet
+* Aktualizace: předvolba clearCache na excludeCache
+* Aktualizace: přepsány celé funkce příkazů shellu (Credits @Pizze)
+* Přidáno: Řazení podle velikosti dat
+* Přidáno: Tooltipy pro všechny ikony
+* Přidáno: Tlačítko pro vymazání mezipaměti na AppSheet

@@ -1,0 +1,8 @@
+- Přidat: Podpora dynamických barev (aka Material You)
+- Přidat: Velikost zálohy (pouze nové zálohy)
+- Přidat: Štítky a poznámka
+- Přidat: Volitelný informační protokol v horním panelu
+- Přidat: Název instalačního balíčku
+- Přidat: Instalační balíček relace (nutné u A13): Instalační balíček relace (nutné u A13)
+- Oprava: Obnovení dat po restartu
+Pro více informací si přečtěte celý seznam změn

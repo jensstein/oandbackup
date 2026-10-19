@@ -1,0 +1,4 @@
+* Fixed: Exclude system apps checkbox in the schedule sheet
+* Fixed: Import the value of exclude system apps on schedules' import
+* Added: Vietnamese, Hindi & Ukranian
+* Updated translations:Arabic, Spanish, Italian, Portuguese, Russian, Catalan, Turkish, Indonesian

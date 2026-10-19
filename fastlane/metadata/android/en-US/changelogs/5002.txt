@@ -1,0 +1,2 @@
+* Fixed: Message disply on error (@hg42)
+* Fixed: Quote issue in backup process (@hg42)

@@ -1,0 +1,4 @@
+**OAndBackupX 0.9.7**
+* Opgelost: update logic
+* Verwijderd: PGP encryptie and volg symbolische links
+* Opschonen van code

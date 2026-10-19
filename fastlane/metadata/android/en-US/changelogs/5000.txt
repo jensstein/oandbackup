@@ -1,0 +1,7 @@
+**NEW MAJOR VERSION**: INCOMPATIBLE WITH OLD RELEASES
+**First KOTLIN release**
+SCHEDULED ACTIONS CAN ONLY LAST 10 MINUTES (SYSTEM CONSTRAINT)
+* Added: Specify modes for apps in Batch dialog
+* Fixed: Persistant storage permission
+* Fixed: A11 support
+* Far too many other improvements, fixes and cleanups

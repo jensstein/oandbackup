@@ -1,0 +1,489 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 3,
+    "identityHash": "89dc3d3d38e95d3da8c53adb041dd74f",
+    "entities": [
+      {
+        "tableName": "Schedule",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `enabled` INTEGER NOT NULL, `timeHour` INTEGER NOT NULL, `timeMinute` INTEGER NOT NULL, `interval` INTEGER NOT NULL, `timePlaced` INTEGER NOT NULL, `filter` INTEGER NOT NULL, `mode` INTEGER NOT NULL, `specialFilter` INTEGER NOT NULL, `timeToRun` INTEGER NOT NULL, `customList` TEXT NOT NULL, `blockList` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "enabled",
+            "columnName": "enabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timeHour",
+            "columnName": "timeHour",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timeMinute",
+            "columnName": "timeMinute",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "interval",
+            "columnName": "interval",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timePlaced",
+            "columnName": "timePlaced",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "filter",
+            "columnName": "filter",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mode",
+            "columnName": "mode",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "specialFilter",
+            "columnName": "specialFilter",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timeToRun",
+            "columnName": "timeToRun",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "customList",
+            "columnName": "customList",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "blockList",
+            "columnName": "blockList",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Blocklist",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `packageName` TEXT, `blocklistId` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "packageName",
+            "columnName": "packageName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "blocklistId",
+            "columnName": "blocklistId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "AppExtras",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`packageName` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `customTags` TEXT NOT NULL, `note` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "packageName",
+            "columnName": "packageName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "customTags",
+            "columnName": "customTags",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "AppInfoX",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`enabled` INTEGER NOT NULL, `installed` INTEGER NOT NULL, `apkDir` TEXT, `dataDir` TEXT, `deDataDir` TEXT, `packageName` TEXT NOT NULL, `packageLabel` TEXT, `versionName` TEXT, `versionCode` INTEGER NOT NULL, `profileId` INTEGER NOT NULL, `sourceDir` TEXT, `splitSourceDirs` TEXT NOT NULL, `isSystem` INTEGER NOT NULL, `icon` INTEGER NOT NULL, PRIMARY KEY(`packageName`))",
+        "fields": [
+          {
+            "fieldPath": "enabled",
+            "columnName": "enabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "installed",
+            "columnName": "installed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "apkDir",
+            "columnName": "apkDir",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dataDir",
+            "columnName": "dataDir",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "deDataDir",
+            "columnName": "deDataDir",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "packageName",
+            "columnName": "packageName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "packageLabel",
+            "columnName": "packageLabel",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "versionName",
+            "columnName": "versionName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "versionCode",
+            "columnName": "versionCode",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "profileId",
+            "columnName": "profileId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sourceDir",
+            "columnName": "sourceDir",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "splitSourceDirs",
+            "columnName": "splitSourceDirs",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isSystem",
+            "columnName": "isSystem",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "icon",
+            "columnName": "icon",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "packageName"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "SpecialInfoX",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`specialFiles` TEXT NOT NULL, `packageName` TEXT NOT NULL, `packageLabel` TEXT, `versionName` TEXT, `versionCode` INTEGER NOT NULL, `profileId` INTEGER NOT NULL, `sourceDir` TEXT, `splitSourceDirs` TEXT NOT NULL, `isSystem` INTEGER NOT NULL, `icon` INTEGER NOT NULL, PRIMARY KEY(`packageName`))",
+        "fields": [
+          {
+            "fieldPath": "specialFiles",
+            "columnName": "specialFiles",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "packageName",
+            "columnName": "packageName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "packageLabel",
+            "columnName": "packageLabel",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "versionName",
+            "columnName": "versionName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "versionCode",
+            "columnName": "versionCode",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "profileId",
+            "columnName": "profileId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sourceDir",
+            "columnName": "sourceDir",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "splitSourceDirs",
+            "columnName": "splitSourceDirs",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isSystem",
+            "columnName": "isSystem",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "icon",
+            "columnName": "icon",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "packageName"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Backup",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`backupVersionCode` INTEGER NOT NULL, `packageName` TEXT NOT NULL, `packageLabel` TEXT, `versionName` TEXT, `versionCode` INTEGER NOT NULL, `profileId` INTEGER NOT NULL, `sourceDir` TEXT, `splitSourceDirs` TEXT NOT NULL, `isSystem` INTEGER NOT NULL, `backupDate` TEXT NOT NULL, `hasApk` INTEGER NOT NULL, `hasAppData` INTEGER NOT NULL, `hasDevicesProtectedData` INTEGER NOT NULL, `hasExternalData` INTEGER NOT NULL, `hasObbData` INTEGER NOT NULL, `hasMediaData` INTEGER NOT NULL, `compressionType` TEXT, `cipherType` TEXT, `iv` BLOB, `cpuArch` TEXT, `permissions` TEXT NOT NULL, PRIMARY KEY(`packageName`, `backupDate`))",
+        "fields": [
+          {
+            "fieldPath": "backupVersionCode",
+            "columnName": "backupVersionCode",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "packageName",
+            "columnName": "packageName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "packageLabel",
+            "columnName": "packageLabel",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "versionName",
+            "columnName": "versionName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "versionCode",
+            "columnName": "versionCode",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "profileId",
+            "columnName": "profileId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sourceDir",
+            "columnName": "sourceDir",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "splitSourceDirs",
+            "columnName": "splitSourceDirs",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isSystem",
+            "columnName": "isSystem",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "backupDate",
+            "columnName": "backupDate",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hasApk",
+            "columnName": "hasApk",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hasAppData",
+            "columnName": "hasAppData",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hasDevicesProtectedData",
+            "columnName": "hasDevicesProtectedData",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hasExternalData",
+            "columnName": "hasExternalData",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hasObbData",
+            "columnName": "hasObbData",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hasMediaData",
+            "columnName": "hasMediaData",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "compressionType",
+            "columnName": "compressionType",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "cipherType",
+            "columnName": "cipherType",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "iv",
+            "columnName": "iv",
+            "affinity": "BLOB",
+            "notNull": false
+          },
+          {
+            "fieldPath": "cpuArch",
+            "columnName": "cpuArch",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "permissions",
+            "columnName": "permissions",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "packageName",
+            "backupDate"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '89dc3d3d38e95d3da8c53adb041dd74f')"
+    ]
+  }
+}

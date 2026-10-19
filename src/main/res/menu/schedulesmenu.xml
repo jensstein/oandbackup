@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/addSchedule"
-        android:title="@string/sched_addSchudule" />
-    <item android:id="@+id/globalBlacklist"
-          android:title="@string/sched_globalBlacklist" />
-</menu>

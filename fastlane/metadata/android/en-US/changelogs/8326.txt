@@ -1,0 +1,7 @@
+Add: Details on custom list, block list and packages-to-backup when manually starting a schedule
+Add: Warning dialog on adding app to global block list or deleting schedule
+Fix: ScheduleService not being started after reboot (credits @jenna-66)
+Fix: Getting fitting shell command on Android 9 - or earlier.
+Update: Default to user apps as main sorting filter and for schedules
+Update: Revamp most pages, chips, tags and buttons layouts
++ more than 40 commits, 40 translations

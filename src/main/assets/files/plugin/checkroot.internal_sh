@@ -1,0 +1,26 @@
+#!/system/bin/sh
+
+#set -x
+
+for dir in                  \
+    "$ANDROID_ASSETS/"      \
+    "$ANDROID_DATA/app/"    \
+    "$ANDROID_DATA/user/0/" \
+; do
+  count=$(ls "$dir" 2>/dev/null | wc -l)
+  # ATTENTION! this expects at least two apps in each dir
+  if [ "$count" -ge 2 ]; then
+    echo "checkroot: access to $dir -> $count -> OK"
+  else
+    echo "checkroot: NO full access to $dir -> $count" >&2
+    exit 1
+  fi
+done
+
+id=$(id -u)
+if [ "$id" = "0" ]; then
+  echo "checkroot: id = $id = root -> OK"
+else
+  echo "checkroot: id = $id is NOT root" >&2
+  exit 1
+fi

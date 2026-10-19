@@ -1,0 +1,5 @@
+Corretto: Pianificazioni che ignorano le offerte speciali nelle liste di blocco
+Corretto: Eseguire le pianificazioni due volte
+Aggiunto: Programmi falsi
+Aggiunto: Più preferenze di tracciamento
+Corretto: Aggiungi spazio ai chip informativi

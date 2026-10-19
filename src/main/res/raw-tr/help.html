@@ -1,0 +1,20 @@
+<html>
+    <body>
+        <p><strong>Yedekleme Modları</strong>: Bir uygulama istenilirse sadece apksını, istenilirse sadece verisini veya her ikisini birden yedekleyebilir. Şu anda yüklü olmayan bir uygulama yalnızca apk mevcutsa geri yüklenebilir. Ana verilere ek olarak üç özel veri türü desteklenir: cihaz korumalı veriler, harici veriler ve obb verileri.
+        </p>
+        <p><strong>Yedeği Sil</strong>: Belirli bir yedek örneğine ait yedek dosyalarını siler. “Yedekleri Sil” seçeneği, seçilen uygulamanın tüm yedeklerini siler.
+        </p>
+        <p><strong>Kaldır</strong>: Standart kaldırmadan biraz daha kapsamlıdır. Android komutlarıyla normal bir kaldırma işlemi yapmanın yanı sıra, OAndBackupX ile kaldırma sırasında uygulamanın `/data/app-lib/` dizininde bırakmış olabileceği dosyalar da silinir.
+        </p>
+        <p><strong>Etkinleştir / Devre Dışı Bırak</strong>: Android `pm` komut dosyasını kullanarak bir uygulamayı etkinleştirir veya devre dışı bırakır. Uygulamayı devre dışı bırakmak, kaldırmadan normal kullanıcı arayüzünden gizler. Bu işlem, birden çok kullanıcı için aynı anda uygulamayı etkinleştirmek veya devre dışı bırakmak için kullanılabilir (cihazda birden çok kullanıcı varsa). Kullanıcılar, örneğin 0 birinci kullanıcı (sahip), 10 ise genellikle iş proforu olarak tanımlanan bir kimlikle belirlenir.
+        </p>
+        <p><strong>Birden Çok Kullanıcı</strong>: Çoklu kullanıcı desteği hâlâ deneysel aşamadadır, ancak çalışmalıdır. Etkinleştirme ve devre dışı bırakma işlemleri, yalnızca uygulamanın ilk kurulumu (mutlaka OAndBackupX’ten yapılmış olmasa da) veya uygulamanın geri yüklenmesinden sonra kullanılabilir.
+        </p>
+        <p><strong>Sistemsiz Uygulamalar</strong>: Magisk modülü olarak yüklenmiş sistemsiz uygulamaların yedeklenmesi ve geri yüklenmesi desteklenmez; bunu denemek sistem çökmesine yol açabilir ve bu cihazın sıfırlanmasını ya da işlrtim sisteminin yeniden yüklenmesini gerektirebilir.
+        </p>
+        <p><strong>Gezinme</strong>: Alt gezinme çubuğunda sırasıyla “Ayarlar”, “Ana Sayfa”, “Toplu Yedekle”, “Toplu Geri Yükle” ve “Yedekleme Zamanla” seçenekleri bulunur. Son yedeklemeden sonra güncellenen uygulama sayısı “Ana Sayfa” düğmesinde bildirim olarak gösterilir.
+        </p>
+        <p><strong>Keystore Kullanan Uygulamalar</strong>: Android hassas veriler için şifreli bir depolama alanına sahiptir. Giriş bilgilerini veya işlev anahtarlarını depolamak için Keystore’u kullanan uygulamalar başarıyla geri yüklenemez. Örnek olarak Signal ve Element (Riot) verilebilir.
+        </p>
+    </body>
+</html>

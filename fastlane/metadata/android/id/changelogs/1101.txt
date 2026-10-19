@@ -1,0 +1,7 @@
+**OAndBackupX 1.1.1**
+* Fitur tambahan: pintasan untuk laporan Exodus pada AppSheet
+* Isu terselesaikan: Tidak dapat terbuka jika ada aplikasi dengan dimensi ikon <= 0
+* Ubahan: default is set now to copy OAndBackupX to parent backup folder
+* Fitur tambahan: Bahasa Yunani (Credits @tsiflimagas)
+* Diperbaharui: Ejaan dan susunan bahasa Inggris (Credits: @atrate)
+* Diperbaharui: secara garis besar terjemahan Chinese, Dutch, Polish and Swedish

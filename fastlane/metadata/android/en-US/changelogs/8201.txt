@@ -1,0 +1,9 @@
+Add: Support for themed icon on A13
+Add: Selectable Home items with context menu (still needs testing)
+Update: New icons (Phosphor icons)
+Update: Allow to backup itself
+Update: Revamp password dialog
+Fix: Handling when apk is not called base.apk
+Fix: Auto updating AppSheet after uninstall/enable/disable/restore
+Fix: Crash on recreating app with a Sheet initiated
+among others…

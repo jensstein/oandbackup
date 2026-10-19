@@ -1,0 +1,2 @@
+Fix: Schedules handling
+Add: System theme based icon

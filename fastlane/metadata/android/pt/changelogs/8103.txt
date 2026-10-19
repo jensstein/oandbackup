@@ -1,0 +1,8 @@
+Correção: rolagem de planilhas
+Correção: botão de atualizações desajeitado em dispositivos com baixo dpi
+Correção: Restringir a detecção de pausa do processo
+Correção: Limpando a barra de pesquisa ao fechar
+Atualização: Remodelar Prefs (com base no Compose)
+Atualização: Reformule a ferramenta de exportação/importação
+Atualização: limite de retenção de backups para 100
+Atualização: tema dinâmico

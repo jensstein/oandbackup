@@ -1,0 +1,10 @@
+##### QUESTA VERSIONE NON È COMPATIBILE CON LE VERSIONI PRECEDENTI
+* Aggiornato: Directory di backup predefinita su /OABX
+* Aggiornato: Soluzione di crittografia riscritta
+* Aggiornato: Rinnovata la Guida e l'interfaccia utente di AppSheet
+* Aggiornato: Preferenza clearCache per escludereCache
+* Aggiornato: Riscritte tutte le funzioni dei comandi della shell
+* Aggiunto: Ordina per dimensione dati
+* Aggiunto: Suggerimenti per tutte le icone
+* Aggiunto: Cancella il pulsante Cache su AppSheet
+* Aggiunto: Finestra di avviso sull'abilitazione di Encrylption

@@ -1,0 +1,18 @@
+#!/system/bin/sh
+
+#set -x
+
+if [ "$(id -u)" != "0" ]; then
+    echo "Not running as root (uid=$(id -u))" >&2
+    exit 1
+fi
+
+# Test write access to a system location
+if ! touch /data/local/tmp/.neobackup_root_test 2>/dev/null; then
+    echo "Cannot write to /data/local/tmp" >&2
+    exit 1
+fi
+rm -f /data/local/tmp/.neobackup_root_test
+
+echo "Root access verified"
+exit 0

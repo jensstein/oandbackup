@@ -1,0 +1,4 @@
+**OAndBackupX 1.2.0**
+* Diperbarui: Tampilan Aplikasi
+* Diperbaiki: membagikan kerusakan
+* Ditambahkan: opsi untuk mencadangkan Data Terlindungi Perangkat dan Data Eksternal

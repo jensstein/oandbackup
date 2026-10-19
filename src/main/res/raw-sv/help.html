@@ -1,0 +1,20 @@
+<html>
+    <body>
+        <p><strong>Ta bort säkerhetskopia</strong>: Tar bort säkerhetskopian för vald app.
+        </p>
+        <p><strong>Aktivera / inaktivera</strong>: Använder android-skriptet `pm` till att aktivera eller inaktivera en app. Inaktivering av en app tar bort den från det normala användargränssnittet utan att avinstallera. detta kan användas till att aktivera eller inaktivera en app för flera användare i taget (om enheten har flera användare aktiverade). Användarna identifieras med ett ID. 0 är första användaren (ägaren).
+        </p>
+        <p><strong>Avinstallera a</strong>Lite mer aggressiv än en vanlig avinstallering. Förutom att göra en vanlig avinstallering via Android kommandon, avinstallerar från OAndBackupX raderar filer som appen kan ha lämnat i /data/app-lib/.
+        </p>
+        <p><strong> Aktivera / inaktivera</strong>: Använder Android `pm`skript för att aktivera eller inaktivera en app. Att inaktivera en app tar bort den från det normala användargränsitet utan att avinstallera den. Detta kan användas för att aktivera och inaktivera en app för flera användare på en gång (om enheten har fler användare). Användare identifieras med en ID. e.g. 0 är den första användaren (ägaren) 10 är oftast en jobb profil.
+        </p>
+        <p><strong>Multiple users</strong>: Multi-user is still somewhat experimental but should work. Enabling and disabling only works after an initial install (not necessarily from OAndBackupx) or restore of the app.
+        </p>
+        <p><strong>System-less apps</strong>: Backup and restore of system-less apps installed as Magisk modules is not supported and trying it could lead to system failure and forcing you to format and flash it anew.
+        </p>
+        <p><strong>Navigation</strong>: The navigation bar has "Settings", "Home", "Batch backup", "Batch restore" and "Schedule backups" (in that order). The number of apps upgraded after their last backup will be presented as a notification on "Home" button.
+        </p>
+        <p><strong>Apps using Keystore</strong>: Android has an encrypted storage for sensitive data. Apps that make use of this to store login data or some keys for its function can't be restored successfully. Two examples of such apps are Signal and Element(Riot).
+        </p>
+    </body>
+</html>

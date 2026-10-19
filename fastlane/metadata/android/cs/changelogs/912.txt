@@ -1,0 +1,8 @@
+**OndBackupX 0.9.12 (aka 1.0.0-rc1)**
+* Přidáno: zástupce informací o aplikaci v listu aplikací
+* Aktualizováno: úder prvků uživatelského rozhraní
+* Aktualizováno: nový výchozí adresář pro zálohování /OAndBackupX
+* Opraveno: chování adaptéru po provedení akcí
+* Opraveno: pád adaptéru
+* Přepnuto: z čištění mezipaměti aplikace na její vyloučení ze zálohování(zásluha @icewind1991)
+* Upraveno: chování různých prvků uživatelského rozhraní

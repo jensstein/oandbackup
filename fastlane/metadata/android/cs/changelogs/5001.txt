@@ -1,0 +1,6 @@
+* Aktualizováno: Vylepšení funkce příkazů shellu (@hg42)
+* Opraveno: Opraven kontext SELinuxu (@jakeler & @hg42)
+* Opraveno: Neúspěšné zálohování souborů s názvy s dvojitými mezerami (@jakeler)
+* Opraveno: Vyhazování výjimek u soketů a dalších speciálních souborů (@hg42)
+* Opraveno: Neúspěšné zálohování souborů s názvy s dvojitými mezerami (@jakeler)
+* Aktualizovány překlady: jazyky

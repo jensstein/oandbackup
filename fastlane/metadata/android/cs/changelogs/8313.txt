@@ -1,0 +1,6 @@
+Přidáno: animace tlačítek na navigační liště
+Opraveno: spuštění plánu, když není aplikace otevřena
+Opraveno: chybějící stub pro restorePackage ve specials
+Opraveno: překrytí tabulek navigační lištou
+Opraveno: pád při restartu aplikace při otevřeném AppSheet
++ více než 10 překladů

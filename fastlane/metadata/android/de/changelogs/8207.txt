@@ -1,0 +1,5 @@
+Behoben: Blocklisten in Zeitplänen
+Behoben: Sich wiederholende Zeitpläne
+Behoben: Wiederherstellung der vollen Höhe des Terminals
+Aktualisierung: Trennung der Dienst-Einstellungen in Sicherungs- und Wiederherstellungseinstellungen
+Aktualisierung: Tracing standardmäßig deaktiviert

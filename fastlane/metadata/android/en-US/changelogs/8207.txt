@@ -1,0 +1,5 @@
+Fix: BlockLists in schedules
+Fix: Repetitive running schedules
+Fix: Restore full height of terminal
+Update: Separate service prefs into backup and restore ones
+Update: Default disable tracing
